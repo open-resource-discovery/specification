@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json",
+  "$id": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#",
   "description": "The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information\nthat are specific to the document/the service it describes.\n\nThe constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.",
   "definitions": {
     "Package": {
@@ -19,10 +19,11 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.",
+          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
           "maxLength": 255,
           "examples": [
-            "SuccessFactorsRecruiting"
+            "SuccessFactorsRecruiting",
+            "91cd9972-c05d-4d29-8b6e-dbef2a2d48e9"
           ]
         },
         "title": {
@@ -397,10 +398,11 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.",
+          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
           "maxLength": 255,
           "examples": [
-            "SuccessFactorsRecruiting"
+            "SuccessFactorsRecruiting",
+            "91cd9972-c05d-4d29-8b6e-dbef2a2d48e9"
           ]
         },
         "correlationIds": {
@@ -561,7 +563,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.",
+          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
           "maxLength": 255,
           "examples": [
             "API_BILL_OF_MATERIAL_SRV"
@@ -1280,7 +1282,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.",
+          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
           "maxLength": 255,
           "examples": [
             "BusinessEvents_SubscriptionEvents"
@@ -1840,7 +1842,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.",
+          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
           "maxLength": 255,
           "examples": [
             "BusinessPartner",
@@ -2178,7 +2180,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.",
+          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
           "maxLength": 255,
           "examples": [
             "CustomerOrder"
@@ -3141,10 +3143,11 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.",
+          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
           "maxLength": 255,
           "examples": [
-            "SuccessFactorsRecruiting"
+            "SuccessFactorsRecruiting",
+            "91cd9972-c05d-4d29-8b6e-dbef2a2d48e9"
           ]
         },
         "correlationIds": {
@@ -3458,10 +3461,11 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.",
+          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
           "maxLength": 255,
           "examples": [
-            "SuccessFactorsRecruiting"
+            "SuccessFactorsRecruiting",
+            "91cd9972-c05d-4d29-8b6e-dbef2a2d48e9"
           ]
         },
         "correlationIds": {
@@ -4215,7 +4219,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Optional local ID for the system instance, as known by the described system.\n\nIn the context of a system instance, this is usually the local tenant id.",
+          "description": "Optional local ID for the system instance, as known by the described system.\n\nIn case of multi-tenant systems, it is equivalent to the local tenant id.",
           "maxLength": 255,
           "examples": [
             "LocalTenantId123"
@@ -4270,7 +4274,11 @@
           "oneOf": [
             {
               "const": "open",
-              "description": "The resource definitions are openly accessible and not protected via authentication or authorization.\n\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/open)."
+              "description": "The resource definitions are openly accessible and not protected via authentication or authorization.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/open)."
+            },
+            {
+              "const": "sap:oauth-client-credentials:v1",
+              "description": "The ORD information are accessible via OAuth 2.0 client credentials flow as standardized within SAP.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-oauth-client-credentials-v1)."
             },
             {
               "const": "sap:cmp-mtls:v1",
@@ -4783,7 +4791,7 @@
           "format": "uri-reference"
         },
         {
-          "const": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json"
+          "const": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#"
         }
       ]
     },

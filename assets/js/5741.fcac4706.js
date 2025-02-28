@@ -1,1 +1,0 @@
-(self.webpackChunk_sap_open_resource_discovery=self.webpackChunk_sap_open_resource_discovery||[]).push([[5741],{5741:()=>{}}]);
