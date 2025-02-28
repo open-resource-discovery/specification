@@ -23,14 +23,14 @@ That leaves the main challenge to create the ORD documents correctly. Two things
 
 - Use a validator to ensure that the ORD Documents are correct and compliant, ideally as CI/CD step or test cases.
 - Implement against a generated (ideally type safe) ORD document interface.
-  - ORD comes with a [JSON Schema definition](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json), which can be converted into interfaces / clients for most programming languages.
+  - ORD comes with a [JSON Schema definition](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json), which can be converted into interfaces / clients for most programming languages.
     This can be done with converters like [quicktype](https://quicktype.io/).
 
 #### Is ORD already used outside of SAP?
 
 Not that we are aware of. But it it designed in a way that this is possible.
 
-In a first step, we released ORD as [open source](https://github.com/SAP/open-resource-discovery) under the Apache 2 license (see [public announcement](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/)).
+In a first step, we released ORD as [open source](https://github.com/open-resource-discovery/specification) under the Apache 2 license (see [public announcement](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/)).
 
 Currently, we're in discussion with other companies to form a community around the standard.
 
@@ -52,7 +52,7 @@ In SAP context, we support including On-Premises software through [Cloud Connect
 The Open in ORD refers to the protocol itself and that it is published publicly under a permissive license.
 It can therefore be freely implemented by SAP partners or customers.
 
-A public version of the standard is published here: https://sap.github.io/open-resource-discovery.
+A public version of the standard is published here: https://open-resource-discovery.github.io/specification.
 
 The governance and the actual development will remain fully at SAP for now.
 In the long term, we can imagine to contribute ORD to an open governance body

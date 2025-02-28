@@ -2,11 +2,11 @@
 
 ### ./examples/document-1.json
 
-> Source Code: [./examples/document-1.json](https://github.com/SAP/open-resource-discovery/blob/main/examples/document-1.json)
+> Source Code: [./examples/document-1.json](https://github.com/open-resource-discovery/specification/blob/main/examples/document-1.json)
 
 ```yaml
 {
-  "$schema": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.9",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1"],
@@ -196,11 +196,11 @@
 
 ### ./examples/document-data-product.json
 
-> Source Code: [./examples/document-data-product.json](https://github.com/SAP/open-resource-discovery/blob/main/examples/document-data-product.json)
+> Source Code: [./examples/document-data-product.json](https://github.com/open-resource-discovery/specification/blob/main/examples/document-data-product.json)
 
 ```yaml
 {
-  "$schema": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.9",
   "policyLevels": ["sap:core:v1"],
   "products": [
@@ -957,11 +957,11 @@
 
 ### ./examples/document-entity-type-mapping.json
 
-> Source Code: [./examples/document-entity-type-mapping.json](https://github.com/SAP/open-resource-discovery/blob/main/examples/document-entity-type-mapping.json)
+> Source Code: [./examples/document-entity-type-mapping.json](https://github.com/open-resource-discovery/specification/blob/main/examples/document-entity-type-mapping.json)
 
 ```yaml
 {
-  "$schema": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.9",
   "description": "This Example demonstrates the Entity Type Mapping feature",
   "policyLevels": ["sap:core:v1"],
@@ -1144,11 +1144,11 @@
 
 ### ./examples/document-entity-types.json
 
-> Source Code: [./examples/document-entity-types.json](https://github.com/SAP/open-resource-discovery/blob/main/examples/document-entity-types.json)
+> Source Code: [./examples/document-entity-types.json](https://github.com/open-resource-discovery/specification/blob/main/examples/document-entity-types.json)
 
 ```yaml
 {
-  "$schema": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.9",
   "description": "Example for entity types as they will be exposed by ODM",
   "policyLevels": ["sap:core:v1"],
@@ -1190,11 +1190,11 @@
 
 ### ./examples/document-special-protocols.json
 
-> Source Code: [./examples/document-special-protocols.json](https://github.com/SAP/open-resource-discovery/blob/main/examples/document-special-protocols.json)
+> Source Code: [./examples/document-special-protocols.json](https://github.com/open-resource-discovery/specification/blob/main/examples/document-special-protocols.json)
 
 ```yaml
 {
-  "$schema": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.9",
   "description": "This ORD Document example contains more special examples, like custom SAP protocols",
   "policyLevels": ["sap:core:v1"],

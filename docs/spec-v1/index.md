@@ -229,7 +229,7 @@ If the size gets too big, consider splitting the information into multiple ORD d
 
 The interfaces are described in [ORD document interface](./interfaces/document.md), including [examples](./interfaces/document.md#examples).
 
-An ORD document MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Document.schema.json](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json).
+An ORD document MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Document.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json).
 
 Internationalization and localization are not supported natively in ORD documents.
 It is therefore RECOMMENDED to use American English for human-readable titles and descriptions.
@@ -303,7 +303,7 @@ The actual value is then provided through an accompanying property, such as `cus
 Additional information or categorization can be added through the generic `Label` concept, which is available for most ORD information.
 
 If such custom values or labels are relied upon by more than one application or team, they SHOULD be standardized through ORD.
-Please [create an issue](https://github.com/SAP/open-resource-discovery/issues) to request this.
+Please [create an issue](https://github.com/open-resource-discovery/specification/issues) to request this.
 
 ### ORD Document API
 
@@ -311,7 +311,7 @@ This section details how an [ORD Provider](#ord-provider) exposes one or multipl
 
 The ORD Provider MUST implement a RESTful API that provides an [ORD configuration endpoint](#ord-configuration-endpoint) and at least one [ORD document endpoint](#ord-document-endpoint).
 
-The API contract is defined as an [OpenAPI 3 Definition](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/DocumentAPI.oas3.yaml).
+The API contract is defined as an [OpenAPI 3 Definition](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/DocumentAPI.oas3.yaml).
 The definition contains the well-known ORD configuration endpoint and one exemplary document endpoint.
 
 #### ORD Configuration Endpoint
@@ -340,7 +340,7 @@ The [ORD configuration endpoint](#ord-configuration-endpoint) MUST be implemente
 The response MUST be a valid UTF-8 encoded [JSON](https://www.json.org/json-en.html) document that is returned with the `application/json;charset=UTF-8` content type and the HTTP Status Code `200`.
 
 - The response MUST not contain any sensitive information or leak tenant specific information.
-- It MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Configuration.schema.json](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Configuration.schema.json).
+- It MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Configuration.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json).
 - Please refer to the [interface documentation](./interfaces/configuration.md) for more details and [examples](./interfaces/configuration.md#complete-examples).
 
 All of the [common REST characteristics](#common-rest-characteristics) MUST be met.
@@ -939,11 +939,11 @@ When an ORD resource has been removed (decommissioned) or an ORD taxonomy is no 
 
 #### Error Handling
 
-If there are internal implementation errors, the REST endpoint MUST return a `500` (Server Error) response as defined in the [OpenAPI 3 definition](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/DocumentAPI.oas3.yaml).
+If there are internal implementation errors, the REST endpoint MUST return a `500` (Server Error) response as defined in the [OpenAPI 3 definition](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/DocumentAPI.oas3.yaml).
 Additional error details MAY be added.
 
 If a resource has been requested that does not exist or is not implemented,
-the REST endpoint MUST return a `404` (Not Found) response as defined in the [OpenAPI 3 definition](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/DocumentAPI.oas3.yaml) definition.
+the REST endpoint MUST return a `404` (Not Found) response as defined in the [OpenAPI 3 definition](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/DocumentAPI.oas3.yaml) definition.
 Additional error details MAY be added.
 
 #### Authentication & Authorization
@@ -951,7 +951,7 @@ Additional error details MAY be added.
 The ORD document endpoints MAY implement authentication and authorization to protect the ORD information and the resource definitions it references.
 In case of system instance aware information, authentication MAY be a technical necessity.
 
-If authentication/authorization are applied, the endpoints MUST return the corresponding HTTP status codes `401` (Unauthorized) and `403` (Forbidden) as defined in the [OpenAPI 3 definition](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/DocumentAPI.oas3.yaml).
+If authentication/authorization are applied, the endpoints MUST return the corresponding HTTP status codes `401` (Unauthorized) and `403` (Forbidden) as defined in the [OpenAPI 3 definition](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/DocumentAPI.oas3.yaml).
 
 The specification makes no hard assumptions about the authorization and authentication mechanism.
 The strategy/access methodology that was chosen to retrieve the ORD information and the referenced resource definition files is described via Access Strategies (`accessStrategies`).

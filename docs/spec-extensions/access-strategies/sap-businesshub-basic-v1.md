@@ -1,6 +1,7 @@
 ---
 title: SAP Business Accelerator Hub Basic Auth v1
 description: Publishing to the SAP Business Accelerator Hub.
+sidebar_position: 3
 ---
 
 # SAP Business Accelerator Hub Basic Auth (v1.0)

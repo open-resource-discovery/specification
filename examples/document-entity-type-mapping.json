@@ -1,5 +1,5 @@
 {
-  "$schema": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.9",
   "description": "This Example demonstrates the Entity Type Mapping feature",
   "policyLevels": ["sap:core:v1"],

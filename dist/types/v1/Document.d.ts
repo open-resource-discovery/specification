@@ -13,7 +13,7 @@ export interface ORDDocument {
      * Optional [URL](https://tools.ietf.org/html/rfc3986) to the Open Resource Discovery document schema (defined as a JSON Schema).
      * If provided, this enables code intelligence and validation in supported editors (like VSCode) and tools.
      */
-    $schema?: (string | "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json") & string;
+    $schema?: (string | "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#") & string;
     /**
      * Version of the Open Resource Discovery specification that is used to describe this document.
      */
@@ -125,7 +125,7 @@ export interface SystemInstance {
     /**
      * Optional local ID for the system instance, as known by the described system.
      *
-     * In the context of a system instance, this is usually the local tenant id.
+     * In case of multi-tenant systems, it is equivalent to the local tenant id.
      */
     localId?: string;
     /**
@@ -217,6 +217,8 @@ export interface APIResource {
     ordId: string;
     /**
      * Local ID, as known by the described system.
+     *
+     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
      */
     localId?: string;
     /**
@@ -664,7 +666,7 @@ export interface AccessStrategy {
     /**
      * Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.
      */
-    type: "open" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom";
+    type: "open" | "sap:oauth-client-credentials:v1" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom";
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -884,6 +886,8 @@ export interface EventResource {
     ordId: string;
     /**
      * Local ID, as known by the described system.
+     *
+     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
      */
     localId?: string;
     /**
@@ -1240,6 +1244,8 @@ export interface EntityType {
     ordId: string;
     /**
      * Local ID, as known by the described system.
+     *
+     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
      */
     localId: string;
     /**
@@ -1470,6 +1476,8 @@ export interface Capability {
     ordId: string;
     /**
      * Local ID, as known by the described system.
+     *
+     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
      */
     localId?: string;
     /**
@@ -1675,6 +1683,8 @@ export interface DataProduct {
     ordId: string;
     /**
      * Local ID, as known by the described system.
+     *
+     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
      */
     localId?: string;
     /**
@@ -2018,6 +2028,8 @@ export interface IntegrationDependency {
     ordId: string;
     /**
      * Local ID, as known by the described system.
+     *
+     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
      */
     localId?: string;
     /**
@@ -2402,6 +2414,8 @@ export interface Package {
     ordId: string;
     /**
      * Local ID, as known by the described system.
+     *
+     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
      */
     localId?: string;
     /**
@@ -2598,6 +2612,8 @@ export interface ConsumptionBundle {
     ordId: string;
     /**
      * Local ID, as known by the described system.
+     *
+     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
      */
     localId?: string;
     /**

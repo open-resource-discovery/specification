@@ -2,11 +2,11 @@
 
 ### ./examples/configuration-1.json
 
-> Source Code: [./examples/configuration-1.json](https://github.com/SAP/open-resource-discovery/blob/main/examples/configuration-1.json)
+> Source Code: [./examples/configuration-1.json](https://github.com/open-resource-discovery/specification/blob/main/examples/configuration-1.json)
 
 ```yaml
 {
-  "$schema": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Configuration.schema.json",
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json",
   "openResourceDiscoveryV1": {
     "documents": [
       {

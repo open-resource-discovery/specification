@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-description: A Data Product is a data set exposed for consumption outside the boundaries of the producing application or service via APIs. They are described through high quality metadata that can be accessed through the Data Product Directory.
+description: More details on the Data Product concept in ORD.
 title: Data Product
 ---
 
@@ -10,7 +10,8 @@ title: Data Product
 
 ## Definition
 
-> A [Data Product](../../spec-v1/interfaces/document#data-product) is a **data set** exposed for consumption outside the boundaries of the producing application or service via **APIs**. They are described through high quality **metadata** that can be accessed through the Data Product Directory ([ORD Aggregator](../../spec-v1/#ord-aggregator)).
+> A [Data Product](../../spec-v1/interfaces/document#data-product) is a **data set** exposed for consumption via APIs or Events.
+> They are described through high quality **metadata** that can be accessed through the Data Product Directory ([ORD Aggregator](../../spec-v1/#ord-aggregator)).
 
 The Data Product concept is based on [Data Mesh Principles](https://martinfowler.com/articles/data-mesh-principles.html) (see also [this book](https://www.thoughtworks.com/en-de/insights/books/data-mesh)).
 
@@ -21,7 +22,7 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 ### Data Aspect
 
 - Applications produce data within a domain. An application takes responsibility for the data it produces, and the application offers data for consumption outside the original context in the form of a Data Product.
-- A data product is a "data set" – which can include:
+- A data product is a "data set", which can include:
   - Business Objects: master data, transaction data
   - Other objects, e.g.: config data
   - Analytical data, including cubes, measures and dimensions
@@ -59,6 +60,8 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 At SAP, the minimum required metadata is the description of the Data Product as an ORD resource. Additional metadata, e.g. CSN, can also be provided.
 
 There are internal guidance what qualities and protocols a Data Product needs to or should have. Those are currently worked our during the beta phase. Once they are clear, they may find their way into a SAP specific [policy level](../../spec-extensions/policy-levels/index.mdx).
+
+> ℹ Relevant SAP blog post: [The Metadata behind SAP Data Products in SAP Business Data Cloud](https://community.sap.com/t5/technology-blogs-by-sap/the-metadata-behind-sap-data-products-in-sap-business-data-cloud/ba-p/14016947).
 
 ## Architecture Overview
 

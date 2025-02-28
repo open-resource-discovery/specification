@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/package",
-  "name": "@sap/open-resource-discovery",
-  "version": "1.9.10",
+  "name": "@open-resource-discovery/specification",
+  "version": "1.9.11",
   "description": "Open Resource Discovery (ORD) Specification",
   "author": "SAP SE",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SAP/open-resource-discovery.git"
+    "url": "git+https://github.com/open-resource-discovery/specification.git"
   },
   "files": [
     "dist/index.*",
@@ -29,7 +29,7 @@
     "@docusaurus/core": "3.7.0",
     "@docusaurus/preset-classic": "3.7.0",
     "@docusaurus/theme-mermaid": "3.7.0",
-    "@easyops-cn/docusaurus-search-local": "0.48.4",
+    "@easyops-cn/docusaurus-search-local": "0.48.5",
     "@mdx-js/react": "3.1.0",
     "clsx": "2.1.1",
     "prism-react-renderer": "2.4.1",

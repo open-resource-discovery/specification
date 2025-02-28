@@ -1,6 +1,7 @@
 ---
 title: SAP CMP mTLS v1
 description: Publishing to Unified Customer Landscape / SAP BTP System Landscape.
+sidebar_position: 2
 ---
 
 # SAP CMP mTLS Access Strategy (v1.0)

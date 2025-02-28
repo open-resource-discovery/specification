@@ -1,5 +1,5 @@
 {
-  "$schema": "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.9",
   "integrationDependencies": [
     // This is an example for a simple Integration Dependency
@@ -10,9 +10,7 @@
       "version": "2.2.3",
       "title": "Subscription Billing Replication",
       "description": "Replication of Subscription Billing data into S/4",
-      "correlationIds": [
-        "sap.s4:communicationScenario:SAP_COM_123"
-      ],
+      "correlationIds": ["sap.s4:communicationScenario:SAP_COM_123"],
       "releaseStatus": "active",
       "visibility": "public",
       "partOfPackage": "sap.xref:package:SomePackage:v1",
@@ -29,22 +27,20 @@
           "eventResources": [
             {
               "ordId": "sap.billing.sb:eventResource:SAPSubscriptionBillingBusinessEvents:v2",
-              "systemTypeRestriction": [
-                "sap.billing"
-              ],
+              "systemTypeRestriction": ["sap.billing"],
               "subset": [
                 {
-                  "eventType": "sap.billing.sb.Subscription.Created.v2"
+                  "eventType": "sap.billing.sb.Subscription.Created.v2",
                 },
                 {
-                  "eventType": "sap.billing.sb.Subscription.Updated.v2"
+                  "eventType": "sap.billing.sb.Subscription.Updated.v2",
                 },
                 {
-                  "eventType": "sap.billing.sb.Subscription.Deleted.v2"
-                }
-              ]
-            }
-          ]
+                  "eventType": "sap.billing.sb.Subscription.Deleted.v2",
+                },
+              ],
+            },
+          ],
         },
         {
           "title": "Billing Forecast Events",
@@ -53,18 +49,16 @@
           "eventResources": [
             {
               "ordId": "sap.billing.sb:eventResource:SAPSubscriptionBillingBusinessEvents_BillingForecastEvents:v1",
-              "systemTypeRestriction": [
-                "sap.billing"
-              ],
+              "systemTypeRestriction": ["sap.billing"],
               "subset": [
                 {
-                  "eventType": "sap.billing.sb.billingForecast.created.v1"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                  "eventType": "sap.billing.sb.billingForecast.created.v1",
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
     // This is an example for Data Product Input ports
     // The context is that there's a Customer Order data product which points to the Integration Dependency here as an input port.
@@ -74,9 +68,7 @@
       "title": "Integration Dependency to realize Customer Order data product",
       "description": "Something",
       "mandatory": true,
-      "correlationIds": [
-        "sap.s4:communicationScenario:SAP_COM_1234"
-      ],
+      "correlationIds": ["sap.s4:communicationScenario:SAP_COM_1234"],
       "releaseStatus": "active",
       "visibility": "public",
       "partOfPackage": "sap.xref:package:SomePackage:v1",
@@ -91,30 +83,28 @@
             // Please note that here
             {
               "ordId": "sap.cic:eventResource:RawCustomerOrder:v1",
-              "systemTypeRestriction": [
-                "sap.cic"
-              ],
+              "systemTypeRestriction": ["sap.cic"],
               "subset": [
                 {
-                  "eventType": "sap.cic.Order.OrderTransferred.v1"
-                }
-              ]
+                  "eventType": "sap.cic.Order.OrderTransferred.v1",
+                },
+              ],
             },
             {
               "ordId": "sap.cic:eventResource:RawCustomerOrder:v2",
               "subset": [
                 {
-                  "eventType": "sap.cic.Order.OrderTransferred.v2"
-                }
-              ]
-            }
+                  "eventType": "sap.cic.Order.OrderTransferred.v2",
+                },
+              ],
+            },
           ],
           "apiResources": [
             {
               "ordId": "sap.cic:apiResource:RawCustomerOrderSQL:v1",
-              "minVersion": "1.3.0" // API Needs to be provided in at least version 1.3,
-            }
-          ]
+              "minVersion": "1.3.0", // API Needs to be provided in at least version 1.3,
+            },
+          ],
         },
         {
           "title": "RetailTransaction",
@@ -124,14 +114,14 @@
           "apiResources": [
             {
               "ordId": "sap.cic:apiResource:RetailTransactionOData:v1",
-              "minVersion": "1.3.0"
+              "minVersion": "1.3.0",
             },
             {
-              "ordId": "sap.cic:apiResource:RetailTransactionSQL:v2"
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              "ordId": "sap.cic:apiResource:RetailTransactionSQL:v2",
+            },
+          ],
+        },
+      ],
+    },
+  ],
 }

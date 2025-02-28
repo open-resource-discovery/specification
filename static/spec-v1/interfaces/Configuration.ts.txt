@@ -12,7 +12,10 @@ export interface ORDConfiguration {
    * Optional URL to the ORD document schema (defined as JSON Schema).
    * If given, this enables code intelligence and validation in supported editors (like VSCode) and tools.
    */
-  $schema?: (string | "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Configuration.schema.json") &
+  $schema?: (
+    | string
+    | "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json#"
+  ) &
     string;
   /**
    * Optional [base URL](../index.md#def-base-url) that can be used to resolve the relative URLs to the ORD Documents.
@@ -89,7 +92,7 @@ export interface AccessStrategy {
   /**
    * Defines the authentication/authorization strategy through which the referenced ORD Documents can be accessed.
    */
-  type: "open" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom";
+  type: "open" | "sap:oauth-client-credentials:v1" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom";
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *

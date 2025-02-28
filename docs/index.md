@@ -28,7 +28,7 @@ ORD can be used for **static documentation** (like API / data catalogs and marke
 By adopting ORD, an application will implement a single-entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl the relevant information / metadata.
 The information can be used to build metadata registries / catalogs and do runtime inspection of actual system landscapes.
 
-> ℹ ORD is an [open source](https://github.com/SAP/open-resource-discovery) standard by SAP, released under the Apache 2 license (see [public announcement](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/)).
+> ℹ ORD is an [open source](https://github.com/open-resource-discovery/specification) standard by SAP, released under the Apache 2 license (see [public announcement](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/)).
 
 > The ORD interface (JSON Schema) and TypeScript types are available via npm: [`@sap/open-resource-discovery`](https://www.npmjs.com/package/@sap/open-resource-discovery).
 
@@ -67,7 +67,7 @@ Based on this, many end-user use cases can be realized, e.g.:
   - Description of both the static / generic perspective and the actual runtime perspective
   - Support of many different metadata-driven use-cases and consumer requirements
 - ORD is an **open standard**
-  - It is [open source](https://github.com/SAP/open-resource-discovery) an can be used by SAP partners and customers if they see a value in adopting it, like better integration in the SAP ecosystem
+  - It is [open source](https://github.com/open-resource-discovery/specification) an can be used by SAP partners and customers if they see a value in adopting it, like better integration in the SAP ecosystem
   - The specification is open for extensions via labels, custom types, spec extensions. Those don't need to go through alignment first.
 
 </p></div></div></div>
@@ -87,7 +87,7 @@ Based on this, many end-user use cases can be realized, e.g.:
 
 ## Future Plans
 
-Now that ORD is [open-source](https://sap.github.io/open-resource-discovery/), a potential next step is to work with partners on a true industry wide standard, as ORD is currently focused on SAPs requirements.
+Now that ORD is [open-source](https://open-resource-discovery.github.io/specification/), a potential next step is to work with partners on a true industry wide standard, as ORD is currently focused on SAPs requirements.
 We are also part of the publicly funded [IPCEI CIS](https://www.bmwk.de/Redaktion/EN/Artikel/Industry/ipcei-cis.html) project, where we also work towards this goal.
 
 The specification itself is designed to be generic, so most SAP specific aspects are described as [spec extensions](./spec-extensions).

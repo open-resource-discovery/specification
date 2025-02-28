@@ -18,7 +18,7 @@ info:
     url: https://www.sap.com/
 externalDocs:
   description: Open Resource Discovery Specification (internal link)
-  url: https://sap.github.io/open-resource-discovery
+  url: https://open-resource-discovery.github.io/specification
 tags:
   - name: OpenResourceDiscovery
 servers:
@@ -207,7 +207,7 @@ components:
             - type: string
               format: uri-reference
             - enum:
-                - https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json
+                - https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#
         openResourceDiscovery:
           type: string
           description: Version of the Open Resource Discovery specification that is used to describe this document.
@@ -403,7 +403,12 @@ components:
           example: sap.xref:package:SomePackage:v1
         localId:
           type: string
-          description: Local ID, as known by the described system.
+          description: >-
+            Local ID, as known by the described system.
+
+
+            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
+            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
           maxLength: 255
           example: SuccessFactorsRecruiting
         title:
@@ -800,7 +805,12 @@ components:
           example: sap.xref:consumptionBundle:bundleXYZ:v1
         localId:
           type: string
-          description: Local ID, as known by the described system.
+          description: >-
+            Local ID, as known by the described system.
+
+
+            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
+            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
           maxLength: 255
           example: SuccessFactorsRecruiting
         correlationIds:
@@ -1026,7 +1036,12 @@ components:
           example: sap.s4:apiResource:API_BILL_OF_MATERIAL_SRV:v1
         localId:
           type: string
-          description: Local ID, as known by the described system.
+          description: >-
+            Local ID, as known by the described system.
+
+
+            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
+            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
           maxLength: 255
           example: API_BILL_OF_MATERIAL_SRV
         correlationIds:
@@ -1800,7 +1815,12 @@ components:
           example: sap.billing.sb:eventResource:BusinessEvents_SubscriptionEvents:v1
         localId:
           type: string
-          description: Local ID, as known by the described system.
+          description: >-
+            Local ID, as known by the described system.
+
+
+            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
+            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
           maxLength: 255
           example: BusinessEvents_SubscriptionEvents
         correlationIds:
@@ -2422,7 +2442,12 @@ components:
           example: sap.odm:entityType:BusinessPartner:v1
         localId:
           type: string
-          description: Local ID, as known by the described system.
+          description: >-
+            Local ID, as known by the described system.
+
+
+            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
+            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
           maxLength: 255
           example: BusinessPartner
         correlationIds:
@@ -2803,7 +2828,12 @@ components:
           example: sap.foo.bar:dataProduct:CustomerOrder:v1
         localId:
           type: string
-          description: Local ID, as known by the described system.
+          description: >-
+            Local ID, as known by the described system.
+
+
+            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
+            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
           maxLength: 255
           example: CustomerOrder
         correlationIds:
@@ -3745,7 +3775,12 @@ components:
           example: sap.foo.bar:capability:fieldExtensibility:v1
         localId:
           type: string
-          description: Local ID, as known by the described system.
+          description: >-
+            Local ID, as known by the described system.
+
+
+            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
+            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
           maxLength: 255
           example: SuccessFactorsRecruiting
         correlationIds:
@@ -4135,7 +4170,12 @@ components:
           example: sap.foo.bar:integrationDependency:CustomerOrder:v1
         localId:
           type: string
-          description: Local ID, as known by the described system.
+          description: >-
+            Local ID, as known by the described system.
+
+
+            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
+            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
           maxLength: 255
           example: SuccessFactorsRecruiting
         correlationIds:
@@ -4868,7 +4908,7 @@ components:
           description: |-
             Optional local ID for the system instance, as known by the described system.
 
-            In the context of a system instance, this is usually the local tenant id.
+            In case of multi-tenant systems, it is equivalent to the local tenant id.
           maxLength: 255
           example: LocalTenantId123
         correlationIds:
@@ -4923,6 +4963,7 @@ components:
             accessed.
           enum:
             - open
+            - sap:oauth-client-credentials:v1
             - sap:cmp-mtls:v1
             - sap.businesshub:basic-auth:v1
             - custom
@@ -4952,6 +4993,8 @@ components:
             API](https://help.sap.com/viewer/1364b70b9cbb417ea5e2d80e966d4f49/CLOUD/en-US) help pages."
       required:
         - type
+      example:
+        type: open
     CredentialExchangeStrategy:
       type: object
       title: Credential Exchange Strategy
@@ -5541,7 +5584,7 @@ components:
             - type: string
               format: uri-reference
             - enum:
-                - https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Configuration.schema.json
+                - https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json#
         baseUrl:
           type: string
           format: uri
