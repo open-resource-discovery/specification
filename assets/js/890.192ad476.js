@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([[890],{8509:(e,c,s)=>{s.d(c,{createInfoServices:()=>i.v});var i=s(7021);s(9369)}}]);
