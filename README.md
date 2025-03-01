@@ -1,4 +1,4 @@
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP/open-resource-discovery)](https://api.reuse.software/info/github.com/SAP/open-resource-discovery)
+[![REUSE status](https://api.reuse.software/badge/github.com/open-resource-discovery/specification)](https://api.reuse.software/info/github.com/open-resource-discovery/specification)
 
 # Open Resource Discovery Specification
 

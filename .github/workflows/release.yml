@@ -7,7 +7,7 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
-    environment: npmjs:@open-resource-discovery/specification
+    environment: tokens:@open-resource-discovery/specification
     steps:
       - uses: actions/checkout@v4
 
@@ -26,13 +26,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  create-github-release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # create-github-release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Create GitHub Release
-        uses: open-resource-discovery/github-release@main
+  #     - name: Create GitHub Release
+  #       uses: open-resource-discovery/github-release@main

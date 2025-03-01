@@ -12,7 +12,7 @@ description: Describes the technical interface / schema for ORD Configuration.
 * Visual diagrams can be found here: [ORD Configuration Class Diagram](/spec-v1/diagrams/configuration.md).
 * The interface is described as [JSON Schema](https://json-schema.org/specification.html) here: [/spec-v1/interfaces/Configuration.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json#).
 * A high-level overview can also be exported as [Excel](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.xlsx) and [CSV](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.csv) file.
-* This documentation is automatically generated from [./spec/v1/Configuration.schema.yaml](https://github.com/open-resource-discovery/specification/blob/master/v1/Configuration.schema.yaml).
+* This documentation is automatically generated from [./spec/v1/Configuration.schema.yaml](https://github.com/open-resource-discovery/specification/blob/main/v1/Configuration.schema.yaml).
 
 ## Schema Definitions
 

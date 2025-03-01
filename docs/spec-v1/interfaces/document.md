@@ -12,7 +12,7 @@ description: Describes the technical interface / schema for ORD Document.
 * Visual diagrams can be found here: [ORD Document Class Diagram](/spec-v1/diagrams/document.md).
 * The interface is described as [JSON Schema](https://json-schema.org/specification.html) here: [/spec-v1/interfaces/Document.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#).
 * A high-level overview can also be exported as [Excel](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.xlsx) and [CSV](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.csv) file.
-* This documentation is automatically generated from [./spec/v1/Document.schema.yaml](https://github.com/open-resource-discovery/specification/blob/master/v1/Document.schema.yaml).
+* This documentation is automatically generated from [./spec/v1/Document.schema.yaml](https://github.com/open-resource-discovery/specification/blob/main/v1/Document.schema.yaml).
 
 ## Schema Definitions
 
