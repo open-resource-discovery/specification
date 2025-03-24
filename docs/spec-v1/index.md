@@ -3,7 +3,7 @@ sidebar_position: 0
 title: ORD Specification
 ---
 
-# Open Resource Discovery Specification 1.9
+# Open Resource Discovery Specification 1.10
 
 ## Notational Conventions
 
@@ -53,23 +53,25 @@ This specification defines the following terms (for the ORD context):
 
 - <dfn id="def-ord-behavior">ORD behavior</dfn> standardizes how <a href="#def-ord-information">ORD information</a> is discovered, transported, and aggregated.
 
-- A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is sometimes referred to as _application and service_ for better readability.
+- A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service from operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is sometimes referred to as _application and service_ for better readability.
   Since system type is an abstract concept, it is not concretely addressable.
-  A [system installation](#def-system-installation) and potentially a [system instance](#def-system-instance) needs to be created and used in this case.
+  A [system deployment](#def-system-deployment) and potentially a [system instance](#def-system-instance) needs to be created and used in this case.
 
   Please note that a system type is similar, but not necessarily identical to a [product](#def-product).
   System type is a technical concept, while product is a term for external communication and sales.
 
-- A <dfn id="def-system-installation">system installation</dfn> is a concrete running instance of a <a href="#def-system-type">system type</a>. If the system type supports tenant isolation, a system installation may offer multiple <a href="#def-system-instance">system instance</a>. A system installation has at least one [base URL](#def-base-url).
+- A <dfn id="def-system-deployment">system deployment</dfn> is a concrete running instance of a <a href="#def-system-type">system type</a>. If the system type supports tenant isolation, a system deployment is the host for multiple <a href="#def-system-instance">system instances</a> (tenants). A system deployment has at least one [base URL](#def-base-url).
 
 - A <dfn id="def-system-instance">system instance</dfn> is running instance of a <a href="#def-system-type">system type</a> and always refers to the _most specific_ instance from a customer / account perspective. Usually this is the boundary where the isolation of resources, capabilities and data is ensured.
-  If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system installation](#def-system-installation) per tenant or system isolation does not matter. In those cases system instance equals the system installation.
+  If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system deployment](#def-system-deployment) per tenant or system isolation does not matter. In those cases system instance equals the system deployment.
 
   To illustrate this, think of an API resource. It may be differently described between system-instances of the same type due to configuration and extensibility. But for sure, the API of one system-instance acts on their own isolated data set (potentially also users).
 
   The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if multi-tenancy is supported or system ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if not.
 
   A system instance can act as an [ORD Provider](#ord-provider).
+
+- A <dfn id="def-system-version">system version</dfn> states the design-time version / release of a [system instance](#def-system-instance). It provides versioning for operational purposes for the <a href="#def-system-type">system type</a>. E.g. all system instances of the same system version could have the same static metadata description.
 
 - A <dfn id="def-system-landscape">system landscape</dfn> is a set of <a href="#def-system-instance">system instances</a> that are explicitly combined together, for example via a shared zone of trust/connectivity, an account or a [namespace concept](#namespaces).
 
@@ -350,7 +352,7 @@ It is RECOMMENDED to make this endpoint public.
 
 It is RECOMMENDED use the fixed [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) `/.well-known/open-resource-discovery` (as registered [here](https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml)) that is relative to the system instances [base URL](#def-base-url).
 
-Since the ORD config does not contain any tenant specific information, it is RECOMMENDED to only provide one ORD configuration endpoint for one [system installation](#def-system-installation) (same [base URL](#def-base-url)) of a multi-tenant application.
+Since the ORD config does not contain any tenant specific information, it is RECOMMENDED to only provide one ORD configuration endpoint for one [system deployment](#def-system-deployment) (same [base URL](#def-base-url)) of a multi-tenant application.
 
 This assumes that the ORD document URLs in the configuration are not different per tenant and the tenant ID is selected as part of the access strategy.
 If the application is single-tenant or the tenant ID is part of the base URL (for example in the domain name), each tenant / system instance will have their own ORD config endpoint as a consequence.
@@ -561,10 +563,8 @@ A namespace may consist of multiple fragments, delimited by dots (`.`).
 For the formatting of the individual fragments of the namespaces, the following rules apply:
 
 - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
-- MUST have a length of at least one character.
 - Dot (`.`) is reserved as delimiter and MUST only be used for separating fragments.
-
-A namespace SHOULD be compact in length, as it is a mandatory part for various IDs, which are restricted to 255 characters.
+- See [namespace constraints](#namespace-constraints)
 
 A complete namespace MUST match the following [regular expression](https://en.wikipedia.org/wiki/Regular_expression):
 
@@ -600,13 +600,14 @@ Optionally, sub-contexts can be defined as sub namespaces for system and authori
     <subContext> := sub-context below application or authority namespace. May consist of multiple fragments.
 ```
 
-**Constraints**:
+#### Namespace Constraints
 
-- A namespace MUST be ensured to be conflict free. This falls into the responsibility of the registered namespace owner. This registry can be used to ensure this for registered namespaces and sub-namespaces, but within them there needs to be some local governance.
-- All SAP applications and services MUST use the `sap` vendor namespace.
-- System namespaces and authority namespaces MUST always be a sub-namespace of a vendor namespace.
-- A sub-context namespace MUST always be a sub-namespace of either a system namespace or an authority namespace.
-- If sub-context namespaces are described in this registry, the list MUST be complete.
+- A namespace MUST be ensured to be conflict free.
+  This falls into the responsibility of the registered namespace owner and assumes a registry of some kind.
+- The total length of the `<systemNamespace>` or `<authorityNamespace>` MUST NOT exceed 32 characters
+- The total length of the overall `<namespace>` (incl. nested subcontext namespaces) MUST NOT exceed 36 characters
+- It is RECOMMENDED to keep namespaces as short as reasonable, as they become part of IDs which have their own length limitations.
+  Shorter namespaces leave more room for the overall IDs.
 
 #### Vendor Namespace
 
@@ -621,7 +622,7 @@ A vendor namespace MUST be constructed according to the following rules:
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
   - There is a special reserved vendor namespace `customer`:
-    - It can be used in extension scenarios, where the customer of an applications creates their own ORD resources.
+    - It can be used in extension scenarios, where the customer of an applications (tenant owner) creates their own ORD resources.
     - This avoids that customers need to register their own namespaces (which could still be done as an alternative).
 - MUST match Regexp: `^[a-z0-9]+$`
 
@@ -692,6 +693,17 @@ An sub-context namespace MUST be constructed according to the following rules:
 **Examples**: `sap.billing.sb`, `sap.s4.beh`, `sap.odm.finance.bank`.
 
 It is NOT RECOMMENDED to use sub-context namespaces for grouping purposes only, see [grouping and bundling](../details/articles/grouping-and-bundling.md#namespaces).
+
+### Customer Namespace
+
+Some systems allow their customers / end-users to create their own resources (in-app extensions).
+In most cases these resources are local to the tenant, so we don't need to force the customer to register a namespace.
+
+To keep this situation simple, there is a reserved [vendor namespace](#vendor-namespace): `customer`.
+Everything within this namespace is owned by the customer, the owner of the tenant.
+In addition, there is one reserved authority namespace, specifically for customer in-app extensions: `customer.ext`.
+
+The limitation of using `customer.*` namespaces is that they are unique only within a tenant and once the resources are published and shared outside the local scope, the `customer` namespace will be insufficient.
 
 ### ORD ID
 

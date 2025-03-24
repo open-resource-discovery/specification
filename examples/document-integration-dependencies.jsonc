@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.9",
+  "openResourceDiscovery": "1.10",
   "integrationDependencies": [
     // This is an example for a simple Integration Dependency
     // that only expresses that only declares that some events are needed together

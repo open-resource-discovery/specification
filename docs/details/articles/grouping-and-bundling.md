@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-description: How to group, bundle and package ORD content right.
+description: How to group, bundle and package ORD content.
 title: Grouping and Bundling
 ---
 

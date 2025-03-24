@@ -519,6 +519,34 @@ See [SystemInstance interface](../interfaces/document.md#system-instance).
   ```
   
 
+## SystemType
+See [SystemType interface](../interfaces/document.md#system-type).
+  ```mermaid
+  classDiagram
+  class SystemType
+  style SystemType stroke:#333,stroke-width:3px
+  SystemType *-- "0..1" Labels : labels
+  SystemType *-- "0..1" DocumentationLabels : documentationLabels
+  click SystemType href "#systemtype" "Go to SystemType"
+  click Labels href "#labels" "Go to Labels"
+  click DocumentationLabels href "#documentationlabels" "Go to DocumentationLabels"
+  ```
+  
+
+## SystemVersion
+See [SystemVersion interface](../interfaces/document.md#system-version).
+  ```mermaid
+  classDiagram
+  class SystemVersion
+  style SystemVersion stroke:#333,stroke-width:3px
+  SystemVersion *-- "0..1" Labels : labels
+  SystemVersion *-- "0..1" DocumentationLabels : documentationLabels
+  click SystemVersion href "#systemversion" "Go to SystemVersion"
+  click Labels href "#labels" "Go to Labels"
+  click DocumentationLabels href "#documentationlabels" "Go to DocumentationLabels"
+  ```
+  
+
 ## AccessStrategy
 See [AccessStrategy interface](../interfaces/document.md#access-strategy).
   ```mermaid
@@ -562,6 +590,8 @@ See [Labels interface](../interfaces/document.md#labels).
   IntegrationDependency *-- "0..1" Labels : labels
   Vendor *-- "0..1" Labels : labels
   SystemInstance *-- "0..1" Labels : labels
+  SystemType *-- "0..1" Labels : labels
+  SystemVersion *-- "0..1" Labels : labels
   click Package href "#package" "Go to Package"
   click ConsumptionBundle href "#consumptionbundle" "Go to ConsumptionBundle"
   click ApiResource href "#apiresource" "Go to ApiResource"
@@ -573,6 +603,8 @@ See [Labels interface](../interfaces/document.md#labels).
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
   click Vendor href "#vendor" "Go to Vendor"
   click SystemInstance href "#systeminstance" "Go to SystemInstance"
+  click SystemType href "#systemtype" "Go to SystemType"
+  click SystemVersion href "#systemversion" "Go to SystemVersion"
   ```
   
 
@@ -632,6 +664,8 @@ See [DocumentationLabels interface](../interfaces/document.md#documentation-labe
   IntegrationDependency *-- "0..1" DocumentationLabels : documentationLabels
   Vendor *-- "0..1" DocumentationLabels : documentationLabels
   SystemInstance *-- "0..1" DocumentationLabels : documentationLabels
+  SystemType *-- "0..1" DocumentationLabels : documentationLabels
+  SystemVersion *-- "0..1" DocumentationLabels : documentationLabels
   click Package href "#package" "Go to Package"
   click ConsumptionBundle href "#consumptionbundle" "Go to ConsumptionBundle"
   click ApiResource href "#apiresource" "Go to ApiResource"
@@ -643,6 +677,8 @@ See [DocumentationLabels interface](../interfaces/document.md#documentation-labe
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
   click Vendor href "#vendor" "Go to Vendor"
   click SystemInstance href "#systeminstance" "Go to SystemInstance"
+  click SystemType href "#systemtype" "Go to SystemType"
+  click SystemVersion href "#systemversion" "Go to SystemVersion"
   ```
   
 

@@ -24,7 +24,7 @@ export interface ORDDocument {
   /**
    * Version of the Open Resource Discovery specification that is used to describe this document.
    */
-  openResourceDiscovery: "1.0" | "1.1" | "1.2" | "1.3" | "1.4" | "1.5" | "1.6" | "1.7" | "1.8" | "1.9";
+  openResourceDiscovery: "1.0" | "1.1" | "1.2" | "1.3" | "1.4" | "1.5" | "1.6" | "1.7" | "1.8" | "1.9" | "1.10";
   /**
    * Optional description of the ORD document itself.
    * Please note that this information is NOT further processed or considered by an ORD aggregator.
@@ -33,6 +33,8 @@ export interface ORDDocument {
    */
   description?: string;
   describedSystemInstance?: SystemInstance;
+  describedSystemType?: SystemType;
+  describedSystemVersion?: SystemVersion;
   /**
    * The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.
    * Depending on the chosen policy level, additional expectations and validations rules will be applied.
@@ -115,8 +117,9 @@ export interface ORDDocument {
   tombstones?: Tombstone[];
 }
 /**
- * A **system instance** is a concrete, running instance of a system type.
- * In a multi-tenant system, this corresponds to a tenant.
+ * A [system instance](../index.md#def-system-instance) is a concrete, running instance of a system type.
+ * In a multi-tenant system, it corresponds to a tenant.
+ * In a single-tenant system, it corresponds to the [system installation](../index.md#def-system-deployment) itself.
  */
 export interface SystemInstance {
   /**
@@ -145,6 +148,8 @@ export interface SystemInstance {
    * MUST be a valid [Correlation ID](../index.md#correlation-id).
    */
   correlationIds?: string[];
+  labels?: Labels;
+  documentationLabels?: DocumentationLabels;
   /**
    * List of free text style tags.
    * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
@@ -152,8 +157,6 @@ export interface SystemInstance {
    * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
    */
   tags?: string[];
-  labels?: Labels;
-  documentationLabels?: DocumentationLabels;
 }
 /**
  * Generic labels that can be applied to most ORD information.
@@ -201,6 +204,70 @@ export interface DocumentationLabels {
   [k: string]: string[];
 }
 /**
+ * A [system type](../index.md#def-system-type) is the abstract type of an application or service, from operational perspective.
+ */
+export interface SystemType {
+  /**
+   * The system namespace is a unique identifier for the system type.
+   * It is used to reference the system type in the ORD.
+   */
+  systemNamespace?: string;
+  /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
+  labels?: Labels;
+  documentationLabels?: DocumentationLabels;
+  /**
+   * List of free text style tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  tags?: string[];
+}
+/**
+ * A [system version](../index.md#def-system-version) states the design-time version / release of a [system instance](../index.md#def-system-instance).
+ * It provides versioning for operational purposes for the [system type](../index.md#def-system-type).
+ */
+export interface SystemVersion {
+  /**
+   * The version number of the system instance (run-time) or the version of the described static system type.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   */
+  version?: string;
+  /**
+   * Human-readable title of the system version.
+   */
+  title?: string;
+  /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
+  labels?: Labels;
+  documentationLabels?: DocumentationLabels;
+  /**
+   * List of free text style tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  tags?: string[];
+}
+/**
  * The API Resource provides a high-level description of an exposed API.
  * You can find more information, such as the API resource definitions, in the links in the table below.
  *
@@ -217,7 +284,7 @@ export interface DocumentationLabels {
  */
 export interface APIResource {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -321,7 +388,7 @@ export interface APIResource {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
@@ -367,6 +434,11 @@ export interface APIResource {
    *
    */
   disabled?: boolean;
+  /**
+   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * This implies that the resource is only available if the system instance is of at least that system version.
+   */
+  minSystemVersion?: string;
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
@@ -467,6 +539,7 @@ export interface APIResource {
     | "sap:cdi-api:v1"
     | "sap:delta-sharing:v1"
     | "sap:hana-cloud-sql:v1"
+    | "sap.dp:data-subscription-api:v1"
     | "custom";
   /**
    * If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.
@@ -484,6 +557,15 @@ export interface APIResource {
    * SHOULD contain documentation and links that describe the used standard.
    */
   customImplementationStandardDescription?: string;
+  /**
+   * Declares this API is a compatible implementation of the referenced API contract(s).
+   * This is also sometimes known as [Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface).
+   *
+   * MUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.
+   *
+   * All APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+   */
+  compatibleWith?: string[];
   /**
    * Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.
    */
@@ -782,7 +864,7 @@ export interface AccessStrategy {
  * As a consequence, there are different types of selectors that are specialized toward certain resource definition formats.
  *
  * The target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)
- * or to an [ORD ID] of an entity type.
+ * or to an [ORD ID](../../spec-v1/#ord-id) of an entity type.
  * It is assumed that the entity types are described in more detail or on a different abstraction level via metadata.
  * When the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.
  * This can be determined either by the namespace of the correlation ID,
@@ -869,7 +951,7 @@ export interface APIModelSelectorJSONPointer {
  */
 export interface EntityTypeTargetORDID {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -972,7 +1054,7 @@ export interface Extensible {
  */
 export interface EventResource {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -1076,7 +1158,7 @@ export interface EventResource {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
@@ -1122,6 +1204,11 @@ export interface EventResource {
    *
    */
   disabled?: boolean;
+  /**
+   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * This implies that the resource is only available if the system instance is of at least that system version.
+   */
+  minSystemVersion?: string;
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
@@ -1190,6 +1277,15 @@ export interface EventResource {
    * SHOULD contain documentation and links that describe the used standard.
    */
   customImplementationStandardDescription?: string;
+  /**
+   * Declares this event resource is a compatible implementation of the referenced contract.
+   * This is also sometimes known as [Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface).
+   *
+   * MUST be a valid reference to an (usually external) [Event Resource](#event-resource) ORD ID.
+   *
+   * All event resources that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+   */
+  compatibleWith?: string[];
   /**
    * Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.
    */
@@ -1377,7 +1473,7 @@ export interface EventResourceDefinition {
  */
 export interface EntityType {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -1456,7 +1552,7 @@ export interface EntityType {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
@@ -1594,7 +1690,7 @@ export interface EntityType {
  */
 export interface RelatedEntityType {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -1609,7 +1705,7 @@ export interface RelatedEntityType {
  */
 export interface Capability {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -1690,7 +1786,7 @@ export interface Capability {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
@@ -1723,6 +1819,24 @@ export interface Capability {
    * The `releaseStatus` specifies the stability of the resource and its external contract.
    */
   releaseStatus: "active" | "beta" | "deprecated";
+  /**
+   * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
+   * This can happen either because it has not been setup for use or disabled by an admin / user.
+   *
+   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance aware perspective.
+   *
+   * This property can only reflect the knowledge of the described system instance itself.
+   * Outside factors for availability can't need to be considered (e.g. network connectivity, middlewares).
+   *
+   * A disabled resource MAY skip describing its resource definitions.
+   *
+   */
+  disabled?: boolean;
+  /**
+   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * This implies that the resource is only available if the system instance is of at least that system version.
+   */
+  minSystemVersion?: string;
   /**
    * Optional list of related EntityType Resources.
    *
@@ -1816,7 +1930,7 @@ export interface CapabilityDefinition {
  */
 export interface DataProduct {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -1885,7 +1999,7 @@ export interface DataProduct {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
@@ -1933,6 +2047,11 @@ export interface DataProduct {
    *
    */
   disabled?: boolean;
+  /**
+   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * This implies that the resource is only available if the system instance is of at least that system version.
+   */
+  minSystemVersion?: string;
   /**
    * Lifecycle status of the Data Product as a whole.
    *
@@ -2148,7 +2267,7 @@ export interface DataProduct {
  */
 export interface DataProductInputPort {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -2164,7 +2283,7 @@ export interface DataProductInputPort {
  */
 export interface DataProductOutputPort {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -2215,7 +2334,7 @@ export interface DataProductLink {
  */
 export interface IntegrationDependency {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -2284,7 +2403,7 @@ export interface IntegrationDependency {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
@@ -2411,7 +2530,7 @@ export interface Aspect {
  */
 export interface APIResourceIntegrationAspect {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -2427,7 +2546,7 @@ export interface APIResourceIntegrationAspect {
  */
 export interface EventResourceIntegrationAspect {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -2482,7 +2601,7 @@ export interface EventResourceIntegrationAspectSubset {
  */
 export interface Vendor {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -2525,7 +2644,7 @@ export interface Vendor {
  */
 export interface Product {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -2601,7 +2720,7 @@ export interface Product {
  */
 export interface Package {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -2640,7 +2759,7 @@ export interface Package {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
@@ -2854,7 +2973,7 @@ export interface PackageLink {
  */
 export interface ConsumptionBundle {
   /**
-   * The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
    * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
    */
@@ -2903,7 +3022,7 @@ export interface ConsumptionBundle {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.

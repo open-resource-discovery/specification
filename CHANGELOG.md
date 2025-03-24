@@ -10,6 +10,26 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.10.0]
+
+### Added
+
+- Added `minSystemVersion` to API and event resources, data products and capabilities
+- Added `describedSystemVersion` and `describedSystemType` to the ORD Document root
+  - This completes the simplified ORD system landscape model, so it can be described within ORD (in case aggregator doesn't have the landscape model already)
+- Added `compatibleWith` to API / event resources
+  - This allows to point to another ORD ID that defines the contract that the API / event resources are compatible with
+  - Typical case is that the API contract is defined by an external party, e.g. as a Service Provider Interface
+  - There is some overlap with `implementationStandard`, which in the future should be less used / considered for deprecation (in case of Events)
+- Added explicit constraints of 36 characters length for namespaces, 32 for system / authority namespaces
+  - So far we only documented the constraints in the SAP namespace registry, we add them now in the public spec to be transparent on current constraints. If they prove to be a problem, making them more liberal will be a follow-up discussion. However, without explicit constraints, no consumer can rely on particular limits.
+- Added `sap.dp:data-subscription-api:v1` as `implementationStandard` choice
+
+### Changed
+
+- Renamed the term system installation to system deployment and updated some definition terms for more clarity.
+  - This has no impact on the ORD interface, just on the documentation.
+
 ## [1.9.11]
 
 ### Changed

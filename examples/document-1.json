@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.9",
+  "openResourceDiscovery": "1.10",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1"],
   "products": [
@@ -51,6 +51,7 @@
       "visibility": "public",
       "releaseStatus": "active",
       "systemInstanceAware": false,
+      "minSystemVersion": "2024.4.0",
       "policyLevels": ["sap.foo:custom:v1"],
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "partOfConsumptionBundles": [

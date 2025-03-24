@@ -6,7 +6,7 @@ title: Data Product
 
 # Data Product
 
-> 🚧 Please note that the [Data Products](../../spec-v1/interfaces/document#data-product) concept still has some missing and some beta properties.
+> 🚧 Please note that the [Data Products](../../spec-v1/interfaces/document#data-product) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
 
 ## Definition
 

@@ -7,7 +7,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.9",
+  "openResourceDiscovery": "1.10",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1"],
   "products": [
@@ -58,6 +58,7 @@
       "visibility": "public",
       "releaseStatus": "active",
       "systemInstanceAware": false,
+      "minSystemVersion": "2024.4.0",
       "policyLevels": ["sap.foo:custom:v1"],
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "partOfConsumptionBundles": [
@@ -201,7 +202,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.9",
+  "openResourceDiscovery": "1.10",
   "policyLevels": ["sap:core:v1"],
   "products": [
     {
@@ -962,7 +963,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.9",
+  "openResourceDiscovery": "1.10",
   "description": "This Example demonstrates the Entity Type Mapping feature",
   "policyLevels": ["sap:core:v1"],
   "apiResources": [
@@ -1149,7 +1150,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.9",
+  "openResourceDiscovery": "1.10",
   "description": "Example for entity types as they will be exposed by ODM",
   "policyLevels": ["sap:core:v1"],
   "packages": [
@@ -1195,7 +1196,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.9",
+  "openResourceDiscovery": "1.10",
   "description": "This ORD Document example contains more special examples, like custom SAP protocols",
   "policyLevels": ["sap:core:v1"],
   "consumptionBundles": [

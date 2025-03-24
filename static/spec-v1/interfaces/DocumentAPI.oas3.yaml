@@ -222,7 +222,8 @@ components:
             - '1.7'
             - '1.8'
             - '1.9'
-          example: '1.9'
+            - '1.10'
+          example: '1.10'
         description:
           type: string
           minLength: 1
@@ -236,6 +237,10 @@ components:
             can change their behavior at runtime.
         describedSystemInstance:
           $ref: '#/components/schemas/SystemInstance'
+        describedSystemType:
+          $ref: '#/components/schemas/SystemType'
+        describedSystemVersion:
+          $ref: '#/components/schemas/SystemVersion'
         policyLevel:
           type: string
           description: >
@@ -395,7 +400,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -457,8 +462,8 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
 
-            When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to
-            be identical.
+            When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be
+            updated to be identical.
 
             In case that a resource definition file also contains a version number (e.g. [OpenAPI
             `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource
@@ -797,7 +802,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -877,8 +882,8 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
 
-            When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to
-            be identical.
+            When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be
+            updated to be identical.
 
             In case that a resource definition file also contains a version number (e.g. [OpenAPI
             `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource
@@ -1028,7 +1033,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -1194,8 +1199,8 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
 
-            When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to
-            be identical.
+            When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be
+            updated to be identical.
 
             In case that a resource definition file also contains a version number (e.g. [OpenAPI
             `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource
@@ -1278,6 +1283,11 @@ components:
 
 
             A disabled resource MAY skip describing its resource definitions.
+        minSystemVersion:
+          type: string
+          description: |-
+            The resource has been introduced in the given [system version](../index.md#def-system-version).
+            This implies that the resource is only available if the system instance is of at least that system version.
         deprecationDate:
           type: string
           format: date-time
@@ -1438,6 +1448,7 @@ components:
             - sap:cdi-api:v1
             - sap:delta-sharing:v1
             - sap:hana-cloud-sql:v1
+            - sap.dp:data-subscription-api:v1
             - custom
           example: sap:ord-document-api:v1
         customImplementationStandard:
@@ -1468,6 +1479,24 @@ components:
           example: >-
             Implemented as defined in the [S/4HANA Attachment Service
             documentation](https://api.sap.com/api/API_CV_ATTACHMENT_SRV/overview)
+        compatibleWith:
+          type: array
+          description: >-
+            Declares this API is a compatible implementation of the referenced API contract(s).
+
+            This is also sometimes known as [Service Provider
+            Interface](https://en.wikipedia.org/wiki/Service_provider_interface).
+
+
+            MUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.
+
+
+            All APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+          items:
+            type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          example:
+            - sap.s4com:apiResource:SomeSharedContract:v1
         responsible:
           type: string
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
@@ -1807,7 +1836,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -1969,8 +1998,8 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
 
-            When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to
-            be identical.
+            When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be
+            updated to be identical.
 
             In case that a resource definition file also contains a version number (e.g. [OpenAPI
             `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource
@@ -2053,6 +2082,11 @@ components:
 
 
             A disabled resource MAY skip describing its resource definitions.
+        minSystemVersion:
+          type: string
+          description: |-
+            The resource has been introduced in the given [system version](../index.md#def-system-version).
+            This implies that the resource is only available if the system instance is of at least that system version.
         deprecationDate:
           type: string
           format: date-time
@@ -2162,6 +2196,25 @@ components:
 
             SHOULD contain documentation and links that describe the used standard.
           example: Implemented as defined in [Some Application Documentation](some link).
+        compatibleWith:
+          type: array
+          description: >-
+            Declares this event resource is a compatible implementation of the referenced contract.
+
+            This is also sometimes known as [Service Provider
+            Interface](https://en.wikipedia.org/wiki/Service_provider_interface).
+
+
+            MUST be a valid reference to an (usually external) [Event Resource](#event-resource) ORD ID.
+
+
+            All event resources that share the same `compatibleWith` value MAY be treated the same or similar by a
+            consumer client.
+          items:
+            type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          example:
+            - sap.s4com:eventResource:SomeSharedContract:v1
         responsible:
           type: string
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
@@ -2434,7 +2487,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -2557,8 +2610,8 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
 
-            When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to
-            be identical.
+            When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be
+            updated to be identical.
 
             In case that a resource definition file also contains a version number (e.g. [OpenAPI
             `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource
@@ -2820,7 +2873,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -2927,8 +2980,8 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
 
-            When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to
-            be identical.
+            When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be
+            updated to be identical.
 
             In case that a resource definition file also contains a version number (e.g. [OpenAPI
             `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource
@@ -3016,6 +3069,11 @@ components:
 
 
             A disabled resource MAY skip describing its resource definitions.
+        minSystemVersion:
+          type: string
+          description: |-
+            The resource has been introduced in the given [system version](../index.md#def-system-version).
+            This implies that the resource is only available if the system instance is of at least that system version.
         lifecycleStatus:
           type: string
           description: |-
@@ -3415,7 +3473,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -3444,7 +3502,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource|eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -3654,7 +3712,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\-]+):()$
@@ -3767,7 +3825,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -3893,8 +3951,8 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
 
-            When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to
-            be identical.
+            When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be
+            updated to be identical.
 
             In case that a resource definition file also contains a version number (e.g. [OpenAPI
             `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource
@@ -3957,6 +4015,31 @@ components:
             - beta
             - deprecated
           example: active
+        disabled:
+          type: boolean
+          default: false
+          description: >
+            Indicates that this resource is currently not available for consumption at runtime, but could be configured
+            to be so.
+
+            This can happen either because it has not been setup for use or disabled by an admin / user.
+
+
+            If the resource is not available in principle for a particular system instance, e.g. due to lack of
+            entitlement, it MUST not be described in the system-instance aware perspective.
+
+
+            This property can only reflect the knowledge of the described system instance itself.
+
+            Outside factors for availability can't need to be considered (e.g. network connectivity, middlewares).
+
+
+            A disabled resource MAY skip describing its resource definitions.
+        minSystemVersion:
+          type: string
+          description: |-
+            The resource has been introduced in the given [system version](../index.md#def-system-version).
+            This implies that the resource is only available if the system instance is of at least that system version.
         relatedEntityTypes:
           type: array
           description: |-
@@ -4162,7 +4245,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -4270,8 +4353,8 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
 
-            When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to
-            be identical.
+            When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be
+            updated to be identical.
 
             In case that a resource definition file also contains a version number (e.g. [OpenAPI
             `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource
@@ -4485,7 +4568,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -4508,7 +4591,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -4599,7 +4682,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+):(vendor):([a-zA-Z0-9._\-]+):()$
@@ -4886,9 +4969,13 @@ components:
     SystemInstance:
       type: object
       title: System Instance
-      description: |-
-        A **system instance** is a concrete, running instance of a system type.
-        In a multi-tenant system, this corresponds to a tenant.
+      description: >-
+        A [system instance](../index.md#def-system-instance) is a concrete, running instance of a system type.
+
+        In a multi-tenant system, it corresponds to a tenant.
+
+        In a single-tenant system, it corresponds to the [system installation](../index.md#def-system-deployment)
+        itself.
       properties:
         baseUrl:
           type: string
@@ -4931,6 +5018,10 @@ components:
             maxLength: 255
           example:
             - sap.cld:tenant:741234567
+        labels:
+          $ref: '#/components/schemas/Labels'
+        documentationLabels:
+          $ref: '#/components/schemas/DocumentationLabels'
         tags:
           type: array
           items:
@@ -4945,10 +5036,118 @@ components:
           example:
             - storage
             - high-availability
+    SystemType:
+      type: object
+      title: System Type
+      description: >-
+        A [system type](../index.md#def-system-type) is the abstract type of an application or service, from operational
+        perspective.
+      properties:
+        systemNamespace:
+          type: string
+          description: |-
+            The system namespace is a unique identifier for the system type.
+            It is used to reference the system type in the ORD.
+          pattern: ^[a-z0-9]+(?:[.][a-z0-9]+){1}$
+          example: sap.s4
+        correlationIds:
+          type: array
+          description: >-
+            Correlation IDs can be used to create a reference to related data in other repositories (especially to the
+            system of record).
+
+
+            They express an "identity" / "equals" / "mappable" relationship to the target ID.
+
+
+            If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+
+
+            MUST be a valid [Correlation ID](../index.md#correlation-id).
+          items:
+            type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
+            maxLength: 255
+          example:
+            - sap.cld:systemRole:S4_PC
         labels:
           $ref: '#/components/schemas/Labels'
         documentationLabels:
           $ref: '#/components/schemas/DocumentationLabels'
+        tags:
+          type: array
+          items:
+            type: string
+            pattern: ^[a-zA-Z0-9-_.\/ ]*$
+            minLength: 1
+          description: |-
+            List of free text style tags.
+            No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+
+            Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+          example:
+            - storage
+            - high-availability
+    SystemVersion:
+      type: object
+      title: System Version
+      description: >-
+        A [system version](../index.md#def-system-version) states the design-time version / release of a [system
+        instance](../index.md#def-system-instance).
+
+        It provides versioning for operational purposes for the [system type](../index.md#def-system-type).
+      properties:
+        version:
+          type: string
+          description: |-
+            The version number of the system instance (run-time) or the version of the described static system type.
+
+            It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+          pattern: >-
+            ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+          example: 1.2.3
+        title:
+          type: string
+          description: Human-readable title of the system version.
+          minLength: 1
+          maxLength: 255
+          example: SAP S/4HANA Cloud 2408
+        correlationIds:
+          type: array
+          description: >-
+            Correlation IDs can be used to create a reference to related data in other repositories (especially to the
+            system of record).
+
+
+            They express an "identity" / "equals" / "mappable" relationship to the target ID.
+
+
+            If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+
+
+            MUST be a valid [Correlation ID](../index.md#correlation-id).
+          items:
+            type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
+            maxLength: 255
+        labels:
+          $ref: '#/components/schemas/Labels'
+        documentationLabels:
+          $ref: '#/components/schemas/DocumentationLabels'
+        tags:
+          type: array
+          items:
+            type: string
+            pattern: ^[a-zA-Z0-9-_.\/ ]*$
+            minLength: 1
+          description: |-
+            List of free text style tags.
+            No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+
+            Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+          example:
+            - storage
+            - high-availability
     AccessStrategy:
       type: object
       title: Access Strategy
@@ -5317,7 +5516,7 @@ components:
         The target of the mapping is a correlation to an entity type via a [Correlation
         ID](../../#/v1/README?id=correlation-id)
 
-        or to an [ORD ID] of an entity type.
+        or to an [ORD ID](../../spec-v1/#ord-id) of an entity type.
 
         It is assumed that the entity types are described in more detail or on a different abstraction level via
         metadata.
@@ -5459,7 +5658,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -5478,7 +5677,7 @@ components:
         ordId:
           type: string
           description: |-
-            The [ORD ID](../index.md#ord-id) is a stable, globally unique ID for ORD resources or taxonomy.
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
             It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
