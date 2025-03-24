@@ -53,6 +53,7 @@ API Resource,lastUpdate,false,string
 API Resource,visibility,true,string
 API Resource,releaseStatus,true,string
 API Resource,disabled,false,boolean
+API Resource,minSystemVersion,false,string
 API Resource,deprecationDate,false,string
 API Resource,sunsetDate,false,string
 API Resource,successors,false,array<string>
@@ -64,6 +65,7 @@ API Resource,resourceDefinitions,false,array<ApiResourceDefinition>
 API Resource,implementationStandard,false,string
 API Resource,customImplementationStandard,false,string
 API Resource,customImplementationStandardDescription,false,string
+API Resource,compatibleWith,false,array<string>
 API Resource,responsible,false,string
 API Resource,supportedUseCases,false,array<string>
 API Resource,usage,false,string
@@ -97,6 +99,7 @@ Event Resource,lastUpdate,false,string
 Event Resource,visibility,true,string
 Event Resource,releaseStatus,true,string
 Event Resource,disabled,false,boolean
+Event Resource,minSystemVersion,false,string
 Event Resource,deprecationDate,false,string
 Event Resource,sunsetDate,false,string
 Event Resource,successors,false,array<string>
@@ -105,6 +108,7 @@ Event Resource,resourceDefinitions,false,array<EventResourceDefinition>
 Event Resource,implementationStandard,false,string
 Event Resource,customImplementationStandard,false,string
 Event Resource,customImplementationStandardDescription,false,string
+Event Resource,compatibleWith,false,array<string>
 Event Resource,responsible,false,string
 Event Resource,entityTypeMappings,false,array<EntityTypeMapping>
 Event Resource,eventResourceLinks,false,array<APIEventResourceLink>
@@ -161,6 +165,7 @@ Data Product,lastUpdate,false,string
 Data Product,visibility,true,string
 Data Product,releaseStatus,true,string
 Data Product,disabled,false,boolean
+Data Product,minSystemVersion,false,string
 Data Product,lifecycleStatus,false,string
 Data Product,deprecationDate,false,string
 Data Product,sunsetDate,false,string
@@ -220,6 +225,8 @@ Capability,version,true,string
 Capability,lastUpdate,false,string
 Capability,visibility,true,string
 Capability,releaseStatus,true,string
+Capability,disabled,false,boolean
+Capability,minSystemVersion,false,string
 Capability,relatedEntityTypes,false,array<string>
 Capability,definitions,false,array<CapabilityDefinition>
 Capability,links,false,array<Link>
@@ -292,9 +299,20 @@ Data Product Link,url,true,string
 System Instance,baseUrl,false,string
 System Instance,localId,false,string
 System Instance,correlationIds,false,array<string>
-System Instance,tags,false,array<string>
 System Instance,labels,false,Labels
 System Instance,documentationLabels,false,DocumentationLabels
+System Instance,tags,false,array<string>
+System Type,systemNamespace,false,string
+System Type,correlationIds,false,array<string>
+System Type,labels,false,Labels
+System Type,documentationLabels,false,DocumentationLabels
+System Type,tags,false,array<string>
+System Version,version,false,string
+System Version,title,false,string
+System Version,correlationIds,false,array<string>
+System Version,labels,false,Labels
+System Version,documentationLabels,false,DocumentationLabels
+System Version,tags,false,array<string>
 Access Strategy,type,true,string
 Access Strategy,customType,false,string
 Access Strategy,customDescription,false,string
