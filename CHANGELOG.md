@@ -10,6 +10,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Updated ORD Logo and relevant images / diagrams
+- Renamed "ORD Document API" to "ORD Provider API"
+- Renamed "ORD Service" to "ORD Discovery API"
+
 ## [1.10.0]
 
 ### Added

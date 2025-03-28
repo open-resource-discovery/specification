@@ -107,7 +107,7 @@ A [system type](#def-system-type) can implement multiple roles, e.g. an ORD Cons
 
 An <dfn id="def-ord-provider">ORD provider</dfn> is a system instance (of an application or service) that exposes ORD information for self-description.
 
-An ORD provider MUST implement the [ORD Document API](#ord-document-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
+An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
 An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
 
 > 📖 See also: [How To Adopt ORD as a Provider](../details/articles/adopt-ord-as-provider.md).
@@ -122,7 +122,7 @@ The aggregator itself MAY represent a [static catalog view](#def-static-catalog-
 In case of an [as-is view](#def-as-is-view) of a concrete [system landscape](#def-system-landscape), it MUST support [system instance aware](#def-system-instance-aware) information and MAY support further [system instance](#def-system-instance) grouping concepts, such as accounts, zones etc.
 If it needs to reflect system instance aware information it MUST be system instance aware itself.
 
-The ORD information MUST be made available to [ORD Consumers](#ord-consumer) through a higher-quality API, for example via an [ORD service](#ord-service) that allows for more advanced consumption patterns.
+The ORD information MUST be made available to [ORD Consumers](#ord-consumer) through a higher-quality API, for example via an [ORD Discovery API](#ord-discovery-api) that allows for more advanced consumption patterns.
 
 An ORD aggregator MUST ensure that information that has `visibility` of `private` or `internal` is not made available to consumers that don't have the corresponding permissions to get such information (e.g. external consumers). If ORD consumers get private or internal information, they inherit the responsibility of protecting it.
 
@@ -141,7 +141,7 @@ An <dfn id="def-ord-consumer">ORD consumer</dfn> is an actor or a system that ne
 ORD can either be consumed from a single [ORD provider](#ord-provider) (a system instance) or from an [ORD aggregator](#def-ord-aggregator).
 The latter is RECOMMENDED, because it provides more information and a higher quality of access.
 
-If the consumer gets the information from an [ORD aggregator](#ord-aggregator), it will be provided through an [ORD service](#ord-service).
+If the consumer gets the information from an [ORD aggregator](#ord-aggregator), it will be provided through an [ORD Discovery API](#ord-discovery-api).
 
 If the consumer gets the information from an [ORD provider](#ord-provider), it will be received as an [ORD document](#ord-document) via one of the implemented [transport modes](#ord-transport-modes).
 
@@ -162,7 +162,7 @@ If the ORD information is [system instance aware](#def-system-instance-aware), t
 
 In pull transport mode, [ORD information](#def-ord-information) is made available through a simple REST API that exposes [ORD documents](#ord-document) via `GET` endpoints.
 
-This is implemented by providing an [ORD Document API](#ord-document-api).
+This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 ##### Pull Transport - Pros
 
@@ -307,7 +307,7 @@ Additional information or categorization can be added through the generic `Label
 If such custom values or labels are relied upon by more than one application or team, they SHOULD be standardized through ORD.
 Please [create an issue](https://github.com/open-resource-discovery/specification/issues) to request this.
 
-### ORD Document API
+### ORD Provider API
 
 This section details how an [ORD Provider](#ord-provider) exposes one or multiple [ORD documents](#ord-document) for the [pull transport mode](#pull-transport).
 
@@ -497,7 +497,7 @@ The following rules need to be implemented by ORD aggregators:
     - When both information are available and differ, the aggregator MAY decide to give precedence to the context information.
 - The information on the [described system instance](#def-described-system-instance) SHOULD be added if they are missing.
   - If system instance information is missing, the aggregator SHOULD obtain and enrich the ORD information, for example, via service discovery or trust context.
-  - If the ORD aggregator has additional information on a system instance that are not standardized through the ORD interfaces, they MAY be added and exposed through the ORD Service interface.
+  - If the ORD aggregator has additional information on a system instance that are not standardized through the ORD interfaces, they MAY be added and exposed through the ORD Discovery API.
 - The aggregator MAY keep a history of previous versions (including minor and patch changes) of published resources.
 
 ##### Removal of Resources/Information
@@ -509,7 +509,7 @@ The ORD Aggregator MUST remove unpublished information that has been tombstoned 
 
 The ORD aggregator MUST host all files that have been referenced in the [ORD resources](#def-ord-resource), most notably the [resource definitions](#def-resource-definition).
 The files MUST be stored, hosted, and made available by the ORD aggregator system itself.
-The URLs to the hosted files MUST be rewritten accordingly in the [ORD Service](#ord-service) responses.
+The URLs to the hosted files MUST be rewritten accordingly in the [ORD Discovery API](#ord-discovery-api) responses.
 The aggregator MUST implement caching and error handling according to the [common REST characteristics](#common-rest-characteristics).
 
 The hosting ensures that ORD consumers can retrieve the referenced files directly from the aggregator itself. They don't need to fetch them from the [ORD Providers](#ord-provider) individually.
@@ -532,19 +532,19 @@ The following validation rules apply specifically for ORD aggregators:
   Please be aware that this could happen within an ORD Document, within the same ORD Provider on different ORD Documents or even across different ORD Providers.
   For migration transitions this rule MAY be violated temporarily.
 
-### ORD Service
+### ORD Discovery API
 
-An ORD Service is a higher quality API that is optimized for easy consumption of ORD information.
+The ORD Discovery API is a higher quality API, provided by an [ORD aggregator](#ord-aggregator) that is optimized for easy consumption of ORD information.
 It MAY support advanced features like pagination, filtering, search, expansion, etc.
-Such features are deliberately missing at the [ORD Document API](#ord-document-api) to keep the provider interface simple.
+Such features are deliberately missing at the [ORD Provider API](#ord-provider-api) to keep the provider interface simple.
 
-The ORD service MUST be implemented by the [ORD aggregator](#ord-aggregator) role.
+The ORD Discovery API MUST be implemented by the [ORD aggregator](#ord-aggregator) role.
 It is the RECOMMENDED interface for [ORD consumers](#ord-consumer) to retrieve ORD information.
 
 An ORD aggregator MAY expose more information than it received from the ORD providers, for example additional information it acquired through service discovery or other metadata sources.
 
-As long as there is no standardized ORD Service contract, each ORD aggregator MAY implement their own API contract.
-Ideally this contract is based on the [ORD Document API](#ord-document-api) interfaces with only minor differences and additions.
+As long as there is no standardized ORD Discovery API contract, each ORD aggregator MAY implement their own API contract.
+Ideally this contract is based on the [ORD Provider API](#ord-provider-api) interfaces with only minor differences and additions.
 
 ## Miscellaneous
 

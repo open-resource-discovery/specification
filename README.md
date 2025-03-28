@@ -1,4 +1,5 @@
 [![REUSE status](https://api.reuse.software/badge/github.com/open-resource-discovery/specification)](https://api.reuse.software/info/github.com/open-resource-discovery/specification)
+<a href="https://www.npmjs.com/package/@open-resource-discovery/specification"><img src="https://img.shields.io/npm/v/@open-resource-discovery/specification" alt="NPM package"></a>
 
 # Open Resource Discovery Specification
 
@@ -47,7 +48,7 @@ For detailed and recent changes, please refer to the [CHANGELOG.md](CHANGELOG.md
 ## Acknowledgements
 
 - The original idea for ORD came from Harsh Jegadeesan and Divya Mary.
-- The currently active core-contributors to the spec are: [Simon Heimler](https://github.com/Fannon), [Sebastian Wennemers](https://github.com/swennemers), [Steffen Göbel](https://github.com/steffengoebel), [Ralf Hofmann](https://github.com/ormos), [Kiril Kabakchiev](https://github.com/KirilKabakchiev), [Nikolay Mateev](https://github.com/NickyMateev), [Bibin Thomas](https://github.com/Bibin-T) and others.
+- The currently active core-contributors to the spec are: [Simon Heimler](https://github.com/Fannon), [Sebastian Wennemers](https://github.com/swennemers), [Pavel Kornev](https://github.com/pavelkornev), [Steffen Göbel](https://github.com/steffengoebel), [Ralf Hofmann](https://github.com/ormos), [Kiril Kabakchiev](https://github.com/KirilKabakchiev), [Nikolay Mateev](https://github.com/NickyMateev), [Bibin Thomas](https://github.com/Bibin-T) and others.
 
 ## License
 

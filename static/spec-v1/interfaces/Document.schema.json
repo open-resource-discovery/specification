@@ -865,7 +865,7 @@
           "oneOf": [
             {
               "const": "sap:ord-document-api:v1",
-              "description": "API follows the Open Resource Discovery v1 [Document API](../index.md#ord-document-api) contract."
+              "description": "API follows the Open Resource Discovery v1 [Document API](../index.md#ord-provider-api) contract."
             },
             {
               "const": "cff:open-service-broker:v2",

@@ -6,8 +6,6 @@ hide_title: false
 sidebar_position: 0
 ---
 
-## Summary
-
 <div className="container"><div className="row">
 <div className="col">
 Open Resource Discovery (ORD) is a protocol that **allows applications and services to self-describe their resources and capabilities** (e.g. ports and adapters).
@@ -15,9 +13,7 @@ Open Resource Discovery (ORD) is a protocol that **allows applications and servi
 ORD can describe [APIs](./spec-v1/interfaces/document#api-resource), [Events](./spec-v1/interfaces/document#event-resource) and higher-level concepts like [Entity Types](./spec-v1/interfaces/document#entity-type) (Domain / Business Objects) and [Data Products](./details/articles/data-product.md).
 With [Integration Dependencies](./spec-v1/interfaces/document#integration-dependency) the use of external resources can be stated.
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/document#capability).
-All of the described artifacts can share relationships, taxonomy and [grouping](./details/articles/grouping-and-bundling.md) concepts, enabling a **well connected metadata graph**.
-
-ORD can be used for **static documentation** (like API / data catalogs and marketplaces) or to describe a **run-time system landscape** (with tenant specific configuration and extensions).
+All of the described artifacts can share relationships, taxonomy and [grouping](./details/articles/grouping-and-bundling.md) concepts, enabling a **well-connected metadata graph**.
 
 </div>
 <div className="col">
@@ -25,7 +21,9 @@ ORD can be used for **static documentation** (like API / data catalogs and marke
 ![ORD Provider Overview](/img/ord-provider-overview.svg 'ORD Provider Overview')
 </div></div></div></div>
 
-By adopting ORD, an application will implement a single-entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl the relevant information / metadata.
+ORD can be used for **static documentation** (like API / data catalogs and marketplaces) or to describe a dynamic **run-time system landscape** (with tenant specific configuration and extensions).
+
+To adopt ORD, an application implements a single-entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl the relevant information / metadata.
 The information can be used to build metadata registries / catalogs and do runtime inspection of actual system landscapes.
 
 > ℹ ORD is an [open source](https://github.com/open-resource-discovery/specification) standard by SAP, released under the Apache 2 license (see [public announcement](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/)).

@@ -140,7 +140,7 @@ const config = {
                 to: "spec-v1/interfaces/document",
               },
               {
-                label: "ORD Document API",
+                label: "ORD Provider API",
                 to: "spec-v1/interfaces/document-api",
               },
               {

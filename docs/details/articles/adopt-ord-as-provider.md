@@ -56,7 +56,7 @@ The application / service that is described usually stays the same at run-time a
 
 This option is not recommended, but let's look at it anyway, just to make a point how simple an ORD implementation can be.
 
-The ORD Document API is designed to be a very simple REST API.
+The ORD Provider API is designed to be a very simple REST API.
 In fact, it's just serving files via HTTP GET request in a standard manner.
 This can even be achieved by using a static web server like [nginx](https://www.nginx.com/), without writing a single line of code.
 
@@ -67,7 +67,7 @@ Please consider whether the information [need to be protected](#protect-ord-docu
 
 #### Option 2: Implement a simple REST API
 
-We recommend implementing the ORD Document API just like any other API that your application / service exposes.
+We recommend implementing the ORD Provider API just like any other API that your application / service exposes.
 How you do this may depend on your programming language, framework and backend architecture.
 
 The API itself consists just of three different types of API GET operations:
@@ -116,10 +116,10 @@ Industry standard metadata formats usually come with validators, too. Consider f
 > 🚧 At SAP we have built a metadata validator for this, that we consider open-sourcing in the future, too.
 > It can not only validate ORD documents and configs but also other metadata standards for technical correctness and guideline compliance.
 
-### Protect ORD Document API Access
+### Protect ORD Provider API Access
 
 You may not want to openly expose the ORD information and related metadata to everyone.
-If this is the case, the ORD Document API needs to be protected.
+If this is the case, the ORD Provider API needs to be protected.
 The specification makes no assumptions on how this is done, but the [ORD Aggregators](../../spec-v1/index.md#ord-aggregator) will likely define the [Access Strategies](../../spec-extensions/access-strategies/) it supports.
 
 ### Integrate with ORD Aggregators
