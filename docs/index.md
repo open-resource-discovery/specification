@@ -15,13 +15,13 @@ With [Integration Dependencies](./spec-v1/interfaces/document#integration-depend
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/document#capability).
 All of the described artifacts can share relationships, taxonomy and [grouping](./details/articles/grouping-and-bundling.md) concepts, enabling a **well-connected metadata graph**.
 
+ORD can be used for **static documentation** (like API / data catalogs and marketplaces) or to describe a dynamic **run-time system landscape** (with tenant specific configuration and extensions).
+
 </div>
 <div className="col">
 <div style={{"text-align": "center", "max-width": "600px"}}>
 ![ORD Provider Overview](/img/ord-provider-overview.svg 'ORD Provider Overview')
 </div></div></div></div>
-
-ORD can be used for **static documentation** (like API / data catalogs and marketplaces) or to describe a dynamic **run-time system landscape** (with tenant specific configuration and extensions).
 
 To adopt ORD, an application implements a single-entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl the relevant information / metadata.
 The information can be used to build metadata registries / catalogs and do runtime inspection of actual system landscapes.
