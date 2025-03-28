@@ -90,7 +90,7 @@ const config = {
         title: "",
         logo: {
           alt: "Open Resource Discovery",
-          src: "img/open-resource-discovery-logo.png",
+          src: "img/logo/ORD_Horizontal_Color_Logo.svg",
         },
         items: [
           {
