@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([[2387],{2387:(e,c,s)=>{s.d(c,{createGitGraphServices:()=>i.b});var i=s(2785);s(9369)}}]);

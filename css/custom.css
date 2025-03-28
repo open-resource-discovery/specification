@@ -27,9 +27,9 @@
 }
 
 .navbar__logo img {
-  margin-left: -4px;
-  margin-top: -8px;
-  height: 48px;
+  margin-left: -1px;
+  margin-top: -5px;
+  height: 42px;
 }
 
 .navbar__search {
@@ -203,8 +203,8 @@ iframe {
 }
 
 .footer--dark {
-  --ifm-footer-background-color: #1a2534;
-  border-top: 6px solid #30546f;
+  --ifm-footer-background-color: #03282b;
+  border-top: 6px solid #1c8b92;
   padding: 16px;
 }
 .footer--dark .footer__copyright {
