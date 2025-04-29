@@ -1,0 +1,22 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'AbstractTypeMapping'
+metadata:
+  name: 'ordresource'
+  path: '/sap/core/ucl/metadata/ord/v1'
+spec:
+  abstractType:
+    name: 'OrdResource'
+    namespace: '/sap/core/ucl/metadata/ord/v1'
+  includedTypes:
+    - includedType:
+        name: 'ApiResource'
+        namespace: '/sap/core/ucl/metadata/ord/v1'
+    - includedType:
+        name: 'EventResource'
+        namespace: '/sap/core/ucl/metadata/ord/v1'
+    - includedType:
+        name: 'DataProduct'
+        namespace: '/sap/core/ucl/metadata/ord/v1'
+    - includedType:
+        name: 'Capability'
+        namespace: '/sap/core/ucl/metadata/ord/v1'

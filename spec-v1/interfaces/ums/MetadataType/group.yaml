@@ -1,0 +1,89 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'group'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'Group'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: "Group (instance) that resources can be assigned to.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nTo learn more about the concept, see [Group Concept Documentation](../../details/articles/grouping-and-bundling#Groups)."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'groupId'
+      type: 'string'
+      description: "The Group ID consists of two [Concept IDs](../../spec-v1/#concept-id) separated by a `:`.\n\nThe first two fragments MUST be equal to the used Group Type ID (`groupTypeId`).\nThe last two fragments MUST be a valid [Concept ID](../../spec-v1/#concept-id), indicating the group instance assignment.\n\nThe ID concept is a bit unusual, but it ensures globally unique and conflict free group assignments."
+      mandatory: true
+      constraints:
+        pattern: '^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$'
+    - name: 'groupTypeId_ID'
+      type: 'guid'
+      description: "Group Type ID.\n\nMUST match with the first two fragments of the own `groupId`."
+      mandatory: true
+      constraints:
+        pattern: '^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$'
+    - name: 'title'
+      type: 'string'
+      description: 'Human readable title of the group assignment (for UI).'
+      mandatory: true
+      constraints:
+        minLength: 1
+        maxLength: 255
+    - name: 'description'
+      type: 'string'
+      description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
+      constraints:
+        minLength: 1
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'groupTypeId'
+      relatedTypeName: 'GroupType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'groupTypeId_ID'
+      description: "Group Type ID.\n\nMUST match with the first two fragments of the own `groupId`."
+      mandatory: true
+      reverseRelation:
+        relationPropertyName: 'groups'
+    - propertyName: 'apiResourceMembers'
+      relatedTypeName: 'ApiResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The API resources that are part the given Group.'
+      mandatory: false
+    - propertyName: 'eventResourceMembers'
+      relatedTypeName: 'EventResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The event resources that are part the given Group.'
+      mandatory: false
+    - propertyName: 'entityTypeMembers'
+      relatedTypeName: 'EntityType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The entity types that are part the given Group.'
+      mandatory: false
+    - propertyName: 'dataProductMembers'
+      relatedTypeName: 'DataProduct'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The data products that are part the given Group.'
+      mandatory: false
+    - propertyName: 'capabilityMembers'
+      relatedTypeName: 'Capability'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The Capabilities that are part the given Group.'
+      mandatory: false
+    - propertyName: 'integrationDependencyMembers'
+      relatedTypeName: 'IntegrationDependency'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The Integration Dependencies that are part the given Group.'
+      mandatory: false
+    - propertyName: 'ordResourceMembers'
+      relatedTypeName: 'OrdResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The ORD resources that are part the given Group.'
+      mandatory: false

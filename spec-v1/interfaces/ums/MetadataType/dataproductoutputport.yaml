@@ -1,0 +1,39 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'dataproductoutputport'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'DataProductOutputPort'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "A data product output port references the APIs or Events that can be used to access the data-set.\nIt MAY provide full access to the complete data set, but can also just expose a subset of it - if other output ports cover the missing parts.\n\nReferenced API or Event ORD resources don't need to be provided within the same ORD document.\nIf a data product is built against a specific API contract of another application or data product, this API resource should be referred to.\nIn this case the other application is responsible for the lifecycle of the API contract and will update its ORD description independently."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'ordId'
+      relatedTypeName: 'OrdResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: true
+      correspondingRelationPropertyNames:
+        - 'apiResourceOrdId'
+        - 'eventResourceOrdId'
+    - propertyName: 'apiResourceOrdId'
+      relatedTypeName: 'ordId'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: true
+    - propertyName: 'eventResourceOrdId'
+      relatedTypeName: 'ordId'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: true

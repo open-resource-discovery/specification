@@ -409,11 +409,17 @@ components:
         localId:
           type: string
           description: >-
-            Local ID, as known by the described system.
+            The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+
+            Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical
+            name.
 
 
-            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
-            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+            It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length
+            limitations within the ORD ID.
+
+            But since this is not always possible, no assumptions MUST be made about the local ID being the same as the
+            `<resourceName>` fragment in the ORD ID.
           maxLength: 255
           example: SuccessFactorsRecruiting
         title:
@@ -596,7 +602,7 @@ components:
         partOfProducts:
           type: array
           description: |-
-            List of products this resource is a part of.
+            List of products the resources of the package are a part of.
 
             MUST be a valid reference to a [Product](#product) ORD ID.
 
@@ -811,11 +817,17 @@ components:
         localId:
           type: string
           description: >-
-            Local ID, as known by the described system.
+            The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+
+            Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical
+            name.
 
 
-            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
-            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+            It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length
+            limitations within the ORD ID.
+
+            But since this is not always possible, no assumptions MUST be made about the local ID being the same as the
+            `<resourceName>` fragment in the ORD ID.
           maxLength: 255
           example: SuccessFactorsRecruiting
         correlationIds:
@@ -1042,11 +1054,17 @@ components:
         localId:
           type: string
           description: >-
-            Local ID, as known by the described system.
+            The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+
+            Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical
+            name.
 
 
-            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
-            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+            It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length
+            limitations within the ORD ID.
+
+            But since this is not always possible, no assumptions MUST be made about the local ID being the same as the
+            `<resourceName>` fragment in the ORD ID.
           maxLength: 255
           example: API_BILL_OF_MATERIAL_SRV
         correlationIds:
@@ -1174,7 +1192,7 @@ components:
         partOfProducts:
           type: array
           description: |-
-            List of products this resource is a part of.
+            List of products the resources of the package are a part of.
 
             MUST be a valid reference to a [Product](#product) ORD ID.
 
@@ -1845,11 +1863,17 @@ components:
         localId:
           type: string
           description: >-
-            Local ID, as known by the described system.
+            The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+
+            Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical
+            name.
 
 
-            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
-            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+            It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length
+            limitations within the ORD ID.
+
+            But since this is not always possible, no assumptions MUST be made about the local ID being the same as the
+            `<resourceName>` fragment in the ORD ID.
           maxLength: 255
           example: BusinessEvents_SubscriptionEvents
         correlationIds:
@@ -1973,7 +1997,7 @@ components:
         partOfProducts:
           type: array
           description: |-
-            List of products this resource is a part of.
+            List of products the resources of the package are a part of.
 
             MUST be a valid reference to a [Product](#product) ORD ID.
 
@@ -2496,11 +2520,17 @@ components:
         localId:
           type: string
           description: >-
-            Local ID, as known by the described system.
+            The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+
+            Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical
+            name.
 
 
-            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
-            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+            It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length
+            limitations within the ORD ID.
+
+            But since this is not always possible, no assumptions MUST be made about the local ID being the same as the
+            `<resourceName>` fragment in the ORD ID.
           maxLength: 255
           example: BusinessPartner
         correlationIds:
@@ -2585,7 +2615,7 @@ components:
         partOfProducts:
           type: array
           description: |-
-            List of products this resource is a part of.
+            List of products the resources of the package are a part of.
 
             MUST be a valid reference to a [Product](#product) ORD ID.
 
@@ -2882,11 +2912,17 @@ components:
         localId:
           type: string
           description: >-
-            Local ID, as known by the described system.
+            The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+
+            Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical
+            name.
 
 
-            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
-            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+            It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length
+            limitations within the ORD ID.
+
+            But since this is not always possible, no assumptions MUST be made about the local ID being the same as the
+            `<resourceName>` fragment in the ORD ID.
           maxLength: 255
           example: CustomerOrder
         correlationIds:
@@ -2967,6 +3003,21 @@ components:
             If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
 
             All resources that share the same group ID assignment are effectively grouped together.
+        partOfProducts:
+          type: array
+          description: |-
+            List of products this Data Product is a part of or is related to, its e.g. data source systems.
+
+            MUST be a valid reference to a [Product](#product) ORD ID.
+
+            `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+          items:
+            type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\-]+):()$
+            maxLength: 255
+          minItems: 0
+          example:
+            - 'sap:product:S4HANA_OD:'
         version:
           type: string
           description: >-
@@ -3834,11 +3885,17 @@ components:
         localId:
           type: string
           description: >-
-            Local ID, as known by the described system.
+            The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+
+            Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical
+            name.
 
 
-            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
-            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+            It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length
+            limitations within the ORD ID.
+
+            But since this is not always possible, no assumptions MUST be made about the local ID being the same as the
+            `<resourceName>` fragment in the ORD ID.
           maxLength: 255
           example: SuccessFactorsRecruiting
         correlationIds:
@@ -4254,11 +4311,17 @@ components:
         localId:
           type: string
           description: >-
-            Local ID, as known by the described system.
+            The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+
+            Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical
+            name.
 
 
-            This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits
-            of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+            It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length
+            limitations within the ORD ID.
+
+            But since this is not always possible, no assumptions MUST be made about the local ID being the same as the
+            `<resourceName>` fragment in the ORD ID.
           maxLength: 255
           example: SuccessFactorsRecruiting
         correlationIds:
@@ -5539,7 +5602,7 @@ components:
         ODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the
 
         corresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the
-        relationships navigatable for customers.
+        relationships navigate-able for customers.
       properties:
         apiModelSelectors:
           type: array
@@ -5758,6 +5821,215 @@ components:
       example:
         ordId: sap.s4:apiResource:API_RFQ_PROCESS_SRV:v2
         removalDate: '2020-12-02T14:12:59Z'
+    OrdResource:
+      type: object
+      title: ORD Resource (abstract)
+      description: Abstract definition of shared properties across ORD Resources.
+      properties:
+        ordId:
+          type: string
+          description: |-
+            The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+
+            It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+          pattern: >-
+            ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(apiResource|eventResource|capability|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
+          maxLength: 255
+        localId:
+          type: string
+          description: >-
+            The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+
+            Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical
+            name.
+
+
+            It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length
+            limitations within the ORD ID.
+
+            But since this is not always possible, no assumptions MUST be made about the local ID being the same as the
+            `<resourceName>` fragment in the ORD ID.
+          maxLength: 255
+        correlationIds:
+          type: array
+          description: >-
+            Correlation IDs can be used to create a reference to related data in other repositories (especially to the
+            system of record).
+
+
+            They express an "identity" / "equals" / "mappable" relationship to the target ID.
+
+
+            If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+
+
+            MUST be a valid [Correlation ID](../index.md#correlation-id).
+          items:
+            type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
+            maxLength: 255
+        title:
+          type: string
+          description: |-
+            Human-readable title.
+
+            MUST NOT exceed 255 chars.
+            MUST NOT contain line breaks.
+          minLength: 1
+          maxLength: 255
+        shortDescription:
+          type: string
+          description: |-
+            Plain text short description.
+
+            MUST NOT exceed 255 chars.
+            MUST NOT contain line breaks.
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 1
+          description: |-
+            Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+            The description SHOULD not be excessive in length and is not meant to provide full documentation.
+            Detailed documentation SHOULD be attached as (typed) links.
+        partOfPackage:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          maxLength: 255
+          description: |-
+            Defines which Package the resource is part of.
+
+            MUST be a valid reference to a [Package](#package) ORD ID.
+
+            Every resource MUST be part of one package.
+        partOfGroups:
+          type: array
+          items:
+            type: string
+            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
+          description: |-
+            Defines which groups the resource is assigned to.
+
+            The property is optional, but if given the value MUST be an array of valid Group IDs.
+
+            Groups are a lightweight custom taxonomy concept.
+            They express a "part of" relationship to the chosen group concept.
+            If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
+
+            All resources that share the same group ID assignment are effectively grouped together.
+        version:
+          type: string
+          description: >-
+            The complete [SemVer](https://semver.org/) version string.
+
+
+            It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+
+            It SHOULD be changed if the ORD information or referenced resource definitions changed.
+
+            It SHOULD express minor and patch changes that don't lead to incompatible changes.
+
+
+            When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be
+            updated to be identical.
+
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI
+            `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource
+            `version` to avoid inconsistencies.
+
+
+            If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
+
+            The `version` MUST not be bumped for changes in extensions.
+
+
+            The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+
+
+            Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy
+            directly.
+
+            For example: If a resource within a `Package` changes, but the package itself did not, the package version
+            does not need to be incremented.
+          pattern: >-
+            ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+          example: 1.2.3
+        lastUpdate:
+          type: string
+          format: date-time
+          description: >-
+            Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its
+            definitions) happened.
+
+
+            The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+
+
+            When retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider
+            based update time or the aggregator processing time.
+
+            Therefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition
+            files.
+
+
+            If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and
+            updated to let the ORD aggregator know that they need to be fetched again.
+
+
+            Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process
+            of the ORD aggregators.
+          example: '2022-12-19T15:47:04+00:00'
+        visibility:
+          type: string
+          description: The visibility states who is allowed to "see" the described resource or capability.
+          enum:
+            - public
+            - internal
+            - private
+        releaseStatus:
+          type: string
+          description: The `releaseStatus` specifies the stability of the resource and its external contract.
+          enum:
+            - active
+            - beta
+            - deprecated
+          example: active
+        links:
+          type: array
+          description: |-
+            Generic links with arbitrary meaning and content.
+
+            `packageLinks` MUST be preferred if applicable.
+          items:
+            $ref: '#/components/schemas/Link'
+        tags:
+          type: array
+          items:
+            type: string
+            pattern: ^[a-zA-Z0-9-_.\/ ]*$
+            minLength: 1
+          description: |-
+            List of free text style tags.
+            No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+
+            Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+          example:
+            - storage
+            - high-availability
+        labels:
+          $ref: '#/components/schemas/Labels'
+        documentationLabels:
+          $ref: '#/components/schemas/DocumentationLabels'
+      required:
+        - ordId
+        - title
+        - description
+        - version
+        - visibility
+        - releaseStatus
+        - partOfPackage
     Configuration:
       title: ORD Configuration
       description: >-

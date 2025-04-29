@@ -2,6 +2,7 @@
   "description": "The ORD configuration response will indicate that ORD is available for the given host and how to proceed with the discovery.\n\nMost notably, the ORD configuration will tell an ORD consumer which ORD documents are available and where/how they can be accessed.\n\nThe configuration endpoint is a [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) discovery mechanism.",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json#",
+  "title": "ORD Configuration",
   "definitions": {
     "OpenResourceDiscoveryV1": {
       "type": "object",
@@ -124,7 +125,6 @@
       ]
     }
   },
-  "title": "ORD Configuration",
   "type": "object",
   "properties": {
     "$schema": {
