@@ -283,9 +283,11 @@ export interface APIResource {
      */
     ordId: string;
     /**
-     * Local ID, as known by the described system.
+     * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+     * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
      *
-     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+     * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+     * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
      */
     localId?: string;
     /**
@@ -365,7 +367,7 @@ export interface APIResource {
      */
     defaultConsumptionBundle?: string;
     /**
-     * List of products this resource is a part of.
+     * List of products the resources of the package are a part of.
      *
      * MUST be a valid reference to a [Product](#product) ORD ID.
      *
@@ -788,7 +790,7 @@ export interface AccessStrategy {
  * To indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).
  *
  * ODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the
- * corresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigatable for customers.
+ * corresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.
  */
 export interface EntityTypeMapping {
     /**
@@ -966,9 +968,11 @@ export interface EventResource {
      */
     ordId: string;
     /**
-     * Local ID, as known by the described system.
+     * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+     * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
      *
-     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+     * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+     * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
      */
     localId?: string;
     /**
@@ -1048,7 +1052,7 @@ export interface EventResource {
      */
     defaultConsumptionBundle?: string;
     /**
-     * List of products this resource is a part of.
+     * List of products the resources of the package are a part of.
      *
      * MUST be a valid reference to a [Product](#product) ORD ID.
      *
@@ -1338,9 +1342,11 @@ export interface EntityType {
      */
     ordId: string;
     /**
-     * Local ID, as known by the described system.
+     * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+     * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
      *
-     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+     * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+     * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
      */
     localId: string;
     /**
@@ -1395,7 +1401,7 @@ export interface EntityType {
      */
     partOfGroups?: string[];
     /**
-     * List of products this resource is a part of.
+     * List of products the resources of the package are a part of.
      *
      * MUST be a valid reference to a [Product](#product) ORD ID.
      *
@@ -1570,9 +1576,11 @@ export interface Capability {
      */
     ordId: string;
     /**
-     * Local ID, as known by the described system.
+     * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+     * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
      *
-     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+     * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+     * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
      */
     localId?: string;
     /**
@@ -1795,9 +1803,11 @@ export interface DataProduct {
      */
     ordId: string;
     /**
-     * Local ID, as known by the described system.
+     * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+     * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
      *
-     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+     * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+     * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
      */
     localId?: string;
     /**
@@ -1851,6 +1861,16 @@ export interface DataProduct {
      * All resources that share the same group ID assignment are effectively grouped together.
      */
     partOfGroups?: string[];
+    /**
+     * List of products this Data Product is a part of or is related to, its e.g. data source systems.
+     *
+     * MUST be a valid reference to a [Product](#product) ORD ID.
+     *
+     * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+     *
+     * @minItems 0
+     */
+    partOfProducts?: string[];
     /**
      * The complete [SemVer](https://semver.org/) version string.
      *
@@ -2145,9 +2165,11 @@ export interface IntegrationDependency {
      */
     ordId: string;
     /**
-     * Local ID, as known by the described system.
+     * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+     * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
      *
-     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+     * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+     * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
      */
     localId?: string;
     /**
@@ -2531,9 +2553,11 @@ export interface Package {
      */
     ordId: string;
     /**
-     * Local ID, as known by the described system.
+     * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+     * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
      *
-     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+     * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+     * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
      */
     localId?: string;
     /**
@@ -2637,7 +2661,7 @@ export interface Package {
      */
     vendor: string;
     /**
-     * List of products this resource is a part of.
+     * List of products the resources of the package are a part of.
      *
      * MUST be a valid reference to a [Product](#product) ORD ID.
      *
@@ -2729,9 +2753,11 @@ export interface ConsumptionBundle {
      */
     ordId: string;
     /**
-     * Local ID, as known by the described system.
+     * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+     * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
      *
-     * This can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.
+     * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+     * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
      */
     localId?: string;
     /**

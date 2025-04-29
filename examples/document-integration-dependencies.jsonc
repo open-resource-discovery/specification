@@ -16,6 +16,7 @@
       "partOfPackage": "sap.xref:package:SomePackage:v1",
       "mandatory": false,
       "lastUpdate": "2023-08-03T10:14:26.941Z",
+
       // Dependencies only means that an integration to the target resource is necessary
       // Data flow could be in both directions. For Data Product only the inbound data flow is really relevant
       // We likely don't need to distinguish this though because everything outbound is likely already setup (via blueprints?) and doesn't need to be put in here (e.g. Audit Log)

@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#",
+  "title": "ORD Document",
   "description": "The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information\nthat are specific to the document/the service it describes.\n\nThe constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.",
   "definitions": {
     "Package": {
@@ -19,7 +20,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
+          "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
             "SuccessFactorsRecruiting",
@@ -149,7 +150,7 @@
         },
         "partOfProducts": {
           "type": "array",
-          "description": "List of products this resource is a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
+          "description": "List of products the resources of the package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
@@ -398,7 +399,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
+          "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
             "SuccessFactorsRecruiting",
@@ -563,7 +564,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
+          "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
             "API_BILL_OF_MATERIAL_SRV"
@@ -651,7 +652,7 @@
         },
         "partOfProducts": {
           "type": "array",
-          "description": "List of products this resource is a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
+          "description": "List of products the resources of the package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
@@ -1303,7 +1304,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
+          "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
             "BusinessEvents_SubscriptionEvents"
@@ -1392,7 +1393,7 @@
         },
         "partOfProducts": {
           "type": "array",
-          "description": "List of products this resource is a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
+          "description": "List of products the resources of the package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
@@ -1880,7 +1881,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
+          "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
             "BusinessPartner",
@@ -1959,7 +1960,7 @@
         },
         "partOfProducts": {
           "type": "array",
-          "description": "List of products this resource is a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
+          "description": "List of products the resources of the package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
@@ -2218,7 +2219,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
+          "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
             "CustomerOrder"
@@ -2280,6 +2281,21 @@
             "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$"
           },
           "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
+        },
+        "partOfProducts": {
+          "type": "array",
+          "description": "List of products this Data Product is a part of or is related to, its e.g. data source systems.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
+            "maxLength": 255
+          },
+          "minItems": 0,
+          "examples": [
+            [
+              "sap:product:S4HANA_OD:"
+            ]
+          ]
         },
         "version": {
           "type": "string",
@@ -3185,7 +3201,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
+          "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
             "SuccessFactorsRecruiting",
@@ -3512,7 +3528,7 @@
         },
         "localId": {
           "type": "string",
-          "description": "Local ID, as known by the described system.\n\nThis can be the `<resourceName>` fragment in the ORD ID. In this case, make sure it fits the length limits of the ORD ID. It might also be different if e.g. localIds have incompatible charset restrictions.",
+          "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
             "SuccessFactorsRecruiting",
@@ -4712,7 +4728,7 @@
     "EntityTypeMapping": {
       "title": "Entity Type Mapping",
       "type": "object",
-      "description": "An API or Event resource may optionally define its `entityTypeMappings`.\nThis is used to map and correlate the API models to the underlying, conceptual **entity types**.\n\nIf the mapping from API resource to entity types is not defined,\ncertain use-cases that rely on this explicit connection will not be possible.\n\nThis mapping is meant to be rather fine granular.\nTherefore, the mapping needs to be done on basis of one of the referenced resource definitions,\nas only there we know the details and the actual contents of the API Model of the API resource.\n\nFor the various resource definition formats the selection of API models may need to be expressed differently.\nAs a consequence, there are different types of selectors that are specialized toward certain resource definition formats.\n\nThe target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)\nor to an [ORD ID](../../spec-v1/#ord-id) of an entity type.\nIt is assumed that the entity types are described in more detail or on a different abstraction level via metadata.\nWhen the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.\nThis can be determined either by the namespace of the correlation ID,\nor through a defined and known `implementationStandard` that can resolve the `localId` fragment of the correlation ID .\n\nAt SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.\nTo indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).\n\nODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the\ncorresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigatable for customers.",
+      "description": "An API or Event resource may optionally define its `entityTypeMappings`.\nThis is used to map and correlate the API models to the underlying, conceptual **entity types**.\n\nIf the mapping from API resource to entity types is not defined,\ncertain use-cases that rely on this explicit connection will not be possible.\n\nThis mapping is meant to be rather fine granular.\nTherefore, the mapping needs to be done on basis of one of the referenced resource definitions,\nas only there we know the details and the actual contents of the API Model of the API resource.\n\nFor the various resource definition formats the selection of API models may need to be expressed differently.\nAs a consequence, there are different types of selectors that are specialized toward certain resource definition formats.\n\nThe target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)\nor to an [ORD ID](../../spec-v1/#ord-id) of an entity type.\nIt is assumed that the entity types are described in more detail or on a different abstraction level via metadata.\nWhen the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.\nThis can be determined either by the namespace of the correlation ID,\nor through a defined and known `implementationStandard` that can resolve the `localId` fragment of the correlation ID .\n\nAt SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.\nTo indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).\n\nODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the\ncorresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.",
       "properties": {
         "apiModelSelectors": {
           "type": "array",
@@ -4937,9 +4953,168 @@
           "removalDate": "2020-12-02T14:12:59Z"
         }
       ]
+    },
+    "OrdResource": {
+      "type": "object",
+      "title": "ORD Resource (abstract)",
+      "description": "Abstract definition of shared properties across ORD Resources.",
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(apiResource|eventResource|capability|dataProduct):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*|)$",
+          "maxLength": 255,
+          "examples": []
+        },
+        "localId": {
+          "type": "string",
+          "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
+          "maxLength": 255,
+          "examples": []
+        },
+        "correlationIds": {
+          "type": "array",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
+            "maxLength": 255
+          },
+          "examples": []
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks.",
+          "minLength": 1,
+          "maxLength": 255,
+          "examples": []
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "Plain text short description.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks.",
+          "minLength": 1,
+          "maxLength": 255,
+          "examples": []
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links.",
+          "examples": []
+        },
+        "partOfPackage": {
+          "type": "string",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "maxLength": 255,
+          "description": "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package.",
+          "examples": []
+        },
+        "partOfGroups": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$"
+          },
+          "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together.",
+          "examples": []
+        },
+        "version": {
+          "type": "string",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+          "examples": [
+            "1.2.3",
+            "1.0.0-alpha.1"
+          ]
+        },
+        "lastUpdate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "examples": [
+            "2022-12-19T15:47:04+00:00"
+          ]
+        },
+        "visibility": {
+          "type": "string",
+          "description": "The visibility states who is allowed to \"see\" the described resource or capability.",
+          "oneOf": [
+            {
+              "const": "public",
+              "description": "Resources are publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+            },
+            {
+              "const": "internal",
+              "description": "Resources are visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+            },
+            {
+              "const": "private",
+              "description": "Resources that are exclusive within an application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+            }
+          ]
+        },
+        "releaseStatus": {
+          "type": "string",
+          "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
+          "oneOf": [
+            {
+              "const": "active",
+              "description": "Resource is meant for productive use and provides a stable API contract."
+            },
+            {
+              "const": "beta",
+              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+            },
+            {
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+            }
+          ],
+          "examples": [
+            "active"
+          ]
+        },
+        "links": {
+          "type": "array",
+          "description": "Generic links with arbitrary meaning and content.\n\n`packageLinks` MUST be preferred if applicable.",
+          "items": {
+            "$ref": "#/definitions/Link"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-_.\\/ ]*$",
+            "minLength": 1
+          },
+          "description": "List of free text style tags.\nNo special characters are allowed except `-`, `_`, `.`, `/` and ` `.\n\nTags that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
+          "examples": [
+            [
+              "storage",
+              "high-availability"
+            ]
+          ]
+        },
+        "labels": {
+          "$ref": "#/definitions/Labels"
+        },
+        "documentationLabels": {
+          "$ref": "#/definitions/DocumentationLabels"
+        }
+      },
+      "required": [
+        "ordId",
+        "title",
+        "description",
+        "version",
+        "visibility",
+        "releaseStatus",
+        "partOfPackage"
+      ],
+      "additionalProperties": true
     }
   },
-  "title": "ORD Document",
   "type": "object",
   "properties": {
     "$schema": {

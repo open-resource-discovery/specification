@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.10.1]
+
+### Added
+
+- Added `partOfProducts` to Data Product, to be consistent with API, Event Resource etc.
+  - This allows an individual data product to add product assignments independent of the package they are part of.
+
 ### Changed
 
 - Updated ORD Logo and relevant images / diagrams

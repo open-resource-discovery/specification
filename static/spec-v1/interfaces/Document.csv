@@ -160,6 +160,7 @@ Data Product,shortDescription,true,string
 Data Product,description,true,string
 Data Product,partOfPackage,true,string
 Data Product,partOfGroups,false,array<string>
+Data Product,partOfProducts,false,array<string>
 Data Product,version,true,string
 Data Product,lastUpdate,false,string
 Data Product,visibility,true,string
@@ -343,3 +344,19 @@ Tombstone,groupId,false,string
 Tombstone,groupTypeId,false,string
 Tombstone,removalDate,true,string
 Tombstone,description,false,string
+ORD Resource (abstract),ordId,true,string
+ORD Resource (abstract),localId,false,string
+ORD Resource (abstract),correlationIds,false,array<string>
+ORD Resource (abstract),title,true,string
+ORD Resource (abstract),shortDescription,false,string
+ORD Resource (abstract),description,true,string
+ORD Resource (abstract),partOfPackage,true,string
+ORD Resource (abstract),partOfGroups,false,array<string>
+ORD Resource (abstract),version,true,string
+ORD Resource (abstract),lastUpdate,false,string
+ORD Resource (abstract),visibility,true,string
+ORD Resource (abstract),releaseStatus,true,string
+ORD Resource (abstract),links,false,array<Link>
+ORD Resource (abstract),tags,false,array<string>
+ORD Resource (abstract),labels,false,Labels
+ORD Resource (abstract),documentationLabels,false,DocumentationLabels

@@ -18,6 +18,7 @@ See [Package interface](../interfaces/document.md#package).
   DataProduct --> "1" Package : partOfPackage
   Capability --> "1" Package : partOfPackage
   IntegrationDependency --> "1" Package : partOfPackage
+  OrdResource --> "1" Package : partOfPackage
   click Package href "#package" "Go to Package"
   click PackageLink href "#packagelink" "Go to PackageLink"
   click Link href "#link" "Go to Link"
@@ -31,6 +32,7 @@ See [Package interface](../interfaces/document.md#package).
   click DataProduct href "#dataproduct" "Go to DataProduct"
   click Capability href "#capability" "Go to Capability"
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
+  click OrdResource href "#ordresource" "Go to OrdResource"
   ```
   
 
@@ -192,6 +194,7 @@ See [DataProduct interface](../interfaces/document.md#data-product).
   style DataProduct stroke:#333,stroke-width:3px
   DataProduct --> "1" Package : partOfPackage
   DataProduct --> "0..*" Group : partOfGroups
+  DataProduct --> "0..*" Product : partOfProducts
   DataProduct --> "0..*" DataProduct : successors
   DataProduct *-- "0..*" ChangelogEntry : changelogEntries
   DataProduct --> "0..*" EntityType : entityTypes
@@ -204,6 +207,7 @@ See [DataProduct interface](../interfaces/document.md#data-product).
   click DataProduct href "#dataproduct" "Go to DataProduct"
   click Package href "#package" "Go to Package"
   click Group href "#group" "Go to Group"
+  click Product href "#product" "Go to Product"
   click ChangelogEntry href "#changelogentry" "Go to ChangelogEntry"
   click EntityType href "#entitytype" "Go to EntityType"
   click DataProductInputPort href "#dataproductinputport" "Go to DataProductInputPort"
@@ -278,6 +282,7 @@ See [Product interface](../interfaces/document.md#product).
   ApiResource --> "0..*" Product : partOfProducts
   EventResource --> "0..*" Product : partOfProducts
   EntityType --> "0..*" Product : partOfProducts
+  DataProduct --> "0..*" Product : partOfProducts
   Product --> "1" Vendor : vendor
   Product --> "0..1" Product : parent
   Product *-- "0..1" Labels : labels
@@ -286,6 +291,7 @@ See [Product interface](../interfaces/document.md#product).
   click ApiResource href "#apiresource" "Go to ApiResource"
   click EventResource href "#eventresource" "Go to EventResource"
   click EntityType href "#entitytype" "Go to EntityType"
+  click DataProduct href "#dataproduct" "Go to DataProduct"
   click Product href "#product" "Go to Product"
   click Vendor href "#vendor" "Go to Vendor"
   click Labels href "#labels" "Go to Labels"
@@ -459,6 +465,7 @@ See [Link interface](../interfaces/document.md#link).
   DataProduct *-- "0..*" Link : links
   Capability *-- "0..*" Link : links
   IntegrationDependency *-- "0..*" Link : links
+  OrdResource *-- "0..*" Link : links
   click Package href "#package" "Go to Package"
   click ConsumptionBundle href "#consumptionbundle" "Go to ConsumptionBundle"
   click ApiResource href "#apiresource" "Go to ApiResource"
@@ -467,6 +474,7 @@ See [Link interface](../interfaces/document.md#link).
   click DataProduct href "#dataproduct" "Go to DataProduct"
   click Capability href "#capability" "Go to Capability"
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
+  click OrdResource href "#ordresource" "Go to OrdResource"
   ```
   
 
@@ -592,6 +600,7 @@ See [Labels interface](../interfaces/document.md#labels).
   SystemInstance *-- "0..1" Labels : labels
   SystemType *-- "0..1" Labels : labels
   SystemVersion *-- "0..1" Labels : labels
+  OrdResource *-- "0..1" Labels : labels
   click Package href "#package" "Go to Package"
   click ConsumptionBundle href "#consumptionbundle" "Go to ConsumptionBundle"
   click ApiResource href "#apiresource" "Go to ApiResource"
@@ -605,6 +614,7 @@ See [Labels interface](../interfaces/document.md#labels).
   click SystemInstance href "#systeminstance" "Go to SystemInstance"
   click SystemType href "#systemtype" "Go to SystemType"
   click SystemVersion href "#systemversion" "Go to SystemVersion"
+  click OrdResource href "#ordresource" "Go to OrdResource"
   ```
   
 
@@ -635,6 +645,7 @@ See [Group interface](../interfaces/document.md#group).
   IntegrationDependency --> "0..*" Group : partOfGroups
   Group --> "1" GroupType : groupTypeId
   Tombstone --> "0..1" Group : groupId
+  OrdResource --> "0..*" Group : partOfGroups
   click ApiResource href "#apiresource" "Go to ApiResource"
   click EventResource href "#eventresource" "Go to EventResource"
   click EntityType href "#entitytype" "Go to EntityType"
@@ -644,6 +655,7 @@ See [Group interface](../interfaces/document.md#group).
   click Group href "#group" "Go to Group"
   click GroupType href "#grouptype" "Go to GroupType"
   click Tombstone href "#tombstone" "Go to Tombstone"
+  click OrdResource href "#ordresource" "Go to OrdResource"
   ```
   
 
@@ -666,6 +678,7 @@ See [DocumentationLabels interface](../interfaces/document.md#documentation-labe
   SystemInstance *-- "0..1" DocumentationLabels : documentationLabels
   SystemType *-- "0..1" DocumentationLabels : documentationLabels
   SystemVersion *-- "0..1" DocumentationLabels : documentationLabels
+  OrdResource *-- "0..1" DocumentationLabels : documentationLabels
   click Package href "#package" "Go to Package"
   click ConsumptionBundle href "#consumptionbundle" "Go to ConsumptionBundle"
   click ApiResource href "#apiresource" "Go to ApiResource"
@@ -679,6 +692,7 @@ See [DocumentationLabels interface](../interfaces/document.md#documentation-labe
   click SystemInstance href "#systeminstance" "Go to SystemInstance"
   click SystemType href "#systemtype" "Go to SystemType"
   click SystemVersion href "#systemversion" "Go to SystemVersion"
+  click OrdResource href "#ordresource" "Go to OrdResource"
   ```
   
 
@@ -790,5 +804,25 @@ See [Tombstone interface](../interfaces/document.md#tombstone).
   click Tombstone href "#tombstone" "Go to Tombstone"
   click Group href "#group" "Go to Group"
   click GroupType href "#grouptype" "Go to GroupType"
+  ```
+  
+
+## OrdResource
+See [OrdResource interface](../interfaces/document.md#ord-resource-(abstract)).
+  ```mermaid
+  classDiagram
+  class OrdResource
+  style OrdResource stroke:#333,stroke-width:3px
+  OrdResource --> "1" Package : partOfPackage
+  OrdResource --> "0..*" Group : partOfGroups
+  OrdResource *-- "0..*" Link : links
+  OrdResource *-- "0..1" Labels : labels
+  OrdResource *-- "0..1" DocumentationLabels : documentationLabels
+  click OrdResource href "#ordresource" "Go to OrdResource"
+  click Package href "#package" "Go to Package"
+  click Group href "#group" "Go to Group"
+  click Link href "#link" "Go to Link"
+  click Labels href "#labels" "Go to Labels"
+  click DocumentationLabels href "#documentationlabels" "Go to DocumentationLabels"
   ```
   
