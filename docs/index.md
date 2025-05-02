@@ -8,14 +8,15 @@ sidebar_position: 0
 
 <div className="container"><div className="row">
 <div className="col">
-Open Resource Discovery (ORD) is a protocol that **allows applications and services to self-describe their resources and capabilities** (e.g. ports and adapters).
+Open Resource Discovery (ORD) is a protocol for application / service metadata publishing and discovery and can be used as a foundation for **metadata catalogs and marketplaces** and to improve automation and quality of integrations.
 
-ORD can describe [APIs](./spec-v1/interfaces/document#api-resource), [Events](./spec-v1/interfaces/document#event-resource) and higher-level concepts like [Entity Types](./spec-v1/interfaces/document#entity-type) (Domain / Business Objects) and [Data Products](./details/articles/data-product.md).
-With [Integration Dependencies](./spec-v1/interfaces/document#integration-dependency) the use of external resources can be stated.
+ORD is designed to be **general-purpose** and to work with a wide variety of industry-standard protocols and metadata standards.
+It can be used for **static documentation** or to describe the **run-time system landscape**, reflecting tenant specific configuration and extensions.
+
+It is possible to describe [APIs](./spec-v1/interfaces/document#api-resource), [Events](./spec-v1/interfaces/document#event-resource) and higher-level concepts like [Entity Types](./spec-v1/interfaces/document#entity-type) (Domain / Business Objects) and [Data Products](./spec-v1/concepts/data-product.md).
+The [Integration Dependencies](./spec-v1/interfaces/document#integration-dependency) describe the use of external resources.
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/document#capability).
-All of the described artifacts can share relationships, taxonomy and [grouping](./details/articles/grouping-and-bundling.md) concepts, enabling a **well-connected metadata graph**.
-
-ORD can be used for **static documentation** (like API / data catalogs and marketplaces) or to describe a dynamic **run-time system landscape** (with tenant specific configuration and extensions).
+All of the described artifacts can share relationships, taxonomy and [grouping](./spec-v1/concepts/grouping-and-bundling.md) concepts, enabling a **well-connected metadata graph**.
 
 </div>
 <div className="col">
@@ -23,8 +24,8 @@ ORD can be used for **static documentation** (like API / data catalogs and marke
 ![ORD Provider Overview](/img/ord-provider-overview.svg 'ORD Provider Overview')
 </div></div></div></div>
 
-To adopt ORD, an application implements a single-entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl the relevant information / metadata.
-The information can be used to build metadata registries / catalogs and do runtime inspection of actual system landscapes.
+Technically, ORD allows applications and services to **self-describe** their resources and capabilities (e.g. ports and adapters).
+To adopt ORD, an application implements a read-only entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl relevant metadata.
 
 > ℹ ORD is an [open source](https://github.com/open-resource-discovery/specification) standard by SAP, released under the Apache 2 license (see [public announcement](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/)).
 
@@ -32,7 +33,7 @@ The information can be used to build metadata registries / catalogs and do runti
 
 ## Introduction
 
-Read the 📄 [ORD Introduction](./introduction.mdx) and watch the 🎦[ORD Videos](./details/videos).
+Read the 📄 [ORD Introduction](./introduction.mdx) and watch the 🎦[ORD Videos](./help/videos).
 
 <div className="videoContainer">
   <iframe className="videoIframe" src="https://www.youtube.com/embed/7Z818CdoZJg" title="Introducing the Open Resource Discovery protocol" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>

@@ -202,6 +202,10 @@ iframe {
   padding: 4px 0 0 0;
 }
 
+.markdown .cardTitle_rnsV {
+  font-size: 1.4rem !important;
+}
+
 .footer--dark {
   --ifm-footer-background-color: #071819;
   border-top: 6px solid #1c8b92;

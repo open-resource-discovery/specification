@@ -98,28 +98,8 @@ const config = {
             to: "/",
           },
           {
-            label: "Introduction",
+            label: "Primer",
             to: "introduction",
-          },
-          {
-            type: "dropdown",
-            position: "left",
-            label: "Details",
-            to: "details/",
-            items: [
-              {
-                label: "Articles",
-                to: "/details/articles/",
-              },
-              {
-                label: "Videos",
-                to: "/details/videos",
-              },
-              {
-                label: "FAQ",
-                to: "/details/faq",
-              },
-            ],
           },
           {
             type: "dropdown",
@@ -174,18 +154,33 @@ const config = {
             ],
           },
           {
-            type: "dropdown",
-            position: "left",
             label: "Ecosystem",
+            position: "left",
             to: "ecosystem/",
             items: [
               {
-                label: "Overview",
-                to: "ecosystem/",
-              },
-              {
                 label: "ORD Reference Application",
                 href: "https://ord-reference-application.cfapps.sap.hana.ondemand.com/",
+              },
+            ],
+          },
+          {
+            type: "dropdown",
+            position: "left",
+            label: "Help",
+            to: "help/",
+            items: [
+              // {
+              //   label: "Overview",
+              //   to: "help/",
+              // },
+              {
+                label: "Videos",
+                to: "help/videos/",
+              },
+              {
+                label: "FAQ",
+                to: "help/faq/",
               },
             ],
           },

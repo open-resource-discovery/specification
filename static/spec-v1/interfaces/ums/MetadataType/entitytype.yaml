@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "An [**Entity Type**](../../details/articles/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.\nThe same entity type can be exposed through one or multiple API and events resources.\n\nTo learn more about the concept, see [Entity Type](../../details/articles/grouping-and-bundling#entity-type)."
+  description: "An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.\nThe same entity type can be exposed through one or multiple API and events resources.\n\nTo learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type)."
   metadataProperties:
     - name: 'id'
       type: 'guid'

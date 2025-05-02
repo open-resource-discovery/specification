@@ -89,7 +89,7 @@ The actual business processes delivered centrally SAP, based on the Enterprise A
 
 ### Data Package
 
-A data package is a group of [data products](../../details/articles/data-product.md) and additional e.g. analytical content that form together a relevant use cases.
+A data package is a group of [data products](../../spec-v1/concepts/data-product.md) and additional e.g. analytical content that form together a relevant use cases.
 
 ```js
 {

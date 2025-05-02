@@ -4,7 +4,7 @@ toc_max_heading_level: 3
 
 # ORD Introduction
 
-> 🎦 There is also an [ORD Introduction video](./details/videos/introduction.md), based on this article.
+> 🎦 There is also an [ORD Introduction video](./help/videos/introduction.md), based on this article.
 
 ## Why ORD?
 
@@ -36,7 +36,7 @@ Second, use a **central aggregator**, which can read metadata from all providers
 
 </details>
 
-> ℹ Read the [Why ORD?](./details/articles/why-ord.md) article for more background.
+> ℹ Read the [Why ORD?](./help/faq/why-ord.md) article for more background.
 
 ## Metadata Discovery Protocol
 
@@ -54,9 +54,9 @@ By adopting ORD, an application will implement a single-entry point ([Service Pr
 In the picture above, the center is an application or service describing itself.
 They typically have multiple resources and capabilities that are outward facing and are of interest for external consumers.
 
-Typically, ORD is used to describe [APIs](./spec-v1/interfaces/document#api-resource) and [Events](./spec-v1/interfaces/document#event-resource), but it also supports higher-level concepts like [Entity Types](./spec-v1/interfaces/document#entity-type) (Business Objects) and [Data Products](./spec-v1/interfaces/document#data-products) (beta).
-With [Integration Dependencies](./spec-v1/interfaces/document#integration-dependency) the (potential) use of external resources can be stated, too.
-In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/document#capability).
+Typically, ORD is used to describe [APIs](./spec-v1/interfaces/document.md#api-resource) and [Events](./spec-v1/interfaces/document.md#event-resource), but it also supports higher-level concepts like [Entity Types](./spec-v1/interfaces/document.md#entity-type) (Business Objects) and [Data Products](./spec-v1/interfaces/document.md#data-products) (beta).
+With [Integration Dependencies](./spec-v1/interfaces/document.md#integration-dependency) the (potential) use of external resources can be stated, too.
+In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/document.md#capability).
 
 ORD standardizes how those information can be automatically discovered and aggregated.
 Please note that ORD is no replacement for detailed resource definition standards like OpenAPI.
@@ -75,12 +75,12 @@ The specification provides a shared contract and alignment point for the ecosyst
 
 ## Data Model Overview
 
-The most typical resources to describe are [APIs](./spec-v1/interfaces/document#api-resource) and [Events](./spec-v1/interfaces/document#event-resource).
-But ORD can also be used to describe higher-level concepts like [Entity Types](./spec-v1/interfaces/document#entity-type) (Business Objects) and [Data Products](./spec-v1/interfaces/document#data-products).
-With [Integration Dependencies](./spec-v1/interfaces/document#integration-dependency) it is possible to also describe how external resources are or can be be used.
-In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/document#capability).
+The most typical resources to describe are [APIs](./spec-v1/interfaces/document.md#api-resource) and [Events](./spec-v1/interfaces/document.md#event-resource).
+But ORD can also be used to describe higher-level concepts like [Entity Types](./spec-v1/interfaces/document.md#entity-type) (Business Objects) and [Data Products](./spec-v1/interfaces/document.md#data-products).
+With [Integration Dependencies](./spec-v1/interfaces/document.md#integration-dependency) it is possible to also describe how external resources are or can be be used.
+In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/document.md#capability).
 
-The mentioned concepts can be grouped by different concerns via [Packages](./spec-v1/interfaces/document#package) and [Consumption Bundles](./spec-v1/interfaces/document#consumption-bundle) and various taxonomy attributes.
+The mentioned concepts can be grouped by different concerns via [Packages](./spec-v1/interfaces/document.md#package) and [Consumption Bundles](./spec-v1/interfaces/document.md#consumption-bundle) and various taxonomy attributes.
 Additionally, relations between the concepts can be expressed (e.g., which APIs and Events share the same Entity Types?).
 
 <div style={{"text-align": "center"}}>
@@ -239,4 +239,4 @@ An ORD consumer should get their information from an ORD Aggregator, where a com
 
 </details>
 
-> Don't forget to have a look at the [Articles](./details/articles) 📖 and [Videos](./details/videos) 🎦 that explain ORD related topics in more detail.
+> Don't forget to have a look at the [help section](./help) 📖 and [videos](./help/videos) 🎦 that explain ORD related topics in more detail.

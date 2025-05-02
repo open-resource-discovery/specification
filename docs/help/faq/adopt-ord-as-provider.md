@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-title: How To Adopt ORD (Provider)
+title: HowTo adopt as ORD Provider
 description: ORD Provider guide how to adopt ORD, depending on preconditions and requirements.
 ---
 

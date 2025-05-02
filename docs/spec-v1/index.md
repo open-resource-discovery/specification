@@ -110,7 +110,7 @@ An <dfn id="def-ord-provider">ORD provider</dfn> is a system instance (of an app
 An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
 An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
 
-> 📖 See also: [How To Adopt ORD as a Provider](../details/articles/adopt-ord-as-provider.md).
+> 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
 ![ORD Provider Role](/img/ord-role-provider.svg "ORD Provider Role")
 
@@ -692,7 +692,7 @@ An sub-context namespace MUST be constructed according to the following rules:
 
 **Examples**: `sap.billing.sb`, `sap.s4.beh`, `sap.odm.finance.bank`.
 
-It is NOT RECOMMENDED to use sub-context namespaces for grouping purposes only, see [grouping and bundling](../details/articles/grouping-and-bundling.md#namespaces).
+It is NOT RECOMMENDED to use sub-context namespaces for grouping purposes only, see [grouping and bundling](./concepts/grouping-and-bundling.md#namespaces).
 
 ### Customer Namespace
 

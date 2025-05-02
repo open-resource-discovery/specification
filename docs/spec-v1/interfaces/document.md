@@ -172,10 +172,10 @@ If the event resource is not created or owned by the user / customer of the syst
 
 ### Entity Type
 
-An [**Entity Type**](../../details/articles/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
+An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
 The same entity type can be exposed through one or multiple API and events resources.
 
-To learn more about the concept, see [Entity Type](../../details/articles/grouping-and-bundling#entity-type).
+To learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).
 
 **Type**: Object(<a href="#entity-type_ordid">ordId</a>, <a href="#entity-type_localid">localId</a>, <a href="#entity-type_correlationids">correlationIds</a>, <a href="#entity-type_title">title</a>, <a href="#entity-type_shortdescription">shortDescription</a>, <a href="#entity-type_description">description</a>, <a href="#entity-type_partofpackage">partOfPackage</a>, <a href="#entity-type_partofgroups">partOfGroups</a>, <a href="#entity-type_partofproducts">partOfProducts</a>, <a href="#entity-type_version">version</a>, <a href="#entity-type_lastupdate">lastUpdate</a>, <a href="#entity-type_visibility">visibility</a>, <a href="#entity-type_releasestatus">releaseStatus</a>, <a href="#entity-type_deprecationdate">deprecationDate</a>, <a href="#entity-type_sunsetdate">sunsetDate</a>, <a href="#entity-type_successors">successors</a>, <a href="#entity-type_changelogentries">changelogEntries</a>, <a href="#entity-type_level">level</a>, <a href="#entity-type_relatedentitytypes">relatedEntityTypes</a>, <a href="#entity-type_links">links</a>, <a href="#entity-type_extensible">extensible</a>, <a href="#entity-type_tags">tags</a>, <a href="#entity-type_labels">labels</a>, <a href="#entity-type_documentationlabels">documentationLabels</a>, <a href="#entity-type_policylevel">policyLevel</a>, <a href="#entity-type_custompolicylevel">customPolicyLevel</a>, <a href="#entity-type_policylevels">policyLevels</a>, <a href="#entity-type_systeminstanceaware">systemInstanceAware</a>)
 
@@ -248,9 +248,9 @@ This is the same idea and mechanism as with API resources and their resource def
 
 ### Data Product
 
-A [Data Product](../../details/articles/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
+A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
 
-Please note that this concept is in beta, see [Data Product - Beta Status](../../details/articles/data-product#beta-status).
+Please note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).
 
 **Type**: Object(<a href="#data-product_ordid">ordId</a>, <a href="#data-product_localid">localId</a>, <a href="#data-product_correlationids">correlationIds</a>, <a href="#data-product_title">title</a>, <a href="#data-product_shortdescription">shortDescription</a>, <a href="#data-product_description">description</a>, <a href="#data-product_partofpackage">partOfPackage</a>, <a href="#data-product_partofgroups">partOfGroups</a>, <a href="#data-product_partofproducts">partOfProducts</a>, <a href="#data-product_version">version</a>, <a href="#data-product_lastupdate">lastUpdate</a>, <a href="#data-product_visibility">visibility</a>, <a href="#data-product_releasestatus">releaseStatus</a>, <a href="#data-product_disabled">disabled</a>, <a href="#data-product_minsystemversion">minSystemVersion</a>, <a href="#data-product_lifecyclestatus">lifecycleStatus</a>, <a href="#data-product_deprecationdate">deprecationDate</a>, <a href="#data-product_sunsetdate">sunsetDate</a>, <a href="#data-product_successors">successors</a>, <a href="#data-product_changelogentries">changelogEntries</a>, <a href="#data-product_type">type</a>, <a href="#data-product_category">category</a>, <a href="#data-product_entitytypes">entityTypes</a>, <a href="#data-product_inputports">inputPorts</a>, <a href="#data-product_outputports">outputPorts</a>, <a href="#data-product_responsible">responsible</a>, <a href="#data-product_dataproductlinks">dataProductLinks</a>, <a href="#data-product_links">links</a>, <a href="#data-product_industry">industry</a>, <a href="#data-product_lineofbusiness">lineOfBusiness</a>, <a href="#data-product_countries">countries</a>, <a href="#data-product_tags">tags</a>, <a href="#data-product_labels">labels</a>, <a href="#data-product_documentationlabels">documentationLabels</a>, <a href="#data-product_policylevel">policyLevel</a>, <a href="#data-product_custompolicylevel">customPolicyLevel</a>, <a href="#data-product_policylevels">policyLevels</a>, <a href="#data-product_systeminstanceaware">systemInstanceAware</a>)
 
@@ -296,7 +296,7 @@ Please note that this concept is in beta, see [Data Product - Beta Status](../..
 
 ### Integration Dependency
 
-An [Integration Dependency](../../details/articles/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.
+An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.
 The purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.
 
 The integration dependency includes a list of individual **aspects** that the integration consists of.
@@ -314,7 +314,7 @@ Therefore, if an integration with multiple types of systems need to be setup, th
 An integration dependency is also not meant to describe a bigger process.
 Instead it focuses on the technical necessaries to create an integration for one particular purpose.
 
-To learn more about the concept, see [Integration Dependency](../../details/articles/integration-dependency).
+To learn more about the concept, see [Integration Dependency](../concepts/integration-dependency).
 
 **Type**: Object(<a href="#integration-dependency_ordid">ordId</a>, <a href="#integration-dependency_localid">localId</a>, <a href="#integration-dependency_correlationids">correlationIds</a>, <a href="#integration-dependency_title">title</a>, <a href="#integration-dependency_shortdescription">shortDescription</a>, <a href="#integration-dependency_description">description</a>, <a href="#integration-dependency_partofpackage">partOfPackage</a>, <a href="#integration-dependency_partofgroups">partOfGroups</a>, <a href="#integration-dependency_version">version</a>, <a href="#integration-dependency_lastupdate">lastUpdate</a>, <a href="#integration-dependency_visibility">visibility</a>, <a href="#integration-dependency_releasestatus">releaseStatus</a>, <a href="#integration-dependency_sunsetdate">sunsetDate</a>, <a href="#integration-dependency_successors">successors</a>, <a href="#integration-dependency_mandatory">mandatory</a>, <a href="#integration-dependency_aspects">aspects</a>, <a href="#integration-dependency_relatedintegrationdependencies">relatedIntegrationDependencies</a>, <a href="#integration-dependency_links">links</a>, <a href="#integration-dependency_tags">tags</a>, <a href="#integration-dependency_labels">labels</a>, <a href="#integration-dependency_documentationlabels">documentationLabels</a>)
 
@@ -397,7 +397,7 @@ ORD assumes that this is handled by specialized systems and that ORD only provid
 
 ### Package
 
-A [**Package**](../../details/articles/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
+A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
 
 The Package can also be used to indicate which products or vendors provided the packaged resources.
 For partner or customer content, the package can indicate this via the `vendor` and `partOfProducts` assignments.
@@ -410,7 +410,7 @@ The package assignment of a resource MAY change, so consumers MUST not rely on t
 A package does not have a `visibility` property.
 Whether it is displayed is decided by the fact, whether it contains any visible resources according to the visibility role of the aggregator.
 
-To learn more about the concept and further guidance, see [Package](../../details/articles/grouping-and-bundling#package).
+To learn more about the concept and further guidance, see [Package](../concepts/grouping-and-bundling#package).
 
 **Type**: Object(<a href="#package_ordid">ordId</a>, <a href="#package_localid">localId</a>, <a href="#package_title">title</a>, <a href="#package_shortdescription">shortDescription</a>, <a href="#package_description">description</a>, <a href="#package_version">version</a>, <a href="#package_policylevel">policyLevel</a>, <a href="#package_custompolicylevel">customPolicyLevel</a>, <a href="#package_policylevels">policyLevels</a>, <a href="#package_packagelinks">packageLinks</a>, <a href="#package_links">links</a>, <a href="#package_licensetype">licenseType</a>, <a href="#package_supportinfo">supportInfo</a>, <a href="#package_vendor">vendor</a>, <a href="#package_partofproducts">partOfProducts</a>, <a href="#package_countries">countries</a>, <a href="#package_lineofbusiness">lineOfBusiness</a>, <a href="#package_industry">industry</a>, <a href="#package_runtimerestriction">runtimeRestriction</a>, <a href="#package_tags">tags</a>, <a href="#package_labels">labels</a>, <a href="#package_documentationlabels">documentationLabels</a>)
 
@@ -441,10 +441,10 @@ To learn more about the concept and further guidance, see [Package](../../detail
 
 ### Consumption Bundle
 
-A [**Consumption Bundle**](../../details/articles/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
+A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
 Ideally it also includes instructions and details how to request access and credentials for resources.
 
-For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../../details/articles/grouping-and-bundling#consumption-bundle).
+For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).
 
 A consumption bundle SHOULD have at least one association with a resource (0..n). Avoid empty consumption bundles.
 A consumption bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned
@@ -452,7 +452,7 @@ by the system instance that defines the consumption bundle.
 
 Please note that some ORD consumer use cases MAY depend on consumption bundle assignments to work with the resources.
 
-To learn more about the concept, see [Consumption Bundle](../../details/articles/grouping-and-bundling#consumption-bundle).
+To learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).
 
 **Type**: Object(<a href="#consumption-bundle_ordid">ordId</a>, <a href="#consumption-bundle_localid">localId</a>, <a href="#consumption-bundle_correlationids">correlationIds</a>, <a href="#consumption-bundle_title">title</a>, <a href="#consumption-bundle_shortdescription">shortDescription</a>, <a href="#consumption-bundle_description">description</a>, <a href="#consumption-bundle_version">version</a>, <a href="#consumption-bundle_lastupdate">lastUpdate</a>, <a href="#consumption-bundle_visibility">visibility</a>, <a href="#consumption-bundle_credentialexchangestrategies">credentialExchangeStrategies</a>, <a href="#consumption-bundle_links">links</a>, <a href="#consumption-bundle_tags">tags</a>, <a href="#consumption-bundle_labels">labels</a>, <a href="#consumption-bundle_documentationlabels">documentationLabels</a>)
 
@@ -481,7 +481,7 @@ Groups are a lightweight custom taxonomy concept.
 They express a "part of" relationship to the chosen group concept.
 If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
 
-To learn more about the concept, see [Group Concept Documentation](../../details/articles/grouping-and-bundling#Groups).
+To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
 
 **Type**: Object(<a href="#group_groupid">groupId</a>, <a href="#group_grouptypeid">groupTypeId</a>, <a href="#group_title">title</a>, <a href="#group_description">description</a>)
 
@@ -509,7 +509,7 @@ What the Group Type means and how it is to be used correctly SHOULD be described
 
 Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
 
-To learn more about the concept, see [Group Concept Documentation](../../details/articles/grouping-and-bundling#Groups).
+To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
 
 **Type**: Object(<a href="#group-type_grouptypeid">groupTypeId</a>, <a href="#group-type_title">title</a>, <a href="#group-type_description">description</a>)
 

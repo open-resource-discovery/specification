@@ -1329,10 +1329,10 @@ export interface EventResourceDefinition {
     accessStrategies?: [AccessStrategy, ...AccessStrategy[]];
 }
 /**
- * An [**Entity Type**](../../details/articles/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
+ * An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
  * The same entity type can be exposed through one or multiple API and events resources.
  *
- * To learn more about the concept, see [Entity Type](../../details/articles/grouping-and-bundling#entity-type).
+ * To learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).
  */
 export interface EntityType {
     /**
@@ -1791,9 +1791,9 @@ export interface CapabilityDefinition {
     accessStrategies?: [AccessStrategy, ...AccessStrategy[]];
 }
 /**
- * A [Data Product](../../details/articles/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
+ * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
  *
- * Please note that this concept is in beta, see [Data Product - Beta Status](../../details/articles/data-product#beta-status).
+ * Please note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).
  */
 export interface DataProduct {
     /**
@@ -2137,7 +2137,7 @@ export interface DataProductLink {
     url: string;
 }
 /**
- * An [Integration Dependency](../../details/articles/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.
+ * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.
  * The purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.
  *
  * The integration dependency includes a list of individual **aspects** that the integration consists of.
@@ -2155,7 +2155,7 @@ export interface DataProductLink {
  * An integration dependency is also not meant to describe a bigger process.
  * Instead it focuses on the technical necessaries to create an integration for one particular purpose.
  *
- * To learn more about the concept, see [Integration Dependency](../../details/articles/integration-dependency).
+ * To learn more about the concept, see [Integration Dependency](../concepts/integration-dependency).
  */
 export interface IntegrationDependency {
     /**
@@ -2530,7 +2530,7 @@ export interface Product {
     documentationLabels?: DocumentationLabels;
 }
 /**
- * A [**Package**](../../details/articles/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
+ * A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
  *
  * The Package can also be used to indicate which products or vendors provided the packaged resources.
  * For partner or customer content, the package can indicate this via the `vendor` and `partOfProducts` assignments.
@@ -2543,7 +2543,7 @@ export interface Product {
  * A package does not have a `visibility` property.
  * Whether it is displayed is decided by the fact, whether it contains any visible resources according to the visibility role of the aggregator.
  *
- * To learn more about the concept and further guidance, see [Package](../../details/articles/grouping-and-bundling#package).
+ * To learn more about the concept and further guidance, see [Package](../concepts/grouping-and-bundling#package).
  */
 export interface Package {
     /**
@@ -2732,10 +2732,10 @@ export interface PackageLink {
     [k: string]: any | undefined;
 }
 /**
- * A [**Consumption Bundle**](../../details/articles/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
+ * A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
  * Ideally it also includes instructions and details how to request access and credentials for resources.
  *
- * For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../../details/articles/grouping-and-bundling#consumption-bundle).
+ * For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).
  *
  * A consumption bundle SHOULD have at least one association with a resource (0..n). Avoid empty consumption bundles.
  * A consumption bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned
@@ -2743,7 +2743,7 @@ export interface PackageLink {
  *
  * Please note that some ORD consumer use cases MAY depend on consumption bundle assignments to work with the resources.
  *
- * To learn more about the concept, see [Consumption Bundle](../../details/articles/grouping-and-bundling#consumption-bundle).
+ * To learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).
  */
 export interface ConsumptionBundle {
     /**
@@ -2897,7 +2897,7 @@ export interface CredentialExchangeStrategy {
  * They express a "part of" relationship to the chosen group concept.
  * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
  *
- * To learn more about the concept, see [Group Concept Documentation](../../details/articles/grouping-and-bundling#Groups).
+ * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
  */
 export interface Group {
     /**
@@ -2934,7 +2934,7 @@ export interface Group {
  *
  * Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
  *
- * To learn more about the concept, see [Group Concept Documentation](../../details/articles/grouping-and-bundling#Groups).
+ * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
  */
 export interface GroupType {
     /**

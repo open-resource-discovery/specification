@@ -10,6 +10,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Changed the structure of the ORD page
+  - Details section removed, merged content either into spec itself (concepts) or new help area
+  - Moved FAQ into help, some detail article became FAQ articles
+
 ## [1.10.1]
 
 ### Added
@@ -189,9 +195,9 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added clarification that an ORD Aggregator MUST bump `lastUpdated` if the provider didn't do it, but it detected a change.
 - Added explicit [Access Strategy](https://open-resource-discovery.github.io/specification/spec-extensions/access-strategies/) description for `open`, defining how local and global tenant headers can be optionally passed on.
 - Added new Detail Articles:
-  - [How To Adopt ORD as a Provider](https://open-resource-discovery.github.io/specification/details/articles/adopt-ord-as-provider) detail page
-  - [System Landscape Model](https://open-resource-discovery.github.io/specification/details/articles/system-landscape-model) detail page
-  - [Grouping and Bundling](https://open-resource-discovery.github.io/specification/details/articles/grouping-and-bundling) detail page
+  - [How To Adopt ORD as a Provider](https://open-resource-discovery.github.io/specification/help/faq/adopt-ord-as-provider) detail page
+  - [System Landscape Model](https://open-resource-discovery.github.io/specification/spec-v1/concepts/system-landscape-model) detail page
+  - [Grouping and Bundling](https://open-resource-discovery.github.io/specification/spec-v1/concepts/grouping-and-bundling) detail page
 
 ### Changed
 

@@ -13,7 +13,7 @@ The purpose could be to enable a certain feature or integration scenario, but it
 The integration dependency includes a list of requirements, which point out which API and event resources (or other ORD concepts) are involved.
 Each requirement describes one aspect / ingredient and can be used to express alternatives (OR condition) for achieving the same outcome.
 
-See also: [Integration Dependency interface](../../spec-v1/interfaces/document#integration-dependency).
+See also: [Integration Dependency interface](../interfaces/document#integration-dependency).
 
 ## Problem Statement
 
