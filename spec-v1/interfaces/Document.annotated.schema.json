@@ -24,7 +24,7 @@
       "type": "object",
       "title": "Package",
       "x-ums-type": "root",
-      "description": "A [**Package**](../../details/articles/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.\n\nThe Package can also be used to indicate which products or vendors provided the packaged resources.\nFor partner or customer content, the package can indicate this via the `vendor` and `partOfProducts` assignments.\nIn any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.\n\nA package SHOULD contain at least one resource. Avoid empty packages.\n\nThe package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.\n\nA package does not have a `visibility` property.\nWhether it is displayed is decided by the fact, whether it contains any visible resources according to the visibility role of the aggregator.\n\nTo learn more about the concept and further guidance, see [Package](../../details/articles/grouping-and-bundling#package).",
+      "description": "A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.\n\nThe Package can also be used to indicate which products or vendors provided the packaged resources.\nFor partner or customer content, the package can indicate this via the `vendor` and `partOfProducts` assignments.\nIn any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.\n\nA package SHOULD contain at least one resource. Avoid empty packages.\n\nThe package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.\n\nA package does not have a `visibility` property.\nWhether it is displayed is decided by the fact, whether it contains any visible resources according to the visibility role of the aggregator.\n\nTo learn more about the concept and further guidance, see [Package](../concepts/grouping-and-bundling#package).",
       "properties": {
         "ordId": {
           "type": "string",
@@ -423,7 +423,7 @@
       "type": "object",
       "title": "Consumption Bundle",
       "x-ums-type": "root",
-      "description": "A [**Consumption Bundle**](../../details/articles/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.\nIdeally it also includes instructions and details how to request access and credentials for resources.\n\nFor more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../../details/articles/grouping-and-bundling#consumption-bundle).\n\nA consumption bundle SHOULD have at least one association with a resource (0..n). Avoid empty consumption bundles.\nA consumption bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned\nby the system instance that defines the consumption bundle.\n\nPlease note that some ORD consumer use cases MAY depend on consumption bundle assignments to work with the resources.\n\nTo learn more about the concept, see [Consumption Bundle](../../details/articles/grouping-and-bundling#consumption-bundle).",
+      "description": "A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.\nIdeally it also includes instructions and details how to request access and credentials for resources.\n\nFor more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).\n\nA consumption bundle SHOULD have at least one association with a resource (0..n). Avoid empty consumption bundles.\nA consumption bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned\nby the system instance that defines the consumption bundle.\n\nPlease note that some ORD consumer use cases MAY depend on consumption bundle assignments to work with the resources.\n\nTo learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).",
       "properties": {
         "ordId": {
           "type": "string",
@@ -2015,7 +2015,7 @@
       "type": "object",
       "title": "Entity Type",
       "x-ums-type": "root",
-      "description": "An [**Entity Type**](../../details/articles/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.\nThe same entity type can be exposed through one or multiple API and events resources.\n\nTo learn more about the concept, see [Entity Type](../../details/articles/grouping-and-bundling#entity-type).",
+      "description": "An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.\nThe same entity type can be exposed through one or multiple API and events resources.\n\nTo learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).",
       "x-introduced-in-version": "1.8.0",
       "properties": {
         "ordId": {
@@ -2397,7 +2397,7 @@
       "x-ums-type": "root",
       "x-introduced-in-version": "1.8.0",
       "x-implements": "#/definitions/OrdResource",
-      "description": "A [Data Product](../../details/articles/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).\n\nPlease note that this concept is in beta, see [Data Product - Beta Status](../../details/articles/data-product#beta-status).",
+      "description": "A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).\n\nPlease note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).",
       "properties": {
         "ordId": {
           "type": "string",
@@ -3834,7 +3834,7 @@
       "title": "Integration Dependency",
       "x-ums-type": "root",
       "x-introduced-in-version": "1.7.0",
-      "description": "An [Integration Dependency](../../details/articles/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.\nThe purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.\n\nThe integration dependency includes a list of individual **aspects** that the integration consists of.\nAspects are an \"ingredient\" for the integration scenario (and are logically combined with AND condition).\nEach aspect can express alternatives (OR condition) on what API and event resources can be used to achieve the same outcome.\n\nThe direction of connection establishment, data flow is not directly implied and needs to be inferred from the referenced resources.\n\nIt is not in scope for the Integration Dependency to describe scenarios that external consumers have with the own exposed resources.\nThis would overstep the boundary of self-description.\n\nIf an integration scenario consists of two sides integration with each other, each need to describe its own part in it as an Integration Dependency.\nTherefore, if an integration with multiple types of systems need to be setup, this SHOULD be separated into distinct Integration Dependencies.\n\nAn integration dependency is also not meant to describe a bigger process.\nInstead it focuses on the technical necessaries to create an integration for one particular purpose.\n\nTo learn more about the concept, see [Integration Dependency](../../details/articles/integration-dependency).",
+      "description": "An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.\nThe purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.\n\nThe integration dependency includes a list of individual **aspects** that the integration consists of.\nAspects are an \"ingredient\" for the integration scenario (and are logically combined with AND condition).\nEach aspect can express alternatives (OR condition) on what API and event resources can be used to achieve the same outcome.\n\nThe direction of connection establishment, data flow is not directly implied and needs to be inferred from the referenced resources.\n\nIt is not in scope for the Integration Dependency to describe scenarios that external consumers have with the own exposed resources.\nThis would overstep the boundary of self-description.\n\nIf an integration scenario consists of two sides integration with each other, each need to describe its own part in it as an Integration Dependency.\nTherefore, if an integration with multiple types of systems need to be setup, this SHOULD be separated into distinct Integration Dependencies.\n\nAn integration dependency is also not meant to describe a bigger process.\nInstead it focuses on the technical necessaries to create an integration for one particular purpose.\n\nTo learn more about the concept, see [Integration Dependency](../concepts/integration-dependency).",
       "properties": {
         "ordId": {
           "type": "string",
@@ -4955,7 +4955,7 @@
       "title": "Group Type",
       "type": "object",
       "x-ums-type": "root",
-      "description": "A Group Type defines the semantics of [group assignments](#group).\nWhat the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).\n\nGroup Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).\n\nTo learn more about the concept, see [Group Concept Documentation](../../details/articles/grouping-and-bundling#Groups).",
+      "description": "A Group Type defines the semantics of [group assignments](#group).\nWhat the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).\n\nGroup Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).",
       "x-introduced-in-version": "1.9.0",
       "properties": {
         "groupTypeId": {
@@ -5001,7 +5001,7 @@
       "title": "Group",
       "type": "object",
       "x-ums-type": "root",
-      "description": "Group (instance) that resources can be assigned to.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nTo learn more about the concept, see [Group Concept Documentation](../../details/articles/grouping-and-bundling#Groups).",
+      "description": "Group (instance) that resources can be assigned to.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).",
       "x-introduced-in-version": "1.9.0",
       "properties": {
         "groupId": {
