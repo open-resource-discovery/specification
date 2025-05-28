@@ -15,6 +15,9 @@
           "items": {
             "$ref": "#/definitions/V1DocumentDescription"
           }
+        },
+        "capabilities": {
+          "$ref": "#/definitions/V1Capabilities"
         }
       },
       "additionalProperties": false
@@ -56,6 +59,18 @@
         "url",
         "accessStrategies"
       ]
+    },
+    "V1Capabilities": {
+      "type": "object",
+      "title": "ORD V1 Capabilities",
+      "description": "List of capabilities that are supported by the ORD provider.",
+      "properties": {
+        "selector": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the ORD provider supports the optional [select parameter](../index.md#select-parameter) for retrieving the ORD config and ORD documents."
+        }
+      }
     },
     "AccessStrategy": {
       "type": "object",
@@ -130,7 +145,7 @@
     "$schema": {
       "type": "string",
       "format": "uri-reference",
-      "description": "Optional URL to the ORD document schema (defined as JSON Schema).\nIf given, this enables code intelligence and validation in supported editors (like VSCode) and tools.",
+      "description": "Optional URL to the ORD Configuration schema (defined as JSON Schema).\nIf given, this enables code intelligence and validation in supported editors (like VSCode) and tools.",
       "anyOf": [
         {
           "type": "string",

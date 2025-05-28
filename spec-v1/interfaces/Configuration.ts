@@ -9,7 +9,7 @@
  */
 export interface ORDConfiguration {
   /**
-   * Optional URL to the ORD document schema (defined as JSON Schema).
+   * Optional URL to the ORD Configuration schema (defined as JSON Schema).
    * If given, this enables code intelligence and validation in supported editors (like VSCode) and tools.
    */
   $schema?: (
@@ -41,6 +41,7 @@ export interface ORDV1Support {
    * For more details how to implement this correctly, please refer to the [ORD configuration endpoint](../index.md#ord-configuration-endpoint) section and the [considerations on the granularity of ORD documents](../index.md#considerations-on-the-granularity-of-ord-documents).
    */
   documents?: ORDV1DocumentDescription[];
+  capabilities?: ORDV1Capabilities;
 }
 /**
  * Describes an [ORD Document](../index.md#ord-document) that is available for pull transport consumption.
@@ -107,4 +108,14 @@ export interface AccessStrategy {
    * MUST only be provided if `type` is set to `custom`.
    */
   customDescription?: string;
+}
+/**
+ * List of capabilities that are supported by the ORD provider.
+ */
+export interface ORDV1Capabilities {
+  /**
+   * Whether the ORD provider supports the optional [select parameter](../index.md#select-parameter) for retrieving the ORD config and ORD documents.
+   */
+  selector?: boolean;
+  [k: string]: any | undefined;
 }

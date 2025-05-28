@@ -388,6 +388,10 @@ spec:
       propertyBased: true
       managedByProperty: 'successors_ID'
       description: "The successor resource(s).\n\nMUST be a valid reference to an ORD ID.\n\nIf the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.\nIf `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`."
+    - propertyName: 'exposedEntityTypes'
+      relatedTypeName: 'ExposedEntityType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of [entity types](#entity-type) that are exposed by the resource.\n\nThis replaces `entityTypeMappings`. If both is given, the `exposedEntityTypes` wins.\n\nMUST be a valid reference to an [EntityType](#entity-type) ORD ID."
     - propertyName: 'extensible'
       relatedTypeName: 'Extensible'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

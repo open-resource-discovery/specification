@@ -70,6 +70,7 @@ API Resource,responsible,false,string
 API Resource,supportedUseCases,false,array<string>
 API Resource,usage,false,string
 API Resource,entityTypeMappings,false,array<EntityTypeMapping>
+API Resource,exposedEntityTypes,false,array<ExposedEntityType>
 API Resource,apiResourceLinks,false,array<APIEventResourceLink>
 API Resource,links,false,array<Link>
 API Resource,extensible,false,Extensible
@@ -111,6 +112,7 @@ Event Resource,customImplementationStandardDescription,false,string
 Event Resource,compatibleWith,false,array<string>
 Event Resource,responsible,false,string
 Event Resource,entityTypeMappings,false,array<EntityTypeMapping>
+Event Resource,exposedEntityTypes,false,array<ExposedEntityType>
 Event Resource,eventResourceLinks,false,array<APIEventResourceLink>
 Event Resource,links,false,array<Link>
 Event Resource,extensible,false,Extensible
@@ -336,9 +338,10 @@ API Model Selector (OData),type,true,string
 API Model Selector (OData),entitySetName,true,string
 API Model Selector (JSON Pointer),type,true,string
 API Model Selector (JSON Pointer),jsonPointer,true,string
-Related Entity Type,ordId,true,string
 Entity Type Target (ORD ID),ordId,true,string
 Entity Type Target (Correlation ID),correlationId,true,string
+Related Entity Type,ordId,true,string
+Exposed Entity Type,ordId,true,string
 Tombstone,ordId,false,string
 Tombstone,groupId,false,string
 Tombstone,groupTypeId,false,string
