@@ -91,6 +91,7 @@ See [ApiResource interface](../interfaces/document.md#api-resource).
   ApiResource *-- "0..*" ChangelogEntry : changelogEntries
   ApiResource *-- "0..*" ApiResourceDefinition : resourceDefinitions
   ApiResource *-- "0..*" EntityTypeMapping : entityTypeMappings
+  ApiResource *-- "0..*" ExposedEntityType : exposedEntityTypes
   ApiResource *-- "0..*" APIEventResourceLink : apiResourceLinks
   ApiResource *-- "0..*" Link : links
   ApiResource *-- "0..1" Extensible : extensible
@@ -105,6 +106,7 @@ See [ApiResource interface](../interfaces/document.md#api-resource).
   click ChangelogEntry href "#changelogentry" "Go to ChangelogEntry"
   click ApiResourceDefinition href "#apiresourcedefinition" "Go to ApiResourceDefinition"
   click EntityTypeMapping href "#entitytypemapping" "Go to EntityTypeMapping"
+  click ExposedEntityType href "#exposedentitytype" "Go to ExposedEntityType"
   click APIEventResourceLink href "#apieventresourcelink" "Go to APIEventResourceLink"
   click Link href "#link" "Go to Link"
   click Extensible href "#extensible" "Go to Extensible"
@@ -128,6 +130,7 @@ See [EventResource interface](../interfaces/document.md#event-resource).
   EventResource *-- "0..*" ChangelogEntry : changelogEntries
   EventResource *-- "0..*" EventResourceDefinition : resourceDefinitions
   EventResource *-- "0..*" EntityTypeMapping : entityTypeMappings
+  EventResource *-- "0..*" ExposedEntityType : exposedEntityTypes
   EventResource *-- "0..*" APIEventResourceLink : eventResourceLinks
   EventResource *-- "0..*" Link : links
   EventResource *-- "0..1" Extensible : extensible
@@ -142,6 +145,7 @@ See [EventResource interface](../interfaces/document.md#event-resource).
   click ChangelogEntry href "#changelogentry" "Go to ChangelogEntry"
   click EventResourceDefinition href "#eventresourcedefinition" "Go to EventResourceDefinition"
   click EntityTypeMapping href "#entitytypemapping" "Go to EntityTypeMapping"
+  click ExposedEntityType href "#exposedentitytype" "Go to ExposedEntityType"
   click APIEventResourceLink href "#apieventresourcelink" "Go to APIEventResourceLink"
   click Link href "#link" "Go to Link"
   click Extensible href "#extensible" "Go to Extensible"
@@ -168,8 +172,9 @@ See [EntityType interface](../interfaces/document.md#entity-type).
   EntityType *-- "0..1" DocumentationLabels : documentationLabels
   DataProduct --> "0..*" EntityType : entityTypes
   Capability --> "0..*" EntityType : relatedEntityTypes
-  RelatedEntityType --> "1" EntityType : ordId
   EntityTypeOrdIdTarget --> "1" EntityType : ordId
+  RelatedEntityType --> "1" EntityType : ordId
+  ExposedEntityType --> "1" EntityType : ordId
   click EntityType href "#entitytype" "Go to EntityType"
   click Package href "#package" "Go to Package"
   click Group href "#group" "Go to Group"
@@ -183,6 +188,7 @@ See [EntityType interface](../interfaces/document.md#entity-type).
   click DataProduct href "#dataproduct" "Go to DataProduct"
   click Capability href "#capability" "Go to Capability"
   click EntityTypeOrdIdTarget href "#entitytypeordidtarget" "Go to EntityTypeOrdIdTarget"
+  click ExposedEntityType href "#exposedentitytype" "Go to ExposedEntityType"
   ```
   
 
@@ -755,19 +761,6 @@ See [ApiModelSelectorJsonPointer interface](../interfaces/document.md#api-model-
   ```
   
 
-## RelatedEntityType
-See [RelatedEntityType interface](../interfaces/document.md#related-entity-type).
-  ```mermaid
-  classDiagram
-  class RelatedEntityType
-  style RelatedEntityType stroke:#333,stroke-width:3px
-  EntityType *-- "0..*" RelatedEntityType : relatedEntityTypes
-  RelatedEntityType --> "1" EntityType : ordId
-  click EntityType href "#entitytype" "Go to EntityType"
-  click RelatedEntityType href "#relatedentitytype" "Go to RelatedEntityType"
-  ```
-  
-
 ## EntityTypeOrdIdTarget
 See [EntityTypeOrdIdTarget interface](../interfaces/document.md#entity-type-target-(ord-id)).
   ```mermaid
@@ -790,6 +783,35 @@ See [EntityTypeCorrelationIdTarget interface](../interfaces/document.md#entity-t
   style EntityTypeCorrelationIdTarget stroke:#333,stroke-width:3px
   EntityTypeMapping *-- "1" EntityTypeCorrelationIdTarget : entityTypeTargets
   click EntityTypeMapping href "#entitytypemapping" "Go to EntityTypeMapping"
+  ```
+  
+
+## RelatedEntityType
+See [RelatedEntityType interface](../interfaces/document.md#related-entity-type).
+  ```mermaid
+  classDiagram
+  class RelatedEntityType
+  style RelatedEntityType stroke:#333,stroke-width:3px
+  EntityType *-- "0..*" RelatedEntityType : relatedEntityTypes
+  RelatedEntityType --> "1" EntityType : ordId
+  click EntityType href "#entitytype" "Go to EntityType"
+  click RelatedEntityType href "#relatedentitytype" "Go to RelatedEntityType"
+  ```
+  
+
+## ExposedEntityType
+See [ExposedEntityType interface](../interfaces/document.md#exposed-entity-type).
+  ```mermaid
+  classDiagram
+  class ExposedEntityType
+  style ExposedEntityType stroke:#333,stroke-width:3px
+  ApiResource *-- "0..*" ExposedEntityType : exposedEntityTypes
+  EventResource *-- "0..*" ExposedEntityType : exposedEntityTypes
+  ExposedEntityType --> "1" EntityType : ordId
+  click ApiResource href "#apiresource" "Go to ApiResource"
+  click EventResource href "#eventresource" "Go to EventResource"
+  click ExposedEntityType href "#exposedentitytype" "Go to ExposedEntityType"
+  click EntityType href "#entitytype" "Go to EntityType"
   ```
   
 

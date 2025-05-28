@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.10",
+  "openResourceDiscovery": "1.11",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1"],
   "products": [
@@ -59,6 +59,11 @@
           "ordId": "sap.foo:consumptionBundle:noAuth:v1"
         }
       ],
+      "exposedEntityTypes": [
+        {
+          "ordId": "sap.foo:entityType:Constellation:v1"
+        }
+      ],
       "partOfGroups": ["sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue"],
       "apiProtocol": "rest",
       "apiResourceLinks": [
@@ -110,7 +115,12 @@
       ],
       "extensible": {
         "supported": "no"
-      }
+      },
+      "exposedEntityTypes": [
+        {
+          "ordId": "sap.foo:entityType:ExampleDomainObject:v1"
+        }
+      ]
     },
     {
       "ordId": "sap.foo:eventResource:BillingDocumentEvents:v1",
@@ -136,7 +146,12 @@
       ],
       "extensible": {
         "supported": "no"
-      }
+      },
+      "exposedEntityTypes": [
+        {
+          "ordId": "sap.foo:entityType:ExampleDomainObject:v1"
+        }
+      ]
     }
   ],
   "capabilities": [
@@ -162,7 +177,36 @@
             }
           ]
         }
-      ]
+      ],
+      "relatedEntityTypes": ["sap.foo:entityType:Constellation:v1"]
+    }
+  ],
+  "entityTypes": [
+    {
+      "ordId": "sap.foo:entityType:Constellation:v1",
+      "localId": "Constellation",
+      "level": "aggregate",
+      "title": "Constellation",
+      "shortDescription": "A group of stars forming a recognizable pattern",
+      "description": "A constellation is a group of stars that forms a recognizable pattern in the night sky. The pattern is usually named after a mythological figure, animal, or object.",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "visibility": "public",
+      "releaseStatus": "active"
+    },
+    {
+      "ordId": "sap.foo:entityType:ExampleDomainObject:v1",
+      "localId": "ExampleDomainObject",
+      "level": "aggregate",
+      "title": "Example Domain Object",
+      "shortDescription": "An example domain object for demonstration purposes",
+      "description": "This is an example domain object used to demonstrate the capabilities of the Open Resource Discovery standard. It is not meant to represent any real-world entity.",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "visibility": "public",
+      "releaseStatus": "active"
     }
   ],
   "groups": [

@@ -7,7 +7,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.10",
+  "openResourceDiscovery": "1.11",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1"],
   "products": [
@@ -66,6 +66,11 @@
           "ordId": "sap.foo:consumptionBundle:noAuth:v1"
         }
       ],
+      "exposedEntityTypes": [
+        {
+          "ordId": "sap.foo:entityType:Constellation:v1"
+        }
+      ],
       "partOfGroups": ["sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue"],
       "apiProtocol": "rest",
       "apiResourceLinks": [
@@ -117,7 +122,12 @@
       ],
       "extensible": {
         "supported": "no"
-      }
+      },
+      "exposedEntityTypes": [
+        {
+          "ordId": "sap.foo:entityType:ExampleDomainObject:v1"
+        }
+      ]
     },
     {
       "ordId": "sap.foo:eventResource:BillingDocumentEvents:v1",
@@ -143,7 +153,12 @@
       ],
       "extensible": {
         "supported": "no"
-      }
+      },
+      "exposedEntityTypes": [
+        {
+          "ordId": "sap.foo:entityType:ExampleDomainObject:v1"
+        }
+      ]
     }
   ],
   "capabilities": [
@@ -169,7 +184,36 @@
             }
           ]
         }
-      ]
+      ],
+      "relatedEntityTypes": ["sap.foo:entityType:Constellation:v1"]
+    }
+  ],
+  "entityTypes": [
+    {
+      "ordId": "sap.foo:entityType:Constellation:v1",
+      "localId": "Constellation",
+      "level": "aggregate",
+      "title": "Constellation",
+      "shortDescription": "A group of stars forming a recognizable pattern",
+      "description": "A constellation is a group of stars that forms a recognizable pattern in the night sky. The pattern is usually named after a mythological figure, animal, or object.",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "visibility": "public",
+      "releaseStatus": "active"
+    },
+    {
+      "ordId": "sap.foo:entityType:ExampleDomainObject:v1",
+      "localId": "ExampleDomainObject",
+      "level": "aggregate",
+      "title": "Example Domain Object",
+      "shortDescription": "An example domain object for demonstration purposes",
+      "description": "This is an example domain object used to demonstrate the capabilities of the Open Resource Discovery standard. It is not meant to represent any real-world entity.",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "visibility": "public",
+      "releaseStatus": "active"
     }
   ],
   "groups": [
@@ -202,7 +246,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.10",
+  "openResourceDiscovery": "1.11",
   "policyLevels": ["sap:core:v1"],
   "products": [
     {
@@ -525,26 +569,12 @@
       ],
       "implementationStandard": "sap:hana-cloud-sql:v1",
       "supportedUseCases": ["data-federation"],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:RetailTransaction:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:RetailTransaction:v1"
         },
         {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/components/schemas/RETAIL/TRANSACTIONS"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "correlationId": "sap.csnexposure:entity:RetailTransaction"
-            }
-          ]
+          "ordId": "sap.xref:entityType:RetailTransaction:v1"
         }
       ],
       "apiResourceLinks": [
@@ -616,26 +646,9 @@
           ]
         }
       ],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
-        },
-        {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/components/schemas/CUSTOMER-ORDER/CUSTOMER_ORDER_HEADER"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "correlationId": "sap.csnexposure:entity:CustomerOrder"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "extensible": {
@@ -673,26 +686,9 @@
       ],
       "implementationStandard": "sap:hana-cloud-sql:v1",
       "supportedUseCases": ["data-federation"],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
-        },
-        {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/components/schemas/CUSTOMER-ORDER/ORDER-HEADER"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "correlationId": "sap.csnexposure:entity:CustomerOrder"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "apiResourceLinks": [
@@ -742,15 +738,12 @@
       "apiProtocol": "delta-sharing",
       "implementationStandard": "sap:delta-sharing:v1",
       "supportedUseCases": ["streaming"],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
+
       "apiResourceLinks": [
         {
           "type": "api-documentation",
@@ -809,26 +802,9 @@
         }
       ],
       "supportedUseCases": ["snapshot"],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
-        },
-        {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/components/schemas/CUSTOMER-ORDER/ORDER-HEADER"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "correlationId": "sap.csnexposure:entity:CustomerOrder"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "apiResourceLinks": [
@@ -878,13 +854,9 @@
           "mediaType": "application/json"
         }
       ],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "extensible": {
@@ -908,13 +880,9 @@
           "mediaType": "application/json"
         }
       ],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "extensible": {
@@ -938,13 +906,9 @@
           "mediaType": "application/json"
         }
       ],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "extensible": {
@@ -956,193 +920,6 @@
 
 ```
 
-### ./examples/document-entity-type-mapping.json
-
-> Source Code: [./examples/document-entity-type-mapping.json](https://github.com/open-resource-discovery/specification/blob/main/examples/document-entity-type-mapping.json)
-
-```yaml
-{
-  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.10",
-  "description": "This Example demonstrates the Entity Type Mapping feature",
-  "policyLevels": ["sap:core:v1"],
-  "apiResources": [
-    {
-      "ordId": "sap.s4:apiResource:SomeODataAPI:v2",
-      "title": "Some OData API",
-      "shortDescription": "...",
-      "description": "Some long description",
-      "version": "2.1.2",
-      "systemInstanceAware": true,
-      "releaseStatus": "active",
-      "lastUpdate": "2023-08-03T10:14:26.941Z",
-      "apiProtocol": "odata-v4",
-      "partOfPackage": "sap.s4:package:SAPS4HANACloud:v1",
-      "partOfConsumptionBundles": [
-        {
-          "ordId": "sap.foo:consumptionBundle:someAuth:v1"
-        }
-      ],
-      "visibility": "public",
-      "extensible": {
-        "supported": "no"
-      },
-      "resourceDefinitions": [
-        {
-          "type": "openapi-v3",
-          "mediaType": "text/yaml",
-          "url": "/definitions/catalog.svc/APIContent.APIs('API_RFQ_PROCESS_SRV')/$value?type=yaml",
-          "accessStrategies": [
-            {
-              "type": "open"
-            }
-          ]
-        },
-        {
-          "type": "edmx",
-          "mediaType": "application/xml",
-          "url": "/definitions/catalog.svc/APIContent.APIs('API_RFQ_PROCESS_SRV')/$value?type=edmx",
-          "accessStrategies": [
-            {
-              "type": "open"
-            }
-          ]
-        }
-      ],
-      "entryPoints": ["/API_RFQ_PROCESS_SRV/v1"],
-      "entityTypeMappings": [
-        {
-          "apiModelSelectors": [
-            {
-              "type": "odata",
-              "entitySetName": "A_OperationalAcctgDocItemCube"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:WorkforcePerson:v1"
-            },
-            {
-              "correlationId": "sap.s4:csnEntity:WorkForcePersonView_v1"
-            },
-            {
-              "correlationId": "sap.s4:csnEntity:sap.odm.JobDetails_v1"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "ordId": "sap.foo:apiResource:PLAIN_REST:v1",
-      "title": "Some plain REST API",
-      "shortDescription": "...",
-      "description": "Some long description",
-      "version": "1.1.2",
-      "apiProtocol": "rest",
-      "partOfPackage": "sap.foo:package:SomePackage:v1",
-      "partOfConsumptionBundles": [
-        {
-          "ordId": "sap.foo:consumptionBundle:someAuth:v1"
-        }
-      ],
-      "releaseStatus": "active",
-      "lastUpdate": "2023-08-03T10:14:26.941Z",
-      "visibility": "public",
-      "extensible": {
-        "supported": "no"
-      },
-      "resourceDefinitions": [
-        {
-          "type": "openapi-v3",
-          "mediaType": "text/yaml",
-          "url": "/definitions/catalog.svc/APIContent.APIs('API_RFQ_PROCESS_SRV')/$value?type=yaml",
-          "accessStrategies": [
-            {
-              "type": "open"
-            }
-          ]
-        }
-      ],
-      "entryPoints": ["/path/to/api/v1"],
-      "entityTypeMappings": [
-        {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/objects/schemas/WorkForcePersonRead"
-            },
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/objects/schemas/WorkForcePersonUpdate"
-            },
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/objects/schemas/WorkForcePersonCreate"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:WorkforcePerson:v1"
-            },
-            {
-              "correlationId": "sap.s4:csnEntity:WorkForcePersonView_v1"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "eventResources": [
-    {
-      "ordId": "sap.foo.bar:eventResource:ExampleEventResource:v1",
-      "title": "Event Example",
-      "shortDescription": "Simple Event Example",
-      "description": "Example long description",
-      "version": "1.2.1",
-      "lastUpdate": "2023-08-03T10:14:26.941Z",
-      "releaseStatus": "beta",
-      "partOfPackage": "sap.s4:package:SAPS4HANACloudBusinessEvents:v1",
-      "visibility": "public",
-      "extensible": {
-        "supported": "no"
-      },
-      "resourceDefinitions": [
-        {
-          "type": "asyncapi-v2",
-          "mediaType": "application/json",
-          "url": "/definitions/asyncApi2.json",
-          "accessStrategies": [
-            {
-              "type": "open"
-            }
-          ]
-        }
-      ],
-      "entityTypeMappings": [
-        {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/components/messages/sap_odm_finance_costobject_CostCenter_Created_v1/payload"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CostCenter:v1"
-            },
-            {
-              "correlationId": "sap.s4:csnEntity:CostCenter_v1"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "entityTypes": []
-}
-
-```
-
 ### ./examples/document-entity-types.json
 
 > Source Code: [./examples/document-entity-types.json](https://github.com/open-resource-discovery/specification/blob/main/examples/document-entity-types.json)
@@ -1150,7 +927,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.10",
+  "openResourceDiscovery": "1.11",
   "description": "Example for entity types as they will be exposed by ODM",
   "policyLevels": ["sap:core:v1"],
   "packages": [
@@ -1196,7 +973,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.10",
+  "openResourceDiscovery": "1.11",
   "description": "This ORD Document example contains more special examples, like custom SAP protocols",
   "policyLevels": ["sap:core:v1"],
   "consumptionBundles": [

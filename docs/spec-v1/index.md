@@ -3,7 +3,7 @@ sidebar_position: 0
 title: ORD Specification
 ---
 
-# Open Resource Discovery Specification 1.10
+# Open Resource Discovery Specification 1.11
 
 ## Notational Conventions
 
@@ -380,17 +380,45 @@ For more details, please see the [considerations on the ORD content](#considerat
 
 The rules for [ORD Provider Cache Handling](#ord-provider-cache-handling) apply.
 
+##### Select Parameter
+
+The ORD Provider API MAY implement an optional `?select` HTTP query parameter, that the ORD Aggregator can pass to reduce the result set of the ORD Config and ORD Documents requests / aggregation run.
+
+The availability of this feature MUST be announced through the [ORD Configuration](#ord-configuration-endpoint), via `capabilities.select` set to `true`.
+
+If supported, the [ORD Configuration](#ord-configuration-endpoint) and the [ORD Document](#ord-document-endpoint) endpoint gain an optional query parameter `?select="` where the value MUST be a valid [ORD ID](#ord-id).
+When given, the ORD Provider only returns the requested ORD Resource, but MAY also add related ORD information that need to be updated in the same transaction (the decision is on the provider).
+
+The Aggregator will follow the regular ORD crawling run by invoking the ORD Configuration endpoint and from there the ORD documents and attached resource definitions.
+There is no reason to pass the parameters to the resource definition requests.
+The aggregator is allowed to send a select request on the config endpoint, but if the select capability is not advertised MUST NOT proceed with select requests on the ORD documents.
+
+```http
+GET http://example.com/.well-known/open-resource-discovery?select=sap.foo:dataProduct:astronomy:v1
+Content-Type: application/json
+```
+
+The resulting ORD config MUST only return the ORD document(s) that contain the results from the select query (to avoid unnecessary requests). The aggregator will then request each listed document with the same `?select` parameter:
+
+If the given ORD ID is invalid he ORD provider MUST return 500, if it cannot be found, the ORD provider MUST return 404, see [error handling](#error-handling).
+
+```http
+GET http://example.com/ord/document-1?select=sap.foo:dataProduct:astronomy:v1
+Content-Type: application/json
+```
+
+The response contains the requested resource and MAY include related ORD information that need to be updated together, e.g. when a data product is requested, it could also return its output ports API resources. Returning Tombstones is out of scope.
+
 #### Consumer Perspective
 
 An [ORD consumer](#ord-consumer) MUST first consult the [ORD configuration endpoint](#ord-configuration-endpoint).
-The response will indicate the supported version(s) of ORD, the URLs of the exposed [ORD documents](#ord-document), and additional information that has implications for accessing the information.
-For all rules and more information, please consult the [configuration interfaces](interfaces/configuration.md).
+The response will indicate the supported version(s) of ORD, the URLs of the exposed [ORD documents](#ord-document), and additional information that has implications for accessing the information. The ORD documents may contain links to metadata definitions and how to access them.
 
 The most important rules are:
 
 - The consumer MUST NOT make any fixed assumptions on the ORD document endpoint paths.
-- The consumer MUST download the [ORD document](#ord-document) via an HTTP GET request.
-- It is RECOMMENDED to add `Accept: application/json` to all request headers.
+- The consumer MUST download the [ORD configuration](#ord-configuration-endpoint), [ORD documents](#ord-document) and the referenced metadata definitions via HTTP GET requests.
+- It is RECOMMENDED to add `Accept: application/json` to all request headers when requesting ORD config and documents.
 - The rules for [ORD Consumer Cache Handling](#ord-consumer-cache-handling) apply.
 
 #### Cache Handling

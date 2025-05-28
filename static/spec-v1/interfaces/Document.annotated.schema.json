@@ -83,7 +83,12 @@
         "policyLevel": {
           "type": "string",
           "description": "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "none",
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
@@ -378,7 +383,7 @@
         "runtimeRestriction": {
           "x-introduced-in-version": "1.8.0",
           "x-feature-status": "alpha",
-          "description": "If provided, all resources that are part of this package can only run on the listed runtime.\n\nMUST be a valid [System Namespace](../index.md#system-namespace).",
+          "description": "If provided, all resources that are part of this package can only run on the listed runtime.\n\nMUST be a valid [system namespace](../index.md#system-namespace).",
           "type": "string",
           "pattern": "^[a-z0-9]+(?:[.][a-z0-9]+){1}$",
           "examples": [
@@ -885,7 +890,12 @@
         "apiProtocol": {
           "type": "string",
           "description": "API Protocol including the protocol version if applicable",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "odata-v2",
               "description": "[OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.\nAn API Resource definition of type `edmx` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `sap-csn-interop-effective-v1` or `custom`."
@@ -947,7 +957,12 @@
         "implementationStandard": {
           "type": "string",
           "description": "Declares this API to be a valid implementation of an externally standardized API contract, sub-protocol or protocol variant.\n\nAll APIs that share the same implementation standard MAY be treated the same or similar by a consumer client.",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customImplementationStandardDescription` SHOULD be provided."
+            },
             {
               "const": "sap:ord-document-api:v1",
               "description": "API follows the Open Resource Discovery v1 [Document API](../index.md#ord-provider-api) contract."
@@ -1038,7 +1053,12 @@
           "x-feature-status": "beta",
           "items": {
             "type": "string",
-            "oneOf": [
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+                "description": "Any valid [Specification ID](../index.md#specification-id)."
+              },
               {
                 "const": "data-federation",
                 "description": "Resources are designed to support [data federation](https://en.wikipedia.org/wiki/Federated_database_system). This goes beyond plain queries, but typically allowing connections on the data base level, in the context of a business user.\nAs consumers will directly access data, performance of the system must support these use cases."
@@ -1084,10 +1104,35 @@
         "entityTypeMappings": {
           "type": "array",
           "x-introduced-in-version": "1.6.0",
+          "x-deprecated-in-version": "1.11.0",
+          "x-deprecated": "Use the simplified `exposedEntityTypes` instead.",
           "description": "Describes mappings between the API Models of the described resource to the underlying, conceptual entity types.",
           "items": {
             "$ref": "#/definitions/EntityTypeMapping"
           }
+        },
+        "exposedEntityTypes": {
+          "type": "array",
+          "x-introduced-in-version": "1.11.0",
+          "description": "Optional list of [entity types](#entity-type) that are exposed by the resource.\n\nThis replaces `entityTypeMappings`. If both is given, the `exposedEntityTypes` wins.\n\nMUST be a valid reference to an [EntityType](#entity-type) ORD ID.",
+          "items": {
+            "$ref": "#/definitions/ExposedEntityType"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.odm:entityType:WorkforcePerson:v1"
+              }
+            ],
+            [
+              {
+                "ordId": "sap.sm:entityType:PurchaseOrderItem:v1"
+              },
+              {
+                "ordId": "sap.sm:entityType:BusinessPartner:v1"
+              }
+            ]
+          ]
         },
         "apiResourceLinks": {
           "type": "array",
@@ -1313,7 +1358,12 @@
         "policyLevel": {
           "type": "string",
           "description": "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "none",
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
@@ -1650,7 +1700,17 @@
         "implementationStandard": {
           "type": "string",
           "description": "Declares this EventResource to be a valid implementation of a standardized or shared contract.\n\nAll implementations of the same implementation standard MAY be treated the same by a consumer.\nHowever, there MAY be differences in the access strategy, and compatible customizations by the implementer.\nThe implementation standard MAY define the role of the implementor (producer, consumer, both) and how it is determined.\n\nAs of now, only custom implementation standards are supported.",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [API Resource ORD ID](../index.md#api-resource_ordid).\n\nRECOMMENDED to use if the contract is published via ORD and has an ORD ID."
+            },
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customImplementationStandardDescription` SHOULD be provided."
+            },
             {
               "const": "custom",
               "description": "If chosen, a custom implementation standard MUST be provided via `customImplementationStandard` and SHOULD be described via `customImplementationStandardDescription`"
@@ -1702,10 +1762,35 @@
         "entityTypeMappings": {
           "type": "array",
           "x-introduced-in-version": "1.6.0",
+          "x-deprecated-in-version": "1.11.0",
+          "x-deprecated": "Use the simplified `exposedEntityTypes` instead.",
           "description": "Describes mappings between the API Models of the described resource to the underlying, conceptual entity types.",
           "items": {
             "$ref": "#/definitions/EntityTypeMapping"
           }
+        },
+        "exposedEntityTypes": {
+          "type": "array",
+          "x-introduced-in-version": "1.11.0",
+          "description": "Optional list of [entity types](#entity-type) that are exposed by the resource.\n\nThis replaces `entityTypeMappings`. If both is given, the `exposedEntityTypes` wins.\n\nMUST be a valid reference to an [EntityType](#entity-type) ORD ID.",
+          "items": {
+            "$ref": "#/definitions/ExposedEntityType"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.odm:entityType:WorkforcePerson:v1"
+              }
+            ],
+            [
+              {
+                "ordId": "sap.sm:entityType:PurchaseOrderItem:v1"
+              },
+              {
+                "ordId": "sap.sm:entityType:BusinessPartner:v1"
+              }
+            ]
+          ]
         },
         "eventResourceLinks": {
           "type": "array",
@@ -1932,7 +2017,12 @@
         "policyLevel": {
           "type": "string",
           "description": "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "none",
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
@@ -2248,7 +2338,7 @@
         },
         "level": {
           "type": "string",
-          "description": "Defining the abstraction level of the entity type using the DDD terminology.\n\nIn Domain-Driven Design, there is a concept of entities and aggregates.\nThere are root entities which may contain further sub entities by composition.\nThe complete “package” is then called an aggregate, which gets its name and identity from the root entity.\nAn aggregate is a cluster of domain objects that can be treated as a single unit.\nThe root is the entity that is referenced from outside the aggregate. There must be only one root per aggregate.\nThe root ensures the integrity of the aggregate. A sub entity is any other non-root entity in the aggregate.\n\nSource, see [Martin Fowler on DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html)",
+          "description": "Defining the abstraction level of the entity type using the DDD terminology.\n\nIn Domain-Driven Design, there is a concept of entities and aggregates.\nThere are root entities which may contain further sub entities by composition.\nThe complete \"package\" is then called an aggregate, which gets its name and identity from the root entity.\nAn aggregate is a cluster of domain objects that can be treated as a single unit.\nThe root is the entity that is referenced from outside the aggregate. There must be only one root per aggregate.\nThe root ensures the integrity of the aggregate. A sub entity is any other non-root entity in the aggregate.\n\nSource, see [Martin Fowler on DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html)",
           "oneOf": [
             {
               "const": "aggregate",
@@ -2273,7 +2363,14 @@
           "description": "States that this Entity Type is related to another Entity Type.\n\nUsually this happens if there are similar conceptual entity types across different namespaces.",
           "items": {
             "$ref": "#/definitions/RelatedEntityType"
-          }
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.odm:entityType:WorkforcePerson:v1"
+              }
+            ]
+          ]
         },
         "links": {
           "type": "array",
@@ -2312,7 +2409,12 @@
         "policyLevel": {
           "type": "string",
           "description": "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "none",
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
@@ -2677,9 +2779,14 @@
           ]
         },
         "category": {
-          "description": "Category of the data-set within data product. Based on its definition, a data product is a “data set” - which can include on the values below.\nBased on the type some properties of a data product may become optional/mandatory.\nConsumers might still do analytics on business object like data products.",
+          "description": "Category of the data-set within data product. Based on its definition, a data product is a \"data set\" - which can include on the values below.\nBased on the type some properties of a data product may become optional/mandatory.\nConsumers might still do analytics on business object like data products.",
           "type": "string",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "business-object",
               "description": "Business Objects: master data, transaction data"
@@ -2995,7 +3102,12 @@
           "x-feature-status": "beta",
           "type": "string",
           "description": "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "none",
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
@@ -3139,7 +3251,12 @@
         "type": {
           "description": "Type of the API Resource Definition\nIf \"custom\" is chosen, a customType MUST be provided",
           "type": "string",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "openapi-v2",
               "description": "[OpenAPI 2 / Swagger 2](https://swagger.io/specification/v2/) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.\nThe `mediaType` MUST be be set to either `application/json` or `text/yaml`."
@@ -3271,7 +3388,12 @@
         "type": {
           "description": "Type of the event resource definition",
           "type": "string",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "asyncapi-v2",
               "description": "[AsyncAPI 2](https://www.asyncapi.com/docs/specifications/2.0.0) API definition for events.\nThe SAP Event Catalog Specification also falls under this category, as it is a valid AsyncAPI definition."
@@ -3509,14 +3631,19 @@
         "type": {
           "description": "Type of the Capability",
           "type": "string",
-          "oneOf": [
+          "anyOf": [
             {
-              "const": "custom",
-              "description": "If chosen, `customType` MUST be provided."
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
               "const": "sap.mdo:mdi-capability:v1",
               "description": "Capability for SAP Master Data Integration (MDI).\n\nFor the capability definitions: `type` MUST ONLY be set to `sap.mdo:mdi-capability-definition:v1`."
+            },
+            {
+              "const": "custom",
+              "description": "If chosen, `customType` MUST be provided."
             }
           ],
           "examples": [
@@ -3659,7 +3786,7 @@
         },
         "relatedEntityTypes": {
           "type": "array",
-          "description": "Optional list of related EntityType Resources.\n\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.",
+          "description": "Optional list of related EntityType Resources.\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
@@ -3749,14 +3876,19 @@
         "type": {
           "description": "Type of the capability resource definition",
           "type": "string",
-          "oneOf": [
+          "anyOf": [
             {
-              "const": "custom",
-              "description": "If chosen, a custom type MUST be provided via `customType`"
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
               "const": "sap.mdo:mdi-capability-definition:v1",
               "description": "Specification for describing master data integration capabilities for Master Data Orchestration (MDO).\n\nThe `mediaType` MUST be set to `application/json`.\nThe capability `type` MUST be set to `sap.mdo:mdi-capability:v1`."
+            },
+            {
+              "const": "custom",
+              "description": "If chosen, a custom type MUST be provided via `customType`"
             }
           ],
           "examples": [
@@ -4423,7 +4555,12 @@
       "properties": {
         "type": {
           "type": "string",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "terms-of-service",
               "description": "Link to human-readable terms of service / use documentation."
@@ -4499,7 +4636,12 @@
         "type": {
           "type": "string",
           "description": "See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html#webapiactions)",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "api-documentation",
               "description": "Link to human-readable documentation describing the API or event resource in more detail."
@@ -4576,7 +4718,12 @@
       "properties": {
         "type": {
           "type": "string",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
             {
               "const": "payment",
               "description": "Links to a resource detailing pricing details of the data product."
@@ -4823,7 +4970,12 @@
         "type": {
           "type": "string",
           "description": "Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
+            },
             {
               "const": "open",
               "description": "The resource definitions are openly accessible and not protected via authentication or authorization.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/open)."
@@ -4892,7 +5044,12 @@
         "type": {
           "type": "string",
           "description": "The type of credential exchange strategy.",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
+            },
             {
               "const": "custom",
               "description": "If chosen, `customType` MUST be provided.\nIf chosen, `customDescription` SHOULD be provided."
@@ -5121,9 +5278,11 @@
     },
     "EntityTypeMapping": {
       "title": "Entity Type Mapping",
-      "x-introduced-in-version": "1.6.0",
-      "x-ums-type": "custom",
       "type": "object",
+      "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecated": "Use the simplified `relatedEntityTypes` instead.",
+      "x-ums-type": "custom",
       "description": "An API or Event resource may optionally define its `entityTypeMappings`.\nThis is used to map and correlate the API models to the underlying, conceptual **entity types**.\n\nIf the mapping from API resource to entity types is not defined,\ncertain use-cases that rely on this explicit connection will not be possible.\n\nThis mapping is meant to be rather fine granular.\nTherefore, the mapping needs to be done on basis of one of the referenced resource definitions,\nas only there we know the details and the actual contents of the API Model of the API resource.\n\nFor the various resource definition formats the selection of API models may need to be expressed differently.\nAs a consequence, there are different types of selectors that are specialized toward certain resource definition formats.\n\nThe target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)\nor to an [ORD ID](../../spec-v1/#ord-id) of an entity type.\nIt is assumed that the entity types are described in more detail or on a different abstraction level via metadata.\nWhen the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.\nThis can be determined either by the namespace of the correlation ID,\nor through a defined and known `implementationStandard` that can resolve the `localId` fragment of the correlation ID .\n\nAt SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.\nTo indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).\n\nODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the\ncorresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.",
       "properties": {
         "apiModelSelectors": {
@@ -5164,6 +5323,8 @@
     "ApiModelSelectorOData": {
       "title": "API Model Selector (OData)",
       "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecated": "Use the simplified `relatedEntityTypes` instead.\n\nFor creating a mapping from API model to Entity Types, consider using the [Entity Relationship](https://sap.github.io/csn-interop-specification/annotations/entity-relationship) annotations.",
       "x-ums-type": "custom",
       "type": "object",
       "description": "API Model Selector for OData, using entity set names for the selection.\n\nMUST only be used if the API Resource provides an API Resource Definition of type `edmx`.",
@@ -5199,6 +5360,8 @@
     "ApiModelSelectorJsonPointer": {
       "title": "API Model Selector (JSON Pointer)",
       "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecated": "Use the simplified `relatedEntityTypes` instead.\n\nFor creating a mapping from API model to Entity Types, consider using the [Entity Relationship](https://sap.github.io/csn-interop-specification/annotations/entity-relationship) annotations.",
       "x-ums-type": "custom",
       "type": "object",
       "description": "Generic API Model Selector for JSON / YAML based resource definitions.\nIt uses a [JSON Pointer](https://datatracker.ietf.org/doc/html/rfc6901) that points to the\nentity type description within the resource definition.\n\nThe JSON Pointer always to refer to the structure of the document as originally provided, before further post-processing like resolving $ref properties.\n\nMUST only be used if the API Resource provides an API Resource Definition of media type `application/json` or `text/yaml`.",
@@ -5233,6 +5396,56 @@
         }
       ]
     },
+    "EntityTypeOrdIdTarget": {
+      "title": "Entity Type Target (ORD ID)",
+      "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecated": "Use the simplified `relatedEntityTypes` instead.",
+      "x-ums-type": "custom",
+      "type": "object",
+      "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.",
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "maxLength": 255,
+          "examples": [
+            "sap.odm:entityType:BusinessPartner:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/EntityType/ordId"
+          ]
+        }
+      },
+      "required": [
+        "ordId"
+      ],
+      "additionalProperties": false
+    },
+    "EntityTypeCorrelationIdTarget": {
+      "title": "Entity Type Target (Correlation ID)",
+      "type": "object",
+      "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).",
+      "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecated": "Use the simplified `relatedEntityTypes` instead.",
+      "x-ums-type": "custom",
+      "properties": {
+        "correlationId": {
+          "type": "string",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
+          "maxLength": 255,
+          "examples": [
+            "sap.csnexposure:entity:Attachment"
+          ]
+        }
+      },
+      "required": [
+        "correlationId"
+      ],
+      "additionalProperties": false
+    },
     "RelatedEntityType": {
       "title": "Related Entity Type",
       "x-introduced-in-version": "1.9.0",
@@ -5258,12 +5471,12 @@
       ],
       "additionalProperties": false
     },
-    "EntityTypeOrdIdTarget": {
-      "title": "Entity Type Target (ORD ID)",
-      "x-introduced-in-version": "1.6.0",
-      "x-ums-type": "custom",
+    "ExposedEntityType": {
+      "title": "Exposed Entity Type",
       "type": "object",
-      "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.",
+      "description": "Defines which Entity Type is exposed through  (via its ORD ID).",
+      "x-introduced-in-version": "1.11.0",
+      "x-ums-type": "embedded",
       "properties": {
         "ordId": {
           "type": "string",
@@ -5271,7 +5484,7 @@
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
-            "sap.odm:entityType:BusinessPartner:v1"
+            "sap.s4.sot:entityType:BusinessPartner:v1"
           ],
           "x-association-target": [
             "#/definitions/EntityType/ordId"
@@ -5280,27 +5493,6 @@
       },
       "required": [
         "ordId"
-      ],
-      "additionalProperties": false
-    },
-    "EntityTypeCorrelationIdTarget": {
-      "title": "Entity Type Target (Correlation ID)",
-      "x-introduced-in-version": "1.6.0",
-      "x-ums-type": "custom",
-      "type": "object",
-      "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).",
-      "properties": {
-        "correlationId": {
-          "type": "string",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
-          "maxLength": 255,
-          "examples": [
-            "sap.csnexposure:entity:Attachment"
-          ]
-        }
-      },
-      "required": [
-        "correlationId"
       ],
       "additionalProperties": false
     },
@@ -5596,10 +5788,11 @@
         "1.7",
         "1.8",
         "1.9",
-        "1.10"
+        "1.10",
+        "1.11"
       ],
       "examples": [
-        "1.10"
+        "1.11"
       ]
     },
     "description": {
@@ -5625,7 +5818,12 @@
     "policyLevel": {
       "type": "string",
       "description": "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n",
-      "oneOf": [
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "description": "Any valid [Specification ID](../index.md#specification-id)."
+        },
         {
           "const": "none",
           "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."

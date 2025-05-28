@@ -10,8 +10,19 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.11.0]
+
+### Added
+
+- Added simplified `exposedEntityTypes` to API and event resource, in favor of now deprecated `entityTypeMappings`
+- Added optional ORD Provider API `?select` parameter to reduce result set of ORD aggregation run
+  - Support of the select subset of the select parameter is indicated through ORD Config `capabilities.select`.
+
 ### Changed
 
+- Deprecated `entityTypeMappings` in favor of simplified `exposedEntityTypes`
+- Changed most enums to be "extensible" by default, usually by allowing strings, following a Spec ID regexp pattern
+  - This will lead to less need to update the validator and could deprecate `custom` types
 - Changed the structure of the ORD page
   - Details section removed, merged content either into spec itself (concepts) or new help area
   - Moved FAQ into help, some detail article became FAQ articles

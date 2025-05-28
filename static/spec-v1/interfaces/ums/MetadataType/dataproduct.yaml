@@ -115,7 +115,7 @@ spec:
       mandatory: true
     - name: 'category'
       type: 'string'
-      description: "Category of the data-set within data product. Based on its definition, a data product is a “data set” - which can include on the values below.\nBased on the type some properties of a data product may become optional/mandatory.\nConsumers might still do analytics on business object like data products."
+      description: "Category of the data-set within data product. Based on its definition, a data product is a \"data set\" - which can include on the values below.\nBased on the type some properties of a data product may become optional/mandatory.\nConsumers might still do analytics on business object like data products."
       mandatory: true
     - name: 'entityTypes_ID'
       type: 'guid'

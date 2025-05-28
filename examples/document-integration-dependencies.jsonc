@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.10",
+  "openResourceDiscovery": "1.11",
   "integrationDependencies": [
     // This is an example for a simple Integration Dependency
     // that only expresses that only declares that some events are needed together
@@ -118,11 +118,11 @@
               "minVersion": "1.3.0",
             },
             {
-              "ordId": "sap.cic:apiResource:RetailTransactionSQL:v2",
-            },
-          ],
-        },
-      ],
-    },
-  ],
+              "ordId": "sap.cic:apiResource:RetailTransactionSQL:v2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

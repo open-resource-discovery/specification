@@ -113,7 +113,7 @@ spec:
       description: "List of industry tags.\nNo special characters are allowed except `-`, `_`, `.`, `/` and ` `.\n\n`industry` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
     - name: 'runtimeRestriction'
       type: 'string'
-      description: "If provided, all resources that are part of this package can only run on the listed runtime.\n\nMUST be a valid [System Namespace](../index.md#system-namespace)."
+      description: "If provided, all resources that are part of this package can only run on the listed runtime.\n\nMUST be a valid [system namespace](../index.md#system-namespace)."
       constraints:
         pattern: '^[a-z0-9]+(?:[.][a-z0-9]+){1}$'
     - name: 'tags'

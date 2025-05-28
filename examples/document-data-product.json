@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.10",
+  "openResourceDiscovery": "1.11",
   "policyLevels": ["sap:core:v1"],
   "products": [
     {
@@ -323,26 +323,12 @@
       ],
       "implementationStandard": "sap:hana-cloud-sql:v1",
       "supportedUseCases": ["data-federation"],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:RetailTransaction:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:RetailTransaction:v1"
         },
         {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/components/schemas/RETAIL/TRANSACTIONS"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "correlationId": "sap.csnexposure:entity:RetailTransaction"
-            }
-          ]
+          "ordId": "sap.xref:entityType:RetailTransaction:v1"
         }
       ],
       "apiResourceLinks": [
@@ -414,26 +400,9 @@
           ]
         }
       ],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
-        },
-        {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/components/schemas/CUSTOMER-ORDER/CUSTOMER_ORDER_HEADER"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "correlationId": "sap.csnexposure:entity:CustomerOrder"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "extensible": {
@@ -471,26 +440,9 @@
       ],
       "implementationStandard": "sap:hana-cloud-sql:v1",
       "supportedUseCases": ["data-federation"],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
-        },
-        {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/components/schemas/CUSTOMER-ORDER/ORDER-HEADER"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "correlationId": "sap.csnexposure:entity:CustomerOrder"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "apiResourceLinks": [
@@ -540,15 +492,12 @@
       "apiProtocol": "delta-sharing",
       "implementationStandard": "sap:delta-sharing:v1",
       "supportedUseCases": ["streaming"],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
+
       "apiResourceLinks": [
         {
           "type": "api-documentation",
@@ -607,26 +556,9 @@
         }
       ],
       "supportedUseCases": ["snapshot"],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
-        },
-        {
-          "apiModelSelectors": [
-            {
-              "type": "json-pointer",
-              "jsonPointer": "#/components/schemas/CUSTOMER-ORDER/ORDER-HEADER"
-            }
-          ],
-          "entityTypeTargets": [
-            {
-              "correlationId": "sap.csnexposure:entity:CustomerOrder"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "apiResourceLinks": [
@@ -676,13 +608,9 @@
           "mediaType": "application/json"
         }
       ],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "extensible": {
@@ -706,13 +634,9 @@
           "mediaType": "application/json"
         }
       ],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "extensible": {
@@ -736,13 +660,9 @@
           "mediaType": "application/json"
         }
       ],
-      "entityTypeMappings": [
+      "exposedEntityTypes": [
         {
-          "entityTypeTargets": [
-            {
-              "ordId": "sap.odm:entityType:CustomerOrder:v1"
-            }
-          ]
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
       "extensible": {

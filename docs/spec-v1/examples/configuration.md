@@ -31,7 +31,10 @@
         ],
         "systemInstanceAware": true
       }
-    ]
+    ],
+    "capabilities": {
+      "selector": true
+    }
   }
 }
 

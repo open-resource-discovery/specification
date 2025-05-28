@@ -98,7 +98,7 @@ spec:
     - name: 'relatedEntityTypes_ID'
       type: 'guid'
       array: true
-      description: "Optional list of related EntityType Resources.\n\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID."
+      description: "Optional list of related EntityType Resources.\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID."
     - name: 'definitions'
       type: 'custom'
       customTypeName: 'CapabilityDefinition'
@@ -219,6 +219,6 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: true
       managedByProperty: 'relatedEntityTypes_ID'
-      description: "Optional list of related EntityType Resources.\n\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID."
+      description: "Optional list of related EntityType Resources.\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID."
       reverseRelation:
         relationPropertyName: 'capabilities'

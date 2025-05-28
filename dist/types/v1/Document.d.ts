@@ -17,7 +17,7 @@ export interface ORDDocument {
     /**
      * Version of the Open Resource Discovery specification that is used to describe this document.
      */
-    openResourceDiscovery: "1.0" | "1.1" | "1.2" | "1.3" | "1.4" | "1.5" | "1.6" | "1.7" | "1.8" | "1.9" | "1.10";
+    openResourceDiscovery: "1.0" | "1.1" | "1.2" | "1.3" | "1.4" | "1.5" | "1.6" | "1.7" | "1.8" | "1.9" | "1.10" | "1.11";
     /**
      * Optional description of the ORD document itself.
      * Please note that this information is NOT further processed or considered by an ORD aggregator.
@@ -35,7 +35,7 @@ export interface ORDDocument {
      * The policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
      *
      */
-    policyLevel?: "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom";
+    policyLevel?: (string | "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom") & string;
     /**
      * If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.
      * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
@@ -498,7 +498,7 @@ export interface APIResource {
     /**
      * API Protocol including the protocol version if applicable
      */
-    apiProtocol: "odata-v2" | "odata-v4" | "rest" | "graphql" | "delta-sharing" | "soap-inbound" | "soap-outbound" | "websocket" | "sap-rfc" | "sap-sql-api-v1" | "sap-ina-api-v1";
+    apiProtocol: (string | "odata-v2" | "odata-v4" | "rest" | "graphql" | "delta-sharing" | "soap-inbound" | "soap-outbound" | "websocket" | "sap-rfc" | "sap-sql-api-v1" | "sap-ina-api-v1") & string;
     /**
      * List of available machine-readable definitions, which describe the resource or capability in detail.
      *
@@ -515,7 +515,7 @@ export interface APIResource {
      *
      * All APIs that share the same implementation standard MAY be treated the same or similar by a consumer client.
      */
-    implementationStandard?: "sap:ord-document-api:v1" | "cff:open-service-broker:v2" | "sap:csn-exposure:v1" | "sap:ape-api:v1" | "sap:cdi-api:v1" | "sap:delta-sharing:v1" | "sap:hana-cloud-sql:v1" | "sap.dp:data-subscription-api:v1" | "custom";
+    implementationStandard?: (string | "sap:ord-document-api:v1" | "cff:open-service-broker:v2" | "sap:csn-exposure:v1" | "sap:ape-api:v1" | "sap:cdi-api:v1" | "sap:delta-sharing:v1" | "sap:hana-cloud-sql:v1" | "sap.dp:data-subscription-api:v1" | "custom") & string;
     /**
      * If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.
      *
@@ -555,12 +555,20 @@ export interface APIResource {
      *
      * If no array is defined, it is assumed that this information is not provided.
      */
-    supportedUseCases?: ("data-federation" | "snapshot" | "incremental" | "streaming")[];
+    supportedUseCases?: ((string | "data-federation" | "snapshot" | "incremental" | "streaming") & string)[];
     usage?: Usage;
     /**
      * Describes mappings between the API Models of the described resource to the underlying, conceptual entity types.
      */
     entityTypeMappings?: EntityTypeMapping[];
+    /**
+     * Optional list of [entity types](#entity-type) that are exposed by the resource.
+     *
+     * This replaces `entityTypeMappings`. If both is given, the `exposedEntityTypes` wins.
+     *
+     * MUST be a valid reference to an [EntityType](#entity-type) ORD ID.
+     */
+    exposedEntityTypes?: ExposedEntityType[];
     /**
      * Links with semantic meaning that are specific to API Resources.
      */
@@ -610,7 +618,7 @@ export interface APIResource {
      * The policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
      *
      */
-    policyLevel?: "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom";
+    policyLevel?: (string | "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom") & string;
     /**
      * If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.
      * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
@@ -703,7 +711,7 @@ export interface APIResourceDefinition {
      * Type of the API Resource Definition
      * If "custom" is chosen, a customType MUST be provided
      */
-    type: "openapi-v2" | "openapi-v3" | "raml-v1" | "edmx" | "csdl-json" | "graphql-sdl" | "wsdl-v1" | "wsdl-v2" | "sap-rfc-metadata-v1" | "sap-sql-api-definition-v1" | "sap-csn-interop-effective-v1" | "custom";
+    type: (string | "openapi-v2" | "openapi-v3" | "raml-v1" | "edmx" | "csdl-json" | "graphql-sdl" | "wsdl-v1" | "wsdl-v2" | "sap-rfc-metadata-v1" | "sap-sql-api-definition-v1" | "sap-csn-interop-effective-v1" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -749,7 +757,7 @@ export interface AccessStrategy {
     /**
      * Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.
      */
-    type: "open" | "sap:oauth-client-credentials:v1" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom";
+    type: (string | "open" | "sap:oauth-client-credentials:v1" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -882,6 +890,17 @@ export interface EntityTypeTargetCorrelationID {
     correlationId: string;
 }
 /**
+ * Defines which Entity Type is exposed through  (via its ORD ID).
+ */
+export interface ExposedEntityType {
+    /**
+     * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+     *
+     * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+     */
+    ordId: string;
+}
+/**
  * Links with specific semantic meaning that are related to API or event resources.
  *
  * If a generic [Link](#link) can also be expressed via an API / Event Resource Link, the latter MUST be chosen.
@@ -890,7 +909,7 @@ export interface APIAndEventResourceLink {
     /**
      * See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html#webapiactions)
      */
-    type: "api-documentation" | "authentication" | "client-registration" | "console" | "payment" | "service-level-agreement" | "support" | "custom";
+    type: (string | "api-documentation" | "authentication" | "client-registration" | "console" | "payment" | "service-level-agreement" | "support" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -1170,7 +1189,7 @@ export interface EventResource {
      *
      * As of now, only custom implementation standards are supported.
      */
-    implementationStandard?: "custom";
+    implementationStandard?: (string | "custom") & string;
     /**
      * If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.
      *
@@ -1204,6 +1223,14 @@ export interface EventResource {
      * Describes mappings between the API Models of the described resource to the underlying, conceptual entity types.
      */
     entityTypeMappings?: EntityTypeMapping[];
+    /**
+     * Optional list of [entity types](#entity-type) that are exposed by the resource.
+     *
+     * This replaces `entityTypeMappings`. If both is given, the `exposedEntityTypes` wins.
+     *
+     * MUST be a valid reference to an [EntityType](#entity-type) ORD ID.
+     */
+    exposedEntityTypes?: ExposedEntityType[];
     /**
      * Links with semantic meaning that are specific to event resources.
      *
@@ -1253,7 +1280,7 @@ export interface EventResource {
      * The policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
      *
      */
-    policyLevel?: "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom";
+    policyLevel?: (string | "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom") & string;
     /**
      * If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.
      * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
@@ -1289,7 +1316,7 @@ export interface EventResourceDefinition {
     /**
      * Type of the event resource definition
      */
-    type: "asyncapi-v2" | "sap-csn-interop-effective-v1" | "custom";
+    type: (string | "asyncapi-v2" | "sap-csn-interop-effective-v1" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -1486,7 +1513,7 @@ export interface EntityType {
      *
      * In Domain-Driven Design, there is a concept of entities and aggregates.
      * There are root entities which may contain further sub entities by composition.
-     * The complete “package” is then called an aggregate, which gets its name and identity from the root entity.
+     * The complete "package" is then called an aggregate, which gets its name and identity from the root entity.
      * An aggregate is a cluster of domain objects that can be treated as a single unit.
      * The root is the entity that is referenced from outside the aggregate. There must be only one root per aggregate.
      * The root ensures the integrity of the aggregate. A sub entity is any other non-root entity in the aggregate.
@@ -1521,7 +1548,7 @@ export interface EntityType {
      * The policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
      *
      */
-    policyLevel?: "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom";
+    policyLevel?: (string | "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom") & string;
     /**
      * If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.
      * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
@@ -1596,7 +1623,7 @@ export interface Capability {
     /**
      * Type of the Capability
      */
-    type: "custom" | "sap.mdo:mdi-capability:v1";
+    type: (string | "sap.mdo:mdi-capability:v1" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -1706,7 +1733,6 @@ export interface Capability {
     minSystemVersion?: string;
     /**
      * Optional list of related EntityType Resources.
-     *
      * MUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.
      */
     relatedEntityTypes?: string[];
@@ -1751,7 +1777,7 @@ export interface CapabilityDefinition {
     /**
      * Type of the capability resource definition
      */
-    type: "custom" | "sap.mdo:mdi-capability-definition:v1";
+    type: (string | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -1974,11 +2000,11 @@ export interface DataProduct {
      */
     type: "primary" | "derived";
     /**
-     * Category of the data-set within data product. Based on its definition, a data product is a “data set” - which can include on the values below.
+     * Category of the data-set within data product. Based on its definition, a data product is a "data set" - which can include on the values below.
      * Based on the type some properties of a data product may become optional/mandatory.
      * Consumers might still do analytics on business object like data products.
      */
-    category: "business-object" | "analytical" | "other";
+    category: (string | "business-object" | "analytical" | "other") & string;
     /**
      * Aggregated list of entity types that are at least partially exposed by the data product. Detailed mapping can be found on the output port schema level.
      */
@@ -2057,7 +2083,7 @@ export interface DataProduct {
      * The policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
      *
      */
-    policyLevel?: "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom";
+    policyLevel?: (string | "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom") & string;
     /**
      * If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.
      * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
@@ -2119,7 +2145,7 @@ export interface DataProductOutputPort {
  * If a generic [Link](#link) can also be expressed via Data Product Link, the latter MUST be chosen.
  */
 export interface DataProductLink {
-    type: "payment" | "terms-of-use" | "service-level-agreement" | "support" | "custom";
+    type: (string | "payment" | "terms-of-use" | "service-level-agreement" | "support" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -2607,7 +2633,7 @@ export interface Package {
      * The policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
      *
      */
-    policyLevel?: "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom";
+    policyLevel?: (string | "none" | "sap:base:v1" | "sap:core:v1" | "sap:dp:v1" | "custom") & string;
     /**
      * If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.
      * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
@@ -2695,7 +2721,7 @@ export interface Package {
     /**
      * If provided, all resources that are part of this package can only run on the listed runtime.
      *
-     * MUST be a valid [System Namespace](../index.md#system-namespace).
+     * MUST be a valid [system namespace](../index.md#system-namespace).
      */
     runtimeRestriction?: string;
     /**
@@ -2714,7 +2740,7 @@ export interface Package {
  * If a generic [Link](#link) can also be expressed via a Package Link, the latter MUST be chosen.
  */
 export interface PackageLink {
-    type: "terms-of-service" | "license" | "client-registration" | "payment" | "sandbox" | "service-level-agreement" | "support" | "custom";
+    type: (string | "terms-of-service" | "license" | "client-registration" | "payment" | "sandbox" | "service-level-agreement" | "support" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -2861,7 +2887,7 @@ export interface CredentialExchangeStrategy {
     /**
      * The type of credential exchange strategy.
      */
-    type: "custom";
+    type: (string | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
