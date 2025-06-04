@@ -1401,8 +1401,8 @@ components:
         compatibleWith:
           type: array
           description: |-
-            Declares this API is a compatible implementation of the referenced API contract(s).
-            This is also sometimes known as [Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface).
+            A reference to the interface (API contract) that this API implements.
+            Serves as a declaration of compatible implementation of API contract, effectively functioning as an "implementationOf" relationship.
 
             MUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.
 
