@@ -938,7 +938,7 @@
         },
         "compatibleWith": {
           "type": "array",
-          "description": "Declares this API is a compatible implementation of the referenced API contract(s).\nThis is also sometimes known as [Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface).\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.",
+          "description": "A reference to the interface (API contract) that this API implements.\nServes as a declaration of compatible implementation of API contract, effectively functioning as an \"implementationOf\" relationship.\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$"
