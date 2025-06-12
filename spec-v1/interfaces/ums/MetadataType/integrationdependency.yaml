@@ -81,7 +81,7 @@ spec:
       mandatory: true
     - name: 'sunsetDate'
       type: 'string'
-      description: "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
+      description: "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
     - name: 'successors_ID'
       type: 'guid'
       array: true
