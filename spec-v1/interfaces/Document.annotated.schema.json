@@ -789,16 +789,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -817,7 +821,7 @@
         "deprecationDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2020-12-08T15:47:04+00:00"
           ]
@@ -825,7 +829,7 @@
         "sunsetDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -1625,16 +1629,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -1653,7 +1661,7 @@
         "deprecationDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2020-12-08T15:47:04+00:00"
           ]
@@ -1661,7 +1669,7 @@
         "sunsetDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -2274,16 +2282,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -2293,7 +2305,7 @@
         "deprecationDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2020-12-08T15:47:04+00:00"
           ]
@@ -2301,7 +2313,7 @@
         "sunsetDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -2653,16 +2665,20 @@
           "description": "The `releaseStatus` specifies the stability towards incompatible changes in the future.\nIn the context of data products, it it covers only properties on the data product level.\nAPIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -2721,7 +2737,7 @@
           "x-feature-status": "beta",
           "type": "string",
           "format": "date-time",
-          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2020-12-08T15:47:04+00:00"
           ]
@@ -2730,7 +2746,7 @@
           "x-feature-status": "beta",
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -3759,16 +3775,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -4101,16 +4121,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -4120,7 +4144,7 @@
         "sunsetDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -4459,16 +4483,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -5500,7 +5528,7 @@
       "type": "object",
       "title": "Tombstone",
       "x-ums-type": "ignore",
-      "description": "A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned.\nThis MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.\n\nExactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.\n\nIt MUST be kept sufficiently long so that all ORD aggregators can learn about the tombstone.\nAfter that it MAY be removed.",
+      "description": "A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.\nThis MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.\n\nExactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.\n\nThe tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.",
       "properties": {
         "ordId": {
           "type": "string",
@@ -5698,16 +5726,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -5970,7 +6002,7 @@
     },
     "tombstones": {
       "type": "array",
-      "description": "List of ORD information (resources or taxonomy) that have been \"tombstoned\"/removed.\nThis MUST be indicated explicitly, so that ORD aggregators and consumers can learn about the removal.\n\nA tombstone entry MAY be removed after a grace period of 31 days.",
+      "description": "List of ORD information (resources or taxonomy) that have been \"tombstoned\", indicating removal or archival.\nThis MUST be indicated explicitly, just removing the ORD information itself is not sufficient.\n\nA tombstone entry MAY be removed after a grace period of 31 days.",
       "items": {
         "$ref": "#/definitions/Tombstone"
       }
