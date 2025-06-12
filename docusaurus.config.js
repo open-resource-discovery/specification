@@ -120,6 +120,10 @@ const config = {
                 to: "spec-v1/interfaces/document",
               },
               {
+                label: "ORD Concepts",
+                to: "spec-v1/concepts",
+              },
+              {
                 label: "ORD Provider API",
                 to: "spec-v1/interfaces/document-api",
               },
@@ -211,7 +215,7 @@ const config = {
             to: "https://github.com/open-resource-discovery/specification",
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} SAP SE. Made available under Apache License 2.0.\n\n This site is hosted by GitHub Pages. Please see the GitHub Privacy Statement for any information how GitHub processes your personal data.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Linux Foundation. Made available under Apache License 2.0.\n\n This site is hosted by GitHub Pages. Please see the GitHub Privacy Statement for any information how GitHub processes your personal data.`,
       },
     }),
 };

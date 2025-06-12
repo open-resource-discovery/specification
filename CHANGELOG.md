@@ -10,18 +10,6 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
-### Added
-
-- Added new `releaseStatus` of `sunset`
-  - If a resource has been sunset, previously it was required to also remove the resource description in ORD. Now it's allowed to keep it, but with `sunset` status. A tombstone entry MUST be provided on top.
-
-### Changed
-
-- Clarifications on Versioning and Lifecycle
-  - Deprecation of resource does not imply a planned sunset, this is only implied once a `sunsetDate` has been set.
-  - Deprecation of resource is RECOMMENDED once a successor resource exists.
-  - Tombstone indicates either removal or archival of the entry for an ORD aggregator (implementation choice)
-
 ## [1.11.0]
 
 ### Added

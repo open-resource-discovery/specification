@@ -22,7 +22,7 @@ If you have feedback, questions or problems, please create a [GitHub issue](http
 
 ## Ownership and Governance
 
-The ORD development is driven by SAP internally, but public feedback, suggestions and contributions are welcome.
+The ORD standard is governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/), a neutral nonprofit organization that supports the development of open-source projects and standards. See [ORD steering committee](https://github.com/open-resource-discovery/steering#readme).
 
 ## Resources
 

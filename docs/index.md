@@ -27,7 +27,7 @@ All of the described artifacts can share relationships, taxonomy and [grouping](
 Technically, ORD allows applications and services to **self-describe** their resources and capabilities (e.g. ports and adapters).
 To adopt ORD, an application implements a read-only entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl relevant metadata.
 
-> ℹ ORD is an [open source](https://github.com/open-resource-discovery/specification) (Apache 2 license) standard governed through the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/). Originally it was developed and open-sourced by [SAP](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/).
+> ℹ The ORD standard is governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/), a neutral nonprofit organization that supports the development of open-source projects and standards. See [ORD steering committee](https://github.com/open-resource-discovery/steering#readme).
 
 > The ORD interface (JSON Schema) and TypeScript types are available via npm: [`@sap/open-resource-discovery`](https://www.npmjs.com/package/@sap/open-resource-discovery).
 
