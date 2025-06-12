@@ -957,21 +957,23 @@ A Specification ID MUST match the following [regular expression](https://en.wiki
 The `version` expresses the complete/full resource version number of an [ORD resource](#def-ord-resource) or [ORD taxonomy](#def-ord-taxonomy).
 
 It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and therefore express minor and patch changes that don't lead to incompatible changes.
-The version SHOULD be changed when the resource or the resource definition changed in any way.
+The version SHOULD be changed when the resource or the resource definition changed in any way relevant to consumers.
 If (potentially runtime) customization/extension leads to changes in the resource definition, a build number SHOULD be added or incremented to indicate that this change happened.
 
 When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-If the resource definition also contains a version number, it MUST be equal to the resource `version`.
+If the resource definition also contains a version number, it SHOULD be in sync with the resource `version` (if possible).
 
 When a breaking change is introduced, the rules on constructing [ORD IDs](#ord-id) will ensure that the old version of the resource is not replaced.
-The new version will lead to the creation of a separate and new resource.
-If the old resource is subject to API Deprecation rules, it MUST only be removed after the deprecation period.
-The `releaseStatus` MUST be used to indicate `deprecated` or `decommissioned`.
+The new version will lead to the creation of a separate and new successor resource (see `successor` property).
 
-When an ORD resource has been removed (decommissioned) or an ORD taxonomy is no longer used, it:
+Once a newer resource succeeds an older resource, the old resource SHOULD be deprecated via `releaseStatus` set to `deprecated`.
 
-- MUST be removed from ORD
-- Its removal MUST be indicated by explicitly setting a [`Tombstone`](interfaces/document.md#document.tombstones).
+However, a deprecation does not automatically imply a planned sunset of the resource, which is done separately via setting a `sunsetDate`.
+
+When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
+
+- MUST be removed from ORD or set the `releaseStatus` to `sunset`.
+- MUST explicitly set a [`Tombstone`](interfaces/document.md#document.tombstones).
 
 ![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.svg "IDs, Version and Lifecycle")
 

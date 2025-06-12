@@ -102,8 +102,8 @@ export interface ORDDocument {
      */
     groupTypes?: GroupType[];
     /**
-     * List of ORD information (resources or taxonomy) that have been "tombstoned"/removed.
-     * This MUST be indicated explicitly, so that ORD aggregators and consumers can learn about the removal.
+     * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
+     * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
      *
      * A tombstone entry MAY be removed after a grace period of 31 days.
      */
@@ -415,7 +415,7 @@ export interface APIResource {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
      * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -436,15 +436,13 @@ export interface APIResource {
     minSystemVersion?: string;
     /**
      * The deprecation date defines when the resource has been set as deprecated.
-     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-     *
-     * If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
      *
      * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
      */
     deprecationDate?: string;
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -681,7 +679,7 @@ export interface ChangelogEntry {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Date of change, without time or timezone information.
      *
@@ -1119,7 +1117,7 @@ export interface EventResource {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
      * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1140,15 +1138,13 @@ export interface EventResource {
     minSystemVersion?: string;
     /**
      * The deprecation date defines when the resource has been set as deprecated.
-     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-     *
-     * If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
      *
      * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
      */
     deprecationDate?: string;
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -1476,18 +1472,16 @@ export interface EntityType {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * The deprecation date defines when the resource has been set as deprecated.
-     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-     *
-     * If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
      *
      * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
      */
     deprecationDate?: string;
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -1712,7 +1706,7 @@ export interface Capability {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
      * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1938,7 +1932,7 @@ export interface DataProduct {
      * In the context of data products, it it covers only properties on the data product level.
      * APIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
      * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1966,15 +1960,13 @@ export interface DataProduct {
     lifecycleStatus?: "inactive" | "provisioning" | "active" | "deprovisioning" | "active-with-errors" | "provisioning-error" | "deprovisioning-error";
     /**
      * The deprecation date defines when the resource has been set as deprecated.
-     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-     *
-     * If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
      *
      * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
      */
     deprecationDate?: string;
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -2288,9 +2280,9 @@ export interface IntegrationDependency {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -2981,13 +2973,12 @@ export interface GroupType {
     [k: string]: any | undefined;
 }
 /**
- * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned.
+ * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
  * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
  *
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *
- * It MUST be kept sufficiently long so that all ORD aggregators can learn about the tombstone.
- * After that it MAY be removed.
+ * The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
  */
 export interface Tombstone {
     /**
