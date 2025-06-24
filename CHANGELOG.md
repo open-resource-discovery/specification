@@ -10,6 +10,23 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.11.1]
+
+### Added
+
+- Added [MCP](https://modelcontextprotocol.io) as standardized API Resource `apiProtocol` option: `mcp`
+  - There is not yet an official standardized resource definition type yet unfortunately
+- Added `openapi-v3.1+` as new API Resource Definition type
+  - This is a new resource definition type as 3.1 is not backward compatible with 3.0. All upcoming 3.x versions will be backward compatible with 3.1, so they share the `3.1+` definition type.
+- Added new standardized enum values for `industry` and `lineOfBusiness`
+
+### Changed
+
+- Fixed regex for `customImplementationStandard` and `customType` to avoid versions with leadings zeroes:
+  - `:v00001` - not allowed
+  - `:v0` - allowed
+  - `:v1` - allowed
+
 ## [1.11.0]
 
 ### Added

@@ -403,7 +403,7 @@ export interface APIResource {
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -526,6 +526,7 @@ export interface APIResource {
     | "delta-sharing"
     | "soap-inbound"
     | "soap-outbound"
+    | "mcp"
     | "websocket"
     | "sap-rfc"
     | "sap-sql-api-v1"
@@ -651,6 +652,7 @@ export interface APIResource {
     | "Sales"
     | "Service"
     | "Sourcing and Procurement"
+    | "Strategy, Compliance, and Governance"
     | "Supply Chain"
     | "Sustainability"
     | "Metering"
@@ -668,15 +670,21 @@ export interface APIResource {
   industry?: ((
     | string
     | "Aerospace and Defense"
+    | "Agribusiness"
     | "Automotive"
     | "Banking"
     | "Chemicals"
+    | "Consumer Industries"
     | "Consumer Products"
     | "Defense and Security"
+    | "Discrete Industries"
+    | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Financial Services"
+    | "Future Cities"
     | "Healthcare"
-    | "Higher Education and Research"
     | "High Tech"
+    | "Higher Education and Research"
     | "Industrial Machinery and Components"
     | "Insurance"
     | "Life Sciences"
@@ -686,7 +694,9 @@ export interface APIResource {
     | "Oil and Gas"
     | "Professional Services"
     | "Public Sector"
+    | "Public Services"
     | "Retail"
+    | "Service Industries"
     | "Sports and Entertainment"
     | "Telecommunications"
     | "Travel and Transportation"
@@ -807,6 +817,7 @@ export interface APIResourceDefinition {
     | string
     | "openapi-v2"
     | "openapi-v3"
+    | "openapi-v3.1+"
     | "raml-v1"
     | "edmx"
     | "csdl-json"
@@ -1214,7 +1225,7 @@ export interface EventResource {
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -1394,6 +1405,7 @@ export interface EventResource {
     | "Sales"
     | "Service"
     | "Sourcing and Procurement"
+    | "Strategy, Compliance, and Governance"
     | "Supply Chain"
     | "Sustainability"
     | "Metering"
@@ -1411,15 +1423,21 @@ export interface EventResource {
   industry?: ((
     | string
     | "Aerospace and Defense"
+    | "Agribusiness"
     | "Automotive"
     | "Banking"
     | "Chemicals"
+    | "Consumer Industries"
     | "Consumer Products"
     | "Defense and Security"
+    | "Discrete Industries"
+    | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Financial Services"
+    | "Future Cities"
     | "Healthcare"
-    | "Higher Education and Research"
     | "High Tech"
+    | "Higher Education and Research"
     | "Industrial Machinery and Components"
     | "Insurance"
     | "Life Sciences"
@@ -1429,7 +1447,9 @@ export interface EventResource {
     | "Oil and Gas"
     | "Professional Services"
     | "Public Sector"
+    | "Public Services"
     | "Retail"
+    | "Service Industries"
     | "Sports and Entertainment"
     | "Telecommunications"
     | "Travel and Transportation"
@@ -1618,7 +1638,7 @@ export interface EntityType {
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -1854,7 +1874,7 @@ export interface Capability {
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -2078,7 +2098,7 @@ export interface DataProduct {
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -2234,15 +2254,21 @@ export interface DataProduct {
   industry?: ((
     | string
     | "Aerospace and Defense"
+    | "Agribusiness"
     | "Automotive"
     | "Banking"
     | "Chemicals"
+    | "Consumer Industries"
     | "Consumer Products"
     | "Defense and Security"
+    | "Discrete Industries"
+    | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Financial Services"
+    | "Future Cities"
     | "Healthcare"
-    | "Higher Education and Research"
     | "High Tech"
+    | "Higher Education and Research"
     | "Industrial Machinery and Components"
     | "Insurance"
     | "Life Sciences"
@@ -2252,7 +2278,9 @@ export interface DataProduct {
     | "Oil and Gas"
     | "Professional Services"
     | "Public Sector"
+    | "Public Services"
     | "Retail"
+    | "Service Industries"
     | "Sports and Entertainment"
     | "Telecommunications"
     | "Travel and Transportation"
@@ -2278,6 +2306,7 @@ export interface DataProduct {
     | "Sales"
     | "Service"
     | "Sourcing and Procurement"
+    | "Strategy, Compliance, and Governance"
     | "Supply Chain"
     | "Sustainability"
     | "Metering"
@@ -2484,7 +2513,7 @@ export interface IntegrationDependency {
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -2842,7 +2871,7 @@ export interface Package {
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -2949,6 +2978,7 @@ export interface Package {
     | "Sales"
     | "Service"
     | "Sourcing and Procurement"
+    | "Strategy, Compliance, and Governance"
     | "Supply Chain"
     | "Sustainability"
     | "Metering"
@@ -2966,15 +2996,21 @@ export interface Package {
   industry?: ((
     | string
     | "Aerospace and Defense"
+    | "Agribusiness"
     | "Automotive"
     | "Banking"
     | "Chemicals"
+    | "Consumer Industries"
     | "Consumer Products"
     | "Defense and Security"
+    | "Discrete Industries"
+    | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Financial Services"
+    | "Future Cities"
     | "Healthcare"
-    | "Higher Education and Research"
     | "High Tech"
+    | "Higher Education and Research"
     | "Industrial Machinery and Components"
     | "Insurance"
     | "Life Sciences"
@@ -2984,7 +3020,9 @@ export interface Package {
     | "Oil and Gas"
     | "Professional Services"
     | "Public Sector"
+    | "Public Services"
     | "Retail"
+    | "Service Industries"
     | "Sports and Entertainment"
     | "Telecommunications"
     | "Travel and Transportation"
@@ -3110,7 +3148,7 @@ export interface ConsumptionBundle {
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.

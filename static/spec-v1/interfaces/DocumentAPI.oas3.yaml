@@ -448,7 +448,7 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
             When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
             If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
             The `version` MUST not be bumped for changes in extensions.
@@ -623,6 +623,8 @@ components:
               - enum:
                   - Sourcing and Procurement
               - enum:
+                  - Strategy, Compliance, and Governance
+              - enum:
                   - Supply Chain
               - enum:
                   - Sustainability
@@ -652,23 +654,35 @@ components:
               - enum:
                   - Aerospace and Defense
               - enum:
+                  - Agribusiness
+              - enum:
                   - Automotive
               - enum:
                   - Banking
               - enum:
                   - Chemicals
               - enum:
+                  - Consumer Industries
+              - enum:
                   - Consumer Products
               - enum:
                   - Defense and Security
               - enum:
+                  - Discrete Industries
+              - enum:
+                  - Energy and Natural Resources
+              - enum:
                   - Engineering Construction and Operations
+              - enum:
+                  - Financial Services
+              - enum:
+                  - Future Cities
               - enum:
                   - Healthcare
               - enum:
-                  - Higher Education and Research
-              - enum:
                   - High Tech
+              - enum:
+                  - Higher Education and Research
               - enum:
                   - Industrial Machinery and Components
               - enum:
@@ -688,7 +702,11 @@ components:
               - enum:
                   - Public Sector
               - enum:
+                  - Public Services
+              - enum:
                   - Retail
+              - enum:
+                  - Service Industries
               - enum:
                   - Sports and Entertainment
               - enum:
@@ -832,7 +850,7 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
             When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
             If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
             The `version` MUST not be bumped for changes in extensions.
@@ -1095,7 +1113,7 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
             When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
             If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
             The `version` MUST not be bumped for changes in extensions.
@@ -1245,21 +1263,21 @@ components:
             - description: |-
                 [OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.
                 An API Resource definition of type `edmx` MUST be provided.
-                For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `sap-csn-interop-effective-v1` or `custom`.
+                For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1` or `custom`.
               enum:
                 - odata-v2
             - description: |-
                 [OData Version 4](https://www.odata.org/documentation/) API.
                 An OData V4 API MUST be described via a Common Schema Definition Language (CSDL).
                 An API Resource definition of type `edmx` MUST be provided.
-                For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `sap-csn-interop-effective-v1` or `custom`.
+                For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1` or `custom`.
               enum:
                 - odata-v4
             - description: |-
                 Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.
                 Please not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.
                 An API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.
-                For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `raml-v1`, `sap-csn-interop-effective-v1` or `custom`.
+                For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1` or `custom`.
               enum:
                 - rest
             - description: |-
@@ -1286,6 +1304,13 @@ components:
                 For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2` or `custom`.
               enum:
                 - soap-outbound
+            - description: |-
+                [MCP](https://modelcontextprotocol.io) is an open protocol that standardizes how applications provide context to LLMs, based on JSON-RPC message format.
+                The protocol version is negotiated at runtime via the protocol itself.
+
+                Currently there is no standard API Resource definition type for MCP.
+              enum:
+                - mcp
             - description: |-
                 Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.
                 Since WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.
@@ -1386,7 +1411,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `implementationStandard` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap.xref:some-api-contract:v1
         customImplementationStandardDescription:
@@ -1536,6 +1561,8 @@ components:
               - enum:
                   - Sourcing and Procurement
               - enum:
+                  - Strategy, Compliance, and Governance
+              - enum:
                   - Supply Chain
               - enum:
                   - Sustainability
@@ -1565,23 +1592,35 @@ components:
               - enum:
                   - Aerospace and Defense
               - enum:
+                  - Agribusiness
+              - enum:
                   - Automotive
               - enum:
                   - Banking
               - enum:
                   - Chemicals
               - enum:
+                  - Consumer Industries
+              - enum:
                   - Consumer Products
               - enum:
                   - Defense and Security
               - enum:
+                  - Discrete Industries
+              - enum:
+                  - Energy and Natural Resources
+              - enum:
                   - Engineering Construction and Operations
+              - enum:
+                  - Financial Services
+              - enum:
+                  - Future Cities
               - enum:
                   - Healthcare
               - enum:
-                  - Higher Education and Research
-              - enum:
                   - High Tech
+              - enum:
+                  - Higher Education and Research
               - enum:
                   - Industrial Machinery and Components
               - enum:
@@ -1601,7 +1640,11 @@ components:
               - enum:
                   - Public Sector
               - enum:
+                  - Public Services
+              - enum:
                   - Retail
+              - enum:
+                  - Service Industries
               - enum:
                   - Sports and Entertainment
               - enum:
@@ -1878,7 +1921,7 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
             When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
             If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
             The `version` MUST not be bumped for changes in extensions.
@@ -2026,7 +2069,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `implementationStandard` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap.xref:some-event-contract:v1
         customImplementationStandardDescription:
@@ -2133,6 +2176,8 @@ components:
               - enum:
                   - Sourcing and Procurement
               - enum:
+                  - Strategy, Compliance, and Governance
+              - enum:
                   - Supply Chain
               - enum:
                   - Sustainability
@@ -2162,23 +2207,35 @@ components:
               - enum:
                   - Aerospace and Defense
               - enum:
+                  - Agribusiness
+              - enum:
                   - Automotive
               - enum:
                   - Banking
               - enum:
                   - Chemicals
               - enum:
+                  - Consumer Industries
+              - enum:
                   - Consumer Products
               - enum:
                   - Defense and Security
               - enum:
+                  - Discrete Industries
+              - enum:
+                  - Energy and Natural Resources
+              - enum:
                   - Engineering Construction and Operations
+              - enum:
+                  - Financial Services
+              - enum:
+                  - Future Cities
               - enum:
                   - Healthcare
               - enum:
-                  - Higher Education and Research
-              - enum:
                   - High Tech
+              - enum:
+                  - Higher Education and Research
               - enum:
                   - Industrial Machinery and Components
               - enum:
@@ -2198,7 +2255,11 @@ components:
               - enum:
                   - Public Sector
               - enum:
+                  - Public Services
+              - enum:
                   - Retail
+              - enum:
+                  - Service Industries
               - enum:
                   - Sports and Entertainment
               - enum:
@@ -2442,7 +2503,7 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
             When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
             If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
             The `version` MUST not be bumped for changes in extensions.
@@ -2784,7 +2845,7 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
             When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
             If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
             The `version` MUST not be bumped for changes in extensions.
@@ -2999,23 +3060,35 @@ components:
               - enum:
                   - Aerospace and Defense
               - enum:
+                  - Agribusiness
+              - enum:
                   - Automotive
               - enum:
                   - Banking
               - enum:
                   - Chemicals
               - enum:
+                  - Consumer Industries
+              - enum:
                   - Consumer Products
               - enum:
                   - Defense and Security
               - enum:
+                  - Discrete Industries
+              - enum:
+                  - Energy and Natural Resources
+              - enum:
                   - Engineering Construction and Operations
+              - enum:
+                  - Financial Services
+              - enum:
+                  - Future Cities
               - enum:
                   - Healthcare
               - enum:
-                  - Higher Education and Research
-              - enum:
                   - High Tech
+              - enum:
+                  - Higher Education and Research
               - enum:
                   - Industrial Machinery and Components
               - enum:
@@ -3035,7 +3108,11 @@ components:
               - enum:
                   - Public Sector
               - enum:
+                  - Public Services
+              - enum:
                   - Retail
+              - enum:
+                  - Service Industries
               - enum:
                   - Sports and Entertainment
               - enum:
@@ -3081,6 +3158,8 @@ components:
                   - Service
               - enum:
                   - Sourcing and Procurement
+              - enum:
+                  - Strategy, Compliance, and Governance
               - enum:
                   - Supply Chain
               - enum:
@@ -3277,15 +3356,22 @@ components:
               pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
               description: Any valid [Specification ID](../index.md#specification-id).
             - description: |-
-                [OpenAPI 2 / Swagger 2](https://swagger.io/specification/v2/) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.
+                [OpenAPI 2 / Swagger 2](https://spec.openapis.org/oas/v2.0.html) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.
                 The `mediaType` MUST be be set to either `application/json` or `text/yaml`.
               enum:
                 - openapi-v2
             - description: |-
-                [OpenAPI 3](https://swagger.io/specification/) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.
+                [OpenAPI 3.0.x](https://spec.openapis.org/oas/v3.0.4.html) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.
                 The `mediaType` MUST be be set to either `application/json` or `text/yaml`.
+
+                For OpenAPI 3.1+, `openapi-v3.1+` MUST be used instead, as it's not backward compatible with OpenAPI 3.0.
               enum:
                 - openapi-v3
+            - description: |-
+                [OpenAPI 3.1+](https://spec.openapis.org/oas/v3.1.1.html) (3.1 or greater, but below 4.x) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.
+                The `mediaType` MUST be be set to either `application/json` or `text/yaml`.
+              enum:
+                - openapi-v3.1+
             - description: |-
                 [RAML](https://raml.org/) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.
                 The `mediaType` MUST be be set to `text/yaml`.
@@ -3353,7 +3439,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `type` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap:custom-definition-format:v1
         mediaType:
@@ -3443,7 +3529,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `type` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap:custom-definition-format:v1
         mediaType:
@@ -3667,7 +3753,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `type` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap:custom-definition-format:v1
         title:
@@ -3739,7 +3825,7 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
             When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
             If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
             The `version` MUST not be bumped for changes in extensions.
@@ -3894,7 +3980,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `type` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap:custom-definition-format:v1
         mediaType:
@@ -4069,7 +4155,7 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
             When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
             If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
             The `version` MUST not be bumped for changes in extensions.
@@ -4535,7 +4621,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `type` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap:custom-definition-format:v1
         url:
@@ -4604,7 +4690,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `type` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap:custom-definition-format:v1
         url:
@@ -4665,7 +4751,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `type` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap:custom-definition-format:v1
         url:
@@ -4918,7 +5004,7 @@ components:
             MUST be a valid [Specification ID](../index.md#specification-id).
 
             MUST only be provided if `type` is set to `custom`.
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap.xref:credential-exchange:v1
         customDescription:
@@ -5476,7 +5562,7 @@ components:
             It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
             When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+            In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
             If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
             The `version` MUST not be bumped for changes in extensions.

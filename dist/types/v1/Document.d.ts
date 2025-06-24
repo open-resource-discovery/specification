@@ -384,7 +384,7 @@ export interface APIResource {
      * It SHOULD express minor and patch changes that don't lead to incompatible changes.
      *
      * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
      *
      * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
      * The `version` MUST not be bumped for changes in extensions.
@@ -498,7 +498,7 @@ export interface APIResource {
     /**
      * API Protocol including the protocol version if applicable
      */
-    apiProtocol: (string | "odata-v2" | "odata-v4" | "rest" | "graphql" | "delta-sharing" | "soap-inbound" | "soap-outbound" | "websocket" | "sap-rfc" | "sap-sql-api-v1" | "sap-ina-api-v1") & string;
+    apiProtocol: (string | "odata-v2" | "odata-v4" | "rest" | "graphql" | "delta-sharing" | "soap-inbound" | "soap-outbound" | "mcp" | "websocket" | "sap-rfc" | "sap-sql-api-v1" | "sap-ina-api-v1") & string;
     /**
      * List of available machine-readable definitions, which describe the resource or capability in detail.
      *
@@ -594,14 +594,14 @@ export interface APIResource {
      *
      * `lineOfBusiness` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
      */
-    lineOfBusiness?: ((string | "Asset Management" | "Commerce" | "Finance" | "Human Resources" | "Manufacturing" | "Marketing" | "R&D Engineering" | "Sales" | "Service" | "Sourcing and Procurement" | "Supply Chain" | "Sustainability" | "Metering" | "Grid Operations and Maintenance" | "Plant Operations and Maintenance" | "Maintenance and Engineering") & string)[];
+    lineOfBusiness?: ((string | "Asset Management" | "Commerce" | "Finance" | "Human Resources" | "Manufacturing" | "Marketing" | "R&D Engineering" | "Sales" | "Service" | "Sourcing and Procurement" | "Strategy, Compliance, and Governance" | "Supply Chain" | "Sustainability" | "Metering" | "Grid Operations and Maintenance" | "Plant Operations and Maintenance" | "Maintenance and Engineering") & string)[];
     /**
      * List of industry tags.
      * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
      *
      * `industry` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
      */
-    industry?: ((string | "Aerospace and Defense" | "Automotive" | "Banking" | "Chemicals" | "Consumer Products" | "Defense and Security" | "Engineering Construction and Operations" | "Healthcare" | "Higher Education and Research" | "High Tech" | "Industrial Machinery and Components" | "Insurance" | "Life Sciences" | "Media" | "Mill Products" | "Mining" | "Oil and Gas" | "Professional Services" | "Public Sector" | "Retail" | "Sports and Entertainment" | "Telecommunications" | "Travel and Transportation" | "Utilities" | "Wholesale Distribution") & string)[];
+    industry?: ((string | "Aerospace and Defense" | "Agribusiness" | "Automotive" | "Banking" | "Chemicals" | "Consumer Industries" | "Consumer Products" | "Defense and Security" | "Discrete Industries" | "Energy and Natural Resources" | "Engineering Construction and Operations" | "Financial Services" | "Future Cities" | "Healthcare" | "High Tech" | "Higher Education and Research" | "Industrial Machinery and Components" | "Insurance" | "Life Sciences" | "Media" | "Mill Products" | "Mining" | "Oil and Gas" | "Professional Services" | "Public Sector" | "Public Services" | "Retail" | "Service Industries" | "Sports and Entertainment" | "Telecommunications" | "Travel and Transportation" | "Utilities" | "Wholesale Distribution") & string)[];
     /**
      * List of free text style tags.
      * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
@@ -711,7 +711,7 @@ export interface APIResourceDefinition {
      * Type of the API Resource Definition
      * If "custom" is chosen, a customType MUST be provided
      */
-    type: (string | "openapi-v2" | "openapi-v3" | "raml-v1" | "edmx" | "csdl-json" | "graphql-sdl" | "wsdl-v1" | "wsdl-v2" | "sap-rfc-metadata-v1" | "sap-sql-api-definition-v1" | "sap-csn-interop-effective-v1" | "custom") & string;
+    type: (string | "openapi-v2" | "openapi-v3" | "openapi-v3.1+" | "raml-v1" | "edmx" | "csdl-json" | "graphql-sdl" | "wsdl-v1" | "wsdl-v2" | "sap-rfc-metadata-v1" | "sap-sql-api-definition-v1" | "sap-csn-interop-effective-v1" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *
@@ -1088,7 +1088,7 @@ export interface EventResource {
      * It SHOULD express minor and patch changes that don't lead to incompatible changes.
      *
      * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
      *
      * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
      * The `version` MUST not be bumped for changes in extensions.
@@ -1256,14 +1256,14 @@ export interface EventResource {
      *
      * `lineOfBusiness` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
      */
-    lineOfBusiness?: ((string | "Asset Management" | "Commerce" | "Finance" | "Human Resources" | "Manufacturing" | "Marketing" | "R&D Engineering" | "Sales" | "Service" | "Sourcing and Procurement" | "Supply Chain" | "Sustainability" | "Metering" | "Grid Operations and Maintenance" | "Plant Operations and Maintenance" | "Maintenance and Engineering") & string)[];
+    lineOfBusiness?: ((string | "Asset Management" | "Commerce" | "Finance" | "Human Resources" | "Manufacturing" | "Marketing" | "R&D Engineering" | "Sales" | "Service" | "Sourcing and Procurement" | "Strategy, Compliance, and Governance" | "Supply Chain" | "Sustainability" | "Metering" | "Grid Operations and Maintenance" | "Plant Operations and Maintenance" | "Maintenance and Engineering") & string)[];
     /**
      * List of industry tags.
      * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
      *
      * `industry` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
      */
-    industry?: ((string | "Aerospace and Defense" | "Automotive" | "Banking" | "Chemicals" | "Consumer Products" | "Defense and Security" | "Engineering Construction and Operations" | "Healthcare" | "Higher Education and Research" | "High Tech" | "Industrial Machinery and Components" | "Insurance" | "Life Sciences" | "Media" | "Mill Products" | "Mining" | "Oil and Gas" | "Professional Services" | "Public Sector" | "Retail" | "Sports and Entertainment" | "Telecommunications" | "Travel and Transportation" | "Utilities" | "Wholesale Distribution") & string)[];
+    industry?: ((string | "Aerospace and Defense" | "Agribusiness" | "Automotive" | "Banking" | "Chemicals" | "Consumer Industries" | "Consumer Products" | "Defense and Security" | "Discrete Industries" | "Energy and Natural Resources" | "Engineering Construction and Operations" | "Financial Services" | "Future Cities" | "Healthcare" | "High Tech" | "Higher Education and Research" | "Industrial Machinery and Components" | "Insurance" | "Life Sciences" | "Media" | "Mill Products" | "Mining" | "Oil and Gas" | "Professional Services" | "Public Sector" | "Public Services" | "Retail" | "Service Industries" | "Sports and Entertainment" | "Telecommunications" | "Travel and Transportation" | "Utilities" | "Wholesale Distribution") & string)[];
     /**
      * List of free text style tags.
      * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
@@ -1445,7 +1445,7 @@ export interface EntityType {
      * It SHOULD express minor and patch changes that don't lead to incompatible changes.
      *
      * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
      *
      * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
      * The `version` MUST not be bumped for changes in extensions.
@@ -1681,7 +1681,7 @@ export interface Capability {
      * It SHOULD express minor and patch changes that don't lead to incompatible changes.
      *
      * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
      *
      * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
      * The `version` MUST not be bumped for changes in extensions.
@@ -1905,7 +1905,7 @@ export interface DataProduct {
      * It SHOULD express minor and patch changes that don't lead to incompatible changes.
      *
      * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
      *
      * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
      * The `version` MUST not be bumped for changes in extensions.
@@ -2051,14 +2051,14 @@ export interface DataProduct {
      *
      * `industry` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
      */
-    industry?: ((string | "Aerospace and Defense" | "Automotive" | "Banking" | "Chemicals" | "Consumer Products" | "Defense and Security" | "Engineering Construction and Operations" | "Healthcare" | "Higher Education and Research" | "High Tech" | "Industrial Machinery and Components" | "Insurance" | "Life Sciences" | "Media" | "Mill Products" | "Mining" | "Oil and Gas" | "Professional Services" | "Public Sector" | "Retail" | "Sports and Entertainment" | "Telecommunications" | "Travel and Transportation" | "Utilities" | "Wholesale Distribution") & string)[];
+    industry?: ((string | "Aerospace and Defense" | "Agribusiness" | "Automotive" | "Banking" | "Chemicals" | "Consumer Industries" | "Consumer Products" | "Defense and Security" | "Discrete Industries" | "Energy and Natural Resources" | "Engineering Construction and Operations" | "Financial Services" | "Future Cities" | "Healthcare" | "High Tech" | "Higher Education and Research" | "Industrial Machinery and Components" | "Insurance" | "Life Sciences" | "Media" | "Mill Products" | "Mining" | "Oil and Gas" | "Professional Services" | "Public Sector" | "Public Services" | "Retail" | "Service Industries" | "Sports and Entertainment" | "Telecommunications" | "Travel and Transportation" | "Utilities" | "Wholesale Distribution") & string)[];
     /**
      * List of line of business tags.
      * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
      *
      * `lineOfBusiness` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
      */
-    lineOfBusiness?: ((string | "Asset Management" | "Commerce" | "Finance" | "Human Resources" | "Manufacturing" | "Marketing" | "R&D Engineering" | "Sales" | "Service" | "Sourcing and Procurement" | "Supply Chain" | "Sustainability" | "Metering" | "Grid Operations and Maintenance" | "Plant Operations and Maintenance" | "Maintenance and Engineering") & string)[];
+    lineOfBusiness?: ((string | "Asset Management" | "Commerce" | "Finance" | "Human Resources" | "Manufacturing" | "Marketing" | "R&D Engineering" | "Sales" | "Service" | "Sourcing and Procurement" | "Strategy, Compliance, and Governance" | "Supply Chain" | "Sustainability" | "Metering" | "Grid Operations and Maintenance" | "Plant Operations and Maintenance" | "Maintenance and Engineering") & string)[];
     /**
      * List of countries that the package resources are applicable to.
      *
@@ -2257,7 +2257,7 @@ export interface IntegrationDependency {
      * It SHOULD express minor and patch changes that don't lead to incompatible changes.
      *
      * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
      *
      * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
      * The `version` MUST not be bumped for changes in extensions.
@@ -2615,7 +2615,7 @@ export interface Package {
      * It SHOULD express minor and patch changes that don't lead to incompatible changes.
      *
      * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
      *
      * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
      * The `version` MUST not be bumped for changes in extensions.
@@ -2710,14 +2710,14 @@ export interface Package {
      *
      * `lineOfBusiness` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
      */
-    lineOfBusiness?: ((string | "Asset Management" | "Commerce" | "Finance" | "Human Resources" | "Manufacturing" | "Marketing" | "R&D Engineering" | "Sales" | "Service" | "Sourcing and Procurement" | "Supply Chain" | "Sustainability" | "Metering" | "Grid Operations and Maintenance" | "Plant Operations and Maintenance" | "Maintenance and Engineering") & string)[];
+    lineOfBusiness?: ((string | "Asset Management" | "Commerce" | "Finance" | "Human Resources" | "Manufacturing" | "Marketing" | "R&D Engineering" | "Sales" | "Service" | "Sourcing and Procurement" | "Strategy, Compliance, and Governance" | "Supply Chain" | "Sustainability" | "Metering" | "Grid Operations and Maintenance" | "Plant Operations and Maintenance" | "Maintenance and Engineering") & string)[];
     /**
      * List of industry tags.
      * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
      *
      * `industry` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
      */
-    industry?: ((string | "Aerospace and Defense" | "Automotive" | "Banking" | "Chemicals" | "Consumer Products" | "Defense and Security" | "Engineering Construction and Operations" | "Healthcare" | "Higher Education and Research" | "High Tech" | "Industrial Machinery and Components" | "Insurance" | "Life Sciences" | "Media" | "Mill Products" | "Mining" | "Oil and Gas" | "Professional Services" | "Public Sector" | "Retail" | "Sports and Entertainment" | "Telecommunications" | "Travel and Transportation" | "Utilities" | "Wholesale Distribution") & string)[];
+    industry?: ((string | "Aerospace and Defense" | "Agribusiness" | "Automotive" | "Banking" | "Chemicals" | "Consumer Industries" | "Consumer Products" | "Defense and Security" | "Discrete Industries" | "Energy and Natural Resources" | "Engineering Construction and Operations" | "Financial Services" | "Future Cities" | "Healthcare" | "High Tech" | "Higher Education and Research" | "Industrial Machinery and Components" | "Insurance" | "Life Sciences" | "Media" | "Mill Products" | "Mining" | "Oil and Gas" | "Professional Services" | "Public Sector" | "Public Services" | "Retail" | "Service Industries" | "Sports and Entertainment" | "Telecommunications" | "Travel and Transportation" | "Utilities" | "Wholesale Distribution") & string)[];
     /**
      * If provided, all resources that are part of this package can only run on the listed runtime.
      *
@@ -2825,7 +2825,7 @@ export interface ConsumptionBundle {
      * It SHOULD express minor and patch changes that don't lead to incompatible changes.
      *
      * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+     * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
      *
      * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
      * The `version` MUST not be bumped for changes in extensions.
