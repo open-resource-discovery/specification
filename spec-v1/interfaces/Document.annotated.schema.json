@@ -73,7 +73,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -255,6 +255,9 @@
                 "const": "Sourcing and Procurement"
               },
               {
+                "const": "Strategy, Compliance, and Governance"
+              },
+              {
                 "const": "Supply Chain"
               },
               {
@@ -295,6 +298,9 @@
                 "const": "Aerospace and Defense"
               },
               {
+                "const": "Agribusiness"
+              },
+              {
                 "const": "Automotive"
               },
               {
@@ -304,22 +310,37 @@
                 "const": "Chemicals"
               },
               {
+                "const": "Consumer Industries"
+              },
+              {
                 "const": "Consumer Products"
               },
               {
                 "const": "Defense and Security"
               },
               {
+                "const": "Discrete Industries"
+              },
+              {
+                "const": "Energy and Natural Resources"
+              },
+              {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Financial Services"
+              },
+              {
+                "const": "Future Cities"
               },
               {
                 "const": "Healthcare"
               },
               {
-                "const": "Higher Education and Research"
+                "const": "High Tech"
               },
               {
-                "const": "High Tech"
+                "const": "Higher Education and Research"
               },
               {
                 "const": "Industrial Machinery and Components"
@@ -349,7 +370,13 @@
                 "const": "Public Sector"
               },
               {
+                "const": "Public Services"
+              },
+              {
                 "const": "Retail"
+              },
+              {
+                "const": "Service Industries"
               },
               {
                 "const": "Sports and Entertainment"
@@ -491,7 +518,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -750,7 +777,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -898,15 +925,15 @@
             },
             {
               "const": "odata-v2",
-              "description": "[OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.\nAn API Resource definition of type `edmx` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `sap-csn-interop-effective-v1` or `custom`."
+              "description": "[OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.\nAn API Resource definition of type `edmx` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1` or `custom`."
             },
             {
               "const": "odata-v4",
-              "description": "[OData Version 4](https://www.odata.org/documentation/) API.\nAn OData V4 API MUST be described via a Common Schema Definition Language (CSDL).\nAn API Resource definition of type `edmx` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `sap-csn-interop-effective-v1` or `custom`."
+              "description": "[OData Version 4](https://www.odata.org/documentation/) API.\nAn OData V4 API MUST be described via a Common Schema Definition Language (CSDL).\nAn API Resource definition of type `edmx` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1` or `custom`."
             },
             {
               "const": "rest",
-              "description": "Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.\nPlease not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.\nAn API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `raml-v1`, `sap-csn-interop-effective-v1` or `custom`."
+              "description": "Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.\nPlease not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.\nAn API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1` or `custom`."
             },
             {
               "const": "graphql",
@@ -924,6 +951,10 @@
             {
               "const": "soap-outbound",
               "description": "[SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides/describes outbound interfaces for async communication.\nAn API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2` or `custom`."
+            },
+            {
+              "const": "mcp",
+              "description": "[MCP](https://modelcontextprotocol.io) is an open protocol that standardizes how applications provide context to LLMs, based on JSON-RPC message format.\nThe protocol version is negotiated at runtime via the protocol itself.\n\nCurrently there is no standard API Resource definition type for MCP."
             },
             {
               "const": "websocket",
@@ -1010,7 +1041,7 @@
         "customImplementationStandard": {
           "type": "string",
           "description": "If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `implementationStandard` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap.xref:some-api-contract:v1"
@@ -1207,6 +1238,9 @@
                 "const": "Sourcing and Procurement"
               },
               {
+                "const": "Strategy, Compliance, and Governance"
+              },
+              {
                 "const": "Supply Chain"
               },
               {
@@ -1247,6 +1281,9 @@
                 "const": "Aerospace and Defense"
               },
               {
+                "const": "Agribusiness"
+              },
+              {
                 "const": "Automotive"
               },
               {
@@ -1256,22 +1293,37 @@
                 "const": "Chemicals"
               },
               {
+                "const": "Consumer Industries"
+              },
+              {
                 "const": "Consumer Products"
               },
               {
                 "const": "Defense and Security"
               },
               {
+                "const": "Discrete Industries"
+              },
+              {
+                "const": "Energy and Natural Resources"
+              },
+              {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Financial Services"
+              },
+              {
+                "const": "Future Cities"
               },
               {
                 "const": "Healthcare"
               },
               {
-                "const": "Higher Education and Research"
+                "const": "High Tech"
               },
               {
-                "const": "High Tech"
+                "const": "Higher Education and Research"
               },
               {
                 "const": "Industrial Machinery and Components"
@@ -1301,7 +1353,13 @@
                 "const": "Public Sector"
               },
               {
+                "const": "Public Services"
+              },
+              {
                 "const": "Retail"
+              },
+              {
+                "const": "Service Industries"
               },
               {
                 "const": "Sports and Entertainment"
@@ -1586,7 +1644,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -1723,7 +1781,7 @@
         "customImplementationStandard": {
           "type": "string",
           "description": "If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `implementationStandard` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap.xref:some-event-contract:v1"
@@ -1866,6 +1924,9 @@
                 "const": "Sourcing and Procurement"
               },
               {
+                "const": "Strategy, Compliance, and Governance"
+              },
+              {
                 "const": "Supply Chain"
               },
               {
@@ -1906,6 +1967,9 @@
                 "const": "Aerospace and Defense"
               },
               {
+                "const": "Agribusiness"
+              },
+              {
                 "const": "Automotive"
               },
               {
@@ -1915,22 +1979,37 @@
                 "const": "Chemicals"
               },
               {
+                "const": "Consumer Industries"
+              },
+              {
                 "const": "Consumer Products"
               },
               {
                 "const": "Defense and Security"
               },
               {
+                "const": "Discrete Industries"
+              },
+              {
+                "const": "Energy and Natural Resources"
+              },
+              {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Financial Services"
+              },
+              {
+                "const": "Future Cities"
               },
               {
                 "const": "Healthcare"
               },
               {
-                "const": "Higher Education and Research"
+                "const": "High Tech"
               },
               {
-                "const": "High Tech"
+                "const": "Higher Education and Research"
               },
               {
                 "const": "Industrial Machinery and Components"
@@ -1960,7 +2039,13 @@
                 "const": "Public Sector"
               },
               {
+                "const": "Public Services"
+              },
+              {
                 "const": "Retail"
+              },
+              {
+                "const": "Service Industries"
               },
               {
                 "const": "Sports and Entertainment"
@@ -2235,7 +2320,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -2614,7 +2699,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -2904,6 +2989,9 @@
                 "const": "Aerospace and Defense"
               },
               {
+                "const": "Agribusiness"
+              },
+              {
                 "const": "Automotive"
               },
               {
@@ -2913,22 +3001,37 @@
                 "const": "Chemicals"
               },
               {
+                "const": "Consumer Industries"
+              },
+              {
                 "const": "Consumer Products"
               },
               {
                 "const": "Defense and Security"
               },
               {
+                "const": "Discrete Industries"
+              },
+              {
+                "const": "Energy and Natural Resources"
+              },
+              {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Financial Services"
+              },
+              {
+                "const": "Future Cities"
               },
               {
                 "const": "Healthcare"
               },
               {
-                "const": "Higher Education and Research"
+                "const": "High Tech"
               },
               {
-                "const": "High Tech"
+                "const": "Higher Education and Research"
               },
               {
                 "const": "Industrial Machinery and Components"
@@ -2958,7 +3061,13 @@
                 "const": "Public Sector"
               },
               {
+                "const": "Public Services"
+              },
+              {
                 "const": "Retail"
+              },
+              {
+                "const": "Service Industries"
               },
               {
                 "const": "Sports and Entertainment"
@@ -3029,6 +3138,9 @@
               },
               {
                 "const": "Sourcing and Procurement"
+              },
+              {
+                "const": "Strategy, Compliance, and Governance"
               },
               {
                 "const": "Supply Chain"
@@ -3259,11 +3371,15 @@
             },
             {
               "const": "openapi-v2",
-              "description": "[OpenAPI 2 / Swagger 2](https://swagger.io/specification/v2/) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.\nThe `mediaType` MUST be be set to either `application/json` or `text/yaml`."
+              "description": "[OpenAPI 2 / Swagger 2](https://spec.openapis.org/oas/v2.0.html) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.\nThe `mediaType` MUST be be set to either `application/json` or `text/yaml`."
             },
             {
               "const": "openapi-v3",
-              "description": "[OpenAPI 3](https://swagger.io/specification/) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.\nThe `mediaType` MUST be be set to either `application/json` or `text/yaml`."
+              "description": "[OpenAPI 3.0.x](https://spec.openapis.org/oas/v3.0.4.html) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.\nThe `mediaType` MUST be be set to either `application/json` or `text/yaml`.\n\nFor OpenAPI 3.1+, `openapi-v3.1+` MUST be used instead, as it's not backward compatible with OpenAPI 3.0."
+            },
+            {
+              "const": "openapi-v3.1+",
+              "description": "[OpenAPI 3.1+](https://spec.openapis.org/oas/v3.1.1.html) (3.1 or greater, but below 4.x) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.\nThe `mediaType` MUST be be set to either `application/json` or `text/yaml`."
             },
             {
               "const": "raml-v1",
@@ -3315,7 +3431,7 @@
         "customType": {
           "type": "string",
           "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap:custom-definition-format:v1"
@@ -3414,7 +3530,7 @@
         "customType": {
           "type": "string",
           "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap:custom-definition-format:v1"
@@ -3653,7 +3769,7 @@
         "customType": {
           "type": "string",
           "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap:custom-definition-format:v1"
@@ -3720,7 +3836,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -3898,7 +4014,7 @@
         "customType": {
           "type": "string",
           "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap:custom-definition-format:v1"
@@ -4062,7 +4178,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -4601,7 +4717,7 @@
         "customType": {
           "type": "string",
           "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap:custom-definition-format:v1"
@@ -4682,7 +4798,7 @@
         "customType": {
           "type": "string",
           "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap:custom-definition-format:v1"
@@ -4752,7 +4868,7 @@
         "customType": {
           "type": "string",
           "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap:custom-definition-format:v1"
@@ -5004,7 +5120,7 @@
         "customType": {
           "type": "string",
           "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap.xref:open-local-tenant-id:v1"
@@ -5059,7 +5175,7 @@
         "customType": {
           "type": "string",
           "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
-          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap.xref:credential-exchange:v1"
@@ -5659,7 +5775,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://swagger.io/specification/#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
