@@ -341,6 +341,7 @@ API Model Selector (JSON Pointer),jsonPointer,true,string
 Entity Type Target (ORD ID),ordId,true,string
 Entity Type Target (Correlation ID),correlationId,true,string
 Related Entity Type,ordId,true,string
+Related Entity Type,relationType,false,string
 Exposed Entity Type,ordId,true,string
 Tombstone,ordId,false,string
 Tombstone,groupId,false,string

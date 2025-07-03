@@ -490,7 +490,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
           ]
@@ -709,7 +709,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
           ]
@@ -737,16 +737,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -765,7 +769,7 @@
         "deprecationDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2020-12-08T15:47:04+00:00"
           ]
@@ -773,7 +777,7 @@
         "sunsetDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -1372,7 +1376,7 @@
         },
         "systemInstanceAware": {
           "type": "boolean",
-          "description": "Defines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
+          "description": "All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
           "default": false,
           "examples": [
             true
@@ -1523,7 +1527,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
           ]
@@ -1551,16 +1555,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -1579,7 +1587,7 @@
         "deprecationDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2020-12-08T15:47:04+00:00"
           ]
@@ -1587,7 +1595,7 @@
         "sunsetDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -2013,7 +2021,7 @@
         },
         "systemInstanceAware": {
           "type": "boolean",
-          "description": "Defines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
+          "description": "All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
           "default": false,
           "examples": [
             true
@@ -2154,7 +2162,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
           ]
@@ -2182,16 +2190,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -2201,7 +2213,7 @@
         "deprecationDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2020-12-08T15:47:04+00:00"
           ]
@@ -2209,7 +2221,7 @@
         "sunsetDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -2365,7 +2377,7 @@
         },
         "systemInstanceAware": {
           "type": "boolean",
-          "description": "Defines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
+          "description": "All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
           "default": false,
           "examples": [
             true
@@ -2490,7 +2502,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
           ]
@@ -2518,16 +2530,20 @@
           "description": "The `releaseStatus` specifies the stability towards incompatible changes in the future.\nIn the context of data products, it it covers only properties on the data product level.\nAPIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -2583,7 +2599,7 @@
         "deprecationDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2020-12-08T15:47:04+00:00"
           ]
@@ -2591,7 +2607,7 @@
         "sunsetDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -3017,7 +3033,7 @@
         },
         "systemInstanceAware": {
           "type": "boolean",
-          "description": "Defines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
+          "description": "All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
           "default": false,
           "examples": [
             true
@@ -3540,7 +3556,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
           ]
@@ -3568,16 +3584,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -3643,7 +3663,7 @@
         },
         "systemInstanceAware": {
           "type": "boolean",
-          "description": "Defines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
+          "description": "All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
           "default": false,
           "examples": [
             true
@@ -3846,7 +3866,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
           ]
@@ -3874,16 +3894,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -3893,7 +3917,7 @@
         "sunsetDate": {
           "type": "string",
           "format": "date-time",
-          "description": "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+          "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
           "examples": [
             "2022-01-08T15:47:04+00:00"
           ]
@@ -4209,16 +4233,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -4647,7 +4675,7 @@
       "properties": {
         "version": {
           "type": "string",
-          "description": "The version number of the system instance (run-time) or the version of the described static system type.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.",
+          "description": "The version of the system instance (run-time) or the version of the described system-version perspective.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\n\nMUST be provided if the ORD document is `perspective`: `system-version`.\n\nFor continuous-delivery systems, the version MAY be fixed to the same value, e.g. `1.0.0`, but be aware that phased rollouts may benefit from a more precise versioning like adding a build number.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -5142,7 +5170,7 @@
     "RelatedEntityType": {
       "title": "Related Entity Type",
       "type": "object",
-      "description": "Defines which Entity Type is related (via its ORD ID).\nIn the future, this could include stating the relationship type, too.",
+      "description": "Defines the relation between Entity Types (via its ORD ID).",
       "properties": {
         "ordId": {
           "type": "string",
@@ -5151,6 +5179,23 @@
           "maxLength": 255,
           "examples": [
             "sap.odm:entityType:BusinessPartner:v1"
+          ]
+        },
+        "relationType": {
+          "type": "string",
+          "description": "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\".",
+          "oneOf": [
+            {
+              "const": "part-of",
+              "description": "The described entity type is a composite part of the referenced entity type.\nE.g. a `SalesOrderItem` is part of a `SalesOrder`."
+            },
+            {
+              "const": "can-share-identity",
+              "description": "The related entity types can potentially share the same identity in their instance data / be ID mapped.\n\nE.g. a `BusinessPartner` can share the same identity as a `NaturalPerson`."
+            }
+          ],
+          "examples": [
+            "can-share-identity"
           ]
         }
       },
@@ -5182,7 +5227,7 @@
     "Tombstone": {
       "type": "object",
       "title": "Tombstone",
-      "description": "A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned.\nThis MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.\n\nExactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.\n\nIt MUST be kept sufficiently long so that all ORD aggregators can learn about the tombstone.\nAfter that it MAY be removed.",
+      "description": "A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.\nThis MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.\n\nExactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.\n\nThe tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.",
       "properties": {
         "ordId": {
           "type": "string",
@@ -5317,7 +5362,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
-          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
           ]
@@ -5345,16 +5390,20 @@
           "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
           "oneOf": [
             {
+              "const": "beta",
+              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+            },
+            {
               "const": "active",
               "description": "Resource is meant for productive use and provides a stable API contract."
             },
             {
-              "const": "beta",
-              "description": "The contract for the resource is beta and MAY not be meant for productive use.\nIn the SAP context, `beta` APIs may be changed or deleted at SAPs discretion."
+              "const": "deprecated",
+              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
-              "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf successor resources exist, they MUST be referenced through `successors`.\nIf it is deprecated without defining its `successors`, a `sunsetDate` SHOULD be provided.\n\nA deprecated resource MAY be decommissioned (removed) in the future, through setting a `Tombstone`.\nOnce the resource is decommissioned, it MUST be removed from ORD (which is why there is no release status for decommissioned)."
+              "const": "sunset",
+              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -5433,10 +5482,11 @@
         "1.8",
         "1.9",
         "1.10",
-        "1.11"
+        "1.11",
+        "1.12"
       ],
       "examples": [
-        "1.11"
+        "1.12"
       ]
     },
     "description": {
@@ -5447,9 +5497,31 @@
         "This ORD document contains all APIs that are system instance aware and have APIs that\ncan change their behavior at runtime.\n"
       ]
     },
+    "perspective": {
+      "type": "string",
+      "description": "With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).\n\nIt is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.\n\nIt is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.\n\nIf not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.\n\nPlease read the [article on perspectives](../concepts/perspectives) for more explanations.",
+      "oneOf": [
+        {
+          "const": "system-version",
+          "description": "Describes the static [system-version](../index.md#def-system-version) perspective, usually known at deploy-time.\n\nIf chosen, `describedSystemVersion`.`version` MUST be provided, too.\n\nThis perspective describes how a system of a particular type and version generally look like.\nThe latest system-version MAY also be interpreted as the [system-type](../index.md#def-system-type) perspective."
+        },
+        {
+          "const": "system-instance",
+          "description": "Describes the complete dynamic [system-instance](../index.md#def-system-instance) (tenant) perspective as known at run-time.\nThis allows to also reflect tenant specific extensions, customizations and runtime configuration.\n\nIf provided, it will completely override the static system-version perspective when metadata about system instances is requested."
+        },
+        {
+          "const": "system-independent",
+          "description": "Describes content that is independent of [system-versions](../index.md#def-system-version) or [system-instances](../index.md#def-system-instance).\nThis content is always static and has independent visibility and lifecycle from the systems in a particular landscape.\nThe \"system-independent\" content MUST NOT be overridden via system-version or system-instance perspective metadata.\n\nExamples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems."
+        }
+      ],
+      "default": "system instance",
+      "examples": [
+        "system-instance"
+      ]
+    },
     "describedSystemInstance": {
       "$ref": "#/definitions/SystemInstance",
-      "description": "Information on the [system instance](../index.md#def-system-instance) that this ORD document describes."
+      "description": "Information on the [system-instance](../index.md#def-system-instance) that this ORD document describes.\n\nWhether this information is required or recommended to add, depends on the requirements of the ORD aggregator."
     },
     "describedSystemType": {
       "$ref": "#/definitions/SystemType",
@@ -5601,7 +5673,7 @@
     },
     "tombstones": {
       "type": "array",
-      "description": "List of ORD information (resources or taxonomy) that have been \"tombstoned\"/removed.\nThis MUST be indicated explicitly, so that ORD aggregators and consumers can learn about the removal.\n\nA tombstone entry MAY be removed after a grace period of 31 days.",
+      "description": "List of ORD information (resources or taxonomy) that have been \"tombstoned\", indicating removal or archival.\nThis MUST be indicated explicitly, just removing the ORD information itself is not sufficient.\n\nA tombstone entry MAY be removed after a grace period of 31 days.",
       "items": {
         "$ref": "#/definitions/Tombstone"
       }

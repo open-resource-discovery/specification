@@ -215,7 +215,8 @@ components:
             - '1.9'
             - '1.10'
             - '1.11'
-          example: '1.11'
+            - '1.12'
+          example: '1.12'
         description:
           type: string
           minLength: 1
@@ -227,6 +228,24 @@ components:
           example: |
             This ORD document contains all APIs that are system instance aware and have APIs that
             can change their behavior at runtime.
+        perspective:
+          type: string
+          description: |-
+            With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
+
+            It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+
+            It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+
+            If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
+
+            Please read the [article on perspectives](../concepts/perspectives) for more explanations.
+          default: system instance
+          enum:
+            - system-version
+            - system-instance
+            - system-independent
+          example: system-instance
         describedSystemInstance:
           $ref: '#/components/schemas/SystemInstance'
         describedSystemType:
@@ -359,8 +378,8 @@ components:
         tombstones:
           type: array
           description: |-
-            List of ORD information (resources or taxonomy) that have been "tombstoned"/removed.
-            This MUST be indicated explicitly, so that ORD aggregators and consumers can learn about the removal.
+            List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
+            This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
 
             A tombstone entry MAY be removed after a grace period of 31 days.
           items:
@@ -874,7 +893,7 @@ components:
 
             If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
 
-            Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+            Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
           example: '2022-12-19T15:47:04+00:00'
         visibility:
           type: string
@@ -1137,7 +1156,7 @@ components:
 
             If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
 
-            Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+            Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
           example: '2022-12-19T15:47:04+00:00'
         visibility:
           type: string
@@ -1150,9 +1169,10 @@ components:
           type: string
           description: The `releaseStatus` specifies the stability of the resource and its external contract.
           enum:
-            - active
             - beta
+            - active
             - deprecated
+            - sunset
           example: active
         disabled:
           type: boolean
@@ -1177,9 +1197,7 @@ components:
           format: date-time
           description: |-
             The deprecation date defines when the resource has been set as deprecated.
-            This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-
-            If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+            This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
 
             The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
           example: '2020-12-08T15:47:04+00:00'
@@ -1187,7 +1205,7 @@ components:
           type: string
           format: date-time
           description: |-
-            The sunset date defines when the resource is scheduled to be decommissioned/removed.
+            The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
 
             If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
             Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -1746,6 +1764,9 @@ components:
         systemInstanceAware:
           type: boolean
           description: |-
+            All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+            All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+
             Defines whether this ORD resource is **system instance aware**.
             This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
 
@@ -1945,7 +1966,7 @@ components:
 
             If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
 
-            Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+            Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
           example: '2022-12-19T15:47:04+00:00'
         visibility:
           type: string
@@ -1958,9 +1979,10 @@ components:
           type: string
           description: The `releaseStatus` specifies the stability of the resource and its external contract.
           enum:
-            - active
             - beta
+            - active
             - deprecated
+            - sunset
           example: active
         disabled:
           type: boolean
@@ -1985,9 +2007,7 @@ components:
           format: date-time
           description: |-
             The deprecation date defines when the resource has been set as deprecated.
-            This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-
-            If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+            This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
 
             The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
           example: '2020-12-08T15:47:04+00:00'
@@ -1995,7 +2015,7 @@ components:
           type: string
           format: date-time
           description: |-
-            The sunset date defines when the resource is scheduled to be decommissioned/removed.
+            The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
 
             If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
             Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -2361,6 +2381,9 @@ components:
         systemInstanceAware:
           type: boolean
           description: |-
+            All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+            All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+
             Defines whether this ORD resource is **system instance aware**.
             This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
 
@@ -2527,7 +2550,7 @@ components:
 
             If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
 
-            Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+            Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
           example: '2022-12-19T15:47:04+00:00'
         visibility:
           type: string
@@ -2540,18 +2563,17 @@ components:
           type: string
           description: The `releaseStatus` specifies the stability of the resource and its external contract.
           enum:
-            - active
             - beta
+            - active
             - deprecated
+            - sunset
           example: active
         deprecationDate:
           type: string
           format: date-time
           description: |-
             The deprecation date defines when the resource has been set as deprecated.
-            This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-
-            If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+            This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
 
             The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
           example: '2020-12-08T15:47:04+00:00'
@@ -2559,7 +2581,7 @@ components:
           type: string
           format: date-time
           description: |-
-            The sunset date defines when the resource is scheduled to be decommissioned/removed.
+            The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
 
             If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
             Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -2705,6 +2727,9 @@ components:
         systemInstanceAware:
           type: boolean
           description: |-
+            All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+            All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+
             Defines whether this ORD resource is **system instance aware**.
             This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
 
@@ -2869,7 +2894,7 @@ components:
 
             If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
 
-            Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+            Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
           example: '2022-12-19T15:47:04+00:00'
         visibility:
           type: string
@@ -2885,9 +2910,10 @@ components:
             In the context of data products, it it covers only properties on the data product level.
             APIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.
           enum:
-            - active
             - beta
+            - active
             - deprecated
+            - sunset
           example: active
         disabled:
           type: boolean
@@ -2928,9 +2954,7 @@ components:
           format: date-time
           description: |-
             The deprecation date defines when the resource has been set as deprecated.
-            This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-
-            If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+            This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
 
             The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
           example: '2020-12-08T15:47:04+00:00'
@@ -2938,7 +2962,7 @@ components:
           type: string
           format: date-time
           description: |-
-            The sunset date defines when the resource is scheduled to be decommissioned/removed.
+            The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
 
             If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
             Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -3277,6 +3301,9 @@ components:
         systemInstanceAware:
           type: boolean
           description: |-
+            All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+            All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+
             Defines whether this ORD resource is **system instance aware**.
             This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
 
@@ -3849,7 +3876,7 @@ components:
 
             If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
 
-            Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+            Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
           example: '2022-12-19T15:47:04+00:00'
         visibility:
           type: string
@@ -3862,9 +3889,10 @@ components:
           type: string
           description: The `releaseStatus` specifies the stability of the resource and its external contract.
           enum:
-            - active
             - beta
+            - active
             - deprecated
+            - sunset
           example: active
         disabled:
           type: boolean
@@ -3933,6 +3961,9 @@ components:
         systemInstanceAware:
           type: boolean
           description: |-
+            All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+            All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+
             Defines whether this ORD resource is **system instance aware**.
             This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
 
@@ -4179,7 +4210,7 @@ components:
 
             If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
 
-            Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+            Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
           example: '2022-12-19T15:47:04+00:00'
         visibility:
           type: string
@@ -4192,15 +4223,16 @@ components:
           type: string
           description: The `releaseStatus` specifies the stability of the resource and its external contract.
           enum:
-            - active
             - beta
+            - active
             - deprecated
+            - sunset
           example: active
         sunsetDate:
           type: string
           format: date-time
           description: |-
-            The sunset date defines when the resource is scheduled to be decommissioned/removed.
+            The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
 
             If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
             Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -4503,9 +4535,10 @@ components:
           type: string
           description: The `releaseStatus` specifies the stability of the resource and its external contract.
           enum:
-            - active
             - beta
+            - active
             - deprecated
+            - sunset
           example: active
         date:
           type: string
@@ -4888,9 +4921,13 @@ components:
         version:
           type: string
           description: |-
-            The version number of the system instance (run-time) or the version of the described static system type.
+            The version of the system instance (run-time) or the version of the described system-version perspective.
 
             It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+
+            MUST be provided if the ORD document is `perspective`: `system-version`.
+
+            For continuous-delivery systems, the version MAY be fixed to the same value, e.g. `1.0.0`, but be aware that phased rollouts may benefit from a more precise versioning like adding a build number.
           pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
           example: 1.2.3
         title:
@@ -4939,12 +4976,37 @@ components:
         type:
           type: string
           description: Defines the authentication/authorization strategy through which the referenced ORD Documents can be accessed.
-          enum:
-            - open
-            - sap:oauth-client-credentials:v1
-            - sap:cmp-mtls:v1
-            - sap.businesshub:basic-auth:v1
-            - custom
+          oneOf:
+            - type: string
+              pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+              description: |-
+                Any valid [Specification ID](../index.md#specification-id).
+                If chosen, `customDescription` SHOULD be provided.
+            - description: |-
+                The resource definitions are openly accessible and not protected via authentication or authorization.
+                Please find a more detailed documentation [here](../../spec-extensions/access-strategies/open).
+              enum:
+                - open
+            - description: |-
+                The ORD information are accessible via OAuth 2.0 client credentials flow as standardized within SAP.
+                Please find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-oauth-client-credentials-v1).
+              enum:
+                - sap:oauth-client-credentials:v1
+            - description: |-
+                The ORD information are accessible via Unified Customer Landscape's client certificate.
+                Please find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-cmp-mtls-v1).
+              enum:
+                - sap:cmp-mtls:v1
+            - description: |-
+                The ORD information are accessible for SAP Business Accelerator Hub via Basic Auth strategy.
+                Please find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-businesshub-basic-v1).
+              enum:
+                - sap.businesshub:basic-auth:v1
+            - description: |-
+                If chosen, `customType` MUST be provided.
+                If chosen, `customDescription` SHOULD be provided.
+              enum:
+                - custom
           example: open
         customType:
           type: string
@@ -5380,9 +5442,7 @@ components:
     RelatedEntityType:
       title: Related Entity Type
       type: object
-      description: |-
-        Defines which Entity Type is related (via its ORD ID).
-        In the future, this could include stating the relationship type, too.
+      description: Defines the relation between Entity Types (via its ORD ID).
       properties:
         ordId:
           type: string
@@ -5393,6 +5453,16 @@ components:
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           example: sap.odm:entityType:BusinessPartner:v1
+        relationType:
+          type: string
+          description: |-
+            Optional type of the relationship, which defines a stricter semantic what the relationship implies.
+
+            If not provided, the relationship type has no semantics, it's "related somehow".
+          enum:
+            - part-of
+            - can-share-identity
+          example: can-share-identity
       required:
         - ordId
     ExposedEntityType:
@@ -5415,13 +5485,12 @@ components:
       type: object
       title: Tombstone
       description: |-
-        A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned.
+        A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
         This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
 
         Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
 
-        It MUST be kept sufficiently long so that all ORD aggregators can learn about the tombstone.
-        After that it MAY be removed.
+        The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
       properties:
         ordId:
           type: string
@@ -5586,7 +5655,7 @@ components:
 
             If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
 
-            Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+            Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
           example: '2022-12-19T15:47:04+00:00'
         visibility:
           type: string
@@ -5599,9 +5668,10 @@ components:
           type: string
           description: The `releaseStatus` specifies the stability of the resource and its external contract.
           enum:
-            - active
             - beta
+            - active
             - deprecated
+            - sunset
           example: active
         links:
           type: array
@@ -5709,6 +5779,26 @@ components:
             If the URL is not relative to the system providing this information or no well-known URI is used,
             either the baseUrl or a full URL to the document MUST be provided.
           example: /open-resource-discovery/v1/documents/example1
+        perspective:
+          type: string
+          x-introduced-in-version: 1.12.0
+          x-feature-status: beta
+          description: |-
+            With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
+
+            It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+
+            It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+
+            If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
+
+            Please read the [article on perspectives](../concepts/perspectives) for more explanations.
+          default: system-instance
+          enum:
+            - system-version
+            - system-instance
+            - system-independent
+          example: system-instance
         systemInstanceAware:
           type: boolean
           description: |-
@@ -5730,6 +5820,8 @@ components:
             If some ORD information is **system instance aware** and some is not,
             we RECOMMEND to split the information into separate documents and mark their system instance awareness accordingly.
           default: false
+          x-deprecated-in-version: 1.12.0
+          x-deprecated: Please use `perspectives` instead and split content of different perspectives into different ORD documents.
           example: true
         accessStrategies:
           type: array
