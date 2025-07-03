@@ -60,7 +60,6 @@ Therefore, the commitment of all LoBs and areas is required to exploit the full 
 Depending on the role of the adopter the value proposition is different:
 
 - If you are an application or service, that needs to provide ORD information, you are in the [ORD Provider](#benefits-to-ord-providers) role.
-
   - The provider benefits from having one protocol for providing the information and not multiple.
   - The provider only needs to publish to two ORD aggregators and avoids having many more point-to-point integrations to the various consumers.
   - The use cases that ORD consumers provide may very well serve the same customer and solve commonly shared problems, see ORD Adoption Status - ORD Consumers for examples.

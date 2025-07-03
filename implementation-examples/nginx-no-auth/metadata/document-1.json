@@ -1,5 +1,5 @@
 {
-  "openResourceDiscovery": "1.11",
+  "openResourceDiscovery": "1.12",
   "policyLevels": ["sap:core:v1"],
   "apiResources": [
     {

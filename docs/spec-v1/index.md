@@ -3,7 +3,7 @@ sidebar_position: 0
 title: ORD Specification
 ---
 
-# Open Resource Discovery Specification 1.11
+# Open Resource Discovery Specification 1.12
 
 ## Notational Conventions
 
@@ -11,80 +11,75 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ## Terminology
 
-This specification defines the following terms (for the ORD context):
+This specification defines and uses the following terms (for the ORD context):
 
 - <dfn id="def-ord">ORD</dfn> is the abbreviation for Open Resource Discovery.
   It refers to the standard (as defined by the specification) as a whole.
 
 - <dfn id="def-ord-information">ORD information</dfn> is the sum of all information that can be expressed through ORD.
 
-  ORD information can have different scopes or views:
+  ORD information can have different [perspectives](#perspectives):
+  - The <dfn id="def-static-perspective">static perspective</dfn> describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a <a href="#def-system-type">system type</a> and <a href="#def-system-version">system version</a>. This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
+    - This can be explicitly set with `perspective`: `system-version`
+    - This is also referred to as <dfn id="def-system-instance-unaware">system instance unaware</dfn> information. They are identical across all <a href="#def-system-instance">system instance</a> of the described <a href="#def-system-type">system type</a> and <a href="#def-system-version">system version</a>.
 
-  - <dfn id="def-system-instance-aware">system instance aware</dfn> information describes the state of a specific <a href="#def-system-instance">system instance</a> at run-time, potentially reflecting customizations.
-    System instance aware information are allowed to be different between system instances of the same <a href="#def-system-type">system type</a>.
-
-  - <dfn id="def-system-instance-unaware">system instance unaware</dfn> information are identical across all <a href="#def-system-instance">system instance</a> of the described <a href="#def-system-type">system type</a>.
-
-  - <dfn id="def-cross-system">cross-system</dfn> information is shared and reused between multiple <a href="#def-system-type">system types</a>.
-    Most notably, this applies to the <a href="#def-ord-taxonomy">ord taxonomy</a>.
-
-  - The <dfn id="def-static-catalog-view">static catalog view</dfn> represents a generic perspective on all potential resources customers / users could use before they actually provision systems.
-    The information is usually provided by reference or sandbox systems which describe their capabilities on behalf of their <a href="#def-system-type">system type</a>.
-    If the ORD information is <a href="#def-system-instance-unaware">system instance unaware</a> it also reflects the static catalog view.
-    An example for this are API Catalogs like [SAP Business Accelerator Hub](https://api.sap.com/) that can be browsed even before actually provisioning any of the described systems.
-
-  - The <dfn id="def-as-is-view">as-is view</dfn> represents a [system instance](#def-system-instance) state at run time and can therefore represent their actual state.
-    Depending on how customizable the system is, this can include reflecting customizations and extensions.
-    If a resource can be customized, it needs to be described <a href="#def-system-instance-aware">system instance aware</a>.
-    If it cannot be customized, <a href="#def-system-instance-unaware">system instance unaware</a> description is sufficient.
+  - The <dfn id="def-dynamic-perspective">dynamic perspective</dfn> describes a <a href="#def-system-instance">system instance</a> at **run-time** and can therefore reflect how it is currently configured, customized or extended. This is also referred to as <a href="#def-system-instance-aware">system instance aware</a>.
+    - This can be explicitly set with `perspective`: `system-instance`
+    - This is also referred to as <dfn id="def-system-instance-aware">system instance aware</dfn> information.
+      System instance aware information are allowed to be different between system instances of the same <a href="#def-system-type">system type</a>.
 
   ORD information can be categorized into resources and taxonomies:
-
   - <dfn id="def-ord-resource">ORD resource</dfn> information describes application and service <a href="#def-resource">resources</a>.
     Currently it covers API resources and Event resources.
     ORD resource information MAY be <a href="#def-system-instance-aware">system instance aware</a>, depending on the implementation of the <a href="#def-system-type">system type</a>.
 
   - <dfn id="def-ord-taxonomy">ORD taxonomy</dfn> is used to categorize and structure <a href="#def-resource">resources</a>.
-    Taxonomies span across <a href="#def-product">products</a> and <a href="#def-system-type">system types</a> and resources and therefore fall under the <a href="#def-cross-system">cross-system</a> information category.
-    - Some taxonomies are implemented as dedicated Entities (e.g. `Package`, `Product`) that can express additional information.
+    Taxonomies span across <a href="#def-product">products</a> and <a href="#def-system-type">system types</a>.
+    - Some taxonomies are implemented as dedicated Entities (e.g. `Package`, `Product`, `Group` and `GroupType`) that can express additional information.
       They are defined by the <a href="#def-ord-provider">ORD providers</a> in a decentralized manner.
     - Other taxonomies are provided via fixed enums (code lists) and are defined as part of ORD itself, e.g. tags.
     - Taxonomies are not a consumer contract and therefore do not offer the same stability guarantees and lifecycle management as ORD resources.
 
 - <dfn id="def-ord-behavior">ORD behavior</dfn> standardizes how <a href="#def-ord-information">ORD information</a> is discovered, transported, and aggregated.
 
-- A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service from operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is sometimes referred to as _application and service_ for better readability.
-  Since system type is an abstract concept, it is not concretely addressable.
-  A [system deployment](#def-system-deployment) and potentially a [system instance](#def-system-instance) needs to be created and used in this case.
+- A <dfn id="def-system">system</dfn> is sometimes used as a generic, imprecise term when no further distinctions are necessary.
+  In most places, the specification uses more precise terms, though:
+  - A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service from operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is sometimes referred to as _application and service_ for better readability.
+    Since system type is an abstract concept, it is not concretely addressable.
+    A [system installation](#def-system-installation) of a specific [system version](#def-system-version) and potentially a [system instance](#def-system-instance) needs to be created to have a concrete, addressable system.
 
-  Please note that a system type is similar, but not necessarily identical to a [product](#def-product).
-  System type is a technical concept, while product is a term for external communication and sales.
+  - A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service. It is also known as SAP system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
+    Since system type is an abstract concept, it is not concretely addressable.
 
-- A <dfn id="def-system-deployment">system deployment</dfn> is a concrete running instance of a <a href="#def-system-type">system type</a>. If the system type supports tenant isolation, a system deployment is the host for multiple <a href="#def-system-instance">system instances</a> (tenants). A system deployment has at least one [base URL](#def-base-url).
+    Please note that a system type is similar, but not necessarily identical to a [product](#def-product).
+    System type is a technical concept, while product is a term for external communication and sales.
+
+  - A <dfn id="def-system-installation">system installation</dfn> is a concrete running instance of a <a href="#def-system-type">system type</a> of a specific [system version](#def-system-version). If the system type supports tenant isolation, a system installation may offer multiple <a href="#def-system-instance">system instance</a>. A system installation has at least one [base URL](#def-base-url).
 
 - A <dfn id="def-system-instance">system instance</dfn> is running instance of a <a href="#def-system-type">system type</a> and always refers to the _most specific_ instance from a customer / account perspective. Usually this is the boundary where the isolation of resources, capabilities and data is ensured.
   If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system deployment](#def-system-deployment) per tenant or system isolation does not matter. In those cases system instance equals the system deployment.
+  - A <dfn id="def-system-version">system version</dfn> is a particular software version of an <a href="#def-system-installation">system installation</a>, which is always of the same <a href="#def-system-type">system type</a>.
 
-  To illustrate this, think of an API resource. It may be differently described between system-instances of the same type due to configuration and extensibility. But for sure, the API of one system-instance acts on their own isolated data set (potentially also users).
+  - A <dfn id="def-system-instance">system instance</dfn> is running, isolated instance of a <a href="#def-system-type">system type</a>, running in a <a href="#def-system-installation">system installation</a> of a particular <a href="#def-system-version">system version</a>. It always refers to the _most specific_ instance from a customer / account / data isolation perspective.
+    If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system installation](#def-system-installation) per tenant or system isolation does not matter. In those cases system instance equals the system installation.
 
-  The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if multi-tenancy is supported or system ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if not.
+    The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if multi-tenancy is supported or system ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if not.
 
-  A system instance can act as an [ORD Provider](#ord-provider).
+    A system instance can act as an [ORD Provider](#ord-provider).
 
 - A <dfn id="def-system-version">system version</dfn> states the design-time version / release of a [system instance](#def-system-instance). It provides versioning for operational purposes for the <a href="#def-system-type">system type</a>. E.g. all system instances of the same system version could have the same static metadata description.
 
 - A <dfn id="def-system-landscape">system landscape</dfn> is a set of <a href="#def-system-instance">system instances</a> that are explicitly combined together, for example via a shared zone of trust/connectivity, an account or a [namespace concept](#namespaces).
 
 - A <dfn id="def-resource">resource</dfn> is provided by or for a [system instance](#def-system-instance) for outside consumption and/or communication.
-
   - A <dfn id="def-machine-readable-resource">machine-readable resource</dfn> is a <a href="#def-resource">resource</a> that can be used for machine consumption and communication.
     For example, APIs and events.
     They are usually described through a [resource definition](#def-resource-definition) format.
 
   - A <dfn id="def-human-consumption-resource">human-consumption resource</dfn> is a <a href="#def-resource">resource</a> that is meant for human consumption, for example documentation.
 
-- A <dfn id="def-resource-definition">resource definition</dfn> is a machine-readable, structured document defining the inputs and outputs of a [machine-readable resource](#def-machine-readable-resource) in a standardized format.
-  It is primarily designed for automated processing, not human consumption. See also [definition](https://webapi-discovery.github.io/rfcs/rfc0001.html#definitions) by the [W3 WebAPI Discovery Community Group](https://www.w3.org/community/web-api-discovery/).
+  - A <dfn id="def-resource-definition">resource definition</dfn> is a machine-readable, structured document defining the inputs and outputs of a [machine-readable resource](#def-machine-readable-resource) in a standardized format.
+    It is primarily designed for automated processing, not human consumption. See also [definition](https://webapi-discovery.github.io/rfcs/rfc0001.html#definitions) by the [W3 WebAPI Discovery Community Group](https://www.w3.org/community/web-api-discovery/).
 
 - A <dfn id="def-product">product</dfn> is understood as a software product:
   A non-versioned, high-level entity for structuring the software portfolio from a software logistics perspective.
@@ -106,6 +101,9 @@ A [system type](#def-system-type) can implement multiple roles, e.g. an ORD Cons
 ### ORD Provider
 
 An <dfn id="def-ord-provider">ORD provider</dfn> is a system instance (of an application or service) that exposes ORD information for self-description.
+The **provider role** applies to business applications/services that want to describe themselves (<dfn id="def-described-system-instance">described system instance</dfn>).
+
+> ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance not necessarily identical described system instances (see [`describedSystemInstance`](./interfaces/document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
 
 An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
 An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
@@ -118,9 +116,7 @@ An ORD provider MUST use one of the standardized [ORD transport modes](#ord-tran
 
 An <dfn id="def-ord-aggregator">ORD aggregator</dfn> is a system that collects, aggregates, and proxies the ORD information from multiple [ORD providers](#ord-provider).
 It reflects the combined information on the ORD providers that it aggregates.
-The aggregator itself MAY represent a [static catalog view](#def-static-catalog-view) or a [as-is view](#def-as-is-view).
-In case of an [as-is view](#def-as-is-view) of a concrete [system landscape](#def-system-landscape), it MUST support [system instance aware](#def-system-instance-aware) information and MAY support further [system instance](#def-system-instance) grouping concepts, such as accounts, zones etc.
-If it needs to reflect system instance aware information it MUST be system instance aware itself.
+The aggregator itself MAY represent a [static perspective](#def-static-perspective) or a [dynamic perspective](#def-dynamic-perspective), or both.
 
 The ORD information MUST be made available to [ORD Consumers](#ord-consumer) through a higher-quality API, for example via an [ORD Discovery API](#ord-discovery-api) that allows for more advanced consumption patterns.
 
@@ -130,7 +126,14 @@ There are [aggregation rules](#aggregation-rules) and [validation rules](#valida
 
 It MUST support all [ORD transport modes](#ord-transport-modes) that are used by the systems it aggregates.
 
-It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `systemInstanceAware`, `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
+In case the ORD aggregator that supports the [dynamic perspective](#def-dynamic-perspective):
+
+- the aggregator MUST support [system instance aware](#def-system-instance-aware) information and MAY support further [system instance](#def-system-instance) grouping concepts, such as accounts etc.
+- If it needs to reflect system instance aware information it MUST be system instance aware itself.
+- In the ORD Service API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
+  - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Service consumer should not need to understand whether the information is currently static or system instance aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
+  - See chapter on [perspectives](#perspectives).
+- It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `systemInstanceAware`, `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
 
@@ -257,24 +260,23 @@ In that case, one ORD document MUST be provided for each system instance.
 Only if the information is [system instance unaware](#def-system-instance-unaware) (the system behaves the same for each instance), a single ORD document can represent the system as a whole.
 
 Differences between system instances are possible, for example, when the system has configuration or extensibility capabilities that result in resources being activated, deactivated, added, or modified.
-This might happen at config time, deploy time, or even at runtime.
+This might happen at config time, deploy time, or even at run-time.
 
 For example, a configuration could explicitly disable an API. In this case, the ORD document for this specific system instance MUST not describe the disabled API.
-Some systems are even extensible in a way that customers can add new APIs or alter existing APIs at runtime.
+Some systems are even extensible in a way that customers can add new APIs or alter existing APIs at run-time.
 Those changes MUST be documented via ORD.
 Please note that some changes only affect the referenced [resource definitions](#def-resource-definition) and not the ORD document itself.
 However, the change in the resource definition MUST be indicated through a version increment (see [Version and Lifecycle](#version-and-lifecycle)).
 
 #### Considerations on the Granularity of ORD Documents
 
-- MUST be split if multiple namespaces or even system instances are described.
-  At least one ORD document MUST be created for each, as the ORD document is scoped to describe a specific system instance.
-- MUST be split when they become too big in size (MUST not exceed 2 MB), as no pagination is supported.
-- MUST be split with different access strategies (as an ORD document can't be both open and protected).
-- SHOULD be split according to lifecycle and ownership concerns (e.g. all customer or partner created resources together).
-- SHOULD be split according to team autonomy boundaries / bounded contexts / domains.
-- SHOULD be split to optimize retrieval and cache handling.
-  - Move frequently changing information to dedicated or smaller documents.
+- MUST be split if multiple [system namespaces](#system-namespace) or even system instances are described.
+  At least one ORD document MUST be created for each, as the ORD document is scoped to describe a specific system type (static) or instance (dynamic).
+- MUST be split if different [perspectives](#perspectives) are described, as one document can only describe one perspective.
+- MUST be split when they become too big in size (MUST not exceed 2 MB).
+- MAY be split according to lifecycle and ownership concerns (e.g. all customer or partner created resources together).
+- MAY be split according to team autonomy boundaries / bounded contexts / domains.
+- MAY be split to optimize retrieval and cache handling.
 
 #### ORD Information Reuse
 
@@ -460,7 +462,7 @@ This section outlines the rules of how ORD information is merged and - if confli
 
 First, the distinction between [ORD taxonomy](#def-ord-taxonomy) and [ORD resource](#def-ord-resource) information must be understood.
 
-The ORD taxonomy is considered <a href="#def-cross-system">cross-system</a> information, while [ORD resources](#def-ord-resource) can be either [system instance aware](#def-system-instance-aware) or [system instance unaware](#def-system-instance-unaware).
+The ORD taxonomy is not tied to a particular <a href="#def-product">product</a> or <a href="#def-system-type">system type</a>, while [ORD resources](#def-ord-resource) can be either [system instance aware](#def-system-instance-aware) or [system instance unaware](#def-system-instance-unaware).
 
 ###### Merging ORD Taxonomy
 
@@ -574,7 +576,31 @@ An ORD aggregator MAY expose more information than it received from the ORD prov
 As long as there is no standardized ORD Discovery API contract, each ORD aggregator MAY implement their own API contract.
 Ideally this contract is based on the [ORD Provider API](#ord-provider-api) interfaces with only minor differences and additions.
 
-## Miscellaneous
+## Perspectives
+
+With ORD it's possible to describe a system both from a <a href="#def-static-perspective">static perspective</a> and a <a href="#def-dynamic-perspective">dynamic perspective</a>.
+For a definition, please refer to the [terminology](#terminology) section.
+
+> ⏩ This concept requires some background to understand properly.
+> It is explained in more detail in the [perspectives concept page](./concepts/perspectives.md).
+
+> This concept deprecates the use of `systemInstanceAware`
+
+There is a `perspective` attribute, which allows to set the following values:
+
+- `system-version`: The <a href="#def-static-perspective">static perspective</a> on the granularity of <a href="#def-system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#def-system-instance-unaware">system instance unaware</a> information (usually known at deploy-time).
+- `system-instance`: The <a href="#def-dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#def-system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#def-system-instance-aware">system instance aware</a> information (only known at run-time).
+
+### Correct Use of Perspectives
+
+- Systems, which only have static metadata (system instance unaware) SHOULD choose the `system-version` perspective
+  - If this is categorized correctly, the ORD aggregators do not have to aggregate static, identical metadata per tenant.
+  - In this case the same static metadata will be used to describe all system instances of the same version
+- Systems, which have dynamic metadata MUST use the `system-instance` perspective.
+  - They SHOULD also provide a complete static `system-version` perspective if possible, as static metadata is equally useful.
+- If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
+
+## ID Concepts
 
 ### Namespaces
 
@@ -760,7 +786,6 @@ It MUST be constructed as defined here:
 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
   The namespace MUST reflect the provider of the described resource.
-
   - For `Package`, `ConsumptionBundle`, `APIResource` and `EventResource`, `Capability` and `IntegrationDependency`:
     - MUST be a valid [system namespace](#system-namespace) or an [sub-context namespace](#sub-context-namespace) thereof
   - For `EntityType`
@@ -773,7 +798,6 @@ It MUST be constructed as defined here:
       In this case it needs to be taken care that static publishing does not create conflicts, e.g. through moving the publishing responsibility to the embedded system (and not by the parent system).
 
 - **`<conceptName>`** := The ORD concept name of the described resource / taxonomy.
-
   - Use `product` for `Product`
   - Use `vendor` for `Vendor`
   - Use `package` for `Package`
@@ -786,7 +810,6 @@ It MUST be constructed as defined here:
   - Use `dataProduct` for `DataProduct`
 
 - **`<resourceName>`** := the technical resource name.
-
   - MUST only contain ASCII letters (`a-z`, `A-Z`), digits (`0-9`) and the special characters `-`, `_` and `.`.
   - MUST be unique within the `<namespace>`.
   - SHOULD be a (somewhat) human readable and SEO/URL friendly string (avoid UUIDs).
@@ -795,7 +818,6 @@ It MUST be constructed as defined here:
     - If this cannot be followed, the relationship to the successor APIs can still be indicated via the `successors` property.
 
 - **`<majorVersion>`** := a version incrementor of the resource that increases on breaking changes.
-
   - MUST be provided for `Package`, `ConsumptionBundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`
   - MUST NOT be provided for `Product` and `Vendor`
   - If provided: MUST be an integer and MUST NOT contain leading zeroes.
@@ -816,6 +838,10 @@ An ORD ID MUST match the following [regular expression](https://en.wikipedia.org
 ```regex
 ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
 ```
+
+Examples:
+
+- sap.s4:apiResource:CE_APS_COM_CS_A4C_ODATA_0001:v1
 
 #### ORD ID Resolving
 
@@ -845,11 +871,9 @@ It MUST be constructed as defined here:
 **`<correlationId>`** := `<namespace>:<conceptName>:<localIdentifier>`
 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
-
   - MUST be a valid [namespace](#namespaces).
 
 - **`<conceptName>`**: the name of the target concept (free choice of concept name)
-
   - MUST only contain alphanumeric characters and the special characters `-`, `_`, `/` and `.`.
   - MUST be unique within the chosen `<namespace>`.
   - MUST be a concept that is understood by the application of the `<namespace>`.
@@ -857,7 +881,6 @@ It MUST be constructed as defined here:
   - SHOULD be registered as a known concept on the level of its `<namespace>`.
 
 - **`<localIdentifier>`** := the local resource ID.
-
   - MUST only contain alphanumeric characters and the special characters `-`, `_`, `/` and `.`.
   - MUST be unique within the chosen `<namespace>`.
   - SHOULD be (sufficiently) human readable and SEO/URL friendly (avoid UUIDs).
@@ -887,11 +910,9 @@ It MUST be constructed as defined here:
 **`<conceptId>`** := `<namespace>:<conceptName>`
 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
-
   - MUST be a valid [namespace](#namespaces).
 
 - **`<conceptName>`**: the name of the target concept (free choice of concept name)
-
   - MUST only contain alphanumeric characters and the special characters `-`, `_`, `/` and `.`.
   - MUST be unique within the chosen `<namespace>`.
   - MUST be a concept that is understood by the application owning the `<namespace>`.
@@ -926,19 +947,16 @@ In some situations it is also used to refer to certain implementation standards 
 **`<specificationId>`** := `<namespace>:<specificationIdentifier>:v<majorVersion>`
 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
-
   - MUST be a valid [namespace](#namespaces).
 
   - If the specification is specific only to a single application / service, an [system namespace](#system-namespace) SHOULD be chosen.
 
 - **`<specificationIdentifier>`** a technical Specification Identifier that is unique within `<namespace>`
-
   - MUST only contain ASCII letters (`a-z`, `A-Z`), digits (`0-9`) and the special characters `-`, `_`, `/` and `.`.
   - MUST be unique within `<namespace>`.
   - SHOULD be (sufficiently) human readable (avoid UUIDs).
 
 - **`<majorVersion>`** the major version for the chosen specification
-
   - MUST be an integer.
   - MUST be incremented if the specification introduced an incompatible change for the implementers of the specification.
     This correlates with a major version change in [Semantic Versioning](https://semver.org/).
@@ -952,32 +970,35 @@ A Specification ID MUST match the following [regular expression](https://en.wiki
 ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
 ```
 
-### Version and Lifecycle
+## Version and Lifecycle
 
 The `version` expresses the complete/full resource version number of an [ORD resource](#def-ord-resource) or [ORD taxonomy](#def-ord-taxonomy).
 
 It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and therefore express minor and patch changes that don't lead to incompatible changes.
-The version SHOULD be changed when the resource or the resource definition changed in any way.
+
+The version SHOULD be changed when the resource or the resource definition changed in any way relevant to consumers.
 If (potentially runtime) customization/extension leads to changes in the resource definition, a build number SHOULD be added or incremented to indicate that this change happened.
 
 When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
-If the resource definition also contains a version number, it MUST be equal to the resource `version`.
+If the resource definition also contains a version number, it SHOULD be in sync with the resource `version` (if possible).
 
 When a breaking change is introduced, the rules on constructing [ORD IDs](#ord-id) will ensure that the old version of the resource is not replaced.
-The new version will lead to the creation of a separate and new resource.
-If the old resource is subject to API Deprecation rules, it MUST only be removed after the deprecation period.
-The `releaseStatus` MUST be used to indicate `deprecated` or `decommissioned`.
+The new version will lead to the creation of a separate and new successor resource (see `successor` property).
 
-When an ORD resource has been removed (decommissioned) or an ORD taxonomy is no longer used, it:
+Once a newer resource succeeds an older resource, the old resource SHOULD be deprecated via `releaseStatus` set to `deprecated`.
 
-- MUST be removed from ORD
-- Its removal MUST be indicated by explicitly setting a [`Tombstone`](interfaces/document.md#document.tombstones).
+However, a deprecation does not automatically imply a planned sunset of the resource, which is done separately via setting a `sunsetDate`.
 
-![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.svg "IDs, Version and Lifecycle")
+When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 
-### Common REST Characteristics
+- MUST be removed from ORD or set the `releaseStatus` to `sunset`.
+- MUST explicitly set a [`Tombstone`](interfaces/document.md#document.tombstones).
 
-#### Error Handling
+![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
+
+## Common REST Characteristics
+
+### Error Handling
 
 If there are internal implementation errors, the REST endpoint MUST return a `500` (Server Error) response as defined in the [OpenAPI 3 definition](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/DocumentAPI.oas3.yaml).
 Additional error details MAY be added.
@@ -986,7 +1007,7 @@ If a resource has been requested that does not exist or is not implemented,
 the REST endpoint MUST return a `404` (Not Found) response as defined in the [OpenAPI 3 definition](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/DocumentAPI.oas3.yaml) definition.
 Additional error details MAY be added.
 
-#### Authentication & Authorization
+### Authentication & Authorization
 
 The ORD document endpoints MAY implement authentication and authorization to protect the ORD information and the resource definitions it references.
 In case of system instance aware information, authentication MAY be a technical necessity.

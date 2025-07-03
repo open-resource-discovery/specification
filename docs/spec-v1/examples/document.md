@@ -7,7 +7,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.11",
+  "openResourceDiscovery": "1.12",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1"],
   "products": [
@@ -203,6 +203,25 @@
       "releaseStatus": "active"
     },
     {
+      "ordId": "sap.foo:entityType:Star:v1",
+      "localId": "Star",
+      "level": "sub-entity",
+      "title": "Star",
+      "shortDescription": "A star is a bright object on the night sky",
+      "description": "A star is a shiny thing...",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "relatedEntityTypes": [
+        {
+          "ordId": "sap.foo:entityType:Star:v1",
+          "relationType": "part-of"
+        }
+      ]
+    },
+    {
       "ordId": "sap.foo:entityType:ExampleDomainObject:v1",
       "localId": "ExampleDomainObject",
       "level": "aggregate",
@@ -246,7 +265,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.11",
+  "openResourceDiscovery": "1.12",
   "policyLevels": ["sap:core:v1"],
   "products": [
     {
@@ -927,7 +946,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.11",
+  "openResourceDiscovery": "1.12",
   "description": "Example for entity types as they will be exposed by ODM",
   "policyLevels": ["sap:core:v1"],
   "packages": [
@@ -973,7 +992,7 @@
 ```yaml
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.11",
+  "openResourceDiscovery": "1.12",
   "description": "This ORD Document example contains more special examples, like custom SAP protocols",
   "policyLevels": ["sap:core:v1"],
   "consumptionBundles": [

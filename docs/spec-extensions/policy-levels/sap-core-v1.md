@@ -14,8 +14,9 @@ It MUST be fulfilled by all SAP applications and services.
 Exceptions are only allowed on a case by case basis.
 
 This policy level is based on various SAP guidelines and rules - most of them which are already established.
-
 It defines the core rules and guidelines that are shared across SAP, although more specific rules and guidelines MAY be applied on top.
+
+**All constraints of the ORD specification itself still apply (valid ORD document). The constrains described here come on top.**
 
 ## General Policies
 
@@ -153,7 +154,6 @@ The following constraints apply in addition to the constraints defined in the [O
   The first link includes a decision table for internal vs. external, which corresponds to `visibility` internal vs. public in ORD.
 - The [`extensible`](../../spec-v1/interfaces/document.md#api-resource_extensible) property MUST be provided.
 - For API Resources with `visibility`: "public" or "internal":
-
   - Resource definitions MUST be provided for OData, REST, GraphQL and SOAP APIs.
   - OData APIs MUST have a resource definition of `"type": "edmx"` AND additionally one of either `"type": "openapi-v3"` or `"type": "openapi-v2"`.
   - Plain REST APIs MUST have a resource definition of `"type": "openapi-v3"` (RECOMMENDED) or `"type": "openapi-v2"`.

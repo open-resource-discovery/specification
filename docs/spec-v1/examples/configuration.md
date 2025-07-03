@@ -10,7 +10,17 @@
   "openResourceDiscoveryV1": {
     "documents": [
       {
-        "url": "/ord/documents/1.json",
+        "url": "/open-resource-discovery/v1/documents/1-static",
+        "perspective": "system-version",
+        "accessStrategies": [
+          {
+            "type": "open"
+          }
+        ]
+      },
+      {
+        "url": "/open-resource-discovery/v1/documents/1",
+        "perspective": "system-instance",
         "accessStrategies": [
           {
             "type": "open"
@@ -19,6 +29,7 @@
       },
       {
         "url": "/ord/documents/data-product.json",
+        "perspective": "system-version",
         "accessStrategies": [
           {
             "type": "open"
@@ -28,8 +39,7 @@
             "customType": "sap.foo:open-with-tenant-id:v1",
             "customDescription": "The metadata information is openly accessible but system instance aware.\nThe tenant is selected by providing a global or local tenant ID header."
           }
-        ],
-        "systemInstanceAware": true
+        ]
       }
     ],
     "capabilities": {

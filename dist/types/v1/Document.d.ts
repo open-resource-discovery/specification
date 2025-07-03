@@ -17,7 +17,7 @@ export interface ORDDocument {
     /**
      * Version of the Open Resource Discovery specification that is used to describe this document.
      */
-    openResourceDiscovery: "1.0" | "1.1" | "1.2" | "1.3" | "1.4" | "1.5" | "1.6" | "1.7" | "1.8" | "1.9" | "1.10" | "1.11";
+    openResourceDiscovery: "1.0" | "1.1" | "1.2" | "1.3" | "1.4" | "1.5" | "1.6" | "1.7" | "1.8" | "1.9" | "1.10" | "1.11" | "1.12";
     /**
      * Optional description of the ORD document itself.
      * Please note that this information is NOT further processed or considered by an ORD aggregator.
@@ -25,6 +25,18 @@ export interface ORDDocument {
      * Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
      */
     description?: string;
+    /**
+     * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
+     *
+     * It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+     *
+     * It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+     *
+     * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
+     *
+     * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
+     */
+    perspective?: "system-version" | "system-instance" | "system-independent";
     describedSystemInstance?: SystemInstance;
     describedSystemType?: SystemType;
     describedSystemVersion?: SystemVersion;
@@ -102,8 +114,8 @@ export interface ORDDocument {
      */
     groupTypes?: GroupType[];
     /**
-     * List of ORD information (resources or taxonomy) that have been "tombstoned"/removed.
-     * This MUST be indicated explicitly, so that ORD aggregators and consumers can learn about the removal.
+     * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
+     * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
      *
      * A tombstone entry MAY be removed after a grace period of 31 days.
      */
@@ -231,9 +243,13 @@ export interface SystemType {
  */
 export interface SystemVersion {
     /**
-     * The version number of the system instance (run-time) or the version of the described static system type.
+     * The version of the system instance (run-time) or the version of the described system-version perspective.
      *
      * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+     *
+     * MUST be provided if the ORD document is `perspective`: `system-version`.
+     *
+     * For continuous-delivery systems, the version MAY be fixed to the same value, e.g. `1.0.0`, but be aware that phased rollouts may benefit from a more precise versioning like adding a build number.
      */
     version?: string;
     /**
@@ -405,7 +421,7 @@ export interface APIResource {
      *
      * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
      *
-     * Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+     * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
      */
     lastUpdate?: string;
     /**
@@ -415,7 +431,7 @@ export interface APIResource {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
      * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -436,15 +452,13 @@ export interface APIResource {
     minSystemVersion?: string;
     /**
      * The deprecation date defines when the resource has been set as deprecated.
-     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-     *
-     * If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
      *
      * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
      */
     deprecationDate?: string;
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -637,6 +651,9 @@ export interface APIResource {
      */
     policyLevels?: string[];
     /**
+     * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+     * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+     *
      * Defines whether this ORD resource is **system instance aware**.
      * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
      *
@@ -681,7 +698,7 @@ export interface ChangelogEntry {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Date of change, without time or timezone information.
      *
@@ -1109,7 +1126,7 @@ export interface EventResource {
      *
      * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
      *
-     * Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+     * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
      */
     lastUpdate?: string;
     /**
@@ -1119,7 +1136,7 @@ export interface EventResource {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
      * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1140,15 +1157,13 @@ export interface EventResource {
     minSystemVersion?: string;
     /**
      * The deprecation date defines when the resource has been set as deprecated.
-     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-     *
-     * If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
      *
      * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
      */
     deprecationDate?: string;
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -1299,6 +1314,9 @@ export interface EventResource {
      */
     policyLevels?: string[];
     /**
+     * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+     * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+     *
      * Defines whether this ORD resource is **system instance aware**.
      * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
      *
@@ -1466,7 +1484,7 @@ export interface EntityType {
      *
      * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
      *
-     * Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+     * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
      */
     lastUpdate?: string;
     /**
@@ -1476,18 +1494,16 @@ export interface EntityType {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * The deprecation date defines when the resource has been set as deprecated.
-     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-     *
-     * If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
      *
      * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
      */
     deprecationDate?: string;
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -1567,6 +1583,9 @@ export interface EntityType {
      */
     policyLevels?: string[];
     /**
+     * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+     * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+     *
      * Defines whether this ORD resource is **system instance aware**.
      * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
      *
@@ -1577,8 +1596,7 @@ export interface EntityType {
     systemInstanceAware?: boolean;
 }
 /**
- * Defines which Entity Type is related (via its ORD ID).
- * In the future, this could include stating the relationship type, too.
+ * Defines the relation between Entity Types (via its ORD ID).
  */
 export interface RelatedEntityType {
     /**
@@ -1587,6 +1605,12 @@ export interface RelatedEntityType {
      * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
      */
     ordId: string;
+    /**
+     * Optional type of the relationship, which defines a stricter semantic what the relationship implies.
+     *
+     * If not provided, the relationship type has no semantics, it's "related somehow".
+     */
+    relationType?: "part-of" | "can-share-identity";
 }
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
@@ -1702,7 +1726,7 @@ export interface Capability {
      *
      * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
      *
-     * Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+     * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
      */
     lastUpdate?: string;
     /**
@@ -1712,7 +1736,7 @@ export interface Capability {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
      * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1761,6 +1785,9 @@ export interface Capability {
     labels?: Labels;
     documentationLabels?: DocumentationLabels;
     /**
+     * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+     * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+     *
      * Defines whether this ORD resource is **system instance aware**.
      * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
      *
@@ -1926,7 +1953,7 @@ export interface DataProduct {
      *
      * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
      *
-     * Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+     * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
      */
     lastUpdate?: string;
     /**
@@ -1938,7 +1965,7 @@ export interface DataProduct {
      * In the context of data products, it it covers only properties on the data product level.
      * APIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
      * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
      * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1966,15 +1993,13 @@ export interface DataProduct {
     lifecycleStatus?: "inactive" | "provisioning" | "active" | "deprovisioning" | "active-with-errors" | "provisioning-error" | "deprovisioning-error";
     /**
      * The deprecation date defines when the resource has been set as deprecated.
-     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.
-     *
-     * If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+     * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
      *
      * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
      */
     deprecationDate?: string;
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -2102,6 +2127,9 @@ export interface DataProduct {
      */
     policyLevels?: string[];
     /**
+     * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+     * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+     *
      * Defines whether this ORD resource is **system instance aware**.
      * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
      *
@@ -2278,7 +2306,7 @@ export interface IntegrationDependency {
      *
      * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
      *
-     * Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+     * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
      */
     lastUpdate?: string;
     /**
@@ -2288,9 +2316,9 @@ export interface IntegrationDependency {
     /**
      * The `releaseStatus` specifies the stability of the resource and its external contract.
      */
-    releaseStatus: "active" | "beta" | "deprecated";
+    releaseStatus: "beta" | "active" | "deprecated" | "sunset";
     /**
-     * The sunset date defines when the resource is scheduled to be decommissioned/removed.
+     * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
      *
      * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
      * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
@@ -2846,7 +2874,7 @@ export interface ConsumptionBundle {
      *
      * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
      *
-     * Together with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+     * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
      */
     lastUpdate?: string;
     /**
@@ -2981,13 +3009,12 @@ export interface GroupType {
     [k: string]: any | undefined;
 }
 /**
- * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned.
+ * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
  * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
  *
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *
- * It MUST be kept sufficiently long so that all ORD aggregators can learn about the tombstone.
- * After that it MAY be removed.
+ * The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
  */
 export interface Tombstone {
     /**

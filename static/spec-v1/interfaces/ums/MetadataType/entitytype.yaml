@@ -75,7 +75,7 @@ spec:
         pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
     - name: 'lastUpdate'
       type: 'string'
-      description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `systemInstanceAware`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
+      description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
     - name: 'visibility'
       type: 'string'
       description: 'The visibility states who is allowed to "see" the described resource or capability.'
@@ -86,10 +86,10 @@ spec:
       mandatory: true
     - name: 'deprecationDate'
       type: 'string'
-      description: "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually decommissioned / removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
+      description: "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
     - name: 'sunsetDate'
       type: 'string'
-      description: "The sunset date defines when the resource is scheduled to be decommissioned/removed.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
+      description: "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
     - name: 'successors_ID'
       type: 'guid'
       array: true
@@ -135,7 +135,7 @@ spec:
       description: "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id)."
     - name: 'systemInstanceAware'
       type: 'boolean'
-      description: "Defines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**."
+      description: "All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**."
   customTypeDefinitions:
     - name: 'ChangelogEntry'
       metadataProperties:
@@ -237,4 +237,9 @@ spec:
       relatedTypeName: 'Capability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: 'Capabilities associated to the Entity Type.'
+      mandatory: false
+    - propertyName: 'inverseRelatedEntityTypes'
+      relatedTypeName: 'RelatedEntityType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Entity types that defined a relationship to this entity type'
       mandatory: false

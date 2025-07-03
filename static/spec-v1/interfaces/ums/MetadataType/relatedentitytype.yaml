@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: true
-  description: "Defines which Entity Type is related (via its ORD ID).\nIn the future, this could include stating the relationship type, too."
+  description: 'Defines the relation between Entity Types (via its ORD ID).'
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -24,6 +24,9 @@ spec:
       constraints:
         maxLength: 255
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'relationType'
+      type: 'string'
+      description: "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\"."
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'ordId'
@@ -33,3 +36,5 @@ spec:
       managedByProperty: 'ordId_ID'
       description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
       mandatory: true
+      reverseRelation:
+        relationPropertyName: 'inverseRelatedEntityTypes'

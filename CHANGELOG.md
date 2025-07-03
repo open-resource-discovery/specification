@@ -10,6 +10,34 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.12.0]
+
+### Added
+
+- Introduction of `perspective` in the ORD config and ORD document interfaces
+  - This allows to explicitly declare which perspective is described on a per ORD-Document granularity level
+    - `system-version`: Describes a static view, how a type of the system looks like in a specific version
+    - `system-instance`: Describes how the system instance actually looks like at run-time (complete description, not partial!)
+    - `system-independent`: Content that is independent or shared by multiple systems, e.g. global taxonomy.
+  - It is now allowed to describe the same ORD resource not once, but for each perspective
+  - This deprecates the `systemInstanceAware` flag
+- Added `relationType` to `EntityType`.`relatedEntityTypes`
+  - This allows to define the semantic relationship type between two entity types
+  - Allowed values are `part-of` and `can-share-identity`
+- Added new `releaseStatus` of `sunset`
+  - If a resource has been sunset, previously it was required to also remove the resource description in ORD. Now it's allowed to keep it, but with `sunset` status. A tombstone entry MUST be provided on top.
+
+### Changed
+
+- Clarifications on Versioning and Lifecycle
+  - Deprecation of resource does not imply a planned sunset, this is only implied once a `sunsetDate` has been set.
+  - Deprecation of resource is RECOMMENDED once a successor resource exists.
+  - Tombstone indicates either removal or archival of the entry for an ORD aggregator (implementation choice)
+
+### Fixed
+
+- Consistency: The Access Strategy enum in the ORD config interface was not extensible, like it already was in the Document interface (introduced with v1.11.0)
+
 ## [1.11.1]
 
 ### Added

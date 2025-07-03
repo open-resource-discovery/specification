@@ -215,7 +215,7 @@ const config = {
             to: "https://github.com/open-resource-discovery/specification",
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Linux Foundation. Made available under Apache License 2.0.\n\n This site is hosted by GitHub Pages. Please see the GitHub Privacy Statement for any information how GitHub processes your personal data.`,
+        copyright: `Copyright © Linux Foundation Europe. <ProjectName> is a project of NeoNephos Foundation. For applicable policies including privacy policy, terms of use and trademark usage guidelines, please see https://linuxfoundation.eu. Linux is a registered trademark of Linus Torvalds.`,
       },
     }),
 };

@@ -52,6 +52,18 @@ export interface ORDV1DocumentDescription {
      */
     url: string;
     /**
+     * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
+     *
+     * It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+     *
+     * It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+     *
+     * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
+     *
+     * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
+     */
+    perspective?: "system-version" | "system-instance" | "system-independent";
+    /**
      * Whether the information in the ORD document is **system instance aware**.
      *
      * This is the case when the provided ORD document potentially differs between **system instances**.
@@ -87,7 +99,7 @@ export interface AccessStrategy {
     /**
      * Defines the authentication/authorization strategy through which the referenced ORD Documents can be accessed.
      */
-    type: "open" | "sap:oauth-client-credentials:v1" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom";
+    type: (string | "open" | "sap:oauth-client-credentials:v1" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *

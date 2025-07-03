@@ -79,7 +79,9 @@ article .card {
 .markdown blockquote {
   margin: 16px 0;
   padding: 4px 8px;
-  background: #eee;
+  background: #f1f4f8;
+  border-left: var(--ifm-blockquote-border-left-width) solid #a1b2cb;
+  border-radius: 4px;
 }
 
 .markdown table {
@@ -109,7 +111,6 @@ article .card {
 .markdown .recommended,
 .markdown .optional,
 .markdown .deprecated,
-.markdown .feature-status-draft,
 .markdown .feature-status-alpha,
 .markdown .feature-status-beta {
   color: #fff;
@@ -128,7 +129,7 @@ article .card {
   background-color: #999;
 }
 .markdown .deprecated {
-  background-color: #9c6649;
+  background-color: #7c5cb4;
 }
 .markdown .feature-status-draft {
   background: #5cad9f;
@@ -160,7 +161,9 @@ article .card {
 
 .markdown dfn {
   scroll-margin-top: 80px;
-  border-bottom: 1px dotted #ccc;
+  background: #e3eef7;
+  border-radius: 3px;
+  padding: 0 4px;
 }
 
 .markdown details {
@@ -176,6 +179,11 @@ article .card {
   display: none;
 }
 
+.footer--dark {
+  border-top: 6px solid #161e2e;
+  background: rgb(41, 53, 71);
+  background: linear-gradient(175deg, #1a2737 0%, rgb(82 112 133) 100%);
+}
 iframe {
   border: 1px solid #e7e7e7;
   border-radius: 8px;
