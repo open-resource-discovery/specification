@@ -215,7 +215,7 @@ const config = {
             to: "https://github.com/open-resource-discovery/specification",
           },
         ],
-        copyright: `Copyright © Linux Foundation Europe. <ProjectName> is a project of NeoNephos Foundation. For applicable policies including privacy policy, terms of use and trademark usage guidelines, please see https://linuxfoundation.eu. Linux is a registered trademark of Linus Torvalds.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Linux Foundation Europe. Open Resource Discovery is a project of NeoNephos Foundation. For applicable policies including privacy policy, terms of use and trademark usage guidelines, please see https://linuxfoundation.eu. Linux is a registered trademark of Linus Torvalds.`,
       },
     }),
 };

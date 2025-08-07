@@ -24,7 +24,7 @@ Most notably, the ORD configuration will tell an ORD consumer which ORD document
 
 The configuration endpoint is a [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) discovery mechanism.
 
-**Type**: Object(<a href="#ord-configuration_$schema">$schema</a>, <a href="#ord-configuration_baseurl">baseUrl</a>, <a href="#ord-configuration_openresourcediscoveryv1">openResourceDiscoveryV1</a>)
+**Type**: Object<small>(<a href="#ord-configuration_$schema">$schema</a>, <a href="#ord-configuration_baseurl">baseUrl</a>, <a href="#ord-configuration_openresourcediscoveryv1">openResourceDiscoveryV1</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -36,7 +36,7 @@ The configuration endpoint is a [Well-Known URI](https://tools.ietf.org/html/rfc
 
 The existence of this version indicates that Open Resource Discovery is supported in Version 1.x
 
-**Type**: Object(<a href="#ord-v1-support_documents">documents</a>, <a href="#ord-v1-support_capabilities">capabilities</a>)
+**Type**: Object<small>(<a href="#ord-v1-support_capabilities">capabilities</a>, <a href="#ord-v1-support_documents">documents</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -47,7 +47,7 @@ The existence of this version indicates that Open Resource Discovery is supporte
 
 Describes an [ORD Document](../index.md#ord-document) that is available for pull transport consumption.
 
-**Type**: Object(<a href="#ord-v1-document-description_url">url</a>, <a href="#ord-v1-document-description_perspective">perspective</a>, <a href="#ord-v1-document-description_systeminstanceaware">systemInstanceAware</a>, <a href="#ord-v1-document-description_accessstrategies">accessStrategies</a>)
+**Type**: Object<small>(<a href="#ord-v1-document-description_accessstrategies">accessStrategies</a>, <a href="#ord-v1-document-description_perspective">perspective</a>, <a href="#ord-v1-document-description_systeminstanceaware">systemInstanceAware</a>, <a href="#ord-v1-document-description_url">url</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -60,7 +60,7 @@ Describes an [ORD Document](../index.md#ord-document) that is available for pull
 
 List of capabilities that are supported by the ORD provider.
 
-**Type**: Object(<a href="#ord-v1-capabilities_selector">selector</a>)
+**Type**: Object<small>(<a href="#ord-v1-capabilities_selector">selector</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -70,7 +70,7 @@ List of capabilities that are supported by the ORD provider.
 
 Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the ORD documents from the ORD provider.
 
-**Type**: Object(<a href="#access-strategy_type">type</a>, <a href="#access-strategy_customtype">customType</a>, <a href="#access-strategy_customdescription">customDescription</a>)
+**Type**: Object<small>(<a href="#access-strategy_customdescription">customDescription</a>, <a href="#access-strategy_customtype">customType</a>, <a href="#access-strategy_type">type</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |

@@ -88,11 +88,10 @@ Based on this, many end-user use cases can be realized, e.g.:
 
 ## Future Plans
 
-Now that ORD is [open-source](https://open-resource-discovery.github.io/specification/), a potential next step is to work with partners on a true industry wide standard, as ORD is currently focused on SAPs requirements.
-We are also part of the publicly funded [IPCEI CIS](https://www.bmwk.de/Redaktion/EN/Artikel/Industry/ipcei-cis.html) project, where we also work towards this goal.
+Now that ORD is [open-source](https://open-resource-discovery.github.io/specification/) and a neutrally governed standard via [Linux Foundation](https://www.linuxfoundation.org/), a next step is to work with partners to establish it as an industry wide standard.
+We are also part of the publicly funded [IPCEI CIS](https://www.bmwk.de/Redaktion/EN/Artikel/Industry/ipcei-cis.html) / [ApeiroRA](https://apeirora.eu/) project, where we work towards this goal.
 
 The specification itself is designed to be generic, so most SAP specific aspects are described as [spec extensions](./spec-extensions).
 Some concepts like [namespaces](./spec-v1/#namespaces) could be further standardized if there's a need for cross-company metadata exchange.
 
-We are thinking about ways to make ORD publishing more efficient when there is a lot of tenant specific metadata or data changes happen frequently and replication is more time critical.
-There is also need to make publishing easier for simple, static providers that prefer publishing design-time information only.
+<p align="left"><img alt="Bundesministerium für Wirtschaft und Energie (BMWE)-EU funding logo" src="https://apeirora.eu/assets/img/BMWK-EU.png" width="250"/></p>

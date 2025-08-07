@@ -53,3 +53,9 @@ For detailed and recent changes, please refer to the [CHANGELOG.md](CHANGELOG.md
 ## License
 
 Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/open-resource-discovery/specification).
+
+## Open Resource Discovery and NeoNephos
+
+Open Resource Discovery has been donated to the NeoNephos Foundation, a Linux Foundation initiative dedicated to advancing open-source projects that align with the strategic objectives of IPCEI-CIS under neutral governance. Learn more about NeoNephos and our role within it [here](https://neonephos.org/).
+
+<p align="center"><img alt="Bundesministerium für Wirtschaft und Energie (BMWE)-EU funding logo" src="https://apeirora.eu/assets/img/BMWK-EU.png" width="400"/></p>

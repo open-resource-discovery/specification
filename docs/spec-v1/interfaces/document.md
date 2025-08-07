@@ -23,7 +23,7 @@ that are specific to the document/the service it describes.
 
 The constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.
 
-**Type**: Object(<a href="#ord-document_$schema">$schema</a>, <a href="#ord-document_openresourcediscovery">openResourceDiscovery</a>, <a href="#ord-document_description">description</a>, <a href="#ord-document_perspective">perspective</a>, <a href="#ord-document_describedsysteminstance">describedSystemInstance</a>, <a href="#ord-document_describedsystemtype">describedSystemType</a>, <a href="#ord-document_describedsystemversion">describedSystemVersion</a>, <a href="#ord-document_policylevel">policyLevel</a>, <a href="#ord-document_custompolicylevel">customPolicyLevel</a>, <a href="#ord-document_policylevels">policyLevels</a>, <a href="#ord-document_apiresources">apiResources</a>, <a href="#ord-document_eventresources">eventResources</a>, <a href="#ord-document_entitytypes">entityTypes</a>, <a href="#ord-document_capabilities">capabilities</a>, <a href="#ord-document_dataproducts">dataProducts</a>, <a href="#ord-document_integrationdependencies">integrationDependencies</a>, <a href="#ord-document_vendors">vendors</a>, <a href="#ord-document_products">products</a>, <a href="#ord-document_packages">packages</a>, <a href="#ord-document_consumptionbundles">consumptionBundles</a>, <a href="#ord-document_groups">groups</a>, <a href="#ord-document_grouptypes">groupTypes</a>, <a href="#ord-document_tombstones">tombstones</a>)
+**Type**: Object<small>(<a href="#ord-document_$schema">$schema</a>, <a href="#ord-document_apiresources">apiResources</a>, <a href="#ord-document_capabilities">capabilities</a>, <a href="#ord-document_consumptionbundles">consumptionBundles</a>, <a href="#ord-document_custompolicylevel">customPolicyLevel</a>, <a href="#ord-document_dataproducts">dataProducts</a>, <a href="#ord-document_describedsysteminstance">describedSystemInstance</a>, <a href="#ord-document_describedsystemtype">describedSystemType</a>, <a href="#ord-document_describedsystemversion">describedSystemVersion</a>, <a href="#ord-document_description">description</a>, <a href="#ord-document_entitytypes">entityTypes</a>, <a href="#ord-document_eventresources">eventResources</a>, <a href="#ord-document_groups">groups</a>, <a href="#ord-document_grouptypes">groupTypes</a>, <a href="#ord-document_integrationdependencies">integrationDependencies</a>, <a href="#ord-document_openresourcediscovery">openResourceDiscovery</a>, <a href="#ord-document_packages">packages</a>, <a href="#ord-document_perspective">perspective</a>, <a href="#ord-document_policylevel">policyLevel</a>, <a href="#ord-document_policylevels">policyLevels</a>, <a href="#ord-document_products">products</a>, <a href="#ord-document_tombstones">tombstones</a>, <a href="#ord-document_vendors">vendors</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -67,7 +67,7 @@ Please note that APIs can be described, but still be [`disabled`](#api-resource_
 
 If the API is not created or owned by the user of the system or by third parties (like partners), it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
 
-**Type**: Object(<a href="#api-resource_ordid">ordId</a>, <a href="#api-resource_localid">localId</a>, <a href="#api-resource_correlationids">correlationIds</a>, <a href="#api-resource_title">title</a>, <a href="#api-resource_shortdescription">shortDescription</a>, <a href="#api-resource_description">description</a>, <a href="#api-resource_partofpackage">partOfPackage</a>, <a href="#api-resource_partofgroups">partOfGroups</a>, <a href="#api-resource_partofconsumptionbundles">partOfConsumptionBundles</a>, <a href="#api-resource_defaultconsumptionbundle">defaultConsumptionBundle</a>, <a href="#api-resource_partofproducts">partOfProducts</a>, <a href="#api-resource_version">version</a>, <a href="#api-resource_lastupdate">lastUpdate</a>, <a href="#api-resource_visibility">visibility</a>, <a href="#api-resource_releasestatus">releaseStatus</a>, <a href="#api-resource_disabled">disabled</a>, <a href="#api-resource_minsystemversion">minSystemVersion</a>, <a href="#api-resource_deprecationdate">deprecationDate</a>, <a href="#api-resource_sunsetdate">sunsetDate</a>, <a href="#api-resource_successors">successors</a>, <a href="#api-resource_changelogentries">changelogEntries</a>, <a href="#api-resource_entrypoints">entryPoints</a>, <a href="#api-resource_direction">direction</a>, <a href="#api-resource_apiprotocol">apiProtocol</a>, <a href="#api-resource_resourcedefinitions">resourceDefinitions</a>, <a href="#api-resource_implementationstandard">implementationStandard</a>, <a href="#api-resource_customimplementationstandard">customImplementationStandard</a>, <a href="#api-resource_customimplementationstandarddescription">customImplementationStandardDescription</a>, <a href="#api-resource_compatiblewith">compatibleWith</a>, <a href="#api-resource_responsible">responsible</a>, <a href="#api-resource_supportedusecases">supportedUseCases</a>, <a href="#api-resource_usage">usage</a>, <a href="#api-resource_entitytypemappings">entityTypeMappings</a>, <a href="#api-resource_exposedentitytypes">exposedEntityTypes</a>, <a href="#api-resource_apiresourcelinks">apiResourceLinks</a>, <a href="#api-resource_links">links</a>, <a href="#api-resource_extensible">extensible</a>, <a href="#api-resource_countries">countries</a>, <a href="#api-resource_lineofbusiness">lineOfBusiness</a>, <a href="#api-resource_industry">industry</a>, <a href="#api-resource_tags">tags</a>, <a href="#api-resource_labels">labels</a>, <a href="#api-resource_documentationlabels">documentationLabels</a>, <a href="#api-resource_policylevel">policyLevel</a>, <a href="#api-resource_custompolicylevel">customPolicyLevel</a>, <a href="#api-resource_policylevels">policyLevels</a>, <a href="#api-resource_systeminstanceaware">systemInstanceAware</a>)
+**Type**: Object<small>(<a href="#api-resource_apiprotocol">apiProtocol</a>, <a href="#api-resource_apiresourcelinks">apiResourceLinks</a>, <a href="#api-resource_changelogentries">changelogEntries</a>, <a href="#api-resource_compatiblewith">compatibleWith</a>, <a href="#api-resource_correlationids">correlationIds</a>, <a href="#api-resource_countries">countries</a>, <a href="#api-resource_customimplementationstandard">customImplementationStandard</a>, <a href="#api-resource_customimplementationstandarddescription">customImplementationStandardDescription</a>, <a href="#api-resource_custompolicylevel">customPolicyLevel</a>, <a href="#api-resource_defaultconsumptionbundle">defaultConsumptionBundle</a>, <a href="#api-resource_deprecationdate">deprecationDate</a>, <a href="#api-resource_description">description</a>, <a href="#api-resource_direction">direction</a>, <a href="#api-resource_disabled">disabled</a>, <a href="#api-resource_documentationlabels">documentationLabels</a>, <a href="#api-resource_entitytypemappings">entityTypeMappings</a>, <a href="#api-resource_entrypoints">entryPoints</a>, <a href="#api-resource_exposedentitytypes">exposedEntityTypes</a>, <a href="#api-resource_extensible">extensible</a>, <a href="#api-resource_implementationstandard">implementationStandard</a>, <a href="#api-resource_industry">industry</a>, <a href="#api-resource_labels">labels</a>, <a href="#api-resource_lastupdate">lastUpdate</a>, <a href="#api-resource_lineofbusiness">lineOfBusiness</a>, <a href="#api-resource_links">links</a>, <a href="#api-resource_localid">localId</a>, <a href="#api-resource_minsystemversion">minSystemVersion</a>, <a href="#api-resource_ordid">ordId</a>, <a href="#api-resource_partofconsumptionbundles">partOfConsumptionBundles</a>, <a href="#api-resource_partofgroups">partOfGroups</a>, <a href="#api-resource_partofpackage">partOfPackage</a>, <a href="#api-resource_partofproducts">partOfProducts</a>, <a href="#api-resource_policylevel">policyLevel</a>, <a href="#api-resource_policylevels">policyLevels</a>, <a href="#api-resource_releasestatus">releaseStatus</a>, <a href="#api-resource_resourcedefinitions">resourceDefinitions</a>, <a href="#api-resource_responsible">responsible</a>, <a href="#api-resource_shortdescription">shortDescription</a>, <a href="#api-resource_successors">successors</a>, <a href="#api-resource_sunsetdate">sunsetDate</a>, <a href="#api-resource_supportedusecases">supportedUseCases</a>, <a href="#api-resource_systeminstanceaware">systemInstanceAware</a>, <a href="#api-resource_tags">tags</a>, <a href="#api-resource_title">title</a>, <a href="#api-resource_usage">usage</a>, <a href="#api-resource_version">version</a>, <a href="#api-resource_visibility">visibility</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -126,7 +126,7 @@ Which events are considered "related" is up to the implementer. A common practic
 Please note that event resources can be described, but still be [`disabled`](#event-resource_disabled).
 If the event resource is not created or owned by the user / customer of the system or by partners / third parties, it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
 
-**Type**: Object(<a href="#event-resource_ordid">ordId</a>, <a href="#event-resource_localid">localId</a>, <a href="#event-resource_correlationids">correlationIds</a>, <a href="#event-resource_title">title</a>, <a href="#event-resource_shortdescription">shortDescription</a>, <a href="#event-resource_description">description</a>, <a href="#event-resource_partofpackage">partOfPackage</a>, <a href="#event-resource_partofgroups">partOfGroups</a>, <a href="#event-resource_partofconsumptionbundles">partOfConsumptionBundles</a>, <a href="#event-resource_defaultconsumptionbundle">defaultConsumptionBundle</a>, <a href="#event-resource_partofproducts">partOfProducts</a>, <a href="#event-resource_version">version</a>, <a href="#event-resource_lastupdate">lastUpdate</a>, <a href="#event-resource_visibility">visibility</a>, <a href="#event-resource_releasestatus">releaseStatus</a>, <a href="#event-resource_disabled">disabled</a>, <a href="#event-resource_minsystemversion">minSystemVersion</a>, <a href="#event-resource_deprecationdate">deprecationDate</a>, <a href="#event-resource_sunsetdate">sunsetDate</a>, <a href="#event-resource_successors">successors</a>, <a href="#event-resource_changelogentries">changelogEntries</a>, <a href="#event-resource_resourcedefinitions">resourceDefinitions</a>, <a href="#event-resource_implementationstandard">implementationStandard</a>, <a href="#event-resource_customimplementationstandard">customImplementationStandard</a>, <a href="#event-resource_customimplementationstandarddescription">customImplementationStandardDescription</a>, <a href="#event-resource_compatiblewith">compatibleWith</a>, <a href="#event-resource_responsible">responsible</a>, <a href="#event-resource_entitytypemappings">entityTypeMappings</a>, <a href="#event-resource_exposedentitytypes">exposedEntityTypes</a>, <a href="#event-resource_eventresourcelinks">eventResourceLinks</a>, <a href="#event-resource_links">links</a>, <a href="#event-resource_extensible">extensible</a>, <a href="#event-resource_countries">countries</a>, <a href="#event-resource_lineofbusiness">lineOfBusiness</a>, <a href="#event-resource_industry">industry</a>, <a href="#event-resource_tags">tags</a>, <a href="#event-resource_labels">labels</a>, <a href="#event-resource_documentationlabels">documentationLabels</a>, <a href="#event-resource_policylevel">policyLevel</a>, <a href="#event-resource_custompolicylevel">customPolicyLevel</a>, <a href="#event-resource_policylevels">policyLevels</a>, <a href="#event-resource_systeminstanceaware">systemInstanceAware</a>)
+**Type**: Object<small>(<a href="#event-resource_changelogentries">changelogEntries</a>, <a href="#event-resource_compatiblewith">compatibleWith</a>, <a href="#event-resource_correlationids">correlationIds</a>, <a href="#event-resource_countries">countries</a>, <a href="#event-resource_customimplementationstandard">customImplementationStandard</a>, <a href="#event-resource_customimplementationstandarddescription">customImplementationStandardDescription</a>, <a href="#event-resource_custompolicylevel">customPolicyLevel</a>, <a href="#event-resource_defaultconsumptionbundle">defaultConsumptionBundle</a>, <a href="#event-resource_deprecationdate">deprecationDate</a>, <a href="#event-resource_description">description</a>, <a href="#event-resource_disabled">disabled</a>, <a href="#event-resource_documentationlabels">documentationLabels</a>, <a href="#event-resource_entitytypemappings">entityTypeMappings</a>, <a href="#event-resource_eventresourcelinks">eventResourceLinks</a>, <a href="#event-resource_exposedentitytypes">exposedEntityTypes</a>, <a href="#event-resource_extensible">extensible</a>, <a href="#event-resource_implementationstandard">implementationStandard</a>, <a href="#event-resource_industry">industry</a>, <a href="#event-resource_labels">labels</a>, <a href="#event-resource_lastupdate">lastUpdate</a>, <a href="#event-resource_lineofbusiness">lineOfBusiness</a>, <a href="#event-resource_links">links</a>, <a href="#event-resource_localid">localId</a>, <a href="#event-resource_minsystemversion">minSystemVersion</a>, <a href="#event-resource_ordid">ordId</a>, <a href="#event-resource_partofconsumptionbundles">partOfConsumptionBundles</a>, <a href="#event-resource_partofgroups">partOfGroups</a>, <a href="#event-resource_partofpackage">partOfPackage</a>, <a href="#event-resource_partofproducts">partOfProducts</a>, <a href="#event-resource_policylevel">policyLevel</a>, <a href="#event-resource_policylevels">policyLevels</a>, <a href="#event-resource_releasestatus">releaseStatus</a>, <a href="#event-resource_resourcedefinitions">resourceDefinitions</a>, <a href="#event-resource_responsible">responsible</a>, <a href="#event-resource_shortdescription">shortDescription</a>, <a href="#event-resource_successors">successors</a>, <a href="#event-resource_sunsetdate">sunsetDate</a>, <a href="#event-resource_systeminstanceaware">systemInstanceAware</a>, <a href="#event-resource_tags">tags</a>, <a href="#event-resource_title">title</a>, <a href="#event-resource_version">version</a>, <a href="#event-resource_visibility">visibility</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -180,7 +180,7 @@ The same entity type can be exposed through one or multiple API and events resou
 
 To learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).
 
-**Type**: Object(<a href="#entity-type_ordid">ordId</a>, <a href="#entity-type_localid">localId</a>, <a href="#entity-type_correlationids">correlationIds</a>, <a href="#entity-type_title">title</a>, <a href="#entity-type_shortdescription">shortDescription</a>, <a href="#entity-type_description">description</a>, <a href="#entity-type_partofpackage">partOfPackage</a>, <a href="#entity-type_partofgroups">partOfGroups</a>, <a href="#entity-type_partofproducts">partOfProducts</a>, <a href="#entity-type_version">version</a>, <a href="#entity-type_lastupdate">lastUpdate</a>, <a href="#entity-type_visibility">visibility</a>, <a href="#entity-type_releasestatus">releaseStatus</a>, <a href="#entity-type_deprecationdate">deprecationDate</a>, <a href="#entity-type_sunsetdate">sunsetDate</a>, <a href="#entity-type_successors">successors</a>, <a href="#entity-type_changelogentries">changelogEntries</a>, <a href="#entity-type_level">level</a>, <a href="#entity-type_relatedentitytypes">relatedEntityTypes</a>, <a href="#entity-type_links">links</a>, <a href="#entity-type_extensible">extensible</a>, <a href="#entity-type_tags">tags</a>, <a href="#entity-type_labels">labels</a>, <a href="#entity-type_documentationlabels">documentationLabels</a>, <a href="#entity-type_policylevel">policyLevel</a>, <a href="#entity-type_custompolicylevel">customPolicyLevel</a>, <a href="#entity-type_policylevels">policyLevels</a>, <a href="#entity-type_systeminstanceaware">systemInstanceAware</a>)
+**Type**: Object<small>(<a href="#entity-type_changelogentries">changelogEntries</a>, <a href="#entity-type_correlationids">correlationIds</a>, <a href="#entity-type_custompolicylevel">customPolicyLevel</a>, <a href="#entity-type_deprecationdate">deprecationDate</a>, <a href="#entity-type_description">description</a>, <a href="#entity-type_documentationlabels">documentationLabels</a>, <a href="#entity-type_extensible">extensible</a>, <a href="#entity-type_labels">labels</a>, <a href="#entity-type_lastupdate">lastUpdate</a>, <a href="#entity-type_level">level</a>, <a href="#entity-type_links">links</a>, <a href="#entity-type_localid">localId</a>, <a href="#entity-type_ordid">ordId</a>, <a href="#entity-type_partofgroups">partOfGroups</a>, <a href="#entity-type_partofpackage">partOfPackage</a>, <a href="#entity-type_partofproducts">partOfProducts</a>, <a href="#entity-type_policylevel">policyLevel</a>, <a href="#entity-type_policylevels">policyLevels</a>, <a href="#entity-type_relatedentitytypes">relatedEntityTypes</a>, <a href="#entity-type_releasestatus">releaseStatus</a>, <a href="#entity-type_shortdescription">shortDescription</a>, <a href="#entity-type_successors">successors</a>, <a href="#entity-type_sunsetdate">sunsetDate</a>, <a href="#entity-type_systeminstanceaware">systemInstanceAware</a>, <a href="#entity-type_tags">tags</a>, <a href="#entity-type_title">title</a>, <a href="#entity-type_version">version</a>, <a href="#entity-type_visibility">visibility</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -221,7 +221,7 @@ This is a generic ORD concept that aims to cover many different capability disco
 If a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.
 This is the same idea and mechanism as with API resources and their resource definition formats.
 
-**Type**: Object(<a href="#capability_ordid">ordId</a>, <a href="#capability_localid">localId</a>, <a href="#capability_correlationids">correlationIds</a>, <a href="#capability_type">type</a>, <a href="#capability_customtype">customType</a>, <a href="#capability_title">title</a>, <a href="#capability_shortdescription">shortDescription</a>, <a href="#capability_description">description</a>, <a href="#capability_partofpackage">partOfPackage</a>, <a href="#capability_partofgroups">partOfGroups</a>, <a href="#capability_version">version</a>, <a href="#capability_lastupdate">lastUpdate</a>, <a href="#capability_visibility">visibility</a>, <a href="#capability_releasestatus">releaseStatus</a>, <a href="#capability_disabled">disabled</a>, <a href="#capability_minsystemversion">minSystemVersion</a>, <a href="#capability_relatedentitytypes">relatedEntityTypes</a>, <a href="#capability_definitions">definitions</a>, <a href="#capability_links">links</a>, <a href="#capability_tags">tags</a>, <a href="#capability_labels">labels</a>, <a href="#capability_documentationlabels">documentationLabels</a>, <a href="#capability_systeminstanceaware">systemInstanceAware</a>)
+**Type**: Object<small>(<a href="#capability_correlationids">correlationIds</a>, <a href="#capability_customtype">customType</a>, <a href="#capability_definitions">definitions</a>, <a href="#capability_description">description</a>, <a href="#capability_disabled">disabled</a>, <a href="#capability_documentationlabels">documentationLabels</a>, <a href="#capability_labels">labels</a>, <a href="#capability_lastupdate">lastUpdate</a>, <a href="#capability_links">links</a>, <a href="#capability_localid">localId</a>, <a href="#capability_minsystemversion">minSystemVersion</a>, <a href="#capability_ordid">ordId</a>, <a href="#capability_partofgroups">partOfGroups</a>, <a href="#capability_partofpackage">partOfPackage</a>, <a href="#capability_relatedentitytypes">relatedEntityTypes</a>, <a href="#capability_releasestatus">releaseStatus</a>, <a href="#capability_shortdescription">shortDescription</a>, <a href="#capability_systeminstanceaware">systemInstanceAware</a>, <a href="#capability_tags">tags</a>, <a href="#capability_title">title</a>, <a href="#capability_type">type</a>, <a href="#capability_version">version</a>, <a href="#capability_visibility">visibility</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -255,7 +255,7 @@ A [Data Product](../concepts/data-product) is a data set exposed for consumption
 
 Please note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).
 
-**Type**: Object(<a href="#data-product_ordid">ordId</a>, <a href="#data-product_localid">localId</a>, <a href="#data-product_correlationids">correlationIds</a>, <a href="#data-product_title">title</a>, <a href="#data-product_shortdescription">shortDescription</a>, <a href="#data-product_description">description</a>, <a href="#data-product_partofpackage">partOfPackage</a>, <a href="#data-product_partofgroups">partOfGroups</a>, <a href="#data-product_partofproducts">partOfProducts</a>, <a href="#data-product_version">version</a>, <a href="#data-product_lastupdate">lastUpdate</a>, <a href="#data-product_visibility">visibility</a>, <a href="#data-product_releasestatus">releaseStatus</a>, <a href="#data-product_disabled">disabled</a>, <a href="#data-product_minsystemversion">minSystemVersion</a>, <a href="#data-product_lifecyclestatus">lifecycleStatus</a>, <a href="#data-product_deprecationdate">deprecationDate</a>, <a href="#data-product_sunsetdate">sunsetDate</a>, <a href="#data-product_successors">successors</a>, <a href="#data-product_changelogentries">changelogEntries</a>, <a href="#data-product_type">type</a>, <a href="#data-product_category">category</a>, <a href="#data-product_entitytypes">entityTypes</a>, <a href="#data-product_inputports">inputPorts</a>, <a href="#data-product_outputports">outputPorts</a>, <a href="#data-product_responsible">responsible</a>, <a href="#data-product_dataproductlinks">dataProductLinks</a>, <a href="#data-product_links">links</a>, <a href="#data-product_industry">industry</a>, <a href="#data-product_lineofbusiness">lineOfBusiness</a>, <a href="#data-product_countries">countries</a>, <a href="#data-product_tags">tags</a>, <a href="#data-product_labels">labels</a>, <a href="#data-product_documentationlabels">documentationLabels</a>, <a href="#data-product_policylevel">policyLevel</a>, <a href="#data-product_custompolicylevel">customPolicyLevel</a>, <a href="#data-product_policylevels">policyLevels</a>, <a href="#data-product_systeminstanceaware">systemInstanceAware</a>)
+**Type**: Object<small>(<a href="#data-product_category">category</a>, <a href="#data-product_changelogentries">changelogEntries</a>, <a href="#data-product_correlationids">correlationIds</a>, <a href="#data-product_countries">countries</a>, <a href="#data-product_custompolicylevel">customPolicyLevel</a>, <a href="#data-product_dataproductlinks">dataProductLinks</a>, <a href="#data-product_deprecationdate">deprecationDate</a>, <a href="#data-product_description">description</a>, <a href="#data-product_documentationlabels">documentationLabels</a>, <a href="#data-product_entitytypes">entityTypes</a>, <a href="#data-product_industry">industry</a>, <a href="#data-product_inputports">inputPorts</a>, <a href="#data-product_labels">labels</a>, <a href="#data-product_lastupdate">lastUpdate</a>, <a href="#data-product_lifecyclestatus">lifecycleStatus</a>, <a href="#data-product_lineofbusiness">lineOfBusiness</a>, <a href="#data-product_links">links</a>, <a href="#data-product_localid">localId</a>, <a href="#data-product_minsystemversion">minSystemVersion</a>, <a href="#data-product_ordid">ordId</a>, <a href="#data-product_outputports">outputPorts</a>, <a href="#data-product_partofgroups">partOfGroups</a>, <a href="#data-product_partofpackage">partOfPackage</a>, <a href="#data-product_partofproducts">partOfProducts</a>, <a href="#data-product_policylevel">policyLevel</a>, <a href="#data-product_policylevels">policyLevels</a>, <a href="#data-product_releasestatus">releaseStatus</a>, <a href="#data-product_responsible">responsible</a>, <a href="#data-product_shortdescription">shortDescription</a>, <a href="#data-product_successors">successors</a>, <a href="#data-product_sunsetdate">sunsetDate</a>, <a href="#data-product_systeminstanceaware">systemInstanceAware</a>, <a href="#data-product_tags">tags</a>, <a href="#data-product_title">title</a>, <a href="#data-product_type">type</a>, <a href="#data-product_version">version</a>, <a href="#data-product_visibility">visibility</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -319,7 +319,7 @@ Instead it focuses on the technical necessaries to create an integration for one
 
 To learn more about the concept, see [Integration Dependency](../concepts/integration-dependency).
 
-**Type**: Object(<a href="#integration-dependency_ordid">ordId</a>, <a href="#integration-dependency_localid">localId</a>, <a href="#integration-dependency_correlationids">correlationIds</a>, <a href="#integration-dependency_title">title</a>, <a href="#integration-dependency_shortdescription">shortDescription</a>, <a href="#integration-dependency_description">description</a>, <a href="#integration-dependency_partofpackage">partOfPackage</a>, <a href="#integration-dependency_partofgroups">partOfGroups</a>, <a href="#integration-dependency_version">version</a>, <a href="#integration-dependency_lastupdate">lastUpdate</a>, <a href="#integration-dependency_visibility">visibility</a>, <a href="#integration-dependency_releasestatus">releaseStatus</a>, <a href="#integration-dependency_sunsetdate">sunsetDate</a>, <a href="#integration-dependency_successors">successors</a>, <a href="#integration-dependency_mandatory">mandatory</a>, <a href="#integration-dependency_aspects">aspects</a>, <a href="#integration-dependency_relatedintegrationdependencies">relatedIntegrationDependencies</a>, <a href="#integration-dependency_links">links</a>, <a href="#integration-dependency_tags">tags</a>, <a href="#integration-dependency_labels">labels</a>, <a href="#integration-dependency_documentationlabels">documentationLabels</a>)
+**Type**: Object<small>(<a href="#integration-dependency_aspects">aspects</a>, <a href="#integration-dependency_correlationids">correlationIds</a>, <a href="#integration-dependency_description">description</a>, <a href="#integration-dependency_documentationlabels">documentationLabels</a>, <a href="#integration-dependency_labels">labels</a>, <a href="#integration-dependency_lastupdate">lastUpdate</a>, <a href="#integration-dependency_links">links</a>, <a href="#integration-dependency_localid">localId</a>, <a href="#integration-dependency_mandatory">mandatory</a>, <a href="#integration-dependency_ordid">ordId</a>, <a href="#integration-dependency_partofgroups">partOfGroups</a>, <a href="#integration-dependency_partofpackage">partOfPackage</a>, <a href="#integration-dependency_relatedintegrationdependencies">relatedIntegrationDependencies</a>, <a href="#integration-dependency_releasestatus">releaseStatus</a>, <a href="#integration-dependency_shortdescription">shortDescription</a>, <a href="#integration-dependency_successors">successors</a>, <a href="#integration-dependency_sunsetdate">sunsetDate</a>, <a href="#integration-dependency_tags">tags</a>, <a href="#integration-dependency_title">title</a>, <a href="#integration-dependency_version">version</a>, <a href="#integration-dependency_visibility">visibility</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -360,7 +360,7 @@ For one vendor namespace there MUST only be exactly one `Vendor` ORD entity desc
 
 For example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.
 
-**Type**: Object(<a href="#vendor_ordid">ordId</a>, <a href="#vendor_title">title</a>, <a href="#vendor_partners">partners</a>, <a href="#vendor_tags">tags</a>, <a href="#vendor_labels">labels</a>, <a href="#vendor_documentationlabels">documentationLabels</a>)
+**Type**: Object<small>(<a href="#vendor_documentationlabels">documentationLabels</a>, <a href="#vendor_labels">labels</a>, <a href="#vendor_ordid">ordId</a>, <a href="#vendor_partners">partners</a>, <a href="#vendor_tags">tags</a>, <a href="#vendor_title">title</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -383,7 +383,7 @@ There is no distinction between products and services and concepts like product 
 
 ORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.
 
-**Type**: Object(<a href="#product_ordid">ordId</a>, <a href="#product_correlationids">correlationIds</a>, <a href="#product_title">title</a>, <a href="#product_shortdescription">shortDescription</a>, <a href="#product_description">description</a>, <a href="#product_vendor">vendor</a>, <a href="#product_parent">parent</a>, <a href="#product_tags">tags</a>, <a href="#product_labels">labels</a>, <a href="#product_documentationlabels">documentationLabels</a>)
+**Type**: Object<small>(<a href="#product_correlationids">correlationIds</a>, <a href="#product_description">description</a>, <a href="#product_documentationlabels">documentationLabels</a>, <a href="#product_labels">labels</a>, <a href="#product_ordid">ordId</a>, <a href="#product_parent">parent</a>, <a href="#product_shortdescription">shortDescription</a>, <a href="#product_tags">tags</a>, <a href="#product_title">title</a>, <a href="#product_vendor">vendor</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -415,7 +415,7 @@ Whether it is displayed is decided by the fact, whether it contains any visible 
 
 To learn more about the concept and further guidance, see [Package](../concepts/grouping-and-bundling#package).
 
-**Type**: Object(<a href="#package_ordid">ordId</a>, <a href="#package_localid">localId</a>, <a href="#package_title">title</a>, <a href="#package_shortdescription">shortDescription</a>, <a href="#package_description">description</a>, <a href="#package_version">version</a>, <a href="#package_policylevel">policyLevel</a>, <a href="#package_custompolicylevel">customPolicyLevel</a>, <a href="#package_policylevels">policyLevels</a>, <a href="#package_packagelinks">packageLinks</a>, <a href="#package_links">links</a>, <a href="#package_licensetype">licenseType</a>, <a href="#package_supportinfo">supportInfo</a>, <a href="#package_vendor">vendor</a>, <a href="#package_partofproducts">partOfProducts</a>, <a href="#package_countries">countries</a>, <a href="#package_lineofbusiness">lineOfBusiness</a>, <a href="#package_industry">industry</a>, <a href="#package_runtimerestriction">runtimeRestriction</a>, <a href="#package_tags">tags</a>, <a href="#package_labels">labels</a>, <a href="#package_documentationlabels">documentationLabels</a>)
+**Type**: Object<small>(<a href="#package_countries">countries</a>, <a href="#package_custompolicylevel">customPolicyLevel</a>, <a href="#package_description">description</a>, <a href="#package_documentationlabels">documentationLabels</a>, <a href="#package_industry">industry</a>, <a href="#package_labels">labels</a>, <a href="#package_licensetype">licenseType</a>, <a href="#package_lineofbusiness">lineOfBusiness</a>, <a href="#package_links">links</a>, <a href="#package_localid">localId</a>, <a href="#package_ordid">ordId</a>, <a href="#package_packagelinks">packageLinks</a>, <a href="#package_partofproducts">partOfProducts</a>, <a href="#package_policylevel">policyLevel</a>, <a href="#package_policylevels">policyLevels</a>, <a href="#package_runtimerestriction">runtimeRestriction</a>, <a href="#package_shortdescription">shortDescription</a>, <a href="#package_supportinfo">supportInfo</a>, <a href="#package_tags">tags</a>, <a href="#package_title">title</a>, <a href="#package_vendor">vendor</a>, <a href="#package_version">version</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -457,7 +457,7 @@ Please note that some ORD consumer use cases MAY depend on consumption bundle as
 
 To learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).
 
-**Type**: Object(<a href="#consumption-bundle_ordid">ordId</a>, <a href="#consumption-bundle_localid">localId</a>, <a href="#consumption-bundle_correlationids">correlationIds</a>, <a href="#consumption-bundle_title">title</a>, <a href="#consumption-bundle_shortdescription">shortDescription</a>, <a href="#consumption-bundle_description">description</a>, <a href="#consumption-bundle_version">version</a>, <a href="#consumption-bundle_lastupdate">lastUpdate</a>, <a href="#consumption-bundle_visibility">visibility</a>, <a href="#consumption-bundle_credentialexchangestrategies">credentialExchangeStrategies</a>, <a href="#consumption-bundle_links">links</a>, <a href="#consumption-bundle_tags">tags</a>, <a href="#consumption-bundle_labels">labels</a>, <a href="#consumption-bundle_documentationlabels">documentationLabels</a>)
+**Type**: Object<small>(<a href="#consumption-bundle_correlationids">correlationIds</a>, <a href="#consumption-bundle_credentialexchangestrategies">credentialExchangeStrategies</a>, <a href="#consumption-bundle_description">description</a>, <a href="#consumption-bundle_documentationlabels">documentationLabels</a>, <a href="#consumption-bundle_labels">labels</a>, <a href="#consumption-bundle_lastupdate">lastUpdate</a>, <a href="#consumption-bundle_links">links</a>, <a href="#consumption-bundle_localid">localId</a>, <a href="#consumption-bundle_ordid">ordId</a>, <a href="#consumption-bundle_shortdescription">shortDescription</a>, <a href="#consumption-bundle_tags">tags</a>, <a href="#consumption-bundle_title">title</a>, <a href="#consumption-bundle_version">version</a>, <a href="#consumption-bundle_visibility">visibility</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -486,7 +486,7 @@ If an "identity / equals" relationship needs to be expressed, use the `correlati
 
 To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
 
-**Type**: Object(<a href="#group_groupid">groupId</a>, <a href="#group_grouptypeid">groupTypeId</a>, <a href="#group_title">title</a>, <a href="#group_description">description</a>)
+**Type**: Object<small>(<a href="#group_description">description</a>, <a href="#group_groupid">groupId</a>, <a href="#group_grouptypeid">groupTypeId</a>, <a href="#group_title">title</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -514,7 +514,7 @@ Group Types can be defined centrally (ownership by authority namespace) or decen
 
 To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
 
-**Type**: Object(<a href="#group-type_grouptypeid">groupTypeId</a>, <a href="#group-type_title">title</a>, <a href="#group-type_description">description</a>)
+**Type**: Object<small>(<a href="#group-type_description">description</a>, <a href="#group-type_grouptypeid">groupTypeId</a>, <a href="#group-type_title">title</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -541,7 +541,7 @@ Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy 
 
 The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
 
-**Type**: Object(<a href="#tombstone_ordid">ordId</a>, <a href="#tombstone_groupid">groupId</a>, <a href="#tombstone_grouptypeid">groupTypeId</a>, <a href="#tombstone_removaldate">removalDate</a>, <a href="#tombstone_description">description</a>)
+**Type**: Object<small>(<a href="#tombstone_description">description</a>, <a href="#tombstone_groupid">groupId</a>, <a href="#tombstone_grouptypeid">groupTypeId</a>, <a href="#tombstone_ordid">ordId</a>, <a href="#tombstone_removaldate">removalDate</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -573,7 +573,7 @@ Reference to a Consumption bundle.
 
 This is a complex object to allow additional properties / selections to be attached.
 
-**Type**: Object(<a href="#consumption-bundle-reference_ordid">ordId</a>, <a href="#consumption-bundle-reference_defaultentrypoint">defaultEntryPoint</a>)
+**Type**: Object<small>(<a href="#consumption-bundle-reference_defaultentrypoint">defaultEntryPoint</a>, <a href="#consumption-bundle-reference_ordid">ordId</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -586,7 +586,7 @@ An input port of a data product states where it retrieves its data inputs from.
 
 It is described as via an ORD Integration Dependency.
 
-**Type**: Object(<a href="#data-product-input-port_ordid">ordId</a>)
+**Type**: Object<small>(<a href="#data-product-input-port_ordid">ordId</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -601,7 +601,7 @@ Referenced API or Event ORD resources don't need to be provided within the same 
 If a data product is built against a specific API contract of another application or data product, this API resource should be referred to.
 In this case the other application is responsible for the lifecycle of the API contract and will update its ORD description independently.
 
-**Type**: Object(<a href="#data-product-output-port_ordid">ordId</a>)
+**Type**: Object<small>(<a href="#data-product-output-port_ordid">ordId</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -612,7 +612,7 @@ In this case the other application is responsible for the lifecycle of the API c
 Link and categorization of a machine-readable API definition.
 For example, OpenAPI definition, OData Metadata, etc.
 
-**Type**: Object(<a href="#api-resource-definition_type">type</a>, <a href="#api-resource-definition_customtype">customType</a>, <a href="#api-resource-definition_mediatype">mediaType</a>, <a href="#api-resource-definition_url">url</a>, <a href="#api-resource-definition_accessstrategies">accessStrategies</a>)
+**Type**: Object<small>(<a href="#api-resource-definition_accessstrategies">accessStrategies</a>, <a href="#api-resource-definition_customtype">customType</a>, <a href="#api-resource-definition_mediatype">mediaType</a>, <a href="#api-resource-definition_type">type</a>, <a href="#api-resource-definition_url">url</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -627,7 +627,7 @@ For example, OpenAPI definition, OData Metadata, etc.
 Link and categorization of a machine-readable API definition.
 For example, AsyncAPI or OpenAPI with callbacks, etc.
 
-**Type**: Object(<a href="#event-resource-definition_type">type</a>, <a href="#event-resource-definition_customtype">customType</a>, <a href="#event-resource-definition_mediatype">mediaType</a>, <a href="#event-resource-definition_url">url</a>, <a href="#event-resource-definition_accessstrategies">accessStrategies</a>)
+**Type**: Object<small>(<a href="#event-resource-definition_accessstrategies">accessStrategies</a>, <a href="#event-resource-definition_customtype">customType</a>, <a href="#event-resource-definition_mediatype">mediaType</a>, <a href="#event-resource-definition_type">type</a>, <a href="#event-resource-definition_url">url</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -641,7 +641,7 @@ For example, AsyncAPI or OpenAPI with callbacks, etc.
 
 Link and categorization of a machine-readable capability definition.
 
-**Type**: Object(<a href="#capability-definition_type">type</a>, <a href="#capability-definition_customtype">customType</a>, <a href="#capability-definition_mediatype">mediaType</a>, <a href="#capability-definition_url">url</a>, <a href="#capability-definition_accessstrategies">accessStrategies</a>)
+**Type**: Object<small>(<a href="#capability-definition_accessstrategies">accessStrategies</a>, <a href="#capability-definition_customtype">customType</a>, <a href="#capability-definition_mediatype">mediaType</a>, <a href="#capability-definition_type">type</a>, <a href="#capability-definition_url">url</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -661,7 +661,7 @@ In case the reference links to own resources, it is implied that they are to be 
 If multiple resources are given within an aspect, they are considered alternatives to each other (OR condition).
 In case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.
 
-**Type**: Object(<a href="#aspect_title">title</a>, <a href="#aspect_description">description</a>, <a href="#aspect_mandatory">mandatory</a>, <a href="#aspect_supportmultipleproviders">supportMultipleProviders</a>, <a href="#aspect_apiresources">apiResources</a>, <a href="#aspect_eventresources">eventResources</a>)
+**Type**: Object<small>(<a href="#aspect_apiresources">apiResources</a>, <a href="#aspect_description">description</a>, <a href="#aspect_eventresources">eventResources</a>, <a href="#aspect_mandatory">mandatory</a>, <a href="#aspect_supportmultipleproviders">supportMultipleProviders</a>, <a href="#aspect_title">title</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -676,7 +676,7 @@ In case an AND condition is needed, multiple aspects need to be added to the Int
 
 API resource related integration aspect
 
-**Type**: Object(<a href="#api-resource-integration-aspect_ordid">ordId</a>, <a href="#api-resource-integration-aspect_minversion">minVersion</a>)
+**Type**: Object<small>(<a href="#api-resource-integration-aspect_minversion">minVersion</a>, <a href="#api-resource-integration-aspect_ordid">ordId</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -687,7 +687,7 @@ API resource related integration aspect
 
 Event resource related integration aspect
 
-**Type**: Object(<a href="#event-resource-integration-aspect_ordid">ordId</a>, <a href="#event-resource-integration-aspect_minversion">minVersion</a>, <a href="#event-resource-integration-aspect_subset">subset</a>, <a href="#event-resource-integration-aspect_systemtyperestriction">systemTypeRestriction</a>)
+**Type**: Object<small>(<a href="#event-resource-integration-aspect_minversion">minVersion</a>, <a href="#event-resource-integration-aspect_ordid">ordId</a>, <a href="#event-resource-integration-aspect_subset">subset</a>, <a href="#event-resource-integration-aspect_systemtyperestriction">systemTypeRestriction</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -703,7 +703,7 @@ Defines that Event Resource Integration Aspect only requires a subset of the ref
 For events, this could be a list of the events that need to be subscribed in order to make the integration work.
 This information helps to narrow down what is really necessary and can help optimize the integration, e.g. by only publishing the events that are really needed.
 
-**Type**: Object(<a href="#event-resource-integration-aspect-subset_eventtype">eventType</a>)
+**Type**: Object<small>(<a href="#event-resource-integration-aspect-subset_eventtype">eventType</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -714,7 +714,7 @@ This information helps to narrow down what is really necessary and can help opti
 A changelog entry can be used to indicate changes.
 Usually they lead to a change of the version number or the release status.
 
-**Type**: Object(<a href="#changelog-entry_version">version</a>, <a href="#changelog-entry_releasestatus">releaseStatus</a>, <a href="#changelog-entry_date">date</a>, <a href="#changelog-entry_description">description</a>, <a href="#changelog-entry_url">url</a>)
+**Type**: Object<small>(<a href="#changelog-entry_date">date</a>, <a href="#changelog-entry_description">description</a>, <a href="#changelog-entry_releasestatus">releaseStatus</a>, <a href="#changelog-entry_url">url</a>, <a href="#changelog-entry_version">version</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -728,7 +728,7 @@ Usually they lead to a change of the version number or the release status.
 
 Link that can be attached to packages or Open Resource Discovery resources.
 
-**Type**: Object(<a href="#link_title">title</a>, <a href="#link_url">url</a>, <a href="#link_description">description</a>)
+**Type**: Object<small>(<a href="#link_description">description</a>, <a href="#link_title">title</a>, <a href="#link_url">url</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -752,7 +752,7 @@ Links with specific semantic meaning that are related to `Package`.
 
 If a generic [Link](#link) can also be expressed via a Package Link, the latter MUST be chosen.
 
-**Type**: Object(<a href="#package-link_type">type</a>, <a href="#package-link_customtype">customType</a>, <a href="#package-link_url">url</a>)
+**Type**: Object<small>(<a href="#package-link_customtype">customType</a>, <a href="#package-link_type">type</a>, <a href="#package-link_url">url</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -775,7 +775,7 @@ Links with specific semantic meaning that are related to API or event resources.
 
 If a generic [Link](#link) can also be expressed via an API / Event Resource Link, the latter MUST be chosen.
 
-**Type**: Object(<a href="#api-and-event-resource-link_type">type</a>, <a href="#api-and-event-resource-link_customtype">customType</a>, <a href="#api-and-event-resource-link_url">url</a>)
+**Type**: Object<small>(<a href="#api-and-event-resource-link_customtype">customType</a>, <a href="#api-and-event-resource-link_type">type</a>, <a href="#api-and-event-resource-link_url">url</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -797,7 +797,7 @@ If a generic [Link](#link) can also be expressed via an API / Event Resource Lin
 Links with specific semantic meaning that are related to Data Product resources.
 If a generic [Link](#link) can also be expressed via Data Product Link, the latter MUST be chosen.
 
-**Type**: Object(<a href="#data-product-link_type">type</a>, <a href="#data-product-link_customtype">customType</a>, <a href="#data-product-link_url">url</a>)
+**Type**: Object<small>(<a href="#data-product-link_customtype">customType</a>, <a href="#data-product-link_type">type</a>, <a href="#data-product-link_url">url</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -820,7 +820,7 @@ A [system instance](../index.md#def-system-instance) is a concrete, running inst
 In a multi-tenant system, it corresponds to a tenant.
 In a single-tenant system, it corresponds to the [system installation](../index.md#def-system-deployment) itself.
 
-**Type**: Object(<a href="#system-instance_baseurl">baseUrl</a>, <a href="#system-instance_localid">localId</a>, <a href="#system-instance_correlationids">correlationIds</a>, <a href="#system-instance_labels">labels</a>, <a href="#system-instance_documentationlabels">documentationLabels</a>, <a href="#system-instance_tags">tags</a>)
+**Type**: Object<small>(<a href="#system-instance_baseurl">baseUrl</a>, <a href="#system-instance_correlationids">correlationIds</a>, <a href="#system-instance_documentationlabels">documentationLabels</a>, <a href="#system-instance_labels">labels</a>, <a href="#system-instance_localid">localId</a>, <a href="#system-instance_tags">tags</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -835,7 +835,7 @@ In a single-tenant system, it corresponds to the [system installation](../index.
 
 A [system type](../index.md#def-system-type) is the abstract type of an application or service, from operational perspective.
 
-**Type**: Object(<a href="#system-type_systemnamespace">systemNamespace</a>, <a href="#system-type_correlationids">correlationIds</a>, <a href="#system-type_labels">labels</a>, <a href="#system-type_documentationlabels">documentationLabels</a>, <a href="#system-type_tags">tags</a>)
+**Type**: Object<small>(<a href="#system-type_correlationids">correlationIds</a>, <a href="#system-type_documentationlabels">documentationLabels</a>, <a href="#system-type_labels">labels</a>, <a href="#system-type_systemnamespace">systemNamespace</a>, <a href="#system-type_tags">tags</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -850,7 +850,7 @@ A [system type](../index.md#def-system-type) is the abstract type of an applicat
 A [system version](../index.md#def-system-version) states the design-time version / release of a [system instance](../index.md#def-system-instance).
 It provides versioning for operational purposes for the [system type](../index.md#def-system-type).
 
-**Type**: Object(<a href="#system-version_version">version</a>, <a href="#system-version_title">title</a>, <a href="#system-version_correlationids">correlationIds</a>, <a href="#system-version_labels">labels</a>, <a href="#system-version_documentationlabels">documentationLabels</a>, <a href="#system-version_tags">tags</a>)
+**Type**: Object<small>(<a href="#system-version_correlationids">correlationIds</a>, <a href="#system-version_documentationlabels">documentationLabels</a>, <a href="#system-version_labels">labels</a>, <a href="#system-version_tags">tags</a>, <a href="#system-version_title">title</a>, <a href="#system-version_version">version</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -865,7 +865,7 @@ It provides versioning for operational purposes for the [system type](../index.m
 
 Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the resource definitions.
 
-**Type**: Object(<a href="#access-strategy_type">type</a>, <a href="#access-strategy_customtype">customType</a>, <a href="#access-strategy_customdescription">customDescription</a>)
+**Type**: Object<small>(<a href="#access-strategy_customdescription">customDescription</a>, <a href="#access-strategy_customtype">customType</a>, <a href="#access-strategy_type">type</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -902,7 +902,7 @@ While the actual flow in term of API calls can differ between the different stra
 the end goal would always be the possibility for automatically obtaining credentials for each client
 that would like to use the APIs from a particular bundle.
 
-**Type**: Object(<a href="#credential-exchange-strategy_type">type</a>, <a href="#credential-exchange-strategy_customtype">customType</a>, <a href="#credential-exchange-strategy_customdescription">customDescription</a>, <a href="#credential-exchange-strategy_callbackurl">callbackUrl</a>)
+**Type**: Object<small>(<a href="#credential-exchange-strategy_callbackurl">callbackUrl</a>, <a href="#credential-exchange-strategy_customdescription">customDescription</a>, <a href="#credential-exchange-strategy_customtype">customType</a>, <a href="#credential-exchange-strategy_type">type</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -979,7 +979,7 @@ Contains information about the extensibility of this resource.
 
 If applicable, a description and further resources about extending this resource are provided.
 
-**Type**: Object(<a href="#extensible_supported">supported</a>, <a href="#extensible_description">description</a>)
+**Type**: Object<small>(<a href="#extensible_description">description</a>, <a href="#extensible_supported">supported</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -1023,7 +1023,7 @@ To indicate this, the service needs to be implemented and described in ORD with 
 ODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the
 corresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.
 
-**Type**: Object(<a href="#entity-type-mapping_apimodelselectors">apiModelSelectors</a>, <a href="#entity-type-mapping_entitytypetargets">entityTypeTargets</a>)
+**Type**: Object<small>(<a href="#entity-type-mapping_apimodelselectors">apiModelSelectors</a>, <a href="#entity-type-mapping_entitytypetargets">entityTypeTargets</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -1036,7 +1036,7 @@ API Model Selector for OData, using entity set names for the selection.
 
 MUST only be used if the API Resource provides an API Resource Definition of type `edmx`.
 
-**Type**: Object(<a href="#api-model-selector-(odata)_type">type</a>, <a href="#api-model-selector-(odata)_entitysetname">entitySetName</a>)
+**Type**: Object<small>(<a href="#api-model-selector-(odata)_entitysetname">entitySetName</a>, <a href="#api-model-selector-(odata)_type">type</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -1062,7 +1062,7 @@ The JSON Pointer always to refer to the structure of the document as originally 
 
 MUST only be used if the API Resource provides an API Resource Definition of media type `application/json` or `text/yaml`.
 
-**Type**: Object(<a href="#api-model-selector-(json-pointer)_type">type</a>, <a href="#api-model-selector-(json-pointer)_jsonpointer">jsonPointer</a>)
+**Type**: Object<small>(<a href="#api-model-selector-(json-pointer)_jsonpointer">jsonPointer</a>, <a href="#api-model-selector-(json-pointer)_type">type</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -1084,7 +1084,7 @@ Define which entity type is the target of an entity type mapping
 
 Entity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.
 
-**Type**: Object(<a href="#entity-type-target-(ord-id)_ordid">ordId</a>)
+**Type**: Object<small>(<a href="#entity-type-target-(ord-id)_ordid">ordId</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -1096,7 +1096,7 @@ Define which entity type is the target of an entity type mapping
 
 Entity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).
 
-**Type**: Object(<a href="#entity-type-target-(correlation-id)_correlationid">correlationId</a>)
+**Type**: Object<small>(<a href="#entity-type-target-(correlation-id)_correlationid">correlationId</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -1106,7 +1106,7 @@ Entity types can be referenced using a [Correlation ID](../../spec-v1/#correlati
 
 Defines the relation between Entity Types (via its ORD ID).
 
-**Type**: Object(<a href="#related-entity-type_ordid">ordId</a>, <a href="#related-entity-type_relationtype">relationType</a>)
+**Type**: Object<small>(<a href="#related-entity-type_ordid">ordId</a>, <a href="#related-entity-type_relationtype">relationType</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -1117,7 +1117,7 @@ Defines the relation between Entity Types (via its ORD ID).
 
 Defines which Entity Type is exposed through  (via its ORD ID).
 
-**Type**: Object(<a href="#exposed-entity-type_ordid">ordId</a>)
+**Type**: Object<small>(<a href="#exposed-entity-type_ordid">ordId</a>)</small>
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
