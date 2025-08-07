@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([[3956],{3956:(e,c,s)=>{s.d(c,{createRadarServices:()=>r.f});var r=s(2852);s(8198)}}]);
