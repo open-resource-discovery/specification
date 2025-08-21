@@ -33,9 +33,11 @@ To adopt ORD, an application implements a read-only entry point ([Service Provid
 
 > The ORD interface (JSON Schema) and TypeScript types are available via npm: [`@sap/open-resource-discovery`](https://www.npmjs.com/package/@sap/open-resource-discovery).
 
-## Introduction
+## Learn More
 
-Read the 📄 [ORD Introduction](./introduction.mdx) and watch the 🎦[ORD Videos](./help/videos).
+- Read the 📄 [ORD Introduction](./introduction.mdx) and watch the 🎦[ORD Videos](./help/videos).
+- Ask an AI via the public 🤖 [ORD NotebookLM](https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382) about ORD.
+- Read blog post: 📄 [Why we created Open Resource Discovery](https://community.sap.com/t5/technology-blog-posts-by-sap/why-we-created-open-resource-discovery/ba-p/14172057) and listen to 🔉 [podcast on ORD](https://podcast.opensap.info/open-source-way/2024/06/14/open-resource-discovery-ord/).
 
 <div className="videoContainer">
   <iframe className="videoIframe" src="https://www.youtube.com/embed/7Z818CdoZJg" title="Introducing the Open Resource Discovery protocol" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
