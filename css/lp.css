@@ -1,0 +1,573 @@
+/* Docusaurus Footer Styling to Match LP Footer */
+.theme-edit-this-page {
+  display: none;
+}
+/* Override Docusaurus stuff */
+.docusaurus-mt-lg.pagination-nav {
+  display: none;
+}
+.theme-doc-footer {
+  display: none;
+}
+
+.footer--dark {
+  --ifm-footer-background-color: var(--lp-c-bg);
+  background-color: var(--lp-c-bg);
+  border-top: 1px solid black;
+  padding: 32px 0;
+  margin-top: 64px;
+}
+
+.footer--dark .footer__copyright {
+  color: var(--lp-c-text-2);
+  font-size: 12px;
+  line-height: 24px;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+  text-align: left;
+}
+
+.footer--dark svg {
+  display: none;
+}
+
+/* Footer Funding Notice */
+.footer-funding {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 0;
+}
+
+.footer-funding__image img {
+  max-width: 300px;
+  height: auto;
+  display: block;
+}
+
+.footer-funding__text {
+  flex: 1;
+  min-width: 280px;
+  font-size: 12px;
+  color: var(--lp-c-text-2);
+  line-height: 1.6;
+  text-align: left;
+}
+
+.footer-funding__text p {
+  color: var(--lp-c-text-2);
+  margin: 0;
+  font-size: 12px;
+  text-align: left;
+}
+
+.footer-funding__text strong {
+  color: var(--lp-c-text-2);
+  font-weight: 600;
+}
+
+.footer-funding__text a {
+  color: var(--lp-c-brand-1);
+  text-decoration: none;
+}
+
+.footer-funding__text a:hover {
+  color: var(--lp-c-brand-2);
+  text-decoration: underline;
+}
+
+.footer-copyright {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--lp-c-divider);
+}
+
+.footer-copyright p {
+  margin: 0;
+  font-size: 12px;
+  text-align: left;
+}
+
+/* Footer Container */
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Neonephos Section */
+.neonephos-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.neonephos-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.neonephos-logo {
+  height: 60px;
+  width: auto;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.neonephos-link:hover .neonephos-logo {
+  opacity: 1;
+}
+
+/* Footer Legal Links */
+.footer-legal-links {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--lp-c-text-2);
+}
+
+.footer-legal-links a {
+  color: var(--lp-c-text-2);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-legal-links a:hover {
+  color: var(--lp-c-brand-1);
+  text-decoration: underline;
+}
+
+.footer-legal-sep {
+  color: var(--lp-c-text-3);
+  opacity: 0.5;
+}
+
+.videoContainer {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: min(56.25%, 454px);
+}
+.videoIframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
+}
+
+/* Landing Page Hero Section */
+.lp-home {
+  display: grid;
+  background: var(--lp-c-bg);
+  min-height: 100vh;
+  gap: 24px;
+  padding: 80px 24px 96px;
+}
+
+.lp-home .container {
+  display: flex;
+  margin: 0 auto;
+  max-width: 1152px;
+  flex-direction: column;
+  text-align: center;
+  gap: 64px;
+}
+
+.lp-home .main {
+  flex: 1 1 100%;
+  order: 2;
+}
+
+.lp-home .heading {
+  line-height: 1.2;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.lp-home .name {
+  font-size: 48px;
+  display: block;
+}
+
+.lp-home .name.clip {
+  background: var(--lp-home-hero-name-background);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: var(--lp-home-hero-name-color);
+}
+
+.lp-home .text {
+  font-size: 36px;
+  font-weight: 500;
+  color: var(--lp-c-text-1);
+  display: block;
+  margin-top: 8px;
+}
+
+.lp-home .tagline {
+  color: var(--lp-c-text-2);
+  font-size: 20px;
+  line-height: 30px;
+  margin: 0 auto 32px;
+  max-width: 600px;
+}
+
+.lp-home .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* === Landing buttons === */
+.lp-home .actions {
+  gap: 10px;
+}
+
+/* Action container styles */
+.action p {
+  margin: 0;
+  padding: 0;
+}
+
+.action a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  line-height: 1.2;
+  height: auto;
+  min-width: 0;
+  white-space: nowrap;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none !important;
+  border: 1px solid transparent;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+  width: 100%;
+}
+
+/* Primary button (brand) */
+.action.brand a {
+  background: var(--lp-c-green-3);
+  color: black;
+  border-color: transparent;
+}
+.action.brand a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  color: black;
+}
+
+/* Secondary button (alt) */
+.action.alt a {
+  background: var(--lp-c-green-1);
+  color: black;
+  border-color: transparent;
+}
+.action.alt a:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 24px var(--lp-c-bg);
+  color: black;
+}
+
+/* Active state for all buttons */
+.action a:active {
+  transform: translateY(0);
+}
+
+/* Legacy .lp-button class support */
+.lp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  line-height: 1.2;
+  height: auto;
+  min-width: 0;
+  white-space: nowrap;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none !important;
+  border: 1px solid transparent;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.lp-button.brand {
+  background: var(--lp-c-green-3);
+  color: black;
+  border-color: transparent;
+}
+.lp-button.brand:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.lp-button:active {
+  transform: translateY(0);
+}
+
+.lp-button.alt {
+  background: var(--lp-c-green-1);
+  color: black;
+  border-color: transparent;
+}
+.lp-button.alt:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 24px var(--lp-c-bg);
+}
+
+.lp-home .image {
+  order: 1;
+  flex: 1 1 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lp-home .image-container {
+  position: relative;
+  width: 350px;
+  height: 350px;
+  margin: 0 auto;
+}
+
+.lp-home .image-bg {
+  position: absolute;
+  inset: 0;
+  background-image: var(--lp-home-hero-image-background-image);
+  filter: var(--lp-home-hero-image-filter);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.image-container > .image-src {
+  position: absolute;
+  left: 10px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 1;
+  background: url("/img/logo/ORD_Icon_Color_Logo.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.container {
+  color: #1b1b1f;
+}
+
+/* Landing Page Feature Cards */
+.lp-features {
+  display: grid;
+  margin: 60px auto 0;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.lp-features h3 {
+  font-size: 16px;
+}
+
+.lp-feature-card {
+  background: #202126;
+  color: #dfdfd6;
+  border-radius: 12px;
+  padding: 16px 28px 24px 28px;
+  transition: all 0.3s ease;
+}
+
+.lp-feature-card p {
+  margin: 0;
+  color: #98989f;
+  font-weight: 500;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* ==============================
+   MEDIA QUERIES - Mobile First
+   ============================== */
+
+/* Mobile: max-width 480px */
+@media (max-width: 480px) {
+  /* Hero section */
+  .lp-home {
+    margin-top: 50px !important;
+  }
+  .lp-home .image-container {
+    width: 200px;
+    height: 200px;
+  }
+  
+  /* Actions grid on mobile */
+  .lp-home .actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+  }
+  .action a {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  /* Features */
+  .lp-features {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 100%;
+    padding: 0 12px;
+  }
+  .lp-feature-card {
+    text-align: left;
+  }
+}
+
+/* Tablet: 481px - 959px */
+@media (min-width: 481px) and (max-width: 959px) {
+  /* Hero section */
+  .lp-home .image-container {
+    width: 280px;
+    height: 280px;
+  }
+  .lp-home {
+    padding: 60px 24px 0px !important;
+  }
+
+  /* Features 2x2 layout */
+  .lp-features {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+  }
+}
+
+/* Footer: max-width 649px */
+@media (max-width: 649px) {
+  .footer-funding {
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+  }
+  .footer-funding__image {
+    align-self: flex-start;
+  }
+}
+
+/* Footer: 650px - 768px */
+@media (min-width: 650px) and (max-width: 768px) {
+  .footer-funding {
+    flex-direction: row;
+    gap: 24px;
+    width: 100%;
+    flex-wrap: unset;
+  }
+  .footer-funding__image img {
+    max-height: 200px;
+  }
+  .footer-legal-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .footer-legal-sep {
+    margin: 0 8px;
+  }
+}
+
+/* Tablet Large: min-width 768px */
+@media (min-width: 768px) {
+  /* Hero text sizes */
+  .lp-home .name {
+    font-size: 56px;
+  }
+  .lp-home .text {
+    font-size: 48px;
+  }
+  .lp-home .tagline {
+    font-size: 24px;
+    line-height: 36px;
+  }
+}
+
+/* Footer: min-width 769px */
+@media (min-width: 769px) {
+  .footer-funding {
+    flex-direction: row;
+    gap: 24px;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .footer-funding__image {
+    align-self: flex-start;
+  }
+}
+
+/* Desktop: min-width 960px */
+@media (min-width: 960px) {
+  /* Hero section layout */
+  .lp-home .name {
+    font-size: 64px;
+  }
+  .lp-home {
+    padding: 120px 64px 0 !important;
+  }
+  .lp-home .container {
+    flex-direction: row;
+    text-align: left;
+    gap: 64px;
+  }
+  .lp-home .main {
+    flex: 1 1 50%;
+    order: 1;
+  }
+  .lp-home .text {
+    font-size: 56px;
+  }
+  .lp-home .tagline {
+    margin: 0 0 32px;
+  }
+  .lp-home .actions {
+    justify-content: flex-start;
+  }
+  .lp-home .image {
+    flex: 1 1 50%;
+    order: 2;
+  }
+
+  /* Features 4 columns */
+  .lp-features {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: 1152px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Desktop Large: min-width 1152px */
+@media (min-width: 1152px) {
+  .lp-feature-card {
+    padding: 16px 28px 0 28px;
+  }
+}
