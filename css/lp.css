@@ -419,7 +419,7 @@
     width: 200px;
     height: 200px;
   }
-  
+
   /* Actions grid on mobile */
   .lp-home .actions {
     display: grid;
@@ -568,6 +568,6 @@
 /* Desktop Large: min-width 1152px */
 @media (min-width: 1152px) {
   .lp-feature-card {
-    padding: 16px 28px 0 28px;
+    padding: 12px 28px 20px 28px;
   }
 }
