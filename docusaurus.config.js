@@ -3,12 +3,14 @@
 
 import { themes as prismThemes } from "prism-react-renderer";
 
+const baseUrl = "/specification";
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Open Resource Discovery",
   tagline: "An aligned protocol for publishing and discovering metadata about systems.",
   url: "https://open-resource-discovery.github.io",
-  baseUrl: "/specification",
+  baseUrl,
   trailingSlash: false,
   onBrokenLinks: "throw",
   onDuplicateRoutes: "throw",
@@ -54,7 +56,7 @@ const config = {
     ],
   ],
 
-  scripts: ["/specification/js/custom.js"],
+  scripts: [`${baseUrl}/js/custom.js`],
 
   themes: [
     "@docusaurus/theme-mermaid",
@@ -87,15 +89,15 @@ const config = {
         theme: { light: "neutral", dark: "forest" },
       },
       navbar: {
-        title: "",
+        title: "Open Resource Discovery",
         logo: {
           alt: "Open Resource Discovery",
-          src: "img/logo/ORD_Horizontal_Color_Logo.svg",
+          src: "img/logo/ORD_Icon_Color_Logo.svg",
         },
         items: [
           {
             label: "Overview",
-            to: "/",
+            to: "overview",
           },
           {
             label: "Primer",
@@ -192,30 +194,44 @@ const config = {
             href: "https://github.com/open-resource-discovery/specification",
             label: "GitHub",
             position: "right",
+            className: "header-github-pill",
           },
         ],
       },
+
       footer: {
         style: "dark",
-        links: [
-          {
-            label: "Disclaimer",
-            to: "disclaimer",
-          },
-          {
-            label: "Legal Disclosure",
-            to: "https://www.sap.com/corporate/en/legal/impressum.html",
-          },
-          {
-            label: "Terms of Use",
-            to: "https://www.sap.com/corporate/en/legal/terms-of-use.html",
-          },
-          {
-            label: "GitHub Repository",
-            to: "https://github.com/open-resource-discovery/specification",
-          },
-        ],
-        copyright: `Copyright © ${new Date().getFullYear()} Linux Foundation Europe. Open Resource Discovery is a project of NeoNephos Foundation. For applicable policies including privacy policy, terms of use and trademark usage guidelines, please see https://linuxfoundation.eu. Linux is a registered trademark of Linus Torvalds.`,
+        copyright: `
+          <div class="footer-container">
+            <div class="footer-funding">
+              <div class="footer-funding__image">
+                <img src="${baseUrl + "/img/ord-footer-bmwe.png"}" alt="EU and German government funding logos" />
+              </div>
+              <div class="footer-funding__text">
+                <p><strong>Funded by the European Union – NextGenerationEU.</strong></p>
+                <p>The views and opinions expressed are solely those of the author(s) and do not necessarily reflect the views of the European Union or the European Commission. Neither the European Union nor the European Commission can be held responsible for them.</p>
+                <div class="footer-copyright">
+                  <p><strong>Copyright © Linux Foundation Europe.</strong></p>
+                  <p>Open Resource Discovery is a project of NeoNephos Foundation. For applicable policies including privacy policy, terms of use and trademark usage guidelines, please see <a href="https://linuxfoundation.eu">https://linuxfoundation.eu</a>. Linux is a registered trademark of Linus Torvalds. </p>
+                </div>
+              </div>
+            </div>
+            <div class="neonephos-logos">
+              <a href="https://neonephos.org/" target="_blank" rel="noopener noreferrer" class="neonephos-link">
+                <img src="${baseUrl + "/img/ord-footer-neonephos.svg"}" alt="Neonephos Logo" class="neonephos-logo">
+              </a>
+            </div>
+            <!--
+            <div class="footer-legal-links">
+              <a href="${baseUrl + "about/terms-of-use"}">Terms of Use</a>
+              <span class="footer-legal-sep">|</span>
+              <a href="${baseUrl + "about/privacy"}">Privacy Statement</a>
+              <span class="footer-legal-sep">|</span>
+              <a href="${baseUrl + "about/legal-disclosure"}">Legal Disclosure</a>
+            </div>
+            -->
+          </div>
+        `,
       },
     }),
 };

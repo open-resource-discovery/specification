@@ -1,4 +1,58 @@
+@import url("lp.css");
+/* ===== Landing Page CSS Variables ===== */
 :root {
+  /* Landing Page Core Colors */
+  --lp-c-white: #ffffff;
+  --lp-c-black: #000000;
+  --lp-c-gray-1: #515c67;
+  --lp-c-gray-2: #414853;
+  --lp-c-gray-3: #32363f;
+  --lp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  /* Landing Page Dark Theme Colors */
+  --lp-c-bg: #1b1b1f;
+  --lp-c-bg-alt: #161618;
+  --lp-c-bg-elv: #202127;
+  --lp-c-bg-soft: #202127;
+  --lp-c-border: #3c3f44;
+  --lp-c-divider: #2e2e32;
+  --lp-c-gutter: #000000;
+  --lp-c-text-1: #dfdfd6;
+  --lp-c-text-2: #98989f;
+  --lp-c-text-3: #6a6a71;
+
+  /* Brand Colors */
+  --lp-c-green-1: #1e8f95;
+  --lp-c-green-2: #32bcac;
+  --lp-c-green-3: #3fdec0;
+  --lp-c-green-soft: rgba(16, 185, 129, 0.16);
+  --lp-c-brand-1: var(--lp-c-green-1);
+  --lp-c-brand-2: var(--lp-c-green-2);
+  --lp-c-brand-3: var(--lp-c-green-3);
+  --lp-c-brand-soft: var(--lp-c-green-soft);
+
+  /* Button Colors */
+  --lp-button-brand-bg: #009f76;
+  --lp-button-brand-border: transparent;
+  --lp-button-brand-text: var(--lp-c-white);
+  --lp-button-brand-hover-bg: var(--lp-c-brand-2);
+  --lp-button-alt-bg: var(--lp-c-gray-3);
+  --lp-button-alt-text: var(--lp-c-text-1);
+  --lp-button-alt-hover-bg: var(--lp-c-gray-2);
+
+  /* Hero Specific */
+  --lp-home-hero-name-color: transparent;
+  --lp-home-hero-name-background: -webkit-linear-gradient(120deg, #1e8f95 30%, #3fdec0);
+  --lp-home-hero-image-background-image: linear-gradient(-45deg, #1e8f95 50%, #3fdec0 50%);
+  --lp-home-hero-image-filter: blur(68px);
+
+  /* Typography */
+  --lp-font-family-base:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+  --lp-font-family-mono: ui-monospace, "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace;
+
+  /* ===== BASE IFM/Docusaurus variables ===== */
   --ifm-table-cell-padding: 0.5rem;
   --ifm-hr-margin-vertical: 0.5rem;
   --ifm-list-margin: 0.5rem;
@@ -13,6 +67,93 @@
   --ifm-h2-font-size: 1.8rem;
   --ifm-h4-font-size: 1.2rem;
   --ifm-h6-font-size: 1rem;
+
+  /* ===== navbar variables ===== */
+  --c-accent: #55e9e9;
+  --c-accent-contrast: #081012;
+  --c-text-strong: #0a0f12;
+  --c-text: #1b242a;
+  --c-text-dim: #5a6a73;
+  --c-bg: #ffffff;
+  --c-bg-elev: #f6f8f9;
+  --c-card: #ffffff;
+  --c-sep: #e7ecef;
+
+  --shadow-lg: 0 20px 60px rgba(4, 13, 18, 0.18);
+  --shadow-md: 0 10px 30px rgba(4, 13, 18, 0.14);
+
+  --container: 1200px;
+  --pad-x: 24px;
+  --pad-x-lg: 32px;
+
+  --h1: 56px;
+  --h1-lh: 1.05;
+  --h2: 36px;
+  --h2-lh: 1.15;
+
+  /* Navigation system vars */
+  --bg-rgb: 11, 15, 19;
+  --glass-alpha: 0.99;
+  --nav-border-scrolled: rgba(255, 255, 255, 0.16);
+  --navbar-height-fallback: 64px;
+  --navbar-bg-blur: 12px;
+  --container-nav: 1320px;
+  --nav-gap: clamp(22px, 3.6vw, 46px);
+  --nav-link-size: clamp(14px, 1.05vw, 16px);
+  --nav-pad-x: 24px;
+}
+
+/* Dark theme overrides for variables used by navbar/desktop */
+html[data-theme="dark"] {
+  --c-accent: #27e0d1;
+  --c-accent-contrast: #061316;
+  --c-text-strong: #f4f7f8;
+  --c-text: #d9e2e6;
+  --c-text-dim: #98a7af;
+  --c-bg: #0c0f13;
+  --c-bg-elev: #10151b;
+  --c-card: #141a21;
+  --c-sep: #212a33;
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --bg-rgb: 12, 15, 19;
+  --glass-alpha: 0.1;
+}
+
+/* Base text/background */
+:root,
+html[data-theme="dark"] {
+  background: var(--c-bg);
+  color: var(--c-text);
+}
+
+/* Landing page background - specific to landing page only */
+/* Target the landing page by ID */
+#landing {
+  background: var(--lp-c-bg);
+}
+
+/* Apply landing page background to landing page containers */
+.lp-home {
+  background: var(--lp-c-bg);
+  min-height: 100vh;
+  margin: -2rem -1rem;
+  padding: 2rem 1rem;
+}
+
+/* Target main wrapper when on landing page */
+main:has(#landing),
+.main-wrapper:has(#landing),
+article:has(#landing),
+.theme-doc-markdown:has(#landing) {
+  background: var(--lp-c-bg);
+}
+
+/* Docusaurus specific containers on landing page */
+.docs-wrapper:has(.lp-home),
+.docMainContainer:has(.lp-home),
+.container.padding-top--md.padding-bottom--lg:has(.lp-home) {
+  background: var(--lp-c-bg);
 }
 
 @media (min-width: 997px) {
@@ -21,17 +162,7 @@
   }
 }
 
-.navbar__brand,
-.navbar__logo {
-  margin-right: 0;
-}
-
-.navbar__logo img {
-  margin-left: -1px;
-  margin-top: -5px;
-  height: 42px;
-}
-
+/* ===== navbar bits ===== */
 .navbar__search {
   margin-left: 0 !important;
 }
@@ -39,6 +170,375 @@
   border-radius: 8px;
 }
 
+/* ======== NAVBAR HEADER ======== */
+/* Base navbar container */
+.navbar {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-bottom: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    opacity 160ms ease;
+}
+
+/* Glass gradient overlay */
+.navbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 16, 18, 0.52) 0%, rgba(8, 16, 18, 0.32) 58%, rgba(8, 16, 18, 0) 100%);
+  backdrop-filter: blur(var(--navbar-bg-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--navbar-bg-blur)) saturate(140%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Scrolled state */
+html[data-nav-scrolled="1"] .navbar {
+  background-color: var(--lp-c-bg) !important;
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-bottom: 1px solid var(--nav-border-scrolled);
+  align-items: center !important;
+}
+html[data-nav-scrolled="1"] .navbar::before {
+  opacity: 0;
+}
+
+/* Link colors when glass is active */
+html[data-nav-scrolled="1"] .navbar__title,
+html[data-nav-scrolled="1"] .navbar__link {
+  color: #fff;
+  opacity: 0.95;
+  align-items: center !important;
+}
+html[data-nav-scrolled="1"] .navbar__link:hover,
+html[data-nav-scrolled="1"] .navbar__link--active {
+  color: #fff;
+}
+
+/* Layout of inner bar */
+.navbar__inner {
+  max-width: none;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* === Brand cluster: logo + title sizing & spacing === */
+nav.navbar .navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--nav-gap);
+  width: auto !important;
+  height: auto !important;
+  line-height: normal;
+  margin: 0 !important;
+  padding-right: var(--nav-gap);
+}
+
+nav.navbar .navbar__logo {
+  display: flex;
+  align-items: center;
+}
+nav.navbar .navbar__logo img {
+  display: block;
+  width: 32px !important;
+  height: 24px !important;
+  object-fit: contain;
+  margin: 0 !important;
+}
+
+nav.navbar .navbar__title {
+  margin: 0 !important;
+  white-space: nowrap;
+  max-width: none !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  line-height: 24px;
+}
+
+nav.navbar .navbar__logo {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+nav.navbar .navbar__logo img {
+  display: block;
+  width: 32px !important;
+  height: 24px !important;
+  object-fit: contain;
+  margin: 0 !important;
+}
+
+nav.navbar {
+  gap: var(--nav-gap);
+  padding-left: var(--nav-gap);
+  padding-right: var(--nav-gap);
+}
+
+nav.navbar .navbar__brand {
+  margin: 0 !important;
+  gap: 12px;
+  width: 232px;
+  height: 24px;
+  line-height: 0;
+}
+
+nav.navbar .navbar__title {
+  max-width: calc(232px - 32px - 12px);
+  height: 24px;
+  line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 15px;
+}
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  margin-right: 0;
+}
+/* logo size */
+.navbar__logo img {
+  width: 32px !important;
+  height: 24px !important;
+
+  display: block;
+  object-fit: contain;
+}
+
+/* Ensure only one logo rendered */
+.navbar__logo > img:not(:first-child) {
+  display: none !important;
+}
+
+.navbar__logo img[class*="themedImage"] ~ img[class*="themedImage"] {
+  display: none !important;
+}
+
+/* Site title next to logo */
+.navbar__title {
+  line-height: 100%;
+  font-weight: 700;
+  color: #e9eef1;
+  letter-spacing: 0%;
+}
+
+/* Links */
+.navbar__item,
+.navbar__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  font-size: var(--nav-link-size);
+  font-weight: 200;
+  letter-spacing: -0.0001em;
+  color: #e9eef1;
+  line-height: 1;
+}
+
+/* Nur Top-Level Navbar Links grün beim Hover */
+nav.navbar a.navbar__link:hover {
+  color: var(--c-accent) !important;
+}
+
+nav.navbar .navbar__link::after {
+  display: none !important;
+}
+
+/* Navbar item link activ = green */
+#__docusaurus nav.navbar a.navbar__link--active,
+#__docusaurus nav.navbar a.navbar__link.active,
+#__docusaurus nav.navbar a.navbar__link:hover,
+#__docusaurus
+  nav.navbar
+  .dropdown__menu
+  a.dropdown__link:hover
+  #__docusaurus
+  nav.navbar
+  a.navbar__link[aria-current="page"] {
+  color: var(--c-accent) !important;
+}
+
+nav.navbar .dropdown__menu a.dropdown__link:hover,
+nav.navbar .dropdown__menu a.dropdown__link--active,
+nav.navbar .dropdown__menu a[aria-current="page"] {
+  color: var(--c-text) !important;
+}
+
+/* Group gaps */
+.navbar__items--left {
+  display: flex;
+  align-items: center;
+  gap: var(--nav-gap);
+  flex: 1;
+}
+.navbar__items--right {
+  display: flex;
+  align-items: center;
+  gap: var(--nav-gap);
+}
+
+/* GitHub */
+.header-github-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #e9eef1;
+  font-weight: 200;
+  text-decoration: none;
+}
+.header-github-pill::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: url("../img/icons/github.svg") center/contain no-repeat;
+  filter: invert(0) opacity(0.95);
+}
+.header-github-pill:hover {
+  color: #fff;
+}
+html[data-nav-scrolled="1"] .header-github-pill {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #fff;
+}
+
+/* Tighten right cluster spacing and keep Search next to GitHub */
+.navbar__items--right {
+  gap: 0 !important;
+}
+.header-github-pill + [class*="navbarSearchContainer_"] {
+  margin-left: 8px !important;
+}
+
+/* Hide external link glyphs in header items */
+.header-github-pill > svg {
+  display: none !important;
+}
+
+/* ===== Desktop SEARCH component styling ===== */
+/* Container look */
+.navbar :is(.navbar__search, [class*="searchbarContainer_"]) {
+  position: relative;
+  width: 160px;
+  height: 32px;
+  border-radius: 8px;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #2b2f36 !important;
+  border: 1px solid #3a4148 !important;
+  box-shadow: none !important;
+}
+/* Input field */
+.navbar :is(input.navbar__search-input, input[class*="searchInput_"]) {
+  flex: 1;
+  min-width: 0;
+  padding-left: 22px;
+  background: transparent !important;
+  color: #e0e6ea !important;
+  border: 0;
+  outline: none;
+  font-size: 14px;
+}
+.navbar :is(input.navbar__search-input, input[class*="searchInput_"])::placeholder {
+  color: #9ca3af;
+  opacity: 0.9;
+}
+/* Search icon inside the container */
+.navbar :is(.navbar__search, [class*="searchbarContainer_"])::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background: url("../img/icons/search.svg") center/contain no-repeat;
+  opacity: 0.9;
+}
+/* Replace the Cmd+K hint with custom icon */
+.navbar :is([class*="searchHintContainer_"]) {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 27px;
+  height: 18px;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  font-size: 0 !important;
+}
+.navbar :is([class*="searchHintContainer_"]) > * {
+  display: none !important;
+}
+.navbar :is([class*="searchHintContainer_"])::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: url("../img/icons/cmd-k.svg") center/contain no-repeat;
+}
+/*Clear (X) icon*/
+.searchClearButton {
+  filter: invert(1);
+}
+
+/* ===== navbar states ===== */
+/* Home: transparent until scrolled */
+html:not([data-nav-scrolled="1"]) #__docusaurus:has(.ord-home-flag) .navbar {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html:not([data-nav-scrolled="1"]) #__docusaurus:has(.ord-home-flag) .navbar::before {
+  display: none !important;
+}
+
+/* Inner pages: glass */
+#__docusaurus:not(:has(.ord-home-flag)) .navbar {
+  background-color: rgba(var(--bg-rgb), var(--glass-alpha)) !important;
+  backdrop-filter: blur(10px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+  border-bottom: 1px solid var(--nav-border-scrolled) !important;
+}
+#__docusaurus:not(:has(.ord-home-flag)) .navbar::before {
+  opacity: 0 !important;
+}
+#__docusaurus:not(:has(.ord-home-flag)) .navbar__title,
+#__docusaurus:not(:has(.ord-home-flag)) .navbar__link {
+  color: #fff !important;
+  opacity: 0.95;
+}
+
+/* Keep active = green even when scrolled or on inner pages */
+html[data-nav-scrolled="1"] nav.navbar .navbar__link--active,
+#__docusaurus:not(:has(.ord-home-flag)) nav.navbar .navbar__link--active {
+  color: var(--c-accent) !important;
+}
+
+.navbar {
+  z-index: 1000;
+}
+
+/* ===== Non-navbar site styling ===== */
 .theme-doc-sidebar-item-link-level-2 {
   font-size: 0.9em;
 }
@@ -83,7 +583,6 @@ article .card {
   border-left: var(--ifm-blockquote-border-left-width) solid #a1b2cb;
   border-radius: 4px;
 }
-
 .markdown table {
   font-size: 0.85em;
 }
@@ -94,19 +593,16 @@ article .card {
 .markdown table td {
   padding: 0.2rem 0.6rem;
 }
-
 .markdown code {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
 }
-
 .markdown .highlight {
   background: #f3f38d !important;
   color: #000 !important;
   border-radius: 3px;
   padding: 0 5px;
 }
-
 .markdown .mandatory,
 .markdown .recommended,
 .markdown .optional,
@@ -146,7 +642,6 @@ article .card {
 .markdown > p {
   margin-bottom: 8px;
 }
-
 .markdown li p {
   margin-top: 0;
   margin: 0 0 4px 0;
@@ -158,14 +653,12 @@ article .card {
   min-width: 120px;
   max-width: 120px;
 }
-
 .markdown dfn {
   scroll-margin-top: 80px;
   background: #e3eef7;
   border-radius: 3px;
   padding: 0 4px;
 }
-
 .markdown details {
   padding: 4px 8px 4px 14px;
 }
@@ -174,88 +667,31 @@ article .card {
   padding: 8px 8px 0 8px;
   font-size: 0.9em;
 }
-
 .hidden {
   display: none;
 }
 
-.footer--dark {
-  border-top: 6px solid #161e2e;
-  background: rgb(41, 53, 71);
-  background: linear-gradient(175deg, #1a2737 0%, rgb(82 112 133) 100%);
-}
 iframe {
   border: 1px solid #e7e7e7;
   border-radius: 8px;
   padding: 3px;
 }
-
 .markdown .container {
   padding: 0;
 }
-
 .markdown .card {
   border: 1px solid #e2e2e2;
   border-radius: 8px;
   font-size: 0.9em;
 }
-
 .markdown .card__header {
   padding: 0 0 4px 0;
   margin: 0 0 4px 0;
   border-bottom: 1px solid #e2e2e2;
 }
-
 .markdown .card__body {
   padding: 4px 0 0 0;
 }
-
 .markdown .cardTitle_rnsV {
   font-size: 1.4rem !important;
-}
-
-.footer--dark {
-  --ifm-footer-background-color: #071819;
-  border-top: 6px solid #1c8b92;
-  padding: 16px;
-}
-.footer--dark .footer__copyright {
-  color: #8695a1;
-  font-size: 0.85em;
-}
-
-.footer--dark svg {
-  display: none;
-}
-
-@media (max-width: 1190px) {
-  .navbar__item {
-    padding-left: 6px;
-    padding-right: 10px;
-  }
-  .navbar__items .dropdown--hoverable {
-    padding-top: 1px;
-  }
-  .navbar__items a {
-    font-size: 0.85em;
-  }
-  .navbar__items--right a {
-    padding-right: 0px;
-  }
-}
-
-.videoContainer {
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-bottom: min(56.25%, 454px);
-}
-
-.videoIframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  max-width: 800px;
 }
