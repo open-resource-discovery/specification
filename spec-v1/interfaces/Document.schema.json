@@ -4622,8 +4622,9 @@
       "properties": {
         "systemNamespace": {
           "type": "string",
-          "description": "The system namespace is a unique identifier for the system type.\nIt is used to reference the system type in the ORD.",
+          "description": "The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.\nIt is used to reference the system type in the ORD.",
           "pattern": "^[a-z0-9]+(?:[.][a-z0-9]+){1}$",
+          "maxLength": 32,
           "examples": [
             "sap.s4",
             "sap.c4c",
@@ -4742,6 +4743,10 @@
             {
               "const": "open",
               "description": "The resource definitions are openly accessible and not protected via authentication or authorization.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/open)."
+            },
+            {
+              "const": "basic-auth",
+              "description": "The resource definitions are protected via generic basic auth.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/basic-auth)."
             },
             {
               "const": "sap:oauth-client-credentials:v1",

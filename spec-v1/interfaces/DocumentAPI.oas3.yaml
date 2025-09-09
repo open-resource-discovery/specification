@@ -4873,9 +4873,10 @@ components:
         systemNamespace:
           type: string
           description: |-
-            The system namespace is a unique identifier for the system type.
+            The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.
             It is used to reference the system type in the ORD.
           pattern: ^[a-z0-9]+(?:[.][a-z0-9]+){1}$
+          maxLength: 32
           example: sap.s4
         correlationIds:
           type: array
@@ -4988,6 +4989,12 @@ components:
               enum:
                 - open
             - description: |-
+                The resource definitions are protected via generic basic auth.
+                Please find a more detailed documentation [here](../../spec-extensions/access-strategies/basic-auth).
+              x-introduced-in-version: 1.12.1
+              enum:
+                - basic-auth
+            - description: |-
                 The ORD information are accessible via OAuth 2.0 client credentials flow as standardized within SAP.
                 Please find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-oauth-client-credentials-v1).
               enum:
@@ -5000,6 +5007,10 @@ components:
             - description: |-
                 The ORD information are accessible for SAP Business Accelerator Hub via Basic Auth strategy.
                 Please find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-businesshub-basic-v1).
+              x-deprecated-in-version: 1.12.1
+              x-deprecated: |-
+                This access strategy is deprecated and will be removed in a future version of the specification.
+                Please use `basic-auth` instead.
               enum:
                 - sap.businesshub:basic-auth:v1
             - description: |-

@@ -233,7 +233,7 @@ export interface DocumentationLabels {
  */
 export interface SystemType {
   /**
-   * The system namespace is a unique identifier for the system type.
+   * The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.
    * It is used to reference the system type in the ORD.
    */
   systemNamespace?: string;
@@ -896,6 +896,7 @@ export interface AccessStrategy {
   type: (
     | string
     | "open"
+    | "basic-auth"
     | "sap:oauth-client-credentials:v1"
     | "sap:cmp-mtls:v1"
     | "sap.businesshub:basic-auth:v1"
