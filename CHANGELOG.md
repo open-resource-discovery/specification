@@ -10,6 +10,18 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.12.1]
+
+### Added
+
+- Added `basic-auth` access strategy for generic basic authentication
+  - Deprecated `sap.businesshub:basic-auth:v1` access strategy in favor of `basic-auth`
+
+### Changed
+
+- Added explicit max length constrain to `systemNamespace` (32 chars)
+  - This was already stated in the specification, but not enforced in the JSON Schema
+
 ## [1.12.0]
 
 ### Added

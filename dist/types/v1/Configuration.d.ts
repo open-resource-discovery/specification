@@ -99,7 +99,7 @@ export interface AccessStrategy {
     /**
      * Defines the authentication/authorization strategy through which the referenced ORD Documents can be accessed.
      */
-    type: (string | "open" | "sap:oauth-client-credentials:v1" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom") & string;
+    type: (string | "open" | "basic-auth" | "sap:oauth-client-credentials:v1" | "sap:cmp-mtls:v1" | "sap.businesshub:basic-auth:v1" | "custom") & string;
     /**
      * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
      *

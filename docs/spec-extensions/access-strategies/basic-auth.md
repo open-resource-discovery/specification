@@ -1,18 +1,20 @@
 ---
-title: Open Access Strategy
-description: Access without mandatory authentication and authorization.
-sidebar_position: 0
+title: Basic Auth Access Strategy
+description: Generic basic auth authentication and authorization.
+sidebar_position: 1
 ---
 
-# Open Access Strategy
+# Basic Auth Access Strategy
 
 ## Description
 
-The `open` access strategy indicates that there is no mandatory authentication and authorization to access the information. A regular HTTP GET call will be sufficient as the information are _unprotected_.
+The `basic-auth` access strategy is a generic access strategy that uses basic authentication for authentication and authorization.
+It doesn't specify how the credentials would be exchanged.
 
-Whether this is a valid choice depends on the security considerations that the ORD providers are subject to.
+To send Basic Authentication with HTTP requests, you include an Authorization header with your request.
+The header value is the word `Basic`, followed by a space, then a Base64-encoded string of `username:password`.
 
-The `accessStrategy`.`type` value for it is: `open`.
+The `accessStrategy`.`type` value for it is: `basic-auth`.
 
 ## Optional Tenant HTTP Headers
 
