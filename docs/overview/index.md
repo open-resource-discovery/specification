@@ -30,7 +30,7 @@ To adopt ORD, an application implements a read-only entry point ([Service Provid
 
 > ℹ The ORD standard is governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/), a neutral nonprofit organization that supports the development of open-source projects and standards. See [ORD steering committee](https://github.com/open-resource-discovery/steering#readme).
 
-> The ORD interface (JSON Schema) and TypeScript types are available via npm: [`@sap/open-resource-discovery`](https://www.npmjs.com/package/@sap/open-resource-discovery).
+> The ORD interface (JSON Schema) and TypeScript types are available via npm: [`@open-resource-discovery/specification`](https://www.npmjs.com/package/@open-resource-discovery/specification).
 
 ## Learn More
 

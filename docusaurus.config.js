@@ -142,7 +142,7 @@ const config = {
           {
             type: "dropdown",
             position: "left",
-            label: "Spec Extensions",
+            label: "Extensions",
             to: "spec-extensions",
             items: [
               {
