@@ -1250,6 +1250,8 @@ components:
             If the URL is relative to the system that describes the ORD information,
             it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
             If the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.
+            If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten. 
+            The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points. 
 
             **Consumer View**:
             When fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs.
@@ -1335,6 +1337,12 @@ components:
                 The API Resource definitions `type` MUST ONLY be set to `custom`.
               enum:
                 - websocket
+            - description: |-
+                [A2A](https://a2a-protocol.org/latest/) is open protocol enabling communication and interoperability between opaque agentic applications.
+
+                As API Resource definition the `a2a-agent-card` MUST be provided, usually put under `/.well-known/agent.json`.
+              enum:
+                - a2a
             - description: |-
                 [SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html) (Remote Function Call)  is the standard SAP interface for communication between SAP systems.
                 RFC calls a function to be executed in a remote system.
@@ -3438,6 +3446,12 @@ components:
                 The `apiProtocol` MUST be set to `soap-inbound` or `soap-outbound`.
               enum:
                 - wsdl-v2
+            - description: |-
+                [A2A Agent Card](https://a2a-protocol.org/topics/agent-discovery/) is a machine-readable description of an A2A Agent.
+                The `mediaType` MUST be be set to `application/json`.
+                The `apiProtocol` MUST be set to `a2a`.
+              enum:
+                - a2a-agent-card
             - description: |-
                 Proprietary metadata description format for [SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html).
                 The `mediaType` MUST be be set to `application/xml`.

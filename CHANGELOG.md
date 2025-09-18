@@ -10,6 +10,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.12.2]
+
+### Added
+
+- Added [Google A2A protocol](https://a2a-protocol.org/) support for agent integration
+  - Added new `apiProtocol`: `a2a`
+  - Added new resource definition type: `a2a-agent-card`
+
 ## [1.12.1]
 
 ### Added
