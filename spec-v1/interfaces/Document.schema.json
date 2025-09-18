@@ -805,7 +805,7 @@
         },
         "entryPoints": {
           "type": "array",
-          "description": "List of [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the target host.\n\nIf the API resource can be accessed through an entry point, it MUST be described here.\n\nThe list of entry points MUST not include duplicates.\nIf multiple entry points are provided they MUST be arbitrarily exchangeable without effects.\nThis means that the URLs are just an alias to each other and the `resourceDefinitions` apply to all entry points equally.\nIn case of multiple entry points it is RECOMMENDED to provide a `defaultEntryPoint` through `partOfConsumptionBundles`.\nThe entry point URLs SHOULD match with the target host(s) in the resource definition files (e.g. OpenAPI `servers`).\nIf there is no match, the information in ORD takes precedence.\n\n**Provider View:**\nIf the URL is relative to the system that describes the ORD information,\nit is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.\nIf the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.\n\n**Consumer View**:\nWhen fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs.",
+          "description": "List of [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the target host.\n\nIf the API resource can be accessed through an entry point, it MUST be described here.\n\nThe list of entry points MUST not include duplicates.\nIf multiple entry points are provided they MUST be arbitrarily exchangeable without effects.\nThis means that the URLs are just an alias to each other and the `resourceDefinitions` apply to all entry points equally.\nIn case of multiple entry points it is RECOMMENDED to provide a `defaultEntryPoint` through `partOfConsumptionBundles`.\nThe entry point URLs SHOULD match with the target host(s) in the resource definition files (e.g. OpenAPI `servers`).\nIf there is no match, the information in ORD takes precedence.\n\n**Provider View:**\nIf the URL is relative to the system that describes the ORD information,\nit is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.\nIf the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.\nIf the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten. \nThe provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points. \n\n**Consumer View**:\nWhen fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs.",
           "items": {
             "type": "string",
             "format": "uri-reference"
@@ -880,6 +880,10 @@
             {
               "const": "websocket",
               "description": "Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.\nSince WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.\nThe API Resource definitions `type` MUST ONLY be set to `custom`."
+            },
+            {
+              "const": "a2a",
+              "description": "[A2A](https://a2a-protocol.org/latest/) is open protocol enabling communication and interoperability between opaque agentic applications.\n\nAs API Resource definition the `a2a-agent-card` MUST be provided, usually put under `/.well-known/agent.json`."
             },
             {
               "const": "sap-rfc",
@@ -3146,6 +3150,10 @@
             {
               "const": "wsdl-v2",
               "description": "[WSDL 2](https://www.w3.org/TR/2007/REC-wsdl20-20070626/) API Definition for [SOAP](https://en.wikipedia.org/wiki/SOAP) APIs.\nThe `mediaType` MUST be be set to `application/xml`.\nThe `apiProtocol` MUST be set to `soap-inbound` or `soap-outbound`."
+            },
+            {
+              "const": "a2a-agent-card",
+              "description": "[A2A Agent Card](https://a2a-protocol.org/topics/agent-discovery/) is a machine-readable description of an A2A Agent.\nThe `mediaType` MUST be be set to `application/json`.\nThe `apiProtocol` MUST be set to `a2a`."
             },
             {
               "const": "sap-rfc-metadata-v1",

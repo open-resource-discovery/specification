@@ -515,6 +515,8 @@ export interface APIResource {
    * If the URL is relative to the system that describes the ORD information,
    * it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
    * If the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.
+   * If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.
+   * The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.
    *
    * **Consumer View**:
    * When fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs.
@@ -543,6 +545,7 @@ export interface APIResource {
     | "soap-outbound"
     | "mcp"
     | "websocket"
+    | "a2a"
     | "sap-rfc"
     | "sap-sql-api-v1"
     | "sap-ina-api-v1"
@@ -842,6 +845,7 @@ export interface APIResourceDefinition {
     | "graphql-sdl"
     | "wsdl-v1"
     | "wsdl-v2"
+    | "a2a-agent-card"
     | "sap-rfc-metadata-v1"
     | "sap-sql-api-definition-v1"
     | "sap-csn-interop-effective-v1"
