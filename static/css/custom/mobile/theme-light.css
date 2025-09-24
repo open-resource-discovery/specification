@@ -1,0 +1,136 @@
+/* Section: Light-mode specifics for mobile */
+@media (max-width: 996px) {
+  /* Light: burger + toggle color on top bar */
+  html[data-theme="light"]
+    nav.navbar:not(.navbar-sidebar--show)
+    nav.navbar
+    :is(.navbar__toggle, [class*="toggleButton_"]) {
+    color: var(--lp-c-text-2) !important;
+  }
+
+  /* Sidebar GitHub icon inversion */
+
+  html[data-theme="light"] .navbar-sidebar__items .menu__link.header-github-pill svg {
+    filter: invert(0) opacity(0.95) !important;
+  }
+
+  /* LP light: scrolled */
+  html[data-theme="light"][data-nav-scrolled="1"] nav.navbar {
+    background-color: var(--c-bg) !important;
+    border-bottom: 1px solid var(--nav-border-scrolled) !important;
+    box-shadow: 0 2px 12px rgba(4, 13, 18, 0.04) !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  html[data-theme="light"][data-nav-scrolled="1"] nav.navbar::before {
+    opacity: 0 !important;
+  }
+  html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .navbar__title {
+    color: var(--c-text-strong) !important;
+  }
+
+  html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .navbar__link:hover {
+    color: var(--c-text-strong) !important;
+  }
+
+  /* Solid light background instead of dark gradient overlay */
+  html[data-theme="light"] .navbar-sidebar {
+    background: var(--c-bg) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Sidebar header (brand bar) */
+  html[data-theme="light"] .navbar-sidebar__brand {
+    background: var(--c-bg) !important;
+  }
+  html[data-theme="light"] .navbar-sidebar__brand .navbar__title {
+    color: var(--c-text-strong) !important;
+  }
+
+  /* Close button/icon */
+  html[data-theme="light"] .navbar-sidebar__close {
+    filter: invert(1) opacity(0.75) !important;
+  }
+  html[data-theme="light"] .navbar-sidebar__close:hover {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* Sidebar search */
+  html[data-theme="light"]
+    .navbar-sidebar
+    .navbar-sidebar__search
+    :is(
+      [class*="navbarSearchContainer_"],
+      .navbar__search,
+      [class*="searchbarContainer_"],
+      [class*="searchBarContainer_"]
+    ) {
+    background: #eef3f6 !important;
+    border: 1px solid var(--lp-c-border) !important;
+    border-radius: 8px;
+  }
+  html[data-theme="light"]
+    .navbar-sidebar__search
+    :is(
+      .navbar__search,
+      [class*="searchBarContainer_"],
+      [class*="searchbarContainer_"],
+      [class*="navbarSearchContainer_"]
+    )::before,
+  html[data-theme="light"] .navbar-sidebar__search [class*="searchBar_"]::before {
+    filter: invert(1) opacity(0.65) !important;
+  }
+  html[data-theme="light"] .navbar-sidebar__search input {
+    color: var(--c-text) !important;
+  }
+  html[data-theme="light"] .navbar-sidebar__search input::placeholder {
+    color: color-mix(in oklab, var(--c-text) 55%, #fff);
+  }
+
+  /* Dropdowns within sidebar */
+  html[data-theme="light"] .navbar-sidebar [class*="dropdownMenu_"],
+  html[data-theme="light"] .navbar-sidebar__search [class*="searchBar_"] [class*="dropdownMenu_"] {
+    background: #fff !important;
+    border: 1px solid var(--lp-c-border) !important;
+    box-shadow: var(--shadow-md, 0 10px 30px rgba(4, 13, 18, 0.08));
+  }
+
+  /* Carets & nesting indicators become dark, no inversion */
+  html[data-theme="light"] .navbar-sidebar .menu__caret,
+  html[data-theme="light"] .navbar-sidebar .menu__caret:hover,
+  html[data-theme="light"] .navbar-sidebar .menu__caret[aria-expanded="true"] {
+    color: var(--c-text) !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  html[data-theme="light"] .navbar-sidebar .menu__caret::before,
+  html[data-theme="light"] .navbar-sidebar .menu__caret::after {
+    filter: none !important;
+  }
+
+  /* Links inside sidebar */
+  html[data-theme="light"] .navbar-sidebar__items .menu__link,
+  html[data-theme="light"] .theme-doc-sidebar-menu .menu__link {
+    color: var(--c-text) !important;
+    background: transparent !important;
+  }
+
+  /* Hover (exclude active) */
+  html[data-theme="light"] .navbar-sidebar__items .menu__link:hover:not(.menu__link--active),
+  html[data-theme="light"] .theme-doc-sidebar-menu .menu__link:hover:not(.menu__link--active) {
+    color: var(--c-text-strong) !important;
+    background: rgba(0, 0, 0, 0.04) !important;
+    transform: translateX(4px);
+  }
+
+  /* Active state */
+  html[data-theme="light"] .navbar-sidebar__items .menu__link--active,
+  html[data-theme="light"] .theme-doc-sidebar-menu .menu__link--active {
+    color: var(--c-text-strong) !important;
+    background: rgba(0, 0, 0, 0.08) !important;
+    font-weight: 500 !important;
+    transform: none !important;
+  }
+}

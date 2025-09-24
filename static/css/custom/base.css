@@ -1,0 +1,21 @@
+/* Base text/background for both themes */
+:root,
+html[data-theme="dark"] {
+  background: var(--c-bg);
+  color: var(--c-text);
+}
+
+/* Section: Media tweaks for navbar padding */
+@media (min-width: 997px) {
+  :root {
+    --ifm-navbar-padding-horizontal: 4px;
+  }
+}
+
+/* Minor resets used site-wide */
+.navbar__search {
+  margin-left: 0 !important;
+}
+.navbar__search-input {
+  border-radius: 8px;
+}

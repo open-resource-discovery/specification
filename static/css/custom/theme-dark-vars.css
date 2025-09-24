@@ -1,0 +1,16 @@
+/* Dark theme variable overrides */
+html[data-theme="dark"] {
+  --c-accent: #27e0d1;
+  --c-accent-contrast: #061316;
+  --c-text-strong: #f4f7f8;
+  --c-text: #d9e2e6;
+  --c-text-dim: #98a7af;
+  --c-bg: #1b1b1f;
+  --c-bg-elev: #10151b;
+  --c-card: #141a21;
+  --c-sep: #212a33;
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --bg-rgb: 12, 15, 19;
+  --glass-alpha: 0.1;
+}

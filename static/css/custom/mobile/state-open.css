@@ -1,0 +1,10 @@
+/* Section: Open sidebar state */
+@media (max-width: 996px) {
+  /* When sidebar is open, burger becomes white and title readable */
+  nav.navbar.navbar-sidebar--show .navbar__toggle {
+    filter: invert(0) opacity(0.95);
+  }
+  nav.navbar.navbar-sidebar--show .navbar__title {
+    color: #fff !important;
+  }
+}

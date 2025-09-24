@@ -1,0 +1,57 @@
+/* Section: Feature cards grid and items */
+.lp-features {
+  display: grid;
+  margin: 60px auto 0;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.lp-features h3 {
+  font-size: 16px;
+}
+.lp-feature-card {
+  background: #202126;
+  color: #dfdfd6;
+  border-radius: 12px;
+  padding: 16px 28px 24px 28px;
+  transition: all 0.3s ease;
+}
+.lp-feature-card p {
+  margin: 0;
+  color: #98989f;
+  font-weight: 500;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* Section: Feature media queries */
+@media (max-width: 480px) {
+  .lp-features {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 100%;
+  }
+  .lp-feature-card {
+    text-align: left;
+  }
+}
+@media (min-width: 481px) and (max-width: 959px) {
+  .lp-features {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+  }
+}
+@media (min-width: 960px) {
+  .lp-features {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: 1152px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media (min-width: 1152px) {
+  .lp-feature-card {
+    padding: 12px 28px 20px 28px;
+  }
+}

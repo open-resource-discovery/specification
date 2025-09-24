@@ -1,0 +1,159 @@
+/* =========================================================
+   Innerpages – Dark mode content
+   Scope: html[data-theme="dark"] + NOT Landing
+  ========================================================= */
+
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown {
+  color: var(--c-text);
+}
+
+/* Headings */
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--c-text-strong);
+}
+
+/* Content links + hash icons */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown a {
+  color: var(--c-accent) !important;
+  text-decoration-color: color-mix(in oklab, var(--c-accent) 50%, transparent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown a:hover {
+  color: var(--c-accent) !important;
+  text-decoration-color: var(--c-accent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown .hash-link {
+  color: var(--c-text-dim) !important;
+}
+
+/* Sidebar level-2 marker */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-sidebar-item-link-level-2 a {
+  border-left-color: var(--c-sep);
+}
+
+/* Divider */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown hr {
+  border-color: var(--c-sep);
+}
+
+/* Blockquotes */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown blockquote {
+  background: var(--c-bg-elev);
+  border-left-color: var(--c-sep);
+}
+
+/* Tables */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown table :is(th, td) {
+  border-bottom: 1px solid var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown table th {
+  background: color-mix(in oklab, var(--c-bg-elev) 85%, transparent);
+}
+
+/* Inline code */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown code {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--c-text-strong);
+}
+
+/* Text highlight */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .highlight {
+  background: #3a3a16 !important;
+  color: #fff !important;
+}
+
+/* dfn chips */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown dfn {
+  background: rgba(39, 224, 209, 0.12);
+}
+
+/* Details / accordion */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown details,
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  details
+  .collapsibleContent_node_modules-\@docusaurus-theme-common-lib-components-Details-styles-module {
+  background: transparent;
+}
+
+/* Iframes */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) iframe {
+  border-color: var(--c-sep);
+}
+
+/* Cards */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .card {
+  background: var(--c-card);
+  border-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .card__header {
+  border-bottom-color: var(--c-sep);
+}
+
+/* Docs page footer */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-footer {
+  color: var(--c-text);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-footer .theme-edit-this-page {
+  color: var(--c-accent);
+}
+
+/* Grid sections inside markdown (container/row/col) */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container .row,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container .row .col {
+  background: transparent;
+  color: var(--c-text);
+}
+
+/* Paragraphs / list items in grid */
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  .container
+  .row
+  .col
+  :is(p, li) {
+  color: var(--c-text);
+}
+
+/* Strong/emphasis in grid */
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  .container
+  .row
+  .col
+  :is(strong, em) {
+  color: var(--c-text-strong);
+}
+
+/* Links in grid */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container .row .col a {
+  color: var(--c-accent) !important;
+  text-decoration-color: color-mix(in oklab, var(--c-accent) 50%, transparent);
+}
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  .container
+  .row
+  .col
+  a:hover {
+  text-decoration-color: var(--c-accent);
+}
+
+/* Images in grid */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container .row .col img {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .clean-btn {
+  color: var(--c-text-strong);
+}

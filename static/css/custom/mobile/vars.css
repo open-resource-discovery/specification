@@ -1,0 +1,7 @@
+/* Section: Mobile navbar variables */
+:root {
+  --navbar-bg-blur: 12px;
+  --mobile-navbar-h: 56px;
+  --mobile-pad-x: 12px;
+  --nav-gap-mobile: 18px;
+}

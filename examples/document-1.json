@@ -3,6 +3,9 @@
   "openResourceDiscovery": "1.12",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1"],
+  "describedSystemType": {
+    "systemNamespace": "sap.foo"
+  },
   "products": [
     {
       "ordId": "sap.foo:product:ord-reference-app:",
@@ -13,7 +16,7 @@
   ],
   "packages": [
     {
-      "ordId": "sap.foo:package:ord-reference-app:v0",
+      "ordId": "sap.foo.sub:package:ord-reference-app:v0",
       "title": "Open Resource Discovery Reference Application",
       "shortDescription": "This is a reference application for the Open Resource Discovery standard",
       "description": "This reference application demonstrates how Open Resource Discovery (ORD) can be implemented, demonstrating different resources and discovery aspects",

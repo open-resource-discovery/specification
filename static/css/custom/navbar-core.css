@@ -1,0 +1,89 @@
+/* Section: Core navbar sizing/layout */
+
+/* Global navbar height */
+:root {
+  --ifm-navbar-height: 60px;
+}
+
+/* Container + inner wrapper heights */
+nav.navbar {
+  min-height: var(--ifm-navbar-height);
+  height: var(--ifm-navbar-height);
+  padding-top: 0;
+  padding-bottom: 0;
+  gap: var(--nav-gap);
+  padding-left: var(--nav-gap);
+  padding-right: var(--nav-gap);
+}
+nav.navbar .navbar__inner {
+  height: var(--ifm-navbar-height);
+  min-height: var(--ifm-navbar-height);
+  align-items: center;
+}
+
+/* Brand & items vertical sizing */
+nav.navbar .navbar__items,
+nav.navbar .navbar__brand {
+  height: 100%;
+}
+
+/* Search pill alignment */
+nav.navbar :is(.navbar__search, [class*="searchBarContainer_"]) {
+  height: 36px;
+  margin-top: 0;
+  margin-bottom: 0;
+  align-self: center;
+}
+
+/* Brand cluster spacing & logo/title sizing */
+nav.navbar .navbar__brand {
+  display: flex;
+  align-items: center;
+
+  margin: 0 !important;
+}
+nav.navbar .navbar__logo {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+nav.navbar .navbar__logo img {
+  max-height: 36px;
+  width: auto;
+  height: 24px !important;
+  object-fit: contain;
+  display: block;
+}
+.navbar__logo > img:not(:first-child),
+.navbar__logo img[class*="themedImage"] ~ img[class*="themedImage"] {
+  display: none !important;
+}
+nav.navbar .navbar__title {
+  height: 24px;
+  line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 15px;
+}
+
+/* Dropdown link aligns full bar height */
+nav.navbar .dropdown > .navbar__link {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+}
+
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  margin-right: 0;
+}
+
+/* Title base typography */
+.navbar__title {
+  line-height: 100%;
+  font-weight: 700;
+  letter-spacing: 0%;
+  color: #e9eef1;
+}

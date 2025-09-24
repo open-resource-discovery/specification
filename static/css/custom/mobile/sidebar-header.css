@@ -1,0 +1,86 @@
+/* Section: Sidebar header (brand bar, toggle, logo/title, close) */
+@media (max-width: 996px) {
+  .navbar-sidebar__brand {
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    min-height: var(--mobile-navbar-h, 56px);
+    padding-left: var(--nav-gap);
+    padding-right: var(--nav-gap);
+  }
+
+  /* Brand block */
+  .navbar-sidebar__brand .navbar__brand {
+    order: 1;
+    flex: 1 1 auto;
+
+    display: flex;
+    align-items: center;
+  }
+  /* Toggle inside sidebar header */
+  .navbar-sidebar :is([class*="toggle_"], [class*="colorModeToggle_"]) {
+    display: none !important;
+  }
+  .navbar-sidebar__brand :is([class*="toggle_"], [class*="colorModeToggle_"]) {
+    order: 2;
+    display: flex !important;
+    align-items: center;
+    position: static !important;
+    transform: none !important;
+  }
+  .navbar-sidebar__brand :is([class*="toggleButton_"]) {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Disable background on toggle hover */
+  [class*="toggleButton_"]:hover {
+    background: none !important;
+  }
+
+  .navbar-sidebar__brand .navbar__logo img {
+    width: 32px;
+    height: 24px;
+    display: block;
+  }
+  .navbar-sidebar__brand .navbar__logo > img:not(:first-child) {
+    display: none !important;
+  }
+  .navbar-sidebar__brand .navbar__title {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Close button */
+  .navbar-sidebar__close {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: url("../../../img/icons/close.svg") center/44px no-repeat !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    filter: invert(0) opacity(0.9);
+    order: 2;
+  }
+
+  .navbar-sidebar__close svg {
+    display: none !important;
+  }
+}

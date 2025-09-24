@@ -1,0 +1,63 @@
+/* Section: Left cluster, brand/title, burger */
+@media (max-width: 996px) {
+  nav.navbar .navbar__brand {
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+  }
+  .theme-layout-navbar-left.navbar__items {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  /* Brand + title */
+  .navbar__logo img {
+    width: 28px !important;
+    height: 24px !important;
+    display: block;
+    object-fit: contain;
+  }
+  .navbar__title {
+    line-height: 100%;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    color: var(--c-text-strong) !important;
+    margin: 0 !important;
+    max-width: calc(100vw - 140px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .navbar__logo > img:not(:first-child),
+  .navbar__logo img[class*="themedImage"] ~ img[class*="themedImage"] {
+    display: none !important;
+  }
+
+  /* Burger */
+  .navbar__toggle svg {
+    display: none !important;
+  }
+  .navbar__toggle {
+    width: 24px;
+    height: 24px;
+    background: url("../../../img/icons/Menu.svg") center/24px no-repeat !important;
+    border: none;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    order: 2;
+  }
+  html[data-theme="light"] nav.navbar .navbar__toggle {
+    filter: invert(1) opacity(0.95);
+  }
+  html[data-theme="dark"] nav.navbar .navbar__toggle {
+    filter: invert(0) opacity(0.95);
+  }
+}
