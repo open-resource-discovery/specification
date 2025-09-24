@@ -42,7 +42,7 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          sidebarCollapsible: false,
+          sidebarCollapsible: true,
           routeBasePath: "/", // Serve the docs at the site's root
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -79,11 +79,12 @@ const config = {
     ({
       colorMode: {
         defaultMode: "light",
-        disableSwitch: true,
+        disableSwitch: false,
         respectPrefersColorScheme: false,
       },
       prism: {
-        theme: prismThemes.oceanicNext,
+        theme: prismThemes.github,
+        darkTheme: prismThemes.oceanicNext,
       },
       mermaid: {
         theme: { light: "neutral", dark: "forest" },
@@ -198,7 +199,6 @@ const config = {
           },
         ],
       },
-
       footer: {
         style: "dark",
         copyright: `
@@ -218,20 +218,35 @@ const config = {
             </div>
             <div class="neonephos-logos">
               <a href="https://neonephos.org/" target="_blank" rel="noopener noreferrer" class="neonephos-link">
-                <img src="${baseUrl + "/img/ord-footer-neonephos.svg"}" alt="Neonephos Logo" class="neonephos-logo">
+                <img
+                  src="${baseUrl + "/img/ord-footer-neonephos.svg"}"
+                  alt="Neonephos Logo"
+                  class="neonephos-logo neonephos-logo--dark"
+                />
+                <img
+                  src="${baseUrl + "/img/ord-footer-neonephos-light.svg"}"
+                  alt=""
+                  aria-hidden="true"
+                  class="neonephos-logo neonephos-logo--light"
+                />
               </a>
             </div>
             <!--
             <div class="footer-legal-links">
-              <a href="${baseUrl + "about/terms-of-use"}">Terms of Use</a>
+              <a href="${baseUrl + "/about/terms-of-use"}">Terms of Use</a>
               <span class="footer-legal-sep">|</span>
-              <a href="${baseUrl + "about/privacy"}">Privacy Statement</a>
+              <a href="${baseUrl + "/about/privacy"}">Privacy Statement</a>
               <span class="footer-legal-sep">|</span>
-              <a href="${baseUrl + "about/legal-disclosure"}">Legal Disclosure</a>
+              <a href="${baseUrl + "/about/legal-disclosure"}">Legal Disclosure</a>
             </div>
             -->
           </div>
         `,
+      },
+      docs: {
+        sidebar: {
+          autoCollapseCategories: true,
+        },
       },
     }),
 };
