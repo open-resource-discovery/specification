@@ -1,0 +1,61 @@
+/* Section: LP navbar → Light mode base (transparent, readable) */
+html[data-theme="light"] nav.navbar {
+  background: transparent !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Section: Brand + links */
+html[data-theme="light"] nav.navbar .navbar__title {
+  color: var(--lp-c-text-1);
+}
+html[data-theme="light"] nav.navbar .navbar__link,
+html[data-theme="light"] nav.navbar .header-github-pill {
+  color: var(--lp-c-text-2);
+}
+html[data-theme="light"] nav.navbar .navbar__link:hover,
+html[data-theme="light"] nav.navbar .navbar__link--active {
+  color: var(--lp-c-text-1);
+}
+
+/* Section: Burger */
+html[data-theme="light"] nav.navbar .navbar__toggle {
+  color: var(--lp-c-text-2);
+}
+
+/* Section: Search pill in header */
+html[data-theme="light"] nav.navbar :is(.navbar__search, [class*="searchBarContainer_"]) {
+  background: #eef3f6 !important;
+  border: 1px solid var(--lp-c-border) !important;
+  border-radius: 8px;
+}
+html[data-theme="light"] nav.navbar :is(input.navbar__search-input, input[class*="searchInput_"]) {
+  color: var(--lp-c-text-2) !important;
+}
+html[data-theme="light"] nav.navbar :is(input.navbar__search-input, input[class*="searchInput_"])::placeholder {
+  color: color-mix(in oklab, var(--lp-c-text-2) 60%, #fff);
+}
+
+/* Section: Dropdown menus */
+html[data-theme="light"] nav.navbar .dropdown__menu {
+  background: #fff;
+  border: 1px solid var(--lp-c-border);
+  box-shadow: var(--shadow-md, 0 10px 30px rgba(4, 13, 18, 0.08));
+}
+html[data-theme="light"] nav.navbar .dropdown__link {
+  color: var(--lp-c-text-2);
+}
+html[data-theme="light"] nav.navbar .dropdown__link:hover,
+html[data-theme="light"] nav.navbar .dropdown__link--active,
+html[data-theme="light"] nav.navbar .dropdown__link[aria-current="page"] {
+  color: var(--lp-c-text-1);
+  background: var(--lp-c-bg-soft);
+}
+
+/* Section: GitHub pill (text weight) */
+html[data-theme="light"] nav.navbar .header-github-pill {
+  font-weight: 300;
+}
+html[data-theme="light"] nav.navbar .header-github-pill > svg {
+  display: none !important;
+}

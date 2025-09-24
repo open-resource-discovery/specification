@@ -1,0 +1,87 @@
+/* Right cluster spacing & normalization */
+nav.navbar .navbar__items--right {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(8px, 1.2vw, 16px);
+  margin: 0;
+  padding: 0;
+}
+
+nav.navbar .navbar__items--right {
+  gap: clamp(8px, 1.2vw, 16px) !important;
+}
+nav.navbar .navbar__items--right > * {
+  margin-left: 0 !important;
+}
+
+/* Left cluster */
+.navbar__items--left {
+  display: flex;
+  align-items: center;
+  gap: var(--nav-gap);
+  flex: 1;
+}
+
+/* tighten spacing on right cluster */
+.navbar__items--right {
+  gap: 0 !important;
+}
+
+/* Search pill next to GitHub */
+.header-github-pill + [class*="navbarSearchContainer_"] {
+  margin-left: 8px !important;
+}
+
+/* === Only Toggle Buttons (light/dark/system) === */
+.navbar__items--right [class*="toggleButton_"] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent !important;
+  border: 1px solid transparent;
+  color: var(--c-text);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Remove white focus outline/border from all toggle buttons */
+nav.navbar [class*="toggleButton_"] {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+nav.navbar [class*="toggleButton_"]:focus,
+nav.navbar [class*="toggleButton_"]:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Vertically align the dark mode toggle icon */
+@media (min-width: 997px) {
+  nav.navbar [class*="darkToggleIcon_"] {
+    transform: translateY(-2px);
+  }
+
+  /* Glow effect on toggle icons (light/dark/system) */
+  nav.navbar .navbar__items--right [class*="toggleButton_"]:hover [class*="toggleIcon_"] {
+    color: var(--c-accent);
+    filter: drop-shadow(0 0 6px color-mix(in oklab, var(--c-accent) 60%, transparent));
+    transition:
+      color 0.2s ease,
+      filter 0.2s ease;
+  }
+
+  /* Active/pressed state */
+  nav.navbar .navbar__items--right [class*="toggleButton_"]:active [class*="toggleIcon_"] {
+    filter: drop-shadow(0 0 8px color-mix(in oklab, var(--c-accent) 80%, transparent));
+  }
+}

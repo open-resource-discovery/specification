@@ -1,0 +1,38 @@
+/* Section: Docusaurus overrides */
+.theme-edit-this-page {
+  display: none;
+}
+.docusaurus-mt-lg.pagination-nav {
+  display: none;
+}
+.theme-doc-footer {
+  display: none;
+}
+
+/* Section: TOC and breadcrumbs accents */
+.table-of-contents__link--active {
+  color: var(--c-accent) !important;
+}
+.theme-doc-sidebar-menu .menu__link--active {
+  color: var(--c-accent) !important;
+  border-left: 2px solid var(--c-accent);
+  padding-left: calc(var(--ifm-menu-link-padding-horizontal) - 2px);
+}
+.breadcrumbs .breadcrumbs__link:hover {
+  color: var(--c-accent) !important;
+}
+.table-of-contents .table-of-contents__link:hover {
+  color: var(--c-accent) !important;
+}
+.breadcrumbs__item--active .breadcrumbs__link {
+  background-color: var(--lp-c-brand-1);
+  color: #ffffff !important;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-weight: 500;
+}
+
+/* Section: Generic container color from LP */
+.container {
+  color: #1b1b1f;
+}

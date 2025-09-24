@@ -1,0 +1,44 @@
+/* Tables */
+.markdown table {
+  font-size: 0.85em;
+}
+.markdown table :is(th, td) {
+  padding: 0.2rem 0.6rem;
+}
+.markdown table td {
+  vertical-align: top;
+}
+
+/* Inline code & highlight */
+.markdown code {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+.markdown .highlight {
+  background: #f3f38d !important;
+  color: #000 !important;
+  border-radius: 3px;
+  padding: 0 5px;
+}
+
+/* Anchors & scroll-margin targets */
+.markdown .interface-property-name,
+.markdown .interface-property-type {
+  scroll-margin-top: 80px;
+  min-width: 120px;
+  max-width: 120px;
+}
+.markdown dfn {
+  scroll-margin-top: 80px;
+  background: #e3eef7;
+  border-radius: 3px;
+  padding: 0 4px;
+}
+.markdown details {
+  padding: 4px 8px 4px 14px;
+}
+.markdown details .collapsibleContent_node_modules-\@docusaurus-theme-common-lib-components-Details-styles-module {
+  margin: 4px 0 0 0;
+  padding: 8px 8px 0 8px;
+  font-size: 0.9em;
+}
