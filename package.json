@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/package",
   "name": "@open-resource-discovery/specification",
-  "version": "1.12.3-rc2",
+  "version": "1.12.3-rc3",
   "description": "Open Resource Discovery (ORD) Specification",
   "author": "SAP SE",
   "license": "Apache-2.0",
@@ -12,7 +12,7 @@
   "files": [
     "dist/index.*",
     "dist/types/",
-    "static/spec-v1/interfaces/*.json"
+    "dist/generated/spec/v1"
   ],
   "types": "dist/index.d.ts",
   "main": "dist/index.js",

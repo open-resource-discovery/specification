@@ -37,13 +37,14 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ordConfigurationSchema = exports.ordDocumentSchema = void 0;
-const fs = __importStar(require("fs"));
+const staticDocumentSchema = __importStar(require("./generated/spec/v1/schemas/document.schema.json"));
+const staticConfigurationSchema = __importStar(require("./generated/spec/v1/schemas/configuration.schema.json"));
 __exportStar(require("./generated/spec/v1/types"), exports);
 /**
  * The JSON Schema (draft-07) describing the ORD Document interface
  */
-exports.ordDocumentSchema = JSON.parse(fs.readFileSync(`${__dirname}/../static/spec-v1/interfaces/document.schema.json`).toString());
+exports.ordDocumentSchema = staticDocumentSchema;
 /**
  * The JSON Schema (draft-07) describing the ORD Configuration interface
  */
-exports.ordConfigurationSchema = JSON.parse(fs.readFileSync(`${__dirname}/../static/spec-v1/interfaces/configuration.schema.json`).toString());
+exports.ordConfigurationSchema = staticConfigurationSchema;
