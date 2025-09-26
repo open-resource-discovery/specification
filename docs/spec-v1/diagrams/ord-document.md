@@ -1,7 +1,6 @@
-# ORD Document Diagram
+#Ord Document Diagram
 
 ## Package
-See [Package interface](../interfaces/document.md#package).
   ```mermaid
   classDiagram
   class Package
@@ -37,7 +36,6 @@ See [Package interface](../interfaces/document.md#package).
   
 
 ## ConsumptionBundle
-See [ConsumptionBundle interface](../interfaces/document.md#consumption-bundle).
   ```mermaid
   classDiagram
   class ConsumptionBundle
@@ -61,7 +59,6 @@ See [ConsumptionBundle interface](../interfaces/document.md#consumption-bundle).
   
 
 ## ConsumptionBundleReference
-See [ConsumptionBundleReference interface](../interfaces/document.md#consumption-bundle-reference).
   ```mermaid
   classDiagram
   class ConsumptionBundleReference
@@ -77,7 +74,6 @@ See [ConsumptionBundleReference interface](../interfaces/document.md#consumption
   
 
 ## ApiResource
-See [ApiResource interface](../interfaces/document.md#api-resource).
   ```mermaid
   classDiagram
   class ApiResource
@@ -116,7 +112,6 @@ See [ApiResource interface](../interfaces/document.md#api-resource).
   
 
 ## EventResource
-See [EventResource interface](../interfaces/document.md#event-resource).
   ```mermaid
   classDiagram
   class EventResource
@@ -155,7 +150,6 @@ See [EventResource interface](../interfaces/document.md#event-resource).
   
 
 ## EntityType
-See [EntityType interface](../interfaces/document.md#entity-type).
   ```mermaid
   classDiagram
   class EntityType
@@ -193,7 +187,6 @@ See [EntityType interface](../interfaces/document.md#entity-type).
   
 
 ## DataProduct
-See [DataProduct interface](../interfaces/document.md#data-product).
   ```mermaid
   classDiagram
   class DataProduct
@@ -226,7 +219,6 @@ See [DataProduct interface](../interfaces/document.md#data-product).
   
 
 ## DataProductInputPort
-See [DataProductInputPort interface](../interfaces/document.md#data-product-input-port).
   ```mermaid
   classDiagram
   class DataProductInputPort
@@ -240,7 +232,6 @@ See [DataProductInputPort interface](../interfaces/document.md#data-product-inpu
   
 
 ## DataProductOutputPort
-See [DataProductOutputPort interface](../interfaces/document.md#data-product-output-port).
   ```mermaid
   classDiagram
   class DataProductOutputPort
@@ -251,7 +242,6 @@ See [DataProductOutputPort interface](../interfaces/document.md#data-product-out
   
 
 ## ApiResourceDefinition
-See [ApiResourceDefinition interface](../interfaces/document.md#api-resource-definition).
   ```mermaid
   classDiagram
   class ApiResourceDefinition
@@ -265,7 +255,6 @@ See [ApiResourceDefinition interface](../interfaces/document.md#api-resource-def
   
 
 ## EventResourceDefinition
-See [EventResourceDefinition interface](../interfaces/document.md#event-resource-definition).
   ```mermaid
   classDiagram
   class EventResourceDefinition
@@ -279,7 +268,6 @@ See [EventResourceDefinition interface](../interfaces/document.md#event-resource
   
 
 ## Product
-See [Product interface](../interfaces/document.md#product).
   ```mermaid
   classDiagram
   class Product
@@ -306,7 +294,6 @@ See [Product interface](../interfaces/document.md#product).
   
 
 ## Capability
-See [Capability interface](../interfaces/document.md#capability).
   ```mermaid
   classDiagram
   class Capability
@@ -330,7 +317,6 @@ See [Capability interface](../interfaces/document.md#capability).
   
 
 ## CapabilityDefinition
-See [CapabilityDefinition interface](../interfaces/document.md#capability-definition).
   ```mermaid
   classDiagram
   class CapabilityDefinition
@@ -344,7 +330,6 @@ See [CapabilityDefinition interface](../interfaces/document.md#capability-defini
   
 
 ## IntegrationDependency
-See [IntegrationDependency interface](../interfaces/document.md#integration-dependency).
   ```mermaid
   classDiagram
   class IntegrationDependency
@@ -370,7 +355,6 @@ See [IntegrationDependency interface](../interfaces/document.md#integration-depe
   
 
 ## IntegrationAspect
-See [IntegrationAspect interface](../interfaces/document.md#aspect).
   ```mermaid
   classDiagram
   class IntegrationAspect
@@ -386,7 +370,6 @@ See [IntegrationAspect interface](../interfaces/document.md#aspect).
   
 
 ## ApiResourceIntegrationAspect
-See [ApiResourceIntegrationAspect interface](../interfaces/document.md#api-resource-integration-aspect).
   ```mermaid
   classDiagram
   class ApiResourceIntegrationAspect
@@ -397,7 +380,6 @@ See [ApiResourceIntegrationAspect interface](../interfaces/document.md#api-resou
   
 
 ## EventResourceIntegrationAspect
-See [EventResourceIntegrationAspect interface](../interfaces/document.md#event-resource-integration-aspect).
   ```mermaid
   classDiagram
   class EventResourceIntegrationAspect
@@ -411,7 +393,6 @@ See [EventResourceIntegrationAspect interface](../interfaces/document.md#event-r
   
 
 ## EventResourceIntegrationAspectSubset
-See [EventResourceIntegrationAspectSubset interface](../interfaces/document.md#event-resource-integration-aspect-subset).
   ```mermaid
   classDiagram
   class EventResourceIntegrationAspectSubset
@@ -422,7 +403,6 @@ See [EventResourceIntegrationAspectSubset interface](../interfaces/document.md#e
   
 
 ## Vendor
-See [Vendor interface](../interfaces/document.md#vendor).
   ```mermaid
   classDiagram
   class Vendor
@@ -441,7 +421,6 @@ See [Vendor interface](../interfaces/document.md#vendor).
   
 
 ## ChangelogEntry
-See [ChangelogEntry interface](../interfaces/document.md#changelog-entry).
   ```mermaid
   classDiagram
   class ChangelogEntry
@@ -458,7 +437,6 @@ See [ChangelogEntry interface](../interfaces/document.md#changelog-entry).
   
 
 ## Link
-See [Link interface](../interfaces/document.md#link).
   ```mermaid
   classDiagram
   class Link
@@ -485,7 +463,6 @@ See [Link interface](../interfaces/document.md#link).
   
 
 ## PackageLink
-See [PackageLink interface](../interfaces/document.md#package-link).
   ```mermaid
   classDiagram
   class PackageLink
@@ -496,7 +473,6 @@ See [PackageLink interface](../interfaces/document.md#package-link).
   
 
 ## APIEventResourceLink
-See [APIEventResourceLink interface](../interfaces/document.md#api-and-event-resource-link).
   ```mermaid
   classDiagram
   class APIEventResourceLink
@@ -509,7 +485,6 @@ See [APIEventResourceLink interface](../interfaces/document.md#api-and-event-res
   
 
 ## DataProductLink
-See [DataProductLink interface](../interfaces/document.md#data-product-link).
   ```mermaid
   classDiagram
   class DataProductLink
@@ -520,7 +495,6 @@ See [DataProductLink interface](../interfaces/document.md#data-product-link).
   
 
 ## SystemInstance
-See [SystemInstance interface](../interfaces/document.md#system-instance).
   ```mermaid
   classDiagram
   class SystemInstance
@@ -534,7 +508,6 @@ See [SystemInstance interface](../interfaces/document.md#system-instance).
   
 
 ## SystemType
-See [SystemType interface](../interfaces/document.md#system-type).
   ```mermaid
   classDiagram
   class SystemType
@@ -548,7 +521,6 @@ See [SystemType interface](../interfaces/document.md#system-type).
   
 
 ## SystemVersion
-See [SystemVersion interface](../interfaces/document.md#system-version).
   ```mermaid
   classDiagram
   class SystemVersion
@@ -562,7 +534,6 @@ See [SystemVersion interface](../interfaces/document.md#system-version).
   
 
 ## AccessStrategy
-See [AccessStrategy interface](../interfaces/document.md#access-strategy).
   ```mermaid
   classDiagram
   class AccessStrategy
@@ -577,7 +548,6 @@ See [AccessStrategy interface](../interfaces/document.md#access-strategy).
   
 
 ## CredentialExchangeStrategy
-See [CredentialExchangeStrategy interface](../interfaces/document.md#credential-exchange-strategy).
   ```mermaid
   classDiagram
   class CredentialExchangeStrategy
@@ -588,7 +558,6 @@ See [CredentialExchangeStrategy interface](../interfaces/document.md#credential-
   
 
 ## Labels
-See [Labels interface](../interfaces/document.md#labels).
   ```mermaid
   classDiagram
   class Labels
@@ -625,7 +594,6 @@ See [Labels interface](../interfaces/document.md#labels).
   
 
 ## GroupType
-See [GroupType interface](../interfaces/document.md#group-type).
   ```mermaid
   classDiagram
   class GroupType
@@ -638,7 +606,6 @@ See [GroupType interface](../interfaces/document.md#group-type).
   
 
 ## Group
-See [Group interface](../interfaces/document.md#group).
   ```mermaid
   classDiagram
   class Group
@@ -666,7 +633,6 @@ See [Group interface](../interfaces/document.md#group).
   
 
 ## DocumentationLabels
-See [DocumentationLabels interface](../interfaces/document.md#documentation-labels).
   ```mermaid
   classDiagram
   class DocumentationLabels
@@ -703,7 +669,6 @@ See [DocumentationLabels interface](../interfaces/document.md#documentation-labe
   
 
 ## Extensible
-See [Extensible interface](../interfaces/document.md#extensible).
   ```mermaid
   classDiagram
   class Extensible
@@ -718,7 +683,6 @@ See [Extensible interface](../interfaces/document.md#extensible).
   
 
 ## EntityTypeMapping
-See [EntityTypeMapping interface](../interfaces/document.md#entity-type-mapping).
   ```mermaid
   classDiagram
   class EntityTypeMapping
@@ -740,7 +704,6 @@ See [EntityTypeMapping interface](../interfaces/document.md#entity-type-mapping)
   
 
 ## ApiModelSelectorOData
-See [ApiModelSelectorOData interface](../interfaces/document.md#api-model-selector-(odata)).
   ```mermaid
   classDiagram
   class ApiModelSelectorOData
@@ -751,7 +714,6 @@ See [ApiModelSelectorOData interface](../interfaces/document.md#api-model-select
   
 
 ## ApiModelSelectorJsonPointer
-See [ApiModelSelectorJsonPointer interface](../interfaces/document.md#api-model-selector-(json-pointer)).
   ```mermaid
   classDiagram
   class ApiModelSelectorJsonPointer
@@ -762,7 +724,6 @@ See [ApiModelSelectorJsonPointer interface](../interfaces/document.md#api-model-
   
 
 ## EntityTypeOrdIdTarget
-See [EntityTypeOrdIdTarget interface](../interfaces/document.md#entity-type-target-(ord-id)).
   ```mermaid
   classDiagram
   class EntityTypeOrdIdTarget
@@ -776,7 +737,6 @@ See [EntityTypeOrdIdTarget interface](../interfaces/document.md#entity-type-targ
   
 
 ## EntityTypeCorrelationIdTarget
-See [EntityTypeCorrelationIdTarget interface](../interfaces/document.md#entity-type-target-(correlation-id)).
   ```mermaid
   classDiagram
   class EntityTypeCorrelationIdTarget
@@ -787,7 +747,6 @@ See [EntityTypeCorrelationIdTarget interface](../interfaces/document.md#entity-t
   
 
 ## RelatedEntityType
-See [RelatedEntityType interface](../interfaces/document.md#related-entity-type).
   ```mermaid
   classDiagram
   class RelatedEntityType
@@ -800,7 +759,6 @@ See [RelatedEntityType interface](../interfaces/document.md#related-entity-type)
   
 
 ## ExposedEntityType
-See [ExposedEntityType interface](../interfaces/document.md#exposed-entity-type).
   ```mermaid
   classDiagram
   class ExposedEntityType
@@ -816,7 +774,6 @@ See [ExposedEntityType interface](../interfaces/document.md#exposed-entity-type)
   
 
 ## Tombstone
-See [Tombstone interface](../interfaces/document.md#tombstone).
   ```mermaid
   classDiagram
   class Tombstone
@@ -830,7 +787,6 @@ See [Tombstone interface](../interfaces/document.md#tombstone).
   
 
 ## OrdResource
-See [OrdResource interface](../interfaces/document.md#ord-resource-(abstract)).
   ```mermaid
   classDiagram
   class OrdResource

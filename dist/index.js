@@ -36,24 +36,14 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ordConfigurationSchemaWithAnnotations = exports.ordConfigurationSchema = exports.ordDocumentSchemaWithAnnotations = exports.ordDocumentSchema = void 0;
+exports.ordConfigurationSchema = exports.ordDocumentSchema = void 0;
 const fs = __importStar(require("fs"));
-__exportStar(require("./types/v1/Document"), exports);
+__exportStar(require("./generated/spec/v1/types"), exports);
 /**
  * The JSON Schema (draft-07) describing the ORD Document interface
  */
-exports.ordDocumentSchema = JSON.parse(fs.readFileSync(`${__dirname}/../static/spec-v1/interfaces/Document.schema.json`).toString());
-/**
- * The JSON Schema (draft-07) describing the ORD Document interface
- * with additional annotations (x-* attributes) like x-recommended
- */
-exports.ordDocumentSchemaWithAnnotations = JSON.parse(fs.readFileSync(`${__dirname}/../static/spec-v1/interfaces/Document.annotated.schema.json`).toString());
+exports.ordDocumentSchema = JSON.parse(fs.readFileSync(`${__dirname}/../static/spec-v1/interfaces/document.schema.json`).toString());
 /**
  * The JSON Schema (draft-07) describing the ORD Configuration interface
  */
-exports.ordConfigurationSchema = JSON.parse(fs.readFileSync(`${__dirname}/../static/spec-v1/interfaces/Configuration.schema.json`).toString());
-/**
- * The JSON Schema (draft-07) describing the ORD Configuration interface
- * with additional annotations (x-* attributes) like x-recommended
- */
-exports.ordConfigurationSchemaWithAnnotations = JSON.parse(fs.readFileSync(`${__dirname}/../static/spec-v1/interfaces/Configuration.annotated.schema.json`).toString());
+exports.ordConfigurationSchema = JSON.parse(fs.readFileSync(`${__dirname}/../static/spec-v1/interfaces/configuration.schema.json`).toString());

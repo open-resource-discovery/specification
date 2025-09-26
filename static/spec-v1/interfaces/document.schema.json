@@ -1,8 +1,256 @@
 {
+  "description": "The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information\nthat are specific to the document/the service it describes.\n\nThe constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.\n\nThis JSON Schema describes the [ORD document interface](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/document) of the [ORD specification](https://open-resource-discovery.github.io/specification/).",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#",
-  "title": "ORD Document",
-  "description": "The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information\nthat are specific to the document/the service it describes.\n\nThe constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.",
+  "title": "Ord Document",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference",
+      "description": "Optional [URL](https://tools.ietf.org/html/rfc3986) to the Open Resource Discovery document schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools.",
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        {
+          "const": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#"
+        }
+      ]
+    },
+    "openResourceDiscovery": {
+      "type": "string",
+      "description": "Version of the Open Resource Discovery specification that is used to describe this document.",
+      "enum": [
+        "1.0",
+        "1.1",
+        "1.2",
+        "1.3",
+        "1.4",
+        "1.5",
+        "1.6",
+        "1.7",
+        "1.8",
+        "1.9",
+        "1.10",
+        "1.11",
+        "1.12"
+      ],
+      "examples": [
+        "1.12"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional description of the ORD document itself.\nPlease note that this information is NOT further processed or considered by an ORD aggregator.\n\nNotated in [CommonMark](https://spec.commonmark.org/) (Markdown).",
+      "examples": [
+        "This ORD document contains all APIs that are system instance aware and have APIs that\ncan change their behavior at runtime.\n"
+      ]
+    },
+    "perspective": {
+      "type": "string",
+      "x-introduced-in-version": "1.12.0",
+      "x-feature-status": "beta",
+      "description": "With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).\n\nIt is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.\n\nIt is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.\n\nIf not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.\n\nPlease read the [article on perspectives](../concepts/perspectives) for more explanations.",
+      "oneOf": [
+        {
+          "const": "system-version",
+          "description": "Describes the static [system-version](../index.md#def-system-version) perspective, usually known at deploy-time.\n\nIf chosen, `describedSystemVersion`.`version` MUST be provided, too.\n\nThis perspective describes how a system of a particular type and version generally look like.\nThe latest system-version MAY also be interpreted as the [system-type](../index.md#def-system-type) perspective."
+        },
+        {
+          "const": "system-instance",
+          "description": "Describes the complete dynamic [system-instance](../index.md#def-system-instance) (tenant) perspective as known at run-time.\nThis allows to also reflect tenant specific extensions, customizations and runtime configuration.\n\nIf provided, it will completely override the static system-version perspective when metadata about system instances is requested."
+        },
+        {
+          "const": "system-independent",
+          "description": "Describes content that is independent of [system-versions](../index.md#def-system-version) or [system-instances](../index.md#def-system-instance).\nThis content is always static and has independent visibility and lifecycle from the systems in a particular landscape.\nThe \"system-independent\" content MUST NOT be overridden via system-version or system-instance perspective metadata.\n\nExamples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems."
+        }
+      ],
+      "default": "system instance",
+      "examples": [
+        "system-instance"
+      ]
+    },
+    "describedSystemInstance": {
+      "$ref": "#/definitions/SystemInstance",
+      "description": "Information on the [system-instance](../index.md#def-system-instance) that this ORD document describes.\n\nWhether this information is required or recommended to add, depends on the requirements of the ORD aggregator."
+    },
+    "describedSystemType": {
+      "$ref": "#/definitions/SystemType",
+      "x-introduced-in-version": "1.10.0",
+      "description": "Information on the [system type](../index.md#def-system-type) that this ORD document describes."
+    },
+    "describedSystemVersion": {
+      "$ref": "#/definitions/SystemVersion",
+      "x-introduced-in-version": "1.10.0",
+      "description": "Information on the [system version](../index.md#def-system-version) that this ORD document describes."
+    },
+    "policyLevel": {
+      "type": "string",
+      "description": "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n",
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "description": "Any valid [Specification ID](../index.md#specification-id)."
+        },
+        {
+          "const": "none",
+          "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
+        },
+        {
+          "const": "sap:base:v1",
+          "description": "Basic SAP rules and guidelines apply. This just ensures technical correctness and essential validations.\nIf chosen the [SAP Base V1](../../spec-extensions/policy-levels/sap-base-v1) rules MUST be followed."
+        },
+        {
+          "const": "sap:core:v1",
+          "description": "SAP core rules and guidelines apply.\nIf chosen the [SAP Core V1](../../spec-extensions/policy-levels/sap-core-v1) rules MUST be followed."
+        },
+        {
+          "const": "sap:dp:v1",
+          "description": "SAP Data Product guidelines apply.\nIf chosen the [SAP Data Product V1](../../spec-extensions/policy-levels/sap-dp-v1) rules MUST be followed."
+        },
+        {
+          "const": "custom",
+          "description": "Custom policy level.\nFurther validation MAY be defined and implemented by the policy-level owner.\nThis level MAY be chosen by 3rd party or customer solutions.\nIf chosen, `customPolicyLevel` MUST be provided."
+        }
+      ],
+      "default": "none",
+      "x-introduced-in-version": "1.3.0",
+      "examples": [
+        "sap:core:v1"
+      ]
+    },
+    "customPolicyLevel": {
+      "type": "string",
+      "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
+      "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+      "maxLength": 255,
+      "x-introduced-in-version": "1.3.0",
+      "examples": [
+        "sap.xref:customPolicy:v1"
+      ]
+    },
+    "policyLevels": {
+      "type": "array",
+      "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+      "x-introduced-in-version": "1.9.9",
+      "items": {
+        "type": "string",
+        "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+        "maxLength": 255,
+        "examples": [
+          "sap:core:v1"
+        ]
+      }
+    },
+    "apiResources": {
+      "type": "array",
+      "description": "Array of all API Resources that are described in this ORD document.",
+      "items": {
+        "$ref": "#/definitions/ApiResource"
+      }
+    },
+    "eventResources": {
+      "type": "array",
+      "description": "Array of all event resources that are described in this ORD document.",
+      "items": {
+        "$ref": "#/definitions/EventResource"
+      }
+    },
+    "entityTypes": {
+      "type": "array",
+      "description": "Array of all entity types that are described in this ORD document.",
+      "x-introduced-in-version": "1.6.0",
+      "items": {
+        "$ref": "#/definitions/EntityType"
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "description": "Array of all capabilities that are described in this ORD document.",
+      "x-introduced-in-version": "1.4.0",
+      "items": {
+        "$ref": "#/definitions/Capability"
+      }
+    },
+    "dataProducts": {
+      "type": "array",
+      "description": "Array of all data products that are described in this ORD document.",
+      "x-introduced-in-version": "1.8.0",
+      "items": {
+        "$ref": "#/definitions/DataProduct"
+      }
+    },
+    "integrationDependencies": {
+      "type": "array",
+      "description": "Array of all integration dependencies that are described in this ORD document.",
+      "x-introduced-in-version": "1.7.0",
+      "items": {
+        "$ref": "#/definitions/IntegrationDependency"
+      }
+    },
+    "vendors": {
+      "type": "array",
+      "description": "Array of all Vendors that are described in this ORD document.",
+      "items": {
+        "$ref": "#/definitions/Vendor"
+      }
+    },
+    "products": {
+      "type": "array",
+      "description": "Array of all Products that are described in this ORD document.",
+      "items": {
+        "$ref": "#/definitions/Product"
+      }
+    },
+    "packages": {
+      "type": "array",
+      "description": "Array of all Packages that are described in this ORD document.",
+      "items": {
+        "$ref": "#/definitions/Package"
+      }
+    },
+    "consumptionBundles": {
+      "type": "array",
+      "description": "Array of all Consumption Bundles that are described in this ORD document.",
+      "items": {
+        "$ref": "#/definitions/ConsumptionBundle"
+      }
+    },
+    "groups": {
+      "type": "array",
+      "description": "Array of all Groups that are described in this ORD document.",
+      "x-introduced-in-version": "1.9.0",
+      "items": {
+        "$ref": "#/definitions/Group"
+      }
+    },
+    "groupTypes": {
+      "type": "array",
+      "description": "Array of all Group Types that are described in this ORD document.",
+      "x-introduced-in-version": "1.9.0",
+      "items": {
+        "$ref": "#/definitions/GroupType"
+      }
+    },
+    "tombstones": {
+      "type": "array",
+      "description": "List of ORD information (resources or taxonomy) that have been \"tombstoned\", indicating removal or archival.\nThis MUST be indicated explicitly, just removing the ORD information itself is not sufficient.\n\nA tombstone entry MAY be removed after a grace period of 31 days.",
+      "items": {
+        "$ref": "#/definitions/Tombstone"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "openResourceDiscovery"
+  ],
+  "x-recommended": [
+    "policyLevels"
+  ],
   "definitions": {
     "Package": {
       "type": "object",
@@ -20,6 +268,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
@@ -93,6 +342,7 @@
             }
           ],
           "default": "none",
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap:core:v1"
           ]
@@ -102,6 +352,7 @@
           "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -109,6 +360,7 @@
         "policyLevels": {
           "type": "array",
           "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
@@ -140,13 +392,17 @@
         "supportInfo": {
           "type": "string",
           "minLength": 1,
-          "description": "Optional information that should be provided when creating a support ticket for the resources bundled in this package.\nThis can for example be a \"component\" name that needs to be chosen in the support portal.\n\nNotated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nPlease also note that if you want to provide link(s) where you can find support information,\nyou can use `packageLinks` with a link of type `support`."
+          "description": "Optional information that should be provided when creating a support ticket for the resources bundled in this package.\nThis can for example be a \"component\" name that needs to be chosen in the support portal.\n\nNotated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nPlease also note that if you want to provide link(s) where you can find support information,\nyou can use `packageLinks` with a link of type `support`.",
+          "x-introduced-in-version": "1.1.0"
         },
         "vendor": {
           "type": "string",
           "description": "Vendor / organization that is the creator (or responsible party) of the resources that are part of the `Package`.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.\n\nMUST be set to `customer:vendor:Customer:` if the contents of the package are created by the customer / user.\n\nMUST be set to a registered partner vendor, if the contents of the package are created by a partner / third party.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\\-]+):()$",
           "maxLength": 256,
+          "x-association-target": [
+            "#/definitions/Vendor/ordId"
+          ],
           "examples": [
             "sap:vendor:SAP:",
             "customer:vendor:Customer:",
@@ -159,7 +415,10 @@
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
-            "maxLength": 255
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/Product/ordId"
+            ]
           },
           "minItems": 0,
           "examples": [
@@ -376,6 +635,8 @@
           ]
         },
         "runtimeRestriction": {
+          "x-introduced-in-version": "1.8.0",
+          "x-feature-status": "alpha",
           "description": "If provided, all resources that are part of this package can only run on the listed runtime.\n\nMUST be a valid [system namespace](../index.md#system-namespace).",
           "type": "string",
           "pattern": "^[a-z0-9]+(?:[.][a-z0-9]+){1}$",
@@ -431,6 +692,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
@@ -485,11 +747,13 @@
           "examples": [
             "1.2.3",
             "1.0.0-alpha.1"
-          ]
+          ],
+          "x-introduced-in-version": "1.2.1"
         },
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
+          "x-introduced-in-version": "1.4.0",
           "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
@@ -515,6 +779,7 @@
         },
         "credentialExchangeStrategies": {
           "type": "array",
+          "x-feature-status": "alpha",
           "description": "Defines the supported strategies for how the consumption credentials can be exchanged.\n\nIdeally, the system type supports a strategy that can automate the exchange.",
           "items": {
             "$ref": "#/definitions/CredentialExchangeStrategy"
@@ -553,6 +818,10 @@
         "ordId",
         "title"
       ],
+      "x-recommended": [
+        "lastUpdate",
+        "version"
+      ],
       "additionalProperties": false
     },
     "ConsumptionBundleReference": {
@@ -565,6 +834,9 @@
           "description": "The consumption bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
+          "x-association-target": [
+            "#/definitions/ConsumptionBundle/ordId"
+          ],
           "examples": [
             "sap.xref:consumptionBundle:bundleXYZ:v1"
           ]
@@ -582,7 +854,7 @@
     },
     "ApiResource": {
       "type": "object",
-      "title": "API Resource",
+      "title": "Api Resource",
       "description": "The API Resource provides a high-level description of an exposed API.\nYou can find more information, such as the API resource definitions, in the links in the table below.\n\nAn API Resource bundles multiple endpoints and resources together.\nThey share the same API namespace and lifecycle (API major version).\nHowever, the exact granularity of this is up to the implementer of the API.\nAs a consequence, an API resource MUST NOT bundle together endpoints from different API versions or namespaces.\n\nA common practice is to bundle endpoints that are based on the same domain or Business Object.\n\nPlease note that APIs can be described, but still be [`disabled`](#api-resource_disabled).\n\nIf the API is not created or owned by the user of the system or by third parties (like partners), it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.",
       "properties": {
         "ordId": {
@@ -596,6 +868,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
@@ -645,6 +918,9 @@
         "partOfPackage": {
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "x-association-target": [
+            "#/definitions/Package/ordId"
+          ],
           "maxLength": 255,
           "description": "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package.",
           "examples": [
@@ -655,7 +931,10 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$"
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "x-association-target": [
+              "#/definitions/Group/groupId"
+            ]
           },
           "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
         },
@@ -677,6 +956,9 @@
           "type": "string",
           "description": "References the default consumption bundle to use for this resource.\n\nMUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.\n\nCan be used by clients to make a deterministic and preferred choice when multiple options are available.\n\nThe value MUST be an existing option in the corresponding `partOfConsumptionBundles` array.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "x-association-target": [
+            "#/definitions/ConsumptionBundle/ordId"
+          ],
           "maxLength": 255,
           "examples": [
             "sap.xref:consumptionBundle:bundleXYZ:v1"
@@ -688,7 +970,10 @@
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
-            "maxLength": 255
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/Product/ordId"
+            ]
           },
           "minItems": 0,
           "examples": [
@@ -709,6 +994,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
+          "x-introduced-in-version": "1.4.0",
           "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
@@ -788,6 +1074,9 @@
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+            "x-association-target": [
+              "#/definitions/ApiResource/ordId"
+            ],
             "maxLength": 255
           },
           "examples": [
@@ -805,7 +1094,7 @@
         },
         "entryPoints": {
           "type": "array",
-          "description": "List of [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the target host.\n\nIf the API resource can be accessed through an entry point, it MUST be described here.\n\nThe list of entry points MUST not include duplicates.\nIf multiple entry points are provided they MUST be arbitrarily exchangeable without effects.\nThis means that the URLs are just an alias to each other and the `resourceDefinitions` apply to all entry points equally.\nIn case of multiple entry points it is RECOMMENDED to provide a `defaultEntryPoint` through `partOfConsumptionBundles`.\nThe entry point URLs SHOULD match with the target host(s) in the resource definition files (e.g. OpenAPI `servers`).\nIf there is no match, the information in ORD takes precedence.\n\n**Provider View:**\nIf the URL is relative to the system that describes the ORD information,\nit is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.\nIf the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.\nIf the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten. \nThe provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points. \n\n**Consumer View**:\nWhen fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs.",
+          "description": "List of [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the target host.\n\nIf the API resource can be accessed through an entry point, it MUST be described here.\n\nThe list of entry points MUST not include duplicates.\nIf multiple entry points are provided they MUST be arbitrarily exchangeable without effects.\nThis means that the URLs are just an alias to each other and the `resourceDefinitions` apply to all entry points equally.\nIn case of multiple entry points it is RECOMMENDED to provide a `defaultEntryPoint` through `partOfConsumptionBundles`.\nThe entry point URLs SHOULD match with the target host(s) in the resource definition files (e.g. OpenAPI `servers`).\nIf there is no match, the information in ORD takes precedence.\n\n**Provider View:**\nIf the URL is relative to the system that describes the ORD information,\nit is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.\nIf the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.\nIf the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.\nThe provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.\n\n**Consumer View**:\nWhen fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs.",
           "items": {
             "type": "string",
             "format": "uri-reference"
@@ -863,6 +1152,7 @@
             },
             {
               "const": "delta-sharing",
+              "x-introduced-in-version": "1.8.0",
               "description": "[Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) Protocol, where one API Resource corresponds to a share.\nFor each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1` or to `custom`.\nFor delta-sharing APIs the resource definition MAY be omitted, as the protocol itself allows for metadata discovery at runtime."
             },
             {
@@ -883,6 +1173,7 @@
             },
             {
               "const": "a2a",
+              "x-introduced-in-version": "1.12.2",
               "description": "[A2A](https://a2a-protocol.org/latest/) is open protocol enabling communication and interoperability between opaque agentic applications.\n\nAs API Resource definition the `a2a-agent-card` MUST be provided, usually put under `/.well-known/agent.json`."
             },
             {
@@ -895,6 +1186,7 @@
             },
             {
               "const": "sap-ina-api-v1",
+              "x-introduced-in-version": "1.8.0",
               "description": "SAP InA APIs are used by SAP Analytics Cloud solutions to capture data. It is an SAP proprietary protocol that only\nSAP Analytics Cloud MUST consume. It contains a protocol specific metadata retrieval mechanism so that SAP Analytics Cloud users can\nsee the schema of an InA API in SAP Analytics Cloud. An API Resource definition MUST NOT be provided."
             }
           ],
@@ -940,14 +1232,17 @@
             },
             {
               "const": "sap:delta-sharing:v1",
+              "x-introduced-in-version": "1.9.4",
               "description": "SAP opinionated implementation of `delta-sharing` API protocol. This implementation has some compatible extension wrt. to standard delta-share such as providing key information.\nThe `apiProtocol` MUST be set to `delta-sharing`, as this is a special flavor of Delta Sharing."
             },
             {
               "const": "sap:hana-cloud-sql:v1",
+              "x-introduced-in-version": "1.8.0",
               "description": "Specific additional implementation of the sap-sql-api-v1 API (sub-)protocol that provide replication support when connecting from an Hana Cloud system\nsee [SAP HANA Cloud documentation](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-data-access-guide/replicating-tables-from-remote-sources).\nThe `apiProtocol` MUST be set to `sap-sql-api-v1`, as this is a sub-protocol / variant of the SAP SQL API."
             },
             {
               "const": "sap.dp:data-subscription-api:v1",
+              "x-introduced-in-version": "1.9.12",
               "description": "Data Subscription API is the unified data ingestion framework that SAP LoBs can adopt for data ingestion into BDC.\nAn API marked with this implementation standard is providing the Data Delivery part of the Data Subscription API flow for a dedicated BDC data source."
             },
             {
@@ -992,6 +1287,7 @@
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
           "maxLength": 255,
+          "x-introduced-in-version": "1.8.0",
           "description": "Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.",
           "examples": [
             "sap:ach:CIC-DP-CO"
@@ -1000,6 +1296,8 @@
         "supportedUseCases": {
           "type": "array",
           "description": "List of use cases (types) how the resource is meant to be used for.\n\nThis helps consumers better to understand which use cases had been in mind by the provider\nand are therefore explicitly supported.\nThis is obviously described from a provider perspective, but stating what consumer use cases it potentially supports.\nAs it's not possible to create a list of options that are mutually exclusive, all options that apply should be provided.\n\nIf no array is defined, it is assumed that this information is not provided.",
+          "x-introduced-in-version": "1.8.0",
+          "x-feature-status": "beta",
           "items": {
             "type": "string",
             "anyOf": [
@@ -1033,6 +1331,8 @@
           ]
         },
         "usage": {
+          "x-introduced-in-version": "1.8.0",
+          "x-feature-status": "alpha",
           "type": "string",
           "title": "Usage",
           "description": "Define from where the API resource can be used and accessed",
@@ -1050,6 +1350,7 @@
         },
         "entityTypeMappings": {
           "type": "array",
+          "x-introduced-in-version": "1.6.0",
           "description": "Describes mappings between the API Models of the described resource to the underlying, conceptual entity types.",
           "items": {
             "$ref": "#/definitions/EntityTypeMapping"
@@ -1057,6 +1358,7 @@
         },
         "exposedEntityTypes": {
           "type": "array",
+          "x-introduced-in-version": "1.11.0",
           "description": "Optional list of [entity types](#entity-type) that are exposed by the resource.\n\nThis replaces `entityTypeMappings`. If both is given, the `exposedEntityTypes` wins.\n\nMUST be a valid reference to an [EntityType](#entity-type) ORD ID.",
           "items": {
             "$ref": "#/definitions/ExposedEntityType"
@@ -1353,6 +1655,7 @@
             }
           ],
           "default": "none",
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap:core:v1"
           ]
@@ -1362,6 +1665,7 @@
           "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -1369,6 +1673,7 @@
         "policyLevels": {
           "type": "array",
           "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
@@ -1417,6 +1722,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
@@ -1467,6 +1773,9 @@
         "partOfPackage": {
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "x-association-target": [
+            "#/definitions/Package/ordId"
+          ],
           "maxLength": 255,
           "description": "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package.",
           "examples": [
@@ -1477,7 +1786,10 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$"
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "x-association-target": [
+              "#/definitions/Group/groupId"
+            ]
           },
           "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
         },
@@ -1499,6 +1811,9 @@
           "type": "string",
           "description": "References the default consumption bundle to use for this resource.\n\nMUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.\n\nCan be used by clients to make a deterministic and preferred choice when multiple options are available.\n\nThe value MUST be an existing option in the corresponding `partOfConsumptionBundles` array.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "x-association-target": [
+            "#/definitions/ConsumptionBundle/ordId"
+          ],
           "maxLength": 255,
           "examples": [
             "sap.xref:consumptionBundle:bundleXYZ:v1"
@@ -1510,7 +1825,10 @@
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
-            "maxLength": 255
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/Product/ordId"
+            ]
           },
           "minItems": 0,
           "examples": [
@@ -1531,6 +1849,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
+          "x-introduced-in-version": "1.4.0",
           "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
@@ -1610,7 +1929,10 @@
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-            "maxLength": 255
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/EventResource/ordId"
+            ]
           },
           "examples": [
             [
@@ -1688,6 +2010,7 @@
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
           "maxLength": 255,
+          "x-introduced-in-version": "1.8.0",
           "description": "Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.",
           "examples": [
             "sap:ach:CIC-DP-CO"
@@ -1695,6 +2018,7 @@
         },
         "entityTypeMappings": {
           "type": "array",
+          "x-introduced-in-version": "1.6.0",
           "description": "Describes mappings between the API Models of the described resource to the underlying, conceptual entity types.",
           "items": {
             "$ref": "#/definitions/EntityTypeMapping"
@@ -1702,6 +2026,7 @@
         },
         "exposedEntityTypes": {
           "type": "array",
+          "x-introduced-in-version": "1.11.0",
           "description": "Optional list of [entity types](#entity-type) that are exposed by the resource.\n\nThis replaces `entityTypeMappings`. If both is given, the `exposedEntityTypes` wins.\n\nMUST be a valid reference to an [EntityType](#entity-type) ORD ID.",
           "items": {
             "$ref": "#/definitions/ExposedEntityType"
@@ -1724,6 +2049,7 @@
         },
         "eventResourceLinks": {
           "type": "array",
+          "x-introduced-in-version": "1.7.1",
           "description": "Links with semantic meaning that are specific to event resources.\n\nIf applicable, `eventResourceLinks` MUST be used instead of generic `links`.",
           "items": {
             "$ref": "#/definitions/APIEventResourceLink"
@@ -1998,6 +2324,7 @@
             }
           ],
           "default": "none",
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap:core:v1"
           ]
@@ -2007,6 +2334,7 @@
           "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -2014,6 +2342,7 @@
         "policyLevels": {
           "type": "array",
           "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
@@ -2042,12 +2371,16 @@
         "visibility",
         "partOfPackage",
         "releaseStatus"
+      ],
+      "x-recommended": [
+        "lastUpdate"
       ]
     },
     "EntityType": {
       "type": "object",
       "title": "Entity Type",
       "description": "An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.\nThe same entity type can be exposed through one or multiple API and events resources.\n\nTo learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).",
+      "x-introduced-in-version": "1.8.0",
       "properties": {
         "ordId": {
           "type": "string",
@@ -2062,6 +2395,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
@@ -2125,6 +2459,9 @@
         "partOfPackage": {
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "x-association-target": [
+            "#/definitions/Package/ordId"
+          ],
           "maxLength": 255,
           "description": "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package.",
           "examples": [
@@ -2135,7 +2472,10 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$"
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "x-association-target": [
+              "#/definitions/Group/groupId"
+            ]
           },
           "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
         },
@@ -2145,7 +2485,10 @@
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
-            "maxLength": 255
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/Product/ordId"
+            ]
           },
           "minItems": 0,
           "examples": [
@@ -2166,6 +2509,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
+          "x-introduced-in-version": "1.4.0",
           "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
@@ -2236,6 +2580,9 @@
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+            "x-association-target": [
+              "#/definitions/EntityType/ordId"
+            ],
             "maxLength": 255
           },
           "examples": [
@@ -2280,6 +2627,7 @@
         },
         "relatedEntityTypes": {
           "type": "array",
+          "x-introduced-in-version": "1.9.0",
           "description": "States that this Entity Type is related to another Entity Type.\n\nUsually this happens if there are similar conceptual entity types across different namespaces.",
           "items": {
             "$ref": "#/definitions/RelatedEntityType"
@@ -2354,6 +2702,7 @@
             }
           ],
           "default": "none",
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap:core:v1"
           ]
@@ -2363,6 +2712,7 @@
           "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -2370,6 +2720,7 @@
         "policyLevels": {
           "type": "array",
           "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
@@ -2398,11 +2749,15 @@
         "visibility",
         "partOfPackage",
         "releaseStatus"
+      ],
+      "x-recommended": [
+        "lastUpdate"
       ]
     },
     "DataProduct": {
       "type": "object",
       "title": "Data Product",
+      "x-introduced-in-version": "1.8.0",
       "description": "A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).\n\nPlease note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).",
       "properties": {
         "ordId": {
@@ -2416,6 +2771,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
@@ -2423,6 +2779,7 @@
           ]
         },
         "correlationIds": {
+          "x-feature-status": "beta",
           "type": "array",
           "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
           "items": {
@@ -2465,6 +2822,9 @@
         "partOfPackage": {
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "x-association-target": [
+            "#/definitions/Package/ordId"
+          ],
           "maxLength": 255,
           "description": "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package.",
           "examples": [
@@ -2475,9 +2835,13 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$"
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "x-association-target": [
+              "#/definitions/Group/groupId"
+            ]
           },
-          "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
+          "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together.",
+          "x-feature-status": "beta"
         },
         "partOfProducts": {
           "type": "array",
@@ -2485,7 +2849,10 @@
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
-            "maxLength": 255
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/Product/ordId"
+            ]
           },
           "minItems": 0,
           "examples": [
@@ -2506,6 +2873,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
+          "x-introduced-in-version": "1.4.0",
           "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
@@ -2555,6 +2923,7 @@
           ]
         },
         "disabled": {
+          "x-feature-status": "beta",
           "type": "boolean",
           "default": false,
           "description": "Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.\nThis can happen either because it has not been setup for use or disabled by an admin / user.\n\nIf the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance aware perspective.\n\nThis property can only reflect the knowledge of the described system instance itself.\nOutside factors for availability can't need to be considered (e.g. network connectivity, middlewares).\n\nA disabled resource MAY skip describing its resource definitions.\n"
@@ -2601,6 +2970,7 @@
           ]
         },
         "deprecationDate": {
+          "x-feature-status": "beta",
           "type": "string",
           "format": "date-time",
           "description": "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
@@ -2609,6 +2979,7 @@
           ]
         },
         "sunsetDate": {
+          "x-feature-status": "beta",
           "type": "string",
           "format": "date-time",
           "description": "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
@@ -2617,12 +2988,16 @@
           ]
         },
         "successors": {
+          "x-feature-status": "beta",
           "type": "array",
           "description": "The successor resource(s).\n\nMUST be a valid reference to an ORD ID.\n\nIf the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.\nIf `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`.",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(dataProduct):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-            "maxLength": 255
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/DataProduct/ordId"
+            ]
           },
           "examples": [
             [
@@ -2631,6 +3006,7 @@
           ]
         },
         "changelogEntries": {
+          "x-feature-status": "beta",
           "type": "array",
           "description": "Contains changelog entries that summarize changes with special regards to version and releaseStatus",
           "items": {
@@ -2681,12 +3057,16 @@
           ]
         },
         "entityTypes": {
+          "x-feature-status": "beta",
           "type": "array",
           "description": "Aggregated list of entity types that are at least partially exposed by the data product. Detailed mapping can be found on the output port schema level.",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-            "maxLength": 255
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/EntityType/ordId"
+            ]
           },
           "examples": [
             [
@@ -2696,6 +3076,7 @@
           ]
         },
         "inputPorts": {
+          "x-feature-status": "beta",
           "type": "array",
           "description": "The input ports of a data product indicate the data inputs for lineage purposes.\n\nIt is a list of Integration Dependencies, whose aspects will form the actual input ports.\n\nInput ports can also be understood as the public interface to ingest data into the data product.\nData products of type `derived` consume data through the input ports. Different input ports allowing ingestion of different sub-sets building up the data-set for the data product.\nData products of type `base` might not have any input ports. Their data sets are typically based directly on the applications / services own data.",
           "minItems": 0,
@@ -2732,12 +3113,14 @@
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
           "maxLength": 255,
+          "x-introduced-in-version": "1.8.0",
           "description": "Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.",
           "examples": [
             "sap:ach:CIC-DP-CO"
           ]
         },
         "dataProductLinks": {
+          "x-feature-status": "beta",
           "type": "array",
           "description": "Links with semantic meaning that are specific to Data Product Resources.",
           "items": {
@@ -2745,6 +3128,7 @@
           }
         },
         "links": {
+          "x-feature-status": "beta",
           "type": "array",
           "description": "Generic Links with arbitrary meaning and content.",
           "items": {
@@ -2752,6 +3136,7 @@
           }
         },
         "industry": {
+          "x-feature-status": "beta",
           "type": "array",
           "items": {
             "type": "string",
@@ -2875,6 +3260,7 @@
           ]
         },
         "lineOfBusiness": {
+          "x-feature-status": "beta",
           "type": "array",
           "items": {
             "type": "string",
@@ -2945,6 +3331,7 @@
           ]
         },
         "countries": {
+          "x-feature-status": "beta",
           "type": "array",
           "items": {
             "type": "string",
@@ -2959,6 +3346,7 @@
           ]
         },
         "tags": {
+          "x-feature-status": "beta",
           "type": "array",
           "items": {
             "type": "string",
@@ -2974,12 +3362,15 @@
           ]
         },
         "labels": {
+          "x-feature-status": "beta",
           "$ref": "#/definitions/Labels"
         },
         "documentationLabels": {
+          "x-feature-status": "beta",
           "$ref": "#/definitions/DocumentationLabels"
         },
         "policyLevel": {
+          "x-feature-status": "beta",
           "type": "string",
           "description": "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n",
           "anyOf": [
@@ -3010,15 +3401,18 @@
             }
           ],
           "default": "none",
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap:core:v1"
           ]
         },
         "customPolicyLevel": {
+          "x-feature-status": "beta",
           "type": "string",
           "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
+          "x-introduced-in-version": "1.3.0",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -3026,6 +3420,7 @@
         "policyLevels": {
           "type": "array",
           "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
@@ -3036,6 +3431,7 @@
           }
         },
         "systemInstanceAware": {
+          "x-feature-status": "beta",
           "type": "boolean",
           "description": "All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**.",
           "default": false,
@@ -3058,6 +3454,9 @@
         "partOfPackage",
         "responsible",
         "outputPorts"
+      ],
+      "x-recommended": [
+        "lastUpdate"
       ]
     },
     "DataProductInputPort": {
@@ -3072,6 +3471,9 @@
           "maxLength": 255,
           "examples": [
             "sap.foo.bar:integrationDependency:CustomerOrder:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/IntegrationDependency/ordId"
           ]
         }
       },
@@ -3093,6 +3495,10 @@
           "examples": [
             "sap.cic:apiResource:RetailTransactionOData:v1",
             "sap.cic:eventResource:RawCustomerOrder:v2"
+          ],
+          "x-association-target": [
+            "#/definitions/ApiResource/ordId",
+            "#/definitions/EventResource/ordId"
           ]
         }
       },
@@ -3103,7 +3509,7 @@
     },
     "ApiResourceDefinition": {
       "type": "object",
-      "title": "API Resource Definition",
+      "title": "Api Resource Definition",
       "description": "Link and categorization of a machine-readable API definition.\nFor example, OpenAPI definition, OData Metadata, etc.",
       "properties": {
         "type": {
@@ -3153,7 +3559,8 @@
             },
             {
               "const": "a2a-agent-card",
-              "description": "[A2A Agent Card](https://a2a-protocol.org/topics/agent-discovery/) is a machine-readable description of an A2A Agent.\nThe `mediaType` MUST be be set to `application/json`.\nThe `apiProtocol` MUST be set to `a2a`."
+              "description": "[A2A Agent Card](https://a2a-protocol.org/topics/agent-discovery/) is a machine-readable description of an A2A Agent.\nThe `mediaType` MUST be be set to `application/json`.\nThe `apiProtocol` MUST be set to `a2a`.",
+              "x-introduced-in-version": "1.12.2"
             },
             {
               "const": "sap-rfc-metadata-v1",
@@ -3161,11 +3568,13 @@
             },
             {
               "const": "sap-sql-api-definition-v1",
-              "description": "Metadata description format for SAP SQL API, following the [SQL interface specification for SAP ecosystem](https://github.com/SAP/sql-interface-specification).\nThe `mediaType` MUST be be set to `application/json`.\nThe `apiProtocol` MUST be set to `sap-sql-api-v1`."
+              "description": "Metadata description format for SAP SQL API, following the [SQL interface specification for SAP ecosystem](https://github.com/SAP/sql-interface-specification).\nThe `mediaType` MUST be be set to `application/json`.\nThe `apiProtocol` MUST be set to `sap-sql-api-v1`.",
+              "x-introduced-in-version": "1.9.4"
             },
             {
               "const": "sap-csn-interop-effective-v1",
-              "description": "[CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.\nThe `mediaType` MUST be be set to `application/json`."
+              "description": "[CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.\nThe `mediaType` MUST be be set to `application/json`.",
+              "x-introduced-in-version": "1.9.4"
             },
             {
               "const": "custom",
@@ -3397,6 +3806,9 @@
           "description": "Vendor / organization that is responsible for the Product.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\\-]+):()$",
           "maxLength": 256,
+          "x-association-target": [
+            "#/definitions/Vendor/ordId"
+          ],
           "examples": [
             "sap:vendor:SAP:",
             "customer:vendor:Customer:",
@@ -3407,6 +3819,9 @@
           "type": "string",
           "description": "Optional product parent ORD ID, if a hierarchical product structure needs to be expressed.\n\nMUST be a valid reference to a [Product](#product) ORD ID.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
+          "x-association-target": [
+            "#/definitions/Product/ordId"
+          ],
           "examples": [
             "sap:product:S4HANA_OD:"
           ]
@@ -3444,6 +3859,7 @@
     "Capability": {
       "type": "object",
       "title": "Capability",
+      "x-introduced-in-version": "1.4.0",
       "description": "Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.\nThis is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).\n\nIf a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.\nThis is the same idea and mechanism as with API resources and their resource definition formats.",
       "properties": {
         "ordId": {
@@ -3457,6 +3873,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
@@ -3538,6 +3955,9 @@
         "partOfPackage": {
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "x-association-target": [
+            "#/definitions/Package/ordId"
+          ],
           "maxLength": 255,
           "description": "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package.",
           "examples": [
@@ -3548,7 +3968,10 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$"
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "x-association-target": [
+              "#/definitions/Group/groupId"
+            ]
           },
           "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
         },
@@ -3564,6 +3987,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
+          "x-introduced-in-version": "1.4.0",
           "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
@@ -3626,7 +4050,10 @@
           "description": "Optional list of related EntityType Resources.\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$"
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+            "x-association-target": [
+              "#/definitions/EntityType/ordId"
+            ]
           },
           "examples": [
             [
@@ -3687,11 +4114,15 @@
         "releaseStatus",
         "visibility",
         "partOfPackage"
+      ],
+      "x-recommended": [
+        "lastUpdate"
       ]
     },
     "CapabilityDefinition": {
       "type": "object",
       "title": "Capability Definition",
+      "x-introduced-in-version": "1.4.0",
       "description": "Link and categorization of a machine-readable capability definition.",
       "properties": {
         "type": {
@@ -3785,6 +4216,7 @@
     "IntegrationDependency": {
       "type": "object",
       "title": "Integration Dependency",
+      "x-introduced-in-version": "1.7.0",
       "description": "An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.\nThe purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.\n\nThe integration dependency includes a list of individual **aspects** that the integration consists of.\nAspects are an \"ingredient\" for the integration scenario (and are logically combined with AND condition).\nEach aspect can express alternatives (OR condition) on what API and event resources can be used to achieve the same outcome.\n\nThe direction of connection establishment, data flow is not directly implied and needs to be inferred from the referenced resources.\n\nIt is not in scope for the Integration Dependency to describe scenarios that external consumers have with the own exposed resources.\nThis would overstep the boundary of self-description.\n\nIf an integration scenario consists of two sides integration with each other, each need to describe its own part in it as an Integration Dependency.\nTherefore, if an integration with multiple types of systems need to be setup, this SHOULD be separated into distinct Integration Dependencies.\n\nAn integration dependency is also not meant to describe a bigger process.\nInstead it focuses on the technical necessaries to create an integration for one particular purpose.\n\nTo learn more about the concept, see [Integration Dependency](../concepts/integration-dependency).",
       "properties": {
         "ordId": {
@@ -3798,6 +4230,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": [
@@ -3848,6 +4281,9 @@
         "partOfPackage": {
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "x-association-target": [
+            "#/definitions/Package/ordId"
+          ],
           "maxLength": 255,
           "description": "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package.",
           "examples": [
@@ -3858,7 +4294,10 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$"
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "x-association-target": [
+              "#/definitions/Group/groupId"
+            ]
           },
           "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
         },
@@ -3874,6 +4313,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
+          "x-introduced-in-version": "1.4.0",
           "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
@@ -3936,7 +4376,10 @@
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-            "maxLength": 255
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/IntegrationDependency/ordId"
+            ]
           },
           "examples": [
             [
@@ -3960,7 +4403,10 @@
           "description": "If an Integration Dependency conceptually belongs or related to another Integration Dependency, this can be indicated here.\nOne situation would be where two systems each have an Integration Dependency to describe a two-sided integration from each side.",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$"
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+            "x-association-target": [
+              "#/definitions/IntegrationDependency/ordId"
+            ]
           },
           "examples": [
             [
@@ -4011,6 +4457,7 @@
     "IntegrationAspect": {
       "type": "object",
       "title": "Aspect",
+      "x-introduced-in-version": "1.7.0",
       "description": "An (integration) aspect is the constituent part that makes up an Integration Dependency.\n\nEach aspect can list references to resources, which could be owned and defined by the integration target or by the described system itself.\nIn case the reference links to own resources, it is implied that they are to be used by the integration target to fulfill the Integration Dependency.\n\nIf multiple resources are given within an aspect, they are considered alternatives to each other (OR condition).\nIn case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.",
       "properties": {
         "title": {
@@ -4061,7 +4508,8 @@
     },
     "ApiResourceIntegrationAspect": {
       "type": "object",
-      "title": "API Resource Integration Aspect",
+      "title": "Api Resource Integration Aspect",
+      "x-introduced-in-version": "1.7.0",
       "description": "API resource related integration aspect",
       "properties": {
         "ordId": {
@@ -4091,6 +4539,7 @@
     "EventResourceIntegrationAspect": {
       "type": "object",
       "title": "Event Resource Integration Aspect",
+      "x-introduced-in-version": "1.7.0",
       "description": "Event resource related integration aspect",
       "properties": {
         "ordId": {
@@ -4142,6 +4591,7 @@
     "EventResourceIntegrationAspectSubset": {
       "type": "object",
       "title": "Event Resource Integration Aspect Subset",
+      "x-introduced-in-version": "1.7.0",
       "description": "Defines that Event Resource Integration Aspect only requires a subset of the referenced contract.\n\nFor events, this could be a list of the events that need to be subscribed in order to make the integration work.\nThis information helps to narrow down what is really necessary and can help optimize the integration, e.g. by only publishing the events that are really needed.",
       "properties": {
         "eventType": {
@@ -4187,7 +4637,10 @@
           "description": "Optional list of partner vendors, referenced through their ORD ID.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.\n\nThis property can be used to indicate partnership relations between vendors.",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\\-]+):()$"
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\\-]+):()$",
+            "x-association-target": [
+              "#/definitions/Vendor/ordId"
+            ]
           },
           "examples": [
             [
@@ -4413,7 +4866,7 @@
     },
     "APIEventResourceLink": {
       "type": "object",
-      "title": "API and Event Resource Link",
+      "title": "Api and Event Resource Link",
       "description": "Links with specific semantic meaning that are related to API or event resources.\n\nIf a generic [Link](#link) can also be expressed via an API / Event Resource Link, the latter MUST be chosen.",
       "properties": {
         "type": {
@@ -4579,6 +5032,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "Optional local ID for the system instance, as known by the described system.\n\nIn case of multi-tenant systems, it is equivalent to the local tenant id.",
           "maxLength": 255,
           "examples": [
@@ -4736,7 +5190,7 @@
     },
     "AccessStrategy": {
       "type": "object",
-      "title": "Access Strategy",
+      "title": "Metadata Definition Access Strategy",
       "description": "Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the resource definitions.",
       "properties": {
         "type": {
@@ -4754,7 +5208,8 @@
             },
             {
               "const": "basic-auth",
-              "description": "The resource definitions are protected via generic basic auth.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/basic-auth)."
+              "description": "The resource definitions are protected via generic basic auth.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/basic-auth).",
+              "x-introduced-in-version": "1.12.1"
             },
             {
               "const": "sap:oauth-client-credentials:v1",
@@ -4813,6 +5268,7 @@
     "CredentialExchangeStrategy": {
       "type": "object",
       "title": "Credential Exchange Strategy",
+      "x-feature-status": "alpha",
       "description": "The credential exchange strategy specifies how a set of credentials for a particular usage\nof the APIs in the consumption bundle can be obtained.\nUntil a SAP-wide strategy for obtaining such credentials exists and is agreed upon,\nboth LoBs and aggregators (namely Unified Customer Landscape) can define their own strategy specifications.\n\nWhile the actual flow in term of API calls can differ between the different strategies,\nthe end goal would always be the possibility for automatically obtaining credentials for each client\nthat would like to use the APIs from a particular bundle.",
       "properties": {
         "type": {
@@ -4885,6 +5341,7 @@
       "title": "Group Type",
       "type": "object",
       "description": "A Group Type defines the semantics of [group assignments](#group).\nWhat the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).\n\nGroup Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).",
+      "x-introduced-in-version": "1.9.0",
       "properties": {
         "groupTypeId": {
           "type": "string",
@@ -4929,6 +5386,7 @@
       "title": "Group",
       "type": "object",
       "description": "Group (instance) that resources can be assigned to.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).",
+      "x-introduced-in-version": "1.9.0",
       "properties": {
         "groupId": {
           "type": "string",
@@ -4945,6 +5403,9 @@
           "examples": [
             "sap.foo:domain",
             "sap.cap:service"
+          ],
+          "x-association-target": [
+            "#/definitions/GroupType/groupTypeId"
           ]
         },
         "title": {
@@ -4982,6 +5443,7 @@
       "title": "Documentation Labels",
       "type": "object",
       "description": "Generic documentation labels that can be applied to most ORD information.\nThey are defined as an object that may have arbitrary keys.\nThe value of a key is an array of [CommonMark](https://spec.commonmark.org/) (Markdown) text.\n\nDocumentation Labels can be used to attach human readable documentation that cannot be expressed natively in ORD.\nA documentation tool (like an API Catalog) can use the documentation labels to provide generic documentation \"snippets\".\nDue to the given structure they can be displayed e.g. as tables.\n\nThe key of the documentation Label is plain-text (MUST not contain line breaks) and denotes the subject matter that is described.\nThe values (multiple can be provided for the same key) are [CommonMark](https://spec.commonmark.org/) (Markdown) text\nwhich describes the subject matter or lists options for the key.\n\nIn contrast to regular labels, documentation labels are not meant to be used to categorize or query information.",
+      "x-introduced-in-version": "1.1.0",
       "patternProperties": {
         "^.*$": {
           "type": "array",
@@ -5036,6 +5498,7 @@
     "EntityTypeMapping": {
       "title": "Entity Type Mapping",
       "type": "object",
+      "x-introduced-in-version": "1.6.0",
       "description": "An API or Event resource may optionally define its `entityTypeMappings`.\nThis is used to map and correlate the API models to the underlying, conceptual **entity types**.\n\nIf the mapping from API resource to entity types is not defined,\ncertain use-cases that rely on this explicit connection will not be possible.\n\nThis mapping is meant to be rather fine granular.\nTherefore, the mapping needs to be done on basis of one of the referenced resource definitions,\nas only there we know the details and the actual contents of the API Model of the API resource.\n\nFor the various resource definition formats the selection of API models may need to be expressed differently.\nAs a consequence, there are different types of selectors that are specialized toward certain resource definition formats.\n\nThe target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)\nor to an [ORD ID](../../spec-v1/#ord-id) of an entity type.\nIt is assumed that the entity types are described in more detail or on a different abstraction level via metadata.\nWhen the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.\nThis can be determined either by the namespace of the correlation ID,\nor through a defined and known `implementationStandard` that can resolve the `localId` fragment of the correlation ID .\n\nAt SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.\nTo indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).\n\nODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the\ncorresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.",
       "properties": {
         "apiModelSelectors": {
@@ -5074,7 +5537,8 @@
       ]
     },
     "ApiModelSelectorOData": {
-      "title": "API Model Selector (OData)",
+      "title": "Api Model Selector (Odata)",
+      "x-introduced-in-version": "1.6.0",
       "type": "object",
       "description": "API Model Selector for OData, using entity set names for the selection.\n\nMUST only be used if the API Resource provides an API Resource Definition of type `edmx`.",
       "properties": {
@@ -5107,7 +5571,8 @@
       ]
     },
     "ApiModelSelectorJsonPointer": {
-      "title": "API Model Selector (JSON Pointer)",
+      "title": "Api Model Selector (Json Pointer)",
+      "x-introduced-in-version": "1.6.0",
       "type": "object",
       "description": "Generic API Model Selector for JSON / YAML based resource definitions.\nIt uses a [JSON Pointer](https://datatracker.ietf.org/doc/html/rfc6901) that points to the\nentity type description within the resource definition.\n\nThe JSON Pointer always to refer to the structure of the document as originally provided, before further post-processing like resolving $ref properties.\n\nMUST only be used if the API Resource provides an API Resource Definition of media type `application/json` or `text/yaml`.",
       "properties": {
@@ -5142,7 +5607,8 @@
       ]
     },
     "EntityTypeOrdIdTarget": {
-      "title": "Entity Type Target (ORD ID)",
+      "title": "Entity Type Target (Ord Id)",
+      "x-introduced-in-version": "1.6.0",
       "type": "object",
       "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.",
       "properties": {
@@ -5153,6 +5619,9 @@
           "maxLength": 255,
           "examples": [
             "sap.odm:entityType:BusinessPartner:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/EntityType/ordId"
           ]
         }
       },
@@ -5162,9 +5631,10 @@
       "additionalProperties": false
     },
     "EntityTypeCorrelationIdTarget": {
-      "title": "Entity Type Target (Correlation ID)",
+      "title": "Entity Type Target (Correlation Id)",
       "type": "object",
       "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).",
+      "x-introduced-in-version": "1.6.0",
       "properties": {
         "correlationId": {
           "type": "string",
@@ -5182,6 +5652,7 @@
     },
     "RelatedEntityType": {
       "title": "Related Entity Type",
+      "x-introduced-in-version": "1.9.0",
       "type": "object",
       "description": "Defines the relation between Entity Types (via its ORD ID).",
       "properties": {
@@ -5192,11 +5663,16 @@
           "maxLength": 255,
           "examples": [
             "sap.odm:entityType:BusinessPartner:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/EntityType/ordId"
           ]
         },
         "relationType": {
           "type": "string",
           "description": "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\".",
+          "x-introduced-in-version": "1.12.0",
+          "x-feature-status": "beta",
           "oneOf": [
             {
               "const": "part-of",
@@ -5221,6 +5697,7 @@
       "title": "Exposed Entity Type",
       "type": "object",
       "description": "Defines which Entity Type is exposed through  (via its ORD ID).",
+      "x-introduced-in-version": "1.11.0",
       "properties": {
         "ordId": {
           "type": "string",
@@ -5229,6 +5706,9 @@
           "maxLength": 255,
           "examples": [
             "sap.s4.sot:entityType:BusinessPartner:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/EntityType/ordId"
           ]
         }
       },
@@ -5249,6 +5729,18 @@
           "maxLength": 255,
           "examples": [
             "sap.xref:package:SomePackage:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/Package/ordId",
+            "#/definitions/ConsumptionBundle/ordId",
+            "#/definitions/Product/ordId",
+            "#/definitions/Vendor/ordId",
+            "#/definitions/ApiResource/ordId",
+            "#/definitions/EventResource/ordId",
+            "#/definitions/Capability/ordId",
+            "#/definitions/EntityType/ordId",
+            "#/definitions/IntegrationDependency/ordId",
+            "#/definitions/DataProduct/ordId"
           ]
         },
         "groupId": {
@@ -5257,6 +5749,9 @@
           "description": "Group ID of the group that has been removed.",
           "examples": [
             "sap.foo:domain:sap.foo:DomainName"
+          ],
+          "x-association-target": [
+            "#/definitions/Group/groupId"
           ]
         },
         "groupTypeId": {
@@ -5266,6 +5761,9 @@
           "examples": [
             "sap.foo:domain",
             "sap.cap:service"
+          ],
+          "x-association-target": [
+            "#/definitions/GroupType/groupTypeId"
           ]
         },
         "removalDate": {
@@ -5301,7 +5799,7 @@
     },
     "OrdResource": {
       "type": "object",
-      "title": "ORD Resource (abstract)",
+      "title": "Ord Resource (abstract)",
       "description": "Abstract definition of shared properties across ORD Resources.",
       "properties": {
         "ordId": {
@@ -5313,6 +5811,7 @@
         },
         "localId": {
           "type": "string",
+          "x-introduced-in-version": "1.2.1",
           "description": "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.",
           "maxLength": 255,
           "examples": []
@@ -5350,6 +5849,9 @@
         "partOfPackage": {
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "x-association-target": [
+            "#/definitions/Package/ordId"
+          ],
           "maxLength": 255,
           "description": "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package.",
           "examples": []
@@ -5358,7 +5860,10 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$"
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "x-association-target": [
+              "#/definitions/Group/groupId"
+            ]
           },
           "description": "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together.",
           "examples": []
@@ -5375,6 +5880,7 @@
         "lastUpdate": {
           "type": "string",
           "format": "date-time",
+          "x-introduced-in-version": "1.4.0",
           "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
           "examples": [
             "2022-12-19T15:47:04+00:00"
@@ -5463,237 +5969,5 @@
       ],
       "additionalProperties": true
     }
-  },
-  "type": "object",
-  "properties": {
-    "$schema": {
-      "type": "string",
-      "format": "uri-reference",
-      "description": "Optional [URL](https://tools.ietf.org/html/rfc3986) to the Open Resource Discovery document schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools.",
-      "anyOf": [
-        {
-          "type": "string",
-          "format": "uri-reference"
-        },
-        {
-          "const": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#"
-        }
-      ]
-    },
-    "openResourceDiscovery": {
-      "type": "string",
-      "description": "Version of the Open Resource Discovery specification that is used to describe this document.",
-      "enum": [
-        "1.0",
-        "1.1",
-        "1.2",
-        "1.3",
-        "1.4",
-        "1.5",
-        "1.6",
-        "1.7",
-        "1.8",
-        "1.9",
-        "1.10",
-        "1.11",
-        "1.12"
-      ],
-      "examples": [
-        "1.12"
-      ]
-    },
-    "description": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Optional description of the ORD document itself.\nPlease note that this information is NOT further processed or considered by an ORD aggregator.\n\nNotated in [CommonMark](https://spec.commonmark.org/) (Markdown).",
-      "examples": [
-        "This ORD document contains all APIs that are system instance aware and have APIs that\ncan change their behavior at runtime.\n"
-      ]
-    },
-    "perspective": {
-      "type": "string",
-      "description": "With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).\n\nIt is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.\n\nIt is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.\n\nIf not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.\n\nPlease read the [article on perspectives](../concepts/perspectives) for more explanations.",
-      "oneOf": [
-        {
-          "const": "system-version",
-          "description": "Describes the static [system-version](../index.md#def-system-version) perspective, usually known at deploy-time.\n\nIf chosen, `describedSystemVersion`.`version` MUST be provided, too.\n\nThis perspective describes how a system of a particular type and version generally look like.\nThe latest system-version MAY also be interpreted as the [system-type](../index.md#def-system-type) perspective."
-        },
-        {
-          "const": "system-instance",
-          "description": "Describes the complete dynamic [system-instance](../index.md#def-system-instance) (tenant) perspective as known at run-time.\nThis allows to also reflect tenant specific extensions, customizations and runtime configuration.\n\nIf provided, it will completely override the static system-version perspective when metadata about system instances is requested."
-        },
-        {
-          "const": "system-independent",
-          "description": "Describes content that is independent of [system-versions](../index.md#def-system-version) or [system-instances](../index.md#def-system-instance).\nThis content is always static and has independent visibility and lifecycle from the systems in a particular landscape.\nThe \"system-independent\" content MUST NOT be overridden via system-version or system-instance perspective metadata.\n\nExamples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems."
-        }
-      ],
-      "default": "system instance",
-      "examples": [
-        "system-instance"
-      ]
-    },
-    "describedSystemInstance": {
-      "$ref": "#/definitions/SystemInstance",
-      "description": "Information on the [system-instance](../index.md#def-system-instance) that this ORD document describes.\n\nWhether this information is required or recommended to add, depends on the requirements of the ORD aggregator."
-    },
-    "describedSystemType": {
-      "$ref": "#/definitions/SystemType",
-      "description": "Information on the [system type](../index.md#def-system-type) that this ORD document describes."
-    },
-    "describedSystemVersion": {
-      "$ref": "#/definitions/SystemVersion",
-      "description": "Information on the [system version](../index.md#def-system-version) that this ORD document describes."
-    },
-    "policyLevel": {
-      "type": "string",
-      "description": "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n",
-      "anyOf": [
-        {
-          "type": "string",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-          "description": "Any valid [Specification ID](../index.md#specification-id)."
-        },
-        {
-          "const": "none",
-          "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
-        },
-        {
-          "const": "sap:base:v1",
-          "description": "Basic SAP rules and guidelines apply. This just ensures technical correctness and essential validations.\nIf chosen the [SAP Base V1](../../spec-extensions/policy-levels/sap-base-v1) rules MUST be followed."
-        },
-        {
-          "const": "sap:core:v1",
-          "description": "SAP core rules and guidelines apply.\nIf chosen the [SAP Core V1](../../spec-extensions/policy-levels/sap-core-v1) rules MUST be followed."
-        },
-        {
-          "const": "sap:dp:v1",
-          "description": "SAP Data Product guidelines apply.\nIf chosen the [SAP Data Product V1](../../spec-extensions/policy-levels/sap-dp-v1) rules MUST be followed."
-        },
-        {
-          "const": "custom",
-          "description": "Custom policy level.\nFurther validation MAY be defined and implemented by the policy-level owner.\nThis level MAY be chosen by 3rd party or customer solutions.\nIf chosen, `customPolicyLevel` MUST be provided."
-        }
-      ],
-      "default": "none",
-      "examples": [
-        "sap:core:v1"
-      ]
-    },
-    "customPolicyLevel": {
-      "type": "string",
-      "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
-      "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-      "maxLength": 255,
-      "examples": [
-        "sap.xref:customPolicy:v1"
-      ]
-    },
-    "policyLevels": {
-      "type": "array",
-      "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
-      "items": {
-        "type": "string",
-        "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-        "maxLength": 255,
-        "examples": [
-          "sap:core:v1"
-        ]
-      }
-    },
-    "apiResources": {
-      "type": "array",
-      "description": "Array of all API Resources that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/ApiResource"
-      }
-    },
-    "eventResources": {
-      "type": "array",
-      "description": "Array of all event resources that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/EventResource"
-      }
-    },
-    "entityTypes": {
-      "type": "array",
-      "description": "Array of all entity types that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/EntityType"
-      }
-    },
-    "capabilities": {
-      "type": "array",
-      "description": "Array of all capabilities that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/Capability"
-      }
-    },
-    "dataProducts": {
-      "type": "array",
-      "description": "Array of all data products that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/DataProduct"
-      }
-    },
-    "integrationDependencies": {
-      "type": "array",
-      "description": "Array of all integration dependencies that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/IntegrationDependency"
-      }
-    },
-    "vendors": {
-      "type": "array",
-      "description": "Array of all Vendors that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/Vendor"
-      }
-    },
-    "products": {
-      "type": "array",
-      "description": "Array of all Products that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/Product"
-      }
-    },
-    "packages": {
-      "type": "array",
-      "description": "Array of all Packages that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/Package"
-      }
-    },
-    "consumptionBundles": {
-      "type": "array",
-      "description": "Array of all Consumption Bundles that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/ConsumptionBundle"
-      }
-    },
-    "groups": {
-      "type": "array",
-      "description": "Array of all Groups that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/Group"
-      }
-    },
-    "groupTypes": {
-      "type": "array",
-      "description": "Array of all Group Types that are described in this ORD document.",
-      "items": {
-        "$ref": "#/definitions/GroupType"
-      }
-    },
-    "tombstones": {
-      "type": "array",
-      "description": "List of ORD information (resources or taxonomy) that have been \"tombstoned\", indicating removal or archival.\nThis MUST be indicated explicitly, just removing the ORD information itself is not sufficient.\n\nA tombstone entry MAY be removed after a grace period of 31 days.",
-      "items": {
-        "$ref": "#/definitions/Tombstone"
-      }
-    }
-  },
-  "additionalProperties": false,
-  "required": [
-    "openResourceDiscovery"
-  ]
+  }
 }

@@ -10,6 +10,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.12.3]
+
+- Breaking package does not export `ordDocumentSchemaWithAnnotations` and `ordConfigurationSchemaWithAnnotations` anymore, use `ordDocumentSchema` and `ordConfigurationSchema` instead
+- Breaking Typescript Types: renamed `AccessStrategy` from Configuration schema to `OrdV1DocumentAccessStrategy`
+
 ## [1.12.2]
 
 ### Added

@@ -1,7 +1,6 @@
-# ORD Configuration Diagram
+#Ord Configuration Diagram
 
 ## OpenResourceDiscoveryV1
-See [OpenResourceDiscoveryV1 interface](../interfaces/configuration.md#ord-v1-support).
   ```mermaid
   classDiagram
   class OpenResourceDiscoveryV1
@@ -15,7 +14,6 @@ See [OpenResourceDiscoveryV1 interface](../interfaces/configuration.md#ord-v1-su
   
 
 ## V1DocumentDescription
-See [V1DocumentDescription interface](../interfaces/configuration.md#ord-v1-document-description).
   ```mermaid
   classDiagram
   class V1DocumentDescription
@@ -29,7 +27,6 @@ See [V1DocumentDescription interface](../interfaces/configuration.md#ord-v1-docu
   
 
 ## V1Capabilities
-See [V1Capabilities interface](../interfaces/configuration.md#ord-v1-capabilities).
   ```mermaid
   classDiagram
   class V1Capabilities
@@ -40,7 +37,6 @@ See [V1Capabilities interface](../interfaces/configuration.md#ord-v1-capabilitie
   
 
 ## AccessStrategy
-See [AccessStrategy interface](../interfaces/configuration.md#access-strategy).
   ```mermaid
   classDiagram
   class AccessStrategy

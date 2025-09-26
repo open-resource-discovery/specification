@@ -1,12 +1,47 @@
 {
+  "description": "The ORD configuration response will indicate that ORD is available for the given host and how to proceed with the discovery.\n\nMost notably, the ORD configuration will tell an ORD consumer which ORD documents are available and where/how they can be accessed.\n\nThe configuration endpoint is a [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) discovery mechanism.\n\nThis JSON Schema describes the [ORD configuration interface](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/configuration) of the [ORD specification](https://open-resource-discovery.github.io/specification/).",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json#",
-  "title": "ORD Configuration",
-  "description": "The ORD configuration response will indicate that ORD is available for the given host and how to proceed with the discovery.\n\nMost notably, the ORD configuration will tell an ORD consumer which ORD documents are available and where/how they can be accessed.\n\nThe configuration endpoint is a [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) discovery mechanism.",
+  "title": "Ord Configuration",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference",
+      "description": "Optional URL to the ORD Configuration schema (defined as JSON Schema).\nIf given, this enables code intelligence and validation in supported editors (like VSCode) and tools.",
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        {
+          "const": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json#"
+        }
+      ]
+    },
+    "baseUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional [base URL](../index.md#def-base-url) that can be used to resolve the relative URLs to the ORD Documents.\n\nThe `baseUrl` MUST not contain a leading slash.\n\nIf you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.\nThis implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.\nIf both a `baseUrl` and a well-known URI is provided, the explicit `baseUrl` takes precedence.",
+      "pattern": "^http[s]?:\\/\\/[^:\\/\\s]+\\.[^:\\/\\s\\.]+(:\\d+)?(\\/[a-zA-Z0-9-\\._~]+)*$",
+      "examples": [
+        "https://example-sap-system.com",
+        "https://sub.foo.bar.com",
+        "https://sub.foo.bar.com/api/v1"
+      ]
+    },
+    "openResourceDiscoveryV1": {
+      "$ref": "#/definitions/OpenResourceDiscoveryV1"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "openResourceDiscoveryV1"
+  ],
   "definitions": {
     "OpenResourceDiscoveryV1": {
       "type": "object",
-      "title": "ORD V1 Support",
+      "title": "Ord V1 Support",
       "description": "The existence of this version indicates that Open Resource Discovery is supported in Version 1.x",
       "properties": {
         "documents": {
@@ -24,7 +59,7 @@
     },
     "V1DocumentDescription": {
       "type": "object",
-      "title": "ORD V1 Document Description",
+      "title": "Ord V1 Document Description",
       "description": "Describes an [ORD Document](../index.md#ord-document) that is available for pull transport consumption.",
       "properties": {
         "url": {
@@ -39,6 +74,8 @@
         },
         "perspective": {
           "type": "string",
+          "x-introduced-in-version": "1.12.0",
+          "x-feature-status": "beta",
           "description": "With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).\n\nIt is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.\n\nIt is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.\n\nIf not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.\n\nPlease read the [article on perspectives](../concepts/perspectives) for more explanations.",
           "oneOf": [
             {
@@ -84,7 +121,7 @@
     },
     "V1Capabilities": {
       "type": "object",
-      "title": "ORD V1 Capabilities",
+      "title": "Ord V1 Capabilities",
       "description": "List of capabilities that are supported by the ORD provider.",
       "properties": {
         "selector": {
@@ -96,7 +133,7 @@
     },
     "AccessStrategy": {
       "type": "object",
-      "title": "Access Strategy",
+      "title": "Ord V1 Document Access Strategy",
       "description": "Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the ORD documents from the ORD provider.",
       "properties": {
         "type": {
@@ -114,7 +151,8 @@
             },
             {
               "const": "basic-auth",
-              "description": "The resource definitions are protected via generic basic auth.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/basic-auth)."
+              "description": "The resource definitions are protected via generic basic auth.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/basic-auth).",
+              "x-introduced-in-version": "1.12.1"
             },
             {
               "const": "sap:oauth-client-credentials:v1",
@@ -170,40 +208,5 @@
         }
       ]
     }
-  },
-  "type": "object",
-  "properties": {
-    "$schema": {
-      "type": "string",
-      "format": "uri-reference",
-      "description": "Optional URL to the ORD Configuration schema (defined as JSON Schema).\nIf given, this enables code intelligence and validation in supported editors (like VSCode) and tools.",
-      "anyOf": [
-        {
-          "type": "string",
-          "format": "uri-reference"
-        },
-        {
-          "const": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json#"
-        }
-      ]
-    },
-    "baseUrl": {
-      "type": "string",
-      "format": "uri",
-      "description": "Optional [base URL](../index.md#def-base-url) that can be used to resolve the relative URLs to the ORD Documents.\n\nThe `baseUrl` MUST not contain a leading slash.\n\nIf you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.\nThis implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.\nIf both a `baseUrl` and a well-known URI is provided, the explicit `baseUrl` takes precedence.",
-      "pattern": "^http[s]?:\\/\\/[^:\\/\\s]+\\.[^:\\/\\s\\.]+(:\\d+)?(\\/[a-zA-Z0-9-\\._~]+)*$",
-      "examples": [
-        "https://example-sap-system.com",
-        "https://sub.foo.bar.com",
-        "https://sub.foo.bar.com/api/v1"
-      ]
-    },
-    "openResourceDiscoveryV1": {
-      "$ref": "#/definitions/OpenResourceDiscoveryV1"
-    }
-  },
-  "additionalProperties": false,
-  "required": [
-    "openResourceDiscoveryV1"
-  ]
+  }
 }
