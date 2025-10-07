@@ -1,2 +1,2 @@
-export * from "./configuration";
-export * from "./document";
+export * from "./Configuration";
+export * from "./Document";

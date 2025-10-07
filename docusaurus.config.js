@@ -58,6 +58,24 @@ const config = {
 
   scripts: [`${baseUrl}/js/custom.js`],
 
+  plugins: [
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        redirects: [
+          {
+            from: "/spec-v1/interfaces/configuration",
+            to: "/spec-v1/interfaces/Configuration",
+          },
+          {
+            from: "/spec-v1/interfaces/document",
+            to: "/spec-v1/interfaces/Document",
+          },
+        ],
+      },
+    ],
+  ],
+
   themes: [
     "@docusaurus/theme-mermaid",
     [
@@ -116,11 +134,11 @@ const config = {
               },
               {
                 label: "ORD Configuration Interface",
-                to: "spec-v1/interfaces/configuration",
+                to: "spec-v1/interfaces/Configuration",
               },
               {
                 label: "ORD Document Interface",
-                to: "spec-v1/interfaces/document",
+                to: "spec-v1/interfaces/Document",
               },
               {
                 label: "ORD Concepts",

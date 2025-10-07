@@ -125,9 +125,9 @@ The actual data packages are delivered with the applications or data platform th
 
 Within a data product, we use these taxonomies in the following ways:
 
-- with [partOfGroups](../../spec-v1/interfaces/document.md#data-product_partofgroups) we express the business capabilities, business processes and data package assignments
-- via [partOfPackage](../../spec-v1/interfaces/document.md#data-product_partofpackage) we have a unique relationship to the application providing the data product, including a reference to the product, that is [assigned to the package](../../spec-v1/interfaces/document.md#package_partofproducts).
-- via [industry](../../spec-v1/interfaces/document.md#data-product_industry) and [lineOfBusiness](../../spec-v1/interfaces/document.md#data-product_lineofbusiness) there is a fixed set of taxonomies for data products.
+- with [partOfGroups](../../spec-v1/interfaces/Document.md#data-product_partofgroups) we express the business capabilities, business processes and data package assignments
+- via [partOfPackage](../../spec-v1/interfaces/Document.md#data-product_partofpackage) we have a unique relationship to the application providing the data product, including a reference to the product, that is [assigned to the package](../../spec-v1/interfaces/Document.md#package_partofproducts).
+- via [industry](../../spec-v1/interfaces/Document.md#data-product_industry) and [lineOfBusiness](../../spec-v1/interfaces/Document.md#data-product_lineofbusiness) there is a fixed set of taxonomies for data products.
 
 ```js
  "dataProducts": [

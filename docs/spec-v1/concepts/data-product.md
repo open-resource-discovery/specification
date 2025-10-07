@@ -6,11 +6,11 @@ title: Data Product
 
 # Data Product
 
-> 🚧 Please note that the [Data Products](../interfaces/document#data-product) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
+> 🚧 Please note that the [Data Products](../interfaces/Document#data-product) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
 
 ## Definition
 
-> A [Data Product](../interfaces/document#data-product) is a **data set** exposed for consumption via APIs or Events.
+> A [Data Product](../interfaces/Document#data-product) is a **data set** exposed for consumption via APIs or Events.
 > They are described through high quality **metadata** that can be accessed through the Data Product Directory ([ORD Aggregator](../#ord-aggregator)).
 
 The Data Product concept is based on [Data Mesh Principles](https://martinfowler.com/articles/data-mesh-principles.html) (see also [this book](https://www.thoughtworks.com/en-de/insights/books/data-mesh)).
@@ -37,7 +37,7 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 - Above we say that Data Products are consumed via APIs, but to be precise, they are consumed via APIs or Events (we treat events as a special form of API). In this doc, we generally use the term APIs to include Events (it is just more readable than always saying "APIs and/or Events").
 - There is a clear expectation that the APIs are described via [metadata](#metadata-aspect) for machine- and human-readable documentation.
 - For Data Products only certain types of API Protocols and qualities (performant mass read) are adequate. E.g. SAP uses [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md), which we additionally describe with [CSN Interop](https://sap.github.io/csn-interop-specification/) for richer metadata.
-- Data Products are also expected to describe their data lineage. This is done via Data Product input ports, which are described in details as an ORD [Integration Dependency](../interfaces/document#integration-dependency)
+- Data Products are also expected to describe their data lineage. This is done via Data Product input ports, which are described in details as an ORD [Integration Dependency](../interfaces/Document#integration-dependency)
 
 ### Metadata Aspect
 
@@ -53,7 +53,7 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 
 ### Business Semantic Aspect
 
-- In ORD, it's not just possible to describe the APIs - and through them the data model / schema / syntax of the data. There are also [Entity Types](../interfaces/document#entity-type) which can be used to describe the **semantic model** (underlying conceptual model) and map it with the technical API / data model.
+- In ORD, it's not just possible to describe the APIs - and through them the data model / schema / syntax of the data. There are also [Entity Types](../interfaces/Document#entity-type) which can be used to describe the **semantic model** (underlying conceptual model) and map it with the technical API / data model.
 
 ## Data Products at SAP
 
@@ -87,7 +87,7 @@ This has the following implications
 
 - The beta-level properties are potentially subject to changes, although we aim to avoid breaking changes if possible.
 - Many data product relevant attributes are currently **not explicitly defined** in the specification yet.
-  - Some attributes should be handled via documentation, e.g. Service Level Agreements via [dataProductLinks](../interfaces/document#data-product_dataproductlinks) of `type`: [`service-level-agreement`](../interfaces/document#data-product-link_type)
+  - Some attributes should be handled via documentation, e.g. Service Level Agreements via [dataProductLinks](../interfaces/Document#data-product_dataproductlinks) of `type`: [`service-level-agreement`](../interfaces/Document#data-product-link_type)
   - Such attributes need to be defined through generic extensibility mechanisms like `labels` and `documentationLabels` or added as text to the documentation.
   - We do this to gain more experience on what information we need to collect and how to structure them best. Later ORD Data Product releases will add more standardized properties or define a dedicated Data Product definition specification that can be attached.
   - Which information needs to be added as additional extensibility attributes is currently only defined as SAP internal guidance.

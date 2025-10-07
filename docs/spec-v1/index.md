@@ -103,7 +103,7 @@ A [system type](#def-system-type) can implement multiple roles, e.g. an ORD Cons
 An <dfn id="def-ord-provider">ORD provider</dfn> is a system instance (of an application or service) that exposes ORD information for self-description.
 The **provider role** applies to business applications/services that want to describe themselves (<dfn id="def-described-system-instance">described system instance</dfn>).
 
-> ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance not necessarily identical described system instances (see [`describedSystemInstance`](./interfaces/document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
+> ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance not necessarily identical described system instances (see [`describedSystemInstance`](./interfaces/Document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
 
 An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
 An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
@@ -232,7 +232,7 @@ The ORD document MUST be a valid [JSON](https://www.json.org/json-en.html) docum
 It MUST NOT exceed 2MB in size.
 If the size gets too big, consider splitting the information into multiple ORD documents instead.
 
-The interfaces are described in [ORD document interface](./interfaces/document.md), including [examples](./interfaces/document.md#examples).
+The interfaces are described in [ORD document interface](./interfaces/Document.md), including [examples](./interfaces/Document.md#examples).
 
 An ORD document MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Document.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json).
 
@@ -282,7 +282,7 @@ However, the change in the resource definition MUST be indicated through a versi
 
 To avoid repeating too much information, ORD provides some limited means for information reuse on [document level](#document-level-inheritance) and [package level](#package-level-inheritance).
 
-Which attributes support information reuse and how it works is described in the [ORD Document interface documentation](./interfaces/document.md) and the [ORD Aggregator Content Enrichment and Preservation](#content-enrichment-and-preservation) section.
+Which attributes support information reuse and how it works is described in the [ORD Document interface documentation](./interfaces/Document.md) and the [ORD Aggregator Content Enrichment and Preservation](#content-enrichment-and-preservation) section.
 
 ##### Document Level Inheritance
 
@@ -345,7 +345,7 @@ The response MUST be a valid UTF-8 encoded [JSON](https://www.json.org/json-en.h
 
 - The response MUST not contain any sensitive information or leak tenant specific information.
 - It MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Configuration.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json).
-- Please refer to the [interface documentation](./interfaces/configuration.md) for more details and [examples](./interfaces/configuration.md#complete-examples).
+- Please refer to the [interface documentation](./interfaces/Configuration.md) for more details and [examples](./interfaces/Configuration.md#complete-examples).
 
 All of the [common REST characteristics](#common-rest-characteristics) MUST be met.
 The rules on [ORD Provider Cache Handling](#ord-provider-cache-handling) apply.
@@ -532,7 +532,7 @@ The following rules need to be implemented by ORD aggregators:
 
 ##### Removal of Resources/Information
 
-The removal of resources is indicated through setting a [Tombstone](./interfaces/document.md#tombstone).
+The removal of resources is indicated through setting a [Tombstone](./interfaces/Document.md#tombstone).
 The ORD Aggregator MUST remove unpublished information that has been tombstoned within a grace period of 31 days.
 
 ##### Hosting Referenced Files
@@ -992,7 +992,7 @@ However, a deprecation does not automatically imply a planned sunset of the reso
 When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
-- MUST explicitly set a [`Tombstone`](interfaces/document.md#document.tombstones).
+- MUST explicitly set a [`Tombstone`](interfaces/Document.md#document.tombstones).
 
 ![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
 

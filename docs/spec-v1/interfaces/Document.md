@@ -9,7 +9,7 @@ description: "Describes the technical interface / schema for ORD Document."
 ## Schema Definitions
 
 * The root schema of the document is [Ord Document](#ord-document)
-* The interface is available as JSON Schema: [document.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#).
+* The interface is available as JSON Schema: [Document.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#).
 
 
 ### Ord Document

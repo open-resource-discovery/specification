@@ -272,10 +272,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added new (lightweight) Group and Group Type concept
   - Adds a new `partOfGroups` attribute on ORD resources
-  - Adds two new top level concepts to the ORD document: [Group](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/document#group) and [Group Type](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/document#group-type)
+  - Adds two new top level concepts to the ORD document: [Group](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document#group) and [Group Type](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document#group-type)
   - This can be used to define custom group types and assign ORD resources to them
   - With this, custom taxonomies can be built that are either centrally or decentrally defined.
-- Added [`relatedEntityTypes`](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/document#entity-type_relatedentitytypes) to Entity Types
+- Added [`relatedEntityTypes`](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document#entity-type_relatedentitytypes) to Entity Types
   - This allows to define that Entity Types are related to other Entity Types (e.g. from a different namespace)
 - Added clarification that an ORD Aggregator MUST bump `lastUpdated` if the provider didn't do it, but it detected a change.
 - Added explicit [Access Strategy](https://open-resource-discovery.github.io/specification/spec-extensions/access-strategies/) description for `open`, defining how local and global tenant headers can be optionally passed on.
@@ -352,7 +352,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added [Data Product](../../spec-v1/interfaces/document.md#data-product) concept.
+- Added [Data Product](../../spec-v1/interfaces/Document.md#data-product) concept.
   - for the time being in **beta** status
 - Added `runtimeRestriction` to packages
 - Added `responsible` to APIs, events and data products

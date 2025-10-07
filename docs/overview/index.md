@@ -12,9 +12,9 @@ Open Resource Discovery (ORD) is a protocol for application / service metadata p
 ORD is designed to be **general-purpose** and to work with a wide variety of industry-standard protocols and metadata standards.
 It can be used for **static documentation** or to describe the **run-time system landscape**, reflecting tenant specific configuration and extensions.
 
-It is possible to describe [APIs](./spec-v1/interfaces/document#api-resource), [Events](./spec-v1/interfaces/document#event-resource) and higher-level concepts like [Entity Types](./spec-v1/interfaces/document#entity-type) (Domain / Business Objects) and [Data Products](../spec-v1/concepts/data-product.md).
-The [Integration Dependencies](./spec-v1/interfaces/document#integration-dependency) describe the use of external resources.
-In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/document#capability).
+It is possible to describe [APIs](./spec-v1/interfaces/Document#api-resource), [Events](./spec-v1/interfaces/Document#event-resource) and higher-level concepts like [Entity Types](./spec-v1/interfaces/Document#entity-type) (Domain / Business Objects) and [Data Products](../spec-v1/concepts/data-product.md).
+The [Integration Dependencies](./spec-v1/interfaces/Document#integration-dependency) describe the use of external resources.
+In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/Document#capability).
 All of the described artifacts can share relationships, taxonomy and [grouping](../spec-v1/concepts/grouping-and-bundling.md) concepts, enabling a **well-connected metadata graph**.
 
 ORD can describe **[static](../spec-v1/index.md#def-static-perspective) documentation** (like API / data catalogs and marketplaces) or a **[dynamic](../spec-v1/index.md#def-dynamic-perspective) run-time system landscape** (with tenant specific configuration and extensions).
@@ -94,5 +94,3 @@ We are also part of the publicly funded [IPCEI CIS](https://www.bmwk.de/Redaktio
 
 The specification itself is designed to be generic, so most SAP specific aspects are described as [spec extensions](./spec-extensions).
 Some concepts like [namespaces](./spec-v1/#namespaces) could be further standardized if there's a need for cross-company metadata exchange.
-
-<p align="left"><img alt="Bundesministerium für Wirtschaft und Energie (BMWE)-EU funding logo" src="https://apeirora.eu/assets/img/BMWK-EU.png" width="250"/></p>

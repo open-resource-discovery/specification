@@ -48,7 +48,7 @@ IF the resources have already been published to the public [SAP Business Acceler
 
 ### Title Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
 
 - All `title` values (except link titles) MUST NOT exceed 120 characters, as per SAP API Style Guide and SAP Business Accelerator Hub guideline recommendations.
 - All `title` values (except link titles) MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
@@ -86,7 +86,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
 
 - All `description` values MUST NOT contain the short description.
   They are complementary to the short description and should not just be a longer replacement.
@@ -95,7 +95,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Short Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
 
 - All `shortDescription` values SHOULD NOT exceed 180 characters.
 - All `shortDescription` values MUST NOT repeat or start with the object name.
@@ -137,7 +137,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Package
 
-- For [Packages](../../spec-v1/interfaces/document.md#package) with policy level sap, the Governance Guidelines for API Packages MUST be followed.
+- For [Packages](../../spec-v1/interfaces/Document.md#package) with policy level sap, the Governance Guidelines for API Packages MUST be followed.
   - This includes current limitations:
     - Packages MUST NOT be shared by multiple provider (source) systems
     - Packages MUST NOT contain mixed resource types. E.g., a Package must only contain either APIs or Events, but never both together.
@@ -146,13 +146,13 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Consumption Bundle
 
-- For public or internal [API Resources](../../spec-v1/interfaces/document.md#api-resource) with `inbound` or `mixed` direction (consumption pattern): SHOULD provide and assign a [Consumption Bundle](../../spec-v1/interfaces/document.md#consumption-bundle). This is necessary as some SAP ORD Consumers rely on Consumption Bundles to find and navigate accessible resources.
+- For public or internal [API Resources](../../spec-v1/interfaces/Document.md#api-resource) with `inbound` or `mixed` direction (consumption pattern): SHOULD provide and assign a [Consumption Bundle](../../spec-v1/interfaces/Document.md#consumption-bundle). This is necessary as some SAP ORD Consumers rely on Consumption Bundles to find and navigate accessible resources.
 
 ### API Resource
 
-- For [API Resources](../../spec-v1/interfaces/document.md#api-resource) the Guidelines for publishing API Resources on the SAP Business Accelerator Hub MUST be followed according to our internal API and external API guidelines.
+- For [API Resources](../../spec-v1/interfaces/Document.md#api-resource) the Guidelines for publishing API Resources on the SAP Business Accelerator Hub MUST be followed according to our internal API and external API guidelines.
   The first link includes a decision table for internal vs. external, which corresponds to `visibility` internal vs. public in ORD.
-- The [`extensible`](../../spec-v1/interfaces/document.md#api-resource_extensible) property MUST be provided.
+- The [`extensible`](../../spec-v1/interfaces/Document.md#api-resource_extensible) property MUST be provided.
 - For API Resources with `visibility`: "public" or "internal":
   - Resource definitions MUST be provided for OData, REST, GraphQL and SOAP APIs.
   - OData APIs MUST have a resource definition of `"type": "edmx"` AND additionally one of either `"type": "openapi-v3"` or `"type": "openapi-v2"`.
@@ -166,7 +166,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Event Resource
 
-- For [Event Resources](../../spec-v1/interfaces/document.md#event-resource) the [Governance Guidelines for Events](https://help.sap.com/viewer/9c880f03c6084ca4b2573b5605ec7a83/Cloud/en-US/3cda0ea7b65849108d530eb33ce2fb85.html) MUST be followed.
+- For [Event Resources](../../spec-v1/interfaces/Document.md#event-resource) the [Governance Guidelines for Events](https://help.sap.com/viewer/9c880f03c6084ca4b2573b5605ec7a83/Cloud/en-US/3cda0ea7b65849108d530eb33ce2fb85.html) MUST be followed.
 - The `extensible` property MUST be provided.
 - For Event Resources with `visibility`: "public" or "internal":
   - Resource definitions MUST be provided.
@@ -180,7 +180,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Extensible
 
-- If the mandatory [Extensible](../../spec-v1/interfaces/document.md#extensible) object has a [description](../../spec-v1/interfaces/document.md#extensible_description), it MUST follow the guidance and rules of the SAP Technology Guideline TG12.R2.
+- If the mandatory [Extensible](../../spec-v1/interfaces/Document.md#extensible) object has a [description](../../spec-v1/interfaces/Document.md#extensible_description), it MUST follow the guidance and rules of the SAP Technology Guideline TG12.R2.
 
 ### Integration Dependencies
 

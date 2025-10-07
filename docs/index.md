@@ -47,6 +47,10 @@ hide_table_of_contents: true
   </div>
 
   <div className="container">
+    <p className="definition">Open Resource Discovery (ORD) is a protocol that enables applications and services to self-describe their exposed resources and capabilities, standardising metadata publishing and discovery. This can improve automation and quality of integrations and serve as a foundation for metadata catalogs and marketplaces. By decentralizing metadata discovery and making the application the source of truth, metadata drift can be avoided and run-time introspection becomes possible.</p>
+  </div>
+
+  <div className="container">
     <div className="lp-features">
       <div className="lp-feature-card">
         <h3>Unify and Connect</h3>
@@ -66,4 +70,5 @@ hide_table_of_contents: true
       </div>
     </div>
   </div>
+
 </div>

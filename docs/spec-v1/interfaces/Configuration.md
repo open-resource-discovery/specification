@@ -9,7 +9,7 @@ description: "Describes the technical interface / schema for ORD Configuration."
 ## Schema Definitions
 
 * The root schema of the document is [Ord Configuration](#ord-configuration)
-* The interface is available as JSON Schema: [configuration.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json#).
+* The interface is available as JSON Schema: [Configuration.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json#).
 
 
 ### Ord Configuration

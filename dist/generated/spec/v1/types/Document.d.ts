@@ -8,7 +8,7 @@ export type Usage = "external" | "local";
  *
  * The constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.
  *
- * This JSON Schema describes the [ORD document interface](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/document) of the [ORD specification](https://open-resource-discovery.github.io/specification/).
+ * This JSON Schema describes the [ORD document interface](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document) of the [ORD specification](https://open-resource-discovery.github.io/specification/).
  */
 export interface OrdDocument {
     /**

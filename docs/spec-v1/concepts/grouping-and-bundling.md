@@ -58,7 +58,7 @@ However, there are still some [Considerations on the granularity of ORD Document
 
 ### Package
 
-Every ORD Resource MUST be assigned to exactly one [**Package**](../interfaces/document#package).
+Every ORD Resource MUST be assigned to exactly one [**Package**](../interfaces/Document#package).
 The Package is primarily motivated by publishing and API catalog presentation concerns, including human-readable documentation and presentation.
 It can also express information about the resource providers, terms of use of the APIs, pricing for the usage of the packages, APIs, Events, etc.
 
@@ -83,7 +83,7 @@ This is the case, when:
 
 ### Consumption Bundle
 
-The [**Consumption Bundle**](../interfaces/document#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
+The [**Consumption Bundle**](../interfaces/Document#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
 Ideally it also includes instructions and details how to request access and credentials for resources.
 
 API and Event resources MAY be assigned to 0..n Consumption Bundles.
@@ -102,7 +102,7 @@ E.g. how credentials can be programmatically obtained could be described by atta
 
 ### Entity Type
 
-An [**Entity Type**](../interfaces/document#entity-type) describes a underlying conceptual model (e.g. a business object / domain model).
+An [**Entity Type**](../interfaces/Document#entity-type) describes a underlying conceptual model (e.g. a business object / domain model).
 In special cases, the entity type could just be a term, describing the semantics but without an actual model behind it.
 
 They represent an "internal" concept and are part of the ORD taxonomy. They should not leak internal implementation details, but can be used to create relations to and between external resources and capabilities and relate them to "business semantics".
@@ -135,12 +135,12 @@ Since they are usually used for enhancing search or navigation, the simplicity o
 
 ### Labels
 
-[**Labels**](../interfaces/document#labels) are very similar to [tags](#tags), but allow to define key value pairs.
+[**Labels**](../interfaces/Document#labels) are very similar to [tags](#tags), but allow to define key value pairs.
 They are optimized towards machine-readability and can be used to query, select and filter resources (similar to [kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)).
 
 ### Groups
 
-[**Groups**](../interfaces/document#group) and the corresponding [Group Types](../interfaces/document#group-type) can be used to define and apply your own taxonomy in a generic, extensible way.
+[**Groups**](../interfaces/Document#group) and the corresponding [Group Types](../interfaces/Document#group-type) can be used to define and apply your own taxonomy in a generic, extensible way.
 
 <div style={{"text-align": "left", "margin-top": "12px"}}>
 ![Group Concept Overview](/img/group-concept-overview.drawio.svg)
