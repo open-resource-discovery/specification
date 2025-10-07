@@ -47,6 +47,15 @@
   margin: 0 auto 32px;
   max-width: 600px;
 }
+.lp-home .definition {
+  color: var(--c-text-dim);
+  font-size: 14px;
+  line-height: 22px;
+  margin: 24px auto 0;
+  max-width: 850px;
+  opacity: 0.85;
+  text-align: center;
+}
 .lp-home .actions {
   display: flex;
   flex-wrap: wrap;
@@ -149,6 +158,11 @@
     font-size: 24px;
     line-height: 36px;
   }
+  .lp-home .definition {
+    font-size: 16px;
+    line-height: 26px;
+    text-align: center;
+  }
 }
 @media (min-width: 960px) {
   .lp-home .name {
@@ -171,6 +185,10 @@
   }
   .lp-home .tagline {
     margin: 0 0 32px;
+  }
+  .lp-home .definition {
+    margin: 24px 0 32px;
+    text-align: left;
   }
   .lp-home .actions {
     justify-content: flex-start;

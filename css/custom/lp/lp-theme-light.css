@@ -8,8 +8,9 @@ html[data-theme="light"] {
   --lp-c-text-1: #0a0f12;
   --lp-c-text-2: #1b242a;
   --lp-c-text-3: #5a6a73;
+  --c-text-dim: #5a6a73;
   --lp-c-divider: #e2e2de;
-  --c-accent: #2e8b57;
+  --c-accent: #519c8c;
   --lp-button-brand-text: #ffffff;
   --lp-button-brand-hover-bg: #32bcac;
 

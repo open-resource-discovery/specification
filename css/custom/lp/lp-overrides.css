@@ -15,7 +15,7 @@
 }
 .theme-doc-sidebar-menu .menu__link--active {
   color: var(--c-accent) !important;
-  border-left: 2px solid var(--c-accent);
+  border-left: 5px solid var(--c-accent);
   padding-left: calc(var(--ifm-menu-link-padding-horizontal) - 2px);
 }
 .breadcrumbs .breadcrumbs__link:hover {
