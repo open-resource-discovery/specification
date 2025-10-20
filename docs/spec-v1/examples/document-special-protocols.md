@@ -1,0 +1,138 @@
+---
+title: document-special-protocols
+description: Example documents for Document.
+---
+
+## Example File:  document-special-protocols
+
+```json
+{
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
+  "openResourceDiscovery": "1.12",
+  "description": "This ORD Document example contains more special examples, like custom SAP protocols",
+  "policyLevels": ["sap:core:v1"],
+  "consumptionBundles": [
+    {
+      "ordId": "sap.foo:consumptionBundle:basicAuth:v1",
+      "title": "BasicAuth protected resources",
+      "shortDescription": "Bundle of protected resources",
+      "description": "This Consumption Bundle contains all resources of the reference app which share the same BasicAuth access and identity realm",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "credentialExchangeStrategies": [
+        {
+          "type": "custom",
+          "customType": "sap.foo:basicAuthCredentialExchange:v1",
+          "customDescription": "The BasicAuth credentials must be created and retrieved manually.\nPlease refer to the documentation on the [ORD Reference App API access](https://pages.github.com/SAP/open-resource-discovery-reference-application/blob/master/docs/README.md#api-access)."
+        }
+      ]
+    }
+  ],
+  "apiResources": [
+    {
+      "ordId": "sap.foo:apiResource:someRfcAPI:v1",
+      "title": "Some RFC API",
+      "shortDescription": "...",
+      "description": "Some long description",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "visibility": "internal",
+      "releaseStatus": "active",
+      "systemInstanceAware": true,
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "apiProtocol": "sap-rfc",
+      "partOfConsumptionBundles": [
+        {
+          "ordId": "sap.foo:consumptionBundle:basicAuth:v1"
+        }
+      ],
+      "entryPoints": ["/some/rfc/api/url/v1"],
+      "resourceDefinitions": [
+        {
+          "type": "sap-rfc-metadata-v1",
+          "mediaType": "application/xml",
+          "url": "/some/url/to/metadata.xml",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ],
+      "extensible": {
+        "supported": "no"
+      }
+    },
+    {
+      "ordId": "sap.foo:apiResource:someApeAPI:v1",
+      "title": "Some APE API",
+      "shortDescription": "...",
+      "description": "Some long description",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "visibility": "internal",
+      "releaseStatus": "active",
+      "systemInstanceAware": true,
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "apiProtocol": "websocket",
+      "direction": "mixed",
+      "implementationStandard": "sap:ape-api:v1",
+      "partOfConsumptionBundles": [
+        {
+          "ordId": "sap.foo:consumptionBundle:basicAuth:v1"
+        }
+      ],
+      "extensible": {
+        "supported": "no"
+      }
+    },
+    {
+      "ordId": "sap.foo:apiResource:someCdiAPI:v1",
+      "title": "Some APE API",
+      "shortDescription": "...",
+      "description": "Some long description",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "visibility": "internal",
+      "releaseStatus": "active",
+      "systemInstanceAware": true,
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "partOfConsumptionBundles": [
+        {
+          "ordId": "sap.foo:consumptionBundle:basicAuth:v1"
+        }
+      ],
+      "apiProtocol": "odata-v4",
+      "direction": "inbound",
+      "entryPoints": ["/some/ape/api/url/v1"],
+      "implementationStandard": "sap:cdi-api:v1",
+      "resourceDefinitions": [
+        {
+          "type": "edmx",
+          "mediaType": "application/xml",
+          "url": "/path/to/metadata.edmx",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        },
+        {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "url": "/path/to/metadata.json",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ],
+      "extensible": {
+        "supported": "no"
+      }
+    }
+  ]
+}
+
+```

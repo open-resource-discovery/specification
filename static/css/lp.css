@@ -1,7 +1,0 @@
-@import url("./custom/lp/lp-footer.css");
-@import url("./custom/lp/lp-hero.css");
-@import url("./custom/lp/lp-buttons.css"); /* intentionally after hero: overrides .lp-home .actions gap */
-@import url("./custom/lp/lp-features.css");
-@import url("./custom/lp/lp-overrides.css");
-@import url("./custom/lp/lp-theme-light.css");
-@import url("./custom/lp/lp-bridge.css");

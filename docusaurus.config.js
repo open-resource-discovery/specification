@@ -43,6 +43,7 @@ const config = {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
           sidebarCollapsible: true,
+          sidebarCollapsed: true,
           routeBasePath: "/", // Serve the docs at the site's root
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -96,7 +97,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       colorMode: {
-        defaultMode: "light",
+        defaultMode: "dark",
         disableSwitch: false,
         respectPrefersColorScheme: false,
       },

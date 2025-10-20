@@ -1,28 +1,3 @@
-@import url("lp.css");
-@import url("./custom/navbar-light-base.css");
-@import url("./custom/navbar-light-scrolled.css");
-@import url("./custom/navbar-light-toggle-icons.css");
-@import url("mobile-nav.css");
-@import url("./custom/docs-dark.css");
-
-/* Tokens & themes */
-@import url("./custom/tokens.css");
-@import url("./custom/theme-dark-vars.css");
-
-/* Base */
-@import url("./custom/base.css");
-
-/* Navbar */
-@import url("./custom/navbar-core.css");
-@import url("./custom/navbar-search.css");
-@import url("./custom/navbar-links.css");
-@import url("./custom/navbar-states.css");
-@import url("./custom/navbar-right-cluster.css");
-
-/* Markdown/Docs */
-@import url("./custom/markdown-core.css");
-@import url("./custom/markdown-tables-code.css");
-@import url("./custom/markdown-cards-iframe.css");
-
-/* Utilities */
-@import url("./custom/utilities.css");
+@import url("./foundation/index.css");
+@import url("./components/index.css");
+@import url("./pages/index.css");
