@@ -62,7 +62,7 @@ Depending on the role of the adopter the value proposition is different:
 - If you are an application or service, that needs to provide ORD information, you are in the [ORD Provider](#benefits-to-ord-providers) role.
   - The provider benefits from having one protocol for providing the information and not multiple.
   - The provider only needs to publish to two ORD aggregators and avoids having many more point-to-point integrations to the various consumers.
-  - The use cases that ORD consumers provide may very well serve the same customer and solve commonly shared problems, see ORD Adoption Status - ORD Consumers for examples.
+  - The use cases that ORD consumers provide may very well serve the same customer and solve commonly shared problems.
   - See [Benefits to ORD Providers](#benefits-to-ord-providers) for more elaboration.
 
 - If you make use of ORD information, you are in the role of an [ORD Consumer](#benefits-to-ord-consumers).
@@ -109,8 +109,6 @@ ORD Providers can automatically benefit of the use cases that the various [ORD C
 
 ORD Consumers usually solve "shared problems" that many SAP applications have and provide a more consistent and integrated experience for the end customers.
 To phrase it differently, some ORD Consumers solve problems and save efforts that the ORD Provider otherwise would need to implement on their own.
-
-To understand how you can profit from this, have a look at the ORD Adoption Status - Consumers.
 
 ### Benefits to ORD Consumers
 

@@ -15,3 +15,26 @@ sidebar_position: 0
 | [SAP Business Data Cloud](https://www.sap.com/products/data-cloud.html)                                                                   |                                                                              |                                                                                                                      |                                                                                    |
 
 > 🚤 List is incomplete. More in progress / planned.
+
+## General Tool, Framework and Library Support
+
+### Reference Implementation
+
+- The [ORD Reference App](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) showcases a simple ORD implementation.
+  - Source Code is available [github.com/SAP-samples/open-resource-discovery-reference-application](https://github.com/SAP-samples/open-resource-discovery-reference-application/)
+
+### Validation
+
+- The API Metadata Validator [TODO: link] supports validation of ORD documents and configurations.
+  It can be used in CI/CD pipelines, but also has a UI for quickly trying it out.
+- The ORD Crawler [TODO: link] can connect with a real ORD provider API and fetch & validate all metadata (not just the ORD documents).
+  This gives a good overall overview of validation / compliance status.
+
+### Framework Support
+
+- [SAP ABAP Platform](https://developers.sap.com/topics/abap-platform.platform.html), including ABAP Cloud has inbuilt ORD support.
+- [SAP CAP](https://cap.cloud.sap/docs/) framework has an [open source ORD plugin](https://github.com/cap-js/ORD).
+
+### Libraries and CLI tools
+
+- The [ORD Provider Server](https://github.com/open-resource-discovery/provider-server) can be used to serve static ORD documents and related metadata.

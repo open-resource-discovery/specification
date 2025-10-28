@@ -55,14 +55,6 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 
 - In ORD, it's not just possible to describe the APIs - and through them the data model / schema / syntax of the data. There are also [Entity Types](../interfaces/Document#entity-type) which can be used to describe the **semantic model** (underlying conceptual model) and map it with the technical API / data model.
 
-## Data Products at SAP
-
-At SAP, the minimum required metadata is the description of the Data Product as an ORD resource. Additional metadata, e.g. CSN, can also be provided.
-
-There are internal guidance what qualities and protocols a Data Product needs to or should have. Those are currently worked our during the beta phase. Once they are clear, they may find their way into a SAP specific [policy level](../../spec-extensions/policy-levels/index.mdx).
-
-> ℹ Relevant SAP blog post: [The Metadata behind SAP Data Products in SAP Business Data Cloud](https://community.sap.com/t5/technology-blogs-by-sap/the-metadata-behind-sap-data-products-in-sap-business-data-cloud/ba-p/14016947).
-
 ## Architecture Overview
 
 ### Model

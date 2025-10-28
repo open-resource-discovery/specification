@@ -1,0 +1,51 @@
+umsMetadataOverride: "0.1"
+overrides:
+  # TODO: add all missing overrides here
+
+  # - type: "MetadataType"
+  #   metadata:
+  #     name: "apiresource"
+  #     labels:
+  #       foo: "bar"
+  #   spec:
+  #     metadataRelations:
+  #       # merge:
+  #       - propertyName: "partOfConsumptionBundles"
+  #         propertyBased: true
+  #         managedByProperty: id
+  #         targetPropertyName: apiResourceId
+  # - type: "MetadataType"
+  #   metadata:
+  #     name: "consumptionbundlereference"
+  #   spec:
+  #     metadataProperties:
+  #       # Append
+  #       - name: "apiResourceId"
+  #         type: "string"
+  #         description: "The API Resource ID this reference comes from."
+  #       # ...
+  #     metadataRelations:
+  #       # Append
+  #       - propertyName: "api"
+  #         relatedTypeName: "ApiResource"
+  #         relatedTypeNamespace: "/sap/core/ucl/metadata/ord/v1"
+  #         reverseRelation:
+  #           relationPropertyName: "partOfConsumptionBundles"
+  #         mandatory: true
+  - type: "MetadataType"
+    metadata:
+      name: "integrationdependency"
+    spec:
+      metadataRelations:
+        - propertyName: "apiResources"
+          description: |-
+            All API resources this integration dependency lists, across all of its aspects.
+            Calculated by UMS.
+          array: true
+          # calculated: true
+        - propertyName: "eventResources"
+          description: |-
+            All event resources this integration dependency lists, across all of its aspects.
+            Calculated by UMS.
+          array: true
+          # calculated: true
