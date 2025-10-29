@@ -1,0 +1,46 @@
+{
+  "$schema": "https://open-resource-discovery.github.io/spec-toolkit/spec-v1/spec-toolkit-config.schema.json#",
+  "generalConfig": {
+    "tsTypeExportExcludeJsFileExtension": true
+  },
+  "outputPath": "src/generated/spec/v1",
+  "docsConfig": [
+    {
+      "type": "spec",
+      "id": "Configuration",
+      "sourceFilePath": "./spec/v1/Configuration.schema.yaml",
+      "mdFrontmatter": {
+        "title": "ORD Configuration",
+        "sidebar_position": "0",
+        "description": "Describes the technical interface / schema for ORD Configuration."
+      },
+      "examplesFolderPath": "./examples/configuration/"
+    },
+    {
+      "type": "spec",
+      "id": "Document",
+      "sourceFilePath": "./spec/v1/Document.schema.yaml",
+      "mdFrontmatter": {
+        "title": "ORD Document",
+        "sidebar_position": "1",
+        "description": "Describes the technical interface / schema for ORD Document."
+      },
+      "examplesFolderPath": "./examples/documents/"
+    }
+  ],
+  "plugins": [
+    {
+      "packageName": "./node_modules/@open-resource-discovery/spec-toolkit/dist/plugin/ums/index.js",
+      "options": {
+        "metadataPath": "/sap/core/ucl/metadata/ord/v1",
+        "overrides": ["./spec/v1/Document.ums.yaml"]
+      }
+    },
+    {
+      "packageName": "./node_modules/@open-resource-discovery/spec-toolkit/dist/plugin/mermaidDiagram/index.js"
+    },
+    {
+      "packageName": "./node_modules/@open-resource-discovery/spec-toolkit/dist/plugin/tabular/index.js"
+    }
+  ]
+}
