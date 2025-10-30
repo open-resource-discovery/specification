@@ -10,7 +10,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
-### Deleted
+### Removed
 
 - deleted from ORD Configuration:
   - `AccessStrategy` values: `sap:oauth-client-credentials:v1`, `sap:cmp-mtls:v1`, `sap.businesshub:basic-auth:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using this values is still allowed
