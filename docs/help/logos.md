@@ -15,4 +15,4 @@ sidebar_position: 12
 
 #### Downloads
 
-- [ORD Logos (zip file)](/img/logo/ord-logos.zip)
+- [ORD Logos](https://github.com/open-resource-discovery/specification/tree/main/static/img/logo) (single files, click on each and download).
