@@ -12,7 +12,3 @@ sidebar_position: 12
 ![ORD Vertical Logo (Color)](/img/logo/ORD_Vertical_Color_Logo.svg "ORD Horizontal Logo (Color)")
 
 </div>
-
-#### Downloads
-
-- [ORD Logos (zip file)](/img/logo/ord-logos.zip)
