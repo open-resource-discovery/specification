@@ -101,18 +101,6 @@
           "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
         },
         {
-          "const": "sap:base:v1",
-          "description": "Basic SAP rules and guidelines apply. This just ensures technical correctness and essential validations.\nIf chosen the [SAP Base V1](../../spec-extensions/policy-levels/sap-base-v1) rules MUST be followed."
-        },
-        {
-          "const": "sap:core:v1",
-          "description": "SAP core rules and guidelines apply.\nIf chosen the [SAP Core V1](../../spec-extensions/policy-levels/sap-core-v1) rules MUST be followed."
-        },
-        {
-          "const": "sap:dp:v1",
-          "description": "SAP Data Product guidelines apply.\nIf chosen the [SAP Data Product V1](../../spec-extensions/policy-levels/sap-dp-v1) rules MUST be followed."
-        },
-        {
           "const": "custom",
           "description": "Custom policy level.\nFurther validation MAY be defined and implemented by the policy-level owner.\nThis level MAY be chosen by 3rd party or customer solutions.\nIf chosen, `customPolicyLevel` MUST be provided."
         }
@@ -323,18 +311,6 @@
             {
               "const": "none",
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
-            },
-            {
-              "const": "sap:base:v1",
-              "description": "Basic SAP rules and guidelines apply. This just ensures technical correctness and essential validations.\nIf chosen the [SAP Base V1](../../spec-extensions/policy-levels/sap-base-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:core:v1",
-              "description": "SAP core rules and guidelines apply.\nIf chosen the [SAP Core V1](../../spec-extensions/policy-levels/sap-core-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:dp:v1",
-              "description": "SAP Data Product guidelines apply.\nIf chosen the [SAP Data Product V1](../../spec-extensions/policy-levels/sap-dp-v1) rules MUST be followed."
             },
             {
               "const": "custom",
@@ -1211,39 +1187,8 @@
               "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customImplementationStandardDescription` SHOULD be provided."
             },
             {
-              "const": "sap:ord-document-api:v1",
-              "description": "API follows the Open Resource Discovery v1 [Document API](../index.md#ord-provider-api) contract."
-            },
-            {
               "const": "cff:open-service-broker:v2",
               "description": "API follows the [Open Service Broker API V2](https://github.com/openservicebrokerapi/servicebroker)."
-            },
-            {
-              "const": "sap:csn-exposure:v1",
-              "description": "API follows the SAP CSN_EXPOSURE service for exposing metadata in the [CSN-format](https://cap.cloud.sap/docs/cds/csn)."
-            },
-            {
-              "const": "sap:ape-api:v1",
-              "description": "API follows the [SAP ABAP Pipeline Engine (APE) API](https://help.sap.com/docs/SAP_DATA_INTELLIGENCE/3a65df0ce7cd40d3a61225b7d3c86703/8b287f0f0033447c8a57a1bee74cd840.html) protocol via ABAP WebSocket RFC for efficient data extraction.\nThe `apiProtocol` MUST be set to `websocket`."
-            },
-            {
-              "const": "sap:cdi-api:v1",
-              "description": "Implementation of the SAP Cloud Data Integration (CDI) interface for delta-enabled data extraction.\nThe `apiProtocol` MUST be set to `odata-v4`, as this is a sub-protocol of OData."
-            },
-            {
-              "const": "sap:delta-sharing:v1",
-              "x-introduced-in-version": "1.9.4",
-              "description": "SAP opinionated implementation of `delta-sharing` API protocol. This implementation has some compatible extension wrt. to standard delta-share such as providing key information.\nThe `apiProtocol` MUST be set to `delta-sharing`, as this is a special flavor of Delta Sharing."
-            },
-            {
-              "const": "sap:hana-cloud-sql:v1",
-              "x-introduced-in-version": "1.8.0",
-              "description": "Specific additional implementation of the sap-sql-api-v1 API (sub-)protocol that provide replication support when connecting from an Hana Cloud system\nsee [SAP HANA Cloud documentation](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-data-access-guide/replicating-tables-from-remote-sources).\nThe `apiProtocol` MUST be set to `sap-sql-api-v1`, as this is a sub-protocol / variant of the SAP SQL API."
-            },
-            {
-              "const": "sap.dp:data-subscription-api:v1",
-              "x-introduced-in-version": "1.9.12",
-              "description": "Data Subscription API is the unified data ingestion framework that SAP LoBs can adopt for data ingestion into BDC.\nAn API marked with this implementation standard is providing the Data Delivery part of the Data Subscription API flow for a dedicated BDC data source."
             },
             {
               "const": "custom",
@@ -1636,18 +1581,6 @@
             {
               "const": "none",
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
-            },
-            {
-              "const": "sap:base:v1",
-              "description": "Basic SAP rules and guidelines apply. This just ensures technical correctness and essential validations.\nIf chosen the [SAP Base V1](../../spec-extensions/policy-levels/sap-base-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:core:v1",
-              "description": "SAP core rules and guidelines apply.\nIf chosen the [SAP Core V1](../../spec-extensions/policy-levels/sap-core-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:dp:v1",
-              "description": "SAP Data Product guidelines apply.\nIf chosen the [SAP Data Product V1](../../spec-extensions/policy-levels/sap-dp-v1) rules MUST be followed."
             },
             {
               "const": "custom",
@@ -2307,18 +2240,6 @@
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
             },
             {
-              "const": "sap:base:v1",
-              "description": "Basic SAP rules and guidelines apply. This just ensures technical correctness and essential validations.\nIf chosen the [SAP Base V1](../../spec-extensions/policy-levels/sap-base-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:core:v1",
-              "description": "SAP core rules and guidelines apply.\nIf chosen the [SAP Core V1](../../spec-extensions/policy-levels/sap-core-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:dp:v1",
-              "description": "SAP Data Product guidelines apply.\nIf chosen the [SAP Data Product V1](../../spec-extensions/policy-levels/sap-dp-v1) rules MUST be followed."
-            },
-            {
               "const": "custom",
               "description": "Custom policy level.\nFurther validation MAY be defined and implemented by the policy-level owner.\nThis level MAY be chosen by 3rd party or customer solutions.\nIf chosen, `customPolicyLevel` MUST be provided."
             }
@@ -2683,18 +2604,6 @@
             {
               "const": "none",
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
-            },
-            {
-              "const": "sap:base:v1",
-              "description": "Basic SAP rules and guidelines apply. This just ensures technical correctness and essential validations.\nIf chosen the [SAP Base V1](../../spec-extensions/policy-levels/sap-base-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:core:v1",
-              "description": "SAP core rules and guidelines apply.\nIf chosen the [SAP Core V1](../../spec-extensions/policy-levels/sap-core-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:dp:v1",
-              "description": "SAP Data Product guidelines apply.\nIf chosen the [SAP Data Product V1](../../spec-extensions/policy-levels/sap-dp-v1) rules MUST be followed."
             },
             {
               "const": "custom",
@@ -3384,18 +3293,6 @@
               "description": "No policy level chosen. Only the base rules on how to create correct ORD documents apply."
             },
             {
-              "const": "sap:base:v1",
-              "description": "Basic SAP rules and guidelines apply. This just ensures technical correctness and essential validations.\nIf chosen the [SAP Base V1](../../spec-extensions/policy-levels/sap-base-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:core:v1",
-              "description": "SAP core rules and guidelines apply.\nIf chosen the [SAP Core V1](../../spec-extensions/policy-levels/sap-core-v1) rules MUST be followed."
-            },
-            {
-              "const": "sap:dp:v1",
-              "description": "SAP Data Product guidelines apply.\nIf chosen the [SAP Data Product V1](../../spec-extensions/policy-levels/sap-dp-v1) rules MUST be followed."
-            },
-            {
               "const": "custom",
               "description": "Custom policy level.\nFurther validation MAY be defined and implemented by the policy-level owner.\nThis level MAY be chosen by 3rd party or customer solutions.\nIf chosen, `customPolicyLevel` MUST be provided."
             }
@@ -3672,7 +3569,7 @@
             },
             {
               "const": "sap-csn-interop-effective-v1",
-              "description": "CSN Interop Effective is a standardized and interoperable flavor of [CSN](https://cap.cloud.sap/docs/cds/csn).\nCSN is a notation for compact representations of [CDS](https://cap.cloud.sap/docs/cds/) models.\n\nIn CDS based frameworks (like ABAP, CAP), APIs and Events are derived from a CDS Service definition and its constituent entities.\nIn this case the original CDS service definition MAY be attached, as it usually contains more metadata insight than other formats.\n\nWARNING: Only expose the CDS Service definition that effectively is governed by the API contract and stability. Do not expose internal models!\n\nThe `mediaType` MUST be be set to `application/json`."
+              "description": "[CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable flavor of [CSN](https://cap.cloud.sap/docs/cds/csn).\nCSN is a notation for compact representations of [CDS](https://cap.cloud.sap/docs/cds/) models.\n\nIn CDS based frameworks (like ABAP, CAP), APIs and Events are derived from a CDS Service definition and its constituent entities.\nIn this case the original CDS service definition MAY be attached, as it usually contains more metadata insight than other formats.\n\nWARNING: Only expose the CDS Service definition that effectively is governed by the API contract and stability. Do not expose internal models!\n\nThe `mediaType` MUST be be set to `application/json`."
             },
             {
               "const": "custom",
@@ -5210,18 +5107,6 @@
               "const": "basic-auth",
               "description": "The resource definitions are protected via generic basic auth.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/basic-auth).",
               "x-introduced-in-version": "1.12.1"
-            },
-            {
-              "const": "sap:oauth-client-credentials:v1",
-              "description": "The ORD information are accessible via OAuth 2.0 client credentials flow as standardized within SAP.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-oauth-client-credentials-v1)."
-            },
-            {
-              "const": "sap:cmp-mtls:v1",
-              "description": "The ORD information are accessible via Unified Customer Landscape's client certificate.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-cmp-mtls-v1)."
-            },
-            {
-              "const": "sap.businesshub:basic-auth:v1",
-              "description": "The ORD information are accessible for SAP Business Accelerator Hub via Basic Auth strategy.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-businesshub-basic-v1)."
             },
             {
               "const": "custom",

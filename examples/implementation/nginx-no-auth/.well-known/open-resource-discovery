@@ -1,0 +1,14 @@
+{
+  "openResourceDiscoveryV1": {
+    "documents": [
+      {
+        "url": "/metadata/document-1.json",
+        "accessStrategies": [
+          {
+            "type": "open"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -23,7 +23,7 @@ description: Example documents for Document.
         {
           "type": "custom",
           "customType": "sap.foo:basicAuthCredentialExchange:v1",
-          "customDescription": "The BasicAuth credentials must be created and retrieved manually.\nPlease refer to the documentation on the [ORD Reference App API access](https://pages.github.com/SAP/open-resource-discovery-reference-application/blob/master/docs/README.md#api-access)."
+          "customDescription": "The BasicAuth credentials must be created and retrieved manually.\nPlease refer to the documentation on the [ORD Reference App API access](https://github.com/open-resource-discovery/reference-application?tab=readme-ov-file#api-access)."
         }
       ]
     }

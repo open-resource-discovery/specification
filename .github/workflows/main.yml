@@ -17,15 +17,15 @@ jobs:
       - name: Installing Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
-      - name: npm install
+      - name: Install NPM dependencies
         run: npm ci
 
-      - name: build
+      - name: Build
         run: npm run build
 
-      - name: deploy
+      - name: Deploy
         if: github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@v4
         with:

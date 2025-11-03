@@ -1,38 +1,64 @@
-name: Release a new version
+name: Release
 on:
   workflow_dispatch:
+    inputs:
+      npm:
+        description: "NPMJS Package"
+        required: false
+        type: boolean
+        default: true
+      githubRelease:
+        description: "GitHub Release"
+        required: false
+        type: boolean
+        default: true
 jobs:
-  publish-to-npmjs:
+  npm:
+    if: inputs.npm
+    runs-on: ubuntu-latest
+    environment: npmjs-registry
     permissions:
       contents: read
       id-token: write
-    runs-on: ubuntu-latest
-    environment: tokens:@open-resource-discovery/specification
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          node-version: "20.x"
-          # registry-url is required for releasing packages
-          registry-url: "https://registry.npmjs.org"
-      # Skipping install since all assets are pre-built already
-      # - run: npm install
+          fetch-depth: 0
 
-      - name: Publish package
-        # --provenance enables the automatic generation of provenance statements
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          # registry-url is required for releasing packages
+          registry-url: ${{ vars.NPM_REGISTRY }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to NPM
         # --access public is only hard required for the initial release, but it doesn't hurt having it setup
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  githubRelease:
+    needs: [npm]
+    if: |
+      always() &&
+      !contains(needs.*.result, 'cancelled') &&
+      !contains(needs.*.result, 'failure') &&
+      inputs.githubRelease
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  # create-github-release:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Check out repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-
-  #     - name: Create GitHub Release
-  #       uses: open-resource-discovery/github-release@main
+      - name: Create GitHub Release
+        uses: open-resource-discovery/github-release@main

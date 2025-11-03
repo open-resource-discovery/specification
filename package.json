@@ -5,40 +5,48 @@
   "description": "Open Resource Discovery (ORD) Specification",
   "author": "SAP SE",
   "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/open-resource-discovery/specification.git"
   },
   "files": [
-    "dist/index.*",
-    "dist/types/",
+    "README.md",
+    "dist/index.js",
+    "dist/index.d.ts",
     "dist/generated/spec/v1"
   ],
-  "types": "dist/index.d.ts",
-  "main": "dist/index.js",
   "scripts": {
     "docusaurus": "docusaurus",
-    "build": "npm run build-docusaurus && touch ./build/.nojekyll",
+    "build": "npm run generate && npm run build-ts && npm run build-docusaurus",
     "clean": "rimraf dist/ && rimraf build/ && rimraf .docusaurus/",
+    "build-ts": "tsc -p ./tsconfig.json",
     "build-docusaurus": "docusaurus build",
     "serve": "docusaurus serve",
     "start": "docusaurus start",
-    "deploy": "npm run build && gh-pages -d ./build"
+    "deploy": "npm run build && gh-pages -d ./build",
+    "generate": "npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json",
+    "postgenerate": "ts-node ./src/helper/copyGeneratedToDestination.ts"
   },
   "devDependencies": {
-    "@docusaurus/core": "3.8.1",
-    "@docusaurus/plugin-client-redirects": "3.8.1",
-    "@docusaurus/preset-classic": "3.8.1",
-    "@docusaurus/theme-mermaid": "3.8.1",
+    "@docusaurus/core": "3.9.2",
+    "@docusaurus/plugin-client-redirects": "3.9.2",
+    "@docusaurus/preset-classic": "3.9.2",
+    "@docusaurus/theme-mermaid": "3.9.2",
     "@easyops-cn/docusaurus-search-local": "0.52.1",
     "@mdx-js/react": "3.1.1",
+    "@open-resource-discovery/spec-toolkit": "0.4.0",
+    "@types/fs-extra": "11.0.4",
     "clsx": "2.1.1",
+    "fs-extra": "11.3.2",
     "prism-react-renderer": "2.4.1",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
-  "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "react-dom": "18.3.1",
+    "ts-node": "10.9.2"
   }
 }
