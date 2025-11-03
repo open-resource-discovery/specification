@@ -155,18 +155,6 @@
               "x-introduced-in-version": "1.12.1"
             },
             {
-              "const": "sap:oauth-client-credentials:v1",
-              "description": "The ORD information are accessible via OAuth 2.0 client credentials flow as standardized within SAP.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-oauth-client-credentials-v1)."
-            },
-            {
-              "const": "sap:cmp-mtls:v1",
-              "description": "The ORD information are accessible via Unified Customer Landscape's client certificate.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-cmp-mtls-v1)."
-            },
-            {
-              "const": "sap.businesshub:basic-auth:v1",
-              "description": "The ORD information are accessible for SAP Business Accelerator Hub via Basic Auth strategy.\nPlease find a more detailed documentation [here](../../spec-extensions/access-strategies/sap-businesshub-basic-v1)."
-            },
-            {
               "const": "custom",
               "description": "If chosen, `customType` MUST be provided.\nIf chosen, `customDescription` SHOULD be provided."
             }

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([[5901],{5901:(e,c,s)=>{s.d(c,{createTreemapServices:()=>r.d});var r=s(1633);s(7960)}}]);
