@@ -298,3 +298,26 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markd
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .clean-btn {
   color: var(--c-text-strong);
 }
+
+/* Anchor offset for sticky navbar */
+:root {
+  --doc-header-offset: 72px;
+}
+
+@media (max-width: 1000px) {
+  :root { --doc-header-offset: 84px; }
+}
+
+html {
+  /* Native anchor offset for in-page links */
+  scroll-padding-top: calc(var(--doc-header-offset) + 8px);
+}
+
+.markdown :is(h1, h2, h3, h4, h5, h6, dfn, .interface-property-name, .interface-property-type) {
+  scroll-margin-top: calc(var(--doc-header-offset) + 8px);
+}
+
+.markdown :is(h1, h2, h3, h4, h5, h6).is-target .hash-link {
+  color: var(--c-accent) !important;
+  text-decoration-color: var(--c-accent);
+}
