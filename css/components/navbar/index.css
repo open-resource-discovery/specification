@@ -159,6 +159,35 @@ nav.navbar .dropdown > .navbar__link {
   height: 100%;
   background: url("../../../img/icons/cmd-k.svg") center/contain no-repeat;
 }
+
+/* search: prevent overflow, keep dropdown visible, reserve space for clear button */
+nav.navbar :is(.navbar__search, [class*="searchbarContainer_"], [class*="searchBarContainer_"]),
+.navbar-sidebar__search :is(.navbar__search, [class*="searchbarContainer_"], [class*="searchBarContainer_"]) {
+  position: relative !important;
+  min-width: 0 !important;
+}
+
+:is(nav.navbar, .navbar-sidebar__search) :is(.searchBar_RVTs, [class*="searchBar_"]) {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+nav.navbar .searchBar_RVTs > input,
+nav.navbar [class*="searchBar_"] > input,
+nav.navbar input.navbar__search-input,
+nav.navbar input[class*="searchInput_"],
+.navbar-sidebar__search .searchBar_RVTs > input,
+.navbar-sidebar__search [class*="searchBar_"] > input,
+.navbar-sidebar__search input.navbar__search-input,
+.navbar-sidebar__search input[class*="searchInput_"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding-right: 2rem !important;
+}
+
 [class*="searchClearButton"] {
   cursor: pointer;
 }
