@@ -139,7 +139,7 @@
         "type": {
           "type": "string",
           "description": "Defines the authentication/authorization strategy through which the referenced ORD Documents can be accessed.",
-          "oneOf": [
+          "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
