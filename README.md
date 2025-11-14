@@ -28,7 +28,7 @@ The ORD standard is governed by the [Linux Foundation](https://www.linuxfoundati
 
 ### Learning Material
 
-Currently there are no public resources beside the ORD spec itself.
+Currently there are no public resources besides the ORD spec itself.
 We plan to add more in the future.
 
 ### Tools and Examples

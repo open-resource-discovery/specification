@@ -16,7 +16,7 @@ Exceptions are only allowed on a case by case basis.
 This policy level is based on various SAP guidelines and rules - most of them which are already established.
 It defines the core rules and guidelines that are shared across SAP, although more specific rules and guidelines MAY be applied on top.
 
-**All constraints of the ORD specification itself still apply (valid ORD document). The constrains described here come on top.**
+**All constraints of the ORD specification itself still apply (valid ORD document). The constraints described here come on top.**
 
 ## General Policies
 

@@ -8,7 +8,7 @@ toc_max_heading_level: 3
 
 ## Why ORD?
 
-- Need for consistent **technical documentation how applications and services can be integrated with and developed against**.
+- Need for consistent **technical documentation of how applications and services can be integrated with and developed against**.
 - Companies and their customers need to **understand actual system landscapes, reflecting customizations and extensions**.
 - Need to provide **more automation and a better development experience** for integrating SAP products with each other, the BTP SAP ecosystem and side-by-side extensions.
 - Many AI and Analytics use-cases **rely on consistent and standardized metadata** to deliver value or scale well.
@@ -58,13 +58,13 @@ Typically, ORD is used to describe [APIs](./spec-v1/interfaces/Document.md#api-r
 With [Integration Dependencies](./spec-v1/interfaces/Document.md#integration-dependency) the (potential) use of external resources can be stated, too.
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/Document.md#capability).
 
-ORD standardizes how those information can be automatically discovered and aggregated.
+ORD standardizes how this information can be automatically discovered and aggregated.
 Please note that ORD is no replacement for detailed resource definition standards like OpenAPI.
 Instead, it describes a bigger context with shared, high-level information, taxonomy and relations between the described resources.
 It also standardizes the publishing and discovery related interfaces and behaviors, to ensure a high degree of automation that allows us to keep in sync with reality.
 The same ORD implementation can be used to both describe the tenant-specific customer landscape and the static reference landscape view to an API Catalog.
 
-When ORD information get combined by a central ORD aggregator and integrated with other, central metadata sources, we can realize a connected (customer) **system landscape metadata view**.
+When ORD information gets combined by a central ORD aggregator and integrated with other, central metadata sources, we can realize a connected (customer) **system landscape metadata view**.
 This gives both SAP and our customers better introspection about the actual system landscape. This enables or improves many meta-data driven use-cases (like low-code/no-code).
 
 The specification provides a shared contract and alignment point for the ecosystem, spanning various consumers and providers. This allows to have one aligned standard instead of a wild growth of specific point-to-point alignments and integrations.
@@ -77,7 +77,7 @@ The specification provides a shared contract and alignment point for the ecosyst
 
 The most typical resources to describe are [APIs](./spec-v1/interfaces/Document.md#api-resource) and [Events](./spec-v1/interfaces/Document.md#event-resource).
 But ORD can also be used to describe higher-level concepts like [Entity Types](./spec-v1/interfaces/Document.md#entity-type) (Business Objects) and [Data Products](./spec-v1/interfaces/Document.md#data-products).
-With [Integration Dependencies](./spec-v1/interfaces/Document.md#integration-dependency) it is possible to also describe how external resources are or can be be used.
+With [Integration Dependencies](./spec-v1/interfaces/Document.md#integration-dependency) it is possible to also describe how external resources are or can be used.
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/Document.md#capability).
 
 The mentioned concepts can be grouped by different concerns via [Packages](./spec-v1/interfaces/Document.md#package) and [Consumption Bundles](./spec-v1/interfaces/Document.md#consumption-bundle) and various taxonomy attributes.
@@ -166,8 +166,8 @@ If ORD information are provided, the detail view can show them and they will be 
 We believe that standards and policies can only realistically be ensured if we can automatically verify for correctness and compliance.
 
 This is why we have a complementary project, called the API Metadata Validator [TODO: link].
-It can validate ORD documents, but also a other metadata formats that we usually pass along via the ORD protocol, like OpenAPI documents.
-We use this also to not just test for technical correctness, but also to ad here to certain compliance levels.
+It can validate ORD documents, but also other metadata formats that we usually pass along via the ORD protocol, like OpenAPI documents.
+We use this also to not just test for technical correctness, but also to adhere to certain compliance levels.
 
 ## ORD in More Detail
 
