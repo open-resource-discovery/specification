@@ -109,7 +109,7 @@ They represent an "internal" concept and are part of the ORD taxonomy. They shou
 
 Relationships to entity types can be assigned to API & Event resources, data products and other entity types:
 
-![Entity Type Relations](/img/entity-type-relations.drawio.svg)
+![Entity Type Relations](/img/entity-type-relations.svg)
 
 The case of "underlying conceptual models", they relate to internal application models that usually have structure (properties, behavior).
 Ideally (see DDD), the underlying conceptual models represent the [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) and have consistent semantics within the domain / bounded context. In other contexts, they might be called conceptual or logical (data) models or just internal models.
@@ -143,7 +143,7 @@ They are optimized towards machine-readability and can be used to query, select 
 [**Groups**](../interfaces/Document#group) and the corresponding [Group Types](../interfaces/Document#group-type) can be used to define and apply your own taxonomy in a generic, extensible way.
 
 <div style={{"text-align": "left", "margin-top": "12px"}}>
-![Group Concept Overview](/img/group-concept-overview.drawio.svg)
+![Group Concept Overview](/img/group-concept-overview.svg)
 </div>
 
 The concept has three parts: The **Group Type** defines the semantics / meaning of a particular type of group assignments.

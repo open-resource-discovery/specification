@@ -44,7 +44,7 @@ This specification defines and uses the following terms (for the ORD context):
 
 - A <dfn id="def-system">system</dfn> is sometimes used as a generic, imprecise term when no further distinctions are necessary.
   In most places, the specification uses more precise terms, though:
-  - A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service from operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is sometimes referred to as _application and service_ for better readability.
+  - A <dfn>system type</dfn> is the abstract type of an application or service from operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is sometimes referred to as _application and service_ for better readability.
     Since system type is an abstract concept, it is not concretely addressable.
     A [system installation](#def-system-installation) of a specific [system version](#def-system-version) and potentially a [system instance](#def-system-instance) needs to be created to have a concrete, addressable system.
 
@@ -58,9 +58,9 @@ This specification defines and uses the following terms (for the ORD context):
 
 - A <dfn id="def-system-instance">system instance</dfn> is running instance of a <a href="#def-system-type">system type</a> and always refers to the _most specific_ instance from a customer / account perspective. Usually this is the boundary where the isolation of resources, capabilities and data is ensured.
   If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system deployment](#def-system-deployment) per tenant or system isolation does not matter. In those cases system instance equals the system deployment.
-  - A <dfn id="def-system-version">system version</dfn> is a particular software version of an <a href="#def-system-installation">system installation</a>, which is always of the same <a href="#def-system-type">system type</a>.
+  - A <dfn>system version</dfn> is a particular software version of an <a href="#def-system-installation">system installation</a>, which is always of the same <a href="#def-system-type">system type</a>.
 
-  - A <dfn id="def-system-instance">system instance</dfn> is running, isolated instance of a <a href="#def-system-type">system type</a>, running in a <a href="#def-system-installation">system installation</a> of a particular <a href="#def-system-version">system version</a>. It always refers to the _most specific_ instance from a customer / account / data isolation perspective.
+  - A <dfn>system instance</dfn> is running, isolated instance of a <a href="#def-system-type">system type</a>, running in a <a href="#def-system-installation">system installation</a> of a particular <a href="#def-system-version">system version</a>. It always refers to the _most specific_ instance from a customer / account / data isolation perspective.
     If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system installation](#def-system-installation) per tenant or system isolation does not matter. In those cases system instance equals the system installation.
 
     The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if multi-tenancy is supported or system ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if not.
@@ -241,7 +241,7 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### ORD Document Data Model (Simplified)
 
-![High-Level ORD Entities (simplified)](/img/ord-high-level-data-model.drawio.svg "High-Level ORD Entities (simplified)")
+![High-Level ORD Entities (simplified)](/img/ord-high-level-data-model.svg "High-Level ORD Entities (simplified)")
 
 #### Considerations on the ORD Content
 
@@ -994,7 +994,7 @@ When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
 - MUST explicitly set a [`Tombstone`](interfaces/Document.md#document.tombstones).
 
-![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
+![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.svg "IDs, Version and Lifecycle")
 
 ## Common REST Characteristics
 

@@ -63,7 +63,7 @@ The system
 
 This is depicted in the following diagram:
 
-![Perspectives to Relation](/img/ord-explicit-system-perspectives.drawio.svg "Perspectives Relation")
+![Perspectives to Relation](/img/ord-explicit-system-perspectives.svg "Perspectives Relation")
 
 The `system-instance` perspective is the most specific, because a consumer could ask how a particular system instance / tenant really looks like. If there is system-instance metadata for it, we can return it directly.
 If we don't have it, we need to fall back to the `system-version` layer and instead return the metadata for the version of the system instance.
@@ -88,7 +88,7 @@ But the concept did not allow to describe the same resource in different perspec
 
 The following diagram gives an overview which perspectives need to be described by an ORD Provider:
 
-![Perspectives to Provide](/img/ord-explicit-system-persectices-flow.drawio.svg "Perspectives to Provide")
+![Perspectives to Provide](/img/ord-explicit-system-persectices-flow.svg "Perspectives to Provide")
 
 If the system has only static metadata, it should explicitly use the `system-version` perspective and state its version (`describedSystemVersion`).
 If the system has dynamic metadata, it should describe both perspectives completely, if possible.
