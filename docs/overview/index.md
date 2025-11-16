@@ -7,17 +7,17 @@ title: ORD Overview
 
 <div className="container"><div className="row">
 <div className="col">
-Open Resource Discovery (ORD) is a protocol for application / service metadata publishing and discovery and can be used as a foundation for **metadata catalogs and marketplaces** and to improve automation and quality of integrations.
+Open Resource Discovery (ORD) is a protocol for application and service metadata publishing and discovery. It serves as a foundation for **metadata catalogs and marketplaces** while improving integration automation and quality.
 
 ORD is designed to be **general-purpose** and to work with a wide variety of industry-standard protocols and metadata standards.
-It can be used for **static documentation** or to describe the **run-time system landscape**, reflecting tenant specific configuration and extensions.
+It can be used for **static documentation** or to describe the **run-time system landscape**, reflecting tenant-specific configuration and extensions.
 
 It is possible to describe [APIs](./spec-v1/interfaces/Document#api-resource), [Events](./spec-v1/interfaces/Document#event-resource) and higher-level concepts like [Entity Types](./spec-v1/interfaces/Document#entity-type) (Domain / Business Objects) and [Data Products](../spec-v1/concepts/data-product.md).
 The [Integration Dependencies](./spec-v1/interfaces/Document#integration-dependency) describe the use of external resources.
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/Document#capability).
 All of the described artifacts can share relationships, taxonomy and [grouping](../spec-v1/concepts/grouping-and-bundling.md) concepts, enabling a **well-connected metadata graph**.
 
-ORD can describe **[static](../spec-v1/index.md#def-static-perspective) documentation** (like API / data catalogs and marketplaces) or a **[dynamic](../spec-v1/index.md#def-dynamic-perspective) run-time system landscape** (with tenant specific configuration and extensions).
+ORD can describe **[static](../spec-v1/index.md#def-static-perspective) documentation** (like API / data catalogs and marketplaces) or a **[dynamic](../spec-v1/index.md#def-dynamic-perspective) run-time system landscape** (with tenant-specific configuration and extensions).
 
 </div>
 <div className="col">
@@ -63,13 +63,13 @@ Based on this, many end-user use cases can be realized, e.g.:
 
 - Systems to **describe themselves** with a single entry-point to crawl all relevant metadata
 - Achieve a combined, machine-readable **system landscape metadata view**
-- Enable **fully automatic** of publication and discovery of metadata
+- Enable **fully automatic publication and discovery** of metadata
 - Having **one aligned standard** for
   - Description of different types of resources
   - Description of both the static / generic perspective and the actual runtime perspective
   - Support of many different metadata-driven use-cases and consumer requirements
 - ORD is an **open standard**
-  - It is [open source](https://github.com/open-resource-discovery/specification) an can be used by SAP partners and customers if they see a value in adopting it, like better integration in the SAP ecosystem
+  - It is [open source](https://github.com/open-resource-discovery/specification) and can be used by SAP partners and customers if they see a value in adopting it, like better integration in the SAP ecosystem
   - The specification is open for extensions via labels, custom types, spec extensions. Those don't need to go through alignment first.
 
 </p></div></div></div>
@@ -79,7 +79,7 @@ Based on this, many end-user use cases can be realized, e.g.:
 
 - Replace industry-standard resource definition formats like OpenAPI
 - Describing resources or capabilities in extensive detail.
-- Currently it is not recommended to put fast changing information into ORD, as the current pull-based transport mechanism would be to slow and expensive to support time-critical updates.
+- Currently it is not recommended to put fast-changing information into ORD, as the current pull-based transport mechanism would be too slow and expensive to support time-critical updates.
   - This could change in the future by introducing more efficient, asynchronous transport modes.
 - Currently: Describe resources other than those that are owned and exposed by the systems directly
   (only self-description of systems).

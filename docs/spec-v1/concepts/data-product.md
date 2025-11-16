@@ -34,8 +34,9 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 
 ### API Aspect
 
-- Above we say that Data Products are consumed via APIs, but to be precise, they are consumed via APIs or Events (we treat events as a special form of API). In this doc, we generally use the term APIs to include Events (it is just more readable than always saying "APIs and/or Events").
-- There is a clear expectation that the APIs are described via [metadata](#metadata-aspect) for machine- and human-readable documentation.
+> **Note:** Throughout this document, "API" refers to both APIs and Events for readability, as Events are treated as a specialized API form.
+
+- Data Products are consumed via APIs and Events, which are expected to be described via [metadata](#metadata-aspect) for machine- and human-readable documentation.
 - For Data Products only certain types of API Protocols and qualities (performant mass read) are adequate. E.g. SAP uses [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md), which we additionally describe with [CSN Interop](https://sap.github.io/csn-interop-specification/) for richer metadata.
 - Data Products are also expected to describe their data lineage. This is done via Data Product input ports, which are described in details as an ORD [Integration Dependency](../interfaces/Document#integration-dependency)
 
