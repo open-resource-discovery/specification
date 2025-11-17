@@ -337,7 +337,7 @@ The [ORD configuration endpoint](#ord-configuration-endpoint) MUST be implemente
 
 The response MUST be a valid UTF-8 encoded [JSON](https://www.json.org/json-en.html) document that is returned with the `application/json;charset=UTF-8` content type and the HTTP Status Code `200`.
 
-- The response MUST not contain any sensitive information or leak tenant specific information.
+- The response MUST not contain any sensitive information or leak tenant-specific information.
 - It MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Configuration.schema.json](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json).
 - Please refer to the [interface documentation](./interfaces/Configuration.md) for more details and [examples](./interfaces/Configuration.md#complete-examples).
 
@@ -348,7 +348,7 @@ It is RECOMMENDED to make this endpoint public.
 
 It is RECOMMENDED use the fixed [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) `/.well-known/open-resource-discovery` (as registered [here](https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml)) that is relative to the system instances [base URL](#def-base-url).
 
-Since the ORD config does not contain any tenant specific information, it is RECOMMENDED to only provide one ORD configuration endpoint for one [system deployment](#def-system-deployment) (same [base URL](#def-base-url)) of a multi-tenant application.
+Since the ORD config does not contain any tenant-specific information, it is RECOMMENDED to only provide one ORD configuration endpoint for one [system deployment](#def-system-deployment) (same [base URL](#def-base-url)) of a multi-tenant application.
 
 This assumes that the ORD document URLs in the configuration are not different per tenant and the tenant ID is selected as part of the access strategy.
 If the application is single-tenant or the tenant ID is part of the base URL (for example in the domain name), each tenant / system instance will have their own ORD config endpoint as a consequence.
