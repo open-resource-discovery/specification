@@ -1,5 +1,12 @@
 {
     "cSpell.words": [
         "tslog"
+    ],
+    // Configure Draw.io extension to recognize SVG diagram files
+    "hediet.vscode-drawio.customEditors": [
+        {
+            "glob": "static/img/**/*.svg",
+            "priority": "option"
+        }
     ]
 }

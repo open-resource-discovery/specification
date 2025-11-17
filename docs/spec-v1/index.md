@@ -234,7 +234,7 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### ORD Document Data Model (Simplified)
 
-![High-Level ORD Entities (simplified)](/img/ord-high-level-data-model.drawio.svg "High-Level ORD Entities (simplified)")
+![High-Level ORD Entities (simplified)](/img/ord-high-level-data-model.svg "High-Level ORD Entities (simplified)")
 
 #### Considerations on the ORD Content
 
@@ -987,7 +987,7 @@ When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
 - MUST explicitly set a [`Tombstone`](interfaces/Document.md#document.tombstones).
 
-![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
+![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.svg "IDs, Version and Lifecycle")
 
 ## Common REST Characteristics
 

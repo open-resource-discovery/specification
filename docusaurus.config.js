@@ -14,7 +14,6 @@ const config = {
   trailingSlash: false,
   onBrokenLinks: "throw",
   onDuplicateRoutes: "throw",
-  onBrokenMarkdownLinks: "throw",
   staticDirectories: ["static"],
   favicon: "img/favicon.ico",
 

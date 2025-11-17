@@ -61,7 +61,7 @@ In fact, it's just serving files via HTTP GET request in a standard manner.
 This can even be achieved by using a static web server like [nginx](https://www.nginx.com/), without writing a single line of code.
 
 Just dropping the ORD configuration and documents and additional metadata files into a web server can already work.
-Please consider whether the information [need to be protected](#protect-ord-document-api-access) and do so if necessary.
+Please consider whether the information [need to be protected](#protect-ord-provider-api-access) and do so if necessary.
 
 > 🔗 See [./implementation-examples/nginx-no-auth](https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/nginx-no-auth) for an example implementation
 
@@ -76,7 +76,7 @@ The API itself consists just of three different types of API GET operations:
 - One to return all [ORD Documents](../../spec-v1/index.md#ord-document)
 - One to return the "attached" metadata documents (ORD Resource Definitions)
 
-Please note that you may need to [protect the API access](#protect-ord-document-api-access).
+Please note that you may need to [protect the API access](#protect-ord-provider-api-access).
 
 > 🔗 See [./implementation-examples/no-auth](https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/no-auth) for an example node.js implementation without authentication.
 

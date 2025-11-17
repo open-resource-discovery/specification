@@ -32,7 +32,7 @@ But at ORD level, we're only describing the "type-level" ability to integrate an
 
 The following diagram shows the situation of how two systems can integrate with each other via APIs and Events:
 
-![Integration Dependency Problem Statement](/img/integration-dependency-ps.drawio.svg "Integration Dependency Problem Statement")
+![Integration Dependency Problem Statement](/img/integration-dependency-ps.svg "Integration Dependency Problem Statement")
 
 > This figure shown an integration scenario between system A and B. System Instance A has implemented API clients against the API Resources B-1 and B-2 of its integration target, as well as an event subscription (client implementation) for events from event resource B-3. It has an API Resource A-2, which the integration target is supposed to write an API client against and use it to provide data for A.
 
@@ -43,7 +43,7 @@ We introduce a new ORD resource type **Integration Dependency**. It can be used 
 In addition, it is also possible to further define that only a subset of the depended resources is necessary for the integration, allowing us to be more precise when necessary (e.g., for the SAP Event Broker use case).
 With the proposed solution we can handle SAP Event Broker and Data Product related requirements with a shared, generic concept. In general, Integration Dependencies are optional to be provided and will only be mandated through specific use cases, e.g., SAP Event Broker or Data Products.
 
-![Integration Dependency](/img/integration-dependency.drawio.svg "Integration Dependency")
+![Integration Dependency](/img/integration-dependency.svg "Integration Dependency")
 
 > This figure is based on the situation in Figure 1. It shows how System Instance A not only exposes API resources on its own side, but how it also defines an Integration Dependency. In the depicted case, it has two requirements which include references to external resources (System Instance B). Requirement 1 shows the situation that it can be either realized by getting access to the API Resource B-1 or B-2. The API client implementation in System Instance A can handle both API Resources as alternatives. Requirement 2 covers the Event Subscription use case. Requirement 3 points to an own API resource, which implies that the integration target implements an API client to send data back to system A.
 
@@ -72,7 +72,7 @@ Also be aware that Integration Dependencies and Requirements are describing a ty
 
 We think describing such outward requirements fits well into the ORD scope, because only the system itself knows what external requirements it has and what integration outcomes / scenarios it realizes by integrating with the requirement targets.
 
-![ORD High Level Data Model](/img/ord-high-level-data-model.drawio.svg "ORD High Level Data Model")
+![ORD High Level Data Model](/img/ord-high-level-data-model.svg "ORD High Level Data Model")
 
 > This figure shows a high-Level overview on ORD entities and where Integration Dependency and Requirements fit in.
 
