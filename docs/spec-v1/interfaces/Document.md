@@ -1072,7 +1072,7 @@ or through a defined and known `implementationStandard` that can resolve the `lo
 At SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.
 To indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).
 
-ODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the
+ODM 2.0 relies on the entity type mappings and uses the mapping to express the relationship of an API to the
 corresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.
 
 **Type**: Object(<a href="#entity-type-mapping_apimodelselectors">apiModelSelectors</a>, <a href="#entity-type-mapping_entitytypetargets">entityTypeTargets</a>)
