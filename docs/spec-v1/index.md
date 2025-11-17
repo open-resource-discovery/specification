@@ -181,7 +181,7 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 ### Other Modes of Transport
 
 Other modes of transport have not yet been standardized/specified.
-They are are only listed here to outline potential modes that we anticipate.
+They are only listed here to outline potential modes that we anticipate.
 
 #### Import Transport
 
@@ -285,7 +285,7 @@ In some cases (like `policyLevel`), it is also possible to override the values l
 
 ##### Package Level Inheritance
 
-Some ORD information are described on Package level and inherited down to all resources it that are assigned to the it.
+Some ORD information are described on Package level and inherited down to all resources that are assigned to it.
 The information on package level are merged into resource level, but can be overridden locally at resource level.
 
 > Please note that package level inheritance might not always have the right granularity, as putting resources into packages can have a different motivation / cut than the reuse.
