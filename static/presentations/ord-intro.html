@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Resource Discovery (ORD) - Introduction</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/highlight/monokai.css">
+    <style>
+        .reveal h1 { font-size: 2.5em; text-transform: none; }
+        .reveal h2 { font-size: 1.8em; text-transform: none; }
+        .reveal h3 { font-size: 1.3em; text-transform: none; }
+        .reveal section img { border: none; background: none; box-shadow: none; }
+        .reveal .subtitle { font-size: 0.7em; color: #42affa; margin-top: 1em; }
+        .reveal .smaller { font-size: 0.8em; }
+        .reveal .smallest { font-size: 0.65em; }
+        .reveal ul { font-size: 0.9em; }
+        .reveal li { margin: 0.5em 0; }
+        .reveal .two-column { display: flex; gap: 2em; }
+        .reveal .two-column > div { flex: 1; }
+        .reveal .problem { color: #ff6b6b; }
+        .reveal .solution { color: #51cf66; }
+        .reveal .highlight { color: #ffd43b; }
+        .reveal .text-left { text-align: left; }
+        .reveal code { color: #ffd43b; }
+        .reveal .fragment.fade-in-then-semi-out.visible:not(.current-fragment) {
+            opacity: 0.3;
+        }
+        .deep-dive-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.5em;
+            color: #42affa;
+            opacity: 0.7;
+        }
+        .optional-slide {
+            opacity: 0.95;
+        }
+        .box {
+            border: 2px solid #42affa;
+            padding: 1em;
+            margin: 0.5em 0;
+            border-radius: 8px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1em;
+            font-size: 0.75em;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SECTION 1: TITLE & INTRO (Core - ~1 min) -->
+            <section>
+                <h1>Open Resource Discovery</h1>
+                <h3 class="subtitle">A Protocol for Self-Describing Resources and Capabilities</h3>
+                <p style="margin-top: 2em; font-size: 0.8em;">
+                    Press <strong>→</strong> for main flow (10 min)<br>
+                    Press <strong>↓</strong> for deep dives (optional, +20-30 min)
+                </p>
+                <p style="margin-top: 2em; font-size: 0.6em; color: #888;">
+                    Governed by Linux Foundation / NeoNephos
+                </p>
+            </section>
+
+            <!-- SECTION 2: THE PROBLEM (Core - ~1.5 min) -->
+            <section>
+                <section>
+                    <h2>The Problem</h2>
+                    <div class="two-column" style="margin-top: 1.5em;">
+                        <div>
+                            <h3 class="problem">Without ORD</h3>
+                            <ul class="smaller">
+                                <li class="fragment">Metadata scattered across systems</li>
+                                <li class="fragment">Manual documentation maintenance</li>
+                                <li class="fragment">Point-to-point integrations</li>
+                                <li class="fragment">Metadata drift over time</li>
+                                <li class="fragment">No runtime introspection</li>
+                            </ul>
+                        </div>
+                        <div class="fragment">
+                            <img src="../img/no-aligned-standards.svg" alt="Integration chaos" style="max-height: 400px;">
+                        </div>
+                    </div>
+                    <div class="deep-dive-indicator">↓ Deep Dive: Integration Challenges</div>
+                </section>
+
+                <!-- Deep Dive: Integration Challenges -->
+                <section class="optional-slide">
+                    <h3>Integration Challenges in Detail</h3>
+                    <div class="grid-2 smaller text-left">
+                        <div class="box">
+                            <strong class="problem">Discovery Problem</strong>
+                            <ul style="font-size: 0.9em;">
+                                <li>How to find available APIs?</li>
+                                <li>Which events are published?</li>
+                                <li>What data models exist?</li>
+                                <li>No single source of truth</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="problem">Documentation Problem</strong>
+                            <ul style="font-size: 0.9em;">
+                                <li>Outdated API catalogs</li>
+                                <li>Manual sync processes</li>
+                                <li>Inconsistent formats</li>
+                                <li>Multiple tools per standard</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="problem">Runtime Problem</strong>
+                            <ul style="font-size: 0.9em;">
+                                <li>Tenant-specific configs unknown</li>
+                                <li>No dynamic discovery</li>
+                                <li>Custom deployments invisible</li>
+                                <li>Integration assumes defaults</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="problem">Tooling Problem</strong>
+                            <ul style="font-size: 0.9em;">
+                                <li>Each tool needs custom adapter</li>
+                                <li>AI tools can't auto-integrate</li>
+                                <li>Analytics require manual setup</li>
+                                <li>Low-code tools limited</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="smallest" style="margin-top: 1em; color: #888;">
+                        Result: High integration costs, slow time-to-market, brittle connections
+                    </p>
+                </section>
+            </section>
+
+            <!-- SECTION 3: WHAT IS ORD (Core - ~1.5 min) -->
+            <section>
+                <section>
+                    <h2>What is ORD?</h2>
+                    <div style="margin-top: 1.5em;">
+                        <p class="solution" style="font-size: 1.2em; margin-bottom: 1em;">
+                            A protocol that allows applications to <strong>self-describe</strong> their resources
+                        </p>
+                        <div class="fragment">
+                            <img src="../img/aligned-standards.svg" alt="Aligned standards" style="max-height: 350px;">
+                        </div>
+                    </div>
+                    <div class="fragment" style="margin-top: 1em;">
+                        <ul class="smaller">
+                            <li><strong>One standard</strong> for APIs, Events, Data Products, and more</li>
+                            <li><strong>Machine-readable</strong> metadata in JSON format</li>
+                            <li><strong>Decentralized</strong> - applications are the source of truth</li>
+                        </ul>
+                    </div>
+                    <div class="deep-dive-indicator">↓ Deep Dive: Governance & Standards</div>
+                </section>
+
+                <!-- Deep Dive: Governance & Standards -->
+                <section class="optional-slide">
+                    <h3>Governance & Standards Alignment</h3>
+                    <div class="grid-2 text-left smaller">
+                        <div>
+                            <div class="box">
+                                <strong class="highlight">Governance</strong>
+                                <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                    <li><strong>Linux Foundation</strong> / NeoNephos</li>
+                                    <li>Initiated by <strong>SAP</strong></li>
+                                    <li>Part of <strong>IPCEI-CIS</strong> / ApeiroRA</li>
+                                    <li>Open-source, vendor-neutral</li>
+                                    <li>Community-driven evolution</li>
+                                </ul>
+                            </div>
+                            <div class="box fragment" style="margin-top: 1em;">
+                                <strong class="highlight">Current Version</strong>
+                                <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                    <li>Specification v1.12</li>
+                                    <li>JSON Schema validation</li>
+                                    <li>Available as npm package</li>
+                                    <li>TypeScript type definitions</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="box">
+                                <strong class="highlight">Standards Integration</strong>
+                                <ul style="font-size: 0.85em; margin-top: 0.5em;">
+                                    <li><strong>OpenAPI</strong> - API descriptions</li>
+                                    <li><strong>AsyncAPI</strong> - Event descriptions</li>
+                                    <li><strong>OData</strong> - EDMX metadata</li>
+                                    <li><strong>CloudEvents</strong> - Event format</li>
+                                    <li><strong>JSON Schema</strong> - Entity types</li>
+                                    <li><strong>ODRL</strong> - Policies (planned)</li>
+                                    <li><strong>DCAT</strong> - Data catalogs (inspiration)</li>
+                                </ul>
+                            </div>
+                            <p class="smallest fragment" style="margin-top: 1em; color: #42affa;">
+                                ORD doesn't replace existing standards—it <strong>orchestrates</strong> them
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SECTION 4: HOW IT WORKS (Core - ~2 min) -->
+            <section>
+                <section>
+                    <h2>How It Works: Three Roles</h2>
+                    <div style="margin-top: 1em;">
+                        <img src="../img/ord-roles-overview.svg" alt="ORD Roles" style="max-height: 450px;">
+                    </div>
+                    <div class="deep-dive-indicator">↓ Deep Dive: Transport Modes</div>
+                </section>
+
+                <!-- Deep Dive: Transport Modes -->
+                <section class="optional-slide">
+                    <h3>Transport Modes in Detail</h3>
+                    <div class="grid-2 smaller text-left">
+                        <div class="box">
+                            <strong class="solution">Pull Transport (REST API)</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>Discovery via <code>/.well-known/open-resource-discovery</code></li>
+                                <li>Configuration endpoint returns ORD Documents</li>
+                                <li>HTTP caching support (ETag, Cache-Control)</li>
+                                <li>Pagination for large datasets</li>
+                                <li>Authentication strategies configurable</li>
+                            </ul>
+                            <pre style="margin-top: 0.5em;"><code class="language-http" data-trim>
+GET /.well-known/open-resource-discovery
+→ { "baseUrl": "https://api.example.com" }
+
+GET /open-resource-discovery/v1/documents
+→ [ { "url": "/ord/doc1.json" }, ... ]
+                            </code></pre>
+                        </div>
+                        <div>
+                            <div class="box">
+                                <strong class="solution">Import Transport (Offline)</strong>
+                                <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                    <li>Static JSON file import</li>
+                                    <li>For disconnected scenarios</li>
+                                    <li>Manual upload to aggregators</li>
+                                    <li>Version control friendly</li>
+                                </ul>
+                            </div>
+                            <div class="box fragment" style="margin-top: 1em;">
+                                <strong class="highlight">Future Transport Modes</strong>
+                                <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                    <li><strong>Push Transport</strong> - Proactive updates</li>
+                                    <li><strong>Event-driven</strong> - Real-time changes</li>
+                                    <li><strong>GraphQL</strong> - Query-based discovery</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="smallest" style="margin-top: 1em; color: #888;">
+                        <strong>Note:</strong> Each ORD Document is max 2MB JSON. Large systems use multiple documents.
+                    </p>
+                </section>
+
+                <!-- Additional Deep Dive: Provider Architecture -->
+                <section class="optional-slide">
+                    <h3>ORD Provider Architecture</h3>
+                    <img src="../img/ord-provider-overview.svg" alt="Provider Architecture" style="max-height: 500px;">
+                    <p class="smallest" style="margin-top: 1em;">
+                        Providers can generate ORD metadata from various sources: code annotations, existing docs, databases
+                    </p>
+                </section>
+            </section>
+
+            <!-- SECTION 5: WHAT YOU CAN DESCRIBE (Core - ~1.5 min) -->
+            <section>
+                <section>
+                    <h2>What You Can Describe</h2>
+                    <div class="grid-3" style="margin-top: 1.5em;">
+                        <div class="box fragment">
+                            <strong class="highlight">APIs</strong>
+                            <ul style="margin-top: 0.5em; text-align: left;">
+                                <li>REST / OpenAPI</li>
+                                <li>OData / EDMX</li>
+                                <li>SOAP / WSDL</li>
+                                <li>GraphQL</li>
+                                <li>Custom protocols</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment">
+                            <strong class="highlight">Events</strong>
+                            <ul style="margin-top: 0.5em; text-align: left;">
+                                <li>AsyncAPI specs</li>
+                                <li>CloudEvents</li>
+                                <li>Event types</li>
+                                <li>Event channels</li>
+                                <li>Event schemas</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment">
+                            <strong class="highlight">Entity Types</strong>
+                            <ul style="margin-top: 0.5em; text-align: left;">
+                                <li>Business objects</li>
+                                <li>Domain models</li>
+                                <li>JSON Schema</li>
+                                <li>Data structures</li>
+                                <li>Relationships</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment">
+                            <strong class="highlight">Data Products</strong>
+                            <ul style="margin-top: 0.5em; text-align: left;">
+                                <li>Data sets <span style="color: #ffd43b;">(BETA)</span></li>
+                                <li>Data lineage</li>
+                                <li>Quality metrics</li>
+                                <li>Access controls</li>
+                                <li>Usage policies</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment">
+                            <strong class="highlight">Integration Dependencies</strong>
+                            <ul style="margin-top: 0.5em; text-align: left;">
+                                <li>External APIs used</li>
+                                <li>Required services</li>
+                                <li>Optional dependencies</li>
+                                <li>Version constraints</li>
+                                <li>Aspect/protocol support</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment">
+                            <strong class="highlight">Capabilities</strong>
+                            <ul style="margin-top: 0.5em; text-align: left;">
+                                <li>Custom extensibility</li>
+                                <li>Feature flags</li>
+                                <li>System capabilities</li>
+                                <li>Vendor-specific</li>
+                                <li>Flexible metadata</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="smallest fragment" style="margin-top: 1em;">
+                        All organized in <strong>Packages</strong> with grouping, tagging, and bundling options
+                    </p>
+                    <div class="deep-dive-indicator">↓ Deep Dive: Resource Types Details</div>
+                </section>
+
+                <!-- Deep Dive: Resource Types Details -->
+                <section class="optional-slide">
+                    <h3>Resource Types: Deep Dive</h3>
+                    <div class="smaller text-left">
+                        <div class="box">
+                            <strong class="highlight">API Resources</strong>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-top: 0.5em;">
+                                <div>
+                                    <p><strong>Metadata Includes:</strong></p>
+                                    <ul style="font-size: 0.9em;">
+                                        <li>API Protocol (REST, OData, etc.)</li>
+                                        <li>Resource Definitions (OpenAPI, EDMX)</li>
+                                        <li>Version & Lifecycle state</li>
+                                        <li>Release status (active, beta, deprecated)</li>
+                                        <li>Visibility (public, internal, private)</li>
+                                        <li>Access strategies (auth methods)</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p><strong>Reference Documents:</strong></p>
+                                    <ul style="font-size: 0.9em;">
+                                        <li>OpenAPI 3.x specification</li>
+                                        <li>EDMX (OData) metadata</li>
+                                        <li>WSDL (SOAP) definitions</li>
+                                        <li>GraphQL schema SDL</li>
+                                        <li>Custom JSON/XML schemas</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box fragment" style="margin-top: 0.5em;">
+                            <strong class="highlight">Event Resources</strong>
+                            <p style="font-size: 0.85em; margin-top: 0.5em;">
+                                Events are first-class citizens with AsyncAPI support, CloudEvents alignment, and subscription model metadata
+                            </p>
+                        </div>
+                        <div class="box fragment" style="margin-top: 0.5em;">
+                            <strong class="highlight">Data Products (BETA)</strong>
+                            <p style="font-size: 0.85em; margin-top: 0.5em;">
+                                Emerging concept for data-as-a-product: datasets with quality SLAs, access policies, lineage tracking, and consumption guidance
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SECTION 6: BENEFITS (Core - ~1.5 min) -->
+            <section>
+                <section>
+                    <h2>Benefits of ORD</h2>
+                    <div class="grid-2" style="margin-top: 1.5em; font-size: 0.85em;">
+                        <div class="text-left">
+                            <h3 class="solution" style="font-size: 1.1em;">For Providers</h3>
+                            <ul>
+                                <li class="fragment">Single source of truth</li>
+                                <li class="fragment">Automated documentation</li>
+                                <li class="fragment">Better discoverability</li>
+                                <li class="fragment">Reduced support burden</li>
+                                <li class="fragment">Ecosystem integration</li>
+                            </ul>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="solution" style="font-size: 1.1em;">For Consumers</h3>
+                            <ul>
+                                <li class="fragment">Easy resource discovery</li>
+                                <li class="fragment">Always up-to-date metadata</li>
+                                <li class="fragment">Runtime introspection</li>
+                                <li class="fragment">Automated integration</li>
+                                <li class="fragment">AI/analytics enablement</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="fragment box" style="margin-top: 1.5em; font-size: 0.85em;">
+                        <strong class="highlight">Key Value:</strong>
+                        Enables <strong>automation</strong> and <strong>tooling</strong> that wasn't possible before
+                    </div>
+                    <div class="deep-dive-indicator">↓ Deep Dive: Use Cases</div>
+                </section>
+
+                <!-- Deep Dive: Use Cases -->
+                <section class="optional-slide">
+                    <h3>Use Cases in Detail</h3>
+                    <div class="grid-2 smallest text-left">
+                        <div class="box">
+                            <strong class="solution">API Catalogs & Marketplaces</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Automated catalog population</li>
+                                <li>Always in sync with reality</li>
+                                <li>Rich metadata for search/filter</li>
+                                <li>Example: SAP Business Accelerator Hub</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="solution">System Landscape Management</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Dynamic tenant-specific discovery</li>
+                                <li>Runtime configuration visibility</li>
+                                <li>Dependency mapping</li>
+                                <li>Example: SAP Unified Customer Landscape</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="solution">AI & Analytics</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>LLMs understand available APIs</li>
+                                <li>Auto-generate integration code</li>
+                                <li>Semantic search over resources</li>
+                                <li>Knowledge graph construction</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="solution">Low-Code / No-Code</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Visual integration builders</li>
+                                <li>Drag-and-drop API composition</li>
+                                <li>Auto-generated connectors</li>
+                                <li>Citizen developer enablement</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="solution">API Management</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Auto-discovery of APIs to manage</li>
+                                <li>Policy application automation</li>
+                                <li>Gateway auto-configuration</li>
+                                <li>Lifecycle management</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="solution">Compliance & Governance</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Complete integration inventory</li>
+                                <li>Data lineage tracking</li>
+                                <li>Policy compliance checks</li>
+                                <li>Audit trail for changes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SECTION 7: GETTING STARTED (Core - ~1 min) -->
+            <section>
+                <h2>Getting Started with ORD</h2>
+                <div class="grid-2 text-left smaller" style="margin-top: 1.5em;">
+                    <div>
+                        <div class="box">
+                            <strong class="highlight">As a Provider</strong>
+                            <ol style="margin-top: 0.5em; font-size: 0.9em;">
+                                <li>Define your ORD Namespace</li>
+                                <li>Create Package descriptions</li>
+                                <li>Describe your APIs/Events/Entities</li>
+                                <li>Implement ORD Document endpoint</li>
+                                <li>Add <code>/.well-known/open-resource-discovery</code></li>
+                                <li>Validate with JSON Schema</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="box">
+                            <strong class="highlight">As a Consumer</strong>
+                            <ol style="margin-top: 0.5em; font-size: 0.9em;">
+                                <li>Discover ORD configuration endpoint</li>
+                                <li>Fetch ORD Documents</li>
+                                <li>Parse resource descriptions</li>
+                                <li>Fetch referenced definitions</li>
+                                <li>Use metadata for your use case</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="fragment" style="margin-top: 1.5em;">
+                    <p class="smaller">
+                        📚 <strong>Documentation:</strong>
+                        <code style="font-size: 0.8em;">https://github.com/open-resource-discovery/specification</code>
+                    </p>
+                    <p class="smaller" style="margin-top: 0.5em;">
+                        📦 <strong>NPM Package:</strong>
+                        <code style="font-size: 0.8em;">@open-resource-discovery/specification</code>
+                    </p>
+                </div>
+                <div class="fragment" style="margin-top: 1.5em; font-size: 0.8em; color: #42affa;">
+                    <p><strong>End of 10-minute core presentation</strong></p>
+                    <p>Press → to end, or ↓ for deep dive topics</p>
+                </div>
+            </section>
+
+            <!-- SECTION 8: DATA MODEL DEEP DIVE (Optional - ~3-4 min) -->
+            <section>
+                <section class="optional-slide">
+                    <h2>Data Model Deep Dive</h2>
+                    <img src="../img/ord-high-level-data-model.drawio.svg" alt="ORD Data Model" style="max-height: 500px;">
+                    <div class="deep-dive-indicator">↓ ID System & Grouping</div>
+                </section>
+
+                <!-- Deep Dive: ID System -->
+                <section class="optional-slide">
+                    <h3>ORD ID System</h3>
+                    <div class="smaller text-left">
+                        <div class="box">
+                            <strong class="highlight">Namespaces (Hierarchical)</strong>
+                            <pre style="margin-top: 0.5em;"><code class="language-text" data-trim>
+vendor:product:sub-context
+Example: sap.s4:communicationScenario:
+                            </code></pre>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li><strong>Vendor:</strong> Organization identifier (e.g., <code>sap</code>, <code>microsoft</code>)</li>
+                                <li><strong>Product:</strong> Product/system identifier (e.g., <code>s4</code>, <code>btp</code>)</li>
+                                <li><strong>Sub-context:</strong> Optional refinement (e.g., <code>communicationScenario</code>)</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment" style="margin-top: 1em;">
+                            <strong class="highlight">ORD ID (Globally Unique)</strong>
+                            <pre style="margin-top: 0.5em;"><code class="language-text" data-trim>
+namespace:type:localID
+Example: sap.s4:apiResource:BusinessPartner:v1
+                            </code></pre>
+                            <p style="font-size: 0.9em; margin-top: 0.5em;">
+                                Used for: Packages, APIs, Events, Entity Types, etc.
+                            </p>
+                        </div>
+                        <div class="box fragment" style="margin-top: 1em;">
+                            <strong class="highlight">Other ID Types</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li><strong>Correlation ID:</strong> Reference resources across systems</li>
+                                <li><strong>Specification ID:</strong> Reference standards/strategies</li>
+                                <li><strong>Local ID:</strong> Unique within namespace</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Deep Dive: Grouping & Bundling -->
+                <section class="optional-slide">
+                    <h3>Grouping & Bundling Concepts</h3>
+                    <div class="grid-2 smallest text-left">
+                        <div class="box">
+                            <strong class="highlight">Packages (Mandatory)</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Top-level organization unit</li>
+                                <li>Every resource belongs to exactly one package</li>
+                                <li>Can represent: products, modules, features</li>
+                                <li>Metadata: title, description, vendor, version</li>
+                                <li>Publishing unit for ORD aggregators</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Consumption Bundles</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Technical grouping by credentials</li>
+                                <li>Resources sharing same authentication</li>
+                                <li>Reduces integration complexity</li>
+                                <li>One token = access to all in bundle</li>
+                                <li>Links to access strategies</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Groups (Custom Types)</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Flexible custom groupings</li>
+                                <li>Examples: business scenarios, capabilities</li>
+                                <li>Extensible group type system</li>
+                                <li>Multiple groups per resource</li>
+                                <li>Semantic relationships</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Tags & Labels</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Free-form categorization</li>
+                                <li>Industry tags (e.g., <code>finance</code>, <code>healthcare</code>)</li>
+                                <li>Technical tags (e.g., <code>beta</code>, <code>premium</code>)</li>
+                                <li>Custom key-value labels</li>
+                                <li>Supports faceted search</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SECTION 9: PERSPECTIVES (Optional - ~2-3 min) -->
+            <section>
+                <section class="optional-slide">
+                    <h2>Perspectives: Static vs Dynamic</h2>
+                    <div class="grid-2 smaller text-left" style="margin-top: 1em;">
+                        <div class="box">
+                            <strong class="solution">Static Perspective (system-version)</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>Generic, design-time view</li>
+                                <li>Product-level metadata</li>
+                                <li>What <em>could</em> be available</li>
+                                <li>Version-specific capabilities</li>
+                                <li>Use case: API catalogs, documentation</li>
+                            </ul>
+                            <p class="smallest" style="margin-top: 0.5em; color: #888;">
+                                Example: "S/4HANA Cloud v2408 supports 500 APIs"
+                            </p>
+                        </div>
+                        <div class="box">
+                            <strong class="solution">Dynamic Perspective (system-instance)</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>Runtime, instance-specific view</li>
+                                <li>Tenant-level configuration</li>
+                                <li>What <em>is actually</em> available</li>
+                                <li>Custom extensions included</li>
+                                <li>Use case: System landscapes, integration</li>
+                            </ul>
+                            <p class="smallest" style="margin-top: 0.5em; color: #888;">
+                                Example: "Customer X's S/4HANA has 327 active APIs + 15 custom"
+                            </p>
+                        </div>
+                    </div>
+                    <div class="deep-dive-indicator">↓ Perspective Use Cases</div>
+                </section>
+
+                <!-- Deep Dive: Perspective Use Cases -->
+                <section class="optional-slide">
+                    <h3>When to Use Each Perspective</h3>
+                    <div class="smaller text-left">
+                        <table style="width: 100%; font-size: 0.75em; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #1a1a1a;">
+                                    <th style="padding: 0.5em; border: 1px solid #444;">Use Case</th>
+                                    <th style="padding: 0.5em; border: 1px solid #444;">Perspective</th>
+                                    <th style="padding: 0.5em; border: 1px solid #444;">Why</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="fragment">
+                                    <td style="padding: 0.5em; border: 1px solid #444;">API Catalog</td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;"><strong>Static</strong></td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Show all possible APIs for a product version</td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding: 0.5em; border: 1px solid #444;">System Landscape</td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;"><strong>Dynamic</strong></td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Show actual deployed systems and configs</td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Integration Setup</td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;"><strong>Dynamic</strong></td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Need tenant-specific endpoints and auth</td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Product Documentation</td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;"><strong>Static</strong></td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Document standard product capabilities</td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Pre-sales Evaluation</td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;"><strong>Static</strong></td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Understand out-of-box features</td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Custom Extension Discovery</td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;"><strong>Dynamic</strong></td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Custom APIs only exist at runtime</td>
+                                </tr>
+                                <tr class="fragment">
+                                    <td style="padding: 0.5em; border: 1px solid #444;">AI Agent Auto-Integration</td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;"><strong>Dynamic</strong></td>
+                                    <td style="padding: 0.5em; border: 1px solid #444;">Need actual available APIs to call</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="smallest fragment" style="margin-top: 1em; color: #42affa;">
+                        <strong>Best practice:</strong> Maintain both perspectives—static for documentation, dynamic for runtime
+                    </p>
+                </section>
+            </section>
+
+            <!-- SECTION 10: SAP ARCHITECTURE EXAMPLE (Optional - ~3 min) -->
+            <section>
+                <section class="optional-slide">
+                    <h2>Real-World Example: SAP Architecture</h2>
+                    <img src="../img/ord-sap-architecture-overview.svg" alt="SAP ORD Architecture" style="max-height: 500px;">
+                    <p class="smallest" style="margin-top: 1em;">
+                        SAP uses ORD across its entire product portfolio
+                    </p>
+                    <div class="deep-dive-indicator">↓ SAP Ecosystem Details</div>
+                </section>
+
+                <!-- Deep Dive: SAP Ecosystem -->
+                <section class="optional-slide">
+                    <h3>SAP ORD Ecosystem</h3>
+                    <div class="grid-2 smallest text-left">
+                        <div class="box">
+                            <strong class="highlight">SAP Business Accelerator Hub</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li><strong>Role:</strong> ORD Aggregator + Consumer</li>
+                                <li><strong>Purpose:</strong> Central API catalog</li>
+                                <li><strong>Perspective:</strong> Static (system-version)</li>
+                                <li>Aggregates from 100+ SAP products</li>
+                                <li>Public marketplace for SAP APIs</li>
+                                <li>Search, browse, test APIs</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Unified Customer Landscape (UCL)</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li><strong>Role:</strong> ORD Aggregator + Consumer</li>
+                                <li><strong>Purpose:</strong> System landscape mgmt</li>
+                                <li><strong>Perspective:</strong> Dynamic (system-instance)</li>
+                                <li>Customer-specific system inventory</li>
+                                <li>Runtime discovery of tenant configs</li>
+                                <li>Integration dependency mapping</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">ORD Providers (Examples)</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li><strong>S/4HANA Cloud:</strong> 500+ APIs, events</li>
+                                <li><strong>SAP BTP:</strong> Platform services</li>
+                                <li><strong>Marketing Cloud:</strong> Marketing APIs</li>
+                                <li><strong>SuccessFactors:</strong> HR APIs</li>
+                                <li><strong>Ariba:</strong> Procurement APIs</li>
+                                <li>Each exposes ORD metadata</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">ORD Consumers (Examples)</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li><strong>SAP Build:</strong> Low-code platform</li>
+                                <li><strong>Integration Suite:</strong> iPaaS</li>
+                                <li><strong>AI Tools:</strong> Joule, CAP LLM Plugin</li>
+                                <li><strong>API Management:</strong> Auto-discovery</li>
+                                <li><strong>Analytics:</strong> Integration insights</li>
+                                <li>All consume ORD for automation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SECTION 11: ADVANCED FEATURES (Optional - ~3-4 min) -->
+            <section>
+                <section class="optional-slide">
+                    <h2>Advanced Features</h2>
+                    <div class="grid-2 smaller text-left">
+                        <div class="box">
+                            <strong class="highlight">Version & Lifecycle Management</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>Semantic versioning (major.minor.patch)</li>
+                                <li>Release status: active, beta, deprecated</li>
+                                <li>Deprecation notices with sunset dates</li>
+                                <li>Version evolution tracking</li>
+                                <li>Successor/predecessor relationships</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Access Strategies</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>Describe authentication methods</li>
+                                <li>OAuth 2.0, API keys, mTLS, custom</li>
+                                <li>Per-resource or per-bundle</li>
+                                <li>Credential rotation guidance</li>
+                                <li>Environment-specific configs</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Policy Levels</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>Extensible validation rules</li>
+                                <li>SAP, Customer, Custom policies</li>
+                                <li>Enforce governance standards</li>
+                                <li>Quality gates for publication</li>
+                                <li>Compliance automation</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Tombstones</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>Mark deleted resources</li>
+                                <li>Prevent stale metadata</li>
+                                <li>Removal tracking</li>
+                                <li>Aggregator cleanup signals</li>
+                                <li>Audit trail for deletions</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="deep-dive-indicator">↓ Versioning & Extensibility</div>
+                </section>
+
+                <!-- Deep Dive: Versioning -->
+                <section class="optional-slide">
+                    <h3>Version Management in Detail</h3>
+                    <div class="smaller text-left">
+                        <div class="box">
+                            <strong class="highlight">Semantic Versioning</strong>
+                            <pre style="margin-top: 0.5em;"><code class="language-text" data-trim>
+MAJOR.MINOR.PATCH
+  ^     ^      ^
+  |     |      +-- Bug fixes, backwards compatible
+  |     +--------- New features, backwards compatible
+  +--------------- Breaking changes, not backwards compatible
+                            </code></pre>
+                        </div>
+                        <div class="box fragment" style="margin-top: 1em;">
+                            <strong class="highlight">Lifecycle States</strong>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-top: 0.5em;">
+                                <div>
+                                    <p><strong>Release Status:</strong></p>
+                                    <ul style="font-size: 0.9em;">
+                                        <li><code>active</code> - Production ready</li>
+                                        <li><code>beta</code> - Preview, may change</li>
+                                        <li><code>deprecated</code> - Marked for removal</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p><strong>Deprecation Info:</strong></p>
+                                    <ul style="font-size: 0.9em;">
+                                        <li>Deprecation date</li>
+                                        <li>Removal/sunset date</li>
+                                        <li>Migration guidance</li>
+                                        <li>Successor reference</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box fragment" style="margin-top: 1em;">
+                            <strong class="highlight">Version Evolution</strong>
+                            <p style="font-size: 0.9em; margin-top: 0.5em;">
+                                Resources can link to predecessors/successors, enabling automated migration path discovery
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Deep Dive: Extensibility -->
+                <section class="optional-slide">
+                    <h3>Extensibility Mechanisms</h3>
+                    <div class="grid-2 smallest text-left">
+                        <div class="box">
+                            <strong class="highlight">Custom Resource Types</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Extend beyond built-in types</li>
+                                <li>Vendor-specific resource kinds</li>
+                                <li>Use <code>Capability</code> type for flexibility</li>
+                                <li>Define custom JSON Schema</li>
+                                <li>Namespace isolation</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Custom Labels & Tags</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Key-value pairs for metadata</li>
+                                <li>Industry-specific categorization</li>
+                                <li>Internal tracking codes</li>
+                                <li>Cost center assignments</li>
+                                <li>Any custom taxonomy</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Custom Group Types</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Define new grouping concepts</li>
+                                <li>Business scenarios, solutions</li>
+                                <li>Compliance categories</li>
+                                <li>Project-specific groupings</li>
+                                <li>Reusable across resources</li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <strong class="highlight">Custom Policy Levels</strong>
+                            <ul style="font-size: 0.95em; margin-top: 0.5em;">
+                                <li>Organization-specific rules</li>
+                                <li>Validation beyond spec</li>
+                                <li>Quality standards enforcement</li>
+                                <li>Regulatory compliance</li>
+                                <li>Publication gates</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="smallest fragment" style="margin-top: 1em; color: #42affa;">
+                        <strong>Design principle:</strong> ORD is designed to be extended without forking the spec
+                    </p>
+                </section>
+            </section>
+
+            <!-- SECTION 12: ROADMAP & COMMUNITY (Optional - ~2 min) -->
+            <section class="optional-slide">
+                <h2>Roadmap & Community</h2>
+                <div class="grid-2 smaller text-left" style="margin-top: 1em;">
+                    <div>
+                        <div class="box">
+                            <strong class="highlight">Current Focus (v1.x)</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>Data Products (BETA → Stable)</li>
+                                <li>Integration Dependencies refinement</li>
+                                <li>Access Strategies expansion</li>
+                                <li>Performance optimizations</li>
+                                <li>Tooling ecosystem growth</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment" style="margin-top: 1em;">
+                            <strong class="highlight">Future Roadmap</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>Push transport mode</li>
+                                <li>Event-driven metadata updates</li>
+                                <li>GraphQL query interface</li>
+                                <li>ODRL policy integration</li>
+                                <li>Enhanced data lineage</li>
+                                <li>Federated aggregation</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="box">
+                            <strong class="highlight">Get Involved</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li><strong>GitHub:</strong> <code>open-resource-discovery/specification</code></li>
+                                <li><strong>Issues:</strong> Report bugs, request features</li>
+                                <li><strong>Discussions:</strong> Ask questions, share ideas</li>
+                                <li><strong>Contributions:</strong> Pull requests welcome</li>
+                            </ul>
+                        </div>
+                        <div class="box fragment" style="margin-top: 1em;">
+                            <strong class="highlight">Resources</strong>
+                            <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                                <li>📖 Specification v1.12</li>
+                                <li>📦 NPM package with types</li>
+                                <li>📝 JSON Schema validators</li>
+                                <li>🎥 Video introductions</li>
+                                <li>💡 Example implementations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="fragment box" style="margin-top: 1.5em; font-size: 0.9em;">
+                    <strong class="solution">Join the Open Resource Discovery community!</strong>
+                    <p style="margin-top: 0.5em; font-size: 0.9em;">
+                        Help shape the future of resource discovery and integration
+                    </p>
+                </div>
+            </section>
+
+            <!-- SECTION 13: THANK YOU -->
+            <section>
+                <h1>Thank You!</h1>
+                <div style="margin-top: 2em;">
+                    <p class="highlight" style="font-size: 1.2em;">Questions?</p>
+                </div>
+                <div style="margin-top: 2em; font-size: 0.8em;">
+                    <p>🌐 <strong>Website:</strong> <code>https://github.com/open-resource-discovery</code></p>
+                    <p style="margin-top: 0.5em;">📚 <strong>Docs:</strong> <code>https://sap.github.io/open-resource-discovery</code></p>
+                    <p style="margin-top: 0.5em;">💬 <strong>Community:</strong> GitHub Discussions</p>
+                </div>
+                <div style="margin-top: 2em; font-size: 0.7em; color: #888;">
+                    <p>Open Resource Discovery (ORD)</p>
+                    <p>Governed by Linux Foundation / NeoNephos</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/zoom/zoom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/plugin/search/search.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            controls: true,
+            progress: true,
+            center: true,
+            transition: 'slide',
+            navigationMode: 'linear',
+            plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom, RevealSearch ]
+        });
+    </script>
+</body>
+</html>
