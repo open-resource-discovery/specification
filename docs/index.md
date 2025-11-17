@@ -47,7 +47,7 @@ hide_table_of_contents: true
   </div>
 
   <div className="container">
-    <p className="definition">Open Resource Discovery (ORD) is a protocol that enables applications and services to self-describe their exposed resources and capabilities, standardising metadata publishing and discovery. This can improve automation and quality of integrations and serve as a foundation for metadata catalogs and marketplaces. By decentralizing metadata discovery and making the application the source of truth, metadata drift can be avoided and run-time introspection becomes possible.</p>
+    <p className="definition">Open Resource Discovery (ORD) is a protocol that enables applications and services to self-describe their exposed resources and capabilities, standardizing metadata publishing and discovery. This improves integration automation and quality while serving as a foundation for metadata catalogs and marketplaces. Decentralized metadata discovery makes applications the source of truth, eliminating metadata drift and enabling run-time introspection.</p>
   </div>
 
   <div className="container">

@@ -2,8 +2,10 @@
 
 This folder contains example ORD Documents and ORD Configs.
 
-Please note that some of the examples are constructed to showcase certain features of ORD.
-They do not work as a 1:1 copy template. For example, the namespaces need to be customized.
+These examples demonstrate ORD features but require customization before use. Specifically, you must:
+- Replace namespace identifiers with your registered namespaces
+- Update system-specific URLs and endpoints
+- Adjust version numbers to match your implementation
 
 ## File naming convention
 
