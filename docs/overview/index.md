@@ -63,7 +63,7 @@ Based on this, many end-user use cases can be realized, e.g.:
 
 - Systems to **describe themselves** with a single entry-point to crawl all relevant metadata
 - Achieve a combined, machine-readable **system landscape metadata view**
-- Enable **fully automatic** of publication and discovery of metadata
+- Enable **fully automatic** publication and discovery of metadata
 - Having **one aligned standard** for
   - Description of different types of resources
   - Description of both the static / generic perspective and the actual runtime perspective
@@ -79,7 +79,7 @@ Based on this, many end-user use cases can be realized, e.g.:
 
 - Replace industry-standard resource definition formats like OpenAPI
 - Describing resources or capabilities in extensive detail.
-- Currently it is not recommended to put fast changing information into ORD, as the current pull-based transport mechanism would be to slow and expensive to support time-critical updates.
+- Currently it is not recommended to put fast changing information into ORD, as the current pull-based transport mechanism would be too slow and expensive to support time-critical updates.
   - This could change in the future by introducing more efficient, asynchronous transport modes.
 - Currently: Describe resources other than those that are owned and exposed by the systems directly
   (only self-description of systems).

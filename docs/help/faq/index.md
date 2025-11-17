@@ -44,7 +44,7 @@ We're aware that some use-cases require faster metadata updates and the ORD spec
 
 ORD does not make a distinction between on-premises or cloud software.
 However On-premises software has implications on how (and whether at all) the ORD information can be accessed.
-Effectively, whether on-premises is supported or not depends on whether the connectivity between the the ORD aggregators (the system that are collecting the information) and the On-premises ORD providers can be established.
+Effectively, whether on-premises is supported or not depends on whether the connectivity between the ORD aggregators (the systems that are collecting the information) and the On-premises ORD providers can be established.
 In SAP context, we support including On-Premises software through [Cloud Connectors](https://help.sap.com/viewer/cca91383641e40ffbe03bdc78f00f681/Cloud/en-US/e6c7616abb5710148cfcf3e75d96d596.html?q=cloud%20connector).
 
 #### Q: What does "Open" in ORD stand for?

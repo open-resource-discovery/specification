@@ -44,21 +44,14 @@ This specification defines and uses the following terms (for the ORD context):
 
 - A <dfn id="def-system">system</dfn> is sometimes used as a generic, imprecise term when no further distinctions are necessary.
   In most places, the specification uses more precise terms, though:
-  - A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service from operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is sometimes referred to as _application and service_ for better readability.
-    Since system type is an abstract concept, it is not concretely addressable.
-    A [system installation](#def-system-installation) of a specific [system version](#def-system-version) and potentially a [system instance](#def-system-instance) needs to be created to have a concrete, addressable system.
 
-  - A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service. It is also known as SAP system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
+  - A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
     Since system type is an abstract concept, it is not concretely addressable.
 
     Please note that a system type is similar, but not necessarily identical to a [product](#def-product).
     System type is a technical concept, while product is a term for external communication and sales.
 
   - A <dfn id="def-system-installation">system installation</dfn> is a concrete running instance of a <a href="#def-system-type">system type</a> of a specific [system version](#def-system-version). If the system type supports tenant isolation, a system installation may offer multiple <a href="#def-system-instance">system instance</a>. A system installation has at least one [base URL](#def-base-url).
-
-- A <dfn id="def-system-instance">system instance</dfn> is running instance of a <a href="#def-system-type">system type</a> and always refers to the _most specific_ instance from a customer / account perspective. Usually this is the boundary where the isolation of resources, capabilities and data is ensured.
-  If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system deployment](#def-system-deployment) per tenant or system isolation does not matter. In those cases system instance equals the system deployment.
-  - A <dfn id="def-system-version">system version</dfn> is a particular software version of an <a href="#def-system-installation">system installation</a>, which is always of the same <a href="#def-system-type">system type</a>.
 
   - A <dfn id="def-system-instance">system instance</dfn> is running, isolated instance of a <a href="#def-system-type">system type</a>, running in a <a href="#def-system-installation">system installation</a> of a particular <a href="#def-system-version">system version</a>. It always refers to the _most specific_ instance from a customer / account / data isolation perspective.
     If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system installation](#def-system-installation) per tenant or system isolation does not matter. In those cases system instance equals the system installation.
@@ -187,7 +180,7 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 ### Other Modes of Transport
 
 Other modes of transport have not yet been standardized/specified.
-They are are only listed here to outline potential modes that we anticipate.
+They are only listed here to outline potential modes that we anticipate.
 
 #### Import Transport
 
@@ -291,7 +284,7 @@ In some cases (like `policyLevel`), it is also possible to override the values l
 
 ##### Package Level Inheritance
 
-Some ORD information are described on Package level and inherited down to all resources it that are assigned to the it.
+Some ORD information are described on Package level and inherited down to all resources that are assigned to it.
 The information on package level are merged into resource level, but can be overridden locally at resource level.
 
 > Please note that package level inheritance might not always have the right granularity, as putting resources into packages can have a different motivation / cut than the reuse.
@@ -402,7 +395,7 @@ Content-Type: application/json
 
 The resulting ORD config MUST only return the ORD document(s) that contain the results from the select query (to avoid unnecessary requests). The aggregator will then request each listed document with the same `?select` parameter:
 
-If the given ORD ID is invalid he ORD provider MUST return 500, if it cannot be found, the ORD provider MUST return 404, see [error handling](#error-handling).
+If the given ORD ID is invalid the ORD provider MUST return 500, if it cannot be found, the ORD provider MUST return 404, see [error handling](#error-handling).
 
 ```http
 GET http://example.com/ord/document-1?select=sap.foo:dataProduct:astronomy:v1
