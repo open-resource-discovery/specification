@@ -3,11 +3,13 @@ name: PR Preview (deploy to separate repo)
 on:
   pull_request:
     types: [opened, reopened, synchronize, closed]
-#    paths:
-#      - 'docs/**'
-#      - 'static/**'
-#      - 'src/theme/**'
-#      - '.github/workflows/pr-preview.yml'
+    paths:
+      - 'docs/**'
+      - 'static/**'
+      - 'src/theme/**'
+      - 'docusaurus.config.js'
+      - 'sidebars.js'
+      - '.github/workflows/pr-preview.yml'
 
 permissions:
   contents: write
