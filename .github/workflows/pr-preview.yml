@@ -36,13 +36,13 @@ jobs:
         if: github.event.action != 'closed'
         run: |
           set -euo pipefail
-          PR_PATH="/specification/pr-previews/pr-${{ github.event.pull_request.number }}/"
+          PR_PATH="/specification-preview/pr-${{ github.event.pull_request.number }}/"
           CFG="docusaurus.config.js"
 
           cp "$CFG" "$CFG.bak"
           trap 'mv -f "$CFG.bak" "$CFG"' EXIT
 
-          sed -i 's#const baseUrl = "/specification";#const baseUrl = "'"$PR_PATH"'" ;#' "$CFG"
+          sed -i "s#const baseUrl = \"/specification\";#const baseUrl = \"$PR_PATH\";#g" "$CFG"
           grep -q "$PR_PATH" "$CFG"
 
           npm ci
@@ -55,5 +55,5 @@ jobs:
           deploy-repository: open-resource-discovery/specification-preview
           preview-branch: gh-pages
           umbrella-dir: ./
-          pages-base-url: open-resource-discovery.github.io/specification
+          pages-base-url: open-resource-discovery.github.io/specification-preview
           token: ${{ secrets.GH_TOKEN }}
