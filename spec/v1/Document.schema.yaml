@@ -977,6 +977,16 @@ definitions:
       lastUpdate:
         <<: *lastUpdate
 
+      abstract: &abstract
+        type: boolean
+        default: false
+        x-introduced-in-version: "1.13.0"
+        x-feature-status: beta
+        description: |-
+          Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
+
+          Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+
       visibility:
         <<: *visibility
 
@@ -1281,19 +1291,22 @@ definitions:
           - "Implemented as defined in the [S/4HANA Attachment Service documentation](https://api.sap.com/api/API_CV_ATTACHMENT_SRV/overview)"
 
       compatibleWith: &compatibleWith
+        x-introduced-in-version: "1.13.0"
+        x-feature-status: beta
         type: array
         description: |-
-          A reference to the interface (API contract) that this API implements.
-          Serves as a declaration of compatible implementation of API contract, effectively functioning as an "implementationOf" relationship.
+          A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
+
+          Serves as a declaration of compatible implementation of API contract, effectively functioning as an "implementationOf" relationship. The data that compatible APIs return follow the same schema, but itself can be different.
+          This means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.
 
           MUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.
 
           All APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
         items:
-          type: string
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          $ref: "#/definitions/ApiCompatibility"
         examples:
-          - [sap.s4com:apiResource:SomeSharedContract:v1]
+          - [{ "ordId": "sap.s4com:apiResource:SomeSharedContract:v1", "maxVersion": "1.2" }]
 
       # TODO: Clarify whether to include Data Slices or not
 
@@ -1578,6 +1591,9 @@ definitions:
       lastUpdate:
         <<: *lastUpdate
 
+      abstract:
+        <<: *abstract
+
       visibility:
         <<: *visibility
 
@@ -1667,17 +1683,16 @@ definitions:
       compatibleWith:
         <<: *compatibleWith
         description: |-
-          Declares this event resource is a compatible implementation of the referenced contract.
-          This is also sometimes known as [Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface).
+          A reference to the interface (event contract) and its maximum version that this event implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
 
-          MUST be a valid reference to an (usually external) [Event Resource](#event-resource) ORD ID.
+          Serves as a declaration of compatible implementation of event contract, effectively functioning as an "implementationOf" relationship. The data that compatible events return follow the same schema, but itself can be different.
+          This means that if one event is returning 1 record for a dedicated request, a compatible event could return multiple and different records, as long as they adhere to the same schema.
 
-          All event resources that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+          All events that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
         items:
-          type: string
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          $ref: "#/definitions/EventCompatibility"
         examples:
-          - [sap.s4com:eventResource:SomeSharedContract:v1]
+          - [{ "ordId": "sap.s4:eventResource:BillofMaterialEvents:v1", "maxVersion": "1.2" }]
 
       responsible:
         <<: *responsible
@@ -2065,6 +2080,14 @@ definitions:
         x-feature-status: beta # but needs deprecation with datasphere & UCL
         <<: *disabled
         x-hide-property: true
+
+      abstract:
+        <<: *abstract
+        type: boolean
+        description: |-
+          Indicates that the data product serves as interface only. All output ports MUST be marked as abstract.
+
+          Implementations of this data product MUST declare compatible with on their specific output port resources as consumption of data products happens through the output ports.
 
       minSystemVersion:
         <<: *minSystemVersion
@@ -4113,6 +4136,80 @@ definitions:
     additionalProperties: false
     required:
       - entityTypeTargets
+
+  ############################################################################################################
+  ApiCompatibility:
+    title: API Compatibility
+    x-introduced-in-version: "1.13.0"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Describes the compatibility of the API with other APIs. This can be used to express that an API is compatible with another API version.
+    properties:
+      ordId:
+        <<: *ordId
+
+        description: |-
+          ORD ID of the APIResource that serves as contract that this resource is compatible with.
+
+          MUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.s4:apiResource:API_BILL_OF_MATERIAL_SRV:v1"
+
+      maxVersion:
+        type: string
+        description: |-
+          Specifies the maximum version of the interface contract that this resource is compatible with. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
+          This is important to consider, given the example of an API version 1.0, that has the fields A and B. Being compatible with version 1.0 means to have exactly the fields A and B and potential tenant specific extensions in a dedicated namespace.
+          If an API contract changes to version 1.1 compatible by adding field C, the API declaring compatibility towards 1.0, will miss field C. Only if adopting the contract of 1.1 with having fields A, B, and C, such an API is also
+          compatible with version 1.1 of the contract. However, a client relying on version 1.0 of the contract, can still work with the API being compatible with version 1.1 of the contract.
+
+          Following the [Semantic Versioning 2.0.0](https://semver.org/) standard, patch versions (x.y.Z) must not have impact on the schema/contract. Therefore, the maxVersion are only the major.minor parts of a semantic version.
+
+        pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)$
+        examples:
+          - "1.2"
+          - "2.0"
+    additionalProperties: false
+    required:
+      - ordId
+      - maxVersion
+
+  EventCompatibility:
+    title: Event Compatibility
+    x-introduced-in-version: "1.13.0"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Describes the compatibility of the Event with other Events. This can be used to express that an Event is compatible with another Event version.
+    properties:
+      ordId:
+        <<: *ordId
+
+        description: |-
+          ORD ID of the EventResource that serves as contract that this resource is compatible with.
+
+          MUST be a valid reference to an (usually external) [Event Resource](#event-resource) ORD ID.
+
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.s4:eventResource:BillofMaterialEvents:v1"
+
+      maxVersion:
+        type: string
+        description: |-
+          Specifies the maximum version of the interface contract that this resource is compatible with. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
+          This is important to consider, given the example of an event version 1.0, that has the fields A and B. Being compatible with version 1.0 means to have exactly the fields A and B and potential tenant specific extensions in a dedicated namespace.
+          If an event contract changes to version 1.1 compatible by adding field C, the event declaring compatibility towards 1.0, will miss field C. Only if adopting the contract of 1.1 with having fields A, B, and C, such an event is also
+          compatible with version 1.1 of the contract. However, a client relying on version 1.0 of the contract, can still work with the event being compatible with version 1.1 of the contract.
+
+          Following the [Semantic Versioning 2.0.0](https://semver.org/) standard, patch versions (x.y.Z) must not have impact on the schema/contract. Therefore, the maxVersion are only the major.minor parts of a semantic version.
+
+        pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)$
+        examples:
+          - "1.2"
+          - "2.0"
 
   ############################################################################################################
 
