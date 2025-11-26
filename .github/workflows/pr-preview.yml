@@ -1,13 +1,13 @@
-name: PR Preview
+name: PR Preview (deploy to separate repo)
 
 on:
   pull_request:
     types: [opened, reopened, synchronize, closed]
-    paths:
-      - 'docs/**'
-      - 'static/**'
-      - 'src/theme/**'
-      - '.github/workflows/pr-preview.yml'
+#    paths:
+#      - 'docs/**'
+#      - 'static/**'
+#      - 'src/theme/**'
+#      - '.github/workflows/pr-preview.yml'
 
 permissions:
   contents: write
@@ -24,7 +24,7 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - name: Checkout
+      - name: Checkout source repo
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -48,10 +48,12 @@ jobs:
           npm ci
           npm run build
 
-      - name: Deploy / Cleanup PR preview
+      - name: Deploy / Remove preview in spec-preview repo
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: build
+          deploy-repository: open-resource-discovery/specification-preview
           preview-branch: gh-pages
-          umbrella-dir: pr-previews
+          umbrella-dir: ./
           pages-base-url: open-resource-discovery.github.io/specification
+          token: ${{ secrets.GH_TOKEN }}
