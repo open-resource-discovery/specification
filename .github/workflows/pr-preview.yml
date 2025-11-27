@@ -1,0 +1,52 @@
+name: PR Preview (deploy to separate repo)
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: preview-${{ github.repository }}-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build with PR-specific baseUrl
+        if: github.event.action != 'closed'
+        run: |
+          set -euo pipefail
+          PR_PATH="/specification-preview/pr-${{ github.event.pull_request.number }}/"
+          CFG="docusaurus.config.js"
+
+          cp "$CFG" "$CFG.bak"
+          trap 'mv -f "$CFG.bak" "$CFG"' EXIT
+
+          sed -i "s#const baseUrl = \"/specification\";#const baseUrl = \"$PR_PATH\";#g" "$CFG"
+          grep -q "$PR_PATH" "$CFG"
+
+          npm ci
+          npm run build
+
+      - name: Deploy / Remove preview in spec-preview repo
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: build
+          deploy-repository: open-resource-discovery/specification-preview
+          preview-branch: gh-pages
+          umbrella-dir: ./
+          pages-base-url: open-resource-discovery.github.io/specification-preview
+          token: ${{ secrets.GH_TOKEN }}
