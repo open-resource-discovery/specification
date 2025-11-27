@@ -1,4 +1,4 @@
-name: PR Preview (deploy to separate repo)
+name: PR Preview
 
 on:
   pull_request:
@@ -48,5 +48,5 @@ jobs:
           deploy-repository: open-resource-discovery/pr-preview
           preview-branch: main
           umbrella-dir: ./specification
-          pages-base-url: open-resource-discovery.github.io/pr-preview/specification/
+          pages-base-url: open-resource-discovery.github.io/pr-preview
           token: ${{ secrets.GH_TOKEN }}
