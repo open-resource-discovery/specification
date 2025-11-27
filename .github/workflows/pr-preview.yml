@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout source repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
 
@@ -29,7 +29,7 @@ jobs:
         if: github.event.action != 'closed'
         run: |
           set -euo pipefail
-          PR_PATH="/specification-preview/pr-${{ github.event.pull_request.number }}/"
+          PR_PATH="/pr-preview/specification/pr-${{ github.event.pull_request.number }}/"
           CFG="docusaurus.config.js"
 
           cp "$CFG" "$CFG.bak"
@@ -45,8 +45,8 @@ jobs:
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: build
-          deploy-repository: open-resource-discovery/specification-preview
-          preview-branch: gh-pages
-          umbrella-dir: ./
-          pages-base-url: open-resource-discovery.github.io/specification-preview
+          deploy-repository: open-resource-discovery/pr-preview
+          preview-branch: main
+          umbrella-dir: ./specification
+          pages-base-url: open-resource-discovery.github.io/pr-preview/specification/
           token: ${{ secrets.GH_TOKEN }}
