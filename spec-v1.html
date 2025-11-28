@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">ORD Specification | Open Resource Discovery</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://open-resource-discovery.github.io/specification/spec-v1"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="ORD Specification | Open Resource Discovery"><meta data-rh="true" name="description" content="Notational Conventions"><meta data-rh="true" property="og:description" content="Notational Conventions"><link data-rh="true" rel="icon" href="/specification/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://open-resource-discovery.github.io/specification/spec-v1"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.github.io/specification/spec-v1" hreflang="en"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.github.io/specification/spec-v1" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ORD Specification","item":"https://open-resource-discovery.github.io/specification/spec-v1/"}]}</script><script src="/specification/js/custom.js"></script><link rel="stylesheet" href="/specification/assets/css/styles.63fa177e.css">
-<script src="/specification/assets/js/runtime~main.5d2c42eb.js" defer="defer"></script>
+<script src="/specification/assets/js/runtime~main.f8188350.js" defer="defer"></script>
 <script src="/specification/assets/js/main.ca945e65.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -68,24 +68,25 @@ They are defined by the <a href="#def-ord-provider">ORD providers</a> in a decen
 In most places, the specification uses more precise terms, though:</p>
 <ul>
 <li class="">
-<p>A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service. It is also known as system role (<a href="https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html" target="_blank" rel="noopener noreferrer" class="">SAP CLD</a>). Within the specification it is also referred to as <em>application and service</em> for better readability.
-Since system type is an abstract concept, it is not concretely addressable.</p>
+<p>A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service from an operational perspective. It is also known as system role (<a href="https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html" target="_blank" rel="noopener noreferrer" class="">SAP CLD</a>). Within the specification it is also referred to as <em>application and service</em> for better readability.
+Since system type is an abstract concept, it is not concretely addressable.
+A <a href="#def-system-installation" class="">system installation</a> of a specific <a href="#def-system-version" class="">system version</a> and potentially a <a href="#def-system-instance" class="">system instance</a> needs to be created to have a concrete, addressable system.</p>
 <p>Please note that a system type is similar, but not necessarily identical to a <a href="#def-product" class="">product</a>.
 System type is a technical concept, while product is a term for external communication and sales.</p>
 </li>
 <li class="">
-<p>A <dfn id="def-system-installation">system installation</dfn> is a concrete running instance of a <a href="#def-system-type">system type</a> of a specific <a href="#def-system-version" class="">system version</a>. If the system type supports tenant isolation, a system installation may offer multiple <a href="#def-system-instance">system instance</a>. A system installation has at least one <a href="#def-base-url" class="">base URL</a>.</p>
+<p>A <dfn id="def-system-installation">system installation</dfn> is a concrete running instance of a <a href="#def-system-type">system type</a> of a specific <a href="#def-system-version" class="">system version</a>. If the system type supports tenant isolation, a system installation may offer multiple <a href="#def-system-instance">system instances</a>. A system installation has at least one <a href="#def-base-url" class="">base URL</a>.</p>
 </li>
 <li class="">
-<p>A <dfn id="def-system-instance">system instance</dfn> is running, isolated instance of a <a href="#def-system-type">system type</a>, running in a <a href="#def-system-installation">system installation</a> of a particular <a href="#def-system-version">system version</a>. It always refers to the <em>most specific</em> instance from a customer / account / data isolation perspective.
-If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated <a href="#def-system-installation" class="">system installation</a> per tenant or system isolation does not matter. In those cases system instance equals the system installation.</p>
+<p>A <dfn id="def-system-version">system version</dfn> is a particular software version of a <a href="#def-system-installation">system installation</a>, which is always of the same <a href="#def-system-type">system type</a>. It states the design-time version or release of a system and provides versioning for operational purposes. All system instances of the same system version could have the same static metadata description.</p>
+</li>
+<li class="">
+<p>A <dfn id="def-system-instance">system instance</dfn> is a running, isolated instance of a <a href="#def-system-type">system type</a>, running in a <a href="#def-system-installation">system installation</a> of a particular <a href="#def-system-version">system version</a>. It always refers to the <em>most specific</em> instance from a customer, account, and data isolation perspective.
+If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated <a href="#def-system-installation" class="">system installation</a> per tenant or system isolation does not matter. In those cases, system instance equals the system installation.</p>
 <p>The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant (<a href="https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html" target="_blank" rel="noopener noreferrer" class="">SAP CLD</a>) if multi-tenancy is supported or system (<a href="https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html" target="_blank" rel="noopener noreferrer" class="">SAP CLD</a>) if not.</p>
 <p>A system instance can act as an <a href="#ord-provider" class="">ORD Provider</a>.</p>
 </li>
 </ul>
-</li>
-<li class="">
-<p>A <dfn id="def-system-version">system version</dfn> states the design-time version / release of a <a href="#def-system-instance" class="">system instance</a>. It provides versioning for operational purposes for the <a href="#def-system-type">system type</a>. E.g. all system instances of the same system version could have the same static metadata description.</p>
 </li>
 <li class="">
 <p>A <dfn id="def-system-landscape">system landscape</dfn> is a set of <a href="#def-system-instance">system instances</a> that are explicitly combined together, for example via a shared zone of trust/connectivity, an account or a <a href="#namespaces" class="">namespace concept</a>.</p>
@@ -224,8 +225,8 @@ Depending on the role of the adopter, only some parts of the specification are r
 It is notated and distributed in the <a href="https://www.json.org/json-en.html" target="_blank" rel="noopener noreferrer" class="">JSON format</a> and can be <a href="#ord-transport-modes" class="">transported in various ways</a>.</p>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="ord-document-content">ORD Document Content<a href="#ord-document-content" class="hash-link" aria-label="Direct link to ORD Document Content" title="Direct link to ORD Document Content" translate="no">​</a></h4>
 <p>The ORD document MUST be a valid <a href="https://www.json.org/json-en.html" target="_blank" rel="noopener noreferrer" class="">JSON</a> document with <a href="https://en.wikipedia.org/wiki/UTF-8" target="_blank" rel="noopener noreferrer" class="">UTF-8</a> encoding.
-It MUST NOT exceed 2MB in size.
-If the size gets too big, consider splitting the information into multiple ORD documents instead.</p>
+It MUST NOT exceed 2MB in size to ensure efficient transport and processing.
+If content exceeds this limit, split the information into multiple ORD documents.</p>
 <p>The interfaces are described in <a class="" href="/specification/spec-v1/interfaces/Document">ORD document interface</a>, including <a class="" href="/specification/spec-v1/interfaces/Document#examples">examples</a>.</p>
 <p>An ORD document MUST be compliant with the following <a href="https://json-schema.org/" target="_blank" rel="noopener noreferrer" class="">JSON Schema</a> definition: <a href="https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json" target="_blank" rel="noopener noreferrer" class="">Document.schema.json</a>.</p>
 <p>Internationalization and localization are not supported natively in ORD documents.
@@ -308,7 +309,7 @@ before making a request.</p>
 <p>The <a href="#ord-configuration-endpoint" class="">ORD configuration endpoint</a> MUST be implemented by <a href="#def-ord-provider" class="">ORD Providers</a> and be accessible via an HTTP GET request.</p>
 <p>The response MUST be a valid UTF-8 encoded <a href="https://www.json.org/json-en.html" target="_blank" rel="noopener noreferrer" class="">JSON</a> document that is returned with the <code>application/json;charset=UTF-8</code> content type and the HTTP Status Code <code>200</code>.</p>
 <ul>
-<li class="">The response MUST not contain any sensitive information or leak tenant specific information.</li>
+<li class="">The response MUST not contain any sensitive information or leak tenant-specific information.</li>
 <li class="">It MUST be compliant with the following <a href="https://json-schema.org/" target="_blank" rel="noopener noreferrer" class="">JSON Schema</a> definition: <a href="https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json" target="_blank" rel="noopener noreferrer" class="">Configuration.schema.json</a>.</li>
 <li class="">Please refer to the <a class="" href="/specification/spec-v1/interfaces/Configuration">interface documentation</a> for more details and <a class="" href="/specification/spec-v1/interfaces/Configuration#complete-examples">examples</a>.</li>
 </ul>
@@ -316,7 +317,7 @@ before making a request.</p>
 The rules on <a href="#ord-provider-cache-handling" class="">ORD Provider Cache Handling</a> apply.</p>
 <p>It is RECOMMENDED to make this endpoint public.</p>
 <p>It is RECOMMENDED use the fixed <a href="https://tools.ietf.org/html/rfc8615#section-3" target="_blank" rel="noopener noreferrer" class="">Well-Known URI</a> <code>/.well-known/open-resource-discovery</code> (as registered <a href="https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml" target="_blank" rel="noopener noreferrer" class="">here</a>) that is relative to the system instances <a href="#def-base-url" class="">base URL</a>.</p>
-<p>Since the ORD config does not contain any tenant specific information, it is RECOMMENDED to only provide one ORD configuration endpoint for one <a href="#def-system-deployment" class="">system deployment</a> (same <a href="#def-base-url" class="">base URL</a>) of a multi-tenant application.</p>
+<p>Since the ORD config does not contain any tenant-specific information, it is RECOMMENDED to only provide one ORD configuration endpoint for one <a href="#def-system-deployment" class="">system deployment</a> (same <a href="#def-base-url" class="">base URL</a>) of a multi-tenant application.</p>
 <p>This assumes that the ORD document URLs in the configuration are not different per tenant and the tenant ID is selected as part of the access strategy.
 If the application is single-tenant or the tenant ID is part of the base URL (for example in the domain name), each tenant / system instance will have their own ORD config endpoint as a consequence.</p>
 <p>If the ORD configuration endpoint is either customized or protected, the information where to find and access the ORD config endpoint MUST be made available to all ORD consumers and aggregators and will be a prerequisite for the ORD discovery.
@@ -342,8 +343,12 @@ When given, the ORD Provider only returns the requested ORD Resource, but MAY al
 There is no reason to pass the parameters to the resource definition requests.
 The aggregator is allowed to send a select request on the config endpoint, but if the select capability is not advertised MUST NOT proceed with select requests on the ORD documents.</p>
 <div class="language-http codeBlockContainer_Ckt0 theme-code-block" style="--prism-background-color:#282c34;--prism-color:#ffffff"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-http codeBlock_bY9V thin-scrollbar" style="background-color:#282c34;color:#ffffff"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#ffffff"><span class="token plain">GET http://example.com/.well-known/open-resource-discovery?select=sap.foo:dataProduct:astronomy:v1</span><br></span><span class="token-line" style="color:#ffffff"><span class="token plain">Content-Type: application/json</span><br></span></code></pre></div></div>
-<p>The resulting ORD config MUST only return the ORD document(s) that contain the results from the select query (to avoid unnecessary requests). The aggregator will then request each listed document with the same <code>?select</code> parameter:</p>
-<p>If the given ORD ID is invalid the ORD provider MUST return 500, if it cannot be found, the ORD provider MUST return 404, see <a href="#error-handling" class="">error handling</a>.</p>
+<p>The resulting ORD config MUST only return the ORD document(s) that contain the results from the select query (to avoid unnecessary requests). The aggregator will then request each listed document with the same <code>?select</code> parameter.</p>
+<p>The ORD provider MUST return the following error codes (see <a href="#error-handling" class="">error handling</a>):</p>
+<ul>
+<li class=""><code>500 Internal Server Error</code> if the given ORD ID format is invalid</li>
+<li class=""><code>404 Not Found</code> if the ORD ID is valid but no matching resource exists</li>
+</ul>
 <div class="language-http codeBlockContainer_Ckt0 theme-code-block" style="--prism-background-color:#282c34;--prism-color:#ffffff"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-http codeBlock_bY9V thin-scrollbar" style="background-color:#282c34;color:#ffffff"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#ffffff"><span class="token plain">GET http://example.com/ord/document-1?select=sap.foo:dataProduct:astronomy:v1</span><br></span><span class="token-line" style="color:#ffffff"><span class="token plain">Content-Type: application/json</span><br></span></code></pre></div></div>
 <p>The response contains the requested resource and MAY include related ORD information that need to be updated together, e.g. when a data product is requested, it could also return its output ports API resources. Returning Tombstones is out of scope.</p>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="consumer-perspective">Consumer Perspective<a href="#consumer-perspective" class="hash-link" aria-label="Direct link to Consumer Perspective" title="Direct link to Consumer Perspective" translate="no">​</a></h4>
@@ -378,7 +383,7 @@ When information from many different system instances comes together, some situa
 <h5 class="anchor anchorTargetStickyNavbar_Vzrq" id="merging-ord-information">Merging ORD information<a href="#merging-ord-information" class="hash-link" aria-label="Direct link to Merging ORD information" title="Direct link to Merging ORD information" translate="no">​</a></h5>
 <p>This section outlines the rules of how ORD information is merged and - if conflicts arise - how they are resolved.</p>
 <p>First, the distinction between <a href="#def-ord-taxonomy" class="">ORD taxonomy</a> and <a href="#def-ord-resource" class="">ORD resource</a> information must be understood.</p>
-<p>The ORD taxonomy is not tied to a particular <a href="#def-product">product</a> or <a href="#def-system-type">system type</a>, while <a href="#def-ord-resource" class="">ORD resources</a> can be either <a href="#def-system-instance-aware" class="">system instance aware</a> or <a href="#def-system-instance-unaware" class="">system instance unaware</a>.</p>
+<p>ORD taxonomy is independent of specific <a href="#def-product">products</a> or <a href="#def-system-type">system types</a>. In contrast, <a href="#def-ord-resource" class="">ORD resources</a> may be either <a href="#def-system-instance-aware" class="">system instance aware</a> (varying per instance) or <a href="#def-system-instance-unaware" class="">system instance unaware</a> (static across instances).</p>
 <h6 class="anchor anchorTargetStickyNavbar_Vzrq" id="merging-ord-taxonomy">Merging ORD Taxonomy<a href="#merging-ord-taxonomy" class="hash-link" aria-label="Direct link to Merging ORD Taxonomy" title="Direct link to Merging ORD Taxonomy" translate="no">​</a></h6>
 <p>This applies currently to the <code>Package</code> and <code>Product</code> <a href="#def-ord-taxonomy" class="">ORD taxonomy</a> interfaces.</p>
 <p>The information is <a href="#def-system-instance-unaware" class="">system instance unaware</a> and therefore MUST not be stored for each <a href="#def-system-instance" class="">system instance</a>.
