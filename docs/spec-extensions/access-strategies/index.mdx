@@ -10,8 +10,8 @@ Access strategies address the authentication and authorization aspects that are 
 
 Concretely, they are currently used to describe how ORD related metadata can be accessed from the ORD provider:
 
-- the ORD documents via [Access Strategy](../../spec-v1/interfaces/configuration.md#access-strategy) in the ORD configuration.
-- the referenced resource definition files via [Access Strategy](../../spec-v1/interfaces/document.md#access-strategy) in the ORD document.
+- the ORD documents via [Access Strategy](../../spec-v1/interfaces/Configuration.md#access-strategy) in the ORD configuration.
+- the referenced resource definition files via [Access Strategy](../../spec-v1/interfaces/Document.md#access-strategy) in the ORD document.
 
 Every access strategy MUST describe how the access is implemented from both ORD provider and the ORD consumer / ORD aggregator side.
 It is therefore a shared contract between the provider and the consumer that details the necessary steps and conventions.
@@ -26,7 +26,10 @@ For this to work, both sides need to share at least one common supported access 
 > There may be situations where gaining access to ORD documents is not as simple as executing a sequence of well-defined programmatic remote requests or actions and manual user intervention might be necessary.
 > In such cases it's acceptable to describe an access strategy more freely in terms of what the user has to do by hand.
 
-import DocCardList from '@theme/DocCardList'
+Access strategies use an [Specification ID](../../spec-v1/index.md#specification-id) as identifier.
+This allows everyone to define their own access strategies locally or centrally.
+
+import DocCardList from "@theme/DocCardList";
 
 <br />
 <DocCardList />

@@ -1,0 +1,137 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'consumptionbundle'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'ConsumptionBundle'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: "A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.\nIdeally it also includes instructions and details how to request access and credentials for resources.\n\nFor more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).\n\nA consumption bundle SHOULD have at least one association with a resource (0..n). Avoid empty consumption bundles.\nA consumption bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned\nby the system instance that defines the consumption bundle.\n\nPlease note that some ORD consumer use cases MAY depend on consumption bundle assignments to work with the resources.\n\nTo learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle)."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId'
+      type: 'string'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: true
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'localId'
+      type: 'string'
+      description: "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID."
+      constraints:
+        maxLength: 255
+    - name: 'correlationIds'
+      type: 'string'
+      array: true
+      description: "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id)."
+    - name: 'title'
+      type: 'string'
+      description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
+      mandatory: true
+      constraints:
+        minLength: 1
+        maxLength: 255
+    - name: 'shortDescription'
+      type: 'string'
+      description: "Plain text short description.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
+      constraints:
+        minLength: 1
+        maxLength: 255
+    - name: 'description'
+      type: 'string'
+      description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
+      constraints:
+        minLength: 1
+    - name: 'version'
+      type: 'string'
+      description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented."
+      constraints:
+        pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+    - name: 'lastUpdate'
+      type: 'string'
+      description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
+    - name: 'visibility'
+      type: 'string'
+      description: 'The visibility states who is allowed to "see" the described resource or capability.'
+    - name: 'credentialExchangeStrategies'
+      type: 'custom'
+      customTypeName: 'CredentialExchangeStrategy'
+      array: true
+      description: "Defines the supported strategies for how the consumption credentials can be exchanged.\n\nIdeally, the system type supports a strategy that can automate the exchange."
+    - name: 'links'
+      type: 'custom'
+      customTypeName: 'Link'
+      array: true
+      description: 'Generic links with arbitrary meaning and content.'
+    - name: 'tags'
+      type: 'string'
+      array: true
+      description: "List of free text style tags.\nNo special characters are allowed except `-`, `_`, `.`, `/` and ` `.\n\nTags that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+    - name: 'labels'
+      type: 'custom'
+      customTypeName: 'Labels'
+      description: 'Generic labels that can be applied to most ORD information.'
+    - name: 'documentationLabels'
+      type: 'custom'
+      customTypeName: 'DocumentationLabels'
+      description: 'Generic documentation labels that can be applied to most ORD information.'
+  customTypeDefinitions:
+    - name: 'CredentialExchangeStrategy'
+      metadataProperties:
+        - name: 'type'
+          type: 'string'
+          description: 'The type of credential exchange strategy.'
+          mandatory: true
+        - name: 'customType'
+          type: 'string'
+          description: "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`."
+          constraints:
+            maxLength: 255
+            pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+        - name: 'customDescription'
+          type: 'string'
+          description: "Human-readable description about how the credential exchange is achieved, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nMUST only be provided if `type` is set to `custom`."
+          constraints:
+            minLength: 1
+        - name: 'callbackUrl'
+          type: 'string'
+          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the credential exchange callback endpoint.\n\nThis allows requesting a set of credentials that can be used for consuming all the APIs and Events that are part of the bundle.\n\nThe interface contract/protocol is dependent and defined by the chosen `type`.\n\nWhenever a client wants to consume a resource within a particular bundle, this endpoint can be called to obtain the credentials that this client can use.\n\nThe returned credentials MUST be valid for all resources that are part of the respective bundle.\nThe endpoint SHOULD return a different set of credentials on each invocation."
+    - name: 'Link'
+      metadataProperties:
+        - name: 'title'
+          type: 'string'
+          description: "Human readable title of the link.\n\nMUST be unique within the collection of links provided."
+          mandatory: true
+          constraints:
+            minLength: 1
+        - name: 'url'
+          type: 'string'
+          description: "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe link target MUST be absolute and SHOULD be openly accessible."
+          mandatory: true
+        - name: 'description'
+          type: 'string'
+          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)'
+          constraints:
+            minLength: 1
+    - name: 'Labels'
+      metadataProperties:
+        - name: 'key'
+          type: 'string'
+        - name: 'value'
+          type: 'string'
+    - name: 'DocumentationLabels'
+      metadataProperties:
+        - name: 'key'
+          type: 'string'
+        - name: 'value'
+          type: 'string'
+  metadataRelations: []

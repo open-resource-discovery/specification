@@ -1,27 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Swagger UI</title>
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.2/swagger-ui.min.css"
-      integrity="sha512-zgNkkBA79Tg3XpwFZuTEhdzXjBNszFu2Cx6wjCyiHw+/jJQLVOISBgr5BEploydVZzoEZKedpYjg8P4eB2hATA=="
+      href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui.min.css"
+      integrity="sha512-xRGj65XGEcpPTE7Cn6ujJWokpXVLxqLxdtNZ/n1w52+76XaCRO7UWKZl9yJHvzpk99A0EP6EW+opPcRwPDxwkA=="
       crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+      referrerpolicy="no-referrer" />
     <link
       rel="icon"
       type="image/png"
-      href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.45.1/favicon-32x32.png"
-      sizes="32x32"
-    />
+      href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.18.2/favicon-32x32.png"
+      sizes="32x32" />
     <link
       rel="icon"
       type="image/png"
-      href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.45.1/favicon-16x16.png"
-      sizes="16x16"
-    />
+      href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.18.2/favicon-16x16.png"
+      sizes="16x16" />
     <style>
       body {
         margin: 0;
@@ -33,35 +30,33 @@
   <body>
     <div id="swagger-ui"></div>
     <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.2/swagger-ui-bundle.js"
-      integrity="sha512-kZtLMwzyBIyLAMv6ZzOivEzOa+SN9PwcxZUxJdVLJswEbMZi/CcTqKVPU5U8ebrsV1GIezAQefVy08PUpP541w=="
+      src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui-bundle.min.js"
+      integrity="sha512-9tBcCofqWq+PelL6USpUB7OJrCaObfefi9ht9nVZuKt1XP7eHDs7NwVljLSLVtSsErax1Tz3pG3O82eeq546Rg=="
       crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+      referrerpolicy="no-referrer"></script>
     <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.2/swagger-ui-standalone-preset.js"
-      integrity="sha512-mSlCZQwAsAAtUmh/QvJmywaDd0m+QK/VfEj1QtP6rmr5hJ/PgV7iEOpA96vf5jX/1i41YuEGdJ3KNVdiFHmanA=="
+      src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui-standalone-preset.min.js"
+      integrity="sha512-RYT3vTu8lWSgdoB5zNck/WogIqUb/ap/ivTr6t2LeS+MwqxRQsnSHkHpJRKjnC4T2fH7OMTxxQoC3jh7KGd3HA=="
       crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+      referrerpolicy="no-referrer"></script>
     <script>
       window.onload = function () {
         // Begin Swagger UI call region
         const ui = SwaggerUIBundle({
           urls: [
             {
-              url: '../interfaces/DocumentAPI.oas3.yaml',
-              name: 'ORD Document API',
+              url: "../interfaces/DocumentAPI.oas3.yaml",
+              name: "ORD Provider API",
             },
           ],
-          dom_id: '#swagger-ui',
+          dom_id: "#swagger-ui",
           deepLinking: true,
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
           plugins: [SwaggerUIBundle.plugins.DownloadUrl],
-          layout: 'StandaloneLayout',
-        })
-        window.ui = ui
-      }
+          layout: "StandaloneLayout",
+        });
+        window.ui = ui;
+      };
     </script>
   </body>
 </html>

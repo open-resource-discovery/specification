@@ -1,0 +1,38 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'consumptionbundlereference'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'ConsumptionBundleReference'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Reference to a Consumption bundle.\n\nThis is a complex object to allow additional properties / selections to be attached."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId_ID'
+      type: 'guid'
+      description: 'The consumption bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.'
+      mandatory: true
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'defaultEntryPoint'
+      type: 'string'
+      description: "In case that an API Resource has multiple entry points, this will indicate which entry point should be used by default\nwhen discovering this resource from the context of the referenced Consumption Bundle.\n\nMUST NOT be provided for Event Resources, as they don't have entry points.\nMUST only be provided if the resource has more than one entry point.\nMUST be in the list of `entryPoints` of the affected resource."
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'ordId'
+      relatedTypeName: 'ConsumptionBundle'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'ordId_ID'
+      description: 'The consumption bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.'
+      mandatory: true

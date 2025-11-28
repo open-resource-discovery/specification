@@ -1,0 +1,323 @@
+/*
+ - Markdown core headings, spacing and badges
+ - Tables, code and details
+ - Cards and iframes
+ - Dark-mode markdown overrides (migrated)
+*/
+
+/* Markdown core headings, spacing and badges */
+.theme-doc-sidebar-item-link-level-2 {
+  font-size: 0.9em;
+}
+.theme-doc-sidebar-item-link-level-2 a {
+  border-left: 5px solid #ddd;
+  padding-inline: 7px;
+}
+
+article .card {
+  padding: 0 16px 16px !important;
+}
+.margin-bottom--lg {
+  margin-bottom: 1.5rem !important;
+}
+
+.markdown h1 {
+  font-size: 2.5rem;
+  margin: 0 0 8px 0 !important;
+}
+.markdown h2 {
+  font-size: 1.8rem;
+  margin: 20px 0 6px 0;
+}
+.markdown h3 {
+  margin: 16px 0 4px 0;
+}
+.markdown h4 {
+  margin-bottom: 6px;
+}
+.markdown h6 {
+  margin: 6px 0;
+}
+.markdown hr {
+  border: 0.5px solid #cecece;
+  height: 0 !important;
+  margin: 6px 0 4px 0;
+}
+
+.markdown blockquote {
+  margin: 16px 0;
+  padding: 4px 8px;
+  background: #f1f4f8;
+  border-left: var(--ifm-blockquote-border-left-width) solid #a1b2cb;
+  border-radius: 4px;
+}
+
+.markdown > pre,
+.markdown > ul,
+.markdown > p {
+  margin-bottom: 8px;
+}
+.markdown li p {
+  margin: 0 0 4px 0;
+}
+
+.markdown .mandatory,
+.markdown .recommended,
+.markdown .optional,
+.markdown .deprecated,
+.markdown .feature-status-alpha,
+.markdown .feature-status-beta {
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 3px 2px 3px;
+  font-size: 0.72em;
+  font-weight: bold;
+}
+.markdown .mandatory {
+  background-color: #ae2020;
+}
+.markdown .recommended {
+  background-color: #3a7fc0;
+}
+.markdown .optional {
+  background-color: #999;
+}
+.markdown .deprecated {
+  background-color: #7c5cb4;
+}
+.markdown .feature-status-draft {
+  background: #5cad9f;
+}
+.markdown .feature-status-alpha {
+  background: #e469b1;
+}
+.markdown .feature-status-beta {
+  background: #9669e4;
+}
+
+.theme-doc-markdown .table-legend-mobile {
+  display: none !important;
+}
+
+.markdown code {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+.markdown .highlight {
+  background: var(--lp-highlight-bg) !important;
+  color: var(--lp-highlight-text) !important;
+  border-radius: 3px;
+  padding: 0 5px;
+}
+
+.theme-doc-markdown p[align="left"] > img[src="https://apeirora.eu/assets/img/BMWK-EU.png"][width="250"]
+{
+  display: none !important;
+}
+
+/* Tables, code and details */
+.markdown table {
+  font-size: 0.85em;
+}
+.markdown table :is(th, td) {
+  padding: 0.2rem 0.6rem;
+}
+.markdown table td {
+  vertical-align: top;
+}
+.markdown .interface-property-name,
+.markdown .interface-property-type {
+  scroll-margin-top: 80px;
+  min-width: 120px;
+  max-width: 120px;
+}
+.markdown dfn {
+  scroll-margin-top: 80px;
+  background: #e3eef7;
+  border-radius: 3px;
+  padding: 0 4px;
+}
+.markdown details {
+  padding: 4px 8px 4px 14px;
+}
+.markdown details .collapsibleContent_node_modules-\@docusaurus-theme-common-lib-components-Details-styles-module {
+  margin: 4px 0 0 0;
+  padding: 8px 8px 0 8px;
+  font-size: 0.9em;
+}
+
+/* Cards and iframes */
+iframe {
+  border: 1px solid #e7e7e7;
+  border-radius: 8px;
+  padding: 3px;
+}
+.markdown .container {
+  padding: 0;
+}
+.markdown .card {
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  font-size: 0.9em;
+}
+.markdown .card__header {
+  padding: 0 0 4px;
+  margin: 0 0 4px;
+  border-bottom: 1px solid #e2e2e2;
+}
+.markdown .card__body {
+  padding: 4px 0 0;
+}
+.markdown .cardTitle_rnsV {
+  font-size: 1.4rem !important;
+}
+a[class*="cardContainer_"]:hover {
+  border: 1px solid var(--c-accent);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Dark-mode markdown overrides */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown {
+  color: var(--c-text);
+}
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--c-text-strong);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown a {
+  color: var(--c-accent) !important;
+  text-decoration-color: color-mix(in oklab, var(--c-accent) 50%, transparent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown a:hover,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) a[class*="cardContainer_"]:hover {
+  color: var(--c-accent) !important;
+  text-decoration-color: var(--c-accent);
+  transition: border-color 0.2s ease;
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown .hash-link {
+  color: var(--c-text-dim) !important;
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown hr {
+  border-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown blockquote {
+  background: var(--c-bg-elev);
+  border-left-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown table :is(th, td) {
+  border-bottom: 1px solid var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown table th {
+  background: color-mix(in oklab, var(--c-bg-elev) 85%, transparent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown code {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--c-text-strong);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .highlight {
+  background: var(--lp-highlight-bg) !important;
+  color: var(--lp-highlight-text) !important;
+  border-radius: 3px;
+  padding: 0 5px;
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown dfn {
+  background: rgba(39, 224, 209, 0.12);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown details,
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  details
+  .collapsibleContent_node_modules-\@docusaurus-theme-common-lib-components-Details-styles-module {
+  background: transparent;
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) iframe {
+  border-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .card {
+  background: var(--c-card);
+  border-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .card__header {
+  border-bottom-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-footer {
+  color: var(--c-text);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-footer .theme-edit-this-page {
+  color: var(--c-accent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container .row,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container .row .col {
+  background: transparent;
+  color: var(--c-text);
+}
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  .container
+  .row
+  .col
+  :is(p, li) {
+  color: var(--c-text);
+}
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  .container
+  .row
+  .col
+  :is(strong, em) {
+  color: var(--c-text-strong);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container .row .col a {
+  color: var(--c-accent) !important;
+  text-decoration-color: color-mix(in oklab, var(--c-accent) 50%, transparent);
+}
+html[data-theme="dark"]
+  #__docusaurus:not(:has(.ord-home-flag))
+  .theme-doc-markdown.markdown
+  .container
+  .row
+  .col
+  a:hover {
+  text-decoration-color: var(--c-accent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .container .row .col img {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .clean-btn {
+  color: var(--c-text-strong);
+}
+
+/* Anchor offset for sticky navbar */
+:root {
+  --doc-header-offset: 72px;
+}
+
+@media (max-width: 1000px) {
+  :root { --doc-header-offset: 84px; }
+}
+
+html {
+  /* Native anchor offset for in-page links */
+  scroll-padding-top: calc(var(--doc-header-offset) + 8px);
+}
+
+.markdown :is(h1, h2, h3, h4, h5, h6, dfn, .interface-property-name, .interface-property-type) {
+  scroll-margin-top: calc(var(--doc-header-offset) + 8px);
+}
+
+.markdown :is(h1, h2, h3, h4, h5, h6).is-target .hash-link {
+  color: var(--c-accent) !important;
+  text-decoration-color: var(--c-accent);
+}

@@ -8,5 +8,7 @@ npm-debug.log*
 node_modules/
 
 # Generated files
+src/generated/
 build/
+dist/
 .docusaurus

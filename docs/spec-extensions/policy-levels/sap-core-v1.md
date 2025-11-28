@@ -1,18 +1,22 @@
 ---
 title: SAP Core v1
-description: "sap:core:v1 compliance level."
+description: "SAP Core v1 policy level"
+sidebar_position: 2
 ---
 
 # SAP Core Policy Level (v1.0)
 
 ## Description
 
-This policy level (aka compliance level) `sap:core:v1` MUST be fulfilled by all SAP applications and services.
+This policy level (aka compliance level) `sap:core:v1` is based on the [`sap:base:v1`](./sap-base-v1.md) policy level and inherits all its expectations.
+
+It MUST be fulfilled by all SAP applications and services.
 Exceptions are only allowed on a case by case basis.
 
 This policy level is based on various SAP guidelines and rules - most of them which are already established.
-
 It defines the core rules and guidelines that are shared across SAP, although more specific rules and guidelines MAY be applied on top.
+
+**All constraints of the ORD specification itself still apply (valid ORD document). The constraints described here come on top.**
 
 ## General Policies
 
@@ -44,7 +48,7 @@ IF the resources have already been published to the public [SAP Business Acceler
 
 ### Title Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
 
 - All `title` values (except link titles) MUST NOT exceed 120 characters, as per SAP API Style Guide and SAP Business Accelerator Hub guideline recommendations.
 - All `title` values (except link titles) MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
@@ -74,15 +78,15 @@ The following constraints apply in addition to the constraints defined in the [O
 
 - All `title` values (except link titles) MAY use the following specially approved terms:
 
-  | Approved Term    | Description                            |
-  | ---------------- | -------------------------------------- |
-  | `S/4HANA`        | Approved product name                  |
-  | `country/region` | Approved name                          |
-  | `G/L`            | General ledger. Approved abbreviation. |
+  | Approved Term                         | Description                            |
+  | ------------------------------------- | -------------------------------------- |
+  | `S/4HANA`                             | Approved product name                  |
+  | `country/region`<br/>`Country/Region` | Approved name                          |
+  | `G/L`                                 | General ledger. Approved abbreviation. |
 
 ### Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
 
 - All `description` values MUST NOT contain the short description.
   They are complementary to the short description and should not just be a longer replacement.
@@ -91,31 +95,32 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Short Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://sap.github.io/open-resource-discovery/spec-v1/interfaces/document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
 
 - All `shortDescription` values SHOULD NOT exceed 180 characters.
 - All `shortDescription` values MUST NOT repeat or start with the object name.
 - All `shortDescription` values SHOULD use the following charset:
 
-  | Chars        | Description           |
-  | ------------ | --------------------- |
-  | `A-Z`, `a-z` | Latin letters         |
-  | `0-9`        | Numbers               |
-  | ` `          | Space                 |
-  | `_`          | Underscores           |
-  | `-` `—` `–`  | Different hyphens     |
-  | `.`          | Fullstop (Period)     |
-  | `,`          | Comma                 |
-  | `(` `)`      | Parentheses           |
-  | `'s`         | Possessive apostrophe |
+  | Chars        | Description                                                            |
+  | ------------ | ---------------------------------------------------------------------- |
+  | `A-Z`, `a-z` | Latin letters                                                          |
+  | `0-9`        | Numbers                                                                |
+  | ` `          | Space                                                                  |
+  | `_`          | Underscores                                                            |
+  | `-` `—` `–`  | Different hyphens                                                      |
+  | `.`          | Fullstop (Period)                                                      |
+  | `,`          | Comma                                                                  |
+  | `(` `)`      | Parentheses                                                            |
+  | `'s`         | Possessive apostrophe for nouns                                        |
+  | `s'`         | Possessive apostrophe is added to plural proper nouns that ends in `s` |
 
 - All `shortDescription` values MAY use the following specially approved terms:
 
-  | Approved Name    | Description                            |
-  | ---------------- | -------------------------------------- |
-  | `S/4HANA`        | Approved product name                  |
-  | `country/region` | Approved name                          |
-  | `G/L`            | General ledger. Approved abbreviation. |
+  | Approved Name                         | Description                            |
+  | ------------------------------------- | -------------------------------------- |
+  | `S/4HANA`                             | Approved product name                  |
+  | `country/region`<br/>`Country/Region` | Approved name                          |
+  | `G/L`                                 | General ledger. Approved abbreviation. |
 
 ### Misc Constraints
 
@@ -132,20 +137,22 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Package
 
-- For [Packages](../../spec-v1/interfaces/document.md#package) with policy level sap, the Governance Guidelines for API Packages MUST be followed.
-  - This includes the current limitation that Packages MUST NOT contain mixed resource types. E.g., a Package must only contain either APIs or Events, but never both together.
-  - SAP Business Accelerator Hub publishing becomes slow if too much content is in a Package (> 100 resources). Consider creating smaller packages that are split around the aspect of what needs to be published in one transaction.
-- The `vendor` of a Package MUST be set to `sap:vendor:SAP:`.
+- For [Packages](../../spec-v1/interfaces/Document.md#package) with policy level sap, the Governance Guidelines for API Packages MUST be followed.
+  - This includes current limitations:
+    - Packages MUST NOT be shared by multiple provider (source) systems
+    - Packages MUST NOT contain mixed resource types. E.g., a Package must only contain either APIs or Events, but never both together.
+    - Packages MUST NOT contain content of mixed `visibility`
+- The vendor of a Package MUST be set and be equal to one of the allowed values: `sap:vendor:SAP:`, `customer:vendor:Customer:`.
 
 ### Consumption Bundle
 
-- For public or internal [API Resources](../../spec-v1/interfaces/document.md#api-resource) with `inbound` or `mixed` direction (consumption pattern): MUST provide and assign a [Consumption Bundle](../../spec-v1/interfaces/document.md#consumption-bundle). This is necessary as some SAP ORD Consumers rely on Consumption Bundles to find and navigate accessible resources.
+- For public or internal [API Resources](../../spec-v1/interfaces/Document.md#api-resource) with `inbound` or `mixed` direction (consumption pattern): SHOULD provide and assign a [Consumption Bundle](../../spec-v1/interfaces/Document.md#consumption-bundle). This is necessary as some SAP ORD Consumers rely on Consumption Bundles to find and navigate accessible resources.
 
 ### API Resource
 
-- For [API Resources](../../spec-v1/interfaces/document.md#api-resource) the Guidelines for publishing API Resources on the SAP Business Accelerator Hub MUST be followed according to our internal API and external API guidelines.
+- For [API Resources](../../spec-v1/interfaces/Document.md#api-resource) the Guidelines for publishing API Resources on the SAP Business Accelerator Hub MUST be followed according to our internal API and external API guidelines.
   The first link includes a decision table for internal vs. external, which corresponds to `visibility` internal vs. public in ORD.
-- The [`extensible`](../../spec-v1/interfaces/document.md#api-resource_extensible) property MUST be provided.
+- The [`extensible`](../../spec-v1/interfaces/Document.md#api-resource_extensible) property MUST be provided.
 - For API Resources with `visibility`: "public" or "internal":
   - Resource definitions MUST be provided for OData, REST, GraphQL and SOAP APIs.
   - OData APIs MUST have a resource definition of `"type": "edmx"` AND additionally one of either `"type": "openapi-v3"` or `"type": "openapi-v2"`.
@@ -159,7 +166,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Event Resource
 
-- For [Event Resources](../../spec-v1/interfaces/document.md#event-resource) the [Governance Guidelines for Events](https://help.sap.com/viewer/9c880f03c6084ca4b2573b5605ec7a83/Cloud/en-US/3cda0ea7b65849108d530eb33ce2fb85.html) MUST be followed.
+- For [Event Resources](../../spec-v1/interfaces/Document.md#event-resource) the [Governance Guidelines for Events](https://help.sap.com/viewer/9c880f03c6084ca4b2573b5605ec7a83/Cloud/en-US/3cda0ea7b65849108d530eb33ce2fb85.html) MUST be followed.
 - The `extensible` property MUST be provided.
 - For Event Resources with `visibility`: "public" or "internal":
   - Resource definitions MUST be provided.
@@ -173,7 +180,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Extensible
 
-- If the mandatory [Extensible](../../spec-v1/interfaces/document.md#extensible) object has a [description](../../spec-v1/interfaces/document.md#extensible_description), it MUST follow the guidance and rules of the SAP Technology Guideline TG12.R2.
+- If the mandatory [Extensible](../../spec-v1/interfaces/Document.md#extensible) object has a [description](../../spec-v1/interfaces/Document.md#extensible_description), it MUST follow the guidance and rules of the SAP Technology Guideline TG12.R2.
 
 ### Integration Dependencies
 

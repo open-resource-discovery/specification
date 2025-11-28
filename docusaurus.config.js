@@ -1,32 +1,34 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-import { themes as prismThemes } from 'prism-react-renderer';
+import { themes as prismThemes } from "prism-react-renderer";
+
+const baseUrl = "/specification";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Open Resource Discovery',
-  tagline: 'An aligned protocol for publishing and discovering metadata about systems.',
-  url: 'https://sap.github.io',
-  baseUrl: '/open-resource-discovery',
+  title: "Open Resource Discovery",
+  tagline: "An aligned protocol for publishing and discovering metadata about systems.",
+  url: "https://open-resource-discovery.github.io",
+  baseUrl,
   trailingSlash: false,
-  onBrokenLinks: 'throw',
-  onDuplicateRoutes: 'throw',
-  onBrokenMarkdownLinks: 'throw',
-  staticDirectories: ['static'],
-  favicon: 'img/favicon.ico',
+  onBrokenLinks: "throw",
+  onDuplicateRoutes: "throw",
+  onBrokenMarkdownLinks: "throw",
+  staticDirectories: ["static"],
+  favicon: "img/favicon.ico",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'SAP', // Usually your GitHub org/user name.
-  projectName: 'open-resource-discovery', // Usually your repo name.
+  organizationName: "open-resource-discovery", // Usually your GitHub org/user name.
+  projectName: "specification", // Usually your repo name.
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
 
   markdown: {
@@ -35,38 +37,57 @@ const config = {
 
   presets: [
     [
-      'classic',
+      "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
-          sidebarCollapsible: false,
-          routeBasePath: '/', // Serve the docs at the site's root
+          sidebarPath: require.resolve("./sidebars.js"),
+          sidebarCollapsible: true,
+          sidebarCollapsed: true,
+          routeBasePath: "/", // Serve the docs at the site's root
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/SAP/open-resource-discovery/tree/main/',
+          editUrl: "https://github.com/open-resource-discovery/specification/tree/main/",
         },
         blog: false, // disable the blog plugin
         theme: {
-          customCss: require.resolve('./static/css/custom.css'),
+          customCss: require.resolve("./static/css/custom.css"),
         },
       }),
     ],
   ],
 
-  scripts: ['/open-resource-discovery/js/custom.js'],
+  scripts: [`${baseUrl}/js/custom.js`],
+
+  plugins: [
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        redirects: [
+          {
+            from: "/spec-v1/interfaces/configuration",
+            to: "/spec-v1/interfaces/Configuration",
+          },
+          {
+            from: "/spec-v1/interfaces/document",
+            to: "/spec-v1/interfaces/Document",
+          },
+        ],
+      },
+    ],
+  ],
 
   themes: [
-    '@docusaurus/theme-mermaid',
+    "@docusaurus/theme-mermaid",
     [
-      require.resolve('@easyops-cn/docusaurus-search-local'),
+      require.resolve("@easyops-cn/docusaurus-search-local"),
       {
         searchResultLimits: 10,
         hashed: true,
         indexBlog: false,
         indexPages: false,
-        language: ['en'],
-        docsRouteBasePath: '/',
+        language: ["en"],
+        docsRouteBasePath: "/",
         highlightSearchTermsOnTargetPage: true,
       },
     ],
@@ -76,149 +97,177 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       colorMode: {
-        defaultMode: 'light',
-        disableSwitch: true,
+        defaultMode: "dark",
+        disableSwitch: false,
         respectPrefersColorScheme: false,
       },
       prism: {
-        theme: prismThemes.oceanicNext,
+        theme: prismThemes.github,
+        darkTheme: prismThemes.oceanicNext,
       },
       mermaid: {
-        theme: { light: 'neutral', dark: 'forest' },
+        theme: { light: "neutral", dark: "forest" },
       },
       navbar: {
-        title: '',
+        title: "Open Resource Discovery",
         logo: {
-          alt: 'Open Resource Discovery',
-          src: 'img/open-resource-discovery-logo.png',
+          alt: "Open Resource Discovery",
+          src: "img/logo/ORD_Icon_Color_Logo.svg",
         },
         items: [
           {
-            label: 'Overview',
-            to: '/',
+            label: "Overview",
+            to: "overview",
           },
           {
-            label: 'Introduction',
-            to: 'introduction',
+            label: "Primer",
+            to: "introduction",
           },
           {
-            type: 'dropdown',
-            position: 'left',
-            label: 'Details',
-            to: 'details/',
+            type: "dropdown",
+            position: "left",
+            label: "Specification",
+            to: "spec-v1/",
             items: [
               {
-                label: 'Articles',
-                to: '/details/articles/',
+                label: "ORD Specification",
+                to: "/spec-v1/",
               },
               {
-                label: 'Videos',
-                to: '/details/videos',
+                label: "ORD Configuration Interface",
+                to: "spec-v1/interfaces/Configuration",
               },
               {
-                label: 'FAQ',
-                to: '/details/faq',
+                label: "ORD Document Interface",
+                to: "spec-v1/interfaces/Document",
+              },
+              {
+                label: "ORD Concepts",
+                to: "spec-v1/concepts",
+              },
+              {
+                label: "ORD Provider API",
+                to: "spec-v1/interfaces/document-api",
+              },
+              {
+                label: "Example Files",
+                to: "spec-v1/examples",
+              },
+              {
+                label: "Changelog",
+                to: "https://github.com/open-resource-discovery/specification/blob/main/CHANGELOG.md",
               },
             ],
           },
           {
-            type: 'dropdown',
-            position: 'left',
-            label: 'Specification',
-            to: 'spec-v1/',
+            type: "dropdown",
+            position: "left",
+            label: "Extensions",
+            to: "spec-extensions",
             items: [
               {
-                label: 'ORD Specification',
-                to: '/spec-v1/',
+                label: "Access Strategies",
+                to: "spec-extensions/access-strategies/",
               },
               {
-                label: 'ORD Configuration Interface',
-                to: 'spec-v1/interfaces/configuration',
+                label: "Policy Levels",
+                to: "spec-extensions/policy-levels/",
               },
               {
-                label: 'ORD Document Interface',
-                to: 'spec-v1/interfaces/document',
-              },
-              {
-                label: 'ORD Document API',
-                to: 'spec-v1/interfaces/document-api',
-              },
-              {
-                label: 'Example Files',
-                to: 'spec-v1/examples',
-              },
-              {
-                label: 'Changelog',
-                to: 'https://github.com/SAP/open-resource-discovery/blob/main/CHANGELOG.md',
+                label: "Global Group Types",
+                to: "spec-extensions/group-types/",
               },
             ],
           },
           {
-            type: 'dropdown',
-            position: 'left',
-            label: 'Spec Extensions',
-            to: 'spec-extensions',
+            label: "Ecosystem",
+            position: "left",
+            to: "ecosystem/",
             items: [
               {
-                label: 'Access Strategies',
-                to: 'spec-extensions/access-strategies/',
-              },
-              {
-                label: 'Policy Levels',
-                to: 'spec-extensions/policy-levels/',
-              },
-              {
-                label: 'Global Group Types',
-                to: 'spec-extensions/group-types/',
+                label: "ORD Reference Application",
+                href: "https://ord-reference-application.cfapps.sap.hana.ondemand.com/",
               },
             ],
           },
           {
-            type: 'dropdown',
-            position: 'left',
-            label: 'Ecosystem',
-            to: 'ecosystem/',
+            type: "dropdown",
+            position: "left",
+            label: "Help",
+            to: "help/",
             items: [
+              // {
+              //   label: "Overview",
+              //   to: "help/",
+              // },
               {
-                label: 'Overview',
-                to: 'ecosystem/',
+                label: "Videos",
+                to: "help/videos/",
               },
               {
-                label: 'ORD Reference Application',
-                href: 'https://ord-reference-application.cfapps.sap.hana.ondemand.com/',
+                label: "FAQ",
+                to: "help/faq/",
               },
             ],
           },
           {
-            href: 'https://github.com/SAP/open-resource-discovery',
-            label: 'GitHub',
-            position: 'right',
+            href: "https://github.com/open-resource-discovery/specification",
+            label: "GitHub",
+            position: "right",
+            className: "header-github-pill",
           },
         ],
       },
       footer: {
-        style: 'dark',
-        links: [
-          {
-            label: 'Disclaimer',
-            to: 'disclaimer',
-          },
-          {
-            label: 'Legal Disclosure',
-            to: 'https://www.sap.com/corporate/en/legal/impressum.html',
-          },
-          {
-            label: 'Terms of Use',
-            to: 'https://www.sap.com/corporate/en/legal/terms-of-use.html',
-          },
-          {
-            label: 'GitHub Repository',
-            to: 'https://github.com/SAP/open-resource-discovery',
-          },
-        ],
-        copyright: `Copyright © ${new Date().getFullYear()} SAP SE. Made available under Apache License 2.0.\n\n This site is hosted by GitHub Pages. Please see the GitHub Privacy Statement for any information how GitHub processes your personal data.`,
-      }
+        style: "dark",
+        copyright: `
+          <div class="footer-container">
+            <div class="footer-funding">
+              <div class="footer-funding__image">
+                <img src="${baseUrl + "/img/ord-footer-bmwe.png"}" alt="EU and German government funding logos" />
+              </div>
+              <div class="footer-funding__text">
+                <p><strong>Funded by the European Union – NextGenerationEU.</strong></p>
+                <p>The views and opinions expressed are solely those of the author(s) and do not necessarily reflect the views of the European Union or the European Commission. Neither the European Union nor the European Commission can be held responsible for them.</p>
+                <div class="footer-copyright">
+                  <p><strong>Copyright © Linux Foundation Europe.</strong></p>
+                  <p>Open Resource Discovery is a project of NeoNephos Foundation. For applicable policies including privacy policy, terms of use and trademark usage guidelines, please see <a href="https://linuxfoundation.eu">https://linuxfoundation.eu</a>. Linux is a registered trademark of Linus Torvalds. </p>
+                </div>
+              </div>
+            </div>
+            <div class="neonephos-logos">
+              <a href="https://neonephos.org/" target="_blank" rel="noopener noreferrer" class="neonephos-link">
+                <img
+                  src="${baseUrl + "/img/ord-footer-neonephos.svg"}"
+                  alt="Neonephos Logo"
+                  class="neonephos-logo neonephos-logo--dark"
+                />
+                <img
+                  src="${baseUrl + "/img/ord-footer-neonephos-light.svg"}"
+                  alt=""
+                  aria-hidden="true"
+                  class="neonephos-logo neonephos-logo--light"
+                />
+              </a>
+            </div>
+            <!--
+            <div class="footer-legal-links">
+              <a href="${baseUrl + "/about/terms-of-use"}">Terms of Use</a>
+              <span class="footer-legal-sep">|</span>
+              <a href="${baseUrl + "/about/privacy"}">Privacy Statement</a>
+              <span class="footer-legal-sep">|</span>
+              <a href="${baseUrl + "/about/legal-disclosure"}">Legal Disclosure</a>
+            </div>
+            -->
+          </div>
+        `,
+      },
+      docs: {
+        sidebar: {
+          autoCollapseCategories: true,
+        },
+      },
     }),
-}
+};
 
-module.exports = config
+module.exports = config;
