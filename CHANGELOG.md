@@ -12,7 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added optional `visibility` to API, Event and Capability definitions
+- Added optional `visibility` to API Resource Definition, Event Resource Definition and Capability Definition
   - By default the definitions have the same visibility as the resource they belong to
   - This can be useful if e.g. a public resource has some metadata definitions that are internal only.
   - The visibility of a resource definition MUST be lower than the visibility of the resource it describes.
