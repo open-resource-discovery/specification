@@ -737,7 +737,7 @@ definitions:
               Internal resources MAY be published through an internal API Catalog if the access permissions are ensured by it.
           - const: private
             description: |-
-              Visibility only to the provider application or service.
+              Visible only to the provider application or service.
               This includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.
               E.g., webhooks for provisioning callbacks or backing services.
 
