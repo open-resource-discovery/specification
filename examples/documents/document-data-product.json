@@ -561,11 +561,6 @@
       "abstract": true,
       "visibility": "public",
       "partOfPackage": "sap.xref:package:SomePackageAPIs:v1",
-      "partOfConsumptionBundles": [
-        {
-          "ordId": "sap.foo:consumptionBundle:someAuth:v1"
-        }
-      ],
       "apiProtocol": "delta-sharing",
       "implementationStandard": "sap:delta-sharing:v1",
       "exposedEntityTypes": [
