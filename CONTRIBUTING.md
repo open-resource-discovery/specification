@@ -1,4 +1,4 @@
-# Contributing
+# Contributing to an SAP Open Source Project
 
 ## Code of Conduct
 
@@ -6,9 +6,9 @@ All members of the project community must abide by the [SAP Open Source Code of 
 Only by respecting each other can we develop a productive, collaborative community.
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by creating a [GitHub issue](https://github.com/open-resource-discovery/specification/issues).
 
-## Engaging in Our Project
+Contributors will be asked to accept a DCO before they submit the first pull request to this projects, this happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
 
-We use GitHub to manage reviews of pull requests.
+## Contributing with AI-generated code
 
 - If you are a new contributor, see: [Steps to Contribute](#steps-to-contribute)
 
