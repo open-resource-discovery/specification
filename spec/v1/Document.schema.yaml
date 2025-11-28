@@ -2511,6 +2511,9 @@ definitions:
           The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
           E.g. a public resource can have metadata definitions that are internal only.
 
+          This makes it also possible to provide both a public and an internal metadata description of the resource,
+          in case that some metadata must only be made accessible to internal consumers.
+
       accessStrategies: &accessStrategies
         type: array
         description: |-
