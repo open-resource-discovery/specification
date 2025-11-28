@@ -749,7 +749,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         },
@@ -990,7 +990,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         },
@@ -1802,7 +1802,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         },
@@ -2450,7 +2450,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         },
@@ -2802,7 +2802,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         },
@@ -3540,7 +3540,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         },
@@ -3670,7 +3670,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         }
@@ -3940,7 +3940,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         },
@@ -4152,7 +4152,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         }
@@ -4284,7 +4284,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         },
@@ -5839,7 +5839,7 @@
             },
             {
               "const": "private",
-              "description": "Visibility is limited to \"whin\" the described application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
             }
           ]
         },

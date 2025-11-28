@@ -2504,7 +2504,7 @@ definitions:
           - /api/openApi.yaml
           - https://example.com/api/API_RFQ_PROCESS_SRV/$metadata
 
-      visibility:
+      visibility: &definitionVisibility
         <<: *visibility
         description: |-
           The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
@@ -2591,13 +2591,7 @@ definitions:
         <<: *accessStrategies
 
       visibility:
-        <<: *visibility
-        description: |-
-          The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
-          This can be useful if e.g. a public resource has some metadata definitions that are internal only.
-
-          If not given, the resource definition has the same visibility as the resource it describes.
-          The visibility of a resource definition MUST be lower than the visibility of the resource it describes.
+        <<: *definitionVisibility
 
     additionalProperties: false
     required:
@@ -2907,13 +2901,7 @@ definitions:
         <<: *accessStrategies
 
       visibility:
-        <<: *visibility
-        description: |-
-          The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
-          This can be useful if e.g. a public resource has some metadata definitions that are internal only.
-
-          If not given, the resource definition has the same visibility as the resource it describes.
-          The visibility of a resource definition MUST be lower than the visibility of the resource it describes.
+        <<: *definitionVisibility
 
     additionalProperties: false
     required:
