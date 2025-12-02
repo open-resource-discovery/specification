@@ -1220,6 +1220,7 @@ definitions:
 
           Each definition is to be understood as an alternative description format, describing the same resource / capability.
           As a consequence the same definition type MUST NOT be provided more than once.
+          The exception is when the same definition type is provided more than once, but with a different `visibility`.
 
           It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
           If the definitions are added or changed, the `version` MUST be incremented.

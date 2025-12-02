@@ -749,7 +749,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         },
@@ -990,7 +990,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         },
@@ -1172,7 +1172,7 @@
         },
         "resourceDefinitions": {
           "type": "array",
-          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
+          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\nThe exception is when the same definition type is provided more than once, but with a different `visibility`.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
           "items": {
             "$ref": "#/definitions/ApiResourceDefinition"
           }
@@ -1802,7 +1802,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         },
@@ -1882,7 +1882,7 @@
         },
         "resourceDefinitions": {
           "type": "array",
-          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
+          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\nThe exception is when the same definition type is provided more than once, but with a different `visibility`.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
           "items": {
             "$ref": "#/definitions/EventResourceDefinition"
           }
@@ -2450,7 +2450,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         },
@@ -2802,7 +2802,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         },
@@ -3528,7 +3528,7 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\nThis can be useful if e.g. a public resource has some metadata definitions that are internal only.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower than the visibility of the resource it describes.",
+          "description": "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.\nE.g. a public resource can have metadata definitions that are internal only.\n\nThis makes it also possible to provide both a public and an internal metadata description of the resource,\nin case that some metadata must only be made accessible to internal consumers.",
           "oneOf": [
             {
               "const": "public",
@@ -3540,7 +3540,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         },
@@ -3658,7 +3658,7 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\nThis can be useful if e.g. a public resource has some metadata definitions that are internal only.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower than the visibility of the resource it describes.",
+          "description": "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.\nE.g. a public resource can have metadata definitions that are internal only.\n\nThis makes it also possible to provide both a public and an internal metadata description of the resource,\nin case that some metadata must only be made accessible to internal consumers.",
           "oneOf": [
             {
               "const": "public",
@@ -3670,7 +3670,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         }
@@ -3940,7 +3940,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         },
@@ -3996,7 +3996,7 @@
         },
         "definitions": {
           "type": "array",
-          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
+          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\nThe exception is when the same definition type is provided more than once, but with a different `visibility`.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
           "items": {
             "$ref": "#/definitions/CapabilityDefinition"
           }
@@ -4140,7 +4140,7 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\nThis can be useful if e.g. a public resource has some metadata definitions that are internal only.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower than the visibility of the resource it describes.",
+          "description": "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.\nE.g. a public resource can have metadata definitions that are internal only.\n\nThis makes it also possible to provide both a public and an internal metadata description of the resource,\nin case that some metadata must only be made accessible to internal consumers.",
           "oneOf": [
             {
               "const": "public",
@@ -4152,7 +4152,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         }
@@ -4284,7 +4284,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         },
@@ -5839,7 +5839,7 @@
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service.\nThis includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.\nE.g., webhooks for provisioning callbacks or backing services.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope or without the necessary access permissions."
+              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
             }
           ]
         },
