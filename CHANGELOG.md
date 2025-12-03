@@ -15,7 +15,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added optional `visibility` to API Resource Definition, Event Resource Definition and Capability Definition
   - By default the definitions have the same visibility as the resource they belong to
   - The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
-    E.g. a public resource can have metadata definitions that are internal only.
+    E.g. a public resource can declare to have some resource definitions that are internal while others are public. An internal resource can't set a resource definition to be public.
 
 ### Fixed
 
