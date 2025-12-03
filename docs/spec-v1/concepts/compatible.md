@@ -51,6 +51,8 @@ Beyond implementing abstract resources, `compatibleWith` can also indicate compa
 
 The `maxVersion` property specifies the maximum version of the interface contract that a resource is compatible with. This is critical for maintaining clear compatibility boundaries as interface contracts evolve over time.
 
+The `maxVersion` is the version that a developer has known and was probably the latest available version of the interface contract at the time of implementation. It indicates that the resource fully implements and supports the specified version of the contract.
+
 Even if an interface contract evolves in a backward-compatible manner (minor or patch version increments), a resource will not automatically be compatible with versions beyond its specified `maxVersion`. This explicit boundary prevents assumptions about compatibility with future interface versions that may introduce optional features or enhancements that the implementing resource does not support.
 
 Consider an API contract at version 1.0 that defines fields A and B. Another API resource declaring compatibility with version 1.0 means it implements exactly fields A and B, along with any tenant-specific extensions in a dedicated namespace. If the API contract changes to version 1.1 by adding optional field C, the API resource declaring compatibility with version 1.0 will not include field C. Only by adopting the contract of version 1.1 and implementing fields A, B, and C would the resource also be compatible with version 1.1 of the contract.
