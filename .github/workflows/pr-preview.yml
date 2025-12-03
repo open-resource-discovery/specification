@@ -26,6 +26,8 @@ jobs:
           echo "DEBUG: secret available  = ${{ secrets.PR_PREVIEW_TOKEN != '' }}"
       - name: Checkout source repo
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v6
