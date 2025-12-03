@@ -18,10 +18,21 @@ jobs:
       cancel-in-progress: true
 
     steps:
+      - name: Debug – Job is running
+        run: |
+          echo "DEBUG: Running PR preview job"
+          echo "DEBUG: head.repo.full_name = ${{ github.event.pull_request.head.repo.full_name }}"
+          echo "DEBUG: repository        = ${{ github.repository }}"
+          echo "DEBUG: secret available  = ${{ secrets.PR_PREVIEW_TOKEN != '' }}"
+
       - name: Checkout source repo
         uses: actions/checkout@v6
-        with:
-          persist-credentials: false
+
+      - name: Print .git/config
+        run: |
+          echo "=== DEBUG: .git/config ==="
+          cat .git/config
+          echo "=========================="
 
       - name: Setup Node
         uses: actions/setup-node@v6
