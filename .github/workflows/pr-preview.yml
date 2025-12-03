@@ -34,6 +34,12 @@ jobs:
           cat .git/config
           echo "=========================="
 
+      - name: Print global git config
+        run: |
+          echo "=== DEBUG: git config --global --list ==="
+          git config --global --list || true
+          echo "========================================="
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
