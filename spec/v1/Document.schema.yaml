@@ -3,7 +3,7 @@ $id: https://open-resource-discovery.github.io/specification/spec-v1/interfaces/
 title: Ord Document
 description: |-
   The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
-  that are specific to the document/the service it describes. Test
+  that are specific to the document/the service it describes.
 
   The constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.
 
