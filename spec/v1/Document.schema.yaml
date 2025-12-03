@@ -987,7 +987,7 @@ definitions:
 
           Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
 
-          More details can be found on the [Compatibility](../concepts/compatibility.md) concept page.
+          More details can be found on the [Compatibility](../concepts/compatibility) concept page.
       visibility:
         <<: *visibility
 
