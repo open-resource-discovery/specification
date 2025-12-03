@@ -1693,7 +1693,7 @@ definitions:
 
           All events that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
 
-          More details can be found on the [Compatibility](../concepts/compatibility.md) concept page.
+          More details can be found on the [Compatibility](../concepts/compatibility) concept page.
         items:
           $ref: "#/definitions/EventCompatibility"
         examples:
