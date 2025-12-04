@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
     concurrency:
@@ -19,6 +20,8 @@ jobs:
     steps:
       - name: Checkout source repo
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v6
