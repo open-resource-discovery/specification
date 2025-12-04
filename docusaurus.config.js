@@ -16,7 +16,7 @@ const config = {
   onDuplicateRoutes: "throw",
   onBrokenMarkdownLinks: "throw",
   staticDirectories: ["static"],
-  favicon: "img/favicon.ico",
+  favicon: "img/favicon.svg",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.

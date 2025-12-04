@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
     concurrency:
@@ -19,6 +20,8 @@ jobs:
     steps:
       - name: Checkout source repo
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -49,4 +52,4 @@ jobs:
           preview-branch: main
           umbrella-dir: ./specification
           pages-base-url: open-resource-discovery.github.io/pr-preview
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.PR_PREVIEW_TOKEN }}
