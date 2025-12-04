@@ -2510,7 +2510,7 @@ definitions:
 
           If not given, the resource definition has the same visibility as the resource it describes.
           The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
-          E.g. a public resource can have metadata definitions that are internal only.
+          E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
 
           This makes it also possible to provide both a public and an internal metadata description of the resource,
           in case that some metadata must only be made accessible to internal consumers.
