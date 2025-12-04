@@ -3896,9 +3896,11 @@ definitions:
       description:
         <<: *description
 
-      # TODO: Add documentationLabels and more in the future? (Currently causing a bug)
-      # documentationLabels:
-      #   <<: *documentationLabels
+      labels:
+        <<: *labels
+
+      correlationIds:
+        <<: *correlationIds
 
     required:
       - groupTypeId
@@ -3958,6 +3960,12 @@ definitions:
 
       description:
         <<: *description
+
+      labels:
+        <<: *labels
+
+      correlationIds:
+        <<: *correlationIds
 
     required:
       - groupId

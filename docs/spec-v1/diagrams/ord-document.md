@@ -575,6 +575,8 @@
   SystemInstance *-- "0..1" Labels : labels
   SystemType *-- "0..1" Labels : labels
   SystemVersion *-- "0..1" Labels : labels
+  GroupType *-- "0..1" Labels : labels
+  Group *-- "0..1" Labels : labels
   OrdResource *-- "0..1" Labels : labels
   click Package href "#package" "Go to Package"
   click ConsumptionBundle href "#consumptionbundle" "Go to ConsumptionBundle"
@@ -589,6 +591,8 @@
   click SystemInstance href "#systeminstance" "Go to SystemInstance"
   click SystemType href "#systemtype" "Go to SystemType"
   click SystemVersion href "#systemversion" "Go to SystemVersion"
+  click GroupType href "#grouptype" "Go to GroupType"
+  click Group href "#group" "Go to Group"
   click OrdResource href "#ordresource" "Go to OrdResource"
   ```
   
@@ -598,8 +602,11 @@
   classDiagram
   class GroupType
   style GroupType stroke:#333,stroke-width:3px
+  GroupType *-- "0..1" Labels : labels
   Group --> "1" GroupType : groupTypeId
   Tombstone --> "0..1" GroupType : groupTypeId
+  click GroupType href "#grouptype" "Go to GroupType"
+  click Labels href "#labels" "Go to Labels"
   click Group href "#group" "Go to Group"
   click Tombstone href "#tombstone" "Go to Tombstone"
   ```
@@ -617,6 +624,7 @@
   Capability --> "0..*" Group : partOfGroups
   IntegrationDependency --> "0..*" Group : partOfGroups
   Group --> "1" GroupType : groupTypeId
+  Group *-- "0..1" Labels : labels
   Tombstone --> "0..1" Group : groupId
   OrdResource --> "0..*" Group : partOfGroups
   click ApiResource href "#apiresource" "Go to ApiResource"
@@ -627,6 +635,7 @@
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
   click Group href "#group" "Go to Group"
   click GroupType href "#grouptype" "Go to GroupType"
+  click Labels href "#labels" "Go to Labels"
   click Tombstone href "#tombstone" "Go to Tombstone"
   click OrdResource href "#ordresource" "Go to OrdResource"
   ```

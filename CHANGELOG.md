@@ -10,6 +10,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `labels` and `correlationIds` to group and group type.
+  - This allows to apply extensions / references to non ORD concepts via IDs, making the group concept more extensible.
+
 ### Fixed
 
 - make AccessStrategy from ORD Configuration consistent with AccessStrategy from ORD Document (both should use `anyOf` for the allowed values)

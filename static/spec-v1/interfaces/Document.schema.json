@@ -5253,6 +5253,23 @@
           "examples": [
             "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
           ]
+        },
+        "labels": {
+          "$ref": "#/definitions/Labels"
+        },
+        "correlationIds": {
+          "type": "array",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
+            "maxLength": 255
+          },
+          "examples": [
+            [
+              "sap.s4:communicationScenario:SAP_COM_0008"
+            ]
+          ]
         }
       },
       "required": [
@@ -5308,6 +5325,23 @@
           "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links.",
           "examples": [
             "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
+          ]
+        },
+        "labels": {
+          "$ref": "#/definitions/Labels"
+        },
+        "correlationIds": {
+          "type": "array",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
+            "maxLength": 255
+          },
+          "examples": [
+            [
+              "sap.s4:communicationScenario:SAP_COM_0008"
+            ]
           ]
         }
       },
