@@ -35,6 +35,13 @@ spec:
       description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
       constraints:
         minLength: 1
+    - name: 'restrictDirection'
+      type: 'string'
+      description: 'Optionally restricts the direction of the group assignments for this group type.'
+    - name: 'restrictResourceType'
+      type: 'string'
+      array: true
+      description: 'Optionally restricts group assignments (of this group type) to ORD resource types.'
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'groups'

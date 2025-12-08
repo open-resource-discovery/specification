@@ -617,6 +617,7 @@
   Capability --> "0..*" Group : partOfGroups
   IntegrationDependency --> "0..*" Group : partOfGroups
   Group --> "1" GroupType : groupTypeId
+  Group *-- "0..*" ExternalOrdId : members
   Tombstone --> "0..1" Group : groupId
   OrdResource --> "0..*" Group : partOfGroups
   click ApiResource href "#apiresource" "Go to ApiResource"
@@ -627,8 +628,19 @@
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
   click Group href "#group" "Go to Group"
   click GroupType href "#grouptype" "Go to GroupType"
+  click ExternalOrdId href "#externalordid" "Go to ExternalOrdId"
   click Tombstone href "#tombstone" "Go to Tombstone"
   click OrdResource href "#ordresource" "Go to OrdResource"
+  ```
+  
+
+## ExternalOrdId
+  ```mermaid
+  classDiagram
+  class ExternalOrdId
+  style ExternalOrdId stroke:#333,stroke-width:3px
+  Group *-- "0..*" ExternalOrdId : members
+  click Group href "#group" "Go to Group"
   ```
   
 

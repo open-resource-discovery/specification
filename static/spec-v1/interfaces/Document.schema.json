@@ -5253,6 +5253,41 @@
           "examples": [
             "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
           ]
+        },
+        "restrictDirection": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "resource-to-group",
+              "description": "The resource is assigned to the group."
+            },
+            {
+              "const": "group-to-resource",
+              "description": "The group is assigned to the resource."
+            }
+          ],
+          "description": "Optionally restricts the direction of the group assignments for this group type.",
+          "x-introduced-in-version": "1.13.0",
+          "x-feature-status": "beta"
+        },
+        "restrictResourceType": {
+          "type": "array",
+          "description": "Optionally restricts group assignments (of this group type) to ORD resource types.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "package",
+              "consumptionBundle",
+              "apiResource",
+              "eventResource",
+              "capability",
+              "entityType",
+              "integrationDependency",
+              "dataProduct"
+            ]
+          },
+          "x-introduced-in-version": "1.13.0",
+          "x-feature-status": "beta"
         }
       },
       "required": [
@@ -5263,7 +5298,11 @@
         {
           "groupTypeId": "sap.cds:service",
           "title": "CAP Service",
-          "description": "Description of the CDS Service concept and how its correctly used for grouping..."
+          "description": "Description of the CDS Service concept and how its correctly used for grouping...",
+          "restrictResourceType": [
+            "apiResource",
+            "eventResource"
+          ]
         }
       ]
     },
@@ -5309,6 +5348,25 @@
           "examples": [
             "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
           ]
+        },
+        "members": {
+          "type": "array",
+          "x-introduced-in-version": "1.13.0",
+          "x-feature-status": "beta",
+          "description": "List of members of the group, complementing the reverse `partOfGroups` assignment.\nThe members are defined as a list of [ORD IDs](../../spec-v1/#ord-id).\nThis list allows a group to define its members, instead of ORD resources stating their membership via `partOfGroups`.\nWhich direction should be used depends on which sides knows it first-hand.\nThe ORD Provider SHOULD offer convenience to calculate the reverse relationships on both sides, ideally as a merged and consolidated (duplicate-free) bi-directional relation.",
+          "items": {
+            "$ref": "#/definitions/ExternalOrdId"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.s4:apiResource:API_BILL_OF_MATERIAL_SRV:v1"
+              },
+              {
+                "ordId": "sap.s4:apiResource:API_SALES_ORDER_SRV:v1"
+              }
+            ]
+          ]
         }
       },
       "required": [
@@ -5321,6 +5379,33 @@
           "groupId": "sap.cap:service:customer.incidents:incidents.IncidentsService",
           "groupTypeId": "sap.cap:service",
           "title": "Incidents Service"
+        }
+      ]
+    },
+    "ExternalOrdId": {
+      "title": "External ORD ID",
+      "type": "object",
+      "description": "An external ORD ID is a reference to an ORD resource that is defined by a different ORD Provider.\nThe format of the external ORD ID is the same as the [ORD ID](../../spec-v1/#ord-id) format.\nIf the reference points to a resource particular to a tenant, the tenant ID MUST be provided, too.",
+      "x-introduced-in-version": "1.13.0",
+      "x-feature-status": "beta",
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*|)?$"
+        },
+        "systemInstanceCorrelationId": {
+          "type": "string",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
+          "maxLength": 255,
+          "description": "Optionally define the system instance that the external ORD ID is related to.\nThis is done by proving a [Correlation ID](../../spec-v1/#correlation-id), as system instances have no own ORD ID.\nWhich correlation ID and namespace / concept to use depends on which systems have the authority to create and know the system instance / tenant IDs.",
+          "examples": [
+            "sap.cld:tenant:741234567"
+          ]
+        }
+      },
+      "examples": [
+        {
+          "ordId": "sap.s4:apiResource:API_BILL_OF_MATERIAL_SRV:v1"
         }
       ]
     },

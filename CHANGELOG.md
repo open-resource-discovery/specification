@@ -10,6 +10,15 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `members` assignment from a Group to ORD Resources
+  - So far, ORD resources could only define their `partOfGroups` assignment, assuming they know which group (instances) they belong to
+  - Sometimes not just the group taxonomy is defined externally, but also the group assignment. In this case, it is the group which knows which ORD resources are part of it (`members`), not vice versa
+  - For an ORD aggregator this comes with a new challenge, as the relationship between group and its constituents can be defined from both sides
+- Added `restrictDirection` to optionally restrict the direction of group assignments to either resource -> group or vice versa.
+- Added `restrictResourceType` to optionally restrict group assignments to one or more ORD resource types.
+
 ### Fixed
 
 - make AccessStrategy from ORD Configuration consistent with AccessStrategy from ORD Document (both should use `anyOf` for the allowed values)
