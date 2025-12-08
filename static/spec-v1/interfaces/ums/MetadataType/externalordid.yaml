@@ -1,0 +1,31 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'externalordid'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'ExternalOrdId'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "An external ORD ID is a reference to an ORD resource that is defined by a different ORD Provider.\nThe format of the external ORD ID is the same as the [ORD ID](../../spec-v1/#ord-id) format.\nIf the reference points to a resource particular to a tenant, the tenant ID MUST be provided, too."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId'
+      type: 'string'
+      constraints:
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)?$'
+    - name: 'systemInstanceCorrelationId'
+      type: 'string'
+      description: "Optionally define the system instance that the external ORD ID is related to.\nThis is done by proving a [Correlation ID](../../spec-v1/#correlation-id), as system instances have no own ORD ID.\nWhich correlation ID and namespace / concept to use depends on which systems have the authority to create and know the system instance / tenant IDs."
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$'
+  customTypeDefinitions: []
+  metadataRelations: []

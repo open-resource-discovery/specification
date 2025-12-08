@@ -488,7 +488,7 @@ If an "identity / equals" relationship needs to be expressed, use the `correlati
 
 To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
 
-**Type**: Object(<a href="#group_groupid">groupId</a>, <a href="#group_grouptypeid">groupTypeId</a>, <a href="#group_title">title</a>, <a href="#group_description">description</a>)
+**Type**: Object(<a href="#group_groupid">groupId</a>, <a href="#group_grouptypeid">groupTypeId</a>, <a href="#group_title">title</a>, <a href="#group_description">description</a>, <a href="#group_members">members</a>)
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -496,6 +496,7 @@ To learn more about the concept, see [Group Concept Documentation](../concepts/g
 |<div className="interface-property-name anchor" id="group_grouptypeid">groupTypeId<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#group_grouptypeid" title="Group.groupTypeId"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Group Type ID.<br/><br/>MUST match with the first two fragments of the own `groupId`.<hr/>**Association Target**: [groupTypeId](#group-type_grouptypeid))<br/>**Regex Pattern**: <code className="regex">^([a-z0-9-]+(?\:[.][a-z0-9-]+)\*)\:([a-zA-Z0-9._\\-\\/]+)$</code><br/>**Example Values**: <ul className="examples"><li>`"sap.foo:domain"`</li><li>`"sap.cap:service"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="group_title">title<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#group_title" title="Group.title"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Human readable title of the group assignment (for UI).<hr/>**Minimum Length**: `1`<br/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"SAP S/4HANA Cloud"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="group_description">description<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#group_description" title="Group.description"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).<br/><br/>The description SHOULD not be excessive in length and is not meant to provide full documentation.<br/>Detailed documentation SHOULD be attached as (typed) links.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="group_members">members<br/><span className="optional">OPTIONAL</span> <span className="feature-status-beta" title="This feature is BETA status and subject to potential changes.">BETA</span><a className="hash-link" href="#group_members" title="Group.members"></a></div>|<div className="interface-property-type">Array&lt;[External ORD ID](#external-ord-id)&gt;</div>|<div className="interface-property-description">List of members of the group, complementing the reverse `partOfGroups` assignment.<br/>The members are defined as a list of [ORD IDs](../../spec-v1/#ord-id).<br/>This list allows a group to define its members, instead of ORD resources stating their membership via `partOfGroups`.<br/>Which direction should be used depends on which sides knows it first-hand.<br/>The ORD Provider SHOULD offer convenience to calculate the reverse relationships on both sides, ideally as a merged and consolidated (duplicate-free) bi-directional relation.<hr/><strong>Introduced in Version</strong>: 1.13.0<br/>**Example Values**: <ul className="examples"><li>`[{"ordId":"sap.s4:apiResource:API_BILL_OF_MATERIAL_SRV:v1"},{"ordId":"sap.s4:apiResource:API_SALES_ORDER_SRV:v1"}]`</li></ul></div>|
 
 
 ###### Example Values:
@@ -519,13 +520,15 @@ Group Types can be defined centrally (ownership by authority namespace) or decen
 
 To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
 
-**Type**: Object(<a href="#group-type_grouptypeid">groupTypeId</a>, <a href="#group-type_title">title</a>, <a href="#group-type_description">description</a>)
+**Type**: Object(<a href="#group-type_grouptypeid">groupTypeId</a>, <a href="#group-type_title">title</a>, <a href="#group-type_description">description</a>, <a href="#group-type_restrictdirection">restrictDirection</a>, <a href="#group-type_restrictresourcetype">restrictResourceType</a>)
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
 |<div className="interface-property-name anchor" id="group-type_grouptypeid">groupTypeId<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#group-type_grouptypeid" title="GroupType.groupTypeId"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">GroupType ID, which MUST be a valid [Concept ID](../../spec-v1/#concept-id).<hr/>**Regex Pattern**: <code className="regex">^([a-z0-9-]+(?\:[.][a-z0-9-]+)\*)\:([a-zA-Z0-9._\\-\\/]+)$</code><br/>**Example Values**: <ul className="examples"><li>`"sap.foo:domain"`</li><li>`"sap.cap:service"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="group-type_title">title<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#group-type_title" title="GroupType.title"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Human readable title of the group type.<hr/>**Minimum Length**: `1`<br/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"SAP S/4HANA Cloud"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="group-type_description">description<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#group-type_description" title="GroupType.description"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).<br/><br/>The description SHOULD not be excessive in length and is not meant to provide full documentation.<br/>Detailed documentation SHOULD be attached as (typed) links.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="group-type_restrictdirection">restrictDirection<br/><span className="optional">OPTIONAL</span> <span className="feature-status-beta" title="This feature is BETA status and subject to potential changes.">BETA</span><a className="hash-link" href="#group-type_restrictdirection" title="GroupType.restrictDirection"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optionally restricts the direction of the group assignments for this group type.<hr/>**Allowed Values**: <ul><li><p>`"resource-to-group"`: The resource is assigned to the group.</p></li><li><p>`"group-to-resource"`: The group is assigned to the resource.</p></li></ul><br/><strong>Introduced in Version</strong>: 1.13.0</div>|
+|<div className="interface-property-name anchor" id="group-type_restrictresourcetype">restrictResourceType<br/><span className="optional">OPTIONAL</span> <span className="feature-status-beta" title="This feature is BETA status and subject to potential changes.">BETA</span><a className="hash-link" href="#group-type_restrictresourcetype" title="GroupType.restrictResourceType"></a></div>|<div className="interface-property-type">Array&lt;string&gt;</div>|<div className="interface-property-description">Optionally restricts group assignments (of this group type) to ORD resource types.<hr/><strong>Introduced in Version</strong>: 1.13.0</div>|
 
 
 ###### Example Values:
@@ -535,7 +538,11 @@ To learn more about the concept, see [Group Concept Documentation](../concepts/g
 {
   "groupTypeId": "sap.cds:service",
   "title": "CAP Service",
-  "description": "Description of the CDS Service concept and how its correctly used for grouping..."
+  "description": "Description of the CDS Service concept and how its correctly used for grouping...",
+  "restrictResourceType": [
+    "apiResource",
+    "eventResource"
+  ]
 }
 ```
 
@@ -989,6 +996,32 @@ Duplicate labels will be merged by the ORD aggregator according to the following
 ```
 
 
+### External ORD ID
+
+<span className="feature-status-beta" title="This feature is BETA status and subject to potential changes.">BETA</span> 
+
+An external ORD ID is a reference to an ORD resource that is defined by a different ORD Provider.
+The format of the external ORD ID is the same as the [ORD ID](../../spec-v1/#ord-id) format.
+If the reference points to a resource particular to a tenant, the tenant ID MUST be provided, too.
+
+**Type**: Object(<a href="#external-ord-id_ordid">ordId</a>, <a href="#external-ord-id_systeminstancecorrelationid">systemInstanceCorrelationId</a>)
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+|<div className="interface-property-name anchor" id="external-ord-id_ordid">ordId<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#external-ord-id_ordid" title="ExternalOrdId.ordId"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description"><hr/>**Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:(package\|consumptionBundle\|product\|vendor\|apiResource\|eventResource\|capability\|entityType\|integrationDependency\|dataProduct)\:([a-zA-Z0-9._\\-]+)\:(v0\|v[1-9][0-9]\*\|)?$</code></div>|
+|<div className="interface-property-name anchor" id="external-ord-id_systeminstancecorrelationid">systemInstanceCorrelationId<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#external-ord-id_systeminstancecorrelationid" title="ExternalOrdId.systemInstanceCorrelationId"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optionally define the system instance that the external ORD ID is related to.<br/>This is done by proving a [Correlation ID](../../spec-v1/#correlation-id), as system instances have no own ORD ID.<br/>Which correlation ID and namespace / concept to use depends on which systems have the authority to create and know the system instance / tenant IDs.<hr/>**Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:([a-zA-Z0-9._\\-\\/]+)\:([a-zA-Z0-9._\\-\\/]+)$</code><br/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"sap.cld:tenant:741234567"`</li></ul></div>|
+
+
+###### Example Values:
+
+
+```js
+{
+  "ordId": "sap.s4:apiResource:API_BILL_OF_MATERIAL_SRV:v1"
+}
+```
+
+
 ### Documentation Labels
 
 Generic documentation labels that can be applied to most ORD information.
@@ -1072,7 +1105,7 @@ or through a defined and known `implementationStandard` that can resolve the `lo
 At SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.
 To indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).
 
-ODM 2.0 relies on the entity type mappings and uses the mapping to express the relationship of an API to the
+ODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the
 corresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.
 
 **Type**: Object(<a href="#entity-type-mapping_apimodelselectors">apiModelSelectors</a>, <a href="#entity-type-mapping_entitytypetargets">entityTypeTargets</a>)

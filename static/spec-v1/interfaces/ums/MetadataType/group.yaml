@@ -52,6 +52,10 @@ spec:
       mandatory: true
       reverseRelation:
         relationPropertyName: 'groups'
+    - propertyName: 'members'
+      relatedTypeName: 'ExternalOrdId'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "List of members of the group, complementing the reverse `partOfGroups` assignment.\nThe members are defined as a list of [ORD IDs](../../spec-v1/#ord-id).\nThis list allows a group to define its members, instead of ORD resources stating their membership via `partOfGroups`.\nWhich direction should be used depends on which sides knows it first-hand.\nThe ORD Provider SHOULD offer convenience to calculate the reverse relationships on both sides, ideally as a merged and consolidated (duplicate-free) bi-directional relation."
     - propertyName: 'apiResourceMembers'
       relatedTypeName: 'ApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
