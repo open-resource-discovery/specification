@@ -19,7 +19,7 @@ Usually SAP applications and services will use the more complete and opinionated
 
 - All SAP [namespaces](../../spec-v1/index.md#namespaces) MUST be registered in the SAP namespace-registry.
   - All ORD resources owned by SAP MUST use the `sap` vendor namespace
-  - ORD resources / extensions created by the customer MAY use the `customer` vendor namespace.
+  - ORD resources / extensions created by the customer MAY use the `customer` vendor namespace or MUST use their own vendor namespace.
 
 ### Packages
 
