@@ -48,7 +48,7 @@ IF the resources have already been published to the public [SAP Business Acceler
 
 ### Title Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://openresourcediscovery.org/spec-v1/interfaces/Document/).
 
 - All `title` values (except link titles) MUST NOT exceed 120 characters, as per SAP API Style Guide and SAP Business Accelerator Hub guideline recommendations.
 - All `title` values (except link titles) MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
@@ -86,7 +86,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://openresourcediscovery.org/spec-v1/interfaces/Document/).
 
 - All `description` values MUST NOT contain the short description.
   They are complementary to the short description and should not just be a longer replacement.
@@ -95,7 +95,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Short Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://openresourcediscovery.org/spec-v1/interfaces/Document/).
 
 - All `shortDescription` values SHOULD NOT exceed 180 characters.
 - All `shortDescription` values MUST NOT repeat or start with the object name.

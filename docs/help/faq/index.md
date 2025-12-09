@@ -23,7 +23,7 @@ That leaves the main challenge to create the ORD documents correctly. Two things
 
 - Use a validator to ensure that the ORD Documents are correct and compliant, ideally as CI/CD step or test cases.
 - Implement against a generated (ideally type safe) ORD document interface.
-  - ORD comes with a [JSON Schema definition](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json), which can be converted into interfaces / clients for most programming languages.
+  - ORD comes with a [JSON Schema definition](https://openresourcediscovery.org/spec-v1/interfaces/Document.schema.json), which can be converted into interfaces / clients for most programming languages.
     This can be done with converters like [quicktype](https://quicktype.io/).
 
 #### Q: Is ORD already used outside of SAP?
