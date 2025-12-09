@@ -38,7 +38,7 @@ jobs:
           cp "$CFG" "$CFG.bak"
           trap 'mv -f "$CFG.bak" "$CFG"' EXIT
 
-          sed -i "s#const baseUrl = \"/specification\";#const baseUrl = \"$PR_PATH\";#g" "$CFG"
+          sed -i "s#const baseUrl = \"\";#const baseUrl = \"$PR_PATH\";#g" "$CFG"
           grep -q "$PR_PATH" "$CFG"
 
           npm ci
