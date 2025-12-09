@@ -3,13 +3,13 @@
 
 import { themes as prismThemes } from "prism-react-renderer";
 
-const baseUrl = "/specification";
+const baseUrl = "";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Open Resource Discovery",
   tagline: "An aligned protocol for publishing and discovering metadata about systems.",
-  url: "https://open-resource-discovery.github.io",
+  url: "https://openresourcediscovery.org",
   baseUrl,
   trailingSlash: false,
   onBrokenLinks: "throw",
@@ -18,10 +18,10 @@ const config = {
   staticDirectories: ["static"],
   favicon: "img/favicon.svg",
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "open-resource-discovery", // Usually your GitHub org/user name.
-  projectName: "specification", // Usually your repo name.
+  // // GitHub pages deployment config.
+  // // If you aren't using GitHub pages, you don't need these.
+  // organizationName: "open-resource-discovery", // Usually your GitHub org/user name.
+  // projectName: "specification", // Usually your repo name.
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
