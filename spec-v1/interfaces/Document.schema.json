@@ -1,7 +1,7 @@
 {
-  "description": "The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information\nthat are specific to the document/the service it describes.\n\nThe constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.\n\nThis JSON Schema describes the [ORD document interface](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document) of the [ORD specification](https://open-resource-discovery.github.io/specification/).",
+  "description": "The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information\nthat are specific to the document/the service it describes.\n\nThe constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.\n\nThis JSON Schema describes the [ORD document interface](https://openresourcediscovery.org/spec-v1/interfaces/Document) of the [ORD specification](https://openresourcediscovery.org/).",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#",
+  "$id": "https://openresourcediscovery.org/spec-v1/interfaces/Document.schema.json#",
   "title": "Ord Document",
   "type": "object",
   "properties": {
@@ -15,7 +15,7 @@
           "format": "uri-reference"
         },
         {
-          "const": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json#"
+          "const": "https://openresourcediscovery.org/spec-v1/interfaces/Document.schema.json#"
         }
       ]
     },
