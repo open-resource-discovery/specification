@@ -50,7 +50,7 @@ In SAP context, we support on-premises software through [Cloud Connectors](https
 **A:** The "Open" in ORD refers to the protocol itself being published publicly under a permissive license (Apache 2.0).
 It can be freely implemented by SAP partners and customers.
 
-The standard is published at https://open-resource-discovery.github.io/specification and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/).
+The standard is published at https://openresourcediscovery.org and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/).
 
 Please note that ORD being an open protocol does not imply that the resources and information described through it are "open".
 They can be categorized explicitly, for example through the `visibility` attribute.
