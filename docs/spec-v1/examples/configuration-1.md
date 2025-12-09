@@ -7,7 +7,7 @@ description: Example documents for Configuration.
 
 ```json
 {
-  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Configuration.schema.json",
+  "$schema": "https://openresourcediscovery.org/spec-v1/interfaces/Configuration.schema.json",
   "openResourceDiscoveryV1": {
     "documents": [
       {
