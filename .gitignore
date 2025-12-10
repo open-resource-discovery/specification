@@ -20,4 +20,6 @@ src/generated/**/*.schema.json
 src/generated/**/plugin/
 docs/spec-v1/interfaces/Configuration.md
 docs/spec-v1/interfaces/Document.md
-static/spec-v1/*
+
+/static/spec-v1/interfaces/Configuration.schema.json
+/static/spec-v1/interfaces/Document.schema.json

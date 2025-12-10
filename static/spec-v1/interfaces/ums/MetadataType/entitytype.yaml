@@ -1,0 +1,245 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'entitytype'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'EntityType'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: "An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.\nThe same entity type can be exposed through one or multiple API and events resources.\n\nTo learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type)."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId'
+      type: 'string'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: true
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'localId'
+      type: 'string'
+      description: "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID."
+      mandatory: true
+      constraints:
+        maxLength: 255
+    - name: 'correlationIds'
+      type: 'string'
+      array: true
+      description: "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id)."
+    - name: 'title'
+      type: 'string'
+      description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
+      mandatory: true
+      constraints:
+        minLength: 1
+        maxLength: 255
+    - name: 'shortDescription'
+      type: 'string'
+      description: "Plain text short description.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
+      constraints:
+        minLength: 1
+        maxLength: 255
+    - name: 'description'
+      type: 'string'
+      description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
+      constraints:
+        minLength: 1
+    - name: 'partOfPackage_ID'
+      type: 'guid'
+      description: "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package."
+      mandatory: true
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'partOfGroups_ID'
+      type: 'guid'
+      array: true
+      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
+    - name: 'partOfProducts_ID'
+      type: 'guid'
+      array: true
+      description: "List of products the resources of the package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+    - name: 'version'
+      type: 'string'
+      description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented."
+      mandatory: true
+      constraints:
+        pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+    - name: 'lastUpdate'
+      type: 'string'
+      description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
+    - name: 'visibility'
+      type: 'string'
+      description: 'The visibility states who is allowed to "see" the described resource or capability.'
+      mandatory: true
+    - name: 'releaseStatus'
+      type: 'string'
+      description: 'The `releaseStatus` specifies the stability of the resource and its external contract.'
+      mandatory: true
+    - name: 'deprecationDate'
+      type: 'string'
+      description: "The deprecation date defines when the resource has been set as deprecated.\nThis is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
+    - name: 'sunsetDate'
+      type: 'string'
+      description: "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
+    - name: 'successors_ID'
+      type: 'guid'
+      array: true
+      description: "The successor resource(s).\n\nMUST be a valid reference to an ORD ID.\n\nIf the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.\nIf `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`."
+    - name: 'changelogEntries'
+      type: 'custom'
+      customTypeName: 'ChangelogEntry'
+      array: true
+      description: 'Contains changelog entries that summarize changes with special regards to version and releaseStatus'
+    - name: 'level'
+      type: 'string'
+      description: "Defining the abstraction level of the entity type using the DDD terminology.\n\nIn Domain-Driven Design, there is a concept of entities and aggregates.\nThere are root entities which may contain further sub entities by composition.\nThe complete \"package\" is then called an aggregate, which gets its name and identity from the root entity.\nAn aggregate is a cluster of domain objects that can be treated as a single unit.\nThe root is the entity that is referenced from outside the aggregate. There must be only one root per aggregate.\nThe root ensures the integrity of the aggregate. A sub entity is any other non-root entity in the aggregate.\n\nSource, see [Martin Fowler on DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html)"
+      mandatory: true
+    - name: 'links'
+      type: 'custom'
+      customTypeName: 'Link'
+      array: true
+      description: 'Generic Links with arbitrary meaning and content.'
+    - name: 'tags'
+      type: 'string'
+      array: true
+      description: "List of free text style tags.\nNo special characters are allowed except `-`, `_`, `.`, `/` and ` `.\n\nTags that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+    - name: 'labels'
+      type: 'custom'
+      customTypeName: 'Labels'
+      description: 'Generic labels that can be applied to most ORD information.'
+    - name: 'documentationLabels'
+      type: 'custom'
+      customTypeName: 'DocumentationLabels'
+      description: 'Generic documentation labels that can be applied to most ORD information.'
+    - name: 'policyLevel'
+      type: 'string'
+      description: "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n"
+    - name: 'customPolicyLevel'
+      type: 'string'
+      description: "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id)."
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'policyLevels'
+      type: 'string'
+      array: true
+      description: "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id)."
+    - name: 'systemInstanceAware'
+      type: 'boolean'
+      description: "All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**."
+  customTypeDefinitions:
+    - name: 'ChangelogEntry'
+      metadataProperties:
+        - name: 'version'
+          type: 'string'
+          description: "Full version number that corresponds to the `version` that is described by the changelog entry.\n\nIdeally it follows the [Semantic Versioning 2.0.0](https://semver.org/) standard,\nbut since it should reflect the actual version string / scheme used, this is not a mandatory requirement."
+          mandatory: true
+          constraints:
+            minLength: 1
+        - name: 'releaseStatus'
+          type: 'string'
+          description: 'The `releaseStatus` specifies the stability of the resource and its external contract.'
+          mandatory: true
+        - name: 'date'
+          type: 'date'
+          description: "Date of change, without time or timezone information.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
+          mandatory: true
+        - name: 'description'
+          type: 'string'
+          description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
+          constraints:
+            minLength: 1
+        - name: 'url'
+          type: 'string'
+          description: "Optional [URL](https://tools.ietf.org/html/rfc3986) that links to a more detailed changelog entry.\n\nThe link target MUST be absolute and SHOULD be openly accessible."
+    - name: 'Link'
+      metadataProperties:
+        - name: 'title'
+          type: 'string'
+          description: "Human readable title of the link.\n\nMUST be unique within the collection of links provided."
+          mandatory: true
+          constraints:
+            minLength: 1
+        - name: 'url'
+          type: 'string'
+          description: "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe link target MUST be absolute and SHOULD be openly accessible."
+          mandatory: true
+        - name: 'description'
+          type: 'string'
+          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)'
+          constraints:
+            minLength: 1
+    - name: 'Labels'
+      metadataProperties:
+        - name: 'key'
+          type: 'string'
+        - name: 'value'
+          type: 'string'
+    - name: 'DocumentationLabels'
+      metadataProperties:
+        - name: 'key'
+          type: 'string'
+        - name: 'value'
+          type: 'string'
+  metadataRelations:
+    - propertyName: 'partOfPackage'
+      relatedTypeName: 'Package'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'partOfPackage_ID'
+      description: "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package."
+      mandatory: true
+      reverseRelation:
+        relationPropertyName: 'entityTypes'
+    - propertyName: 'partOfGroups'
+      relatedTypeName: 'Group'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'partOfGroups_ID'
+      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
+      reverseRelation:
+        relationPropertyName: 'entityTypeMembers'
+    - propertyName: 'partOfProducts'
+      relatedTypeName: 'Product'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'partOfProducts_ID'
+      description: "List of products the resources of the package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+    - propertyName: 'successors'
+      relatedTypeName: 'EntityType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'successors_ID'
+      description: "The successor resource(s).\n\nMUST be a valid reference to an ORD ID.\n\nIf the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.\nIf `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`."
+    - propertyName: 'relatedEntityTypes'
+      relatedTypeName: 'RelatedEntityType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "States that this Entity Type is related to another Entity Type.\n\nUsually this happens if there are similar conceptual entity types across different namespaces."
+    - propertyName: 'extensible'
+      relatedTypeName: 'Extensible'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Describes extensibility (by customers or partners) of this resource.\nExtensibility usually happens at run-time by the end-users.\nExtensions can be field or entity extensions that come on top of the baseline contract.\n\nChanges in extensions do not lead to an increase in the `version`, but MUST lead to an updated `lastUpdate` date.\n\nSince the extensions are managed by the customer or a partner, whether those changes are compatible or not is not guaranteed by the base contract of the resource."
+    - propertyName: 'dataProducts'
+      relatedTypeName: 'DataProduct'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Data Products associated to the Entity Type.'
+      mandatory: false
+    - propertyName: 'capabilities'
+      relatedTypeName: 'Capability'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Capabilities associated to the Entity Type.'
+      mandatory: false
+    - propertyName: 'inverseRelatedEntityTypes'
+      relatedTypeName: 'RelatedEntityType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Entity types that defined a relationship to this entity type'
+      mandatory: false
