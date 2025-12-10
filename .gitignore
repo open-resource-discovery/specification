@@ -7,8 +7,19 @@ npm-debug.log*
 # Dependency directories
 node_modules/
 
-# Generated files
-src/generated/
-build/
-dist/
+# Cache
 .docusaurus
+
+# Build
+dist/
+build/
+
+# Generated
+src/generated/**/*.md
+src/generated/**/*.schema.json
+src/generated/**/plugin/
+docs/spec-v1/interfaces/Configuration.md
+docs/spec-v1/interfaces/Document.md
+
+/static/spec-v1/interfaces/Configuration.schema.json
+/static/spec-v1/interfaces/Document.schema.json
