@@ -18,5 +18,6 @@ build/
 src/generated/**/*.md
 src/generated/**/*.schema.json
 src/generated/**/plugin/
-
+docs/spec-v1/interfaces/Configuration.md
+docs/spec-v1/interfaces/Document.md
 static/spec-v1/*
