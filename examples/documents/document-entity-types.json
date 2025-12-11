@@ -1,5 +1,5 @@
 {
-  "$schema": "https://openresourcediscovery.org/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.12",
   "description": "Example for entity types as they will be exposed by ODM",
   "policyLevels": ["sap:core:v1"],
