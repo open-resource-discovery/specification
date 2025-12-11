@@ -193,6 +193,28 @@
         ]
       },
       "systemInstanceAware": true
+    },
+    {
+      "ordId": "sap.xref:dataProduct:AbstractCustomer:v1",
+      "localId": "Customer",
+      "correlationIds": ["sap.xref:foo:bar"],
+      "title": "Customer",
+      "abstract": true,
+      "shortDescription": "An abstract DP example",
+      "description": "The Customer data should be offered following the schema and descriptions of this abstract data product...",
+      "partOfPackage": "sap.xref:package:SomePackageDataProduct:v1",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "version": "1.9.0",
+      "lastUpdate": "2020-12-08T15:47:04+00:00",
+      "type": "primary",
+      "category": "business-object",
+      "outputPorts": [
+        {
+          "ordId": "sap.xref:apiResource:AbstractCustomer:v1"
+        }
+      ],
+      "responsible": "sap:ach:CIC-DP-CO"
     }
   ],
   "integrationDependencies": [
@@ -479,7 +501,7 @@
       "title": "Customer Order",
       "shortDescription": "Exposing Customer Order...",
       "description": "Customer Order Delta Sharing API ...",
-      "version": "1.2.3",
+      "version": "1.3.4",
       "releaseStatus": "active",
       "visibility": "public",
       "partOfPackage": "sap.xref:package:SomePackageAPIs:v1",
@@ -491,13 +513,28 @@
       "entryPoints": ["sap://my.lob.data.platform.endpoint:30015"],
       "apiProtocol": "delta-sharing",
       "implementationStandard": "sap:delta-sharing:v1",
+      "resourceDefinitions": [
+        {
+          "type": "sap-csn-interop-effective-v1",
+          "mediaType": "application/json",
+          "url": "/api/customer-order-csn.json",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ],
       "supportedUseCases": ["streaming"],
       "exposedEntityTypes": [
         {
           "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
-
+      "compatibleWith": [{
+          "ordId": "sap.xref:apiResource:AbstractCustomerOrderDeltaSharing:v1",
+          "maxVersion": "1.2"
+      }],
       "apiResourceLinks": [
         {
           "type": "api-documentation",
@@ -524,6 +561,39 @@
       },
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]
+      }
+    },{
+      "ordId": "sap.xref:apiResource:AbstractCustomerOrderDeltaSharing:v1",
+      "localId": "AbstractCustomerOrderDeltaSharing",
+      "title": "Customer Order Data Contract",
+      "shortDescription": "This is the contract to expose Customer Order data...",
+      "description": "Customer Order Delta Sharing API need to follow this contract...",
+      "version": "1.2.3",
+      "releaseStatus": "active",
+      "abstract": true,
+      "visibility": "public",
+      "partOfPackage": "sap.xref:package:SomePackageAPIs:v1",
+      "apiProtocol": "delta-sharing",
+      "implementationStandard": "sap:delta-sharing:v1",
+      "resourceDefinitions": [
+        {
+          "type": "sap-csn-interop-effective-v1",
+          "mediaType": "application/json",
+          "url": "/api/customer-order-csn.json",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ],
+      "exposedEntityTypes": [
+        {
+          "ordId": "sap.odm:entityType:CustomerOrder:v1"
+        }
+      ],
+      "extensible": {
+        "supported": "no"
       }
     },
     {
