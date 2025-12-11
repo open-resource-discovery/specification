@@ -7,14 +7,14 @@
  *
  * The configuration endpoint is a [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) discovery mechanism.
  *
- * This JSON Schema describes the [ORD configuration interface](https://open-resource-discovery.org/spec-v1/interfaces/Configuration) of the [ORD specification](https://open-resource-discovery.org/).
+ * This JSON Schema describes the [ORD configuration interface](https://openresourcediscovery.org/spec-v1/interfaces/Configuration) of the [ORD specification](https://openresourcediscovery.org/).
  */
 export interface OrdConfiguration {
   /**
    * Optional URL to the ORD Configuration schema (defined as JSON Schema).
    * If given, this enables code intelligence and validation in supported editors (like VSCode) and tools.
    */
-  $schema?: (string | "https://open-resource-discovery.org/spec-v1/interfaces/Configuration.schema.json#") & string;
+  $schema?: (string | "https://openresourcediscovery.org/spec-v1/interfaces/Configuration.schema.json#") & string;
   /**
    * Optional [base URL](../index.md#def-base-url) that can be used to resolve the relative URLs to the ORD Documents.
    *

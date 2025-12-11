@@ -9,7 +9,7 @@ const baseUrl = "";
 const config = {
   title: "Open Resource Discovery",
   tagline: "An aligned protocol for publishing and discovering metadata about systems.",
-  url: "https://open-resource-discovery.org",
+  url: "https://openresourcediscovery.org",
   baseUrl,
   trailingSlash: false,
   onBrokenLinks: "throw",
