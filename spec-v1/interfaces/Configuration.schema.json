@@ -1,7 +1,7 @@
 {
-  "description": "The ORD configuration response will indicate that ORD is available for the given host and how to proceed with the discovery.\n\nMost notably, the ORD configuration will tell an ORD consumer which ORD documents are available and where/how they can be accessed.\n\nThe configuration endpoint is a [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) discovery mechanism.\n\nThis JSON Schema describes the [ORD configuration interface](https://openresourcediscovery.org/spec-v1/interfaces/Configuration) of the [ORD specification](https://openresourcediscovery.org/).",
+  "description": "The ORD configuration response will indicate that ORD is available for the given host and how to proceed with the discovery.\n\nMost notably, the ORD configuration will tell an ORD consumer which ORD documents are available and where/how they can be accessed.\n\nThe configuration endpoint is a [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) discovery mechanism.\n\nThis JSON Schema describes the [ORD configuration interface](https://open-resource-discovery.org/spec-v1/interfaces/Configuration) of the [ORD specification](https://open-resource-discovery.org/).",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://openresourcediscovery.org/spec-v1/interfaces/Configuration.schema.json#",
+  "$id": "https://open-resource-discovery.org/spec-v1/interfaces/Configuration.schema.json#",
   "title": "Ord Configuration",
   "type": "object",
   "properties": {
@@ -15,7 +15,7 @@
           "format": "uri-reference"
         },
         {
-          "const": "https://openresourcediscovery.org/spec-v1/interfaces/Configuration.schema.json#"
+          "const": "https://open-resource-discovery.org/spec-v1/interfaces/Configuration.schema.json#"
         }
       ]
     },

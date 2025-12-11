@@ -16,7 +16,7 @@ info:
     url: https://www.sap.com/
 externalDocs:
   description: "Open Resource Discovery Specification"
-  url: "https://openresourcediscovery.org"
+  url: "https://open-resource-discovery.org"
 tags:
   - name: OpenResourceDiscovery
 servers:
