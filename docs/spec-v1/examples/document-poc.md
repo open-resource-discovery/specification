@@ -7,7 +7,7 @@ description: Example documents for Document.
 
 ```jsonc
 {
-  "$schema": "https://openresourcediscovery.org/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.12",
   // This document demonstrates that we can also write .jsonc (JSON with Comments) examples.
   // JSONC can be helpful for PoCs where we start with writing example ORD documents with additional explanations.

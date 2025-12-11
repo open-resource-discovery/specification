@@ -7,7 +7,7 @@ description: Example documents for Document.
 
 ```jsonc
 {
-  "$schema": "https://openresourcediscovery.org/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.12",
   "integrationDependencies": [
     // This is an example for a simple Integration Dependency

@@ -1,5 +1,5 @@
 $schema: "http://json-schema.org/draft-07/schema#"
-$id: https://openresourcediscovery.org/spec-v1/interfaces/Document.schema.json#
+$id: https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json#
 title: Ord Document
 description: |-
   The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
@@ -7,7 +7,7 @@ description: |-
 
   The constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.
 
-  This JSON Schema describes the [ORD document interface](https://openresourcediscovery.org/spec-v1/interfaces/Document) of the [ORD specification](https://openresourcediscovery.org/).
+  This JSON Schema describes the [ORD document interface](https://open-resource-discovery.org/spec-v1/interfaces/Document) of the [ORD specification](https://open-resource-discovery.org/).
 x-property-order:
   - ApiResource
   - EventResource
@@ -34,7 +34,7 @@ properties:
     anyOf:
       - type: string
         format: uri-reference
-      - const: "https://openresourcediscovery.org/spec-v1/interfaces/Document.schema.json#"
+      - const: "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json#"
 
   openResourceDiscovery:
     type: string

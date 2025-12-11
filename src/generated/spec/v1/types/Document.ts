@@ -11,14 +11,14 @@ export type Usage = "external" | "local";
  *
  * The constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.
  *
- * This JSON Schema describes the [ORD document interface](https://openresourcediscovery.org/spec-v1/interfaces/Document) of the [ORD specification](https://openresourcediscovery.org/).
+ * This JSON Schema describes the [ORD document interface](https://open-resource-discovery.org/spec-v1/interfaces/Document) of the [ORD specification](https://open-resource-discovery.org/).
  */
 export interface OrdDocument {
   /**
    * Optional [URL](https://tools.ietf.org/html/rfc3986) to the Open Resource Discovery document schema (defined as a JSON Schema).
    * If provided, this enables code intelligence and validation in supported editors (like VSCode) and tools.
    */
-  $schema?: (string | "https://openresourcediscovery.org/spec-v1/interfaces/Document.schema.json#") & string;
+  $schema?: (string | "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json#") & string;
   /**
    * Version of the Open Resource Discovery specification that is used to describe this document.
    */
