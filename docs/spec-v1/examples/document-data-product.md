@@ -7,7 +7,7 @@ description: Example documents for Document.
 
 ```json
 {
-  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.12",
   "policyLevels": ["sap:core:v1"],
   "products": [

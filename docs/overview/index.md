@@ -89,7 +89,7 @@ Based on this, many end-user use cases can be realized, e.g.:
 
 ## Future Plans
 
-Now that ORD is [open-source](https://open-resource-discovery.github.io/specification/) and a neutrally governed standard via [Linux Foundation](https://www.linuxfoundation.org/), a next step is to work with partners to establish it as an industry wide standard.
+Now that ORD is [open-source](https://open-resource-discovery.org/) and a neutrally governed standard via [Linux Foundation](https://www.linuxfoundation.org/), a next step is to work with partners to establish it as an industry wide standard.
 We are also part of the publicly funded [IPCEI CIS](https://www.bmwk.de/Redaktion/EN/Artikel/Industry/ipcei-cis.html) / [ApeiroRA](https://apeirora.eu/) project, where we work towards this goal.
 
 The specification itself is designed to be generic, so most SAP specific aspects are described as [spec extensions](./spec-extensions).
