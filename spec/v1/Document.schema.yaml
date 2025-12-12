@@ -2084,22 +2084,34 @@ definitions:
             description: |-
               The data product is currently being provisioned / installed and is not yet ready to be used.
               This includes acquiring data from input ports, potentially necessary transformation and making the data available in the output ports.
+              During the provisioning phase the data product is not yet usable by consumers and metadata MAY still be incomplete.
+          - const: provisioning-error
+            description: |-
+              The provisioning of the data product failed with error(s). Consumers cannot expect the metadata or data to be available until all errors are resolved.
+          - const: data-loading
+            x-introduced-in-version: "1.13.0"
+            description: |-
+              The data product metadata is ready, and data loading is in progress. It might have started to acquire or transform data before, but is not yet finished.
+              This includes having all necessary metadata information, but the actual data may still be in the process of being acquired or transformed.
+              The data product might be usable for metadata-driven scenarios, but not yet for actual data consumption.
+          - const: data-loading-error
+            x-introduced-in-version: "1.13.0"
+            description: |-
+              The data product metadata is ready, but errors occurred during data acquisition or transformation.
+              Consumers cannot expect the data to be available until all errors are resolved.
           - const: active
             description: |-
               The data product is active / live and can be used by consumers.
               There MAY be warnings but there MUST not be reported errors in the data product.
+          - const: active-with-errors
+            description: |-
+              The data product has been successfully provisioned and has gone `active`, but errors prevent proper consumption.
+              Consistent usage of the data product is not guaranteed until all errors are resolved.
           - const: deprovisioning
             description: |-
               The data product is being deprovisioned / uninstalled and not available for use anymore.
               Deprovisioning includes un-sharing the data from connected consumers and removing the replicated data which is no longer used.
               After successful deprovisioning the data product will either be `disabled: true` (preferred) or not described by the tenant at run-time.
-          - const: active-with-errors
-            description: |-
-              The data product has been successfully provisioned and has gone `active`, but errors prevent proper consumption.
-              Consistent usage of the data product is not guaranteed until all errors are resolved.
-          - const: provisioning-error
-            description: |-
-              The provisioning of the data product failed with error(s).
           - const: deprovisioning-error
             description: |-
               The deprovisioning of the data product failed with error(s).
