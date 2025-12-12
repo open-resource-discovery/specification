@@ -3,7 +3,7 @@
 
 import { themes as prismThemes } from "prism-react-renderer";
 
-const baseUrl = "";
+const baseUrl = process.env.BASE_URL ?? "/";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -52,7 +52,7 @@ const config = {
     ],
   ],
 
-  scripts: [`${baseUrl}/js/custom.js`],
+  scripts: [`${baseUrl}js/custom.js`],
 
   plugins: [
     [
@@ -219,7 +219,7 @@ const config = {
           <div class="footer-container">
             <div class="footer-funding">
               <div class="footer-funding__image">
-                <img src="${baseUrl + "/img/ord-footer-bmwe.png"}" alt="EU and German government funding logos" />
+                <img src="${baseUrl + "img/ord-footer-bmwe.png"}" alt="EU and German government funding logos" />
               </div>
               <div class="footer-funding__text">
                 <p><strong>Funded by the European Union – NextGenerationEU.</strong></p>
@@ -233,12 +233,12 @@ const config = {
             <div class="neonephos-logos">
               <a href="https://neonephos.org/" target="_blank" rel="noopener noreferrer" class="neonephos-link">
                 <img
-                  src="${baseUrl + "/img/ord-footer-neonephos.svg"}"
+                  src="${baseUrl + "img/ord-footer-neonephos.svg"}"
                   alt="Neonephos Logo"
                   class="neonephos-logo neonephos-logo--dark"
                 />
                 <img
-                  src="${baseUrl + "/img/ord-footer-neonephos-light.svg"}"
+                  src="${baseUrl + "img/ord-footer-neonephos-light.svg"}"
                   alt=""
                   aria-hidden="true"
                   class="neonephos-logo neonephos-logo--light"
@@ -247,11 +247,11 @@ const config = {
             </div>
             <!--
             <div class="footer-legal-links">
-              <a href="${baseUrl + "/about/terms-of-use"}">Terms of Use</a>
+              <a href="${baseUrl + "about/terms-of-use"}">Terms of Use</a>
               <span class="footer-legal-sep">|</span>
-              <a href="${baseUrl + "/about/privacy"}">Privacy Statement</a>
+              <a href="${baseUrl + "about/privacy"}">Privacy Statement</a>
               <span class="footer-legal-sep">|</span>
-              <a href="${baseUrl + "/about/legal-disclosure"}">Legal Disclosure</a>
+              <a href="${baseUrl + "about/legal-disclosure"}">Legal Disclosure</a>
             </div>
             -->
           </div>
@@ -262,6 +262,14 @@ const config = {
           autoCollapseCategories: true,
         },
       },
+      ...(process.env.PR_PREVIEW_NUMBER ? {
+        announcementBar: {
+          content: `<b>This is a preview version of the website for <a href="https://github.com/open-resource-discovery/specification/pull/${process.env.PR_PREVIEW_NUMBER}" target="_blank">PR #${process.env.PR_PREVIEW_NUMBER}</a></b>`,
+          backgroundColor: '#e65050ff',
+          textColor: '#fff',
+          isCloseable: false,
+        }} : {}
+      )
     }),
 };
 
