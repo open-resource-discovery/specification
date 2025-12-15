@@ -24,6 +24,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          BANNER_SERVER_BASE_URL: https://banner-server.cert.cfapps.sap.hana.ondemand.com
 
       - name: Deploy
         if: github.ref == 'refs/heads/main'
