@@ -30,11 +30,11 @@ Therefore, we introduced Integration Dependency as a means to describe what a sy
 If this is setup and connected at run-time, we call this an integration.
 But at ORD level, we're only describing the "type-level" ability to integrate and what dependencies and requirements that entails.
 
-The following diagram shows the situation of how two systems can integrate with each other via APIs and Events:
+The following diagram shows how two systems can integrate with each other via APIs and Events:
 
 ![Integration Dependency Problem Statement](/img/integration-dependency-ps.svg "Integration Dependency Problem Statement")
 
-> This figure shown an integration scenario between system A and B. System Instance A has implemented API clients against the API Resources B-1 and B-2 of its integration target, as well as an event subscription (client implementation) for events from event resource B-3. It has an API Resource A-2, which the integration target is supposed to write an API client against and use it to provide data for A.
+> **Figure 1:** This figure shows an integration scenario between System A and System B. System Instance A has implemented API clients against API Resources B-1 and B-2 of its integration target, as well as an event subscription (client implementation) for events from event resource B-3. It has an API Resource A-2, which the integration target uses to provide data back to System A.
 
 ## Proposed Solution
 
@@ -45,7 +45,7 @@ With the proposed solution we can handle SAP Event Broker and Data Product relat
 
 ![Integration Dependency](/img/integration-dependency.svg "Integration Dependency")
 
-> This figure is based on the situation in Figure 1. It shows how System Instance A not only exposes API resources on its own side, but how it also defines an Integration Dependency. In the depicted case, it has two requirements which include references to external resources (System Instance B). Requirement 1 shows the situation that it can be either realized by getting access to the API Resource B-1 or B-2. The API client implementation in System Instance A can handle both API Resources as alternatives. Requirement 2 covers the Event Subscription use case. Requirement 3 points to an own API resource, which implies that the integration target implements an API client to send data back to system A.
+> **Figure 2:** This figure is based on the situation in Figure 1. It shows how System Instance A not only exposes API resources, but also defines an Integration Dependency with multiple requirements referencing external resources (System Instance B). Requirement 1 can be realized by accessing either API Resource B-1 or B-2 (alternatives). Requirement 2 covers event subscription. Requirement 3 points to its own API resource, which the integration target uses to send data back to System A.
 
 Here are some typical scenarios with additional explanations:
 

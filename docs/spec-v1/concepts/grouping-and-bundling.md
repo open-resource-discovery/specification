@@ -34,13 +34,9 @@ Some of them have a specific indented usage, while others offer the application 
 
 ### Namespaces
 
-The ORD IDs contain a [namespace](../index.md#namespaces), which MAY include optional [sub-context namespaces](../index.md#sub-context-namespace).
-They act like a [DDD Bounded Context](https://martinfowler.com/bliki/BoundedContext.html) and allow the same `<resourceName>` to appear in multiple sub-namespaces.
+While ORD IDs contain [namespaces](../index.md#namespaces) that can include optional [sub-context namespaces](../index.md#sub-context-namespace), these should NOT be used for grouping purposes. Changing sub-context namespaces creates incompatible changes by altering ORD IDs. Use [groups](#groups) for grouping instead.
 
-Please be aware that changing the sub-context namespace is an incompatible change, as the ORD IDs change.
-Therefore it's NOT RECOMMENDED to use sub-context namespaces just for the purpose of grouping (use [groups](#groups) instead).
-They should only be used if they are expected to be stable and are necessary to ensure the overall ORD ID is conflict free.
-A good reason is to ensure that sub-teams can work independently on content and have an isolated, conflict free sub-namespace.
+Sub-context namespaces should only be used if they are expected to be stable and are necessary to ensure conflict-free ORD IDs. A valid use case is enabling sub-teams to work independently with isolated, conflict-free sub-namespaces.
 
 ### ORD Documents
 
@@ -50,7 +46,7 @@ However, there are still some [Considerations on the granularity of ORD Document
 ## Best Practices and Recommendations
 
 - Avoid using [namespaces](#namespaces) for the purpose of grouping, if possible.
-- To express end-user facing taxonomy, use [groups](#groups) and not tags or labels as they have no human-readable labels and are meant more for machine
+- For end-user-facing taxonomy, use [groups](#groups) rather than tags or labels. Tags and labels lack human-readable labels and are optimized for machine processing.
 - Packages are less flexible for grouping than [groups](#groups), so the latter are recommended and can be complementary.
   Use [packages](#package) to group ORD resources published together and making use of the information reuse.
 
@@ -83,8 +79,10 @@ This is the case, when:
 
 ### Consumption Bundle
 
-The [**Consumption Bundle**](../interfaces/Document#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
-Ideally it also includes instructions and details how to request access and credentials for resources.
+The [**Consumption Bundle**](../interfaces/Document#consumption-bundle) groups APIs and Events together that can be consumed with the same credentials and auth mechanism.
+Ideally it also includes instructions and details on how to request access and credentials for resources.
+
+> **Important:** A Consumption Bundle is a template that describes _how_ to obtain access, not _which_ credentials are already available. It provides instructions, not instances.
 
 API and Event resources MAY be assigned to 0..n Consumption Bundles.
 Consumption Bundles are only applicable to APIs and Events where the described application itself manages the access and credentials.
@@ -94,9 +92,7 @@ In practice however, there are usually more fine-grained access control permissi
 Those are currently not described in ORD and the Consumption Bundle should therefore describe the "maximum possible scope" that is theoretically possible.
 
 Within consumption bundle, we anticipate to provide more machine-readable information that help to understand and automate the necessary steps to get access.
-E.g. how credentials can be programmatically obtained could be described by attached `credentialExchangeStrategies`.
-
-> It is important to understand that the Consumption Bundle is conceptually like a Template or HowTo guide. It only provides information how access / credentials / clients can be obtained for API usage, not what is already available. The latter would be the result of an "instantiation" of a Consumption Bundle, or something that is already setup and managed by the application itself.
+For example, how credentials can be programmatically obtained could be described by attached `credentialExchangeStrategies`.
 
 > 🚧 Please note that the Consumption Bundle concept is still in a rather basic form and may be extended in the future.
 

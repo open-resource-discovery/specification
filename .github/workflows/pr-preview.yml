@@ -1,0 +1,48 @@
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: preview-${{ github.repository }}-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Build with PR-specific baseUrl
+        if: github.event.action != 'closed'
+        env:
+          PR_PREVIEW_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_URL: /pr-preview/specification/pr-${{ github.event.pull_request.number }}/
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy / Remove preview in spec-preview repo
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: build
+          deploy-repository: open-resource-discovery/pr-preview
+          preview-branch: main
+          umbrella-dir: ./specification
+          pages-base-url: open-resource-discovery.github.io/pr-preview
+          token: ${{ secrets.PR_PREVIEW_TOKEN }}
