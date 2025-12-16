@@ -8,13 +8,13 @@ const baseUrl = process.env.BASE_URL ?? "/";
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Open Resource Discovery",
-  tagline: "An aligned protocol for publishing and discovering metadata about systems.",
+  tagline:
+    "An aligned protocol for publishing and discovering metadata about systems.",
   url: "https://open-resource-discovery.org",
   baseUrl,
   trailingSlash: false,
   onBrokenLinks: "throw",
   onDuplicateRoutes: "throw",
-  onBrokenMarkdownLinks: "throw",
   staticDirectories: ["static"],
   favicon: "img/favicon.svg",
 
@@ -28,6 +28,9 @@ const config = {
 
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: "throw",
+    },
   },
 
   presets: [
@@ -42,7 +45,8 @@ const config = {
           routeBasePath: "/", // Serve the docs at the site's root
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/open-resource-discovery/specification/tree/main/",
+          editUrl:
+            "https://github.com/open-resource-discovery/specification/tree/main/",
         },
         blog: false, // disable the blog plugin
         theme: {
@@ -50,6 +54,14 @@ const config = {
         },
       }),
     ],
+  ],
+
+  headTags: [
+    {
+      tagName: "script",
+      attributes: {},
+      innerHTML: `window.bannerServerBaseUrl = ${JSON.stringify(process.env.BANNER_SERVER_BASE_URL || "")};`,
+    },
   ],
 
   scripts: [`${baseUrl}js/custom.js`],
@@ -262,14 +274,28 @@ const config = {
           autoCollapseCategories: true,
         },
       },
-      ...(process.env.PR_PREVIEW_NUMBER ? {
-        announcementBar: {
-          content: `<b>This is a preview version of the website for <a href="https://github.com/open-resource-discovery/specification/pull/${process.env.PR_PREVIEW_NUMBER}" target="_blank">PR #${process.env.PR_PREVIEW_NUMBER}</a></b>`,
-          backgroundColor: '#e65050ff',
-          textColor: '#fff',
-          isCloseable: false,
-        }} : {}
-      )
+      ...(process.env.PR_PREVIEW_NUMBER
+        ? {
+            announcementBar: {
+              id: "pr-preview-banner",
+              content: `<b>This is a preview version of the website for <a href="https://github.com/open-resource-discovery/specification/pull/${process.env.PR_PREVIEW_NUMBER}" target="_blank">PR #${process.env.PR_PREVIEW_NUMBER}</a></b>`,
+              backgroundColor: "#e65050ff",
+              textColor: "#fff",
+              isCloseable: false,
+            },
+          }
+        : process.env.NODE_ENV === "production" &&
+            process.env.BANNER_SERVER_BASE_URL
+          ? {
+              announcementBar: {
+                id: "internal-banner",
+                backgroundColor: "#f0fd00ff",
+                textColor: "#000000",
+                content: '<div class="internal-banner-hidden"></div>',
+                isCloseable: false,
+              },
+            }
+          : {}),
     }),
 };
 
