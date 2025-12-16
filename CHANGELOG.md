@@ -20,6 +20,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Fixed
 
 - make AccessStrategy from ORD Configuration consistent with AccessStrategy from ORD Document (both should use `anyOf` for the allowed values)
+- Breaking: The `minSystemVersion` was not properly validated against semver, although the version it refers to (`describedSystemVersion.version`) is a mandatory semver.
+  - Fixed the regex to properly validate against [Semantic Versioning 2.0.0](https://semver.org/) standard.
+  - Added to documentation that this is an association to `SystemVersion.version`.
+  - Introducing this as bugfix, as this property was presumed to be semver. This change just adds validation and explicit mentioning to ensure it.
+  - If `minSystemVersion` is not a SemVer, it would be unclear how to do the version comparison anyway.
 
 ### Removed
 
