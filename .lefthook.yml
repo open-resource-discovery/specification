@@ -10,3 +10,6 @@ pre-commit:
       stage_fixed: true
       # If generation fails, the commit is blocked.
       # `stage_fixed: true` will re-stage any updated files.
+    git_add_generated:
+      run: git add src/generated/ docs/spec-v1/interfaces/ docs/spec-v1/examples/ docs/spec-v1/diagrams/ static/spec-v1/interfaces/
+      # Stage only the generated TypeScript types and copied documentation/schema files.
