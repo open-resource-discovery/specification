@@ -10,7 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
-# Changed
+### Added
+
+- Added expressing hierarchical taxonomies and graph relationships for both group types and group instances
+  - Added `partOfGroupTypes` to Group Types, allowing group types to be hierarchically organized
+  - Added `partOfGroups` to Groups, allowing group instances to be hierarchically organized
+
+### Changed
 
 - The public ORD page changed its domain name:
   - Old: https://open-resource-discovery.github.io/specification
