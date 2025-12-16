@@ -54,7 +54,7 @@ export interface OrdDocument {
    *
    * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
    */
-  perspective?: ("system-version" | "system-instance" | "system-independent") & string;
+  perspective?: ("system-type" | "system-version" | "system-instance" | "system-independent") & string;
   describedSystemInstance?: SystemInstance;
   describedSystemType?: SystemType;
   describedSystemVersion?: SystemVersion;
