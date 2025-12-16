@@ -24,12 +24,13 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "build": "npm run generate && npm run build-ts && npm run build-docusaurus",
-    "clean": "rimraf dist/ && rimraf build/ && rimraf .docusaurus/",
+    "clean": "rimraf dist/ && rimraf build/ && rimraf .docusaurus/ && rimraf src/generated/",
     "build-ts": "tsc -p ./tsconfig.json",
     "build-docusaurus": "docusaurus build",
     "serve": "docusaurus serve",
     "start": "docusaurus start",
     "deploy": "npm run build && gh-pages -d ./build",
+    "pregenerate": "npm run clean",
     "generate": "npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json",
     "postgenerate": "ts-node ./src/helper/copyGeneratedToDestination.ts"
   },
