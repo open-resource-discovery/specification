@@ -163,7 +163,7 @@ E.g. a particular OData API for Employee Management can be part of both the "Emp
 Group Types and Groups can be locally defined by the ORD Provider ([system namespace](../../spec-v1/index.md#system-namespace)) or be defined globally ([authority namespace](../../spec-v1/index.md#authority-namespace)) if they are shared across different applications.
 
 Groups and even group types can be defined globally. If the Group Type is shared across different applications, it should have an [authority namespace](../index.md#authority-namespace).
-In this case it works like a global taxonomy with a predefined list of values.It's also possible for the application itself to define and assign its own Group Types (and instances).
+In this case it works like a global taxonomy with a predefined list of values. It's also possible for the application itself to define and assign its own Group Types (and instances).
 
 > The Group concept is correct choice when ORD resources need to be grouped through an explicit taxonomy, beyond the predefined taxonomy concepts from ORD (like Package). The advantage of groups over tags and labels is that their types and instance values can be defined, governed and listed.
 
