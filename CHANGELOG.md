@@ -10,7 +10,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
-# Changed
+### Added
+
+- Added `system-type` perspective to describe static metadata that is not version dependent.
+
+### Changed
 
 - The public ORD page changed its domain name:
   - Old: https://open-resource-discovery.github.io/specification

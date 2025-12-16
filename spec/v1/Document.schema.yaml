@@ -84,6 +84,12 @@ properties:
 
       Please read the [article on perspectives](../concepts/perspectives) for more explanations.
     oneOf:
+      - const: "system-type"
+        description: |-
+          Describes a static [system-type](../index.md#def-system-type) perspective, which is version independent.
+
+          If a system is not versioned (continuous delivery) or resources are not tied to a system, the system-type perspective
+          implies that the information apply, no matter which system version or instance.
       - const: "system-version"
         description: |-
           Describes the static [system-version](../index.md#def-system-version) perspective, usually known at deploy-time.

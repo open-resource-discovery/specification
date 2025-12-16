@@ -13,7 +13,7 @@ An application or service can be described both from a static or a dynamic persp
 
 ### Static Perspective
 
-The static `system-version` perspective describes how an application or services looks like _in general_ at design-time.
+The static `system-version` or `system-type` perspective describes how an application or services looks like _in general_ at design-time.
 This perspective is especially useful for customers, who haven't purchased a product yet and need to understand what technical capabilities they would get.
 It also helps to understand the common baseline of what all systems of the same type provide and how it changes over time.
 
@@ -22,7 +22,10 @@ Static metadata is known at design-time or deploy-time, when a new version of an
 For cloud software with continuous delivery, the version may not be explicit or of interest to the consumer, a fallback to a "latest" version may be needed.
 But consider that also cloud software that is going through phased deployments therefore can have multiple versions active at the same time.
 
-The static perspective describes the shared metadata of all system instances (tenants) of the same system version.
+In the case that the system is not versioned (continuous delivery) or resources do not relate to a system directly, the `system-type` perspective can be used.
+The `system-type` information apply no matter which system version or instance is used.
+
+The static perspective describes the shared metadata of all system instances (tenants) of the same system version or version independent.
 Either the metadata is always the same or it explicitly ignores the tenant-specific extensibility, configuration and any feature toggles - describing what's generic and shared.
 The advantage of static metadata is that is always available, there is no need to first provision tenants to get it. It is also a good integration contract for everything that is meant to work potentially with _any_ tenant.
 
