@@ -31,6 +31,21 @@ The advantage of static metadata is that is always available, there is no need t
 
 At SAP, we have the [SAP Business Accelerator Hub](https://api.sap.com/) that documents the static perspective.
 
+#### System Version Guidelines
+
+Versions and Lifecycle is often difficult. Putting a version on a system is not always straightforward.
+Here are some guidelines how to choose the correct version for the `system-version` perspective:
+
+- If the system has explicit versions (e.g. "v1.0.1", "v2.0.0"), use these versions.
+- If the system does not use SemVer, it has to be converted so that SemVer conventions apply (conservatively).
+  - E.g. if the system uses simple incremental versions like "1", "2" or "2404, convert these to "1.0.0", "2.0.0", "2404.0.0" respectively.
+  - E.g. if the system uses date-based versions like "2024-01-15", convert these to "2024.1.15".
+- If the system is continuously delivered and does not have explicit versions at all, use the `system-type` perspective instead.
+  - However, consider that you may still have different releases rolled out over time and on different stages. If this causes a problem, use `system-version` with below conventions.
+  - Alternatively, use a fixed `1.0.0` version and overwrite it with every new release.
+- If the system has no versions, but we need to keep track of releases deployed on different environments or stages, use a synthetic versioning scheme:
+  - Use `1.0.0-DEV-SNAPSHOT`, `1.0.0-PROD-SNAPSHOT` or similar semver suffixes to indicate different stages or environments, where static metadata is identical.
+
 ### Dynamic Perspective
 
 The dynamic perspective describes an application or service how it really looks like, _at run-time_.
