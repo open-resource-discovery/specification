@@ -7,19 +7,15 @@ const config = {
   removeDirs: [
     'dist',
     'build',
-    '.docusaurus',
     'src/generated',
-    'logs',
-    'tmp'
   ],
-  // Files to remove (absolute or workspace-relative)
-  removeFiles: [
-    // Log files in root
-    '*.log',
-    'npm-debug.log*',
+  // Generated files to remove (absolute or workspace-relative)
+  removeGeneratedFiles: [
     // Static generated schema artifacts
     'static/spec-v1/interfaces/Configuration.schema.json',
-    'static/spec-v1/interfaces/Document.schema.json'
+    'static/spec-v1/interfaces/Document.schema.json',
+    'docs/spec-v1/interfaces/Configuration.md',
+    'docs/spec-v1/interfaces/Document.md'
   ],
   // Folders where we remove all contents except certain keepers
   cleanFoldersExcept: [
@@ -32,11 +28,6 @@ const config = {
       keep: new Set(['index.mdx'])
     }
   ],
-  // Specific generated MD files noted in .gitignore
-  removeGeneratedDocs: [
-    'docs/spec-v1/interfaces/Configuration.md',
-    'docs/spec-v1/interfaces/Document.md'
-  ]
 };
 
 const workspaceRoot = process.cwd();
@@ -106,17 +97,12 @@ async function main() {
   }
 
   // Remove root-level log patterns
-  for (const f of config.removeFiles) {
+  for (const f of config.removeGeneratedFiles) {
     if (f.includes('*')) {
       await removeFilesWithPattern(f);
     } else {
       await removeFile(f);
     }
-  }
-
-  // Remove specifically generated docs
-  for (const f of config.removeGeneratedDocs) {
-    await removeFile(f);
   }
 
   // Clean folders except keepers
