@@ -155,7 +155,7 @@ Example: Group Type: "Process", Group: ["Hire to Retire", "Travel to Reimburse"]
 
 Third, we need to assign the ORD resources to the groups, via:
 
-- `partOfGroup` assignment from ORD Resource to 0..n Groups
+- `partOfGroups` assignment from ORD Resource to 0..n Groups
 - `members` assignment from Group to 0..n ORD Resources
 
 E.g. a particular OData API for Employee Management can be part of both the "Employee Service" group (of Group Type "CSN Service") and the "Hire to Retire" group of Group Type "Process".
