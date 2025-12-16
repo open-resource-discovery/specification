@@ -147,7 +147,7 @@ They are optimized towards machine-readability and can be used to query, select 
 </div>
 
 The concept has three parts: The **Group Type** defines the semantics / meaning of a particular type of group assignments.
-An example would be to have a Group Type for a "part of an CSN Service" or "part of a Process".
+An example would be to have a Group Type for a "CSN Service" or "Process".
 
 Second, the **Group** itself defines the actual group instances that resources can be assigned to.
 
