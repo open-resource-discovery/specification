@@ -128,7 +128,7 @@ async function fetchBannerContent(banner) {
 
       if (content) {
         content.innerHTML =
-          '<b>For internal documentation, follow this URL: <a href="' +
+          '<b>This is PUBLIC version. For internal version, follow this URL: <a href="' +
           data.url +
           '">' +
           data.url +
