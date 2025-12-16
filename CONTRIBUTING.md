@@ -31,6 +31,28 @@ The following rule governs code contributions:
 - Contributions must be licensed under the [Apache 2.0 License](./LICENSE)
 - Due to legal reasons, contributors will be asked to accept a Developer Certificate of Origin (DCO) when they create the first pull request to this project. This happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
 
+## Generated Artifacts and Review Process
+
+This repository checks in certain generated files (TypeScript types and UMS types). We intentionally commit these artifacts so pull requests clearly show the impact on those interfaces and downstream consumers during review.
+
+- What is generated: TypeScript interfaces in `dist/generated/spec/v1` and UMS types referenced under `spec/v1` and `src/generated/`.
+- How to generate: run `npm run generate` (this executes the spec toolkit and copies results via the postgenerate step).
+
+### CI verification
+
+To prevent accidental divergence, our CI runs `npm run generate` and fails if it produces changes that are not committed. This protects the main branch from merging updates that forgot to regenerate.
+
+### Local pre-commit hook (optional)
+
+We provide a pre-commit hook via [Lefthook](https://github.com/evilmartians/lefthook) that automatically runs `npm run generate` before each commit and re-stages any changed files. This helps ensure generated artifacts are always included.
+
+Enable it locally:
+
+```
+npm i -D lefthook
+npx lefthook install
+```
+
 ## Issues and Planning
 
 - We use GitHub issues to track bugs and enhancement requests.

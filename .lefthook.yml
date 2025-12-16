@@ -1,0 +1,12 @@
+# Lefthook configuration to ensure code generation runs before commit
+# Runs `npm run generate` and re-stages any changed files so they are included
+# in the current commit.
+
+pre-commit:
+  parallel: false
+  commands:
+    generate:
+      run: npm run generate
+      stage_fixed: true
+      # If generation fails, the commit is blocked.
+      # `stage_fixed: true` will re-stage any updated files.
