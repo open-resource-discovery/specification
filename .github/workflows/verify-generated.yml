@@ -13,6 +13,9 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   verify-generated:
     name: Generated files up-to-date
