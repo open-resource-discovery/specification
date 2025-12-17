@@ -26,6 +26,7 @@ flowchart TB
         ProviderAPI["ORD Provider API"]
         Config["ORD Config"]
         Document["ORD Document"]
+        Definitions["Resource Definitions"]
         DiscoveryAPI["ORD Discovery API"]
     end
 
@@ -37,6 +38,7 @@ flowchart TB
     Provider -->|exposes| ProviderAPI
     ProviderAPI -->|serves| Config
     ProviderAPI -->|serves| Document
+    ProviderAPI -->|serves| Definitions
     Document -->|contains| Resources
     Document -->|contains| Taxonomy
     Aggregator -->|fetches from| ProviderAPI
@@ -50,6 +52,7 @@ flowchart TB
     click ProviderAPI "#ord-provider-api"
     click Config "#ord-configuration-endpoint"
     click Document "#ord-document"
+    click Definitions "#resource-definitions"
     click DiscoveryAPI "#ord-discovery-api"
     click Resources "#ord-resource"
     click Taxonomy "#ord-taxonomy"
@@ -381,6 +384,12 @@ Content-Type: application/json
 ```
 
 The response contains the requested resource and MAY include related ORD information that need to be updated together, e.g. when a data product is requested, it could also return its output ports API resources. Returning Tombstones is out of scope.
+
+#### Resource Definitions
+
+The resources in the ORD Document often contain resource definitions, which contain the actual detailed description, using industry standard formats like OpenAPI.
+The ORD protocol does not aim to replace such standards, instead they are discovered and transported along with ORD.
+The ORD layer adds shared common properties, taxonomy and relationships.
 
 #### Consumer Perspective
 
