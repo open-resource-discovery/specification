@@ -92,15 +92,15 @@ properties:
           implies that the information apply, no matter which system version or instance.
       - const: "system-version"
         description: |-
-          Describes the static [system-version](../index.md#def-system-version) perspective, usually known at deploy-time.
+          Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.
 
           If chosen, `describedSystemVersion`.`version` MUST be provided, too.
 
           This perspective describes how a system of a particular type and version generally look like.
-          The latest system-version MAY also be interpreted as the [system-type](../index.md#def-system-type) perspective.
+          The latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective.
       - const: "system-instance"
         description: |-
-          Describes the complete dynamic [system-instance](../index.md#def-system-instance) (tenant) perspective as known at run-time.
+          Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
           This allows to also reflect tenant specific extensions, customizations and runtime configuration.
 
           If provided, it will completely override the static system-version perspective when metadata about system instances is requested.
@@ -111,7 +111,7 @@ properties:
       #     If chosen, `describedSystemVersion`.`version` MUST be provided, too.
       - const: "system-independent"
         description: |-
-          Describes content that is independent of [system-versions](../index.md#def-system-version) or [system-instances](../index.md#def-system-instance).
+          Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).
           This content is always static and has independent visibility and lifecycle from the systems in a particular landscape.
           The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
 
@@ -123,19 +123,19 @@ properties:
   describedSystemInstance:
     $ref: "#/definitions/SystemInstance"
     description: |-
-      Information on the [system-instance](../index.md#def-system-instance) that this ORD document describes.
+      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
 
       Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   describedSystemType:
     $ref: "#/definitions/SystemType"
     x-introduced-in-version: "1.10.0"
     description: |-
-      Information on the [system type](../index.md#def-system-type) that this ORD document describes.
+      Information on the [system type](../index.md#system-type) that this ORD document describes.
   describedSystemVersion:
     $ref: "#/definitions/SystemVersion"
     x-introduced-in-version: "1.10.0"
     description: |-
-      Information on the [system version](../index.md#def-system-version) that this ORD document describes.
+      Information on the [system version](../index.md#system-version) that this ORD document describes.
   policyLevel: &policyLevel
     type: string
     description: |
@@ -1032,7 +1032,7 @@ definitions:
       minSystemVersion: &minSystemVersion
         type: string
         description: |-
-          The resource has been introduced in the given [system version](../index.md#def-system-version).
+          The resource has been introduced in the given [system version](../index.md#system-version).
           This implies that the resource is only available if the system instance is of at least that system version.
 
       deprecationDate: &deprecationDate
@@ -1103,7 +1103,7 @@ definitions:
           **Provider View:**
           If the URL is relative to the system that describes the ORD information,
           it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
-          If the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.
+          If the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.
           If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.
           The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.
 
@@ -1225,6 +1225,7 @@ definitions:
         type: array
         description: |-
           List of available machine-readable definitions, which describe the resource or capability in detail.
+          See also [Resource Definitions](../index.md#resource-definitions) for more context.
 
           Each definition is to be understood as an alternative description format, describing the same resource / capability.
           As a consequence the same definition type MUST NOT be provided more than once.
@@ -1465,8 +1466,8 @@ definitions:
       systemInstanceAware: &systemInstanceAware
         type: boolean
         description: |-
-          All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-          All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+          All resources that are [system instance aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+          All resources that are [system instance unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
 
           Defines whether this ORD resource is **system instance aware**.
           This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
@@ -1641,8 +1642,10 @@ definitions:
           # Once there is a first standard, remove the sentence that only custom ones are supported in above description.
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            x-association-target:
+            - "#/definitions/ApiResource/ordId"
             description: |-
-              Any valid [API Resource ORD ID](../index.md#api-resource_ordid).
+              Any valid [API Resource ORD ID](../index.md#ord-id).
 
               RECOMMENDED to use if the contract is published via ORD and has an ORD ID.
           - type: string
@@ -1981,7 +1984,7 @@ definitions:
     description: |-
       A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
 
-      Please note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).
+      Please note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).
     properties:
       ## IDs
 
@@ -3164,7 +3167,7 @@ definitions:
       systemTypeRestriction:
         type: array
         description: |-
-          In case that the event subscriptions are limited to known [system types](../index.md#def-system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
+          In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
 
           If given, only system types of the defined namespaces are supported as integration partners.
           If not given, there is no restriction which system type provides the events.
@@ -3583,15 +3586,15 @@ definitions:
     title: System Instance
     x-ums-type: "ignore"
     description: |-
-      A [system instance](../index.md#def-system-instance) is a concrete, running instance of a system type.
+      A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.
       In a multi-tenant system, it corresponds to a tenant.
-      In a single-tenant system, it corresponds to the [system installation](../index.md#def-system-deployment) itself.
+      In a single-tenant system, it corresponds to the [system installation](../index.md#system-deployment) itself.
     properties:
       baseUrl:
         type: string
         format: uri-reference
         description: |-
-          Optional [base URL](../index.md#def-base-url) of the **system instance**.
+          Optional [base URL](../index.md#base-url) of the **system instance**.
           By providing the base URL, relative URLs in the document are resolved relative to it.
 
           The `baseUrl` MUST not contain a leading slash.
@@ -3635,7 +3638,7 @@ definitions:
     type: object
     title: System Type
     description: |-
-      A [system type](../index.md#def-system-type) is the abstract type of an application or service, from operational perspective.
+      A [system type](../index.md#system-type) is the abstract type of an application or service, from operational perspective.
     x-ums-type: "ignore"
     properties:
       systemNamespace:
@@ -3672,8 +3675,8 @@ definitions:
     type: object
     title: System Version
     description: |-
-      A [system version](../index.md#def-system-version) states the design-time version / release of a [system instance](../index.md#def-system-instance).
-      It provides versioning for operational purposes for the [system type](../index.md#def-system-type).
+      A [system version](../index.md#system-version) states the design-time version / release of a [system instance](../index.md#system-instance).
+      It provides versioning for operational purposes for the [system type](../index.md#system-type).
     x-ums-type: "ignore"
     properties:
       version:
@@ -3883,7 +3886,7 @@ definitions:
 
       Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
 
-      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
     x-introduced-in-version: "1.9.0"
     properties:
       groupTypeId: &groupTypeId
@@ -3927,7 +3930,7 @@ definitions:
       They express a "part of" relationship to the chosen group concept.
       If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
 
-      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
     x-introduced-in-version: "1.9.0"
     properties:
       groupId: &groupId
@@ -4069,8 +4072,8 @@ definitions:
       For the various resource definition formats the selection of API models may need to be expressed differently.
       As a consequence, there are different types of selectors that are specialized toward certain resource definition formats.
 
-      The target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)
-      or to an [ORD ID](../../spec-v1/#ord-id) of an entity type.
+      The target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)
+      or to an [ORD ID](../index.md#ord-id) of an entity type.
       It is assumed that the entity types are described in more detail or on a different abstraction level via metadata.
       When the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.
       This can be determined either by the namespace of the correlation ID,
@@ -4108,7 +4111,7 @@ definitions:
           If multiple entity types are defined as the mapping target,
           all of them can be at least partially mapped to the source API model(s).
 
-          Entity types can be referenced using either using an [ORD ID](../../spec-v1/#ord-id) or a [Correlation ID](../../spec-v1/#correlation-id).
+          Entity types can be referenced using either using an [ORD ID](../index.md#ord-id) or a [Correlation ID](../index.md#correlation-id).
         items:
           anyOf:
             - $ref: "#/definitions/EntityTypeOrdIdTarget"
@@ -4227,7 +4230,7 @@ definitions:
     description: |-
       Define which entity type is the target of an entity type mapping
 
-      Entity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.
+      Entity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.
     properties:
       ordId:
         <<: *ordId
@@ -4249,7 +4252,7 @@ definitions:
     description: |-
       Define which entity type is the target of an entity type mapping
 
-      Entity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).
+      Entity types can be referenced using a [Correlation ID](../index.md#correlation-id).
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
     x-deprecation-text: |-

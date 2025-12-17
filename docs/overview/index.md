@@ -17,7 +17,7 @@ The [Integration Dependencies](./spec-v1/interfaces/Document#integration-depende
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/Document#capability).
 All of the described artifacts can share relationships, taxonomy and [grouping](../spec-v1/concepts/grouping-and-bundling.md) concepts, enabling a **well-connected metadata graph**.
 
-ORD can describe **[static](../spec-v1/index.md#def-static-perspective) documentation** (like API / data catalogs and marketplaces) or a **[dynamic](../spec-v1/index.md#def-dynamic-perspective) run-time system landscape** (with tenant-specific configuration and extensions).
+ORD can describe **[static](../spec-v1/index.md#perspectives) documentation** (like API / data catalogs and marketplaces) or a **[dynamic](../spec-v1/index.md#perspectives) run-time system landscape** (with tenant-specific configuration and extensions).
 
 </div>
 <div className="col">

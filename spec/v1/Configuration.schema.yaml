@@ -27,7 +27,7 @@ properties:
     type: string
     format: uri
     description: |-
-      Optional [base URL](../index.md#def-base-url) that can be used to resolve the relative URLs to the ORD Documents.
+      Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.
 
       The `baseUrl` MUST not contain a leading slash.
 
@@ -117,15 +117,15 @@ definitions:
               implies that the information apply, no matter which system version or instance.
           - const: "system-version"
             description: |-
-              Describes the static [system-version](../index.md#def-system-version) perspective, usually known at deploy-time.
+              Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.
 
               If chosen, `describedSystemVersion`.`version` MUST be provided, too.
 
               This perspective describes how a system of a particular type and version generally look like.
-              The latest system-version MAY also be interpreted as the [system-type](../index.md#def-system-type) perspective.
+              The latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective.
           - const: "system-instance"
             description: |-
-              Describes the complete dynamic [system-instance](../index.md#def-system-instance) (tenant) perspective as known at run-time.
+              Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
               This allows to also reflect tenant specific extensions, customizations and runtime configuration.
 
               If provided, it will completely override the static system-version perspective when metadata about system instances is requested.
@@ -136,7 +136,7 @@ definitions:
           #     If chosen, `describedSystemVersion`.`version` MUST be provided, too.
           - const: "system-independent"
             description: |-
-              Describes content that is independent of [system-versions](../index.md#def-system-version) or [system-instances](../index.md#def-system-instance).
+              Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).
               This content is always static and has independent visibility and lifecycle from the systems in a particular landscape.
               The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
 

@@ -140,13 +140,13 @@ export interface OrdDocument {
   tombstones?: Tombstone[];
 }
 /**
- * Information on the [system-instance](../index.md#def-system-instance) that this ORD document describes.
+ * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
  *
  * Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
  */
 export interface SystemInstance {
   /**
-   * Optional [base URL](../index.md#def-base-url) of the **system instance**.
+   * Optional [base URL](../index.md#base-url) of the **system instance**.
    * By providing the base URL, relative URLs in the document are resolved relative to it.
    *
    * The `baseUrl` MUST not contain a leading slash.
@@ -227,7 +227,7 @@ export interface DocumentationLabels {
   [k: string]: string[];
 }
 /**
- * Information on the [system type](../index.md#def-system-type) that this ORD document describes.
+ * Information on the [system type](../index.md#system-type) that this ORD document describes.
  */
 export interface SystemType {
   /**
@@ -256,7 +256,7 @@ export interface SystemType {
   tags?: string[];
 }
 /**
- * Information on the [system version](../index.md#def-system-version) that this ORD document describes.
+ * Information on the [system version](../index.md#system-version) that this ORD document describes.
  */
 export interface SystemVersion {
   /**
@@ -463,7 +463,7 @@ export interface ApiResource {
    */
   disabled?: boolean;
   /**
-   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
    */
   minSystemVersion?: string;
@@ -511,7 +511,7 @@ export interface ApiResource {
    * **Provider View:**
    * If the URL is relative to the system that describes the ORD information,
    * it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
-   * If the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.
+   * If the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.
    * If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.
    * The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.
    *
@@ -550,6 +550,7 @@ export interface ApiResource {
     string;
   /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
@@ -742,8 +743,8 @@ export interface ApiResource {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+   * All resources that are [system instance aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+   * All resources that are [system instance unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
    *
    * Defines whether this ORD resource is **system instance aware**.
    * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
@@ -912,8 +913,8 @@ export interface MetadataDefinitionAccessStrategy {
  * For the various resource definition formats the selection of API models may need to be expressed differently.
  * As a consequence, there are different types of selectors that are specialized toward certain resource definition formats.
  *
- * The target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)
- * or to an [ORD ID](../../spec-v1/#ord-id) of an entity type.
+ * The target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)
+ * or to an [ORD ID](../index.md#ord-id) of an entity type.
  * It is assumed that the entity types are described in more detail or on a different abstraction level via metadata.
  * When the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.
  * This can be determined either by the namespace of the correlation ID,
@@ -944,7 +945,7 @@ export interface EntityTypeMapping {
    * If multiple entity types are defined as the mapping target,
    * all of them can be at least partially mapped to the source API model(s).
    *
-   * Entity types can be referenced using either using an [ORD ID](../../spec-v1/#ord-id) or a [Correlation ID](../../spec-v1/#correlation-id).
+   * Entity types can be referenced using either using an [ORD ID](../index.md#ord-id) or a [Correlation ID](../index.md#correlation-id).
    *
    * @minItems 1
    */
@@ -996,7 +997,7 @@ export interface ApiModelSelectorJsonPointer {
 /**
  * Define which entity type is the target of an entity type mapping
  *
- * Entity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.
+ * Entity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.
  */
 export interface EntityTypeTargetOrdId {
   /**
@@ -1009,7 +1010,7 @@ export interface EntityTypeTargetOrdId {
 /**
  * Define which entity type is the target of an entity type mapping
  *
- * Entity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).
+ * Entity types can be referenced using a [Correlation ID](../index.md#correlation-id).
  */
 export interface EntityTypeTargetCorrelationId {
   correlationId: string;
@@ -1270,7 +1271,7 @@ export interface EventResource {
    */
   disabled?: boolean;
   /**
-   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
    */
   minSystemVersion?: string;
@@ -1305,6 +1306,7 @@ export interface EventResource {
   changelogEntries?: ChangelogEntry[];
   /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
@@ -1489,8 +1491,8 @@ export interface EventResource {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+   * All resources that are [system instance aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+   * All resources that are [system instance unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
    *
    * Defines whether this ORD resource is **system instance aware**.
    * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
@@ -1758,8 +1760,8 @@ export interface EntityType {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+   * All resources that are [system instance aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+   * All resources that are [system instance unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
    *
    * Defines whether this ORD resource is **system instance aware**.
    * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
@@ -1926,7 +1928,7 @@ export interface Capability {
    */
   disabled?: boolean;
   /**
-   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
    */
   minSystemVersion?: string;
@@ -1937,6 +1939,7 @@ export interface Capability {
   relatedEntityTypes?: string[];
   /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
@@ -1960,8 +1963,8 @@ export interface Capability {
   labels?: Labels;
   documentationLabels?: DocumentationLabels;
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+   * All resources that are [system instance aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+   * All resources that are [system instance unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
    *
    * Defines whether this ORD resource is **system instance aware**.
    * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
@@ -2021,7 +2024,7 @@ export interface CapabilityDefinition {
 /**
  * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
  *
- * Please note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).
+ * Please note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).
  */
 export interface DataProduct {
   /**
@@ -2155,7 +2158,7 @@ export interface DataProduct {
    */
   disabled?: boolean;
   /**
-   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
    */
   minSystemVersion?: string;
@@ -2365,8 +2368,8 @@ export interface DataProduct {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+   * All resources that are [system instance aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+   * All resources that are [system instance unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
    *
    * Defines whether this ORD resource is **system instance aware**.
    * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
@@ -2680,7 +2683,7 @@ export interface EventResourceIntegrationAspect {
    */
   subset?: EventResourceIntegrationAspectSubset[];
   /**
-   * In case that the event subscriptions are limited to known [system types](../index.md#def-system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
+   * In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
    *
    * If given, only system types of the defined namespaces are supported as integration partners.
    * If not given, there is no restriction which system type provides the events.
@@ -3256,7 +3259,7 @@ export interface CredentialExchangeStrategy {
  * They express a "part of" relationship to the chosen group concept.
  * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
  *
- * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+ * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
  */
 export interface Group {
   /**
@@ -3293,7 +3296,7 @@ export interface Group {
  *
  * Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
  *
- * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+ * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
  */
 export interface GroupType {
   /**
