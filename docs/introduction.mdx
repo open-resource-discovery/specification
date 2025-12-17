@@ -174,7 +174,7 @@ We use this also to not just test for technical correctness, but also to adhere 
 <details>
 <summary>ORD Information</summary>
 
-ORD as a protocol standardizes both the **information model** and the [behavior](#ord-behaviors) how the information are exchanged.
+ORD as a protocol standardizes both the **information model** and the [behavior](./spec-v1/index.md#def-ord-behavior) how the information are exchanged.
 
 Typical questions that are addressed on ORD level are:
 
@@ -213,7 +213,7 @@ One system can also have more than one role, e.g. an ORD Provider can also be an
 <details>
 <summary>ORD Provider Role</summary>
 
-The [ORD Provider](./spec-v1/index.md#ord-provider) is a system that describes itself via ORD, so it's metadata becomes available to interested ORD Consumers.
+The [ORD Provider](./spec-v1/index.md#def-ord-provider) is a system that describes itself via ORD, so it's metadata becomes available to interested ORD Consumers.
 
 They have to implement one of the ORD transport modes (currently only a pull-based API is supported), so the ORD information and related metadata definitions can be discovered and fetched.
 
@@ -224,7 +224,7 @@ They have to implement one of the ORD transport modes (currently only a pull-bas
 <details>
 <summary>ORD Aggregator Role</summary>
 
-The [ORD Aggregator](./spec-v1/index.md#ord-aggregator) has the job to simplify the life of ORD Consumers.
+The [ORD Aggregator](./spec-v1/index.md#def-ord-aggregator) has the job to simplify the life of ORD Consumers.
 It will discover and connect to many ORD Providers and fetch their metadata.
 It may also integrate information from other (usually central) repositories.
 Since it builds an aggregated overview, here the decentralized information from many sources can come together and form a connected graph of metadata knowledge.
@@ -239,7 +239,7 @@ The information offered represent an aggregated, connected and consolidated meta
 <details>
 <summary>ORD Consumer Role</summary>
 
-The [ORD Consumer](./spec-v1/index.md#ord-consumer) is interested in learning about the resources and capabilities of other systems.
+The [ORD Consumer](./spec-v1/index.md#def-ord-consumer) is interested in learning about the resources and capabilities of other systems.
 
 An ORD consumer should get their information from an ORD Aggregator, where a complete overview is offered with a more consumer friendly [ORD Discovery API](./spec-v1/index.md#ord-discovery-api) API
 

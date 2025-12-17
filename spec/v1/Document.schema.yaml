@@ -1975,9 +1975,9 @@ definitions:
     x-introduced-in-version: "1.8.0"
     x-ums-implements: "#/definitions/OrdResource"
     description: |-
-      A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
+      A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#def-ord-aggregator).
 
-      Please note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).
+      Please note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).
     properties:
       ## IDs
 

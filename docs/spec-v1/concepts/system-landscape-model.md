@@ -42,9 +42,9 @@ They are described in more detail behind the link.
 
 It should be pointed out that the:
 
-- [vendor namespace](../index.md#vendor-namespace) corresponds to the [ORD Vendor](../interfaces/Document.md#vendor).
+- [vendor namespace](../index.md#def-ord-vendor-namespace) corresponds to the [ORD Vendor](../interfaces/Document.md#vendor).
 - [system namespace](../index.md#system-namespace) corresponds to the [ORD System Type](../index.md#def-system-type).
-- [sub-context namespaces](../index.md#subcontext-namespace) have no corresponding ORD concept.
+- [sub-context namespaces](../index.md#sub-context-namespace) have no corresponding ORD concept.
 
 ## System Resources and Capabilities
 

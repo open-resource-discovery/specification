@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).\n\nPlease note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status)."
+  description: "A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#def-ord-aggregator).\n\nPlease note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status)."
   metadataProperties:
     - name: 'id'
       type: 'guid'

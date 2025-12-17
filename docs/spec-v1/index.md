@@ -20,12 +20,16 @@ A [system type](#def-system-type) can implement multiple roles, e.g. an ORD Cons
 ### ORD Provider {#def-ord-provider}
 
 An **ORD provider** is a system instance (of an application or service) that exposes ORD information for self-description.
-The **provider role** applies to business applications/services that want to describe themselves (**described system instance**<a id="def-described-system-instance"></a>).
+The **provider role** applies to business applications/services that want to describe themselves ([described system instance](#def-described-system-instance)).
+
+#### Described System Instance {#def-described-system-instance}
+
+A **described system instance** is a system instance that is being described by an ORD provider.
 
 > ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance not necessarily identical described system instances (see [`describedSystemInstance`](./interfaces/Document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
 
 An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
-An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
+An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#def-ord-aggregator).
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
@@ -37,11 +41,11 @@ An **ORD aggregator** is a system that collects, aggregates, and proxies the ORD
 It reflects the combined information on the ORD providers that it aggregates.
 The aggregator itself MAY represent a [static perspective](#def-static-perspective) or a [dynamic perspective](#def-dynamic-perspective), or both.
 
-The ORD information MUST be made available to [ORD Consumers](#ord-consumer) through a higher-quality API, for example via an [ORD Discovery API](#ord-discovery-api) that allows for more advanced consumption patterns.
+The ORD information MUST be made available to [ORD Consumers](#def-ord-consumer) through a higher-quality API, for example via an [ORD Discovery API](#ord-discovery-api) that allows for more advanced consumption patterns.
 
 An ORD aggregator MUST ensure that information that has `visibility` of `private` or `internal` is not made available to consumers that don't have the corresponding permissions to get such information (e.g. external consumers). If ORD consumers get private or internal information, they inherit the responsibility of protecting it.
 
-There are [aggregation rules](#aggregation-rules) and [validation rules](#validation-rules) that an ORD aggregator MUST implement and [ORD Consumers](#ord-consumer) MAY hold to.
+There are [aggregation rules](#aggregation-rules) and [validation rules](#validation-rules) that an ORD aggregator MUST implement and [ORD Consumers](#def-ord-consumer) MAY hold to.
 
 It MUST support all [ORD transport modes](#ord-transport-modes) that are used by the systems it aggregates.
 
@@ -230,7 +234,7 @@ Please [create an issue](https://github.com/open-resource-discovery/specificatio
 
 ### ORD Provider API
 
-This section details how an [ORD Provider](#ord-provider) exposes one or multiple [ORD documents](#ord-document) for the [pull transport mode](#pull-transport).
+This section details how an [ORD Provider](#def-ord-provider) exposes one or multiple [ORD documents](#ord-document) for the [pull transport mode](#pull-transport).
 
 The ORD Provider MUST implement a RESTful API that provides an [ORD configuration endpoint](#ord-configuration-endpoint) and at least one [ORD document endpoint](#ord-document-endpoint).
 
@@ -286,7 +290,7 @@ If the ORD configuration endpoint is customized, the ORD configuration response 
 #### ORD Document Endpoint
 
 The <dfn id="def-document-endpoint">ORD document endpoint</dfn> provides an [ORD document](#ord-document) via [pull transport](#pull-transport).
-An [ORD Provider](#ord-provider) MUST implement one ORD document endpoint for each ORD document it exposes.
+An [ORD Provider](#def-ord-provider) MUST implement one ORD document endpoint for each ORD document it exposes.
 
 ##### Provider Implementation
 
@@ -334,7 +338,7 @@ The response contains the requested resource and MAY include related ORD informa
 
 #### Consumer Perspective
 
-An [ORD consumer](#ord-consumer) MUST first consult the [ORD configuration endpoint](#ord-configuration-endpoint).
+An [ORD consumer](#def-ord-consumer) MUST first consult the [ORD configuration endpoint](#ord-configuration-endpoint).
 The response will indicate the supported version(s) of ORD, the URLs of the exposed [ORD documents](#ord-document), and additional information that has implications for accessing the information. The ORD documents may contain links to metadata definitions and how to access them.
 
 The most important rules are:
@@ -356,8 +360,8 @@ The `ETag` header value on the document REST response will implicitly be updated
 
 ##### ORD Consumer Cache Handling
 
-An arbitrary [ORD consumer](#ord-consumer) MAY implement the following cache handling rules to optimize frequent access.
-An [ORD aggregator](#ord-aggregator) MUST implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
+An arbitrary [ORD consumer](#def-ord-consumer) MAY implement the following cache handling rules to optimize frequent access.
+An [ORD aggregator](#def-ord-aggregator) MUST implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
 
 The `Cache-Control` and `ETag` headers (as described in [ORD Provider Cache Handling](#ord-provider-cache-handling)) MUST be respected and correctly implemented from the client's side.
 
@@ -368,13 +372,13 @@ If they are [system instance unaware](#def-system-instance-unaware) they SHOULD 
 
 ### ORD Aggregation
 
-This section covers the aggregation rules and validations for [ORD aggregators](#ord-aggregator).
+This section covers the aggregation rules and validations for [ORD aggregators](#def-ord-aggregator).
 
 [ORD Consumers](#def-ord-consumer) that retrieve information from an aggregator MAY rely on the outlined rules.
 
 #### Aggregation Rules
 
-One of the responsibilities of an [ORD aggregator](#ord-aggregator) is to combine the ORD information from multiple system instances.
+One of the responsibilities of an [ORD aggregator](#def-ord-aggregator) is to combine the ORD information from multiple system instances.
 When information from many different system instances comes together, some situations may arise that need to be resolved through clearly defined rules.
 
 ##### Merging ORD information
@@ -463,7 +467,7 @@ The files MUST be stored, hosted, and made available by the ORD aggregator syste
 The URLs to the hosted files MUST be rewritten accordingly in the [ORD Discovery API](#ord-discovery-api) responses.
 The aggregator MUST implement caching and error handling according to the [common REST characteristics](#common-rest-characteristics).
 
-The hosting ensures that ORD consumers can retrieve the referenced files directly from the aggregator itself. They don't need to fetch them from the [ORD Providers](#ord-provider) individually.
+The hosting ensures that ORD consumers can retrieve the referenced files directly from the aggregator itself. They don't need to fetch them from the [ORD Providers](#def-ord-provider) individually.
 This eliminates the need for authentication and authorization against many different systems.
 It also ensures that the files have the same high SLA availability that the ORD aggregator has.
 
@@ -485,12 +489,12 @@ The following validation rules apply specifically for ORD aggregators:
 
 ### ORD Discovery API
 
-The ORD Discovery API is a higher quality API, provided by an [ORD aggregator](#ord-aggregator) that is optimized for easy consumption of ORD information.
+The ORD Discovery API is a higher quality API, provided by an [ORD aggregator](#def-ord-aggregator) that is optimized for easy consumption of ORD information.
 It MAY support advanced features like pagination, filtering, search, expansion, etc.
 Such features are deliberately missing at the [ORD Provider API](#ord-provider-api) to keep the provider interface simple.
 
-The ORD Discovery API MUST be implemented by the [ORD aggregator](#ord-aggregator) role.
-It is the RECOMMENDED interface for [ORD consumers](#ord-consumer) to retrieve ORD information.
+The ORD Discovery API MUST be implemented by the [ORD aggregator](#def-ord-aggregator) role.
+It is the RECOMMENDED interface for [ORD consumers](#def-ord-consumer) to retrieve ORD information.
 
 An ORD aggregator MAY expose more information than it received from the ORD providers, for example additional information it acquired through service discovery or other metadata sources.
 
@@ -584,9 +588,9 @@ Optionally, sub-contexts can be defined as sub namespaces for system and authori
 - It is RECOMMENDED to keep namespaces as short as reasonable, as they become part of IDs which have their own length limitations.
   Shorter namespaces leave more room for the overall IDs.
 
-#### Vendor Namespace
+#### Vendor Namespace {#def-ord-vendor-namespace}
 
-A <a id="def-ord-vendor-namespace"></a><dfn id="def-ord-vendor-namespace">vendor namespace</dfn> is a stable and globally unique identifier namespace that corresponds to a vendor / company.
+A **vendor namespace** is a stable and globally unique identifier namespace that corresponds to a vendor / company.
 The vendor owns this top-level namespace and is responsible for governing this namespace and all the namespaces within it.
 
 A vendor namespace MUST be constructed according to the following rules:
@@ -622,7 +626,7 @@ An system namespace MUST be constructed according to the following rules:
 
 `<systemNamespace> := <vendorNamespace>.<systemTypeId>`
 
-- `<systemNamespace>` MUST be a valid [vendor namespace](#vendor-namespace)
+- `<systemNamespace>` MUST be a valid [vendor namespace](#def-ord-vendor-namespace)
 - `<systemTypeId>` is the identifier of the technical system type (of the application or service).
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
 - MUST match Regexp: `^[a-z0-9]+(?:[.][a-z0-9]+){1}$`
@@ -638,7 +642,7 @@ An authority namespace MUST be constructed according to the following rules:
 
 `<authority>` := `<vendorNamespace>.<authorityIdentifier>`
 
-- `<vendorNamespace>` MUST be a valid [vendor namespace](#vendor-namespace)
+- `<vendorNamespace>` MUST be a valid [vendor namespace](#def-ord-vendor-namespace)
 - `<authorityIdentifier>` is the identifier of the organizational unit.
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
 - MUST match Regexp: `^[a-z0-9]+(?:[.][a-z0-9]+){1}$`
@@ -674,7 +678,7 @@ It is NOT RECOMMENDED to use sub-context namespaces for grouping purposes only, 
 Some systems allow their customers / end-users to create their own resources (in-app extensions).
 In most cases these resources are local to the tenant, so we don't need to force the customer to register a namespace.
 
-To keep this situation simple, there is a reserved [vendor namespace](#vendor-namespace): `customer`.
+To keep this situation simple, there is a reserved [vendor namespace](#def-ord-vendor-namespace): `customer`.
 Everything within this namespace is owned by the customer, the owner of the tenant.
 In addition, there is one reserved authority namespace, specifically for customer in-app extensions: `customer.ext`.
 
@@ -769,7 +773,7 @@ Examples:
 An ORD ID should contain all of the necessary information to be self contained and to be successfully resolved.
 
 Resolving an ORD ID can serve multiple purposes, for example, by having an ID we can construct the link to the API Catalog page describing this resource.
-Or we can construct the API request to an [ORD aggregator](#ord-aggregator) where the ORD resource can be accessed.
+Or we can construct the API request to an [ORD aggregator](#def-ord-aggregator) where the ORD resource can be accessed.
 
 The rules about how an ORD ID is resolved to the customer's own URLs/APIs SHOULD be provided by the ORD aggregator.
 
@@ -958,15 +962,23 @@ ORD information can have different [perspectives](#perspectives):
 The **static perspective** describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a [system type](#def-system-type) and [system version](#def-system-version). This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
 
 - This can be explicitly set with `perspective`: `system-version`
-- This is also referred to as **system instance unaware**<a id="def-system-instance-unaware"></a> information. They are identical across all [system instance](#def-system-instance) of the described [system type](#def-system-type) and [system version](#def-system-version).
+- This is also referred to as [system instance unaware](#def-system-instance-unaware) information. They are identical across all [system instance](#def-system-instance) of the described [system type](#def-system-type) and [system version](#def-system-version).
+
+##### System Instance Unaware {#def-system-instance-unaware}
+
+**System instance unaware** information is identical across all system instances of the described system type and system version.
 
 #### Dynamic Perspective {#def-dynamic-perspective}
 
 The **dynamic perspective** describes a [system instance](#def-system-instance) at **run-time** and can therefore reflect how it is currently configured, customized or extended. This is also referred to as [system instance aware](#def-system-instance-aware).
 
 - This can be explicitly set with `perspective`: `system-instance`
-- This is also referred to as **system instance aware**<a id="def-system-instance-aware"></a> information.
+- This is also referred to as [system instance aware](#def-system-instance-aware) information.
   System instance aware information are allowed to be different between system instances of the same [system type](#def-system-type).
+
+##### System Instance Aware {#def-system-instance-aware}
+
+**System instance aware** information is allowed to be different between system instances of the same system type.
 
 #### ORD Resource {#def-ord-resource}
 
@@ -1007,9 +1019,9 @@ System type is a technical concept, while product is a term for external communi
 
 #### System Installation {#def-system-installation}
 
-<a id="def-system-deployment"></a>
+##### System Deployment {#def-system-deployment}
 
-A **system installation** is a concrete running instance of a [system type](#def-system-type) of a specific [system version](#def-system-version). If the system type supports tenant isolation, a system installation may offer multiple [system instances](#def-system-instance). A system installation has at least one [base URL](#def-base-url).
+A **system installation** (also called **system deployment**) is a concrete running instance of a [system type](#def-system-type) of a specific [system version](#def-system-version). If the system type supports tenant isolation, a system installation may offer multiple [system instances](#def-system-instance). A system installation has at least one [base URL](#def-base-url).
 
 #### System Version {#def-system-version}
 
@@ -1023,7 +1035,7 @@ If the system type offers tenant isolation (multi-tenancy), system instance refe
 
 The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if multi-tenancy is supported or system ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if not.
 
-A system instance can act as an [ORD Provider](#ord-provider).
+A system instance can act as an [ORD Provider](#def-ord-provider).
 
 #### System Landscape {#def-system-landscape}
 
