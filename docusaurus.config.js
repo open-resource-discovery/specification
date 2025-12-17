@@ -113,7 +113,7 @@ const config = {
         darkTheme: prismThemes.oceanicNext,
       },
       mermaid: {
-        theme: { light: "neutral", dark: "forest" },
+        theme: { light: "neutral", dark: "dark" },
       },
       navbar: {
         title: "Open Resource Discovery",
