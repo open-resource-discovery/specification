@@ -550,6 +550,7 @@ export interface ApiResource {
     string;
   /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
@@ -1305,6 +1306,7 @@ export interface EventResource {
   changelogEntries?: ChangelogEntry[];
   /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
@@ -1936,9 +1938,10 @@ export interface Capability {
    */
   relatedEntityTypes?: string[];
   /**
-   * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * List of available machine-readable definitions, which describe the capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Each definition is to be understood as an alternative description format, describing the same resource / capability.
+   * Each definition is to be understood as an alternative description format, describing the same capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.

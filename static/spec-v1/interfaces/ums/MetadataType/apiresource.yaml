@@ -127,7 +127,7 @@ spec:
       type: 'custom'
       customTypeName: 'ApiResourceDefinition'
       array: true
-      description: "List of available machine-readable definitions, which describe the resource or capability in detail.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented."
+      description: "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented."
     - name: 'implementationStandard'
       type: 'string'
       description: "Declares this API to be a valid implementation of an externally standardized API contract, sub-protocol or protocol variant.\n\nAll APIs that share the same implementation standard MAY be treated the same or similar by a consumer client."

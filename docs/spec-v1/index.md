@@ -363,7 +363,7 @@ The availability of this feature MUST be announced through the [ORD Configuratio
 If supported, the [ORD Configuration](#ord-configuration-endpoint) and the [ORD Document](#ord-document-endpoint) endpoint gain an optional query parameter `?select="` where the value MUST be a valid [ORD ID](#ord-id).
 When given, the ORD Provider only returns the requested ORD Resource, but MAY also add related ORD information that need to be updated in the same transaction (the decision is on the provider).
 
-The Aggregator will follow the regular ORD crawling run by invoking the ORD Configuration endpoint and from there the ORD documents and attached resource definitions.
+The Aggregator will follow the regular ORD crawling run by invoking the ORD Configuration endpoint and from there the ORD documents and attached [resource definitions](#resource-definition).
 There is no reason to pass the parameters to the resource definition requests.
 The aggregator is allowed to send a select request on the config endpoint, but if the select capability is not advertised MUST NOT proceed with select requests on the ORD documents.
 
@@ -387,9 +387,12 @@ The response contains the requested resource and MAY include related ORD informa
 
 #### Resource Definitions
 
-The resources in the ORD Document often contain resource definitions, which contain the actual detailed description, using industry standard formats like OpenAPI.
-The ORD protocol does not aim to replace such standards, instead they are discovered and transported along with ORD.
-The ORD layer adds shared common properties, taxonomy and relationships.
+[ORD resources](#ord-resource) like APIs and Events reference [resource definitions](#resource-definition), which are machine-readable documents that describe the resource's interface in detail. These use industry-standard formats such as [OpenAPI](https://www.openapis.org/), [AsyncAPI](https://www.asyncapi.com/), JSON Schema, or WSDL.
+
+ORD does not aim to replace these standards. Instead, it discovers and transports them alongside shared metadata. The ORD layer adds common properties (like `version`, `visibility`, `releaseStatus`), [taxonomy](#ord-taxonomy) (via `Package`, `Product`, etc.), and relationships between resources.
+
+For details on how resource definitions are referenced, see the `resourceDefinitions` property on [API Resource](./interfaces/Document.md#api-resource) and [Event Resource](./interfaces/Document.md#event-resource) in the interface documentation.
+When consumed via an [ORD aggregator](#ord-aggregator), the aggregator may [host the resource definitions](#hosting-resource-definitions) for easier access.
 
 #### Consumer Perspective
 
@@ -500,7 +503,7 @@ The following rules need to be implemented by ORD aggregators:
   - `labels` MUST be merged without duplicated values.
     - Values of the same label key will be merged.
     - Duplicate values of the same label key will be removed.
-- The aggregator MUST rewrite all URLs for [hosted referenced files](#hosting-referenced-files) to point to their own hosted URLs.
+- The aggregator MUST rewrite all URLs for [hosted resource definitions](#hosting-resource-definitions) to point to their own hosted URLs.
 - The aggregator MUST convert all relative URLs to absolute URLs
   - Relative URLs MUST be rewritten according to the detected [base URL](#base-url) of the described system instance.
     - The base URL MUST be made known to the aggregator, either via context (e.g. service discovery or trust context) or by explicitly describing it in the ORD document via `describedSystemInstance`.`baseUrl`.
@@ -515,7 +518,7 @@ The following rules need to be implemented by ORD aggregators:
 The removal of resources is indicated through setting a [Tombstone](./interfaces/Document.md#tombstone).
 The ORD Aggregator MUST remove unpublished information that has been tombstoned within a grace period of 31 days.
 
-##### Hosting Referenced Files
+##### Hosting Resource Definitions
 
 The ORD aggregator MUST host all files that have been referenced in the [ORD resources](#ord-resource), most notably the [resource definitions](#resource-definition).
 The files MUST be stored, hosted, and made available by the ORD aggregator system itself.

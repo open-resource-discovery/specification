@@ -1219,6 +1219,7 @@ definitions:
         type: array
         description: |-
           List of available machine-readable definitions, which describe the resource or capability in detail.
+          See also [Resource Definitions](../index.md#resource-definitions) for more context.
 
           Each definition is to be understood as an alternative description format, describing the same resource / capability.
           As a consequence the same definition type MUST NOT be provided more than once.
