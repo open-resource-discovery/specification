@@ -16,24 +16,24 @@ This specification defines and uses the following terms (for the ORD context):
 - <dfn id="def-ord">ORD</dfn> is the abbreviation for Open Resource Discovery.
   It refers to the standard (as defined by the specification) as a whole.
 
-- <dfn id="def-ord-information">ORD information</dfn> is the sum of all information that can be expressed through ORD.
+- <a id="def-ord-information"></a><dfn id="def-ord-information">ORD information</dfn> is the sum of all information that can be expressed through ORD.
 
   ORD information can have different [perspectives](#perspectives):
-  - The <dfn id="def-static-perspective">static perspective</dfn> describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a <a href="#def-system-type">system type</a> and <a href="#def-system-version">system version</a>. This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
+  - The <a id="def-static-perspective"></a><dfn id="def-static-perspective">static perspective</dfn> describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a <a href="#def-system-type">system type</a> and <a href="#def-system-version">system version</a>. This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
     - This can be explicitly set with `perspective`: `system-version`
-    - This is also referred to as <dfn id="def-system-instance-unaware">system instance unaware</dfn> information. They are identical across all <a href="#def-system-instance">system instance</a> of the described <a href="#def-system-type">system type</a> and <a href="#def-system-version">system version</a>.
+    - This is also referred to as <a id="def-system-instance-unaware"></a><dfn id="def-system-instance-unaware">system instance unaware</dfn> information. They are identical across all <a href="#def-system-instance">system instance</a> of the described <a href="#def-system-type">system type</a> and <a href="#def-system-version">system version</a>.
 
-  - The <dfn id="def-dynamic-perspective">dynamic perspective</dfn> describes a <a href="#def-system-instance">system instance</a> at **run-time** and can therefore reflect how it is currently configured, customized or extended. This is also referred to as <a href="#def-system-instance-aware">system instance aware</a>.
+  - The <a id="def-dynamic-perspective"></a><dfn id="def-dynamic-perspective">dynamic perspective</dfn> describes a <a href="#def-system-instance">system instance</a> at **run-time** and can therefore reflect how it is currently configured, customized or extended. This is also referred to as <a href="#def-system-instance-aware">system instance aware</a>.
     - This can be explicitly set with `perspective`: `system-instance`
-    - This is also referred to as <dfn id="def-system-instance-aware">system instance aware</dfn> information.
+    - This is also referred to as <a id="def-system-instance-aware"></a><dfn id="def-system-instance-aware">system instance aware</dfn> information.
       System instance aware information are allowed to be different between system instances of the same <a href="#def-system-type">system type</a>.
 
   ORD information can be categorized into resources and taxonomies:
-  - <dfn id="def-ord-resource">ORD resource</dfn> information describes application and service <a href="#def-resource">resources</a>.
+  - <a id="def-ord-resource"></a><dfn id="def-ord-resource">ORD resource</dfn> information describes application and service <a href="#def-resource">resources</a>.
     Currently it covers API resources and Event resources.
     ORD resource information MAY be <a href="#def-system-instance-aware">system instance aware</a>, depending on the implementation of the <a href="#def-system-type">system type</a>.
 
-  - <dfn id="def-ord-taxonomy">ORD taxonomy</dfn> is used to categorize and structure <a href="#def-resource">resources</a>.
+  - <a id="def-ord-taxonomy"></a><dfn id="def-ord-taxonomy">ORD taxonomy</dfn> is used to categorize and structure <a href="#def-resource">resources</a>.
     Taxonomies span across <a href="#def-product">products</a> and <a href="#def-system-type">system types</a>.
     - Some taxonomies are implemented as dedicated Entities (e.g. `Package`, `Product`, `Group` and `GroupType`) that can express additional information.
       They are defined by the <a href="#def-ord-provider">ORD providers</a> in a decentralized manner.
@@ -42,44 +42,44 @@ This specification defines and uses the following terms (for the ORD context):
 
 - <dfn id="def-ord-behavior">ORD behavior</dfn> standardizes how <a href="#def-ord-information">ORD information</a> is discovered, transported, and aggregated.
 
-- A <dfn id="def-system">system</dfn> is sometimes used as a generic, imprecise term when no further distinctions are necessary.
+- A <a id="def-system"></a><dfn id="def-system">system</dfn> is sometimes used as a generic, imprecise term when no further distinctions are necessary.
   In most places, the specification uses more precise terms, though:
 
-  - A <dfn id="def-system-type">system type</dfn> is the abstract type of an application or service from an operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
+  - A <a id="def-system-type"></a><dfn id="def-system-type">system type</dfn> is the abstract type of an application or service from an operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
     Since system type is an abstract concept, it is not concretely addressable.
     A [system installation](#def-system-installation) of a specific [system version](#def-system-version) and potentially a [system instance](#def-system-instance) needs to be created to have a concrete, addressable system.
 
     Please note that a system type is similar, but not necessarily identical to a [product](#def-product).
     System type is a technical concept, while product is a term for external communication and sales.
 
-  - A <dfn id="def-system-installation">system installation</dfn> is a concrete running instance of a <a href="#def-system-type">system type</a> of a specific [system version](#def-system-version). If the system type supports tenant isolation, a system installation may offer multiple <a href="#def-system-instance">system instances</a>. A system installation has at least one [base URL](#def-base-url).
+  - A <a id="def-system-installation"></a><a id="def-system-deployment"></a><dfn id="def-system-installation">system installation</dfn> is a concrete running instance of a <a href="#def-system-type">system type</a> of a specific [system version](#def-system-version). If the system type supports tenant isolation, a system installation may offer multiple <a href="#def-system-instance">system instances</a>. A system installation has at least one [base URL](#def-base-url).
 
-  - A <dfn id="def-system-version">system version</dfn> is a particular software version of a <a href="#def-system-installation">system installation</a>, which is always of the same <a href="#def-system-type">system type</a>. It states the design-time version or release of a system and provides versioning for operational purposes. All system instances of the same system version could have the same static metadata description.
+  - A <a id="def-system-version"></a><dfn id="def-system-version">system version</dfn> is a particular software version of a <a href="#def-system-installation">system installation</a>, which is always of the same <a href="#def-system-type">system type</a>. It states the design-time version or release of a system and provides versioning for operational purposes. All system instances of the same system version could have the same static metadata description.
 
-  - A <dfn id="def-system-instance">system instance</dfn> is a running, isolated instance of a <a href="#def-system-type">system type</a>, running in a <a href="#def-system-installation">system installation</a> of a particular <a href="#def-system-version">system version</a>. It always refers to the _most specific_ instance from a customer, account, and data isolation perspective.
+  - A <a id="def-system-instance"></a><dfn id="def-system-instance">system instance</dfn> is a running, isolated instance of a <a href="#def-system-type">system type</a>, running in a <a href="#def-system-installation">system installation</a> of a particular <a href="#def-system-version">system version</a>. It always refers to the _most specific_ instance from a customer, account, and data isolation perspective.
     If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system installation](#def-system-installation) per tenant or system isolation does not matter. In those cases, system instance equals the system installation.
 
     The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if multi-tenancy is supported or system ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if not.
 
     A system instance can act as an [ORD Provider](#ord-provider).
 
-- A <dfn id="def-system-landscape">system landscape</dfn> is a set of <a href="#def-system-instance">system instances</a> that are explicitly combined together, for example via a shared zone of trust/connectivity, an account or a [namespace concept](#namespaces).
+- A <a id="def-system-landscape"></a><dfn id="def-system-landscape">system landscape</dfn> is a set of <a href="#def-system-instance">system instances</a> that are explicitly combined together, for example via a shared zone of trust/connectivity, an account or a [namespace concept](#namespaces).
 
-- A <dfn id="def-resource">resource</dfn> is provided by or for a [system instance](#def-system-instance) for outside consumption and/or communication.
-  - A <dfn id="def-machine-readable-resource">machine-readable resource</dfn> is a <a href="#def-resource">resource</a> that can be used for machine consumption and communication.
+- A <a id="def-resource"></a><dfn id="def-resource">resource</dfn> is provided by or for a [system instance](#def-system-instance) for outside consumption and/or communication.
+  - A <a id="def-machine-readable-resource"></a><dfn id="def-machine-readable-resource">machine-readable resource</dfn> is a <a href="#def-resource">resource</a> that can be used for machine consumption and communication.
     For example, APIs and events.
     They are usually described through a [resource definition](#def-resource-definition) format.
 
   - A <dfn id="def-human-consumption-resource">human-consumption resource</dfn> is a <a href="#def-resource">resource</a> that is meant for human consumption, for example documentation.
 
-  - A <dfn id="def-resource-definition">resource definition</dfn> is a machine-readable, structured document defining the inputs and outputs of a [machine-readable resource](#def-machine-readable-resource) in a standardized format.
+  - A <a id="def-resource-definition"></a><dfn id="def-resource-definition">resource definition</dfn> is a machine-readable, structured document defining the inputs and outputs of a [machine-readable resource](#def-machine-readable-resource) in a standardized format.
     It is primarily designed for automated processing, not human consumption. See also [definition](https://webapi-discovery.github.io/rfcs/rfc0001.html#definitions) by the [W3 WebAPI Discovery Community Group](https://www.w3.org/community/web-api-discovery/).
 
-- A <dfn id="def-product">product</dfn> is understood as a software product:
+- A <a id="def-product"></a><dfn id="def-product">product</dfn> is understood as a software product:
   A non-versioned, high-level entity for structuring the software portfolio from a software logistics perspective.
   While <a href="#def-system-type">system type</a> addresses the technical perspective, product is the term to use for customer-facing communication.
 
-- A <dfn id="def-base-url">base URL</dfn> is the consistent part of a <a href="#def-system-instance">system instance</a> URL.
+- A <a id="def-base-url"></a><dfn id="def-base-url">base URL</dfn> is the consistent part of a <a href="#def-system-instance">system instance</a> URL.
   From ORD perspective this is the base URL where the discovery starts and where the [ORD config endpoint](#ord-configuration-endpoint) location is relative to.
   In most cases the base URL consists of the URL protocol, domain name and (if necessary) the port, for example `https://example.com`.
   In rare cases, a relative path (e.g. including a tenant ID) might be included, for example `https://example.com/tenantA/`.
@@ -94,8 +94,8 @@ A [system type](#def-system-type) can implement multiple roles, e.g. an ORD Cons
 
 ### ORD Provider
 
-An <dfn id="def-ord-provider">ORD provider</dfn> is a system instance (of an application or service) that exposes ORD information for self-description.
-The **provider role** applies to business applications/services that want to describe themselves (<dfn id="def-described-system-instance">described system instance</dfn>).
+An <a id="def-ord-provider"></a><dfn id="def-ord-provider">ORD provider</dfn> is a system instance (of an application or service) that exposes ORD information for self-description.
+The **provider role** applies to business applications/services that want to describe themselves (<a id="def-described-system-instance"></a><dfn id="def-described-system-instance">described system instance</dfn>).
 
 > ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance not necessarily identical described system instances (see [`describedSystemInstance`](./interfaces/Document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
 
@@ -108,7 +108,7 @@ An ORD provider MUST use one of the standardized [ORD transport modes](#ord-tran
 
 ### ORD Aggregator
 
-An <dfn id="def-ord-aggregator">ORD aggregator</dfn> is a system that collects, aggregates, and proxies the ORD information from multiple [ORD providers](#ord-provider).
+An <a id="def-ord-aggregator"></a><dfn id="def-ord-aggregator">ORD aggregator</dfn> is a system that collects, aggregates, and proxies the ORD information from multiple [ORD providers](#ord-provider).
 It reflects the combined information on the ORD providers that it aggregates.
 The aggregator itself MAY represent a [static perspective](#def-static-perspective) or a [dynamic perspective](#def-dynamic-perspective), or both.
 
@@ -133,7 +133,7 @@ In case the ORD aggregator that supports the [dynamic perspective](#def-dynamic-
 
 ### ORD Consumer
 
-An <dfn id="def-ord-consumer">ORD consumer</dfn> is an actor or a system that needs to retrieve ORD information.
+An <a id="def-ord-consumer"></a><dfn id="def-ord-consumer">ORD consumer</dfn> is an actor or a system that needs to retrieve ORD information.
 
 ORD can either be consumed from a single [ORD provider](#ord-provider) (a system instance) or from an [ORD aggregator](#def-ord-aggregator).
 The latter is RECOMMENDED, because it provides more information and a higher quality of access.
@@ -661,7 +661,7 @@ Optionally, sub-contexts can be defined as sub namespaces for system and authori
 
 #### Vendor Namespace
 
-A <dfn id="def-ord-vendor-namespace">vendor namespace</dfn> is a stable and globally unique identifier namespace that corresponds to a vendor / company.
+A <a id="def-ord-vendor-namespace"></a><dfn id="def-ord-vendor-namespace">vendor namespace</dfn> is a stable and globally unique identifier namespace that corresponds to a vendor / company.
 The vendor owns this top-level namespace and is responsible for governing this namespace and all the namespaces within it.
 
 A vendor namespace MUST be constructed according to the following rules:
