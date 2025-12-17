@@ -184,7 +184,7 @@ spec:
         - name: 'systemTypeRestriction'
           type: 'string'
           array: true
-          description: "In case that the event subscriptions are limited to known [system types](../index.md#def-system-type), they can be listed here as [system namespaces](../index.md#system-namespace).\n\nIf given, only system types of the defined namespaces are supported as integration partners.\nIf not given, there is no restriction which system type provides the events."
+          description: "In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).\n\nIf given, only system types of the defined namespaces are supported as integration partners.\nIf not given, there is no restriction which system type provides the events."
     - name: 'EventResourceIntegrationAspectSubset'
       metadataProperties:
         - name: 'eventType'

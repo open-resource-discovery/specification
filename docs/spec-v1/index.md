@@ -15,43 +15,43 @@ The ORD specification consists of several [parts](#ord-parts).
 Depending on the role of the adopter, only some parts of the specification are relevant and need to be implemented.
 
 Please note that ORD roles are not exclusive.
-A [system type](#def-system-type) can implement multiple roles, e.g. an ORD Consumer MAY also be an ORD Provider.
+A [system type](#system-type) can implement multiple roles, e.g. an ORD Consumer MAY also be an ORD Provider.
 
-### ORD Provider {#def-ord-provider}
+### ORD Provider
 
 An **ORD provider** is a system instance (of an application or service) that exposes ORD information for self-description.
-The **provider role** applies to business applications/services that want to describe themselves ([described system instance](#def-described-system-instance)).
+The **provider role** applies to business applications/services that want to describe themselves ([described system instance](#described-system-instance)).
 
-#### Described System Instance {#def-described-system-instance}
+#### Described System Instance
 
 A **described system instance** is a system instance that is being described by an ORD provider.
 
 > ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance not necessarily identical described system instances (see [`describedSystemInstance`](./interfaces/Document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
 
 An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
-An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#def-ord-aggregator).
+An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
 ![ORD Provider Role](/img/ord-role-provider.svg "ORD Provider Role")
 
-### ORD Aggregator {#def-ord-aggregator}
+### ORD Aggregator
 
-An **ORD aggregator** is a system that collects, aggregates, and proxies the ORD information from multiple [ORD providers](#def-ord-provider).
+An **ORD aggregator** is a system that collects, aggregates, and proxies the ORD information from multiple [ORD providers](#ord-provider).
 It reflects the combined information on the ORD providers that it aggregates.
-The aggregator itself MAY represent a [static perspective](#def-static-perspective) or a [dynamic perspective](#def-dynamic-perspective), or both.
+The aggregator itself MAY represent a [static perspective](#static-perspective) or a [dynamic perspective](#dynamic-perspective), or both.
 
-The ORD information MUST be made available to [ORD Consumers](#def-ord-consumer) through a higher-quality API, for example via an [ORD Discovery API](#ord-discovery-api) that allows for more advanced consumption patterns.
+The ORD information MUST be made available to [ORD Consumers](#ord-consumer) through a higher-quality API, for example via an [ORD Discovery API](#ord-discovery-api) that allows for more advanced consumption patterns.
 
 An ORD aggregator MUST ensure that information that has `visibility` of `private` or `internal` is not made available to consumers that don't have the corresponding permissions to get such information (e.g. external consumers). If ORD consumers get private or internal information, they inherit the responsibility of protecting it.
 
-There are [aggregation rules](#aggregation-rules) and [validation rules](#validation-rules) that an ORD aggregator MUST implement and [ORD Consumers](#def-ord-consumer) MAY hold to.
+There are [aggregation rules](#aggregation-rules) and [validation rules](#validation-rules) that an ORD aggregator MUST implement and [ORD Consumers](#ord-consumer) MAY hold to.
 
 It MUST support all [ORD transport modes](#ord-transport-modes) that are used by the systems it aggregates.
 
-In case the ORD aggregator that supports the [dynamic perspective](#def-dynamic-perspective):
+In case the ORD aggregator that supports the [dynamic perspective](#dynamic-perspective):
 
-- the aggregator MUST support [system instance aware](#def-system-instance-aware) information and MAY support further [system instance](#def-system-instance) grouping concepts, such as accounts etc.
+- the aggregator MUST support [system instance aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system instance aware information it MUST be system instance aware itself.
 - In the ORD Service API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
   - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Service consumer should not need to understand whether the information is currently static or system instance aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
@@ -60,16 +60,16 @@ In case the ORD aggregator that supports the [dynamic perspective](#def-dynamic-
 
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
 
-### ORD Consumer {#def-ord-consumer}
+### ORD Consumer
 
 An **ORD consumer** is an actor or a system that needs to retrieve ORD information.
 
-ORD can either be consumed from a single [ORD provider](#def-ord-provider) (a system instance) or from an [ORD aggregator](#def-ord-aggregator).
+ORD can either be consumed from a single [ORD provider](#ord-provider) (a system instance) or from an [ORD aggregator](#ord-aggregator).
 The latter is RECOMMENDED, because it provides more information and a higher quality of access.
 
-If the consumer gets the information from an [ORD aggregator](#def-ord-aggregator), it will be provided through an [ORD Discovery API](#ord-discovery-api).
+If the consumer gets the information from an [ORD aggregator](#ord-aggregator), it will be provided through an [ORD Discovery API](#ord-discovery-api).
 
-If the consumer gets the information from an [ORD provider](#def-ord-provider), it will be received as an [ORD document](#ord-document) via one of the implemented [transport modes](#ord-transport-modes).
+If the consumer gets the information from an [ORD provider](#ord-provider), it will be received as an [ORD document](#ord-document) via one of the implemented [transport modes](#ord-transport-modes).
 
 An ORD consumer that receives information with a `visibility` of `private` or `internal` inherits the responsibility of the ORD aggregator to protect the information.
 The ORD consumer MUST ensure that private and internal information is not exposed to consumers without the corresponding permissions.
@@ -79,14 +79,14 @@ If the ORD consumer only needs public information, it SHOULD only request those 
 
 ## ORD Transport Modes
 
-The specification makes a distinction between how [ORD information](#def-ord-information) is expressed (say, as an [ORD document](#ord-document)) and how it is transported.
+The specification makes a distinction between how [ORD information](#ord-information) is expressed (say, as an [ORD document](#ord-document)) and how it is transported.
 
-An [ORD Provider](#def-ord-provider) MUST implement at least one of the defined transport modes.
-If the ORD information is [system instance aware](#def-system-instance-aware), the implementation of the transport mode MUST support providing it **per system instance**.
+An [ORD Provider](#ord-provider) MUST implement at least one of the defined transport modes.
+If the ORD information is [system instance aware](#system-instance-aware), the implementation of the transport mode MUST support providing it **per system instance**.
 
 ### Pull Transport
 
-In pull transport mode, [ORD information](#def-ord-information) is made available through a simple REST API that exposes [ORD documents](#ord-document) via `GET` endpoints.
+In pull transport mode, [ORD information](#ord-information) is made available through a simple REST API that exposes [ORD documents](#ord-document) via `GET` endpoints.
 
 This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
@@ -168,7 +168,7 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### Considerations on the ORD Content
 
-The ORD documents MUST describe the current state of a concrete, running [system instance](#def-system-instance).
+The ORD documents MUST describe the current state of a concrete, running [system instance](#system-instance).
 
 All resources that are described within one document MUST describe the same system instance.
 
@@ -178,9 +178,9 @@ This also applies across ORD Providers, which is ensured through the correct use
 
 The [validation rules](#validation-rules) MUST be considered.
 
-If the [resources](#def-resource) that are described through ORD are [system instance aware](#def-system-instance-aware) (they differ between system instances), the ORD document MUST reflect this.
+If the [resources](#resource) that are described through ORD are [system instance aware](#system-instance-aware) (they differ between system instances), the ORD document MUST reflect this.
 In that case, one ORD document MUST be provided for each system instance.
-Only if the information is [system instance unaware](#def-system-instance-unaware) (the system behaves the same for each instance), a single ORD document can represent the system as a whole.
+Only if the information is [system instance unaware](#system-instance-unaware) (the system behaves the same for each instance), a single ORD document can represent the system as a whole.
 
 Differences between system instances are possible, for example, when the system has configuration or extensibility capabilities that result in resources being activated, deactivated, added, or modified.
 This might happen at config time, deploy time, or even at run-time.
@@ -188,7 +188,7 @@ This might happen at config time, deploy time, or even at run-time.
 For example, a configuration could explicitly disable an API. In this case, the ORD document for this specific system instance MUST not describe the disabled API.
 Some systems are even extensible in a way that customers can add new APIs or alter existing APIs at run-time.
 Those changes MUST be documented via ORD.
-Please note that some changes only affect the referenced [resource definitions](#def-resource-definition) and not the ORD document itself.
+Please note that some changes only affect the referenced [resource definitions](#resource-definition) and not the ORD document itself.
 However, the change in the resource definition MUST be indicated through a version increment (see [Version and Lifecycle](#version-and-lifecycle)).
 
 #### Considerations on the Granularity of ORD Documents
@@ -234,7 +234,7 @@ Please [create an issue](https://github.com/open-resource-discovery/specificatio
 
 ### ORD Provider API
 
-This section details how an [ORD Provider](#def-ord-provider) exposes one or multiple [ORD documents](#ord-document) for the [pull transport mode](#pull-transport).
+This section details how an [ORD Provider](#ord-provider) exposes one or multiple [ORD documents](#ord-document) for the [pull transport mode](#pull-transport).
 
 The ORD Provider MUST implement a RESTful API that provides an [ORD configuration endpoint](#ord-configuration-endpoint) and at least one [ORD document endpoint](#ord-document-endpoint).
 
@@ -247,7 +247,7 @@ The <dfn id="def-configuration-endpoint">ORD configuration endpoint</dfn> is the
 
 The motivation behind the ORD configuration endpoint is to:
 
-- Define which version(s) and capabilities of the ORD standard are currently supported by the [system instance](#def-system-instance).
+- Define which version(s) and capabilities of the ORD standard are currently supported by the [system instance](#system-instance).
 - Define where and how the ORD information can be accessed
   - Which transport mode is available (URLs to ORD document(s) indicate the [pull transport mode](#pull-transport))
   - Which [access strategies](../spec-extensions/access-strategies/index.mdx) are available
@@ -262,7 +262,7 @@ The idea behind the configuration endpoint is inspired by the [well-known URI](h
 
 ##### Provider Implementation
 
-The [ORD configuration endpoint](#ord-configuration-endpoint) MUST be implemented by [ORD Providers](#def-ord-provider) and be accessible via an HTTP GET request.
+The [ORD configuration endpoint](#ord-configuration-endpoint) MUST be implemented by [ORD Providers](#ord-provider) and be accessible via an HTTP GET request.
 
 The response MUST be a valid UTF-8 encoded [JSON](https://www.json.org/json-en.html) document that is returned with the `application/json;charset=UTF-8` content type and the HTTP Status Code `200`.
 
@@ -275,9 +275,9 @@ The rules on [ORD Provider Cache Handling](#ord-provider-cache-handling) apply.
 
 It is RECOMMENDED to make this endpoint public.
 
-It is RECOMMENDED use the fixed [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) `/.well-known/open-resource-discovery` (as registered [here](https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml)) that is relative to the system instances [base URL](#def-base-url).
+It is RECOMMENDED use the fixed [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) `/.well-known/open-resource-discovery` (as registered [here](https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml)) that is relative to the system instances [base URL](#base-url).
 
-Since the ORD config does not contain any tenant-specific information, it is RECOMMENDED to only provide one ORD configuration endpoint for one [system deployment](#def-system-deployment) (same [base URL](#def-base-url)) of a multi-tenant application.
+Since the ORD config does not contain any tenant-specific information, it is RECOMMENDED to only provide one ORD configuration endpoint for one [system deployment](#system-deployment) (same [base URL](#base-url)) of a multi-tenant application.
 
 This assumes that the ORD document URLs in the configuration are not different per tenant and the tenant ID is selected as part of the access strategy.
 If the application is single-tenant or the tenant ID is part of the base URL (for example in the domain name), each tenant / system instance will have their own ORD config endpoint as a consequence.
@@ -290,7 +290,7 @@ If the ORD configuration endpoint is customized, the ORD configuration response 
 #### ORD Document Endpoint
 
 The <dfn id="def-document-endpoint">ORD document endpoint</dfn> provides an [ORD document](#ord-document) via [pull transport](#pull-transport).
-An [ORD Provider](#def-ord-provider) MUST implement one ORD document endpoint for each ORD document it exposes.
+An [ORD Provider](#ord-provider) MUST implement one ORD document endpoint for each ORD document it exposes.
 
 ##### Provider Implementation
 
@@ -298,7 +298,7 @@ The content of an [ORD document](#ord-document) MUST be made available via an HT
 
 All of the [common REST characteristics](#common-rest-characteristics) MUST be met.
 
-If the ORD document is [system instance aware](#def-system-instance-aware) (different between system instances), the ORD document endpoint MUST ensure that the response describes the correct/chosen instance specifically.
+If the ORD document is [system instance aware](#system-instance-aware) (different between system instances), the ORD document endpoint MUST ensure that the response describes the correct/chosen instance specifically.
 This can be implemented, for example, via authentication (multi tenancy) or by having different URLs per system instance.
 In this case, the ORD documents MUST be provided and fetched for _each_ system instance.
 For more details, please see the [considerations on the ORD content](#considerations-on-the-ord-content) section.
@@ -338,7 +338,7 @@ The response contains the requested resource and MAY include related ORD informa
 
 #### Consumer Perspective
 
-An [ORD consumer](#def-ord-consumer) MUST first consult the [ORD configuration endpoint](#ord-configuration-endpoint).
+An [ORD consumer](#ord-consumer) MUST first consult the [ORD configuration endpoint](#ord-configuration-endpoint).
 The response will indicate the supported version(s) of ORD, the URLs of the exposed [ORD documents](#ord-document), and additional information that has implications for accessing the information. The ORD documents may contain links to metadata definitions and how to access them.
 
 The most important rules are:
@@ -360,40 +360,40 @@ The `ETag` header value on the document REST response will implicitly be updated
 
 ##### ORD Consumer Cache Handling
 
-An arbitrary [ORD consumer](#def-ord-consumer) MAY implement the following cache handling rules to optimize frequent access.
-An [ORD aggregator](#def-ord-aggregator) MUST implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
+An arbitrary [ORD consumer](#ord-consumer) MAY implement the following cache handling rules to optimize frequent access.
+An [ORD aggregator](#ord-aggregator) MUST implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
 
 The `Cache-Control` and `ETag` headers (as described in [ORD Provider Cache Handling](#ord-provider-cache-handling)) MUST be respected and correctly implemented from the client's side.
 
 Referenced definition files MUST only be fetched if they have not been retrieved yet or the `version` has been incremented since the last retrieval.
 
-ORD documents and ORD resources that have been marked as [system instance aware](#def-system-instance-aware) MUST each be fetched per tenant.
-If they are [system instance unaware](#def-system-instance-unaware) they SHOULD only be fetched once per system.
+ORD documents and ORD resources that have been marked as [system instance aware](#system-instance-aware) MUST each be fetched per tenant.
+If they are [system instance unaware](#system-instance-unaware) they SHOULD only be fetched once per system.
 
 ### ORD Aggregation
 
-This section covers the aggregation rules and validations for [ORD aggregators](#def-ord-aggregator).
+This section covers the aggregation rules and validations for [ORD aggregators](#ord-aggregator).
 
-[ORD Consumers](#def-ord-consumer) that retrieve information from an aggregator MAY rely on the outlined rules.
+[ORD Consumers](#ord-consumer) that retrieve information from an aggregator MAY rely on the outlined rules.
 
 #### Aggregation Rules
 
-One of the responsibilities of an [ORD aggregator](#def-ord-aggregator) is to combine the ORD information from multiple system instances.
+One of the responsibilities of an [ORD aggregator](#ord-aggregator) is to combine the ORD information from multiple system instances.
 When information from many different system instances comes together, some situations may arise that need to be resolved through clearly defined rules.
 
 ##### Merging ORD information
 
 This section outlines the rules of how ORD information is merged and - if conflicts arise - how they are resolved.
 
-First, the distinction between [ORD taxonomy](#def-ord-taxonomy) and [ORD resource](#def-ord-resource) information must be understood.
+First, the distinction between [ORD taxonomy](#ord-taxonomy) and [ORD resource](#ord-resource) information must be understood.
 
-ORD taxonomy is independent of specific <a href="#def-product">products</a> or <a href="#def-system-type">system types</a>. In contrast, [ORD resources](#def-ord-resource) may be either [system instance aware](#def-system-instance-aware) (varying per instance) or [system instance unaware](#def-system-instance-unaware) (static across instances).
+ORD taxonomy is independent of specific <a href="#product">products</a> or <a href="#system-type">system types</a>. In contrast, [ORD resources](#ord-resource) may be either [system instance aware](#system-instance-aware) (varying per instance) or [system instance unaware](#system-instance-unaware) (static across instances).
 
 ###### Merging ORD Taxonomy
 
-This applies currently to the `Package` and `Product` [ORD taxonomy](#def-ord-taxonomy) interfaces.
+This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
 
-The information is [system instance unaware](#def-system-instance-unaware) and therefore MUST not be stored for each [system instance](#def-system-instance).
+The information is [system instance unaware](#system-instance-unaware) and therefore MUST not be stored for each [system instance](#system-instance).
 If multiple systems/system instances describe the same ORD taxonomy instance, the following merging rules MUST be followed:
 
 - Instances with the same [ORD ID](#ord-id) are considered to be the same and MUST be merged.
@@ -405,19 +405,19 @@ If multiple systems/system instances describe the same ORD taxonomy instance, th
 
 ###### Merging ORD Resources
 
-This applies currently to the `APIResource` and `EventResource` [ORD resource](#def-ord-resource) interfaces.
+This applies currently to the `APIResource` and `EventResource` [ORD resource](#ord-resource) interfaces.
 
-The information MAY be [system instance aware](#def-system-instance-aware).
-Therefore, the information MUST be retrieved and stored for each [system instance](#def-system-instance) individually.
+The information MAY be [system instance aware](#system-instance-aware).
+Therefore, the information MUST be retrieved and stored for each [system instance](#system-instance) individually.
 In this case, an ORD resource with the same [ORD ID](#ord-id) will exist exactly once for each system instance.
 Therefore, the ORD ID MUST be further qualified by a system instance ID when stored by the aggregator.
-If a [system landscape](#def-system-landscape) view needs to be supported, the information about the landscape assignment/zone information MUST be enriched and considered by the aggregator.
+If a [system landscape](#system-landscape) view needs to be supported, the information about the landscape assignment/zone information MUST be enriched and considered by the aggregator.
 
 If the same system instances describe the same ORD resource, the following merging rules MUST be followed:
 
 - Instances with the same ORD ID from the same system instance are considered to be the same and MUST be merged.
 - Instances with the same ORD ID from different system instances MUST not be merged.
-  If the aggregator knows for sure that the information is [system instance unaware](#def-system-instance-unaware) it MAY only retrieve and store some of the information once for optimization purposes.
+  If the aggregator knows for sure that the information is [system instance unaware](#system-instance-unaware) it MAY only retrieve and store some of the information once for optimization purposes.
   However, the aggregator MUST store the information about which system instances (system instance IDs) the resource is available on.
 - If there is a conflict, the instance with the higher `version` according to [Semantic Versioning](https://semver.org/) rules takes precedence.
 - If both instances have the same version but different content, the most recent information takes precedence.
@@ -447,10 +447,10 @@ The following rules need to be implemented by ORD aggregators:
     - Duplicate values of the same label key will be removed.
 - The aggregator MUST rewrite all URLs for [hosted referenced files](#hosting-referenced-files) to point to their own hosted URLs.
 - The aggregator MUST convert all relative URLs to absolute URLs
-  - Relative URLs MUST be rewritten according to the detected [base URL](#def-base-url) of the described system instance.
+  - Relative URLs MUST be rewritten according to the detected [base URL](#base-url) of the described system instance.
     - The base URL MUST be made known to the aggregator, either via context (e.g. service discovery or trust context) or by explicitly describing it in the ORD document via `describedSystemInstance`.`baseUrl`.
     - When both information are available and differ, the aggregator MAY decide to give precedence to the context information.
-- The information on the [described system instance](#def-described-system-instance) SHOULD be added if they are missing.
+- The information on the [described system instance](#described-system-instance) SHOULD be added if they are missing.
   - If system instance information is missing, the aggregator SHOULD obtain and enrich the ORD information, for example, via service discovery or trust context.
   - If the ORD aggregator has additional information on a system instance that are not standardized through the ORD interfaces, they MAY be added and exposed through the ORD Discovery API.
 - The aggregator MAY keep a history of previous versions (including minor and patch changes) of published resources.
@@ -462,12 +462,12 @@ The ORD Aggregator MUST remove unpublished information that has been tombstoned 
 
 ##### Hosting Referenced Files
 
-The ORD aggregator MUST host all files that have been referenced in the [ORD resources](#def-ord-resource), most notably the [resource definitions](#def-resource-definition).
+The ORD aggregator MUST host all files that have been referenced in the [ORD resources](#ord-resource), most notably the [resource definitions](#resource-definition).
 The files MUST be stored, hosted, and made available by the ORD aggregator system itself.
 The URLs to the hosted files MUST be rewritten accordingly in the [ORD Discovery API](#ord-discovery-api) responses.
 The aggregator MUST implement caching and error handling according to the [common REST characteristics](#common-rest-characteristics).
 
-The hosting ensures that ORD consumers can retrieve the referenced files directly from the aggregator itself. They don't need to fetch them from the [ORD Providers](#def-ord-provider) individually.
+The hosting ensures that ORD consumers can retrieve the referenced files directly from the aggregator itself. They don't need to fetch them from the [ORD Providers](#ord-provider) individually.
 This eliminates the need for authentication and authorization against many different systems.
 It also ensures that the files have the same high SLA availability that the ORD aggregator has.
 
@@ -489,12 +489,12 @@ The following validation rules apply specifically for ORD aggregators:
 
 ### ORD Discovery API
 
-The ORD Discovery API is a higher quality API, provided by an [ORD aggregator](#def-ord-aggregator) that is optimized for easy consumption of ORD information.
+The ORD Discovery API is a higher quality API, provided by an [ORD aggregator](#ord-aggregator) that is optimized for easy consumption of ORD information.
 It MAY support advanced features like pagination, filtering, search, expansion, etc.
 Such features are deliberately missing at the [ORD Provider API](#ord-provider-api) to keep the provider interface simple.
 
-The ORD Discovery API MUST be implemented by the [ORD aggregator](#def-ord-aggregator) role.
-It is the RECOMMENDED interface for [ORD consumers](#def-ord-consumer) to retrieve ORD information.
+The ORD Discovery API MUST be implemented by the [ORD aggregator](#ord-aggregator) role.
+It is the RECOMMENDED interface for [ORD consumers](#ord-consumer) to retrieve ORD information.
 
 An ORD aggregator MAY expose more information than it received from the ORD providers, for example additional information it acquired through service discovery or other metadata sources.
 
@@ -503,7 +503,7 @@ Ideally this contract is based on the [ORD Provider API](#ord-provider-api) inte
 
 ## Perspectives
 
-With ORD it's possible to describe a system both from a <a href="#def-static-perspective">static perspective</a> and a <a href="#def-dynamic-perspective">dynamic perspective</a>.
+With ORD it's possible to describe a system both from a <a href="#static-perspective">static perspective</a> and a <a href="#dynamic-perspective">dynamic perspective</a>.
 For a definition, please refer to the [terminology](#terminology) section.
 
 > ⏩ This concept requires some background to understand properly.
@@ -513,8 +513,8 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 There is a `perspective` attribute, which allows to set the following values:
 
-- `system-version`: The <a href="#def-static-perspective">static perspective</a> on the granularity of <a href="#def-system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#def-system-instance-unaware">system instance unaware</a> information (usually known at deploy-time).
-- `system-instance`: The <a href="#def-dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#def-system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#def-system-instance-aware">system instance aware</a> information (only known at run-time).
+- `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system instance unaware</a> information (usually known at deploy-time).
+- `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system instance aware</a> information (only known at run-time).
 
 ### Correct Use of Perspectives
 
@@ -588,7 +588,7 @@ Optionally, sub-contexts can be defined as sub namespaces for system and authori
 - It is RECOMMENDED to keep namespaces as short as reasonable, as they become part of IDs which have their own length limitations.
   Shorter namespaces leave more room for the overall IDs.
 
-#### Vendor Namespace {#def-ord-vendor-namespace}
+#### Vendor Namespace
 
 A **vendor namespace** is a stable and globally unique identifier namespace that corresponds to a vendor / company.
 The vendor owns this top-level namespace and is responsible for governing this namespace and all the namespaces within it.
@@ -611,7 +611,7 @@ A vendor namespace MUST be constructed according to the following rules:
 
 #### System Namespace
 
-An <dfn id="def-ord-system-namespace">system namespace</dfn> is a stable and globally unique identifier namespace that corresponds to an ORD <a href="#def-system-type">system type</a> (application or service type).
+An <dfn id="def-ord-system-namespace">system namespace</dfn> is a stable and globally unique identifier namespace that corresponds to an ORD <a href="#system-type">system type</a> (application or service type).
 
 The system type is the top-level technical, simplified view on an application or service.
 There there can be hierarchical groupings of them to higher, logical concepts and also to divide them into multiple sub-components.
@@ -626,7 +626,7 @@ An system namespace MUST be constructed according to the following rules:
 
 `<systemNamespace> := <vendorNamespace>.<systemTypeId>`
 
-- `<systemNamespace>` MUST be a valid [vendor namespace](#def-ord-vendor-namespace)
+- `<systemNamespace>` MUST be a valid [vendor namespace](#vendor-namespace)
 - `<systemTypeId>` is the identifier of the technical system type (of the application or service).
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
 - MUST match Regexp: `^[a-z0-9]+(?:[.][a-z0-9]+){1}$`
@@ -642,7 +642,7 @@ An authority namespace MUST be constructed according to the following rules:
 
 `<authority>` := `<vendorNamespace>.<authorityIdentifier>`
 
-- `<vendorNamespace>` MUST be a valid [vendor namespace](#def-ord-vendor-namespace)
+- `<vendorNamespace>` MUST be a valid [vendor namespace](#vendor-namespace)
 - `<authorityIdentifier>` is the identifier of the organizational unit.
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
 - MUST match Regexp: `^[a-z0-9]+(?:[.][a-z0-9]+){1}$`
@@ -678,7 +678,7 @@ It is NOT RECOMMENDED to use sub-context namespaces for grouping purposes only, 
 Some systems allow their customers / end-users to create their own resources (in-app extensions).
 In most cases these resources are local to the tenant, so we don't need to force the customer to register a namespace.
 
-To keep this situation simple, there is a reserved [vendor namespace](#def-ord-vendor-namespace): `customer`.
+To keep this situation simple, there is a reserved [vendor namespace](#vendor-namespace): `customer`.
 Everything within this namespace is owned by the customer, the owner of the tenant.
 In addition, there is one reserved authority namespace, specifically for customer in-app extensions: `customer.ext`.
 
@@ -686,16 +686,16 @@ The limitation of using `customer.*` namespaces is that they are unique only wit
 
 ### ORD ID
 
-An <dfn id="def-ord-id">ORD ID</dfn> is a stable and globally unique identifier (at design-time) for [ORD resources](#def-ord-resource) and [ORD taxonomies](#def-ord-taxonomy).
+An <dfn id="def-ord-id">ORD ID</dfn> is a stable and globally unique identifier (at design-time) for [ORD resources](#ord-resource) and [ORD taxonomies](#ord-taxonomy).
 
 It serves two purposes:
 
 - Use as an identifier for ORD information.
 - Refer to an ORD resources/taxonomy.
 
-The ORD ID is a globally unique identifier from a [system type](#def-system-type) perspective and is [system instance unaware](#def-system-instance-unaware).
+The ORD ID is a globally unique identifier from a [system type](#system-type) perspective and is [system instance unaware](#system-instance-unaware).
 This means that the ORD ID will not include information about system instances (e.g. tenant IDs) and is therefore only unique at design-time.
-Therefore an ORD ID is not unique from a [system instance](#def-system-instance) perspective.
+Therefore an ORD ID is not unique from a [system instance](#system-instance) perspective.
 The same resource (with the same ORD ID) can be exposed in different variations (e.g. customizations, extensions) by multiple system instances at run-time.
 
 To get a globally unique ID at run-time, a composite key is required.
@@ -716,7 +716,7 @@ It MUST be constructed as defined here:
   - For `EntityType`
     - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace)
   - For `Vendor` and `Product`:
-    - MUST be a valid [vendor namespace](#def-ord-vendor-namespace) for `Vendor` and `Product`
+    - MUST be a valid [vendor namespace](#vendor-namespace) for `Vendor` and `Product`
   - The provider is the system hosting the described resource.
     - In advanced cases, the provider could be an embedded system / sidecar with its own system namespace.
       This can lead to multiple system namespaces within one system.
@@ -773,14 +773,14 @@ Examples:
 An ORD ID should contain all of the necessary information to be self contained and to be successfully resolved.
 
 Resolving an ORD ID can serve multiple purposes, for example, by having an ID we can construct the link to the API Catalog page describing this resource.
-Or we can construct the API request to an [ORD aggregator](#def-ord-aggregator) where the ORD resource can be accessed.
+Or we can construct the API request to an [ORD aggregator](#ord-aggregator) where the ORD resource can be accessed.
 
 The rules about how an ORD ID is resolved to the customer's own URLs/APIs SHOULD be provided by the ORD aggregator.
 
 ### Correlation ID
 
 A <dfn id="def-correlation-id">Correlation ID</dfn> is a stable and globally unique reference and is conceptually similar to an [ORD ID](#ord-id).
-It can be used to correlate [ORD resources](#def-ord-resource) and [ORD taxonomy](#def-ord-taxonomy) to information that are provided by other systems (especially systems of record).
+It can be used to correlate [ORD resources](#ord-resource) and [ORD taxonomy](#ord-taxonomy) to information that are provided by other systems (especially systems of record).
 If the target information is already described via ORD, the relation should be expressed via an [ORD ID](#ord-id) instead.
 
 The correlation ID does not have a version fragment like the ORD ID, because it assumes that versioning is already part of the `<localIdentifier>` (if applicable at all).
@@ -897,7 +897,7 @@ A Specification ID MUST match the following [regular expression](https://en.wiki
 
 ## Version and Lifecycle
 
-The `version` expresses the complete/full resource version number of an [ORD resource](#def-ord-resource) or [ORD taxonomy](#def-ord-taxonomy).
+The `version` expresses the complete/full resource version number of an [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy).
 
 It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and therefore express minor and patch changes that don't lead to incompatible changes.
 
@@ -946,129 +946,129 @@ The strategy/access methodology that was chosen to retrieve the ORD information 
 
 This specification defines and uses the following terms (for the ORD context):
 
-#### ORD {#def-ord}
+#### ORD
 
 **ORD** is the abbreviation for Open Resource Discovery.
 It refers to the standard (as defined by the specification) as a whole.
 
-#### ORD Information {#def-ord-information}
+#### ORD Information
 
 **ORD information** is the sum of all information that can be expressed through ORD.
 
 ORD information can have different [perspectives](#perspectives):
 
-#### Static Perspective {#def-static-perspective}
+#### Static Perspective
 
-The **static perspective** describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a [system type](#def-system-type) and [system version](#def-system-version). This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
+The **static perspective** describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a [system type](#system-type) and [system version](#system-version). This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
 
 - This can be explicitly set with `perspective`: `system-version`
-- This is also referred to as [system instance unaware](#def-system-instance-unaware) information. They are identical across all [system instance](#def-system-instance) of the described [system type](#def-system-type) and [system version](#def-system-version).
+- This is also referred to as [system instance unaware](#system-instance-unaware) information. They are identical across all [system instance](#system-instance) of the described [system type](#system-type) and [system version](#system-version).
 
-##### System Instance Unaware {#def-system-instance-unaware}
+##### System Instance Unaware
 
 **System instance unaware** information is identical across all system instances of the described system type and system version.
 
-#### Dynamic Perspective {#def-dynamic-perspective}
+#### Dynamic Perspective
 
-The **dynamic perspective** describes a [system instance](#def-system-instance) at **run-time** and can therefore reflect how it is currently configured, customized or extended. This is also referred to as [system instance aware](#def-system-instance-aware).
+The **dynamic perspective** describes a [system instance](#system-instance) at **run-time** and can therefore reflect how it is currently configured, customized or extended. This is also referred to as [system instance aware](#system-instance-aware).
 
 - This can be explicitly set with `perspective`: `system-instance`
-- This is also referred to as [system instance aware](#def-system-instance-aware) information.
-  System instance aware information are allowed to be different between system instances of the same [system type](#def-system-type).
+- This is also referred to as [system instance aware](#system-instance-aware) information.
+  System instance aware information are allowed to be different between system instances of the same [system type](#system-type).
 
-##### System Instance Aware {#def-system-instance-aware}
+##### System Instance Aware
 
 **System instance aware** information is allowed to be different between system instances of the same system type.
 
-#### ORD Resource {#def-ord-resource}
+#### ORD Resource
 
 ORD information can be categorized into resources and taxonomies:
 
-**ORD resource** information describes application and service [resources](#def-resource).
+**ORD resource** information describes application and service [resources](#resource).
 Currently it covers API resources and Event resources.
-ORD resource information MAY be [system instance aware](#def-system-instance-aware), depending on the implementation of the [system type](#def-system-type).
+ORD resource information MAY be [system instance aware](#system-instance-aware), depending on the implementation of the [system type](#system-type).
 
-#### ORD Taxonomy {#def-ord-taxonomy}
+#### ORD Taxonomy
 
-**ORD taxonomy** is used to categorize and structure [resources](#def-resource).
-Taxonomies span across [products](#def-product) and [system types](#def-system-type).
+**ORD taxonomy** is used to categorize and structure [resources](#resource).
+Taxonomies span across [products](#product) and [system types](#system-type).
 
 - Some taxonomies are implemented as dedicated Entities (e.g. `Package`, `Product`, `Group` and `GroupType`) that can express additional information.
-  They are defined by the [ORD providers](#def-ord-provider) in a decentralized manner.
+  They are defined by the [ORD providers](#ord-provider) in a decentralized manner.
 - Other taxonomies are provided via fixed enums (code lists) and are defined as part of ORD itself, e.g. tags.
 - Taxonomies are not a consumer contract and therefore do not offer the same stability guarantees and lifecycle management as ORD resources.
 
-#### ORD Behavior {#def-ord-behavior}
+#### ORD Behavior
 
-**ORD behavior** standardizes how [ORD information](#def-ord-information) is discovered, transported, and aggregated.
+**ORD behavior** standardizes how [ORD information](#ord-information) is discovered, transported, and aggregated.
 
-#### System {#def-system}
+#### System
 
 A **system** is sometimes used as a generic, imprecise term when no further distinctions are necessary.
 In most places, the specification uses more precise terms, though:
 
-#### System Type {#def-system-type}
+#### System Type
 
 A **system type** is the abstract type of an application or service from an operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
 
 Since system type is an abstract concept, it is not concretely addressable.
-A [system installation](#def-system-installation) of a specific [system version](#def-system-version) and potentially a [system instance](#def-system-instance) needs to be created to have a concrete, addressable system.
+A [system installation](#system-installation) of a specific [system version](#system-version) and potentially a [system instance](#system-instance) needs to be created to have a concrete, addressable system.
 
-Please note that a system type is similar, but not necessarily identical to a [product](#def-product).
+Please note that a system type is similar, but not necessarily identical to a [product](#product).
 System type is a technical concept, while product is a term for external communication and sales.
 
-#### System Installation {#def-system-installation}
+#### System Installation
 
-##### System Deployment {#def-system-deployment}
+##### System Deployment
 
-A **system installation** (also called **system deployment**) is a concrete running instance of a [system type](#def-system-type) of a specific [system version](#def-system-version). If the system type supports tenant isolation, a system installation may offer multiple [system instances](#def-system-instance). A system installation has at least one [base URL](#def-base-url).
+A **system installation** (also called **system deployment**) is a concrete running instance of a [system type](#system-type) of a specific [system version](#system-version). If the system type supports tenant isolation, a system installation may offer multiple [system instances](#system-instance). A system installation has at least one [base URL](#base-url).
 
-#### System Version {#def-system-version}
+#### System Version
 
-A **system version** is a particular software version of a [system installation](#def-system-installation), which is always of the same [system type](#def-system-type). It states the design-time version or release of a system and provides versioning for operational purposes. All system instances of the same system version could have the same static metadata description.
+A **system version** is a particular software version of a [system installation](#system-installation), which is always of the same [system type](#system-type). It states the design-time version or release of a system and provides versioning for operational purposes. All system instances of the same system version could have the same static metadata description.
 
-#### System Instance {#def-system-instance}
+#### System Instance
 
-A **system instance** is a running, isolated instance of a [system type](#def-system-type), running in a [system installation](#def-system-installation) of a particular [system version](#def-system-version). It always refers to the _most specific_ instance from a customer, account, and data isolation perspective.
+A **system instance** is a running, isolated instance of a [system type](#system-type), running in a [system installation](#system-installation) of a particular [system version](#system-version). It always refers to the _most specific_ instance from a customer, account, and data isolation perspective.
 
-If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system installation](#def-system-installation) per tenant or system isolation does not matter. In those cases, system instance equals the system installation.
+If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system installation](#system-installation) per tenant or system isolation does not matter. In those cases, system instance equals the system installation.
 
 The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if multi-tenancy is supported or system ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if not.
 
-A system instance can act as an [ORD Provider](#def-ord-provider).
+A system instance can act as an [ORD Provider](#ord-provider).
 
-#### System Landscape {#def-system-landscape}
+#### System Landscape
 
-A **system landscape** is a set of [system instances](#def-system-instance) that are explicitly combined together, for example via a shared zone of trust/connectivity, an account or a [namespace concept](#namespaces).
+A **system landscape** is a set of [system instances](#system-instance) that are explicitly combined together, for example via a shared zone of trust/connectivity, an account or a [namespace concept](#namespaces).
 
-#### Resource {#def-resource}
+#### Resource
 
-A **resource** is provided by or for a [system instance](#def-system-instance) for outside consumption and/or communication.
+A **resource** is provided by or for a [system instance](#system-instance) for outside consumption and/or communication.
 
-#### Machine-Readable Resource {#def-machine-readable-resource}
+#### Machine-Readable Resource
 
-A **machine-readable resource** is a [resource](#def-resource) that can be used for machine consumption and communication.
+A **machine-readable resource** is a [resource](#resource) that can be used for machine consumption and communication.
 For example, APIs and events.
-They are usually described through a [resource definition](#def-resource-definition) format.
+They are usually described through a [resource definition](#resource-definition) format.
 
-#### Human-Consumption Resource {#def-human-consumption-resource}
+#### Human-Consumption Resource
 
-A **human-consumption resource** is a [resource](#def-resource) that is meant for human consumption, for example documentation.
+A **human-consumption resource** is a [resource](#resource) that is meant for human consumption, for example documentation.
 
-#### Resource Definition {#def-resource-definition}
+#### Resource Definition
 
-A **resource definition** is a machine-readable, structured document defining the inputs and outputs of a [machine-readable resource](#def-machine-readable-resource) in a standardized format.
+A **resource definition** is a machine-readable, structured document defining the inputs and outputs of a [machine-readable resource](#machine-readable-resource) in a standardized format.
 It is primarily designed for automated processing, not human consumption. See also [definition](https://webapi-discovery.github.io/rfcs/rfc0001.html#definitions) by the [W3 WebAPI Discovery Community Group](https://www.w3.org/community/web-api-discovery/).
 
-#### Product {#def-product}
+#### Product
 
 A **product** is understood as a software product:
 A non-versioned, high-level entity for structuring the software portfolio from a software logistics perspective.
-While [system type](#def-system-type) addresses the technical perspective, product is the term to use for customer-facing communication.
+While [system type](#system-type) addresses the technical perspective, product is the term to use for customer-facing communication.
 
-#### Base URL {#def-base-url}
+#### Base URL
 
-A **base URL** is the consistent part of a [system instance](#def-system-instance) URL.
+A **base URL** is the consistent part of a [system instance](#system-instance) URL.
 From ORD perspective this is the base URL where the discovery starts and where the [ORD config endpoint](#ord-configuration-endpoint) location is relative to.
 In most cases the base URL consists of the URL protocol, domain name and (if necessary) the port, for example `https://example.com`.
 In rare cases, a relative path (e.g. including a tenant ID) might be included, for example `https://example.com/tenantA/`.

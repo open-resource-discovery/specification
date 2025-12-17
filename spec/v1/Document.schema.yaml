@@ -86,15 +86,15 @@ properties:
     oneOf:
       - const: "system-version"
         description: |-
-          Describes the static [system-version](../index.md#def-system-version) perspective, usually known at deploy-time.
+          Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.
 
           If chosen, `describedSystemVersion`.`version` MUST be provided, too.
 
           This perspective describes how a system of a particular type and version generally look like.
-          The latest system-version MAY also be interpreted as the [system-type](../index.md#def-system-type) perspective.
+          The latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective.
       - const: "system-instance"
         description: |-
-          Describes the complete dynamic [system-instance](../index.md#def-system-instance) (tenant) perspective as known at run-time.
+          Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
           This allows to also reflect tenant specific extensions, customizations and runtime configuration.
 
           If provided, it will completely override the static system-version perspective when metadata about system instances is requested.
@@ -105,7 +105,7 @@ properties:
       #     If chosen, `describedSystemVersion`.`version` MUST be provided, too.
       - const: "system-independent"
         description: |-
-          Describes content that is independent of [system-versions](../index.md#def-system-version) or [system-instances](../index.md#def-system-instance).
+          Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).
           This content is always static and has independent visibility and lifecycle from the systems in a particular landscape.
           The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
 
@@ -117,19 +117,19 @@ properties:
   describedSystemInstance:
     $ref: "#/definitions/SystemInstance"
     description: |-
-      Information on the [system-instance](../index.md#def-system-instance) that this ORD document describes.
+      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
 
       Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   describedSystemType:
     $ref: "#/definitions/SystemType"
     x-introduced-in-version: "1.10.0"
     description: |-
-      Information on the [system type](../index.md#def-system-type) that this ORD document describes.
+      Information on the [system type](../index.md#system-type) that this ORD document describes.
   describedSystemVersion:
     $ref: "#/definitions/SystemVersion"
     x-introduced-in-version: "1.10.0"
     description: |-
-      Information on the [system version](../index.md#def-system-version) that this ORD document describes.
+      Information on the [system version](../index.md#system-version) that this ORD document describes.
   policyLevel: &policyLevel
     type: string
     description: |
@@ -1026,7 +1026,7 @@ definitions:
       minSystemVersion: &minSystemVersion
         type: string
         description: |-
-          The resource has been introduced in the given [system version](../index.md#def-system-version).
+          The resource has been introduced in the given [system version](../index.md#system-version).
           This implies that the resource is only available if the system instance is of at least that system version.
 
       deprecationDate: &deprecationDate
@@ -1097,7 +1097,7 @@ definitions:
           **Provider View:**
           If the URL is relative to the system that describes the ORD information,
           it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
-          If the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.
+          If the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.
           If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.
           The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.
 
@@ -1459,8 +1459,8 @@ definitions:
       systemInstanceAware: &systemInstanceAware
         type: boolean
         description: |-
-          All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-          All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+          All resources that are [system instance aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
+          All resources that are [system instance unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
 
           Defines whether this ORD resource is **system instance aware**.
           This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
@@ -1975,7 +1975,7 @@ definitions:
     x-introduced-in-version: "1.8.0"
     x-ums-implements: "#/definitions/OrdResource"
     description: |-
-      A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#def-ord-aggregator).
+      A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
 
       Please note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).
     properties:
@@ -3160,7 +3160,7 @@ definitions:
       systemTypeRestriction:
         type: array
         description: |-
-          In case that the event subscriptions are limited to known [system types](../index.md#def-system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
+          In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
 
           If given, only system types of the defined namespaces are supported as integration partners.
           If not given, there is no restriction which system type provides the events.
@@ -3579,15 +3579,15 @@ definitions:
     title: System Instance
     x-ums-type: "ignore"
     description: |-
-      A [system instance](../index.md#def-system-instance) is a concrete, running instance of a system type.
+      A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.
       In a multi-tenant system, it corresponds to a tenant.
-      In a single-tenant system, it corresponds to the [system installation](../index.md#def-system-deployment) itself.
+      In a single-tenant system, it corresponds to the [system installation](../index.md#system-deployment) itself.
     properties:
       baseUrl:
         type: string
         format: uri-reference
         description: |-
-          Optional [base URL](../index.md#def-base-url) of the **system instance**.
+          Optional [base URL](../index.md#base-url) of the **system instance**.
           By providing the base URL, relative URLs in the document are resolved relative to it.
 
           The `baseUrl` MUST not contain a leading slash.
@@ -3631,7 +3631,7 @@ definitions:
     type: object
     title: System Type
     description: |-
-      A [system type](../index.md#def-system-type) is the abstract type of an application or service, from operational perspective.
+      A [system type](../index.md#system-type) is the abstract type of an application or service, from operational perspective.
     x-ums-type: "ignore"
     properties:
       systemNamespace:
@@ -3668,8 +3668,8 @@ definitions:
     type: object
     title: System Version
     description: |-
-      A [system version](../index.md#def-system-version) states the design-time version / release of a [system instance](../index.md#def-system-instance).
-      It provides versioning for operational purposes for the [system type](../index.md#def-system-type).
+      A [system version](../index.md#system-version) states the design-time version / release of a [system instance](../index.md#system-instance).
+      It provides versioning for operational purposes for the [system type](../index.md#system-type).
     x-ums-type: "ignore"
     properties:
       version:

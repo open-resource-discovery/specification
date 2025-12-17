@@ -8,7 +8,7 @@ description: ORD Provider guide how to adopt ORD, depending on preconditions and
 
 ## Introduction
 
-You may wonder how much work it is to adopt ORD as an [ORD Provider](../../spec-v1/index.md#def-ord-provider).
+You may wonder how much work it is to adopt ORD as an [ORD Provider](../../spec-v1/index.md#ord-provider).
 What are the steps involved? Are there any libraries / frameworks that can help me?
 
 This guide will explain those questions, but some of the answers will depend on your situation.
@@ -24,7 +24,7 @@ First, it's important to understand that ORD may look bigger and more complex th
 This is, because **most of the specification is optional to implement** and the data interfaces share a lot of common attributes.
 An ORD document that returns one empty ORD document is technically a valid implementation - although it doesn't bring value to anyone.
 
-So it needs to be clarified first, which information need to be exposed via ORD that are useful to actual [ORD Consumers](../../spec-v1/index.md#def-ord-consumer). Typically the most essential resources to describe are APIs and Events and their Package assignments.
+So it needs to be clarified first, which information need to be exposed via ORD that are useful to actual [ORD Consumers](../../spec-v1/index.md#ord-consumer). Typically the most essential resources to describe are APIs and Events and their Package assignments.
 
 > ℹ At SAP, the minimal scope of ORD adoption is to describe public APIs and Events and their Package assignments.
 > Everything else is optional, but may be a prerequisite for other Product integrations or use cases (like SAP Event Broker / Mesh or Data Products)
@@ -96,7 +96,7 @@ Now becomes a necessity to implement ORD as a REST API, where the GET operations
 The response (of at least some requests) will depend on tenant context, customizations and extensions.
 
 In practice it's more realistic that such an implementation will be a mix between static and dynamic metadata.
-Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to indicate this on a per resource basis via the `systemInstanceAware` attribute see [definition](../../spec-v1/index.md#def-system-instance-aware).
+Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to indicate this on a per resource basis via the `systemInstanceAware` attribute see [definition](../../spec-v1/index.md#system-instance-aware).
 
 > 🚧 The [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) showcases a mix between static and dynamic metadata. The source-code for it is yet to be made public, though.
 
@@ -106,7 +106,7 @@ The following concerns apply the same to the different scenarios and should alwa
 
 ### Validate ORD and other Metadata
 
-While the [ORD Aggregators](../../spec-v1/index.md#def-ord-aggregator) will validate the published metadata, this happens very late in the development lifecycle.
+While the [ORD Aggregators](../../spec-v1/index.md#ord-aggregator) will validate the published metadata, this happens very late in the development lifecycle.
 We therefore strongly RECOMMEND to validate the published metadata as early as possible, ideally in the local CI/CD pipelines.
 
 Usually metadata specification come with a schema that can be used for validation. This is also true for the ORD specification, where it can be downloaded on the interface documentation pages.
@@ -120,11 +120,11 @@ Industry standard metadata formats usually come with validators, too. Consider f
 
 You may not want to openly expose the ORD information and related metadata to everyone.
 If this is the case, the ORD Provider API needs to be protected.
-The specification makes no assumptions on how this is done, but the [ORD Aggregators](../../spec-v1/index.md#def-ord-aggregator) will likely define the [Access Strategies](../../spec-extensions/access-strategies/) it supports.
+The specification makes no assumptions on how this is done, but the [ORD Aggregators](../../spec-v1/index.md#ord-aggregator) will likely define the [Access Strategies](../../spec-extensions/access-strategies/) it supports.
 
 ### Integrate with ORD Aggregators
 
-An ORD Provider implementation alone will not be very useful, because the information also need to be made available to other Consumers. This is done by integrating with one (or multiple) [ORD Aggregators](../../spec-v1/index.md#def-ord-aggregator).
+An ORD Provider implementation alone will not be very useful, because the information also need to be made available to other Consumers. This is done by integrating with one (or multiple) [ORD Aggregators](../../spec-v1/index.md#ord-aggregator).
 
 How this is done is defined by the onboarding of the aggregators.
 
