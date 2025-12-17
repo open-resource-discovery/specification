@@ -16,6 +16,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Old: https://open-resource-discovery.github.io/specification
   - New: https://open-resource-discovery.org
 - $id of both Document and Configuration schemas now point to a new domain (with a proper redirect from the old location)
+- Increased minimum Node.js version to v22 LTS
 
 ### Fixed
 
