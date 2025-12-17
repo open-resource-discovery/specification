@@ -1635,6 +1635,8 @@ definitions:
           # Once there is a first standard, remove the sentence that only custom ones are supported in above description.
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            x-association-target:
+            - "#/definitions/ApiResource/ordId"
             description: |-
               Any valid [API Resource ORD ID](../index.md#ord-id).
 
