@@ -289,7 +289,7 @@ const config = {
           ? {
               announcementBar: {
                 id: "internal-banner",
-                backgroundColor: "#f0fd00ff",
+                backgroundColor: "#ffe900",
                 textColor: "#000000",
                 content: '<div class="internal-banner-hidden"></div>',
                 isCloseable: false,
