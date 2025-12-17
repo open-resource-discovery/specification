@@ -35,7 +35,7 @@ The following rule governs code contributions:
 
 This repository checks in certain generated files (TypeScript types and UMS types). We intentionally commit these artifacts so pull requests clearly show the impact on those interfaces and downstream consumers during review.
 
-- What is generated: TypeScript interfaces in `dist/generated/spec/v1` and UMS types referenced under `spec/v1` and `src/generated/`.
+- What is generated: TypeScript interfaces referenced unde `dist/generated/spec/v1` and `src/generated` and UMS types referenced under `spec/v1` and `src/generated/`.
 - How to generate: run `npm run generate` (this executes the spec toolkit and copies results via the postgenerate step).
 
 ### CI verification
