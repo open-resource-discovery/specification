@@ -185,7 +185,7 @@ The following constraints apply in addition to the constraints defined in the [O
 ### Integration Dependencies
 
 - If an Integration Dependency is used to indicate Subscription Content for the [SAP Event Broker](https://help.sap.com/docs/event-broker/event-broker-service-guide/what-is):
-  - Each [EventResourceIntegrationAspect](../../spec-v1/index.md#event-resource-integration-aspect) MUST provide exactly one `systemTypeRestriction` application namespace.
+  - Each [EventResourceIntegrationAspect](../../spec-v1/interfaces/Document.md#eventresourceintegrationaspect) MUST provide exactly one `systemTypeRestriction` application namespace.
     The value of the `systemTypeRestriction` MUST always be the same within an integration dependency.
     These limitation MAY be reconsidered in the future.
 

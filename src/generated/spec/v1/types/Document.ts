@@ -912,8 +912,8 @@ export interface MetadataDefinitionAccessStrategy {
  * For the various resource definition formats the selection of API models may need to be expressed differently.
  * As a consequence, there are different types of selectors that are specialized toward certain resource definition formats.
  *
- * The target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)
- * or to an [ORD ID](../../spec-v1/#ord-id) of an entity type.
+ * The target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)
+ * or to an [ORD ID](../index.md#ord-id) of an entity type.
  * It is assumed that the entity types are described in more detail or on a different abstraction level via metadata.
  * When the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.
  * This can be determined either by the namespace of the correlation ID,
@@ -944,7 +944,7 @@ export interface EntityTypeMapping {
    * If multiple entity types are defined as the mapping target,
    * all of them can be at least partially mapped to the source API model(s).
    *
-   * Entity types can be referenced using either using an [ORD ID](../../spec-v1/#ord-id) or a [Correlation ID](../../spec-v1/#correlation-id).
+   * Entity types can be referenced using either using an [ORD ID](../index.md#ord-id) or a [Correlation ID](../index.md#correlation-id).
    *
    * @minItems 1
    */
@@ -996,7 +996,7 @@ export interface ApiModelSelectorJsonPointer {
 /**
  * Define which entity type is the target of an entity type mapping
  *
- * Entity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.
+ * Entity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.
  */
 export interface EntityTypeTargetOrdId {
   /**
@@ -1009,7 +1009,7 @@ export interface EntityTypeTargetOrdId {
 /**
  * Define which entity type is the target of an entity type mapping
  *
- * Entity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).
+ * Entity types can be referenced using a [Correlation ID](../index.md#correlation-id).
  */
 export interface EntityTypeTargetCorrelationId {
   correlationId: string;

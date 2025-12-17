@@ -1636,7 +1636,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [API Resource ORD ID](../index.md#api-resource_ordid).
+              Any valid [API Resource ORD ID](../index.md#ord-id).
 
               RECOMMENDED to use if the contract is published via ORD and has an ORD ID.
           - type: string
@@ -4063,8 +4063,8 @@ definitions:
       For the various resource definition formats the selection of API models may need to be expressed differently.
       As a consequence, there are different types of selectors that are specialized toward certain resource definition formats.
 
-      The target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)
-      or to an [ORD ID](../../spec-v1/#ord-id) of an entity type.
+      The target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)
+      or to an [ORD ID](../index.md#ord-id) of an entity type.
       It is assumed that the entity types are described in more detail or on a different abstraction level via metadata.
       When the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.
       This can be determined either by the namespace of the correlation ID,
@@ -4102,7 +4102,7 @@ definitions:
           If multiple entity types are defined as the mapping target,
           all of them can be at least partially mapped to the source API model(s).
 
-          Entity types can be referenced using either using an [ORD ID](../../spec-v1/#ord-id) or a [Correlation ID](../../spec-v1/#correlation-id).
+          Entity types can be referenced using either using an [ORD ID](../index.md#ord-id) or a [Correlation ID](../index.md#correlation-id).
         items:
           anyOf:
             - $ref: "#/definitions/EntityTypeOrdIdTarget"
@@ -4221,7 +4221,7 @@ definitions:
     description: |-
       Define which entity type is the target of an entity type mapping
 
-      Entity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.
+      Entity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.
     properties:
       ordId:
         <<: *ordId
@@ -4243,7 +4243,7 @@ definitions:
     description: |-
       Define which entity type is the target of an entity type mapping
 
-      Entity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).
+      Entity types can be referenced using a [Correlation ID](../index.md#correlation-id).
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
     x-deprecation-text: |-
