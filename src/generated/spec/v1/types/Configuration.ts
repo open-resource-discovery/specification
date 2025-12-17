@@ -16,7 +16,7 @@ export interface OrdConfiguration {
    */
   $schema?: (string | "https://open-resource-discovery.org/spec-v1/interfaces/Configuration.schema.json#") & string;
   /**
-   * Optional [base URL](../index.md#def-base-url) that can be used to resolve the relative URLs to the ORD Documents.
+   * Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.
    *
    * The `baseUrl` MUST not contain a leading slash.
    *
