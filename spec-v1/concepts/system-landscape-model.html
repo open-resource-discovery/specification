@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">System Landscape Model | Open Resource Discovery</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://open-resource-discovery.org/spec-v1/concepts/system-landscape-model"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="System Landscape Model | Open Resource Discovery"><meta data-rh="true" name="description" content="Detailed explanation of the System Landscape and the ORD Data model."><meta data-rh="true" property="og:description" content="Detailed explanation of the System Landscape and the ORD Data model."><link data-rh="true" rel="icon" href="/img/favicon.svg"><link data-rh="true" rel="canonical" href="https://open-resource-discovery.org/spec-v1/concepts/system-landscape-model"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1/concepts/system-landscape-model" hreflang="en"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1/concepts/system-landscape-model" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ORD Concepts","item":"https://open-resource-discovery.org/spec-v1/concepts/"},{"@type":"ListItem","position":2,"name":"System Landscape Model","item":"https://open-resource-discovery.org/spec-v1/concepts/system-landscape-model"}]}</script><script>window.bannerServerBaseUrl="https://banner-server.cert.cfapps.sap.hana.ondemand.com"</script>
-<script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.c92d79a1.css">
-<script src="/assets/js/runtime~main.6ae15a5e.js" defer="defer"></script>
-<script src="/assets/js/main.aa2f24f9.js" defer="defer"></script>
+<script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.7035d958.css">
+<script src="/assets/js/runtime~main.c98cc04c.js" defer="defer"></script>
+<script src="/assets/js/main.4a225f22.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -26,21 +26,21 @@ From there ORD is used to fill in the details.</p>
 <p>However, those two worlds need to be connected and therefore ORD has a simplified, very high-level system landscape model.
 It is mostly described in the <a class="" href="/spec-v1#terminology">ORD Terminology section</a>.</p>
 <p><img decoding="async" loading="lazy" alt="System and namespace concept overview" src="/assets/images/system.drawio-4816989beaf1dddf12bd177a96b525b1.svg" class="img_ev3q"></p>
-<p>The most essential concept to understand is the <strong><a class="" href="/spec-v1#def-system-instance">System Instance</a></strong>.
+<p>The most essential concept to understand is the <strong><a class="" href="/spec-v1#system-instance">System Instance</a></strong>.
 It&#x27;s a simplified concept that usually stands for a technical tenant of a system, but in case of single-tenant system it can also stand for the system itself.
 The important aspect is that it&#x27;s where the isolation of resources, capabilities and data is ensured.
 In the diagram, it&#x27;s also marked with &quot;dynamic&quot;, as it is a live running system that can describe its actual state at run-time.</p>
-<p>A System Instance can be of a <a class="" href="/spec-v1#def-system-type">System Type</a>, which is the technical type.
-This is not to be confused with the <a class="" href="/spec-v1#def-product">Product</a>, which lives in the commercial domain and can have a more complicated relationship with the concepts from the technical system domain.</p>
-<p>Optionally, a System Instance or a Type could also have several <a class="" href="/spec-v1#def-system-version">System Versions</a>, in case that metadata needs to have a history or that multiple versions of the same System Type are deployed at the same time (this is very common with on-premises systems).</p>
+<p>A System Instance can be of a <a class="" href="/spec-v1#system-type">System Type</a>, which is the technical type.
+This is not to be confused with the <a class="" href="/spec-v1#product">Product</a>, which lives in the commercial domain and can have a more complicated relationship with the concepts from the technical system domain.</p>
+<p>Optionally, a System Instance or a Type could also have several <a class="" href="/spec-v1#system-version">System Versions</a>, in case that metadata needs to have a history or that multiple versions of the same System Type are deployed at the same time (this is very common with on-premises systems).</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="namespaces">Namespaces<a href="#namespaces" class="hash-link" aria-label="Direct link to Namespaces" title="Direct link to Namespaces" translate="no">​</a></h2>
 <p><a class="" href="/spec-v1#namespaces">Namespaces</a> are a purely static concept and are used to get globally unique, conflict free IDs.
 They are described in more detail behind the link.</p>
 <p>It should be pointed out that the:</p>
 <ul>
 <li class=""><a class="" href="/spec-v1#vendor-namespace">vendor namespace</a> corresponds to the <a class="" href="/spec-v1/interfaces/Document#vendor">ORD Vendor</a>.</li>
-<li class=""><a class="" href="/spec-v1#system-namespace">system namespace</a> corresponds to the <a class="" href="/spec-v1#def-system-type">ORD System Type</a>.</li>
-<li class=""><a class="" href="/spec-v1#subcontext-namespace">sub-context namespaces</a> have no corresponding ORD concept.</li>
+<li class=""><a class="" href="/spec-v1#system-namespace">system namespace</a> corresponds to the <a class="" href="/spec-v1#system-type">ORD System Type</a>.</li>
+<li class=""><a class="" href="/spec-v1#sub-context-namespace">sub-context namespaces</a> have no corresponding ORD concept.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="system-resources-and-capabilities">System Resources and Capabilities<a href="#system-resources-and-capabilities" class="hash-link" aria-label="Direct link to System Resources and Capabilities" title="Direct link to System Resources and Capabilities" translate="no">​</a></h2>
 <p>From here we can place most of the ORD concepts, e.g. like the APIs and Events.</p>

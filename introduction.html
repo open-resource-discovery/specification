@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">ORD Introduction | Open Resource Discovery</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://open-resource-discovery.org/introduction"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="ORD Introduction | Open Resource Discovery"><meta data-rh="true" name="description" content="🎦 There is also an ORD Introduction video, based on this article."><meta data-rh="true" property="og:description" content="🎦 There is also an ORD Introduction video, based on this article."><link data-rh="true" rel="icon" href="/img/favicon.svg"><link data-rh="true" rel="canonical" href="https://open-resource-discovery.org/introduction"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/introduction" hreflang="en"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/introduction" hreflang="x-default"><script>window.bannerServerBaseUrl="https://banner-server.cert.cfapps.sap.hana.ondemand.com"</script>
-<script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.c92d79a1.css">
-<script src="/assets/js/runtime~main.6ae15a5e.js" defer="defer"></script>
-<script src="/assets/js/main.aa2f24f9.js" defer="defer"></script>
+<script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.7035d958.css">
+<script src="/assets/js/runtime~main.c98cc04c.js" defer="defer"></script>
+<script src="/assets/js/main.4a225f22.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -38,7 +38,7 @@ It can be used to describe static documentation, but can also reflect tenant-spe
 <div style="text-align:center;max-width:450px;margin:0 auto"><p><img decoding="async" loading="lazy" alt="ORD Provider Overview" src="/assets/images/ord-provider-overview-7541358f15f21e362b88aa6f600ac6d4.svg" title="ORD Provider Overview" width="1771" height="1422" class="img_ev3q"></p></div>
 <p>In the picture above, the center is an application or service describing itself.
 They typically have multiple resources and capabilities that are outward facing and are of interest for external consumers.</p>
-<p>Typically, ORD is used to describe <a class="" href="/spec-v1/interfaces/Document#api-resource">APIs</a> and <a class="" href="/spec-v1/interfaces/Document#event-resource">Events</a>, but it also supports higher-level concepts like <a class="" href="/spec-v1/interfaces/Document#entity-type">Entity Types</a> (Business Objects) and <a class="" href="/spec-v1/interfaces/Document#data-products">Data Products</a> (beta).
+<p>Typically, ORD is used to describe <a class="" href="/spec-v1/interfaces/Document#api-resource">APIs</a> and <a class="" href="/spec-v1/interfaces/Document#event-resource">Events</a>, but it also supports higher-level concepts like <a class="" href="/spec-v1/interfaces/Document#entity-type">Entity Types</a> (Business Objects) and <a class="" href="/spec-v1/interfaces/Document#data-product">Data Products</a> (beta).
 With <a class="" href="/spec-v1/interfaces/Document#integration-dependency">Integration Dependencies</a> the (potential) use of external resources can be stated, too.
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and <a class="" href="/spec-v1/interfaces/Document#capability">Capabilities</a>.</p>
 <p>ORD standardizes how this information can be automatically discovered and aggregated.
@@ -56,7 +56,7 @@ ORD will enable the discovery of this fact and can pass along the relevant detai
 </blockquote>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="data-model-overview">Data Model Overview<a href="#data-model-overview" class="hash-link" aria-label="Direct link to Data Model Overview" title="Direct link to Data Model Overview" translate="no">​</a></h2>
 <p>The most typical resources to describe are <a class="" href="/spec-v1/interfaces/Document#api-resource">APIs</a> and <a class="" href="/spec-v1/interfaces/Document#event-resource">Events</a>.
-But ORD can also be used to describe higher-level concepts like <a class="" href="/spec-v1/interfaces/Document#entity-type">Entity Types</a> (Business Objects) and <a class="" href="/spec-v1/interfaces/Document#data-products">Data Products</a>.
+But ORD can also be used to describe higher-level concepts like <a class="" href="/spec-v1/interfaces/Document#entity-type">Entity Types</a> (Business Objects) and <a class="" href="/spec-v1/interfaces/Document#data-product">Data Products</a>.
 With <a class="" href="/spec-v1/interfaces/Document#integration-dependency">Integration Dependencies</a> it is possible to also describe how external resources are or can be used.
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and <a class="" href="/spec-v1/interfaces/Document#capability">Capabilities</a>.</p>
 <p>The mentioned concepts can be grouped by different concerns via <a class="" href="/spec-v1/interfaces/Document#package">Packages</a> and <a class="" href="/spec-v1/interfaces/Document#consumption-bundle">Consumption Bundles</a> and various taxonomy attributes.
@@ -119,7 +119,7 @@ The metadata is also used to simplify development, e.g. for side-by-side extensi
 This is achieved by offering industry-standard GraphQL and OData APIs with rich querying capabilities.</li>
 <li class="">Provides the so called &quot;managed by SAP&quot; experience in the domain of integration lifecycle management** and therefore allow customers to focus purely on taking business decisions and not doing or caring about the actual technical wiring and integration setup underneath. This is achieved by providing active automation over the integrations based on already available metadata, specified by the Application Providers about what integrations are required and how they can be established. Leveraging the automated integration lifecycle management makes the life of both Customers and Application Providers much easier, as the day 2 operations, such as credentials rotation also happen automatically.</li>
 </ul>
-<p>In the UI screenshot, the most notable concept is the <a class="" href="/#def-system-instance">ORD System Instance</a>, which is usually a tenant.
+<p>In the UI screenshot, the most notable concept is the <a class="" href="/spec-v1#system-instance">ORD System Instance</a>, which is usually a tenant.
 If ORD information are provided, the detail view can show them and they will be made available to other systems in the same formation or account context.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="api-metadata-validator">API Metadata Validator<a href="#api-metadata-validator" class="hash-link" aria-label="Direct link to API Metadata Validator" title="Direct link to API Metadata Validator" translate="no">​</a></h3>
 <p>We believe that standards and policies can only realistically be ensured if we can automatically verify for correctness and compliance.</p>
@@ -127,7 +127,7 @@ If ORD information are provided, the detail view can show them and they will be 
 It can validate ORD documents, but also other metadata formats that we usually pass along via the ORD protocol, like OpenAPI documents.
 We use this also to not just test for technical correctness, but also to adhere to certain compliance levels.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="ord-in-more-detail">ORD in More Detail<a href="#ord-in-more-detail" class="hash-link" aria-label="Direct link to ORD in More Detail" title="Direct link to ORD in More Detail" translate="no">​</a></h2>
-<details class="details_lb9f alert alert--info details_b_Ee" data-collapsed="true"><summary>ORD Information</summary><div><div class="collapsibleContent_i85q"><p>ORD as a protocol standardizes both the <strong>information model</strong> and the <a href="#ord-behaviors" class="">behavior</a> how the information are exchanged.</p><p>Typical questions that are addressed on ORD level are:</p><ul>
+<details class="details_lb9f alert alert--info details_b_Ee" data-collapsed="true"><summary>ORD Information</summary><div><div class="collapsibleContent_i85q"><p>ORD as a protocol standardizes both the <strong>information model</strong> and the <a class="" href="/spec-v1#ord-behavior">behavior</a> how the information are exchanged.</p><p>Typical questions that are addressed on ORD level are:</p><ul>
 <li class="">Get an complete overview of the resources and capabilities</li>
 <li class="">What type of resource something is and how to access its metadata or the resource itself</li>
 <li class="">Where to find more information on the resource, e.g. links to machine-readable definitions (e.g. OpenAPI)</li>

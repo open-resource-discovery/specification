@@ -22,7 +22,7 @@
     "baseUrl": {
       "type": "string",
       "format": "uri",
-      "description": "Optional [base URL](../index.md#def-base-url) that can be used to resolve the relative URLs to the ORD Documents.\n\nThe `baseUrl` MUST not contain a leading slash.\n\nIf you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.\nThis implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.\nIf both a `baseUrl` and a well-known URI is provided, the explicit `baseUrl` takes precedence.",
+      "description": "Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.\n\nThe `baseUrl` MUST not contain a leading slash.\n\nIf you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.\nThis implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.\nIf both a `baseUrl` and a well-known URI is provided, the explicit `baseUrl` takes precedence.",
       "pattern": "^http[s]?:\\/\\/[^:\\/\\s]+\\.[^:\\/\\s\\.]+(:\\d+)?(\\/[a-zA-Z0-9-\\._~]+)*$",
       "examples": [
         "https://example-sap-system.com",
@@ -80,15 +80,15 @@
           "oneOf": [
             {
               "const": "system-version",
-              "description": "Describes the static [system-version](../index.md#def-system-version) perspective, usually known at deploy-time.\n\nIf chosen, `describedSystemVersion`.`version` MUST be provided, too.\n\nThis perspective describes how a system of a particular type and version generally look like.\nThe latest system-version MAY also be interpreted as the [system-type](../index.md#def-system-type) perspective."
+              "description": "Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.\n\nIf chosen, `describedSystemVersion`.`version` MUST be provided, too.\n\nThis perspective describes how a system of a particular type and version generally look like.\nThe latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective."
             },
             {
               "const": "system-instance",
-              "description": "Describes the complete dynamic [system-instance](../index.md#def-system-instance) (tenant) perspective as known at run-time.\nThis allows to also reflect tenant specific extensions, customizations and runtime configuration.\n\nIf provided, it will completely override the static system-version perspective when metadata about system instances is requested."
+              "description": "Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.\nThis allows to also reflect tenant specific extensions, customizations and runtime configuration.\n\nIf provided, it will completely override the static system-version perspective when metadata about system instances is requested."
             },
             {
               "const": "system-independent",
-              "description": "Describes content that is independent of [system-versions](../index.md#def-system-version) or [system-instances](../index.md#def-system-instance).\nThis content is always static and has independent visibility and lifecycle from the systems in a particular landscape.\nThe \"system-independent\" content MUST NOT be overridden via system-version or system-instance perspective metadata.\n\nExamples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems."
+              "description": "Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).\nThis content is always static and has independent visibility and lifecycle from the systems in a particular landscape.\nThe \"system-independent\" content MUST NOT be overridden via system-version or system-instance perspective metadata.\n\nExamples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems."
             }
           ],
           "default": "system-instance",

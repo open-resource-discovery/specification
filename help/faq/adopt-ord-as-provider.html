@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">HowTo adopt as ORD Provider | Open Resource Discovery</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://open-resource-discovery.org/help/faq/adopt-ord-as-provider"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="HowTo adopt as ORD Provider | Open Resource Discovery"><meta data-rh="true" name="description" content="ORD Provider guide how to adopt ORD, depending on preconditions and requirements."><meta data-rh="true" property="og:description" content="ORD Provider guide how to adopt ORD, depending on preconditions and requirements."><link data-rh="true" rel="icon" href="/img/favicon.svg"><link data-rh="true" rel="canonical" href="https://open-resource-discovery.org/help/faq/adopt-ord-as-provider"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/help/faq/adopt-ord-as-provider" hreflang="en"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/help/faq/adopt-ord-as-provider" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"FAQ 🙋","item":"https://open-resource-discovery.org/help/faq/"},{"@type":"ListItem","position":2,"name":"HowTo adopt as ORD Provider","item":"https://open-resource-discovery.org/help/faq/adopt-ord-as-provider"}]}</script><script>window.bannerServerBaseUrl="https://banner-server.cert.cfapps.sap.hana.ondemand.com"</script>
-<script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.c92d79a1.css">
-<script src="/assets/js/runtime~main.6ae15a5e.js" defer="defer"></script>
-<script src="/assets/js/main.aa2f24f9.js" defer="defer"></script>
+<script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.7035d958.css">
+<script src="/assets/js/runtime~main.c98cc04c.js" defer="defer"></script>
+<script src="/assets/js/main.4a225f22.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -50,7 +50,7 @@ The application / service that is described usually stays the same at run-time a
 In fact, it&#x27;s just serving files via HTTP GET request in a standard manner.
 This can even be achieved by using a static web server like <a href="https://www.nginx.com/" target="_blank" rel="noopener noreferrer" class="">nginx</a>, without writing a single line of code.</p>
 <p>Just dropping the ORD configuration and documents and additional metadata files into a web server can already work.
-Please consider whether the information <a href="#protect-ord-document-api-access" class="">need to be protected</a> and do so if necessary.</p>
+Please consider whether the information <a href="#protect-ord-provider-api-access" class="">need to be protected</a> and do so if necessary.</p>
 <blockquote>
 <p>🔗 See <a href="https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/nginx-no-auth" target="_blank" rel="noopener noreferrer" class="">./implementation-examples/nginx-no-auth</a> for an example implementation</p>
 </blockquote>
@@ -63,7 +63,7 @@ How you do this may depend on your programming language, framework and backend a
 <li class="">One to return all <a class="" href="/spec-v1#ord-document">ORD Documents</a></li>
 <li class="">One to return the &quot;attached&quot; metadata documents (ORD Resource Definitions)</li>
 </ul>
-<p>Please note that you may need to <a href="#protect-ord-document-api-access" class="">protect the API access</a>.</p>
+<p>Please note that you may need to <a href="#protect-ord-provider-api-access" class="">protect the API access</a>.</p>
 <blockquote>
 <p>🔗 See <a href="https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/no-auth" target="_blank" rel="noopener noreferrer" class="">./implementation-examples/no-auth</a> for an example node.js implementation without authentication.</p>
 </blockquote>
@@ -77,7 +77,7 @@ If the metadata is purely static, it would also be possible to publish it at des
 <p>Now becomes a necessity to implement ORD as a REST API, where the GET operations return metadata dynamically.
 The response (of at least some requests) will depend on tenant context, customizations and extensions.</p>
 <p>In practice it&#x27;s more realistic that such an implementation will be a mix between static and dynamic metadata.
-Since static metadata is much cheaper and easier to provide, it&#x27;s recommended to only use run-time dynamic generation of metadata where necessary. In ORD it&#x27;s possible to indicate this on a per resource basis via the <code>systemInstanceAware</code> attribute see <a class="" href="/spec-v1#def-system-instance-aware">definition</a>.</p>
+Since static metadata is much cheaper and easier to provide, it&#x27;s recommended to only use run-time dynamic generation of metadata where necessary. In ORD it&#x27;s possible to indicate this on a per resource basis via the <code>systemInstanceAware</code> attribute see <a class="" href="/spec-v1#system-instance-aware">definition</a>.</p>
 <blockquote>
 <p>🚧 The <a href="https://ord-reference-application.cfapps.sap.hana.ondemand.com/" target="_blank" rel="noopener noreferrer" class="">ORD Reference Application</a> showcases a mix between static and dynamic metadata. The source-code for it is yet to be made public, though.</p>
 </blockquote>
