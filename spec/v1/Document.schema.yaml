@@ -3879,7 +3879,7 @@ definitions:
 
       Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
 
-      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
     x-introduced-in-version: "1.9.0"
     properties:
       groupTypeId: &groupTypeId
@@ -3923,7 +3923,7 @@ definitions:
       They express a "part of" relationship to the chosen group concept.
       If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
 
-      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
     x-introduced-in-version: "1.9.0"
     properties:
       groupId: &groupId

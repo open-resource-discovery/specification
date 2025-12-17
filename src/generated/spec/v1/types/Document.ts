@@ -3256,7 +3256,7 @@ export interface CredentialExchangeStrategy {
  * They express a "part of" relationship to the chosen group concept.
  * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
  *
- * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+ * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
  */
 export interface Group {
   /**
@@ -3293,7 +3293,7 @@ export interface Group {
  *
  * Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
  *
- * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+ * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
  */
 export interface GroupType {
   /**
