@@ -9,6 +9,52 @@ title: ORD Specification
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
+## Specification Overview
+
+The following diagram provides a high-level overview of how the ORD specification is structured.
+Click on the elements to navigate to the corresponding sections.
+
+```mermaid
+flowchart TB
+    subgraph Roles["ORD Roles"]
+        Provider["ORD Provider"]
+        Aggregator["ORD Aggregator"]
+        Consumer["ORD Consumer"]
+    end
+
+    subgraph Parts["ORD Parts"]
+        ProviderAPI["ORD Provider API"]
+        Config["ORD Config"]
+        Document["ORD Document"]
+        DiscoveryAPI["ORD Discovery API"]
+    end
+
+    subgraph Content["Document Content"]
+        Resources["ORD Resources<br/>(API, Event, ...)"]
+        Taxonomy["ORD Taxonomy<br/>(Package, Product, ...)"]
+    end
+
+    Provider -->|exposes| ProviderAPI
+    ProviderAPI -->|serves| Config
+    ProviderAPI -->|serves| Document
+    Document -->|contains| Resources
+    Document -->|contains| Taxonomy
+    Aggregator -->|fetches from| ProviderAPI
+    Aggregator -->|provides| DiscoveryAPI
+    Consumer -->|consumes| DiscoveryAPI
+    Consumer -.->|or directly| ProviderAPI
+
+    click Provider "#ord-provider"
+    click Aggregator "#ord-aggregator"
+    click Consumer "#ord-consumer"
+    click ProviderAPI "#ord-provider-api"
+    click Config "#ord-configuration-endpoint"
+    click Document "#ord-document"
+    click DiscoveryAPI "#ord-discovery-api"
+    click Resources "#ord-resource"
+    click Taxonomy "#ord-taxonomy"
+```
+
 ## ORD Roles
 
 The ORD specification consists of several [parts](#ord-parts).
