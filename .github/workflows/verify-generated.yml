@@ -1,10 +1,5 @@
 # Verify Generated Files Workflow
 #
-# Purpose: Ensures all generated artifacts are committed.
-#
-# How: Installs deps, runs `npm run generate`, then checks for
-#      uncommitted changes. If any changes appear, the job fails
-#      and prints status + diff to guide fixes.
 
 name: Verify Generated Files
 
