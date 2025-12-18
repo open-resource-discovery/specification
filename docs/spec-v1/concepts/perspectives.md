@@ -76,7 +76,7 @@ A consumer can legitimately be interested in all three levels, but he needs to p
 - If `system-version` metadata is requested, the system type and system version must be specified.
 - If `system-type` metadata is requested, only the system type must be specified and the latest system version is returned.
 
-### Relation to system instance aware
+### Relation to System-Instance-Aware
 
 The `perspectives` attribute deprecates the `systemInstanceAware` attribute.
 
@@ -108,7 +108,7 @@ Static aggregators only describe the `system-version` perspective.
 If the aggregator supports both static and dynamic perspectives:
 
 - The ORD aggregator that to be able to aggregate and store both perspectives at the same time.
-- In its ORD Service API for consumers, it needs to implement the inheritance / fallback behavior.
+- In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior.
 
 If the `system-version` perspective is used, the described version MUST be provided via the ORD `describedSystemVersion`.`version` property.
 Ideally, ORD providers SHOULD define the `describedSystemVersion`.`version` property on both the static and the dynamic perspective.
