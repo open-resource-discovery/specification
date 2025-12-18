@@ -203,7 +203,7 @@ definitions:
           Defines the authentication/authorization strategy through which the referenced ORD Documents can be accessed.
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
               If chosen, `customDescription` SHOULD be provided.

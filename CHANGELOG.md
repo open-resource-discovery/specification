@@ -22,7 +22,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Old: https://open-resource-discovery.github.io/specification
   - New: https://open-resource-discovery.org
 - $id of both Document and Configuration schemas now point to a new domain (with a proper redirect from the old location)
-- Increased minimum Node.js version to v22 LTS
+- breaking: increased minimum Node.js version to v22 LTS
+- breaking: fixed namespace part check from `^([a-z0-9-]+(?:[.][a-z0-9-]+)*)` to `^([a-z0-9]+(?:[.][a-z0-9]+)*)` from multiple OrdID/CorrelationId/ConceptId/SpecificationID regular expressions
 
 ### Fixed
 
@@ -31,13 +32,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Removed
 
 - deleted SAP specific values from ORD Configuration:
-  - `AccessStrategy` values: `sap:oauth-client-credentials:v1`, `sap:cmp-mtls:v1`, `sap.businesshub:basic-auth:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `AccessStrategy` values: `sap:oauth-client-credentials:v1`, `sap:cmp-mtls:v1`, `sap.businesshub:basic-auth:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
 
 - deleted SAP specific values from ORD Document:
-  - `policyLevel` values: `sap:base:v1`, `sap:core:v1`, `sap:dp:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
-  - `ApiResource.implementationStandard` values: `sap:ord-document-api:v1`, `sap:csn-exposure:v1`, `sap:ape-api:v1`, `sap:cdi-api:v1`, `sap:delta-sharing:v1`, `sap:hana-cloud-sql:v1`, `sap.dp:data-subscription-api:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
-  - `Package.policyLevel`, `ApiResource.policyLevel`, `EventResource.policyLevel`, `EntityType.policyLevel`, `DataProduct.policyLevel` values: `sap:base:v1`, `sap:core:v1`, `sap:dp:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
-  - `AccessStrategy` values: `sap:oauth-client-credentials:v1`, `sap:cmp-mtls:v1`, `sap.businesshub:basic-auth:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `policyLevel` values: `sap:base:v1`, `sap:core:v1`, `sap:dp:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `ApiResource.implementationStandard` values: `sap:ord-document-api:v1`, `sap:csn-exposure:v1`, `sap:ape-api:v1`, `sap:cdi-api:v1`, `sap:delta-sharing:v1`, `sap:hana-cloud-sql:v1`, `sap.dp:data-subscription-api:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `Package.policyLevel`, `ApiResource.policyLevel`, `EventResource.policyLevel`, `EntityType.policyLevel`, `DataProduct.policyLevel` values: `sap:base:v1`, `sap:core:v1`, `sap:dp:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `AccessStrategy` values: `sap:oauth-client-credentials:v1`, `sap:cmp-mtls:v1`, `sap.businesshub:basic-auth:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
 
 ## [1.12.3]
 
