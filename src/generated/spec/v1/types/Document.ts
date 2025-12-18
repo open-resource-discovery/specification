@@ -140,13 +140,13 @@ export interface OrdDocument {
   tombstones?: Tombstone[];
 }
 /**
- * Information on the [system-instance](../index.md#def-system-instance) that this ORD document describes.
+ * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
  *
  * Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
  */
 export interface SystemInstance {
   /**
-   * Optional [base URL](../index.md#def-base-url) of the **system instance**.
+   * Optional [base URL](../index.md#base-url) of the **system instance**.
    * By providing the base URL, relative URLs in the document are resolved relative to it.
    *
    * The `baseUrl` MUST not contain a leading slash.
@@ -227,7 +227,7 @@ export interface DocumentationLabels {
   [k: string]: string[];
 }
 /**
- * Information on the [system type](../index.md#def-system-type) that this ORD document describes.
+ * Information on the [system type](../index.md#system-type) that this ORD document describes.
  */
 export interface SystemType {
   /**
@@ -256,7 +256,7 @@ export interface SystemType {
   tags?: string[];
 }
 /**
- * Information on the [system version](../index.md#def-system-version) that this ORD document describes.
+ * Information on the [system version](../index.md#system-version) that this ORD document describes.
  */
 export interface SystemVersion {
   /**
@@ -375,22 +375,22 @@ export interface ApiResource {
    */
   partOfGroups?: string[];
   /**
-   * List of references to the consumption bundles in this resource belongs to.
+   * List of references to the Consumption Bundles in this resource belongs to.
    *
    * MUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.
    *
-   * An API resource SHOULD be associated to one or multiple consumption bundles, if it is of direction `inbound` or `mixed`.
-   * Some ORD consumer use cases MAY depend on an association to a consumption bundle.
+   * An API resource SHOULD be associated to one or multiple Consumption Bundles, if it is of direction `inbound` or `mixed`.
+   * Some ORD consumer use cases MAY depend on an association to a Consumption Bundle.
    * If none is given, the resource may not appear as it's unknown how it can be consumed.
    *
    * If a resource has no direct incoming consumption characteristics:
-   * - MUST NOT assign consumption bundle to API or Event resources with `direction`: `outbound` (no inbound consumption)
-   * - MUST NOT assign consumption bundle if resource is not accessible directly, but only via intermediaries like event brokers or gateways.
-   *   - In this case the intermediary SHOULD describe the consumption bundle instead (potentially also re-describing the resources as well).
+   * - MUST NOT assign Consumption Bundle to API or Event resources with `direction`: `outbound` (no inbound consumption)
+   * - MUST NOT assign Consumption Bundle if resource is not accessible directly, but only via intermediaries like event brokers or gateways.
+   *   - In this case the intermediary SHOULD describe the Consumption Bundle instead (potentially also re-describing the resources as well).
    */
   partOfConsumptionBundles?: ConsumptionBundleReference[];
   /**
-   * References the default consumption bundle to use for this resource.
+   * References the default Consumption Bundle to use for this resource.
    *
    * MUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.
    *
@@ -400,7 +400,7 @@ export interface ApiResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products the resources of the package are a part of.
+   * List of products the resources of the Package are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
@@ -425,7 +425,7 @@ export interface ApiResource {
    * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
-   * For example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
    */
   version: string;
   /**
@@ -453,7 +453,7 @@ export interface ApiResource {
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
    *
-   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance aware perspective.
+   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance-aware perspective.
    *
    * This property can only reflect the knowledge of the described system instance itself.
    * Outside factors for availability can't need to be considered (e.g. network connectivity, middlewares).
@@ -463,7 +463,7 @@ export interface ApiResource {
    */
   disabled?: boolean;
   /**
-   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
    */
   minSystemVersion?: string;
@@ -511,7 +511,7 @@ export interface ApiResource {
    * **Provider View:**
    * If the URL is relative to the system that describes the ORD information,
    * it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
-   * If the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.
+   * If the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.
    * If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.
    * The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.
    *
@@ -550,6 +550,7 @@ export interface ApiResource {
     string;
   /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
@@ -630,7 +631,7 @@ export interface ApiResource {
   links?: Link[];
   extensible?: Extensible;
   /**
-   * List of countries that the package resources are applicable to.
+   * List of countries that the Package resources are applicable to.
    *
    * MUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
    *
@@ -742,26 +743,27 @@ export interface ApiResource {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
-   * Defines whether this ORD resource is **system instance aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * Defines whether this ORD resource is **system-instance-aware**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }
 /**
- * Reference to a Consumption bundle.
+ * Reference to a Consumption Bundle.
  *
  * This is a complex object to allow additional properties / selections to be attached.
  */
 export interface ConsumptionBundleReference {
   /**
-   * The consumption bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.
+   * The Consumption Bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.
    */
   ordId: string;
   /**
@@ -912,8 +914,8 @@ export interface MetadataDefinitionAccessStrategy {
  * For the various resource definition formats the selection of API models may need to be expressed differently.
  * As a consequence, there are different types of selectors that are specialized toward certain resource definition formats.
  *
- * The target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)
- * or to an [ORD ID](../../spec-v1/#ord-id) of an entity type.
+ * The target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)
+ * or to an [ORD ID](../index.md#ord-id) of an entity type.
  * It is assumed that the entity types are described in more detail or on a different abstraction level via metadata.
  * When the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.
  * This can be determined either by the namespace of the correlation ID,
@@ -944,7 +946,7 @@ export interface EntityTypeMapping {
    * If multiple entity types are defined as the mapping target,
    * all of them can be at least partially mapped to the source API model(s).
    *
-   * Entity types can be referenced using either using an [ORD ID](../../spec-v1/#ord-id) or a [Correlation ID](../../spec-v1/#correlation-id).
+   * Entity types can be referenced using either using an [ORD ID](../index.md#ord-id) or a [Correlation ID](../index.md#correlation-id).
    *
    * @minItems 1
    */
@@ -996,7 +998,7 @@ export interface ApiModelSelectorJsonPointer {
 /**
  * Define which entity type is the target of an entity type mapping
  *
- * Entity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.
+ * Entity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.
  */
 export interface EntityTypeTargetOrdId {
   /**
@@ -1009,7 +1011,7 @@ export interface EntityTypeTargetOrdId {
 /**
  * Define which entity type is the target of an entity type mapping
  *
- * Entity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).
+ * Entity types can be referenced using a [Correlation ID](../index.md#correlation-id).
  */
 export interface EntityTypeTargetCorrelationId {
   correlationId: string;
@@ -1182,22 +1184,22 @@ export interface EventResource {
    */
   partOfGroups?: string[];
   /**
-   * List of references to the consumption bundles in this resource belongs to.
+   * List of references to the Consumption Bundles in this resource belongs to.
    *
    * MUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.
    *
-   * An API resource SHOULD be associated to one or multiple consumption bundles, if it is of direction `inbound` or `mixed`.
-   * Some ORD consumer use cases MAY depend on an association to a consumption bundle.
+   * An API resource SHOULD be associated to one or multiple Consumption Bundles, if it is of direction `inbound` or `mixed`.
+   * Some ORD consumer use cases MAY depend on an association to a Consumption Bundle.
    * If none is given, the resource may not appear as it's unknown how it can be consumed.
    *
    * If a resource has no direct incoming consumption characteristics:
-   * - MUST NOT assign consumption bundle to API or Event resources with `direction`: `outbound` (no inbound consumption)
-   * - MUST NOT assign consumption bundle if resource is not accessible directly, but only via intermediaries like event brokers or gateways.
-   *   - In this case the intermediary SHOULD describe the consumption bundle instead (potentially also re-describing the resources as well).
+   * - MUST NOT assign Consumption Bundle to API or Event resources with `direction`: `outbound` (no inbound consumption)
+   * - MUST NOT assign Consumption Bundle if resource is not accessible directly, but only via intermediaries like event brokers or gateways.
+   *   - In this case the intermediary SHOULD describe the Consumption Bundle instead (potentially also re-describing the resources as well).
    */
   partOfConsumptionBundles?: ConsumptionBundleReference[];
   /**
-   * References the default consumption bundle to use for this resource.
+   * References the default Consumption Bundle to use for this resource.
    *
    * MUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.
    *
@@ -1207,7 +1209,7 @@ export interface EventResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products the resources of the package are a part of.
+   * List of products the resources of the Package are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
@@ -1232,7 +1234,7 @@ export interface EventResource {
    * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
-   * For example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
    */
   version: string;
   /**
@@ -1260,7 +1262,7 @@ export interface EventResource {
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
    *
-   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance aware perspective.
+   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance-aware perspective.
    *
    * This property can only reflect the knowledge of the described system instance itself.
    * Outside factors for availability can't need to be considered (e.g. network connectivity, middlewares).
@@ -1270,7 +1272,7 @@ export interface EventResource {
    */
   disabled?: boolean;
   /**
-   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
    */
   minSystemVersion?: string;
@@ -1305,6 +1307,7 @@ export interface EventResource {
   changelogEntries?: ChangelogEntry[];
   /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
@@ -1377,7 +1380,7 @@ export interface EventResource {
   links?: Link[];
   extensible?: Extensible;
   /**
-   * List of countries that the package resources are applicable to.
+   * List of countries that the Package resources are applicable to.
    *
    * MUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
    *
@@ -1489,15 +1492,16 @@ export interface EventResource {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
-   * Defines whether this ORD resource is **system instance aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * Defines whether this ORD resource is **system-instance-aware**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }
@@ -1621,7 +1625,7 @@ export interface EntityType {
    */
   partOfGroups?: string[];
   /**
-   * List of products the resources of the package are a part of.
+   * List of products the resources of the Package are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
@@ -1646,7 +1650,7 @@ export interface EntityType {
    * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
-   * For example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
    */
   version: string;
   /**
@@ -1758,15 +1762,16 @@ export interface EntityType {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
-   * Defines whether this ORD resource is **system instance aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * Defines whether this ORD resource is **system-instance-aware**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }
@@ -1888,7 +1893,7 @@ export interface Capability {
    * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
-   * For example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
    */
   version: string;
   /**
@@ -1916,7 +1921,7 @@ export interface Capability {
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
    *
-   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance aware perspective.
+   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance-aware perspective.
    *
    * This property can only reflect the knowledge of the described system instance itself.
    * Outside factors for availability can't need to be considered (e.g. network connectivity, middlewares).
@@ -1926,7 +1931,7 @@ export interface Capability {
    */
   disabled?: boolean;
   /**
-   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
    */
   minSystemVersion?: string;
@@ -1937,6 +1942,7 @@ export interface Capability {
   relatedEntityTypes?: string[];
   /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
@@ -1960,15 +1966,16 @@ export interface Capability {
   labels?: Labels;
   documentationLabels?: DocumentationLabels;
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
-   * Defines whether this ORD resource is **system instance aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * Defines whether this ORD resource is **system-instance-aware**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }
@@ -2021,7 +2028,7 @@ export interface CapabilityDefinition {
 /**
  * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
  *
- * Please note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).
+ * Please note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).
  */
 export interface DataProduct {
   /**
@@ -2115,7 +2122,7 @@ export interface DataProduct {
    * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
-   * For example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
    */
   version: string;
   /**
@@ -2145,7 +2152,7 @@ export interface DataProduct {
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
    *
-   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance aware perspective.
+   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance-aware perspective.
    *
    * This property can only reflect the knowledge of the described system instance itself.
    * Outside factors for availability can't need to be considered (e.g. network connectivity, middlewares).
@@ -2155,14 +2162,14 @@ export interface DataProduct {
    */
   disabled?: boolean;
   /**
-   * The resource has been introduced in the given [system version](../index.md#def-system-version).
+   * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
    */
   minSystemVersion?: string;
   /**
    * Lifecycle status of the Data Product as a whole.
    *
-   * MUST be provided when describing the system-instance aware (run-time) perspective.
+   * MUST be provided when describing the system-instance-aware (run-time) perspective.
    * SHOULD NOT be provided in static (design-time) perspective. Static aggregators MUST ignore this property.
    */
   lifecycleStatus?:
@@ -2323,7 +2330,7 @@ export interface DataProduct {
   ) &
     string)[];
   /**
-   * List of countries that the package resources are applicable to.
+   * List of countries that the Package resources are applicable to.
    *
    * MUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
    *
@@ -2365,15 +2372,16 @@ export interface DataProduct {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
-   * Defines whether this ORD resource is **system instance aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * Defines whether this ORD resource is **system-instance-aware**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }
@@ -2531,7 +2539,7 @@ export interface IntegrationDependency {
    * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
-   * For example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
    */
   version: string;
   /**
@@ -2680,7 +2688,7 @@ export interface EventResourceIntegrationAspect {
    */
   subset?: EventResourceIntegrationAspectSubset[];
   /**
-   * In case that the event subscriptions are limited to known [system types](../index.md#def-system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
+   * In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
    *
    * If given, only system types of the defined namespaces are supported as integration partners.
    * If not given, there is no restriction which system type provides the events.
@@ -2825,14 +2833,14 @@ export interface Product {
  * A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
  *
  * The Package can also be used to indicate which products or vendors provided the packaged resources.
- * For partner or customer content, the package can indicate this via the `vendor` and `partOfProducts` assignments.
+ * For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
  * In any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.
  *
- * A package SHOULD contain at least one resource. Avoid empty packages.
+ * A Package SHOULD contain at least one resource. Avoid empty Packages.
  *
- * The package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.
+ * The Package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.
  *
- * A package does not have a `visibility` property.
+ * A Package does not have a `visibility` property.
  * Whether it is displayed is decided by the fact, whether it contains any visible resources according to the visibility role of the aggregator.
  *
  * To learn more about the concept and further guidance, see [Package](../concepts/grouping-and-bundling#package).
@@ -2889,7 +2897,7 @@ export interface Package {
    * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
-   * For example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
    */
   version: string;
   /**
@@ -2918,7 +2926,7 @@ export interface Package {
    */
   policyLevels?: string[];
   /**
-   * Links with semantic meaning that are specific to packages.
+   * Links with semantic meaning that are specific to Packages.
    */
   packageLinks?: PackageLink[];
   /**
@@ -2933,7 +2941,7 @@ export interface Package {
    */
   licenseType?: string;
   /**
-   * Optional information that should be provided when creating a support ticket for the resources bundled in this package.
+   * Optional information that should be provided when creating a support ticket for the resources bundled in this Package.
    * This can for example be a "component" name that needs to be chosen in the support portal.
    *
    * Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
@@ -2947,13 +2955,13 @@ export interface Package {
    *
    * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
    *
-   * MUST be set to `customer:vendor:Customer:` if the contents of the package are created by the customer / user.
+   * MUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.
    *
-   * MUST be set to a registered partner vendor, if the contents of the package are created by a partner / third party.
+   * MUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party.
    */
   vendor: string;
   /**
-   * List of products the resources of the package are a part of.
+   * List of products the resources of the Package are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
@@ -2963,7 +2971,7 @@ export interface Package {
    */
   partOfProducts?: string[];
   /**
-   * List of countries that the package resources are applicable to.
+   * List of countries that the Package resources are applicable to.
    *
    * MUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
    *
@@ -3041,7 +3049,7 @@ export interface Package {
   ) &
     string)[];
   /**
-   * If provided, all resources that are part of this package can only run on the listed runtime.
+   * If provided, all resources that are part of this Package can only run on the listed runtime.
    *
    * MUST be a valid [system namespace](../index.md#system-namespace).
    */
@@ -3096,11 +3104,11 @@ export interface PackageLink {
  *
  * For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).
  *
- * A consumption bundle SHOULD have at least one association with a resource (0..n). Avoid empty consumption bundles.
- * A consumption bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned
- * by the system instance that defines the consumption bundle.
+ * A Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.
+ * A Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned
+ * by the system instance that defines the Consumption Bundle.
  *
- * Please note that some ORD consumer use cases MAY depend on consumption bundle assignments to work with the resources.
+ * Please note that some ORD consumer use cases MAY depend on Consumption Bundle assignments to work with the resources.
  *
  * To learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).
  */
@@ -3166,7 +3174,7 @@ export interface ConsumptionBundle {
    * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
-   * For example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
    */
   version?: string;
   /**
@@ -3208,7 +3216,7 @@ export interface ConsumptionBundle {
 }
 /**
  * The credential exchange strategy specifies how a set of credentials for a particular usage
- * of the APIs in the consumption bundle can be obtained.
+ * of the APIs in the Consumption Bundle can be obtained.
  * Until a SAP-wide strategy for obtaining such credentials exists and is agreed upon,
  * both LoBs and aggregators (namely Unified Customer Landscape) can define their own strategy specifications.
  *
@@ -3256,7 +3264,7 @@ export interface CredentialExchangeStrategy {
  * They express a "part of" relationship to the chosen group concept.
  * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
  *
- * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+ * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
  */
 export interface Group {
   /**
@@ -3300,7 +3308,7 @@ export interface Group {
  *
  * Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
  *
- * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+ * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
  */
 export interface GroupType {
   /**

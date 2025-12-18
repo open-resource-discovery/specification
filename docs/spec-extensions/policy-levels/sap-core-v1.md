@@ -173,7 +173,7 @@ The following constraints apply in addition to the constraints defined in the [O
   - CloudEvents MUST have a resource definition of `"type": "asyncapi-v2"` (see [AsyncAPI specification 2.0](https://www.asyncapi.com/docs/specifications/2.0.0)).
   - SAP Business Events (that conform to the SAP Event Specification:
     - MUST use the SAP Event Catalog standard, which is compatible to AsyncAPI 2.0 (`"type": "asyncapi-v2"`).
-    - MUST NOT be part of a consumption bundle.
+    - MUST NOT be part of a Consumption Bundle.
       - Events can only be consumed at an intermediary, i.e., the SAP Event Mesh.
       - Consequently, the producing application cannot describe how they are eventually consumed.
 - SAP Event Catalogs SHOULD be validated via the SAP API Metadata Validator, using `sap:core:v1` compliance level.
@@ -185,7 +185,7 @@ The following constraints apply in addition to the constraints defined in the [O
 ### Integration Dependencies
 
 - If an Integration Dependency is used to indicate Subscription Content for the [SAP Event Broker](https://help.sap.com/docs/event-broker/event-broker-service-guide/what-is):
-  - Each [EventResourceIntegrationAspect](../../spec-v1/index.md#event-resource-integration-aspect) MUST provide exactly one `systemTypeRestriction` application namespace.
+  - Each [EventResourceIntegrationAspect](../../spec-v1/interfaces/Document.md#eventresourceintegrationaspect) MUST provide exactly one `systemTypeRestriction` application namespace.
     The value of the `systemTypeRestriction` MUST always be the same within an integration dependency.
     These limitation MAY be reconsidered in the future.
 
