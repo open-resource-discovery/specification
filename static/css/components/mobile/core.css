@@ -97,7 +97,7 @@
     border-bottom-color: rgba(255, 255, 255, 0.16) !important;
   }
   .main-wrapper {
-    padding-top: var(--ifm-navbar-height) !important;
+    padding-top: var(--ifm-navbar-height);
   }
 
   html:not([data-nav-scrolled="1"]) .navbar {
