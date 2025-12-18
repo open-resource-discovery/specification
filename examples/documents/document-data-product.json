@@ -513,6 +513,18 @@
       "entryPoints": ["sap://my.lob.data.platform.endpoint:30015"],
       "apiProtocol": "delta-sharing",
       "implementationStandard": "sap:delta-sharing:v1",
+      "resourceDefinitions": [
+        {
+          "type": "sap-csn-interop-effective-v1",
+          "mediaType": "application/json",
+          "url": "/api/customer-order-csn.json",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ],
       "supportedUseCases": ["streaming"],
       "exposedEntityTypes": [
         {
@@ -561,13 +573,20 @@
       "abstract": true,
       "visibility": "public",
       "partOfPackage": "sap.xref:package:SomePackageAPIs:v1",
-      "partOfConsumptionBundles": [
-        {
-          "ordId": "sap.foo:consumptionBundle:someAuth:v1"
-        }
-      ],
       "apiProtocol": "delta-sharing",
       "implementationStandard": "sap:delta-sharing:v1",
+      "resourceDefinitions": [
+        {
+          "type": "sap-csn-interop-effective-v1",
+          "mediaType": "application/json",
+          "url": "/api/customer-order-csn.json",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ],
       "exposedEntityTypes": [
         {
           "ordId": "sap.odm:entityType:CustomerOrder:v1"

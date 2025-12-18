@@ -26,7 +26,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Fixed
 
 - make AccessStrategy from ORD Configuration consistent with AccessStrategy from ORD Document (both should use `anyOf` for the allowed values)
-- make `compatibleWith` an array of ORD IDs and a maximum version instead of an ORD ID value. Only this way one can correctly express compatibility with a dedicated contract versions.
+- BREAKING FIX: make `compatibleWith` an array of ORD IDs and a maximum version instead of an ORD ID value. Only this way one can correctly express compatibility with a dedicated contract versions.
+  - We're introducing this as a fix, because the feature has not been adopted so far and we think that the information missing otherwise would make the concept unviable for real scenarios.
 
 ### Removed
 
