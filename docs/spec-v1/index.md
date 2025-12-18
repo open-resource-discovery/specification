@@ -595,17 +595,22 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 There is a `perspective` attribute, which allows to set the following values:
 
+- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the latest version or version agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version.
 - `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time).
 - `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system-instance-aware</a> information (only known at run-time).
+- `system-independent`: Describes content that is independent of system versions or system instances and can be shared across multiple systems.
 
 ### Correct Use of Perspectives
 
-- Systems, which only have static metadata (system-instance-unaware) SHOULD choose the `system-version` perspective
+- Systems, which only have static metadata (system-instance-unaware) SHOULD choose either:
+  - The `system-type` perspective if the system is not versioned (continuous delivery) or resources do not relate to a specific system version
+  - The `system-version` perspective if the system has explicit versions
   - If this is categorized correctly, the ORD aggregators do not have to aggregate static, identical metadata per tenant.
-  - In this case the same static metadata will be used to describe all system instances of the same version
+  - In this case the same static metadata will be used to describe all system instances of the same version (or for `system-type`, all systems regardless of version)
 - Systems, which have dynamic metadata MUST use the `system-instance` perspective.
-  - They SHOULD also provide a complete static `system-version` perspective if possible, as static metadata is equally useful.
+  - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
 - If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
+- Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
 
 ## ID Concepts
 
@@ -1043,8 +1048,8 @@ ORD information can have different [perspectives](#perspectives):
 
 The **static perspective** describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a [system type](#system-type) and [system version](#system-version). This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
 
-- This can be explicitly set with `perspective`: `system-version`
-- This is also referred to as [system-instance-unaware](#system-instance-unaware) information. They are identical across all [system instance](#system-instance) of the described [system type](#system-type) and [system version](#system-version).
+- This can be explicitly set with `perspective`: `system-type` (version independent) or `system-version` (for specific versions)
+- This is also referred to as [system-instance-unaware](#system-instance-unaware) information. They are identical across all [system instance](#system-instance) of the described [system type](#system-type) (and [system version](#system-version) when using `system-version` perspective).
 
 ##### system-instance-unaware
 
