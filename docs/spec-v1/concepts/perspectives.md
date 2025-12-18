@@ -114,22 +114,27 @@ If the system has dynamic metadata, it should describe both perspectives complet
 
 #### Static Aggregators
 
-Static aggregators only describe the `system-version` perspective.
+Static aggregators describe the static perspectives: `system-type` and/or `system-version`.
 
-- If both perspectives are described, it MUST only pick the `system-version` perspective
+- If both static and dynamic perspectives are described, it MUST only pick the static perspectives (`system-type` or `system-version`)
 - If only `system-instance` (or unspecified) perspective is available, we assume this is a generic system instance which is meant to describe all system instances as a subsidiary
+- When aggregating `system-type` perspective, the aggregator MAY derive it from the latest `system-version` if not explicitly provided
 
 #### Dynamic Aggregators
 
 If the aggregator supports both static and dynamic perspectives:
 
-- The ORD aggregator that to be able to aggregate and store both perspectives at the same time.
-- In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior.
+- The ORD aggregator must be able to aggregate and store all perspectives (`system-type`, `system-version`, and `system-instance`) at the same time.
+- In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior:
+  - When `system-instance` is requested but not available, fall back to `system-version`
+  - When `system-version` is requested but not available (or version is unknown), fall back to `system-type`
+  - The aggregator MAY derive `system-type` from the latest `system-version` if not explicitly provided
 
 If the `system-version` perspective is used, the described version MUST be provided via the ORD `describedSystemVersion`.`version` property.
-Ideally, ORD providers SHOULD define the `describedSystemVersion`.`version` property on both the static and the dynamic perspective.
+For the `system-type` perspective, the version property is NOT required as this perspective is version-independent.
+Ideally, ORD providers SHOULD define the `describedSystemVersion`.`version` property on both the `system-version` and `system-instance` perspectives.
 
-The `version` becomes effectively the "join" criteria how the dynamic metadata is associated to the static metadata.
+The `version` becomes effectively the "join" criteria for how the dynamic metadata is associated to the version-specific static metadata.
 
 Some addition considerations that need to be looked into:
 
