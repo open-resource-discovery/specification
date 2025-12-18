@@ -194,19 +194,39 @@ function adjustLayoutForBanner() {
   var banner = document.querySelector(".theme-announcement-bar");
   var navbar = document.querySelector(".navbar");
   var mainWrapper = document.querySelector(".main-wrapper");
+  var docRoot = document.querySelector("[class*='docRoot_']");
 
   if (!banner || !navbar) return;
 
-  // Only apply on mobile/tablet (max-width: 996px)
-  if (window.innerWidth > 996) return;
-
   var bannerHeight = banner.offsetHeight;
+  var isDesktop = window.innerWidth > 996;
+
+  if (isDesktop) {
+    // Desktop: reset mobile styles
+    navbar.style.top = "";
+    if (mainWrapper) {
+      mainWrapper.style.paddingTop = "";
+    }
+    // Add padding to docRoot if banner is taller than default 30px
+    if (docRoot && bannerHeight > 30) {
+      docRoot.style.paddingTop = (bannerHeight - 30) + "px";
+    } else if (docRoot) {
+      docRoot.style.paddingTop = "";
+    }
+    return;
+  }
+
+  // Mobile/tablet: adjust navbar and main-wrapper
   if (bannerHeight > 0) {
     navbar.style.top = bannerHeight + "px";
     if (mainWrapper) {
       var navbarHeight = navbar.offsetHeight || 60;
       mainWrapper.style.paddingTop = bannerHeight + navbarHeight + "px";
     }
+  }
+  // Reset docRoot padding on mobile
+  if (docRoot) {
+    docRoot.style.paddingTop = "";
   }
 }
 
