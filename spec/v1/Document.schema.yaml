@@ -2707,11 +2707,6 @@ definitions:
       changelogEntries:
         <<: *changelogEntries
 
-      policyLevel:
-        <<: *policyLevel
-
-      customPolicyLevel:
-        <<: *customPolicyLevel
 
       policyLevels:
         <<: *policyLevels
