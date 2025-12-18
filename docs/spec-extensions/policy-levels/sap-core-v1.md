@@ -173,7 +173,7 @@ The following constraints apply in addition to the constraints defined in the [O
   - CloudEvents MUST have a resource definition of `"type": "asyncapi-v2"` (see [AsyncAPI specification 2.0](https://www.asyncapi.com/docs/specifications/2.0.0)).
   - SAP Business Events (that conform to the SAP Event Specification:
     - MUST use the SAP Event Catalog standard, which is compatible to AsyncAPI 2.0 (`"type": "asyncapi-v2"`).
-    - MUST NOT be part of a consumption bundle.
+    - MUST NOT be part of a Consumption Bundle.
       - Events can only be consumed at an intermediary, i.e., the SAP Event Mesh.
       - Consequently, the producing application cannot describe how they are eventually consumed.
 - SAP Event Catalogs SHOULD be validated via the SAP API Metadata Validator, using `sap:core:v1` compliance level.
