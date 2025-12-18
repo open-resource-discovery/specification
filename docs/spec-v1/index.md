@@ -102,10 +102,10 @@ In case the ORD aggregator that supports the [dynamic perspective](#dynamic-pers
 
 - the aggregator MUST support [system instance aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system instance aware information it MUST be system instance aware itself.
-- In the ORD Service API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
-  - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Service consumer should not need to understand whether the information is currently static or system instance aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
+- In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
+  - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Discovery consumer should not need to understand whether the information is currently static or System-Instance-Aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
   - See chapter on [perspectives](#perspectives).
-- It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `systemInstanceAware`, `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
+- It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
 
@@ -131,7 +131,7 @@ If the ORD consumer only needs public information, it SHOULD only request those 
 The specification makes a distinction between how [ORD information](#ord-information) is expressed (say, as an [ORD document](#ord-document)) and how it is transported.
 
 An [ORD Provider](#ord-provider) MUST implement at least one of the defined transport modes.
-If the ORD information is [system instance aware](#system-instance-aware), the implementation of the transport mode MUST support providing it **per system instance**.
+If the ORD information is [System-Instance-Aware](#system-instance-aware), the implementation of the transport mode MUST support providing it **per system instance**.
 
 ### Pull Transport
 
@@ -229,7 +229,7 @@ The [validation rules](#validation-rules) MUST be considered.
 
 If the [resources](#resource) that are described through ORD are [system instance aware](#system-instance-aware) (they differ between system instances), the ORD document MUST reflect this.
 In that case, one ORD document MUST be provided for each system instance.
-Only if the information is [system instance unaware](#system-instance-unaware) (the system behaves the same for each instance), a single ORD document can represent the system as a whole.
+Only if the information is [System-Instance-Unaware](#system-instance-unaware) (the system behaves the same for each instance), a single ORD document can represent the system as a whole.
 
 Differences between system instances are possible, for example, when the system has configuration or extensibility capabilities that result in resources being activated, deactivated, added, or modified.
 This might happen at config time, deploy time, or even at run-time.
@@ -264,11 +264,11 @@ In some cases (like `policyLevel`), it is also possible to override the values l
 ##### Package Level Inheritance
 
 Some ORD information are described on Package level and inherited down to all resources that are assigned to it.
-The information on package level are merged into resource level, but can be overridden locally at resource level.
+The information on Package level are merged into resource level, but can be overridden locally at resource level.
 
-> Please note that package level inheritance might not always have the right granularity, as putting resources into packages can have a different motivation / cut than the reuse.
+> Please note that Package level inheritance might not always have the right granularity, as putting resources into Packages can have a different motivation / cut than the reuse.
 > In this case, the information need to be defined on resource level individually, leading to some information duplication.
-> For ORD 2.0 we consider replacing package level inheritance with a more generic information reuse concept.
+> For ORD 2.0 we consider removing Package level inheritance, potentially replacing it with a more flexible approach.
 
 #### ORD Document Content Extensions
 
@@ -354,18 +354,18 @@ For more details, please see the [considerations on the ORD content](#considerat
 
 The rules for [ORD Provider Cache Handling](#ord-provider-cache-handling) apply.
 
-##### Select Parameter
+###### `select` Parameter
 
 The ORD Provider API MAY implement an optional `?select` HTTP query parameter, that the ORD Aggregator can pass to reduce the result set of the ORD Config and ORD Documents requests / aggregation run.
 
-The availability of this feature MUST be announced through the [ORD Configuration](#ord-configuration-endpoint), via `capabilities.select` set to `true`.
+The availability of this feature MUST be announced through the [ORD Configuration](#ord-configuration-endpoint), via `capabilities.selector` set to `true`.
 
 If supported, the [ORD Configuration](#ord-configuration-endpoint) and the [ORD Document](#ord-document-endpoint) endpoint gain an optional query parameter `?select="` where the value MUST be a valid [ORD ID](#ord-id).
 When given, the ORD Provider only returns the requested ORD Resource, but MAY also add related ORD information that need to be updated in the same transaction (the decision is on the provider).
 
 The Aggregator will follow the regular ORD crawling run by invoking the ORD Configuration endpoint and from there the ORD documents and attached [resource definitions](#resource-definition).
 There is no reason to pass the parameters to the resource definition requests.
-The aggregator is allowed to send a select request on the config endpoint, but if the select capability is not advertised MUST NOT proceed with select requests on the ORD documents.
+The aggregator is allowed to send a `select` request on the config endpoint, but if the `select` capability is not advertised MUST NOT proceed with `select` requests on the ORD documents.
 
 ```http
 GET http://example.com/.well-known/open-resource-discovery?select=sap.foo:dataProduct:astronomy:v1
@@ -426,7 +426,7 @@ The `Cache-Control` and `ETag` headers (as described in [ORD Provider Cache Hand
 Referenced definition files MUST only be fetched if they have not been retrieved yet or the `version` has been incremented since the last retrieval.
 
 ORD documents and ORD resources that have been marked as [system instance aware](#system-instance-aware) MUST each be fetched per tenant.
-If they are [system instance unaware](#system-instance-unaware) they SHOULD only be fetched once per system.
+If they are [System-Instance-Unaware](#system-instance-unaware) they SHOULD only be fetched once per system.
 
 ### ORD Aggregation
 
@@ -445,13 +445,13 @@ This section outlines the rules of how ORD information is merged and - if confli
 
 First, the distinction between [ORD taxonomy](#ord-taxonomy) and [ORD resource](#ord-resource) information must be understood.
 
-ORD taxonomy is independent of specific <a href="#product">products</a> or <a href="#system-type">system types</a>. In contrast, [ORD resources](#ord-resource) may be either [system instance aware](#system-instance-aware) (varying per instance) or [system instance unaware](#system-instance-unaware) (static across instances).
+ORD taxonomy is independent of specific <a href="#product">products</a> or <a href="#system-type">system types</a>. In contrast, [ORD resources](#ord-resource) may be either [system instance aware](#system-instance-aware) (varying per instance) or [System-Instance-Unaware](#system-instance-unaware) (static across instances).
 
 ###### Merging ORD Taxonomy
 
 This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
 
-The information is [system instance unaware](#system-instance-unaware) and therefore MUST not be stored for each [system instance](#system-instance).
+The information is [System-Instance-Unaware](#system-instance-unaware) and therefore MUST not be stored for each [system instance](#system-instance).
 If multiple systems/system instances describe the same ORD taxonomy instance, the following merging rules MUST be followed:
 
 - Instances with the same [ORD ID](#ord-id) are considered to be the same and MUST be merged.
@@ -475,7 +475,7 @@ If the same system instances describe the same ORD resource, the following mergi
 
 - Instances with the same ORD ID from the same system instance are considered to be the same and MUST be merged.
 - Instances with the same ORD ID from different system instances MUST not be merged.
-  If the aggregator knows for sure that the information is [system instance unaware](#system-instance-unaware) it MAY only retrieve and store some of the information once for optimization purposes.
+  If the aggregator knows for sure that the information is [System-Instance-Unaware](#system-instance-unaware) it MAY only retrieve and store some of the information once for optimization purposes.
   However, the aggregator MUST store the information about which system instances (system instance IDs) the resource is available on.
 - If there is a conflict, the instance with the higher `version` according to [Semantic Versioning](https://semver.org/) rules takes precedence.
 - If both instances have the same version but different content, the most recent information takes precedence.
@@ -497,7 +497,7 @@ The following rules need to be implemented by ORD aggregators:
   - This ensures that consumers can rely on `lastUpdate` to be always available and to understand if a change happened, even if the ORD Provider did not update it at the source
   - Ideally this situation doesn't happen and the ORD Providers update `lastUpdate`. Then the date can also reflect better the time when the change happened, not when it was detected.
 - The aggregator MUST apply all defined inheritances from root document properties to all the ORD information that it contains.
-  - `policyLevel` (and the corresponding `customPolicyLevel`) MUST be inherited to the resource / package level, with the latter taking precedence.
+  - `policyLevel` (and the corresponding `customPolicyLevel`) MUST be inherited to the resource / Package level, with the latter taking precedence.
 - The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
   - `vendor`, `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
   - `labels` MUST be merged without duplicated values.
@@ -571,12 +571,12 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 There is a `perspective` attribute, which allows to set the following values:
 
-- `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system instance unaware</a> information (usually known at deploy-time).
+- `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">System-Instance-Unaware</a> information (usually known at deploy-time).
 - `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system instance aware</a> information (only known at run-time).
 
 ### Correct Use of Perspectives
 
-- Systems, which only have static metadata (system instance unaware) SHOULD choose the `system-version` perspective
+- Systems, which only have static metadata (System-Instance-Unaware) SHOULD choose the `system-version` perspective
   - If this is categorized correctly, the ORD aggregators do not have to aggregate static, identical metadata per tenant.
   - In this case the same static metadata will be used to describe all system instances of the same version
 - Systems, which have dynamic metadata MUST use the `system-instance` perspective.
@@ -751,7 +751,7 @@ It serves two purposes:
 - Use as an identifier for ORD information.
 - Refer to an ORD resources/taxonomy.
 
-The ORD ID is a globally unique identifier from a [system type](#system-type) perspective and is [system instance unaware](#system-instance-unaware).
+The ORD ID is a globally unique identifier from a [system type](#system-type) perspective and is [System-Instance-Unaware](#system-instance-unaware).
 This means that the ORD ID will not include information about system instances (e.g. tenant IDs) and is therefore only unique at design-time.
 Therefore an ORD ID is not unique from a [system instance](#system-instance) perspective.
 The same resource (with the same ORD ID) can be exposed in different variations (e.g. customizations, extensions) by multiple system instances at run-time.
@@ -769,7 +769,7 @@ It MUST be constructed as defined here:
 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
   The namespace MUST reflect the provider of the described resource.
-  - For `Package`, `ConsumptionBundle`, `APIResource` and `EventResource`, `Capability` and `IntegrationDependency`:
+  - For `Package`, `Consumption Bundle`, `APIResource` and `EventResource`, `Capability` and `IntegrationDependency`:
     - MUST be a valid [system namespace](#system-namespace) or an [sub-context namespace](#sub-context-namespace) thereof
   - For `EntityType`
     - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace)
@@ -801,7 +801,7 @@ It MUST be constructed as defined here:
     - If this cannot be followed, the relationship to the successor APIs can still be indicated via the `successors` property.
 
 - **`<majorVersion>`** := a version incrementor of the resource that increases on breaking changes.
-  - MUST be provided for `Package`, `ConsumptionBundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`
+  - MUST be provided for `Package`, `Consumption Bundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`
   - MUST NOT be provided for `Product` and `Vendor`
   - If provided: MUST be an integer and MUST NOT contain leading zeroes.
   - MUST be incremented if the resource introduced an incompatible API change. This correlates with a major version change in [Semantic Versioning](https://semver.org/).
@@ -1020,11 +1020,11 @@ ORD information can have different [perspectives](#perspectives):
 The **static perspective** describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a [system type](#system-type) and [system version](#system-version). This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
 
 - This can be explicitly set with `perspective`: `system-version`
-- This is also referred to as [system instance unaware](#system-instance-unaware) information. They are identical across all [system instance](#system-instance) of the described [system type](#system-type) and [system version](#system-version).
+- This is also referred to as [System-Instance-Unaware](#system-instance-unaware) information. They are identical across all [system instance](#system-instance) of the described [system type](#system-type) and [system version](#system-version).
 
 ##### System Instance Unaware
 
-**System instance unaware** information is identical across all system instances of the described system type and system version.
+**System-Instance-Unaware** information is identical across all system instances of the described system type and system version.
 
 #### Dynamic Perspective
 
@@ -1032,19 +1032,18 @@ The **dynamic perspective** describes a [system instance](#system-instance) at *
 
 - This can be explicitly set with `perspective`: `system-instance`
 - This is also referred to as [system instance aware](#system-instance-aware) information.
-  System instance aware information are allowed to be different between system instances of the same [system type](#system-type).
+  System-Instance-Aware information are allowed to be different between system instances of the same [system type](#system-type).
 
 ##### System Instance Aware
 
-**System instance aware** information is allowed to be different between system instances of the same system type.
+**System-Instance-Aware** information is allowed to be different between system instances of the same system type.
 
 #### ORD Resource
 
 ORD information can be categorized into resources and taxonomies:
 
-**ORD resource** information describes application and service [resources](#resource).
-Currently it covers API resources and Event resources.
-ORD resource information MAY be [system instance aware](#system-instance-aware), depending on the implementation of the [system type](#system-type).
+**ORD resource** information describes application and service [resources](#resource). Resources are consumable capabilities of the system (e.g. API resources, Event resources, etc.).
+ORD resource information MAY be [System-Instance-Aware](#system-instance-aware), depending on the implementation of the [system type](#system-type).
 
 #### ORD Taxonomy
 
