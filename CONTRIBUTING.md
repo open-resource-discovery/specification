@@ -1,14 +1,14 @@
-# Contributing
+# Contributing to an SAP Open Source Project
 
 ## Code of Conduct
 
 All members of the project community must abide by the [SAP Open Source Code of Conduct](https://github.com/SAP/.github/blob/main/CODE_OF_CONDUCT.md).
-Only by respecting each other we can develop a productive, collaborative community.
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting [a project maintainer](.reuse/dep5).
+Only by respecting each other can we develop a productive, collaborative community.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by creating a [GitHub issue](https://github.com/open-resource-discovery/specification/issues).
 
-## Engaging in Our Project
+Contributors will be asked to accept a DCO before they submit the first pull request to this projects, this happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
 
-We use GitHub to manage reviews of pull requests.
+## Contributing with AI-generated code
 
 - If you are a new contributor, see: [Steps to Contribute](#steps-to-contribute)
 
@@ -30,6 +30,28 @@ The following rule governs code contributions:
 
 - Contributions must be licensed under the [Apache 2.0 License](./LICENSE)
 - Due to legal reasons, contributors will be asked to accept a Developer Certificate of Origin (DCO) when they create the first pull request to this project. This happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
+
+## Generated Artifacts and Review Process
+
+This repository checks in certain generated files (TypeScript types and UMS types). We intentionally commit these artifacts so pull requests clearly show the impact on those interfaces and downstream consumers during review.
+
+- What is generated: TypeScript interfaces referenced unde `dist/generated/spec/v1` and `src/generated` and UMS types referenced under `spec/v1` and `src/generated/`.
+- How to generate: run `npm run generate` (this executes the spec toolkit and copies results via the postgenerate step).
+
+### CI verification
+
+To prevent accidental divergence, our CI runs `npm run generate` and fails if it produces changes that are not committed. This protects the main branch from merging updates that forgot to regenerate.
+
+### Local pre-commit hook (optional)
+
+We provide a pre-commit hook via [Lefthook](https://github.com/evilmartians/lefthook) that automatically runs `npm run generate` before each commit and re-stages any changed files. This helps ensure generated artifacts are always included.
+
+Enable it locally:
+
+```
+npm i -D lefthook
+npx lefthook install
+```
 
 ## Issues and Planning
 

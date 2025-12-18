@@ -3,7 +3,7 @@
 ## Description
 
 This is example implements ORD by serving all information statically.
-Of course this approach is limited and would only work for applications which are not system instance aware.
+Of course this approach is limited and would only work for applications which are not system-instance-aware.
 
 But it shows that ORD can be implemented without writing code, just by statically serving static metadata.
 

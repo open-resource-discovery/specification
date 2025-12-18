@@ -3,25 +3,20 @@
 
 import { themes as prismThemes } from "prism-react-renderer";
 
-const baseUrl = "/specification";
+const baseUrl = process.env.BASE_URL ?? "/";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Open Resource Discovery",
-  tagline: "An aligned protocol for publishing and discovering metadata about systems.",
-  url: "https://open-resource-discovery.github.io",
+  tagline:
+    "An aligned protocol for publishing and discovering metadata about systems.",
+  url: "https://open-resource-discovery.org",
   baseUrl,
   trailingSlash: false,
   onBrokenLinks: "throw",
   onDuplicateRoutes: "throw",
-  onBrokenMarkdownLinks: "throw",
   staticDirectories: ["static"],
-  favicon: "img/favicon.ico",
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "open-resource-discovery", // Usually your GitHub org/user name.
-  projectName: "specification", // Usually your repo name.
+  favicon: "img/favicon.svg",
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -33,6 +28,9 @@ const config = {
 
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: "throw",
+    },
   },
 
   presets: [
@@ -47,7 +45,8 @@ const config = {
           routeBasePath: "/", // Serve the docs at the site's root
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/open-resource-discovery/specification/tree/main/",
+          editUrl:
+            "https://github.com/open-resource-discovery/specification/tree/main/",
         },
         blog: false, // disable the blog plugin
         theme: {
@@ -57,7 +56,15 @@ const config = {
     ],
   ],
 
-  scripts: [`${baseUrl}/js/custom.js`],
+  headTags: [
+    {
+      tagName: "script",
+      attributes: {},
+      innerHTML: `window.bannerServerBaseUrl = ${JSON.stringify(process.env.BANNER_SERVER_BASE_URL || "")};`,
+    },
+  ],
+
+  scripts: [`${baseUrl}js/custom.js`],
 
   plugins: [
     [
@@ -106,7 +113,7 @@ const config = {
         darkTheme: prismThemes.oceanicNext,
       },
       mermaid: {
-        theme: { light: "neutral", dark: "forest" },
+        theme: { light: "neutral", dark: "dark" },
       },
       navbar: {
         title: "Open Resource Discovery",
@@ -224,7 +231,7 @@ const config = {
           <div class="footer-container">
             <div class="footer-funding">
               <div class="footer-funding__image">
-                <img src="${baseUrl + "/img/ord-footer-bmwe.png"}" alt="EU and German government funding logos" />
+                <img src="${baseUrl + "img/ord-footer-bmwe.png"}" alt="EU and German government funding logos" />
               </div>
               <div class="footer-funding__text">
                 <p><strong>Funded by the European Union – NextGenerationEU.</strong></p>
@@ -238,12 +245,12 @@ const config = {
             <div class="neonephos-logos">
               <a href="https://neonephos.org/" target="_blank" rel="noopener noreferrer" class="neonephos-link">
                 <img
-                  src="${baseUrl + "/img/ord-footer-neonephos.svg"}"
+                  src="${baseUrl + "img/ord-footer-neonephos.svg"}"
                   alt="Neonephos Logo"
                   class="neonephos-logo neonephos-logo--dark"
                 />
                 <img
-                  src="${baseUrl + "/img/ord-footer-neonephos-light.svg"}"
+                  src="${baseUrl + "img/ord-footer-neonephos-light.svg"}"
                   alt=""
                   aria-hidden="true"
                   class="neonephos-logo neonephos-logo--light"
@@ -252,11 +259,11 @@ const config = {
             </div>
             <!--
             <div class="footer-legal-links">
-              <a href="${baseUrl + "/about/terms-of-use"}">Terms of Use</a>
+              <a href="${baseUrl + "about/terms-of-use"}">Terms of Use</a>
               <span class="footer-legal-sep">|</span>
-              <a href="${baseUrl + "/about/privacy"}">Privacy Statement</a>
+              <a href="${baseUrl + "about/privacy"}">Privacy Statement</a>
               <span class="footer-legal-sep">|</span>
-              <a href="${baseUrl + "/about/legal-disclosure"}">Legal Disclosure</a>
+              <a href="${baseUrl + "about/legal-disclosure"}">Legal Disclosure</a>
             </div>
             -->
           </div>
@@ -267,6 +274,28 @@ const config = {
           autoCollapseCategories: true,
         },
       },
+      ...(process.env.PR_PREVIEW_NUMBER
+        ? {
+            announcementBar: {
+              id: "pr-preview-banner",
+              content: `<b>This is a preview version of the website for <a href="https://github.com/open-resource-discovery/specification/pull/${process.env.PR_PREVIEW_NUMBER}" target="_blank">PR #${process.env.PR_PREVIEW_NUMBER}</a></b>`,
+              backgroundColor: "#e65050ff",
+              textColor: "#fff",
+              isCloseable: false,
+            },
+          }
+        : process.env.NODE_ENV === "production" &&
+            process.env.BANNER_SERVER_BASE_URL
+          ? {
+              announcementBar: {
+                id: "internal-banner",
+                backgroundColor: "#ffe900",
+                textColor: "#000000",
+                content: '<div class="internal-banner-hidden"></div>',
+                isCloseable: false,
+              },
+            }
+          : {}),
     }),
 };
 
