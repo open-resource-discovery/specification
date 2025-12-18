@@ -83,6 +83,9 @@ spec:
     - name: 'lastUpdate'
       type: 'string'
       description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
+    - name: 'abstract'
+      type: 'boolean'
+      description: "Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.\n\nAbstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page."
     - name: 'visibility'
       type: 'string'
       description: 'The visibility states who is allowed to "see" the described resource or capability.'
@@ -140,10 +143,6 @@ spec:
     - name: 'customImplementationStandardDescription'
       type: 'string'
       description: "Full description of the custom implementation standard, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nMUST only be provided if `implementationStandard` is set to `custom`.\n\nSHOULD contain documentation and links that describe the used standard."
-    - name: 'compatibleWith'
-      type: 'string'
-      array: true
-      description: "A reference to the interface (API contract) that this API implements.\nServes as a declaration of compatible implementation of API contract, effectively functioning as an \"implementationOf\" relationship.\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client."
     - name: 'responsible'
       type: 'string'
       description: 'Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.'
@@ -406,6 +405,10 @@ spec:
       propertyBased: true
       managedByProperty: 'successors_ID'
       description: "The successor resource(s).\n\nMUST be a valid reference to an ORD ID.\n\nIf the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.\nIf `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`."
+    - propertyName: 'compatibleWith'
+      relatedTypeName: 'ApiCompatibility'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.\n\nServes as a declaration of compatible implementation of API contract, effectively functioning as an \"implementationOf\" relationship. The data that compatible APIs return follow the same schema, but itself can be different.\nThis means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page."
     - propertyName: 'exposedEntityTypes'
       relatedTypeName: 'ExposedEntityType'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

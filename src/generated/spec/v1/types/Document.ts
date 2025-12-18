@@ -442,6 +442,14 @@ export interface ApiResource {
    */
   lastUpdate?: string;
   /**
+   * Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
+   *
+   * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+   *
+   * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   */
+  abstract?: boolean;
+  /**
    * The visibility states who is allowed to "see" the described resource or capability.
    */
   visibility: "public" | "internal" | "private";
@@ -583,14 +591,18 @@ export interface ApiResource {
    */
   customImplementationStandardDescription?: string;
   /**
-   * A reference to the interface (API contract) that this API implements.
-   * Serves as a declaration of compatible implementation of API contract, effectively functioning as an "implementationOf" relationship.
+   * A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
+   *
+   * Serves as a declaration of compatible implementation of API contract, effectively functioning as an "implementationOf" relationship. The data that compatible APIs return follow the same schema, but itself can be different.
+   * This means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.
    *
    * MUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.
    *
    * All APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+   *
+   * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
    */
-  compatibleWith?: string[];
+  compatibleWith?: APICompatibility[];
   /**
    * Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.
    */
@@ -899,6 +911,28 @@ export interface MetadataDefinitionAccessStrategy {
    * MUST only be provided if `type` is set to `custom`.
    */
   customDescription?: string;
+}
+/**
+ * Describes the compatibility of the API with other APIs. This can be used to express that an API is compatible with another API version.
+ */
+export interface APICompatibility {
+  /**
+   * ORD ID of the APIResource that serves as contract that this resource is compatible with.
+   *
+   * MUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.
+   */
+  ordId: string;
+  /**
+   * Specifies the maximum version of the interface contract that this resource is compatible with. This is the version, that the resource fully implements and supports.
+   *
+   * Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one. It is important to consider, given the example of an API version 1.0, that has the fields A and B.
+   * Being compatible with version 1.0 means to have exactly the fields A and B and potential tenant specific extensions in a dedicated namespace.
+   * If an API contract changes to version 1.1 compatible by adding field C, the API declaring compatibility towards 1.0, will miss field C. Only if adopting the contract of 1.1 with having fields A, B, and C, such an API is also
+   * compatible with version 1.1 of the contract. However, a client relying on version 1.0 of the contract, can still work with the API being compatible with version 1.1 of the contract.
+   *
+   * Following the [Semantic Versioning 2.0.0](https://semver.org/) standard, patch versions (x.y.Z) must not have impact on the schema/contract. Therefore, the maxVersion are only the major.minor parts of a semantic version.
+   */
+  maxVersion: string;
 }
 /**
  * An API or Event resource may optionally define its `entityTypeMappings`.
@@ -1251,6 +1285,14 @@ export interface EventResource {
    */
   lastUpdate?: string;
   /**
+   * Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
+   *
+   * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+   *
+   * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   */
+  abstract?: boolean;
+  /**
    * The visibility states who is allowed to "see" the described resource or capability.
    */
   visibility: "public" | "internal" | "private";
@@ -1344,14 +1386,16 @@ export interface EventResource {
    */
   customImplementationStandardDescription?: string;
   /**
-   * Declares this event resource is a compatible implementation of the referenced contract.
-   * This is also sometimes known as [Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface).
+   * A reference to the interface (event contract) and its maximum version that this event implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
    *
-   * MUST be a valid reference to an (usually external) [Event Resource](#event-resource) ORD ID.
+   * Serves as a declaration of compatible implementation of event contract, effectively functioning as an "implementationOf" relationship. The data that compatible events return follow the same schema, but itself can be different.
+   * This means that if one event is returning 1 record for a dedicated request, a compatible event could return multiple and different records, as long as they adhere to the same schema.
    *
-   * All event resources that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+   * All events that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+   *
+   * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
    */
-  compatibleWith?: string[];
+  compatibleWith?: EventCompatibility[];
   /**
    * Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.
    */
@@ -1551,6 +1595,27 @@ export interface EventResourceDefinition {
    * @minItems 1
    */
   accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+}
+/**
+ * Describes the compatibility of the Event with other Events. This can be used to express that an Event is compatible with another Event version.
+ */
+export interface EventCompatibility {
+  /**
+   * ORD ID of the EventResource that serves as contract that this resource is compatible with.
+   *
+   * MUST be a valid reference to an (usually external) [Event Resource](#event-resource) ORD ID.
+   */
+  ordId: string;
+  /**
+   * Specifies the maximum version of the interface contract that this resource is compatible with. This is the version, that the resource fully implements and supports.
+   *
+   * Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one. It is important to consider, given the example of an event version 1.0, that has the fields A and B. Being compatible with version 1.0 means to have exactly the fields A and B and potential tenant specific extensions in a dedicated namespace.
+   * If an event contract changes to version 1.1 compatible by adding field C, the event declaring compatibility towards 1.0, will miss field C. Only if adopting the contract of 1.1 with having fields A, B, and C, such an event is also
+   * compatible with version 1.1 of the contract. However, a client relying on version 1.0 of the contract, can still work with the event being compatible with version 1.1 of the contract.
+   *
+   * Following the [Semantic Versioning 2.0.0](https://semver.org/) standard, patch versions (x.y.Z) must not have impact on the schema/contract. Therefore, the maxVersion are only the major.minor parts of a semantic version.
+   */
+  maxVersion: string;
 }
 /**
  * An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
@@ -2161,6 +2226,12 @@ export interface DataProduct {
    *
    */
   disabled?: boolean;
+  /**
+   * Indicates that the data product serves as interface only. All output ports MUST be marked as abstract.
+   *
+   * Implementations of this data product MUST declare compatible with on their specific output port resources as consumption of data products happens through the output ports.
+   */
+  abstract?: boolean;
   /**
    * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
