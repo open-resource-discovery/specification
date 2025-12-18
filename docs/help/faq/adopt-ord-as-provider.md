@@ -61,7 +61,7 @@ In fact, it's just serving files via HTTP GET request in a standard manner.
 This can even be achieved by using a static web server like [nginx](https://www.nginx.com/), without writing a single line of code.
 
 Just dropping the ORD configuration and documents and additional metadata files into a web server can already work.
-Please consider whether the information [need to be protected](#protect-ord-document-api-access) and do so if necessary.
+Please consider whether the information [need to be protected](#protect-ord-provider-api-access) and do so if necessary.
 
 > 🔗 See [./implementation-examples/nginx-no-auth](https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/nginx-no-auth) for an example implementation
 
@@ -76,7 +76,7 @@ The API itself consists just of three different types of API GET operations:
 - One to return all [ORD Documents](../../spec-v1/index.md#ord-document)
 - One to return the "attached" metadata documents (ORD Resource Definitions)
 
-Please note that you may need to [protect the API access](#protect-ord-document-api-access).
+Please note that you may need to [protect the API access](#protect-ord-provider-api-access).
 
 > 🔗 See [./implementation-examples/no-auth](https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/no-auth) for an example node.js implementation without authentication.
 
@@ -96,7 +96,7 @@ Now becomes a necessity to implement ORD as a REST API, where the GET operations
 The response (of at least some requests) will depend on tenant context, customizations and extensions.
 
 In practice it's more realistic that such an implementation will be a mix between static and dynamic metadata.
-Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to indicate this on a per resource basis via the `systemInstanceAware` attribute see [definition](../../spec-v1/index.md#def-system-instance-aware).
+Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to indicate this on a per resource basis via the `systemInstanceAware` attribute see [definition](../../spec-v1/index.md#system-instance-aware).
 
 > 🚧 The [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) showcases a mix between static and dynamic metadata. The source-code for it is yet to be made public, though.
 
