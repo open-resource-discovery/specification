@@ -19,7 +19,7 @@ The `accessStrategy`.`type` value for it is: `basic-auth`.
 ## Optional Tenant HTTP Headers
 
 It may be necessary to indicate which tenant the information are requested for.
-This becomes necessary when the ORD Provider is multi-tenant and the metadata it provides is different across those tenants (system instance aware).
+This becomes necessary when the ORD Provider is multi-tenant and the metadata it provides is different across those tenants (System-Instance-Aware).
 
 The HTTP headers are optional and will only be sent by the ORD Aggregator if they are applicable and known by it.
 
@@ -51,5 +51,5 @@ Global-Tenant-Id: c6c80b52-ecc1-47f8-9303-0d55fb67fd41
 
 ### General Remarks
 
-> ℹ If the metadata is not different across tenants (system instance unaware), the response is static and the same across tenants.
+> ℹ If the metadata is not different across tenants (System-Instance-Unaware), the response is static and the same across tenants.
 > In this case, this should be indicated via `systemInstanceAware`: `false` to avoid unnecessary requests for each tenant.

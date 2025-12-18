@@ -66,17 +66,17 @@ spec:
       description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
     - name: 'defaultConsumptionBundle_ID'
       type: 'guid'
-      description: "References the default consumption bundle to use for this resource.\n\nMUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.\n\nCan be used by clients to make a deterministic and preferred choice when multiple options are available.\n\nThe value MUST be an existing option in the corresponding `partOfConsumptionBundles` array."
+      description: "References the default Consumption Bundle to use for this resource.\n\nMUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.\n\nCan be used by clients to make a deterministic and preferred choice when multiple options are available.\n\nThe value MUST be an existing option in the corresponding `partOfConsumptionBundles` array."
       constraints:
         maxLength: 255
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
     - name: 'partOfProducts_ID'
       type: 'guid'
       array: true
-      description: "List of products the resources of the package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+      description: "List of products the resources of the Package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
     - name: 'version'
       type: 'string'
-      description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented."
+      description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented."
       mandatory: true
       constraints:
         pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
@@ -93,7 +93,7 @@ spec:
       mandatory: true
     - name: 'disabled'
       type: 'boolean'
-      description: "Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.\nThis can happen either because it has not been setup for use or disabled by an admin / user.\n\nIf the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance aware perspective.\n\nThis property can only reflect the knowledge of the described system instance itself.\nOutside factors for availability can't need to be considered (e.g. network connectivity, middlewares).\n\nA disabled resource MAY skip describing its resource definitions.\n"
+      description: "Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.\nThis can happen either because it has not been setup for use or disabled by an admin / user.\n\nIf the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the System-Instance-Aware perspective.\n\nThis property can only reflect the knowledge of the described system instance itself.\nOutside factors for availability can't need to be considered (e.g. network connectivity, middlewares).\n\nA disabled resource MAY skip describing its resource definitions.\n"
     - name: 'minSystemVersion'
       type: 'string'
       description: "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version."
@@ -175,7 +175,7 @@ spec:
     - name: 'countries'
       type: 'string'
       array: true
-      description: "List of countries that the package resources are applicable to.\n\nMUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).\n\n`countries` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+      description: "List of countries that the Package resources are applicable to.\n\nMUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).\n\n`countries` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
     - name: 'lineOfBusiness'
       type: 'string'
       array: true
@@ -211,7 +211,7 @@ spec:
       description: "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id)."
     - name: 'systemInstanceAware'
       type: 'boolean'
-      description: "All resources that are [system instance aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [system instance unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **system instance aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**."
+      description: "All resources that are [System-Instance-Aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.\nAll resources that are [System-Instance-Unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.\n\nDefines whether this ORD resource is **System-Instance-Aware**.\nThis is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator that represents a System-Instance-Aware perspective MUST fetch the referenced resource definitions,\nnot just once per system type, but once per **system instance**."
   customTypeDefinitions:
     - name: 'ChangelogEntry'
       metadataProperties:
@@ -387,19 +387,19 @@ spec:
     - propertyName: 'partOfConsumptionBundles'
       relatedTypeName: 'ConsumptionBundleReference'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "List of references to the consumption bundles in this resource belongs to.\n\nMUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.\n\nAn API resource SHOULD be associated to one or multiple consumption bundles, if it is of direction `inbound` or `mixed`.\nSome ORD consumer use cases MAY depend on an association to a consumption bundle.\nIf none is given, the resource may not appear as it's unknown how it can be consumed.\n\nIf a resource has no direct incoming consumption characteristics:\n- MUST NOT assign consumption bundle to API or Event resources with `direction`: `outbound` (no inbound consumption)\n- MUST NOT assign consumption bundle if resource is not accessible directly, but only via intermediaries like event brokers or gateways.\n  - In this case the intermediary SHOULD describe the consumption bundle instead (potentially also re-describing the resources as well)."
+      description: "List of references to the Consumption Bundles in this resource belongs to.\n\nMUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.\n\nAn API resource SHOULD be associated to one or multiple Consumption Bundles, if it is of direction `inbound` or `mixed`.\nSome ORD consumer use cases MAY depend on an association to a Consumption Bundle.\nIf none is given, the resource may not appear as it's unknown how it can be consumed.\n\nIf a resource has no direct incoming consumption characteristics:\n- MUST NOT assign Consumption Bundle to API or Event resources with `direction`: `outbound` (no inbound consumption)\n- MUST NOT assign Consumption Bundle if resource is not accessible directly, but only via intermediaries like event brokers or gateways.\n  - In this case the intermediary SHOULD describe the Consumption Bundle instead (potentially also re-describing the resources as well)."
     - propertyName: 'defaultConsumptionBundle'
       relatedTypeName: 'ConsumptionBundle'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: true
       managedByProperty: 'defaultConsumptionBundle_ID'
-      description: "References the default consumption bundle to use for this resource.\n\nMUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.\n\nCan be used by clients to make a deterministic and preferred choice when multiple options are available.\n\nThe value MUST be an existing option in the corresponding `partOfConsumptionBundles` array."
+      description: "References the default Consumption Bundle to use for this resource.\n\nMUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.\n\nCan be used by clients to make a deterministic and preferred choice when multiple options are available.\n\nThe value MUST be an existing option in the corresponding `partOfConsumptionBundles` array."
     - propertyName: 'partOfProducts'
       relatedTypeName: 'Product'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: true
       managedByProperty: 'partOfProducts_ID'
-      description: "List of products the resources of the package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+      description: "List of products the resources of the Package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
     - propertyName: 'successors'
       relatedTypeName: 'ApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

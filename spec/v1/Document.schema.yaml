@@ -783,7 +783,7 @@ definitions:
     title: Consumption Bundle Reference
     x-ums-type: "embedded"
     description: |-
-      Reference to a Consumption bundle.
+      Reference to a Consumption Bundle.
 
       This is a complex object to allow additional properties / selections to be attached.
     properties:
@@ -1461,7 +1461,7 @@ definitions:
         type: boolean
         description: |-
           All resources that are [System-Instance-Aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-          All resources that are [System-Instance-Unaware](../index.md#System-Instance-Unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
+          All resources that are [System-Instance-Unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
 
           Defines whether this ORD resource is **System-Instance-Aware**.
           This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
