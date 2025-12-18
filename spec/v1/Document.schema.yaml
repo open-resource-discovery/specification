@@ -139,7 +139,7 @@ properties:
       The policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
     anyOf:
       - type: string
-        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         description: |-
           Any valid [Specification ID](../index.md#specification-id).
       - const: "none"
@@ -909,7 +909,7 @@ definitions:
         type: array
         items:
           type: string
-          pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
           x-association-target:
             - "#/definitions/Group/groupId"
         x-ums-reverse-relationship:
@@ -1146,7 +1146,7 @@ definitions:
         description: API Protocol including the protocol version if applicable
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: odata-v2
@@ -1248,7 +1248,7 @@ definitions:
         anyOf:
           # More standards can be added via simple feature request and minor releases.
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
               If chosen, `customImplementationStandardDescription` SHOULD be provided.
@@ -1345,7 +1345,7 @@ definitions:
           type: string
           anyOf:
             - type: string
-              pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+              pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
               description: |-
                 Any valid [Specification ID](../index.md#specification-id).
             - const: data-federation
@@ -1653,7 +1653,7 @@ definitions:
 
               RECOMMENDED to use if the contract is published via ORD and has an ORD ID.
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
               If chosen, `customImplementationStandardDescription` SHOULD be provided.
@@ -2172,7 +2172,7 @@ definitions:
         type: string
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: business-object
@@ -2394,7 +2394,7 @@ definitions:
         type: string
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: openapi-v2
@@ -2555,7 +2555,7 @@ definitions:
         type: string
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: asyncapi-v2
@@ -2694,7 +2694,7 @@ definitions:
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         examples:
           - "sap.foo.bar:capability:fieldExtensibility:v1"
 
@@ -2709,7 +2709,7 @@ definitions:
         type: string
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: "sap.mdo:mdi-capability:v1"
@@ -2870,7 +2870,7 @@ definitions:
         type: string
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: "sap.mdo:mdi-capability-definition:v1"
@@ -2937,7 +2937,7 @@ definitions:
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         examples:
           - "sap.foo.bar:integrationDependency:CustomerOrder:v1"
 
@@ -3021,7 +3021,7 @@ definitions:
           One situation would be where two systems each have an Integration Dependency to describe a two-sided integration from each side.
         items:
           type: string
-          pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           x-association-target:
             - "#/definitions/IntegrationDependency/ordId"
         examples:
@@ -3134,7 +3134,7 @@ definitions:
       #     Within the context of the Integration Dependency, there can be constraints which Consumption Bundles to use.
       #   items:
       #     type: string
-      #     pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(consumptionBundle):([a-zA-Z0-9._\-]+):(alpha|beta|v[0-9]+|)$
+      #     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\-]+):(alpha|beta|v[0-9]+|)$
       #   examples:
       #     - ['sap.foo:consumptionBundle:basicAuth:v1']
 
@@ -3393,7 +3393,7 @@ definitions:
         type: string
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: terms-of-service
@@ -3463,7 +3463,7 @@ definitions:
           See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html#webapiactions)
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: api-documentation
@@ -3534,7 +3534,7 @@ definitions:
         type: string
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: payment
@@ -3735,7 +3735,7 @@ definitions:
           Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
               If chosen, `customDescription` SHOULD be provided.
@@ -3804,7 +3804,7 @@ definitions:
           The type of credential exchange strategy.
         anyOf:
           - type: string
-            pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
               If chosen, `customDescription` SHOULD be provided.
@@ -3895,7 +3895,7 @@ definitions:
     properties:
       groupTypeId: &groupTypeId
         type: string
-        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
         description: |-
           GroupType ID, which MUST be a valid [Concept ID](../../spec-v1/#concept-id).
         examples:
@@ -3939,7 +3939,7 @@ definitions:
     properties:
       groupId: &groupId
         type: string
-        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
         description: |-
           The Group ID consists of two [Concept IDs](../../spec-v1/#concept-id) separated by a `:`.
 
@@ -4503,7 +4503,7 @@ definitions:
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(apiResource|eventResource|capability|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource|eventResource|capability|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
         examples: []
 
       localId:
