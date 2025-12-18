@@ -1031,8 +1031,6 @@ definitions:
 
           It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
         x-introduced-in-version: "1.10.0"
-        x-association-target:
-          - "#/definitions/SystemVersion/version"
         pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
         examples:
           - "1.2.3"
