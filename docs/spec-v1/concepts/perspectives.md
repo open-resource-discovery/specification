@@ -43,8 +43,6 @@ Here are some guidelines how to choose the correct version for the `system-versi
 - If the system is continuously delivered and does not have explicit versions at all, use the `system-type` perspective instead.
   - However, consider that you may still have different releases rolled out over time and on different stages. If this causes a problem, use `system-version` with below conventions.
   - Alternatively, use a fixed `1.0.0` version and overwrite it with every new release.
-- If the system has no versions, but we need to keep track of releases deployed on different environments or stages, use a synthetic versioning scheme:
-  - Use `1.0.0-DEV-SNAPSHOT`, `1.0.0-PROD-SNAPSHOT` or similar semver suffixes to indicate different stages or environments, where static metadata is identical.
 
 ### Dynamic Perspective
 
