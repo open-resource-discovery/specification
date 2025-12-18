@@ -93,7 +93,7 @@
       "anyOf": [
         {
           "type": "string",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "description": "Any valid [Specification ID](../index.md#specification-id)."
         },
         {
@@ -305,7 +305,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -907,7 +907,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
             "x-association-target": [
               "#/definitions/Group/groupId"
             ]
@@ -1107,7 +1107,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -1183,7 +1183,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customImplementationStandardDescription` SHOULD be provided."
             },
             {
@@ -1248,7 +1248,7 @@
             "anyOf": [
               {
                 "type": "string",
-                "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+                "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
                 "description": "Any valid [Specification ID](../index.md#specification-id)."
               },
               {
@@ -1575,7 +1575,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -1719,7 +1719,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
             "x-association-target": [
               "#/definitions/Group/groupId"
             ]
@@ -1901,7 +1901,7 @@
             },
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customImplementationStandardDescription` SHOULD be provided."
             },
             {
@@ -2235,7 +2235,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -2396,7 +2396,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
             "x-association-target": [
               "#/definitions/Group/groupId"
             ]
@@ -2601,7 +2601,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -2747,7 +2747,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
             "x-association-target": [
               "#/definitions/Group/groupId"
             ]
@@ -2948,7 +2948,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -3288,7 +3288,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -3418,7 +3418,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -3563,7 +3563,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -3765,7 +3765,7 @@
         "ordId": {
           "type": "string",
           "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(capability):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap.foo.bar:capability:fieldExtensibility:v1"
@@ -3801,7 +3801,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -3868,7 +3868,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
             "x-association-target": [
               "#/definitions/Group/groupId"
             ]
@@ -4031,7 +4031,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -4122,7 +4122,7 @@
         "ordId": {
           "type": "string",
           "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
             "sap.foo.bar:integrationDependency:CustomerOrder:v1"
@@ -4194,7 +4194,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
             "x-association-target": [
               "#/definitions/Group/groupId"
             ]
@@ -4303,7 +4303,7 @@
           "description": "If an Integration Dependency conceptually belongs or related to another Integration Dependency, this can be indicated here.\nOne situation would be where two systems each have an Integration Dependency to describe a two-sided integration from each side.",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
             "x-association-target": [
               "#/definitions/IntegrationDependency/ordId"
             ]
@@ -4695,7 +4695,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -4775,7 +4775,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -4856,7 +4856,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
@@ -5099,7 +5099,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
             },
             {
@@ -5165,7 +5165,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
             },
             {
@@ -5233,7 +5233,7 @@
       "properties": {
         "groupTypeId": {
           "type": "string",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
           "description": "GroupType ID, which MUST be a valid [Concept ID](../../spec-v1/#concept-id).",
           "examples": [
             "sap.foo:domain",
@@ -5278,7 +5278,7 @@
       "properties": {
         "groupId": {
           "type": "string",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
           "description": "The Group ID consists of two [Concept IDs](../../spec-v1/#concept-id) separated by a `:`.\n\nThe first two fragments MUST be equal to the used Group Type ID (`groupTypeId`).\nThe last two fragments MUST be a valid [Concept ID](../../spec-v1/#concept-id), indicating the group instance assignment.\n\nThe ID concept is a bit unusual, but it ensures globally unique and conflict free group assignments.",
           "examples": [
             "sap.foo:domain:sap.foo:DomainName"
@@ -5286,7 +5286,7 @@
         },
         "groupTypeId": {
           "type": "string",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
           "description": "Group Type ID.\n\nMUST match with the first two fragments of the own `groupId`.",
           "examples": [
             "sap.foo:domain",
@@ -5633,7 +5633,7 @@
         },
         "groupId": {
           "type": "string",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
           "description": "Group ID of the group that has been removed.",
           "examples": [
             "sap.foo:domain:sap.foo:DomainName"
@@ -5644,7 +5644,7 @@
         },
         "groupTypeId": {
           "type": "string",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
           "description": "Group Type ID of the group type that has been removed.",
           "examples": [
             "sap.foo:domain",
@@ -5693,7 +5693,7 @@
         "ordId": {
           "type": "string",
           "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
-          "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(apiResource|eventResource|capability|dataProduct):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*|)$",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource|eventResource|capability|dataProduct):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*|)$",
           "maxLength": 255,
           "examples": []
         },
@@ -5748,7 +5748,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
             "x-association-target": [
               "#/definitions/Group/groupId"
             ]

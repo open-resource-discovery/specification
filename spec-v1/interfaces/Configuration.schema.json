@@ -142,7 +142,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
             },
             {
