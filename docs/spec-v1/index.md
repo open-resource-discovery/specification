@@ -154,7 +154,31 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 ##### Pull Transport Sequence Diagram
 
-![Pull Transport - Sequence Diagram](/img/ord-pull-transport-sequence.svg "Pull Transport - Sequence Diagram")
+```mermaid
+sequenceDiagram
+    participant Aggregator as ORD Aggregator
+    participant Provider as ORD Provider
+    participant Landscape as System Landscape
+
+    Provider->>Landscape: Register system instance
+    Aggregator->>Landscape: Discover system instances
+    Landscape-->>Aggregator:
+
+    loop once per discovered system instance
+        Aggregator->>Provider: Request ORD configuration
+        Provider-->>Aggregator:
+
+        loop once per ORD document
+            Aggregator->>Provider: Request ORD document (using an access strategy)
+            Provider-->>Aggregator:
+
+            loop once per resource definition
+                Aggregator->>Provider: Request resource definition file
+                Provider-->>Aggregator:
+            end
+        end
+    end
+```
 
 ### Other Modes of Transport
 
