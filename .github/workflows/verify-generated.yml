@@ -1,0 +1,52 @@
+# Verify Generated Files Workflow
+#
+
+name: Verify Generated Files
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-generated:
+    name: Generated files up-to-date
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate files
+        run: npm run generate
+
+      - name: Check for uncommitted changes
+        id: git-check
+        run: |
+          echo "Checking repository status after generation..."
+          git status --porcelain
+          changes=$(git status --porcelain | wc -l)
+          echo "changes_count=${changes}" >> $GITHUB_OUTPUT
+
+      - name: Fail if repo is dirty
+        if: steps.git-check.outputs.changes_count != '0'
+        run: |
+          echo "Generated files are not up-to-date. Please run 'npm run generate' and commit the results."
+          echo "Changed files:"
+          git status --porcelain
+          echo "Diff:"
+          git --no-pager diff
+          exit 1

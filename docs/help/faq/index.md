@@ -23,7 +23,7 @@ That leaves the main challenge to create the ORD documents correctly. Two things
 
 - Use a validator to ensure that the ORD Documents are correct and compliant, ideally as CI/CD step or test cases.
 - Implement against a generated (ideally type safe) ORD document interface.
-  - ORD comes with a [JSON Schema definition](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json), which can be converted into interfaces / clients for most programming languages.
+  - ORD comes with a [JSON Schema definition](https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json), which can be converted into interfaces / clients for most programming languages.
     This can be done with converters like [quicktype](https://quicktype.io/).
 
 #### Q: Is ORD already used outside of SAP?
@@ -50,7 +50,7 @@ In SAP context, we support on-premises software through [Cloud Connectors](https
 **A:** The "Open" in ORD refers to the protocol itself being published publicly under a permissive license (Apache 2.0).
 It can be freely implemented by SAP partners and customers.
 
-The standard is published at https://open-resource-discovery.github.io/specification and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/).
+The standard is published at https://open-resource-discovery.org and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/).
 
 Please note that ORD being an open protocol does not imply that the resources and information described through it are "open".
 They can be categorized explicitly, for example through the `visibility` attribute.

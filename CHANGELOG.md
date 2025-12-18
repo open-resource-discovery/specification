@@ -17,6 +17,15 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
     E.g. a public resource can declare to have some resource definitions that are internal while others are public. An internal resource can't set a resource definition to be public.
 
+### Changed
+
+- The public ORD page changed its domain name:
+  - Old: https://open-resource-discovery.github.io/specification
+  - New: https://open-resource-discovery.org
+- $id of both Document and Configuration schemas now point to a new domain (with a proper redirect from the old location)
+- breaking: increased minimum Node.js version to v22 LTS
+- breaking: fixed namespace part check from `^([a-z0-9-]+(?:[.][a-z0-9-]+)*)` to `^([a-z0-9]+(?:[.][a-z0-9]+)*)` from multiple OrdID/CorrelationId/ConceptId/SpecificationID regular expressions
+
 ### Fixed
 
 - make AccessStrategy from ORD Configuration consistent with AccessStrategy from ORD Document (both should use `anyOf` for the allowed values)
@@ -24,13 +33,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Removed
 
 - deleted SAP specific values from ORD Configuration:
-  - `AccessStrategy` values: `sap:oauth-client-credentials:v1`, `sap:cmp-mtls:v1`, `sap.businesshub:basic-auth:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `AccessStrategy` values: `sap:oauth-client-credentials:v1`, `sap:cmp-mtls:v1`, `sap.businesshub:basic-auth:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
 
 - deleted SAP specific values from ORD Document:
-  - `policyLevel` values: `sap:base:v1`, `sap:core:v1`, `sap:dp:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
-  - `ApiResource.implementationStandard` values: `sap:ord-document-api:v1`, `sap:csn-exposure:v1`, `sap:ape-api:v1`, `sap:cdi-api:v1`, `sap:delta-sharing:v1`, `sap:hana-cloud-sql:v1`, `sap.dp:data-subscription-api:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
-  - `Package.policyLevel`, `ApiResource.policyLevel`, `EventResource.policyLevel`, `EntityType.policyLevel`, `DataProduct.policyLevel` values: `sap:base:v1`, `sap:core:v1`, `sap:dp:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
-  - `AccessStrategy` values: `sap:oauth-client-credentials:v1`, `sap:cmp-mtls:v1`, `sap.businesshub:basic-auth:v1` but any string with pattern `^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `policyLevel` values: `sap:base:v1`, `sap:core:v1`, `sap:dp:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `ApiResource.implementationStandard` values: `sap:ord-document-api:v1`, `sap:csn-exposure:v1`, `sap:ape-api:v1`, `sap:cdi-api:v1`, `sap:delta-sharing:v1`, `sap:hana-cloud-sql:v1`, `sap.dp:data-subscription-api:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `Package.policyLevel`, `ApiResource.policyLevel`, `EventResource.policyLevel`, `EntityType.policyLevel`, `DataProduct.policyLevel` values: `sap:base:v1`, `sap:core:v1`, `sap:dp:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
+  - `AccessStrategy` values: `sap:oauth-client-credentials:v1`, `sap:cmp-mtls:v1`, `sap.businesshub:basic-auth:v1` but any string with pattern `^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$` is allowed therefore using these values is still allowed
 
 ## [1.12.3]
 
@@ -112,7 +121,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added simplified `exposedEntityTypes` to API and event resource, in favor of now deprecated `entityTypeMappings`
 - Added optional ORD Provider API `?select` parameter to reduce result set of ORD aggregation run
-  - Support of the select subset of the select parameter is indicated through ORD Config `capabilities.select`.
+  - Support of the select subset of the select parameter is indicated through ORD Config `capabilities.selector`.
 
 ### Changed
 
@@ -162,7 +171,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - The public ORD repository moved into its own GitHub organization
   - Old: https://sap.github.io/open-resource-discovery/
-  - New: https://open-resource-discovery.github.io/specification/
+  - New: https://open-resource-discovery.github.io/specification
 
 ### Added
 
@@ -251,7 +260,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Added
 
 - added optional `visibility` to Consumption Bundle
-  - Some consumption bundle access types are only meant for internal or private purposes. Especially when we have internal APIs, their assigned Consumption Bundles are likely internal, too.
+  - Some Consumption Bundle access types are only meant for internal or private purposes. Especially when we have internal APIs, their assigned Consumption Bundles are likely internal, too.
   - If `visibility` is not given, default is `public` (to ensure backward compatibility)
 
 ## [1.9.2]
@@ -270,8 +279,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added back [FAQ page](https://open-resource-discovery.github.io/specification/details/faq) (can be found under "Details" navbar item)
-- Added autogenerated class diagrams for [ORD Documents](https://open-resource-discovery.github.io/specification/spec-v1/diagrams/document) and [Configuration](https://open-resource-discovery.github.io/specification/spec-v1/diagrams/configuration) Interface.
+- Added back [FAQ page](https://open-resource-discovery.org/help/faq) (can be found under "Details" navbar item)
+- Added autogenerated class diagrams for [ORD Documents](https://open-resource-discovery.org/spec-v1/diagrams/ord-document) and [Configuration](https://open-resource-discovery.org/spec-v1/diagrams/ord-configuration) Interface.
 - Added optional `systemTypeRestriction` to `EventResourceIntegrationAspect`
   - This can be used to limit the event publisher system type, which can be used to setup the subscription accordingly.
 - Added explicit statement that the same resource definition type MUST NOT be provided more than once.
@@ -294,17 +303,17 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added new (lightweight) Group and Group Type concept
   - Adds a new `partOfGroups` attribute on ORD resources
-  - Adds two new top level concepts to the ORD document: [Group](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document#group) and [Group Type](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document#group-type)
+  - Adds two new top level concepts to the ORD document: [Group](https://open-resource-discovery.org/spec-v1/interfaces/Document#group) and [Group Type](https://open-resource-discovery.org/spec-v1/interfaces/Document#group-type)
   - This can be used to define custom group types and assign ORD resources to them
   - With this, custom taxonomies can be built that are either centrally or decentrally defined.
-- Added [`relatedEntityTypes`](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document#entity-type_relatedentitytypes) to Entity Types
+- Added [`relatedEntityTypes`](https://open-resource-discovery.org/spec-v1/interfaces/Document#entity-type_relatedentitytypes) to Entity Types
   - This allows to define that Entity Types are related to other Entity Types (e.g. from a different namespace)
 - Added clarification that an ORD Aggregator MUST bump `lastUpdated` if the provider didn't do it, but it detected a change.
-- Added explicit [Access Strategy](https://open-resource-discovery.github.io/specification/spec-extensions/access-strategies/) description for `open`, defining how local and global tenant headers can be optionally passed on.
+- Added explicit [Access Strategy](https://open-resource-discovery.org/spec-extensions/access-strategies/) description for `open`, defining how local and global tenant headers can be optionally passed on.
 - Added new Detail Articles:
-  - [How To Adopt ORD as a Provider](https://open-resource-discovery.github.io/specification/help/faq/adopt-ord-as-provider) detail page
-  - [System Landscape Model](https://open-resource-discovery.github.io/specification/spec-v1/concepts/system-landscape-model) detail page
-  - [Grouping and Bundling](https://open-resource-discovery.github.io/specification/spec-v1/concepts/grouping-and-bundling) detail page
+  - [How To Adopt ORD as a Provider](https://open-resource-discovery.org/help/faq/adopt-ord-as-provider) detail page
+  - [System Landscape Model](https://open-resource-discovery.org/spec-v1/concepts/system-landscape-model) detail page
+  - [Grouping and Bundling](https://open-resource-discovery.org/spec-v1/concepts/grouping-and-bundling) detail page
 
 ### Changed
 
