@@ -743,15 +743,16 @@ export interface ApiResource {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system-instance-aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system-instance-unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
    * Defines whether this ORD resource is **system-instance-aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system-instance-aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }
@@ -1491,15 +1492,16 @@ export interface EventResource {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system-instance-aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system-instance-unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
    * Defines whether this ORD resource is **system-instance-aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system-instance-aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }
@@ -1760,15 +1762,16 @@ export interface EntityType {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system-instance-aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system-instance-unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
    * Defines whether this ORD resource is **system-instance-aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system-instance-aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }
@@ -1963,15 +1966,16 @@ export interface Capability {
   labels?: Labels;
   documentationLabels?: DocumentationLabels;
   /**
-   * All resources that are [system-instance-aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system-instance-unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
    * Defines whether this ORD resource is **system-instance-aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system-instance-aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }
@@ -2368,15 +2372,16 @@ export interface DataProduct {
    */
   policyLevels?: string[];
   /**
-   * All resources that are [system-instance-aware](../index.md#system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-   * All resources that are [system-instance-unaware](../index.md#system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-   *
    * Defines whether this ORD resource is **system-instance-aware**.
-   * This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
    *
    * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator that represents a system-instance-aware perspective MUST fetch the referenced resource definitions,
-   * not just once per system type, but once per **system instance**.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
 }

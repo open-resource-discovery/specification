@@ -69,22 +69,14 @@ export interface OrdV1DocumentDescription {
   perspective?: "system-version" | "system-instance" | "system-independent";
   /**
    * Whether the information in the ORD document is **system-instance-aware**.
+   * This is the case when the provided ORD document potentially differs between **system instances** (e.g. due to multi-tenancy, configuration or extensibility).
    *
-   * This is the case when the provided ORD document potentially differs between **system instances**.
-   * Please note that if a system does not support multi-tenancy, most likely each system instance has its own
-   * URL and different system instances could even be deployed in a different state (version).
-   * If those conditions apply, `systemInstanceAware` MUST be set to true.
+   * If a document is system-instance-aware, an ORD aggregator MUST fetch it for _each_ **system instance** (tenant), not just once per system type.
    *
-   * An ORD aggregator that represents a system-instance-aware perspective MUST fetch a system-instance-aware ORD document,
-   * not just once per system type but once per **system instance**.
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * It is strongly RECOMMENDED to split metadata into separate documents for the different perspectives (static vs. dynamic).
    *
-   * Please note that you can define system-instance-awareness also on the level of an ORD resource.
-   * It is even possible and valid to have an ORD document that is NOT system-instance-aware to contain resources that are.
-   * This can be the case because the resource is described in separate resource definition formats which would change,
-   * while the ORD document itself would not change (the links to the resource definition files stay the same).
-   *
-   * If some ORD information is **system-instance-aware** and some is not,
-   * we RECOMMEND to split the information into separate documents and mark their system-instance-awareness accordingly.
+   * For a detailed explanation, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
   /**
