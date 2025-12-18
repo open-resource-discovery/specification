@@ -23,7 +23,7 @@ spec:
       mandatory: true
       constraints:
         maxLength: 255
-        pattern: '^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(apiResource|eventResource|capability|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$'
+        pattern: '^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(apiResource|eventResource|capability|dataProduct|agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$'
     - name: 'localId'
       type: 'string'
       description: "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID."

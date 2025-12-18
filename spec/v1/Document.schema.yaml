@@ -14,6 +14,7 @@ x-property-order:
   - EntityType
   - Capability
   - DataProduct
+  - Agent
   - IntegrationDependency
   - Vendor
   - Product
@@ -230,6 +231,15 @@ properties:
     x-introduced-in-version: "1.8.0"
     items:
       $ref: "#/definitions/DataProduct"
+
+  agents:
+    type: array
+    description: |-
+      Array of all AI Agents that are described in this ORD document.
+    x-introduced-in-version: "1.13.0"
+    x-feature-status: beta
+    items:
+      $ref: "#/definitions/Agent"
 
   integrationDependencies:
     type: array
@@ -2593,6 +2603,208 @@ definitions:
 
   ############################################################################################################
 
+  Agent:
+    type: object
+    title: Agent
+    x-ums-type: root
+    x-introduced-in-version: "1.13.0"
+    x-feature-status: beta
+    x-ums-implements: "#/definitions/OrdResource"
+    description: |-
+      An **Agent** provides a high-level description of an AI-powered autonomous system that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals.
+
+      An Agent can relate to specific entity types it works with, declare integration dependencies on external systems it requires, and expose its capabilities through APIs using protocols like A2A (Agent-to-Agent).
+
+      Agents enable intelligent automation and decision-making within business processes by providing semantic understanding and context-aware capabilities beyond traditional API-based integrations.
+
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.foo.bar:agent:disputeAgent:v1"
+
+      localId:
+        <<: *localId
+
+      correlationIds:
+        <<: *correlationIds
+
+      title:
+        <<: *title
+        examples:
+          - Dispute Agent
+
+      shortDescription:
+        <<: *shortDescription
+
+      description:
+        <<: *description
+
+      partOfPackage:
+        <<: *partOfPackage
+        x-ums-reverse-relationship:
+          propertyName: agents
+          description: |-
+            The agents that are part the given Package.
+          min: 0
+          max: "*"
+
+      partOfGroups:
+        <<: *partOfGroups
+        x-ums-reverse-relationship:
+          propertyName: agentMembers
+          description: |-
+            The Agents that are part the given Group.
+
+      version:
+        <<: *version
+
+      lastUpdate:
+        <<: *lastUpdate
+
+      visibility:
+        <<: *visibility
+
+      releaseStatus:
+        <<: *releaseStatus
+
+      disabled:
+        <<: *disabled
+
+      minSystemVersion:
+        <<: *minSystemVersion
+
+      partOfProducts:
+        <<: *partOfProducts
+        minItems: 0
+
+      responsible:
+        <<: *responsible
+
+      deprecationDate:
+        <<: *deprecationDate
+
+      sunsetDate:
+        <<: *sunsetDate
+
+      successors:
+        type: array
+        description: |-
+          The successor resource(s).
+
+          MUST be a valid reference to an ORD ID.
+
+          If the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.
+          If `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          x-association-target:
+            - "#/definitions/Agent/ordId"
+          maxLength: 255
+
+      changelogEntries:
+        <<: *changelogEntries
+
+      policyLevel:
+        <<: *policyLevel
+
+      customPolicyLevel:
+        <<: *customPolicyLevel
+
+      policyLevels:
+        <<: *policyLevels
+
+      countries:
+        <<: *countries
+
+      lineOfBusiness:
+        <<: *lineOfBusiness
+
+      industry:
+        <<: *industry
+
+      relatedEntityTypes:
+        # NOTE: It would have been better for consistency and evolution to use the `RelatedEntityType` object
+        #       Like we do it on the Entity Type -> Entity Type relation
+        type: array
+        description: |-
+          Optional list of related EntityType Resources.
+          
+          MUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          x-association-target:
+            - "#/definitions/EntityType/ordId"
+        x-ums-reverse-relationship:
+          propertyName: agents
+          description: |-
+            Agents associated to the Entity Type.
+          min: 0
+          max: "*"
+
+        examples:
+          - ["sap.odm:entityType:WorkforcePerson:v1"]
+
+      exposedApiResources:
+        type: array
+        description: |-
+          Optional list of API Resources that expose the functionality of the agent. Typically using the A2A protocol, but other protocols are possible as well.
+
+          MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - ["sap.foo:apiResource:DisputeResolutionAgent:v1"]
+
+      integrationDependencies:
+        type: array
+        description: |-
+          Optional list of integration dependencies that the agent relies on.
+
+          MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+        items:
+          type: string
+          pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          maxLength: 255
+          x-association-target:
+            - "#/definitions/IntegrationDependency/ordId"
+        examples:
+          - ["sap.foo.bar:integrationDependency:DisputeCaseManagement:v1"]
+
+      links:
+        <<: *links
+        description: |-
+          Generic Links with arbitrary meaning and content.
+
+      tags:
+        <<: *tags
+
+      labels:
+        <<: *labels
+
+      documentationLabels:
+        <<: *documentationLabels
+
+      systemInstanceAware:
+        <<: *systemInstanceAware
+
+    additionalProperties: false
+    required:
+      - ordId
+      - title
+      - version
+      - releaseStatus
+      - visibility
+      - partOfPackage
+    x-recommended:
+      - lastUpdate
+
+  ############################################################################################################
+
   Product:
     type: object
     title: Product
@@ -4349,7 +4561,7 @@ definitions:
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)?$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct|agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)?$
         x-association-target:
           - "#/definitions/Package/ordId"
           - "#/definitions/ConsumptionBundle/ordId"
@@ -4361,6 +4573,7 @@ definitions:
           - "#/definitions/EntityType/ordId"
           - "#/definitions/IntegrationDependency/ordId"
           - "#/definitions/DataProduct/ordId"
+          - "#/definitions/Agent/ordId"
         description: |-
           [ORD ID](../index.md#ord-id) of the ORD resource/taxonomy that has been removed.
       groupId:
@@ -4494,7 +4707,7 @@ definitions:
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(apiResource|eventResource|capability|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
+        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(apiResource|eventResource|capability|dataProduct|agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
         examples: []
 
       localId:
