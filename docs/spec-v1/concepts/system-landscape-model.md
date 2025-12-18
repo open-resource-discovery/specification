@@ -25,15 +25,15 @@ It is mostly described in the [ORD Terminology section](../index.md#terminology)
 
 ![System and namespace concept overview](/img/system-landscape/system.drawio.svg)
 
-The most essential concept to understand is the **[System Instance](../index.md#def-system-instance)**.
+The most essential concept to understand is the **[System Instance](../index.md#system-instance)**.
 It's a simplified concept that usually stands for a technical tenant of a system, but in case of single-tenant system it can also stand for the system itself.
 The important aspect is that it's where the isolation of resources, capabilities and data is ensured.
 In the diagram, it's also marked with "dynamic", as it is a live running system that can describe its actual state at run-time.
 
-A System Instance can be of a [System Type](../index.md#def-system-type), which is the technical type.
-This is not to be confused with the [Product](../index.md#def-product), which lives in the commercial domain and can have a more complicated relationship with the concepts from the technical system domain.
+A System Instance can be of a [System Type](../index.md#system-type), which is the technical type.
+This is not to be confused with the [Product](../index.md#product), which lives in the commercial domain and can have a more complicated relationship with the concepts from the technical system domain.
 
-Optionally, a System Instance or a Type could also have several [System Versions](../index.md#def-system-version), in case that metadata needs to have a history or that multiple versions of the same System Type are deployed at the same time (this is very common with on-premises systems).
+Optionally, a System Instance or a Type could also have several [System Versions](../index.md#system-version), in case that metadata needs to have a history or that multiple versions of the same System Type are deployed at the same time (this is very common with on-premises systems).
 
 ## Namespaces
 
@@ -43,8 +43,8 @@ They are described in more detail behind the link.
 It should be pointed out that the:
 
 - [vendor namespace](../index.md#vendor-namespace) corresponds to the [ORD Vendor](../interfaces/Document.md#vendor).
-- [system namespace](../index.md#system-namespace) corresponds to the [ORD System Type](../index.md#def-system-type).
-- [sub-context namespaces](../index.md#subcontext-namespace) have no corresponding ORD concept.
+- [system namespace](../index.md#system-namespace) corresponds to the [ORD System Type](../index.md#system-type).
+- [sub-context namespaces](../index.md#sub-context-namespace) have no corresponding ORD concept.
 
 ## System Resources and Capabilities
 

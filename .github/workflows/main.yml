@@ -24,6 +24,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          BANNER_SERVER_BASE_URL: ${{vars.BANNER_SERVER_BASE_URL}}
 
       - name: Deploy
         if: github.ref == 'refs/heads/main'
