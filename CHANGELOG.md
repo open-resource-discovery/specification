@@ -117,7 +117,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added simplified `exposedEntityTypes` to API and event resource, in favor of now deprecated `entityTypeMappings`
 - Added optional ORD Provider API `?select` parameter to reduce result set of ORD aggregation run
-  - Support of the select subset of the select parameter is indicated through ORD Config `capabilities.select`.
+  - Support of the select subset of the select parameter is indicated through ORD Config `capabilities.selector`.
 
 ### Changed
 
@@ -256,7 +256,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Added
 
 - added optional `visibility` to Consumption Bundle
-  - Some consumption bundle access types are only meant for internal or private purposes. Especially when we have internal APIs, their assigned Consumption Bundles are likely internal, too.
+  - Some Consumption Bundle access types are only meant for internal or private purposes. Especially when we have internal APIs, their assigned Consumption Bundles are likely internal, too.
   - If `visibility` is not given, default is `public` (to ensure backward compatibility)
 
 ## [1.9.2]
