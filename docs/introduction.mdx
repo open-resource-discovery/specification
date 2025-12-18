@@ -158,7 +158,7 @@ Systems that are in the same formation usually need to get information about eac
   This is achieved by offering industry-standard GraphQL and OData APIs with rich querying capabilities.
 - Provides the so called "managed by SAP" experience in the domain of integration lifecycle management\*\* and therefore allow customers to focus purely on taking business decisions and not doing or caring about the actual technical wiring and integration setup underneath. This is achieved by providing active automation over the integrations based on already available metadata, specified by the Application Providers about what integrations are required and how they can be established. Leveraging the automated integration lifecycle management makes the life of both Customers and Application Providers much easier, as the day 2 operations, such as credentials rotation also happen automatically.
 
-In the UI screenshot, the most notable concept is the [ORD System Instance](./spec-v1/index.md#def-system-instance), which is usually a tenant.
+In the UI screenshot, the most notable concept is the [ORD System Instance](./spec-v1/index.md#system-instance), which is usually a tenant.
 If ORD information are provided, the detail view can show them and they will be made available to other systems in the same formation or account context.
 
 ### API Metadata Validator
@@ -174,7 +174,7 @@ We use this also to not just test for technical correctness, but also to adhere 
 <details>
 <summary>ORD Information</summary>
 
-ORD as a protocol standardizes both the **information model** and the [behavior](#ord-behaviors) how the information are exchanged.
+ORD as a protocol standardizes both the **information model** and the [behavior](./spec-v1/index.md#ord-behavior) how the information are exchanged.
 
 Typical questions that are addressed on ORD level are:
 

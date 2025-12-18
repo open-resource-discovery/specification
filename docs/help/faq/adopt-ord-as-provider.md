@@ -96,7 +96,7 @@ Now becomes a necessity to implement ORD as a REST API, where the GET operations
 The response (of at least some requests) will depend on tenant context, customizations and extensions.
 
 In practice it's more realistic that such an implementation will be a mix between static and dynamic metadata.
-Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to indicate this on a per resource basis via the `systemInstanceAware` attribute see [definition](../../spec-v1/index.md#def-system-instance-aware).
+Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to indicate this on a per resource basis via the `systemInstanceAware` attribute see [definition](../../spec-v1/index.md#system-instance-aware).
 
 > 🚧 The [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) showcases a mix between static and dynamic metadata. The source-code for it is yet to be made public, though.
 

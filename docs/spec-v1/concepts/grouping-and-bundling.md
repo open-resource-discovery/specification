@@ -87,11 +87,11 @@ Ideally it also includes instructions and details on how to request access and c
 API and Event resources MAY be assigned to 0..n Consumption Bundles.
 Consumption Bundles are only applicable to APIs and Events where the described application itself manages the access and credentials.
 
-All resources that are part of the same consumption bundle MUST theoretically be accessible through the same set of credentials.
+All resources that are part of the same Consumption Bundle MUST theoretically be accessible through the same set of credentials.
 In practice however, there are usually more fine-grained access control permissions like RBAC that further restrict access based on user / client identity.
 Those are currently not described in ORD and the Consumption Bundle should therefore describe the "maximum possible scope" that is theoretically possible.
 
-Within consumption bundle, we anticipate to provide more machine-readable information that help to understand and automate the necessary steps to get access.
+Within Consumption Bundle, we anticipate to provide more machine-readable information that help to understand and automate the necessary steps to get access.
 For example, how credentials can be programmatically obtained could be described by attached `credentialExchangeStrategies`.
 
 > 🚧 Please note that the Consumption Bundle concept is still in a rather basic form and may be extended in the future.

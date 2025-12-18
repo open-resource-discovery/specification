@@ -66,7 +66,7 @@ properties:
       Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
     examples:
       - |
-        This ORD document contains all APIs that are system instance aware and have APIs that
+        This ORD document contains all APIs that are system-instance-aware and have APIs that
         can change their behavior at runtime.
 
   perspective:
@@ -86,15 +86,15 @@ properties:
     oneOf:
       - const: "system-version"
         description: |-
-          Describes the static [system-version](../index.md#def-system-version) perspective, usually known at deploy-time.
+          Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.
 
           If chosen, `describedSystemVersion`.`version` MUST be provided, too.
 
           This perspective describes how a system of a particular type and version generally look like.
-          The latest system-version MAY also be interpreted as the [system-type](../index.md#def-system-type) perspective.
+          The latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective.
       - const: "system-instance"
         description: |-
-          Describes the complete dynamic [system-instance](../index.md#def-system-instance) (tenant) perspective as known at run-time.
+          Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
           This allows to also reflect tenant specific extensions, customizations and runtime configuration.
 
           If provided, it will completely override the static system-version perspective when metadata about system instances is requested.
@@ -105,31 +105,31 @@ properties:
       #     If chosen, `describedSystemVersion`.`version` MUST be provided, too.
       - const: "system-independent"
         description: |-
-          Describes content that is independent of [system-versions](../index.md#def-system-version) or [system-instances](../index.md#def-system-instance).
+          Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).
           This content is always static and has independent visibility and lifecycle from the systems in a particular landscape.
           The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
 
           Examples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems.
-    default: "system instance"
+    default: "system-instance"
     examples:
       - "system-instance"
 
   describedSystemInstance:
     $ref: "#/definitions/SystemInstance"
     description: |-
-      Information on the [system-instance](../index.md#def-system-instance) that this ORD document describes.
+      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
 
       Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   describedSystemType:
     $ref: "#/definitions/SystemType"
     x-introduced-in-version: "1.10.0"
     description: |-
-      Information on the [system type](../index.md#def-system-type) that this ORD document describes.
+      Information on the [system type](../index.md#system-type) that this ORD document describes.
   describedSystemVersion:
     $ref: "#/definitions/SystemVersion"
     x-introduced-in-version: "1.10.0"
     description: |-
-      Information on the [system version](../index.md#def-system-version) that this ORD document describes.
+      Information on the [system version](../index.md#system-version) that this ORD document describes.
   policyLevel: &policyLevel
     type: string
     description: |
@@ -306,14 +306,14 @@ definitions:
       A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
 
       The Package can also be used to indicate which products or vendors provided the packaged resources.
-      For partner or customer content, the package can indicate this via the `vendor` and `partOfProducts` assignments.
+      For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
       In any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.
 
-      A package SHOULD contain at least one resource. Avoid empty packages.
+      A Package SHOULD contain at least one resource. Avoid empty Packages.
 
-      The package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.
+      The Package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.
 
-      A package does not have a `visibility` property.
+      A Package does not have a `visibility` property.
       Whether it is displayed is decided by the fact, whether it contains any visible resources according to the visibility role of the aggregator.
 
       To learn more about the concept and further guidance, see [Package](../concepts/grouping-and-bundling#package).
@@ -400,7 +400,7 @@ definitions:
           The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
 
           Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
-          For example: If a resource within a `Package` changes, but the package itself did not, the package version does not need to be incremented.
+          For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
         pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
         examples:
           - "1.2.3"
@@ -418,7 +418,7 @@ definitions:
       packageLinks:
         type: array
         description: |-
-          Links with semantic meaning that are specific to packages.
+          Links with semantic meaning that are specific to Packages.
         items:
           $ref: "#/definitions/PackageLink"
 
@@ -442,7 +442,7 @@ definitions:
         type: string
         minLength: 1
         description: |-
-          Optional information that should be provided when creating a support ticket for the resources bundled in this package.
+          Optional information that should be provided when creating a support ticket for the resources bundled in this Package.
           This can for example be a "component" name that needs to be chosen in the support portal.
 
           Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
@@ -458,9 +458,9 @@ definitions:
 
           MUST be a valid reference to a [Vendor](#vendor) ORD ID.
 
-          MUST be set to `customer:vendor:Customer:` if the contents of the package are created by the customer / user.
+          MUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.
 
-          MUST be set to a registered partner vendor, if the contents of the package are created by a partner / third party.
+          MUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\-]+):()$
         maxLength: 256
         x-association-target:
@@ -473,7 +473,7 @@ definitions:
       partOfProducts: &partOfProducts
         type: array
         description: |-
-          List of products the resources of the package are a part of.
+          List of products the resources of the Package are a part of.
 
           MUST be a valid reference to a [Product](#product) ORD ID.
 
@@ -494,7 +494,7 @@ definitions:
           type: string
           pattern: "^[A-Z]{2}$"
         description: |-
-          List of countries that the package resources are applicable to.
+          List of countries that the Package resources are applicable to.
 
           MUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
 
@@ -591,7 +591,7 @@ definitions:
         x-introduced-in-version: "1.8.0"
         x-feature-status: alpha
         description: |-
-          If provided, all resources that are part of this package can only run on the listed runtime.
+          If provided, all resources that are part of this Package can only run on the listed runtime.
 
           MUST be a valid [system namespace](../index.md#system-namespace).
         type: string
@@ -646,11 +646,11 @@ definitions:
 
       For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).
 
-      A consumption bundle SHOULD have at least one association with a resource (0..n). Avoid empty consumption bundles.
-      A consumption bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned
-      by the system instance that defines the consumption bundle.
+      A Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.
+      A Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned
+      by the system instance that defines the Consumption Bundle.
 
-      Please note that some ORD consumer use cases MAY depend on consumption bundle assignments to work with the resources.
+      Please note that some ORD consumer use cases MAY depend on Consumption Bundle assignments to work with the resources.
 
       To learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).
     properties:
@@ -694,7 +694,7 @@ definitions:
         <<: *description
         examples:
           - |
-            This consumption bundle includes all SAP LoB System 3 Cloud APIs and Events
+            This Consumption Bundle includes all SAP LoB System 3 Cloud APIs and Events
             that can be consumed with the same credentials.
       version:
         <<: *version
@@ -783,14 +783,14 @@ definitions:
     title: Consumption Bundle Reference
     x-ums-type: "embedded"
     description: |-
-      Reference to a Consumption bundle.
+      Reference to a Consumption Bundle.
 
       This is a complex object to allow additional properties / selections to be attached.
     properties:
       ordId:
         type: string
         description: |-
-          The consumption bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.
+          The Consumption Bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         maxLength: 255
         x-association-target:
@@ -932,18 +932,18 @@ definitions:
       partOfConsumptionBundles: &partOfConsumptionBundles
         type: array
         description: |-
-          List of references to the consumption bundles in this resource belongs to.
+          List of references to the Consumption Bundles in this resource belongs to.
 
           MUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.
 
-          An API resource SHOULD be associated to one or multiple consumption bundles, if it is of direction `inbound` or `mixed`.
-          Some ORD consumer use cases MAY depend on an association to a consumption bundle.
+          An API resource SHOULD be associated to one or multiple Consumption Bundles, if it is of direction `inbound` or `mixed`.
+          Some ORD consumer use cases MAY depend on an association to a Consumption Bundle.
           If none is given, the resource may not appear as it's unknown how it can be consumed.
 
           If a resource has no direct incoming consumption characteristics:
-          - MUST NOT assign consumption bundle to API or Event resources with `direction`: `outbound` (no inbound consumption)
-          - MUST NOT assign consumption bundle if resource is not accessible directly, but only via intermediaries like event brokers or gateways.
-            - In this case the intermediary SHOULD describe the consumption bundle instead (potentially also re-describing the resources as well).
+          - MUST NOT assign Consumption Bundle to API or Event resources with `direction`: `outbound` (no inbound consumption)
+          - MUST NOT assign Consumption Bundle if resource is not accessible directly, but only via intermediaries like event brokers or gateways.
+            - In this case the intermediary SHOULD describe the Consumption Bundle instead (potentially also re-describing the resources as well).
         items:
           $ref: "#/definitions/ConsumptionBundleReference"
         examples:
@@ -952,7 +952,7 @@ definitions:
       defaultConsumptionBundle: &defaultConsumptionBundle
         type: string
         description: |-
-          References the default consumption bundle to use for this resource.
+          References the default Consumption Bundle to use for this resource.
 
           MUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.
 
@@ -1016,7 +1016,7 @@ definitions:
           Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
           This can happen either because it has not been setup for use or disabled by an admin / user.
 
-          If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance aware perspective.
+          If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance-aware perspective.
 
           This property can only reflect the knowledge of the described system instance itself.
           Outside factors for availability can't need to be considered (e.g. network connectivity, middlewares).
@@ -1026,7 +1026,7 @@ definitions:
       minSystemVersion: &minSystemVersion
         type: string
         description: |-
-          The resource has been introduced in the given [system version](../index.md#def-system-version).
+          The resource has been introduced in the given [system version](../index.md#system-version).
           This implies that the resource is only available if the system instance is of at least that system version.
 
       deprecationDate: &deprecationDate
@@ -1097,7 +1097,7 @@ definitions:
           **Provider View:**
           If the URL is relative to the system that describes the ORD information,
           it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
-          If the URL is not relative to the described system instance [base URL](../index.md#def-base-url), a full URL MUST be provided.
+          If the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.
           If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.
           The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.
 
@@ -1219,6 +1219,7 @@ definitions:
         type: array
         description: |-
           List of available machine-readable definitions, which describe the resource or capability in detail.
+          See also [Resource Definitions](../index.md#resource-definitions) for more context.
 
           Each definition is to be understood as an alternative description format, describing the same resource / capability.
           As a consequence the same definition type MUST NOT be provided more than once.
@@ -1459,15 +1460,16 @@ definitions:
       systemInstanceAware: &systemInstanceAware
         type: boolean
         description: |-
-          All resources that are [system instance aware](../index.md#def-system-instance-aware) should now be put together in one ORD document that has `perspective`: `system-instance`.
-          All resources that are [system instance unaware](../index.md#def-system-instance-unaware) should now be put together in one ORD document that has `perspective`: `system-version`.
-
-          Defines whether this ORD resource is **system instance aware**.
-          This is the case (and relevant) when the referenced resource definitions are potentially different between **system instances**.
+          Defines whether this ORD resource is **system-instance-aware**.
+          This is the case when the referenced resource definitions are potentially different between **system instances**.
 
           If this behavior applies, `systemInstanceAware` MUST be set to true.
-          An ORD aggregator that represents a system instance aware perspective MUST fetch the referenced resource definitions,
-          not just once per system type, but once per **system instance**.
+          An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+
+          This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+          All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+
+          For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
         default: false
         x-deprecated-in-version: "1.12.0"
         x-deprecation-text: |-
@@ -1635,8 +1637,10 @@ definitions:
           # Once there is a first standard, remove the sentence that only custom ones are supported in above description.
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            x-association-target:
+            - "#/definitions/ApiResource/ordId"
             description: |-
-              Any valid [API Resource ORD ID](../index.md#api-resource_ordid).
+              Any valid [API Resource ORD ID](../index.md#ord-id).
 
               RECOMMENDED to use if the contract is published via ORD and has an ORD ID.
           - type: string
@@ -1975,7 +1979,7 @@ definitions:
     description: |-
       A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
 
-      Please note that this concept is in beta, see [Data Product - Beta Status](../concepts/data-product#beta-status).
+      Please note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).
     properties:
       ## IDs
 
@@ -2074,7 +2078,7 @@ definitions:
         description: |-
           Lifecycle status of the Data Product as a whole.
 
-          MUST be provided when describing the system-instance aware (run-time) perspective.
+          MUST be provided when describing the system-instance-aware (run-time) perspective.
           SHOULD NOT be provided in static (design-time) perspective. Static aggregators MUST ignore this property.
         oneOf:
           - const: inactive
@@ -3158,7 +3162,7 @@ definitions:
       systemTypeRestriction:
         type: array
         description: |-
-          In case that the event subscriptions are limited to known [system types](../index.md#def-system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
+          In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
 
           If given, only system types of the defined namespaces are supported as integration partners.
           If not given, there is no restriction which system type provides the events.
@@ -3577,15 +3581,15 @@ definitions:
     title: System Instance
     x-ums-type: "ignore"
     description: |-
-      A [system instance](../index.md#def-system-instance) is a concrete, running instance of a system type.
+      A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.
       In a multi-tenant system, it corresponds to a tenant.
-      In a single-tenant system, it corresponds to the [system installation](../index.md#def-system-deployment) itself.
+      In a single-tenant system, it corresponds to the [system installation](../index.md#system-deployment) itself.
     properties:
       baseUrl:
         type: string
         format: uri-reference
         description: |-
-          Optional [base URL](../index.md#def-base-url) of the **system instance**.
+          Optional [base URL](../index.md#base-url) of the **system instance**.
           By providing the base URL, relative URLs in the document are resolved relative to it.
 
           The `baseUrl` MUST not contain a leading slash.
@@ -3629,7 +3633,7 @@ definitions:
     type: object
     title: System Type
     description: |-
-      A [system type](../index.md#def-system-type) is the abstract type of an application or service, from operational perspective.
+      A [system type](../index.md#system-type) is the abstract type of an application or service, from operational perspective.
     x-ums-type: "ignore"
     properties:
       systemNamespace:
@@ -3666,8 +3670,8 @@ definitions:
     type: object
     title: System Version
     description: |-
-      A [system version](../index.md#def-system-version) states the design-time version / release of a [system instance](../index.md#def-system-instance).
-      It provides versioning for operational purposes for the [system type](../index.md#def-system-type).
+      A [system version](../index.md#system-version) states the design-time version / release of a [system instance](../index.md#system-instance).
+      It provides versioning for operational purposes for the [system type](../index.md#system-type).
     x-ums-type: "ignore"
     properties:
       version:
@@ -3777,7 +3781,7 @@ definitions:
     x-ums-type: "custom"
     description: |-
       The credential exchange strategy specifies how a set of credentials for a particular usage
-      of the APIs in the consumption bundle can be obtained.
+      of the APIs in the Consumption Bundle can be obtained.
       Until a SAP-wide strategy for obtaining such credentials exists and is agreed upon,
       both LoBs and aggregators (namely Unified Customer Landscape) can define their own strategy specifications.
 
@@ -3877,7 +3881,7 @@ definitions:
 
       Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
 
-      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
     x-introduced-in-version: "1.9.0"
     properties:
       groupTypeId: &groupTypeId
@@ -3921,7 +3925,7 @@ definitions:
       They express a "part of" relationship to the chosen group concept.
       If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
 
-      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups).
+      To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
     x-introduced-in-version: "1.9.0"
     properties:
       groupId: &groupId
@@ -4063,8 +4067,8 @@ definitions:
       For the various resource definition formats the selection of API models may need to be expressed differently.
       As a consequence, there are different types of selectors that are specialized toward certain resource definition formats.
 
-      The target of the mapping is a correlation to an entity type via a [Correlation ID](../../#/v1/README?id=correlation-id)
-      or to an [ORD ID](../../spec-v1/#ord-id) of an entity type.
+      The target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)
+      or to an [ORD ID](../index.md#ord-id) of an entity type.
       It is assumed that the entity types are described in more detail or on a different abstraction level via metadata.
       When the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.
       This can be determined either by the namespace of the correlation ID,
@@ -4102,7 +4106,7 @@ definitions:
           If multiple entity types are defined as the mapping target,
           all of them can be at least partially mapped to the source API model(s).
 
-          Entity types can be referenced using either using an [ORD ID](../../spec-v1/#ord-id) or a [Correlation ID](../../spec-v1/#correlation-id).
+          Entity types can be referenced using either using an [ORD ID](../index.md#ord-id) or a [Correlation ID](../index.md#correlation-id).
         items:
           anyOf:
             - $ref: "#/definitions/EntityTypeOrdIdTarget"
@@ -4221,7 +4225,7 @@ definitions:
     description: |-
       Define which entity type is the target of an entity type mapping
 
-      Entity types can be referenced using a [ORD ID](../../spec-v1/#ord-id) of an entity type.
+      Entity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.
     properties:
       ordId:
         <<: *ordId
@@ -4243,7 +4247,7 @@ definitions:
     description: |-
       Define which entity type is the target of an entity type mapping
 
-      Entity types can be referenced using a [Correlation ID](../../spec-v1/#correlation-id).
+      Entity types can be referenced using a [Correlation ID](../index.md#correlation-id).
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
     x-deprecation-text: |-
