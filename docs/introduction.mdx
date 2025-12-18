@@ -54,7 +54,7 @@ By adopting ORD, an application will implement a single-entry point ([Service Pr
 In the picture above, the center is an application or service describing itself.
 They typically have multiple resources and capabilities that are outward facing and are of interest for external consumers.
 
-Typically, ORD is used to describe [APIs](./spec-v1/interfaces/Document.md#api-resource) and [Events](./spec-v1/interfaces/Document.md#event-resource), but it also supports higher-level concepts like [Entity Types](./spec-v1/interfaces/Document.md#entity-type) (Business Objects) and [Data Products](./spec-v1/interfaces/Document.md#data-products) (beta).
+Typically, ORD is used to describe [APIs](./spec-v1/interfaces/Document.md#api-resource) and [Events](./spec-v1/interfaces/Document.md#event-resource), but it also supports higher-level concepts like [Entity Types](./spec-v1/interfaces/Document.md#entity-type) (Business Objects) and [Data Products](./spec-v1/interfaces/Document.md#data-product) (beta).
 With [Integration Dependencies](./spec-v1/interfaces/Document.md#integration-dependency) the (potential) use of external resources can be stated, too.
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/Document.md#capability).
 
@@ -76,7 +76,7 @@ The specification provides a shared contract and alignment point for the ecosyst
 ## Data Model Overview
 
 The most typical resources to describe are [APIs](./spec-v1/interfaces/Document.md#api-resource) and [Events](./spec-v1/interfaces/Document.md#event-resource).
-But ORD can also be used to describe higher-level concepts like [Entity Types](./spec-v1/interfaces/Document.md#entity-type) (Business Objects) and [Data Products](./spec-v1/interfaces/Document.md#data-products).
+But ORD can also be used to describe higher-level concepts like [Entity Types](./spec-v1/interfaces/Document.md#entity-type) (Business Objects) and [Data Products](./spec-v1/interfaces/Document.md#data-product).
 With [Integration Dependencies](./spec-v1/interfaces/Document.md#integration-dependency) it is possible to also describe how external resources are or can be used.
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/Document.md#capability).
 
@@ -158,7 +158,7 @@ Systems that are in the same formation usually need to get information about eac
   This is achieved by offering industry-standard GraphQL and OData APIs with rich querying capabilities.
 - Provides the so called "managed by SAP" experience in the domain of integration lifecycle management\*\* and therefore allow customers to focus purely on taking business decisions and not doing or caring about the actual technical wiring and integration setup underneath. This is achieved by providing active automation over the integrations based on already available metadata, specified by the Application Providers about what integrations are required and how they can be established. Leveraging the automated integration lifecycle management makes the life of both Customers and Application Providers much easier, as the day 2 operations, such as credentials rotation also happen automatically.
 
-In the UI screenshot, the most notable concept is the [ORD System Instance](./index.md#def-system-instance), which is usually a tenant.
+In the UI screenshot, the most notable concept is the [ORD System Instance](./spec-v1/index.md#system-instance), which is usually a tenant.
 If ORD information are provided, the detail view can show them and they will be made available to other systems in the same formation or account context.
 
 ### API Metadata Validator
@@ -174,7 +174,7 @@ We use this also to not just test for technical correctness, but also to adhere 
 <details>
 <summary>ORD Information</summary>
 
-ORD as a protocol standardizes both the **information model** and the [behavior](#ord-behaviors) how the information are exchanged.
+ORD as a protocol standardizes both the **information model** and the [behavior](./spec-v1/index.md#ord-behavior) how the information are exchanged.
 
 Typical questions that are addressed on ORD level are:
 
