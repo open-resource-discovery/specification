@@ -76,7 +76,7 @@ A consumer can legitimately be interested in all three levels, but he needs to p
 - If `system-version` metadata is requested, the system type and system version must be specified.
 - If `system-type` metadata is requested, only the system type must be specified and the latest system version is returned.
 
-### Relation to System-Instance-Aware
+### Relation to system-instance-aware
 
 The `perspectives` attribute deprecates the `systemInstanceAware` attribute.
 
