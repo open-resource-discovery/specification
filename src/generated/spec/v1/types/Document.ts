@@ -465,6 +465,8 @@ export interface ApiResource {
   /**
    * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    */
   minSystemVersion?: string;
   /**
@@ -1286,6 +1288,8 @@ export interface EventResource {
   /**
    * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    */
   minSystemVersion?: string;
   /**
@@ -1957,6 +1961,8 @@ export interface Capability {
   /**
    * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    */
   minSystemVersion?: string;
   /**
@@ -2200,6 +2206,8 @@ export interface DataProduct {
   /**
    * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    */
   minSystemVersion?: string;
   /**
