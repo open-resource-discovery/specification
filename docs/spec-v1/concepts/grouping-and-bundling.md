@@ -17,7 +17,7 @@ Some of them have a specific indented usage, while others offer the application 
   - Every ORD Resource MUST be assigned to exactly one Package.
   - The concerns of a Package are:
     - What is published together
-    - How the published information are presented on a catalog, e.g. in SAPs case the [Business Accelerator Hub](https://api.sap.com/)
+    - How the published information is presented on a catalog, e.g. in SAPs case the [Business Accelerator Hub](https://api.sap.com/)
 - The [**Consumption Bundle**](#consumption-bundle)
   - API or Event Resources MAY be assigned to 0..n Consumption Bundles
   - The concern is technical: What resources can be consumed together with the same set of credentials and auth mechanism

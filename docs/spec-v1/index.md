@@ -75,7 +75,7 @@ The **provider role** applies to business applications/services that want to des
 
 A **described system instance** is a system instance that is being described by an ORD provider.
 
-> ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance not necessarily identical described system instances (see [`describedSystemInstance`](./interfaces/Document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
+> ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance is not necessarily identical to the described system instances (see [`describedSystemInstance`](./interfaces/Document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
 
 An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
 An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
@@ -98,7 +98,7 @@ There are [aggregation rules](#aggregation-rules) and [validation rules](#valida
 
 It MUST support all [ORD transport modes](#ord-transport-modes) that are used by the systems it aggregates.
 
-In case the ORD aggregator that supports the [dynamic perspective](#dynamic-perspective):
+In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-perspective):
 
 - the aggregator MUST support [system-instance-aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
@@ -246,7 +246,7 @@ The ORD documents MUST describe the current state of a concrete, running [system
 All resources that are described within one document MUST describe the same system instance.
 
 The described information MUST not be duplicated within or across ORD documents.
-If some information like Package or Consumption Bundle are needed across multiple documents they can either be put in one of the documents or be moved to a separate document for shared information.
+If some information like Package or Consumption Bundle is needed across multiple documents they can either be put in one of the documents or be moved to a separate document for shared information.
 This also applies across ORD Providers, which is ensured through the correct use of namespaces and namespace ownerships.
 
 The [validation rules](#validation-rules) MUST be considered.
@@ -282,13 +282,13 @@ Which attributes support information reuse and how it works is described in the 
 
 ##### Document Level Inheritance
 
-Some ORD information are described on the document root level and apply to all information that the ORD Document contains.
+Some ORD information is described on the document root level and applies to all information that the ORD Document contains.
 In some cases (like `policyLevel`), it is also possible to override the values locally.
 
 ##### Package Level Inheritance
 
-Some ORD information are described on Package level and inherited down to all resources that are assigned to it.
-The information on Package level are merged into resource level, but can be overridden locally at resource level.
+Some ORD information is described on Package level and inherited down to all resources that are assigned to it.
+The information on Package level is merged into resource level, but can be overridden locally at resource level.
 
 > Please note that Package level inheritance might not always have the right granularity, as putting resources into Packages can have a different motivation / cut than the reuse.
 > In this case, the information need to be defined on resource level individually, leading to some information duplication.
@@ -348,7 +348,7 @@ The rules on [ORD Provider Cache Handling](#ord-provider-cache-handling) apply.
 
 It is RECOMMENDED to make this endpoint public.
 
-It is RECOMMENDED use the fixed [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) `/.well-known/open-resource-discovery` (as registered [here](https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml)) that is relative to the system instances [base URL](#base-url).
+It is RECOMMENDED use the fixed [Well-Known URI](https://tools.ietf.org/html/rfc8615#section-3) `/.well-known/open-resource-discovery` (as registered [here](https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml)) that is relative to the system instance's [base URL](#base-url).
 
 Since the ORD config does not contain any tenant-specific information, it is RECOMMENDED to only provide one ORD configuration endpoint for one [system deployment](#system-deployment) (same [base URL](#base-url)) of a multi-tenant application.
 
@@ -519,7 +519,7 @@ The following rules need to be implemented by ORD aggregators:
 
 - If the aggregator detects a change in a resource (compared to previous state), but the `lastUpdate` isn't provided or hasn't changed since, the aggregator MUST update the `lastUpdate` timestamp on aggregator side.
   - This ensures that consumers can rely on `lastUpdate` to be always available and to understand if a change happened, even if the ORD Provider did not update it at the source
-  - Ideally this situation doesn't happen and the ORD Providers update `lastUpdate`. Then the date can also reflect better the time when the change happened, not when it was detected.
+  - Ideally this situation doesn't happen and the ORD Providers update `lastUpdate`. Then the date can also better reflect the time when the change happened, not when it was detected.
 - The aggregator MUST apply all defined inheritances from root document properties to all the ORD information that it contains.
   - `policyLevel` (and the corresponding `customPolicyLevel`) MUST be inherited to the resource / Package level, with the latter taking precedence.
 - The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
@@ -531,10 +531,10 @@ The following rules need to be implemented by ORD aggregators:
 - The aggregator MUST convert all relative URLs to absolute URLs
   - Relative URLs MUST be rewritten according to the detected [base URL](#base-url) of the described system instance.
     - The base URL MUST be made known to the aggregator, either via context (e.g. service discovery or trust context) or by explicitly describing it in the ORD document via `describedSystemInstance`.`baseUrl`.
-    - When both information are available and differ, the aggregator MAY decide to give precedence to the context information.
-- The information on the [described system instance](#described-system-instance) SHOULD be added if they are missing.
+    - When both bits of information are available and differ, the aggregator MAY decide to give precedence to the context information.
+- The information on the [described system instance](#described-system-instance) SHOULD be added if it is missing.
   - If system instance information is missing, the aggregator SHOULD obtain and enrich the ORD information, for example, via service discovery or trust context.
-  - If the ORD aggregator has additional information on a system instance that are not standardized through the ORD interfaces, they MAY be added and exposed through the ORD Discovery API.
+  - If the ORD aggregator has additional information on a system instance that is not standardized through the ORD interfaces, they MAY be added and exposed through the ORD Discovery API.
 - The aggregator MAY keep a history of previous versions (including minor and patch changes) of published resources.
 
 ##### Removal of Resources/Information
@@ -563,7 +563,7 @@ However, there are also validations that can only be done by an aggregator, such
 The following validation rules apply specifically for ORD aggregators:
 
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
-  This happens if the [ORD ID](#ord-id) points an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
+  This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
 - The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times.
   Please be aware that this could happen within an ORD Document, within the same ORD Provider on different ORD Documents or even across different ORD Providers.
@@ -593,7 +593,7 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 > This concept deprecates the use of `systemInstanceAware`
 
-There is a `perspective` attribute, which allows to set the following values:
+There is a `perspective` attribute, which allows setting the following values:
 
 - `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time).
 - `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system-instance-aware</a> information (only known at run-time).
@@ -683,7 +683,7 @@ A vendor namespace MUST be constructed according to the following rules:
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
   - There is a special reserved vendor namespace `customer`:
-    - It can be used in extension scenarios, where the customer of an applications (tenant owner) creates their own ORD resources.
+    - It can be used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources.
     - This avoids that customers need to register their own namespaces (which could still be done as an alternative).
 - MUST match Regexp: `^[a-z0-9]+$`
 
@@ -696,7 +696,7 @@ A vendor namespace MUST be constructed according to the following rules:
 An <dfn id="def-ord-system-namespace">system namespace</dfn> is a stable and globally unique identifier namespace that corresponds to an ORD <a href="#system-type">system type</a> (application or service type).
 
 The system type is the top-level technical, simplified view on an application or service.
-There there can be hierarchical groupings of them to higher, logical concepts and also to divide them into multiple sub-components.
+There can be hierarchical groupings of them to higher, logical concepts and also to divide them into multiple sub-components.
 Here we simplify on purpose and **treat the identity of an application / service type flatly, without hierarchy**.
 How this boundary is drawn depends on the technical decisions of the application / service.
 
@@ -741,7 +741,7 @@ A sub-context can be motivated by ownership, ID uniqueness, domain or technical 
 - A Sub-Context MAY contain further sub-namespaces, e.g. `subcontext.subsubcontext`.
 - **The Sub-Context MUST NOT be interpreted as identity by services and consumers.**.
 
-An sub-context namespace MUST be constructed according to the following rules:
+A sub-context namespace MUST be constructed according to the following rules:
 
 `<subContextNamespace>` := `<systemNamespace|authorityNamespace>.<subContextName>`
 
@@ -852,7 +852,7 @@ Examples:
 
 #### ORD ID Resolving
 
-An ORD ID should contain all of the necessary information to be self contained and to be successfully resolved.
+An ORD ID should contain all of the necessary information to be self-contained and to be successfully resolved.
 
 Resolving an ORD ID can serve multiple purposes, for example, by having an ID we can construct the link to the API Catalog page describing this resource.
 Or we can construct the API request to an [ORD aggregator](#ord-aggregator) where the ORD resource can be accessed.
@@ -862,7 +862,7 @@ The rules about how an ORD ID is resolved to the customer's own URLs/APIs SHOULD
 ### Correlation ID
 
 A <dfn id="def-correlation-id">Correlation ID</dfn> is a stable and globally unique reference and is conceptually similar to an [ORD ID](#ord-id).
-It can be used to correlate [ORD resources](#ord-resource) and [ORD taxonomy](#ord-taxonomy) to information that are provided by other systems (especially systems of record).
+It can be used to correlate [ORD resources](#ord-resource) and [ORD taxonomy](#ord-taxonomy) to information that is provided by other systems (especially systems of record).
 If the target information is already described via ORD, the relation should be expressed via an [ORD ID](#ord-id) instead.
 
 The correlation ID does not have a version fragment like the ORD ID, because it assumes that versioning is already part of the `<localIdentifier>` (if applicable at all).
@@ -1011,7 +1011,7 @@ If there are internal implementation errors, the REST endpoint MUST return a `50
 Additional error details MAY be added.
 
 If a resource has been requested that does not exist or is not implemented,
-the REST endpoint MUST return a `404` (Not Found) response as defined in the [OpenAPI 3 definition](https://open-resource-discovery.org/spec-v1/interfaces/DocumentAPI.oas3.yaml) definition.
+the REST endpoint MUST return a `404` (Not Found) response as defined in the [OpenAPI 3 definition](https://open-resource-discovery.org/spec-v1/interfaces/DocumentAPI.oas3.yaml).
 Additional error details MAY be added.
 
 ### Authentication & Authorization
@@ -1044,7 +1044,7 @@ ORD information can have different [perspectives](#perspectives):
 The **static perspective** describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a [system type](#system-type) and [system version](#system-version). This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
 
 - This can be explicitly set with `perspective`: `system-version`
-- This is also referred to as [system-instance-unaware](#system-instance-unaware) information. They are identical across all [system instance](#system-instance) of the described [system type](#system-type) and [system version](#system-version).
+- This is also referred to as [system-instance-unaware](#system-instance-unaware) information. It is identical across all [system instance](#system-instance) of the described [system type](#system-type) and [system version](#system-version).
 
 ##### system-instance-unaware
 
@@ -1056,7 +1056,7 @@ The **dynamic perspective** describes a [system instance](#system-instance) at *
 
 - This can be explicitly set with `perspective`: `system-instance`
 - This is also referred to as [system-instance-aware](#system-instance-aware) information.
-  system-instance-aware information are allowed to be different between system instances of the same [system type](#system-type).
+  system-instance-aware information is allowed to be different between system instances of the same [system type](#system-type).
 
 ##### system-instance-aware
 
