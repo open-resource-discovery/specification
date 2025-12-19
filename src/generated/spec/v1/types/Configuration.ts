@@ -18,7 +18,7 @@ export interface OrdConfiguration {
   /**
    * Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.
    *
-   * The `baseUrl` MUST not contain a leading slash.
+   * The `baseUrl` MUST NOT contain a leading slash.
    *
    * If you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.
    * This implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.
