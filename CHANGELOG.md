@@ -10,6 +10,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.13.0]
+
 ### Added
 
 - Added `system-type` perspective to describe static metadata that is not version dependent.

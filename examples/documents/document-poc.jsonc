@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.12",
+  "openResourceDiscovery": "1.13",
   // This document demonstrates that we can also write .jsonc (JSON with Comments) examples.
   // JSONC can be helpful for PoCs where we start with writing example ORD documents with additional explanations.
   // Please note that this is not supported for a real productive implementation, where only plain JSON is allowed.

@@ -53,8 +53,9 @@ properties:
       - "1.10"
       - "1.11"
       - "1.12"
+      - "1.13"
     examples:
-      - "1.12"
+      - "1.13"
 
   description:
     type: string
