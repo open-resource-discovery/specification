@@ -2854,23 +2854,33 @@
             },
             {
               "const": "provisioning",
-              "description": "The data product is currently being provisioned / installed and is not yet ready to be used.\nThis includes acquiring data from input ports, potentially necessary transformation and making the data available in the output ports."
+              "description": "The data product is currently being provisioned / installed and is not yet ready to be used.\nThis includes acquiring data from input ports, potentially necessary transformation and making the data available in the output ports.\nDuring the provisioning phase the data product is not yet usable by consumers and metadata MAY still be incomplete."
+            },
+            {
+              "const": "provisioning-error",
+              "description": "The provisioning of the data product failed with error(s). Consumers cannot expect the metadata or data to be available until all errors are resolved."
+            },
+            {
+              "const": "data-loading",
+              "x-introduced-in-version": "1.13.0",
+              "description": "The data product metadata is ready, and data loading is in progress. It might have started to acquire or transform data before, but is not yet finished.\nThis includes having all necessary metadata information, but the actual data may still be in the process of being acquired or transformed.\nThe data product might be usable for metadata-driven scenarios, but not yet for actual data consumption."
+            },
+            {
+              "const": "data-loading-error",
+              "x-introduced-in-version": "1.13.0",
+              "description": "The data product metadata is ready, but errors occurred during data acquisition or transformation.\nConsumers cannot expect the data to be available until all errors are resolved."
             },
             {
               "const": "active",
               "description": "The data product is active / live and can be used by consumers.\nThere MAY be warnings but there MUST not be reported errors in the data product."
             },
             {
-              "const": "deprovisioning",
-              "description": "The data product is being deprovisioned / uninstalled and not available for use anymore.\nDeprovisioning includes un-sharing the data from connected consumers and removing the replicated data which is no longer used.\nAfter successful deprovisioning the data product will either be `disabled: true` (preferred) or not described by the tenant at run-time."
-            },
-            {
               "const": "active-with-errors",
               "description": "The data product has been successfully provisioned and has gone `active`, but errors prevent proper consumption.\nConsistent usage of the data product is not guaranteed until all errors are resolved."
             },
             {
-              "const": "provisioning-error",
-              "description": "The provisioning of the data product failed with error(s)."
+              "const": "deprovisioning",
+              "description": "The data product is being deprovisioned / uninstalled and not available for use anymore.\nDeprovisioning includes un-sharing the data from connected consumers and removing the replicated data which is no longer used.\nAfter successful deprovisioning the data product will either be `disabled: true` (preferred) or not described by the tenant at run-time."
             },
             {
               "const": "deprovisioning-error",
