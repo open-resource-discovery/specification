@@ -27,7 +27,7 @@ The `system-type` information apply no matter which system version or instance i
 
 The static perspective describes the shared metadata of all system instances (tenants) of the same system version or version independent.
 Either the metadata is always the same or it explicitly ignores the tenant-specific extensibility, configuration and any feature toggles - describing what's generic and shared.
-The advantage of static metadata is that is always available, there is no need to first provision tenants to get it. It is also a good integration contract for everything that is meant to work potentially with _any_ tenant.
+The advantage of static metadata is that it is always available, there is no need to first provision tenants to get it. It is also a good integration contract for everything that is meant to work potentially with _any_ tenant.
 
 At SAP, we have the [SAP Business Accelerator Hub](https://api.sap.com/) that documents the static perspective.
 
@@ -46,7 +46,7 @@ Here are some guidelines how to choose the correct version for the `system-versi
 
 ### Dynamic Perspective
 
-The dynamic perspective describes an application or service how it really looks like, _at run-time_.
+The dynamic perspective describes an application or service as it really looks like, _at run-time_.
 This is more precise than the static perspective, because it can reflect configuration, customization and extensions of the system instance (tenant).
 
 In ORD, we describe this with `perspective`: `system-instance`.
@@ -58,7 +58,7 @@ It is not a "diff" on the static perspective, for this we may consider introduci
 Some examples when metadata can be dynamic:
 
 - APIs or Events can be activated and deactivated per system instance / tenant.
-- APIs or Events interfaces can be extended, e.g. through field extensibility.
+- API or Event interfaces can be extended, e.g. through field extensibility.
 - New resources can be created by the user of the application at run-time (typical situation for frameworks, platforms and extensible applications).
 - Endpoint URLs may be dynamic
 
@@ -66,7 +66,7 @@ At SAP, the run-time discovery of dynamic metadata (system-installation) is hand
 
 ### System Independent Perspective
 
-Some ORD information like Taxonomies, Products and Vendors are not dependent on systems and can use the `system-independent` perspective.
+Some ORD information like Taxonomies, Products and Vendors is not dependent on systems and can use the `system-independent` perspective.
 They can be considered global, static content that can be shared by multiple systems.
 
 Such content is of a "singleton" quality for the whole ORD aggregator and SHOULD not be republished by the individual systems.
@@ -136,7 +136,7 @@ Ideally, ORD providers SHOULD define the `describedSystemVersion`.`version` prop
 
 The `version` becomes effectively the "join" criteria for how the dynamic metadata is associated to the version-specific static metadata.
 
-Some addition considerations that need to be looked into:
+Some additional considerations that need to be looked into:
 
 - An older version of an application / service can have a resource which has been decommissioned (via a `Tombstone`) in a newer version.
   - The inheritance / fallback logic MUST not fall back to the now removed resource.

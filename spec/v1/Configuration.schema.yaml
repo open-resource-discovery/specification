@@ -29,7 +29,7 @@ properties:
     description: |-
       Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.
 
-      The `baseUrl` MUST not contain a leading slash.
+      The `baseUrl` MUST NOT contain a leading slash.
 
       If you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.
       This implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.
@@ -160,7 +160,7 @@ definitions:
         default: false
         x-deprecated-in-version: "1.12.0"
         x-deprecation-text: |-
-          Please use `perspectives` instead and split content of different perspectives into different ORD documents.
+          Please use `perspective` instead and split content of different perspectives into different ORD documents.
         examples:
           - true
 
@@ -251,7 +251,7 @@ definitions:
           MUST only be provided if `type` is set to `custom`.
         examples:
           - |-
-            To set up the access to OData APIs, please refer to the [SAP Cloud for Customer OData API](https://help.sap.com/viewer/1364b70b9cbb417ea5e2d80e966d4f49/CLOUD/en-US) help pages."
+            To set up the access to OData APIs, please refer to the [SAP Cloud for Customer OData API](https://help.sap.com/viewer/1364b70b9cbb417ea5e2d80e966d4f49/CLOUD/en-US) help pages.
     additionalProperties: false
     required:
       - "type"

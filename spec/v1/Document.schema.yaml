@@ -3,7 +3,7 @@ $id: https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json
 title: Ord Document
 description: |-
   The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
-  that are specific to the document/the service it describes.
+  that is specific to the document/the service it describes.
 
   The constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.
 
@@ -731,11 +731,11 @@ definitions:
         oneOf:
           - const: public
             description: |-
-              Resources are publicly visible to customers and 3rd parties.
+              Publicly visible to customers and 3rd parties.
               Usually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html).
           - const: internal
             description: |-
-              Resources are visible to other applications within the same [vendor](#vendor).
+              Visible to other applications within the same [vendor](#vendor).
               However, they are not officially exposed and communicated to customers and 3rd parties.
               They might not come with the same guarantees on API stability.
 
@@ -743,11 +743,9 @@ definitions:
               Internal resources MAY be published through an internal API Catalog if the access permissions are ensured by it.
           - const: private
             description: |-
-              Resources that are exclusive within an application or service.
-              This includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.
-              E.g., webhooks for provisioning callbacks or backing services.
+              Visible only to the provider application or service, usually within the same system namespace / system type.
 
-              Private resources MUST NOT be made available to public consumers or consumers outside of the "private" scope or without the necessary access permissions.
+              Private resources MUST NOT be made available to public consumers or consumers outside of the "private" scope of the described application.
 
       credentialExchangeStrategies:
         type: array
@@ -1035,6 +1033,13 @@ definitions:
           The resource has been introduced in the given [system version](../index.md#system-version).
           This implies that the resource is only available if the system instance is of at least that system version.
 
+          It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+        x-introduced-in-version: "1.10.0"
+        pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+        examples:
+          - "1.2.3"
+          - "2024.8.0"
+
       deprecationDate: &deprecationDate
         type: string
         format: date-time
@@ -1229,6 +1234,7 @@ definitions:
 
           Each definition is to be understood as an alternative description format, describing the same resource / capability.
           As a consequence the same definition type MUST NOT be provided more than once.
+          The exception is when the same definition type is provided more than once, but with a different `visibility`.
 
           It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
           If the definitions are added or changed, the `version` MUST be incremented.
@@ -2094,22 +2100,34 @@ definitions:
             description: |-
               The data product is currently being provisioned / installed and is not yet ready to be used.
               This includes acquiring data from input ports, potentially necessary transformation and making the data available in the output ports.
+              During the provisioning phase the data product is not yet usable by consumers and metadata MAY still be incomplete.
+          - const: provisioning-error
+            description: |-
+              The provisioning of the data product failed with error(s). Consumers cannot expect the metadata or data to be available until all errors are resolved.
+          - const: data-loading
+            x-introduced-in-version: "1.13.0"
+            description: |-
+              The data product metadata is ready, and data loading is in progress. It might have started to acquire or transform data before, but is not yet finished.
+              This includes having all necessary metadata information, but the actual data may still be in the process of being acquired or transformed.
+              The data product might be usable for metadata-driven scenarios, but not yet for actual data consumption.
+          - const: data-loading-error
+            x-introduced-in-version: "1.13.0"
+            description: |-
+              The data product metadata is ready, but errors occurred during data acquisition or transformation.
+              Consumers cannot expect the data to be available until all errors are resolved.
           - const: active
             description: |-
               The data product is active / live and can be used by consumers.
               There MAY be warnings but there MUST not be reported errors in the data product.
+          - const: active-with-errors
+            description: |-
+              The data product has been successfully provisioned and has gone `active`, but errors prevent proper consumption.
+              Consistent usage of the data product is not guaranteed until all errors are resolved.
           - const: deprovisioning
             description: |-
               The data product is being deprovisioned / uninstalled and not available for use anymore.
               Deprovisioning includes un-sharing the data from connected consumers and removing the replicated data which is no longer used.
               After successful deprovisioning the data product will either be `disabled: true` (preferred) or not described by the tenant at run-time.
-          - const: active-with-errors
-            description: |-
-              The data product has been successfully provisioned and has gone `active`, but errors prevent proper consumption.
-              Consistent usage of the data product is not guaranteed until all errors are resolved.
-          - const: provisioning-error
-            description: |-
-              The provisioning of the data product failed with error(s).
           - const: deprovisioning-error
             description: |-
               The deprovisioning of the data product failed with error(s).
@@ -2514,6 +2532,18 @@ definitions:
           - /api/openApi.yaml
           - https://example.com/api/API_RFQ_PROCESS_SRV/$metadata
 
+      visibility: &definitionVisibility
+        <<: *visibility
+        description: |-
+          The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+
+          If not given, the resource definition has the same visibility as the resource it describes.
+          The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+          E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+
+          This makes it also possible to provide both a public and an internal metadata description of the resource,
+          in case that some metadata must only be made accessible to internal consumers.
+
       accessStrategies: &accessStrategies
         type: array
         description: |-
@@ -2590,6 +2620,9 @@ definitions:
 
       accessStrategies:
         <<: *accessStrategies
+
+      visibility:
+        <<: *definitionVisibility
 
     additionalProperties: false
     required:
@@ -2897,6 +2930,9 @@ definitions:
 
       accessStrategies:
         <<: *accessStrategies
+
+      visibility:
+        <<: *definitionVisibility
 
     additionalProperties: false
     required:
@@ -3906,9 +3942,24 @@ definitions:
       description:
         <<: *description
 
-      # TODO: Add documentationLabels and more in the future? (Currently causing a bug)
-      # documentationLabels:
-      #   <<: *documentationLabels
+      partOfGroupTypes:
+        type: array
+        items:
+          type: string
+          pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
+          x-association-target:
+            - "#/definitions/GroupType/groupTypeId"
+        x-ums-reverse-relationship:
+          propertyName: inversePartOfGroupTypes
+          description: |-
+            The Group Types that are part of the given Group Type, assigned from the inverse direction.
+          min: 0
+          max: "*"
+        description: |-
+          A group type can logically be part of another group type, for example in hierarchical taxonomies or graph relationships.
+          Assigning a group type to be part of another group type is a lightweight and flexible approach to express such relationships.
+
+          This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
 
     required:
       - groupTypeId
@@ -3943,7 +3994,7 @@ definitions:
           The first two fragments MUST be equal to the used Group Type ID (`groupTypeId`).
           The last two fragments MUST be a valid [Concept ID](../../spec-v1/#concept-id), indicating the group instance assignment.
 
-          The ID concept is a bit unusual, but it ensures globally unique and conflict free group assignments.
+          The ID concept is a bit unusual, but it ensures globally unique and conflict-free group assignments.
         examples:
           - sap.foo:domain:sap.foo:DomainName
       groupTypeId:
@@ -3968,6 +4019,20 @@ definitions:
 
       description:
         <<: *description
+
+      partOfGroups:
+        <<: *partOfGroups
+        description: |-
+          A group (instance) can logically be part of another group, for example in hierarchical taxonomies or graph relationships.
+          Assigning a group to be part of another group is a lightweight and flexible approach to express such relationships.
+
+          This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
+        x-feature-status: beta
+        x-introduced-in-version: "1.13.0"
+        x-ums-reverse-relationship:
+          propertyName: inversePartOfGroup
+          description: |-
+            The groups that are part of the given Group, assigned from the inverse direction.
 
     required:
       - groupId
