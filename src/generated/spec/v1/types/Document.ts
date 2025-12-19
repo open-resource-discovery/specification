@@ -7,7 +7,7 @@ export type Usage = "external" | "local";
 
 /**
  * The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
- * that are specific to the document/the service it describes.
+ * that is specific to the document/the service it describes.
  *
  * The constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.
  *
@@ -3275,7 +3275,7 @@ export interface Group {
    * The first two fragments MUST be equal to the used Group Type ID (`groupTypeId`).
    * The last two fragments MUST be a valid [Concept ID](../../spec-v1/#concept-id), indicating the group instance assignment.
    *
-   * The ID concept is a bit unusual, but it ensures globally unique and conflict free group assignments.
+   * The ID concept is a bit unusual, but it ensures globally unique and conflict-free group assignments.
    */
   groupId: string;
   /**
