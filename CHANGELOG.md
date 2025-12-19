@@ -10,11 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.13.0]
+
 ### Added
 
 - Added `system-type` perspective to describe static metadata that is not version dependent.
 - Added `data-loading` and `data-loading-error` as new `lifecycleStatus` for Data Products
-  - This statuses indicates that the Data Product metadata is ready, and data loading is in progress.
+  - These statuses indicate that the Data Product metadata is ready, and data loading is in progress.
 - Added optional `visibility` to API Resource Definition, Event Resource Definition and Capability Definition
   - By default the definitions have the same visibility as the resource they belong to
   - The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.

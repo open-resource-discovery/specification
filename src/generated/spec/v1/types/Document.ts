@@ -35,7 +35,8 @@ export interface OrdDocument {
     | "1.9"
     | "1.10"
     | "1.11"
-    | "1.12";
+    | "1.12"
+    | "1.13";
   /**
    * Optional description of the ORD document itself.
    * Please note that this information is NOT further processed or considered by an ORD aggregator.
