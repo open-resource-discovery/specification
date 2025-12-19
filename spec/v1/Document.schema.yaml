@@ -725,11 +725,11 @@ definitions:
         oneOf:
           - const: public
             description: |-
-              Resources are publicly visible to customers and 3rd parties.
+              Publicly visible to customers and 3rd parties.
               Usually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html).
           - const: internal
             description: |-
-              Resources are visible to other applications within the same [vendor](#vendor).
+              Visible to other applications within the same [vendor](#vendor).
               However, they are not officially exposed and communicated to customers and 3rd parties.
               They might not come with the same guarantees on API stability.
 
@@ -737,11 +737,9 @@ definitions:
               Internal resources MAY be published through an internal API Catalog if the access permissions are ensured by it.
           - const: private
             description: |-
-              Resources that are exclusive within an application or service.
-              This includes resources that may be called from outside but serve purely private purposes and are not supposed to be known by other outside parties.
-              E.g., webhooks for provisioning callbacks or backing services.
+              Visible only to the provider application or service, usually within the same system namespace / system type.
 
-              Private resources MUST NOT be made available to public consumers or consumers outside of the "private" scope or without the necessary access permissions.
+              Private resources MUST NOT be made available to public consumers or consumers outside of the "private" scope of the described application.
 
       credentialExchangeStrategies:
         type: array
@@ -1223,6 +1221,7 @@ definitions:
 
           Each definition is to be understood as an alternative description format, describing the same resource / capability.
           As a consequence the same definition type MUST NOT be provided more than once.
+          The exception is when the same definition type is provided more than once, but with a different `visibility`.
 
           It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
           If the definitions are added or changed, the `version` MUST be incremented.
@@ -2508,6 +2507,18 @@ definitions:
           - /api/openApi.yaml
           - https://example.com/api/API_RFQ_PROCESS_SRV/$metadata
 
+      visibility: &definitionVisibility
+        <<: *visibility
+        description: |-
+          The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+
+          If not given, the resource definition has the same visibility as the resource it describes.
+          The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+          E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+
+          This makes it also possible to provide both a public and an internal metadata description of the resource,
+          in case that some metadata must only be made accessible to internal consumers.
+
       accessStrategies: &accessStrategies
         type: array
         description: |-
@@ -2584,6 +2595,9 @@ definitions:
 
       accessStrategies:
         <<: *accessStrategies
+
+      visibility:
+        <<: *definitionVisibility
 
     additionalProperties: false
     required:
@@ -2891,6 +2905,9 @@ definitions:
 
       accessStrategies:
         <<: *accessStrategies
+
+      visibility:
+        <<: *definitionVisibility
 
     additionalProperties: false
     required:

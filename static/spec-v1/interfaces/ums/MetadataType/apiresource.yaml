@@ -127,7 +127,7 @@ spec:
       type: 'custom'
       customTypeName: 'ApiResourceDefinition'
       array: true
-      description: "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented."
+      description: "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\nThe exception is when the same definition type is provided more than once, but with a different `visibility`.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented."
     - name: 'implementationStandard'
       type: 'string'
       description: "Declares this API to be a valid implementation of an externally standardized API contract, sub-protocol or protocol variant.\n\nAll APIs that share the same implementation standard MAY be treated the same or similar by a consumer client."
@@ -257,6 +257,9 @@ spec:
           type: 'string'
           description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL (to base URL)."
           mandatory: true
+        - name: 'visibility'
+          type: 'string'
+          description: "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.\nE.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.\n\nThis makes it also possible to provide both a public and an internal metadata description of the resource,\nin case that some metadata must only be made accessible to internal consumers."
         - name: 'accessStrategies'
           type: 'custom'
           customTypeName: 'AccessStrategy'
