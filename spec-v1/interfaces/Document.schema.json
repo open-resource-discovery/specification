@@ -1,5 +1,5 @@
 {
-  "description": "The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information\nthat are specific to the document/the service it describes.\n\nThe constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.\n\nThis JSON Schema describes the [ORD document interface](https://open-resource-discovery.org/spec-v1/interfaces/Document) of the [ORD specification](https://open-resource-discovery.org/).",
+  "description": "The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information\nthat is specific to the document/the service it describes.\n\nThe constraints and considerations on [ORD Documents](../index.md#ord-document) MUST be followed.\n\nThis JSON Schema describes the [ORD document interface](https://open-resource-discovery.org/spec-v1/interfaces/Document) of the [ORD specification](https://open-resource-discovery.org/).",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json#",
   "title": "Ord Document",
@@ -5279,7 +5279,7 @@
         "groupId": {
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-          "description": "The Group ID consists of two [Concept IDs](../../spec-v1/#concept-id) separated by a `:`.\n\nThe first two fragments MUST be equal to the used Group Type ID (`groupTypeId`).\nThe last two fragments MUST be a valid [Concept ID](../../spec-v1/#concept-id), indicating the group instance assignment.\n\nThe ID concept is a bit unusual, but it ensures globally unique and conflict free group assignments.",
+          "description": "The Group ID consists of two [Concept IDs](../../spec-v1/#concept-id) separated by a `:`.\n\nThe first two fragments MUST be equal to the used Group Type ID (`groupTypeId`).\nThe last two fragments MUST be a valid [Concept ID](../../spec-v1/#concept-id), indicating the group instance assignment.\n\nThe ID concept is a bit unusual, but it ensures globally unique and conflict-free group assignments.",
           "examples": [
             "sap.foo:domain:sap.foo:DomainName"
           ]

@@ -5,7 +5,7 @@
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">ORD Introduction | Open Resource Discovery</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://open-resource-discovery.org/introduction"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="ORD Introduction | Open Resource Discovery"><meta data-rh="true" name="description" content="🎦 There is also an ORD Introduction video, based on this article."><meta data-rh="true" property="og:description" content="🎦 There is also an ORD Introduction video, based on this article."><link data-rh="true" rel="icon" href="/img/favicon.svg"><link data-rh="true" rel="canonical" href="https://open-resource-discovery.org/introduction"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/introduction" hreflang="en"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/introduction" hreflang="x-default"><script>window.bannerServerBaseUrl="https://banner-server.cert.cfapps.sap.hana.ondemand.com"</script>
 <script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.b5a8d27f.css">
-<script src="/assets/js/runtime~main.fcb32aea.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.3e403f7f.js" defer="defer"></script>
 <script src="/assets/js/main.4a225f22.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -69,7 +69,7 @@ Additionally, relations between the concepts can be expressed (e.g., which APIs 
 <ul>
 <li class=""><strong>Customer System Landscape</strong>: Describes a real system landscape as it actually exists, e.g. for a customer (&quot;as-is view&quot;).<!-- -->
 <ul>
-<li class="">SAP uses the <a href="#unified-customer-landscape" class="">Unified Customer Landscape</a> (UCL) as central aggregator, that will discover and combine ORD information and re-expose them as a (customer specific) system landscape metadata view.</li>
+<li class="">SAP uses the <a href="#unified-customer-landscape" class="">Unified Customer Landscape</a> (UCL) as central aggregator, that will discover and combine ORD information and re-expose it as a (customer specific) system landscape metadata view.</li>
 </ul>
 </li>
 <li class=""><strong>Reference Landscape</strong>: Describes a static, generic catalog of what is offered (&quot;could-be view&quot;).<!-- -->
@@ -88,12 +88,12 @@ Additionally, relations between the concepts can be expressed (e.g., which APIs 
 Some of the APIs are public and are of interest for outside consumers to learn about.</p><p>The flow to crawl the application for relevant metadata is the following:</p><ul>
 <li class="">Execute an HTTP GET request on the <a href="https://ord-reference-application.cfapps.sap.hana.ondemand.com/.well-known/open-resource-discovery" target="_blank" rel="noopener noreferrer" class="">.well-known/open-resource-discovery</a> entry point.<!-- -->
 <ul>
-<li class="">With a successful response we now know that ORD is supported, where to find the actual information (<code>documents.url</code>) and how to access them (<code>documents.accessStrategies</code>)</li>
+<li class="">With a successful response we now know that ORD is supported, where to find the actual information (<code>documents.url</code>) and how to access it (<code>documents.accessStrategies</code>)</li>
 </ul>
 </li>
 <li class="">Execute an HTTP GET request on the <a href="https://ord-reference-application.cfapps.sap.hana.ondemand.com/open-resource-discovery/v1/documents/1" target="_blank" rel="noopener noreferrer" class="">first ORD document</a>, we discovered from the previous step.<!-- -->
 <ul>
-<li class="">Here we now find the actual information, like the APIs and Events the application exposes, but also taxonomy like information like what product it is or how the information are structured into packages.</li>
+<li class="">Here we now find the actual information, like the APIs and Events the application exposes, but also taxonomy like information like what product it is or how the information is structured into packages.</li>
 </ul>
 </li>
 <li class="">For a particular API, we find out that it&#x27;s a plain REST API, described with OpenAPI v3 in JSON format. We also learn how and where to download its <a href="https://ord-reference-application.cfapps.sap.hana.ondemand.com/astronomy/v1/openapi/oas3.json" target="_blank" rel="noopener noreferrer" class="">OpenAPI resource definition</a>.</li>
@@ -120,14 +120,14 @@ This is achieved by offering industry-standard GraphQL and OData APIs with rich 
 <li class="">Provides the so called &quot;managed by SAP&quot; experience in the domain of integration lifecycle management** and therefore allow customers to focus purely on taking business decisions and not doing or caring about the actual technical wiring and integration setup underneath. This is achieved by providing active automation over the integrations based on already available metadata, specified by the Application Providers about what integrations are required and how they can be established. Leveraging the automated integration lifecycle management makes the life of both Customers and Application Providers much easier, as the day 2 operations, such as credentials rotation also happen automatically.</li>
 </ul>
 <p>In the UI screenshot, the most notable concept is the <a class="" href="/spec-v1#system-instance">ORD System Instance</a>, which is usually a tenant.
-If ORD information are provided, the detail view can show them and they will be made available to other systems in the same formation or account context.</p>
+If ORD information is provided, the detail view can show them and they will be made available to other systems in the same formation or account context.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="api-metadata-validator">API Metadata Validator<a href="#api-metadata-validator" class="hash-link" aria-label="Direct link to API Metadata Validator" title="Direct link to API Metadata Validator" translate="no">​</a></h3>
 <p>We believe that standards and policies can only realistically be ensured if we can automatically verify for correctness and compliance.</p>
 <p>This is why we have a complementary project, called the API Metadata Validator [TODO: link].
 It can validate ORD documents, but also other metadata formats that we usually pass along via the ORD protocol, like OpenAPI documents.
 We use this also to not just test for technical correctness, but also to adhere to certain compliance levels.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="ord-in-more-detail">ORD in More Detail<a href="#ord-in-more-detail" class="hash-link" aria-label="Direct link to ORD in More Detail" title="Direct link to ORD in More Detail" translate="no">​</a></h2>
-<details class="details_lb9f alert alert--info details_b_Ee" data-collapsed="true"><summary>ORD Information</summary><div><div class="collapsibleContent_i85q"><p>ORD as a protocol standardizes both the <strong>information model</strong> and the <a class="" href="/spec-v1#ord-behavior">behavior</a> how the information are exchanged.</p><p>Typical questions that are addressed on ORD level are:</p><ul>
+<details class="details_lb9f alert alert--info details_b_Ee" data-collapsed="true"><summary>ORD Information</summary><div><div class="collapsibleContent_i85q"><p>ORD as a protocol standardizes both the <strong>information model</strong> and the <a class="" href="/spec-v1#ord-behavior">behavior</a> how the information is exchanged.</p><p>Typical questions that are addressed on ORD level are:</p><ul>
 <li class="">Get an complete overview of the resources and capabilities</li>
 <li class="">What type of resource something is and how to access its metadata or the resource itself</li>
 <li class="">Where to find more information on the resource, e.g. links to machine-readable definitions (e.g. OpenAPI)</li>
@@ -136,7 +136,7 @@ We use this also to not just test for technical correctness, but also to adhere 
 <li class="">How resources relate to each other (e.g. for navigation)</li>
 </ul><p><img decoding="async" loading="lazy" alt="ORD Information Overview" src="/assets/images/ord-information-overview-d40620b5784095400b48e8ddb0680d11.svg" title="ORD Information Overview" width="3180" height="1390" class="img_ev3q"></p></div></div></details>
 <details class="details_lb9f alert alert--info details_b_Ee" data-collapsed="true"><summary>ORD Behavior</summary><div><div class="collapsibleContent_i85q"><p>ORD can enable fully automated metadata discovery and exchange (after initial onboarding).
-by also standardizing how the information are discovered, transported and accessed. See <a class="" href="/spec-v1#ord-transport-modes">ORD Transport Modes</a> for an example.</p><p><img decoding="async" loading="lazy" alt="ORD Behavior Overview" src="/assets/images/ord-behavior-overview-09abfa41a19d1ad11280eeb0367ef8a7.svg" title="ORD Behavior Overview" width="3941" height="1370" class="img_ev3q"></p></div></div></details>
+by also standardizing how the information is discovered, transported and accessed. See <a class="" href="/spec-v1#ord-transport-modes">ORD Transport Modes</a> for an example.</p><p><img decoding="async" loading="lazy" alt="ORD Behavior Overview" src="/assets/images/ord-behavior-overview-09abfa41a19d1ad11280eeb0367ef8a7.svg" title="ORD Behavior Overview" width="3941" height="1370" class="img_ev3q"></p></div></div></details>
 <details class="details_lb9f alert alert--info details_b_Ee" data-collapsed="true"><summary>ORD Roles Overview</summary><div><div class="collapsibleContent_i85q"><p>In ORD there are three roles that systems can have.
 Depending on the role, only some parts of the specification are relevant and need to be implemented.
 One system can also have more than one role, e.g. an ORD Provider can also be an ORD Consumer.</p><p><img decoding="async" loading="lazy" alt="ORD Roles Overview" src="/assets/images/ord-roles-overview-784f6c1d049dd9eca252a8f07b462aae.svg" title="ORD Roles Overview" width="3979" height="1214" class="img_ev3q"></p></div></div></details>

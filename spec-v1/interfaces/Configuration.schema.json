@@ -22,7 +22,7 @@
     "baseUrl": {
       "type": "string",
       "format": "uri",
-      "description": "Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.\n\nThe `baseUrl` MUST not contain a leading slash.\n\nIf you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.\nThis implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.\nIf both a `baseUrl` and a well-known URI is provided, the explicit `baseUrl` takes precedence.",
+      "description": "Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.\n\nThe `baseUrl` MUST NOT contain a leading slash.\n\nIf you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.\nThis implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.\nIf both a `baseUrl` and a well-known URI is provided, the explicit `baseUrl` takes precedence.",
       "pattern": "^http[s]?:\\/\\/[^:\\/\\s]+\\.[^:\\/\\s\\.]+(:\\d+)?(\\/[a-zA-Z0-9-\\._~]+)*$",
       "examples": [
         "https://example-sap-system.com",
@@ -177,7 +177,7 @@
           "minLength": 1,
           "description": "Human-readable description about how the access is set up, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nMUST only be provided if `type` is set to `custom`.",
           "examples": [
-            "To set up the access to OData APIs, please refer to the [SAP Cloud for Customer OData API](https://help.sap.com/viewer/1364b70b9cbb417ea5e2d80e966d4f49/CLOUD/en-US) help pages.\""
+            "To set up the access to OData APIs, please refer to the [SAP Cloud for Customer OData API](https://help.sap.com/viewer/1364b70b9cbb417ea5e2d80e966d4f49/CLOUD/en-US) help pages."
           ]
         }
       },
