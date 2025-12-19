@@ -556,6 +556,7 @@ export interface ApiResource {
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
+   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -865,6 +866,17 @@ export interface ApiResourceDefinition {
    * It is RECOMMENDED to provide a relative URL (to base URL).
    */
   url: string;
+  /**
+   * The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+   *
+   * If not given, the resource definition has the same visibility as the resource it describes.
+   * The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+   * E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+   *
+   * This makes it also possible to provide both a public and an internal metadata description of the resource,
+   * in case that some metadata must only be made accessible to internal consumers.
+   */
+  visibility?: "public" | "internal" | "private";
   /**
    * List of supported access strategies for retrieving metadata from the ORD provider.
    * An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
@@ -1315,6 +1327,7 @@ export interface EventResource {
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
+   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1555,6 +1568,17 @@ export interface EventResourceDefinition {
    * @minItems 1
    */
   accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+   *
+   * If not given, the resource definition has the same visibility as the resource it describes.
+   * The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+   * E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+   *
+   * This makes it also possible to provide both a public and an internal metadata description of the resource,
+   * in case that some metadata must only be made accessible to internal consumers.
+   */
+  visibility?: "public" | "internal" | "private";
 }
 /**
  * An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
@@ -1952,6 +1976,7 @@ export interface Capability {
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
    * As a consequence the same definition type MUST NOT be provided more than once.
+   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -2030,6 +2055,17 @@ export interface CapabilityDefinition {
    * @minItems 1
    */
   accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+   *
+   * If not given, the resource definition has the same visibility as the resource it describes.
+   * The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+   * E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+   *
+   * This makes it also possible to provide both a public and an internal metadata description of the resource,
+   * in case that some metadata must only be made accessible to internal consumers.
+   */
+  visibility?: "public" | "internal" | "private";
 }
 /**
  * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
@@ -2183,10 +2219,12 @@ export interface DataProduct {
   lifecycleStatus?:
     | "inactive"
     | "provisioning"
-    | "active"
-    | "deprovisioning"
-    | "active-with-errors"
     | "provisioning-error"
+    | "data-loading"
+    | "data-loading-error"
+    | "active"
+    | "active-with-errors"
+    | "deprovisioning"
     | "deprovisioning-error";
   /**
    * The deprecation date defines when the resource has been set as deprecated.
