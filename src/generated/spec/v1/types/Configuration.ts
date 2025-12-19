@@ -66,7 +66,7 @@ export interface OrdV1DocumentDescription {
    *
    * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
    */
-  perspective?: "system-version" | "system-instance" | "system-independent";
+  perspective?: "system-type" | "system-version" | "system-instance" | "system-independent";
   /**
    * Whether the information in the ORD document is **system-instance-aware**.
    * This is the case when the provided ORD document potentially differs between **system instances** (e.g. due to multi-tenancy, configuration or extensibility).
