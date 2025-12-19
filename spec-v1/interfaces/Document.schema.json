@@ -1026,7 +1026,13 @@
         },
         "minSystemVersion": {
           "type": "string",
-          "description": "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version."
+          "description": "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.",
+          "x-introduced-in-version": "1.10.0",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+          "examples": [
+            "1.2.3",
+            "2024.8.0"
+          ]
         },
         "deprecationDate": {
           "type": "string",
@@ -1838,7 +1844,13 @@
         },
         "minSystemVersion": {
           "type": "string",
-          "description": "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version."
+          "description": "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.",
+          "x-introduced-in-version": "1.10.0",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+          "examples": [
+            "1.2.3",
+            "2024.8.0"
+          ]
         },
         "deprecationDate": {
           "type": "string",
@@ -2842,7 +2854,13 @@
         },
         "minSystemVersion": {
           "type": "string",
-          "description": "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version."
+          "description": "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.",
+          "x-introduced-in-version": "1.10.0",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+          "examples": [
+            "1.2.3",
+            "2024.8.0"
+          ]
         },
         "lifecycleStatus": {
           "type": "string",
@@ -3989,7 +4007,13 @@
         },
         "minSystemVersion": {
           "type": "string",
-          "description": "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version."
+          "description": "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.",
+          "x-introduced-in-version": "1.10.0",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+          "examples": [
+            "1.2.3",
+            "2024.8.0"
+          ]
         },
         "relatedEntityTypes": {
           "type": "array",
