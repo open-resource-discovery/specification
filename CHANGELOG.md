@@ -9,6 +9,10 @@ but omits the **patch** level in the spec version number.
 For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMAP.md)
 
 ## [unreleased]
+### Added
+
+- Added `data-loading` and `data-loading-error` as new `lifecycleStatus` for Data Products
+  - This statuses indicates that the Data Product metadata is ready, and data loading is in progress.
 
 ### Added
 

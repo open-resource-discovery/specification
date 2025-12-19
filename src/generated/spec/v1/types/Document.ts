@@ -2211,10 +2211,12 @@ export interface DataProduct {
   lifecycleStatus?:
     | "inactive"
     | "provisioning"
-    | "active"
-    | "deprovisioning"
-    | "active-with-errors"
     | "provisioning-error"
+    | "data-loading"
+    | "data-loading-error"
+    | "active"
+    | "active-with-errors"
+    | "deprovisioning"
     | "deprovisioning-error";
   /**
    * The deprecation date defines when the resource has been set as deprecated.
