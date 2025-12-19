@@ -3331,6 +3331,13 @@ export interface Group {
    * Detailed documentation SHOULD be attached as (typed) links.
    */
   description?: string;
+  /**
+   * A group (instance) can logically be part of another group, for example in hierarchical taxonomies or graph relationships.
+   * Assigning a group to be part of another group is a lightweight and flexible approach to express such relationships.
+   *
+   * This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
+   */
+  partOfGroups?: string[];
   [k: string]: unknown | undefined;
 }
 /**
@@ -3357,6 +3364,13 @@ export interface GroupType {
    * Detailed documentation SHOULD be attached as (typed) links.
    */
   description?: string;
+  /**
+   * A group type can logically be part of another group type, for example in hierarchical taxonomies or graph relationships.
+   * Assigning a group type to be part of another group type is a lightweight and flexible approach to express such relationships.
+   *
+   * This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
+   */
+  partOfGroupTypes?: string[];
   [k: string]: unknown | undefined;
 }
 /**

@@ -41,6 +41,10 @@ spec:
       description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
       constraints:
         minLength: 1
+    - name: 'partOfGroups_ID'
+      type: 'guid'
+      array: true
+      description: "A group (instance) can logically be part of another group, for example in hierarchical taxonomies or graph relationships.\nAssigning a group to be part of another group is a lightweight and flexible approach to express such relationships.\n\nThis relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios."
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'groupTypeId'
@@ -52,6 +56,14 @@ spec:
       mandatory: true
       reverseRelation:
         relationPropertyName: 'groups'
+    - propertyName: 'partOfGroups'
+      relatedTypeName: 'Group'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'partOfGroups_ID'
+      description: "A group (instance) can logically be part of another group, for example in hierarchical taxonomies or graph relationships.\nAssigning a group to be part of another group is a lightweight and flexible approach to express such relationships.\n\nThis relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios."
+      reverseRelation:
+        relationPropertyName: 'inversePartOfGroup'
     - propertyName: 'apiResourceMembers'
       relatedTypeName: 'ApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
@@ -81,6 +93,11 @@ spec:
       relatedTypeName: 'IntegrationDependency'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: 'The Integration Dependencies that are part the given Group.'
+      mandatory: false
+    - propertyName: 'inversePartOfGroup'
+      relatedTypeName: 'Group'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The groups that are part of the given Group, assigned from the inverse direction.'
       mandatory: false
     - propertyName: 'ordResourceMembers'
       relatedTypeName: 'OrdResource'
