@@ -18,7 +18,7 @@ The `accessStrategy`.`type` value for it is: `basic-auth`.
 
 ## Optional Tenant HTTP Headers
 
-It may be necessary to indicate which tenant the information are requested for.
+It may be necessary to indicate which tenant the information is requested for.
 This becomes necessary when the ORD Provider is multi-tenant and the metadata it provides is different across those tenants (system-instance-aware).
 
 The HTTP headers are optional and will only be sent by the ORD Aggregator if they are applicable and known by it.

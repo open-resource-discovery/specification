@@ -24,7 +24,7 @@ First, it's important to understand that ORD may look bigger and more complex th
 This is, because **most of the specification is optional to implement** and the data interfaces share a lot of common attributes.
 An ORD document that returns one empty ORD document is technically a valid implementation - although it doesn't bring value to anyone.
 
-So it needs to be clarified first, which information need to be exposed via ORD that are useful to actual [ORD Consumers](../../spec-v1/index.md#ord-consumer). Typically the most essential resources to describe are APIs and Events and their Package assignments.
+So it needs to be clarified first, which information needs to be exposed via ORD that is useful to actual [ORD Consumers](../../spec-v1/index.md#ord-consumer). Typically the most essential resources to describe are APIs and Events and their Package assignments.
 
 > ℹ At SAP, the minimal scope of ORD adoption is to describe public APIs and Events and their Package assignments.
 > Everything else is optional, but may be a prerequisite for other Product integrations or use cases (like SAP Event Broker / Mesh or Data Products)

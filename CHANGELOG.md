@@ -12,6 +12,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
+- Added `data-loading` and `data-loading-error` as new `lifecycleStatus` for Data Products
+  - This statuses indicates that the Data Product metadata is ready, and data loading is in progress.
+- Added optional `visibility` to API Resource Definition, Event Resource Definition and Capability Definition
+  - By default the definitions have the same visibility as the resource they belong to
+  - The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+    E.g. a public resource can declare to have some resource definitions that are internal while others are public. An internal resource can't set a resource definition to be public.
 - Added expressing hierarchical taxonomies and graph relationships for both group types and group instances
   - Added `partOfGroupTypes` to Group Types, allowing group types to be hierarchically organized
   - Added `partOfGroups` to Groups, allowing group instances to be hierarchically organized
