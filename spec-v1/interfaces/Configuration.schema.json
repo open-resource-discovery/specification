@@ -79,6 +79,10 @@
           "description": "With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).\n\nIt is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.\n\nIt is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.\n\nIf not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.\n\nPlease read the [article on perspectives](../concepts/perspectives) for more explanations.",
           "oneOf": [
             {
+              "const": "system-type",
+              "description": "Describes a static [system-type](../index.md#def-system-type) perspective, which is version independent.\n\nIf a system is not versioned (continuous delivery) or resources are not tied to a system, the system-type perspective\nimplies that the information apply, no matter which system version or instance."
+            },
+            {
               "const": "system-version",
               "description": "Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.\n\nIf chosen, `describedSystemVersion`.`version` MUST be provided, too.\n\nThis perspective describes how a system of a particular type and version generally look like.\nThe latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective."
             },

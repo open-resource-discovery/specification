@@ -5,7 +5,7 @@
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">Perspectives | Open Resource Discovery</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://open-resource-discovery.org/spec-v1/concepts/perspectives"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Perspectives | Open Resource Discovery"><meta data-rh="true" name="description" content="Metadata can be described from static or dynamic perspectives. This article explains the concept in more detail."><meta data-rh="true" property="og:description" content="Metadata can be described from static or dynamic perspectives. This article explains the concept in more detail."><link data-rh="true" rel="icon" href="/img/favicon.svg"><link data-rh="true" rel="canonical" href="https://open-resource-discovery.org/spec-v1/concepts/perspectives"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1/concepts/perspectives" hreflang="en"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1/concepts/perspectives" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ORD Concepts","item":"https://open-resource-discovery.org/spec-v1/concepts/"},{"@type":"ListItem","position":2,"name":"Perspectives","item":"https://open-resource-discovery.org/spec-v1/concepts/perspectives"}]}</script><script>window.bannerServerBaseUrl="https://banner-server.cert.cfapps.sap.hana.ondemand.com"</script>
 <script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.b5a8d27f.css">
-<script src="/assets/js/runtime~main.bd18e3eb.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.674a6c4e.js" defer="defer"></script>
 <script src="/assets/js/main.4a225f22.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -19,17 +19,37 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="overview">Overview<a href="#overview" class="hash-link" aria-label="Direct link to Overview" title="Direct link to Overview" translate="no">​</a></h2>
 <p>An application or service can be described both from a static or a dynamic perspective. The configuration endpoint can point to different ORD documents that represent the information from the different perspectives.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="static-perspective">Static Perspective<a href="#static-perspective" class="hash-link" aria-label="Direct link to Static Perspective" title="Direct link to Static Perspective" translate="no">​</a></h3>
-<p>The static <code>system-version</code> perspective describes how an application or service looks like <em>in general</em> at design-time.
+<p>The static <code>system-version</code> or <code>system-type</code> perspective describes how an application or services looks like <em>in general</em> at design-time.
 This perspective is especially useful for customers, who haven&#x27;t purchased a product yet and need to understand what technical capabilities they would get.
 It also helps to understand the common baseline of what all systems of the same type provide and how it changes over time.</p>
 <p>In ORD, we describe this with <code>perspective</code>: <code>system-version</code>, to hint at the fact that the static metadata is usually version dependent.
 Static metadata is known at design-time or deploy-time, when a new version of an application or service is developed or provisioned.
 For cloud software with continuous delivery, the version may not be explicit or of interest to the consumer, a fallback to a &quot;latest&quot; version may be needed.
 But consider that also cloud software that is going through phased deployments therefore can have multiple versions active at the same time.</p>
-<p>The static perspective describes the shared metadata of all system instances (tenants) of the same system version.
+<p>In the case that the system is not versioned (continuous delivery) or resources do not relate to a system directly, the <code>system-type</code> perspective can be used.
+The <code>system-type</code> information apply no matter which system version or instance is used.</p>
+<p>The static perspective describes the shared metadata of all system instances (tenants) of the same system version or version independent.
 Either the metadata is always the same or it explicitly ignores the tenant-specific extensibility, configuration and any feature toggles - describing what&#x27;s generic and shared.
 The advantage of static metadata is that it is always available, there is no need to first provision tenants to get it. It is also a good integration contract for everything that is meant to work potentially with <em>any</em> tenant.</p>
 <p>At SAP, we have the <a href="https://api.sap.com/" target="_blank" rel="noopener noreferrer" class="">SAP Business Accelerator Hub</a> that documents the static perspective.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="system-version-guidelines">System Version Guidelines<a href="#system-version-guidelines" class="hash-link" aria-label="Direct link to System Version Guidelines" title="Direct link to System Version Guidelines" translate="no">​</a></h4>
+<p>Versions and Lifecycle is often difficult. Putting a version on a system is not always straightforward.
+Here are some guidelines how to choose the correct version for the <code>system-version</code> perspective:</p>
+<ul>
+<li class="">If the system has explicit versions (e.g. &quot;v1.0.1&quot;, &quot;v2.0.0&quot;), use these versions.</li>
+<li class="">If the system does not use SemVer, it has to be converted so that SemVer conventions apply (conservatively).<!-- -->
+<ul>
+<li class="">E.g. if the system uses simple incremental versions like &quot;1&quot;, &quot;2&quot; or &quot;2404, convert these to &quot;1.0.0&quot;, &quot;2.0.0&quot;, &quot;2404.0.0&quot; respectively.</li>
+<li class="">E.g. if the system uses date-based versions like &quot;2024-01-15&quot;, convert these to &quot;2024.1.15&quot;.</li>
+</ul>
+</li>
+<li class="">If the system is continuously delivered and does not have explicit versions at all, use the <code>system-type</code> perspective instead.<!-- -->
+<ul>
+<li class="">However, consider that you may still have different releases rolled out over time and on different stages. If this causes a problem, use <code>system-version</code> with below conventions.</li>
+<li class="">Alternatively, use a fixed <code>1.0.0</code> version and overwrite it with every new release.</li>
+</ul>
+</li>
+</ul>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="dynamic-perspective">Dynamic Perspective<a href="#dynamic-perspective" class="hash-link" aria-label="Direct link to Dynamic Perspective" title="Direct link to Dynamic Perspective" translate="no">​</a></h3>
 <p>The dynamic perspective describes an application or service as it really looks like, <em>at run-time</em>.
 This is more precise than the static perspective, because it can reflect configuration, customization and extensions of the system instance (tenant).</p>
@@ -53,7 +73,7 @@ They can be considered global, static content that can be shared by multiple sys
 <p>The dynamic perspective is a more precise description of the system instance than the static perspective, as it can contain its customizations.
 If no dynamic perspective has been published for a system instance, the static perspective can be used as the fallback.</p>
 <p>This is depicted in the following diagram:</p>
-<p><img decoding="async" loading="lazy" alt="Perspectives to Relation" src="/assets/images/ord-explicit-system-perspectives.drawio-2cb5c8c957390cd891ec6a2229ec6d19.svg" title="Perspectives Relation" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Perspectives to Relation" src="/assets/images/ord-explicit-system-perspectives.drawio-1fbc0515d31cd96df0b00dbd83a176e6.svg" title="Perspectives Relation" class="img_ev3q"></p>
 <p>The <code>system-instance</code> perspective is the most specific, because a consumer could ask how a particular system instance / tenant really looks like. If there is system-instance metadata for it, we can return it directly.
 If we don&#x27;t have it, we need to fall back to the <code>system-version</code> layer and instead return the metadata for the version of the system instance.</p>
 <p>If we don&#x27;t know the version of a system, we can introduce a &quot;virtual&quot; <code>system-type</code> perspective that doesn&#x27;t have to be explicitly published.
@@ -78,20 +98,28 @@ If the system has dynamic metadata, it should describe both perspectives complet
 </blockquote>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="ord-aggregator-considerations">ORD Aggregator Considerations<a href="#ord-aggregator-considerations" class="hash-link" aria-label="Direct link to ORD Aggregator Considerations" title="Direct link to ORD Aggregator Considerations" translate="no">​</a></h2>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="static-aggregators">Static Aggregators<a href="#static-aggregators" class="hash-link" aria-label="Direct link to Static Aggregators" title="Direct link to Static Aggregators" translate="no">​</a></h4>
-<p>Static aggregators only describe the <code>system-version</code> perspective.</p>
+<p>Static aggregators describe the static perspectives: <code>system-type</code> and/or <code>system-version</code>.</p>
 <ul>
-<li class="">If both perspectives are described, it MUST only pick the <code>system-version</code> perspective</li>
+<li class="">If both static and dynamic perspectives are described, it MUST only pick the static perspectives (<code>system-type</code> or <code>system-version</code>)</li>
 <li class="">If only <code>system-instance</code> (or unspecified) perspective is available, we assume this is a generic system instance which is meant to describe all system instances as a subsidiary</li>
+<li class="">When aggregating <code>system-type</code> perspective, the aggregator MAY derive it from the latest <code>system-version</code> if not explicitly provided</li>
 </ul>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="dynamic-aggregators">Dynamic Aggregators<a href="#dynamic-aggregators" class="hash-link" aria-label="Direct link to Dynamic Aggregators" title="Direct link to Dynamic Aggregators" translate="no">​</a></h4>
 <p>If the aggregator supports both static and dynamic perspectives:</p>
 <ul>
-<li class="">The ORD aggregator needs to be able to aggregate and store both perspectives at the same time.</li>
-<li class="">In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior.</li>
+<li class="">The ORD aggregator must be able to aggregate and store all perspectives (<code>system-type</code>, <code>system-version</code>, and <code>system-instance</code>) at the same time.</li>
+<li class="">In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior:<!-- -->
+<ul>
+<li class="">When <code>system-instance</code> is requested but not available, fall back to <code>system-version</code></li>
+<li class="">When <code>system-version</code> is requested but not available (or version is unknown), fall back to <code>system-type</code></li>
+<li class="">The aggregator MAY derive <code>system-type</code> from the latest <code>system-version</code> if not explicitly provided</li>
+</ul>
+</li>
 </ul>
 <p>If the <code>system-version</code> perspective is used, the described version MUST be provided via the ORD <code>describedSystemVersion</code>.<code>version</code> property.
-Ideally, ORD providers SHOULD define the <code>describedSystemVersion</code>.<code>version</code> property on both the static and the dynamic perspective.</p>
-<p>The <code>version</code> becomes effectively the &quot;join&quot; criteria how the dynamic metadata is associated to the static metadata.</p>
+For the <code>system-type</code> perspective, the version property is NOT required as this perspective is version-independent.
+Ideally, ORD providers SHOULD define the <code>describedSystemVersion</code>.<code>version</code> property on both the <code>system-version</code> and <code>system-instance</code> perspectives.</p>
+<p>The <code>version</code> becomes effectively the &quot;join&quot; criteria for how the dynamic metadata is associated to the version-specific static metadata.</p>
 <p>Some additional considerations that need to be looked into:</p>
 <ul>
 <li class="">An older version of an application / service can have a resource which has been decommissioned (via a <code>Tombstone</code>) in a newer version.<!-- -->
