@@ -914,7 +914,7 @@ definitions:
         type: array
         items:
           type: string
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
           x-association-target:
             - "#/definitions/Group/groupId"
         x-ums-reverse-relationship:
@@ -3947,7 +3947,7 @@ definitions:
         type: array
         items:
           type: string
-          pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
           x-association-target:
             - "#/definitions/GroupType/groupTypeId"
         x-ums-reverse-relationship:
@@ -3988,7 +3988,7 @@ definitions:
     properties:
       groupId: &groupId
         type: string
-        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
         description: |-
           The Group ID consists of two [Concept IDs](../../spec-v1/#concept-id) separated by a `:`.
 
