@@ -384,7 +384,7 @@ The ORD Provider API MAY implement an optional `?select` HTTP query parameter, t
 
 The availability of this feature MUST be announced through the [ORD Configuration](#ord-configuration-endpoint), via `capabilities.selector` set to `true`.
 
-If supported, the [ORD Configuration](#ord-configuration-endpoint) and the [ORD Document](#ord-document-endpoint) endpoint gain an optional query parameter `?select="` where the value MUST be a valid [ORD ID](#ord-id).
+If supported, the [ORD Configuration](#ord-configuration-endpoint) and the [ORD Document](#ord-document-endpoint) endpoint gain an optional query parameter `?select=<ORD ID>` where the value MUST be a valid [ORD ID](#ord-id).
 When given, the ORD Provider only returns the requested ORD Resource, but MAY also add related ORD information that need to be updated in the same transaction (the decision is on the provider).
 
 The Aggregator will follow the regular ORD crawling run by invoking the ORD Configuration endpoint and from there the ORD documents and attached [resource definitions](#resource-definition).
