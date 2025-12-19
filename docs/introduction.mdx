@@ -98,7 +98,7 @@ Below is a simplified overview of how ORD has been adopted at SAP:
 We need to make a distinction between describing and understanding:
 
 - **Customer System Landscape**: Describes a real system landscape as it actually exists, e.g. for a customer ("as-is view").
-  - SAP uses the [Unified Customer Landscape](#unified-customer-landscape) (UCL) as central aggregator, that will discover and combine ORD information and re-expose them as a (customer specific) system landscape metadata view.
+  - SAP uses the [Unified Customer Landscape](#unified-customer-landscape) (UCL) as central aggregator, that will discover and combine ORD information and re-expose it as a (customer specific) system landscape metadata view.
 - **Reference Landscape**: Describes a static, generic catalog of what is offered ("could-be view").
   - SAP publishes static documentation to the [SAP Business Accelerator Hub](#sap-business-accelerator-hub)
 
@@ -123,9 +123,9 @@ Some of the APIs are public and are of interest for outside consumers to learn a
 The flow to crawl the application for relevant metadata is the following:
 
 - Execute an HTTP GET request on the [.well-known/open-resource-discovery](https://ord-reference-application.cfapps.sap.hana.ondemand.com/.well-known/open-resource-discovery) entry point.
-  - With a successful response we now know that ORD is supported, where to find the actual information (`documents.url`) and how to access them (`documents.accessStrategies`)
+  - With a successful response we now know that ORD is supported, where to find the actual information (`documents.url`) and how to access it (`documents.accessStrategies`)
 - Execute an HTTP GET request on the [first ORD document](https://ord-reference-application.cfapps.sap.hana.ondemand.com/open-resource-discovery/v1/documents/1), we discovered from the previous step.
-  - Here we now find the actual information, like the APIs and Events the application exposes, but also taxonomy like information like what product it is or how the information are structured into packages.
+  - Here we now find the actual information, like the APIs and Events the application exposes, but also taxonomy like information like what product it is or how the information is structured into packages.
 - For a particular API, we find out that it's a plain REST API, described with OpenAPI v3 in JSON format. We also learn how and where to download its [OpenAPI resource definition](https://ord-reference-application.cfapps.sap.hana.ondemand.com/astronomy/v1/openapi/oas3.json).
 
 </details>
@@ -159,7 +159,7 @@ Systems that are in the same formation usually need to get information about eac
 - Provides the so called "managed by SAP" experience in the domain of integration lifecycle management\*\* and therefore allow customers to focus purely on taking business decisions and not doing or caring about the actual technical wiring and integration setup underneath. This is achieved by providing active automation over the integrations based on already available metadata, specified by the Application Providers about what integrations are required and how they can be established. Leveraging the automated integration lifecycle management makes the life of both Customers and Application Providers much easier, as the day 2 operations, such as credentials rotation also happen automatically.
 
 In the UI screenshot, the most notable concept is the [ORD System Instance](./spec-v1/index.md#system-instance), which is usually a tenant.
-If ORD information are provided, the detail view can show them and they will be made available to other systems in the same formation or account context.
+If ORD information is provided, the detail view can show them and they will be made available to other systems in the same formation or account context.
 
 ### API Metadata Validator
 
@@ -174,7 +174,7 @@ We use this also to not just test for technical correctness, but also to adhere 
 <details>
 <summary>ORD Information</summary>
 
-ORD as a protocol standardizes both the **information model** and the [behavior](./spec-v1/index.md#ord-behavior) how the information are exchanged.
+ORD as a protocol standardizes both the **information model** and the [behavior](./spec-v1/index.md#ord-behavior) how the information is exchanged.
 
 Typical questions that are addressed on ORD level are:
 
@@ -193,7 +193,7 @@ Typical questions that are addressed on ORD level are:
 <summary>ORD Behavior</summary>
 
 ORD can enable fully automated metadata discovery and exchange (after initial onboarding).
-by also standardizing how the information are discovered, transported and accessed. See [ORD Transport Modes](./spec-v1/index.md#ord-transport-modes) for an example.
+by also standardizing how the information is discovered, transported and accessed. See [ORD Transport Modes](./spec-v1/index.md#ord-transport-modes) for an example.
 
 ![ORD Behavior Overview](/img/ord-behavior-overview.svg "ORD Behavior Overview")
 
