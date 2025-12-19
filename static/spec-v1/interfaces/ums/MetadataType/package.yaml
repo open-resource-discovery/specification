@@ -207,6 +207,11 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: 'The data products that are part the given Package.'
       mandatory: false
+    - propertyName: 'agents'
+      relatedTypeName: 'Agent'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The agents that are part the given Package.'
+      mandatory: false
     - propertyName: 'capabilities'
       relatedTypeName: 'Capability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
