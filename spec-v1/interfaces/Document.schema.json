@@ -5320,6 +5320,17 @@
           "examples": [
             "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
           ]
+        },
+        "partOfGroupTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "x-association-target": [
+              "#/definitions/GroupType/groupTypeId"
+            ]
+          },
+          "description": "A group type can logically be part of another group type, for example in hierarchical taxonomies or graph relationships.\nAssigning a group type to be part of another group type is a lightweight and flexible approach to express such relationships.\n\nThis relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios."
         }
       },
       "required": [
@@ -5376,6 +5387,19 @@
           "examples": [
             "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
           ]
+        },
+        "partOfGroups": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+            "x-association-target": [
+              "#/definitions/Group/groupId"
+            ]
+          },
+          "description": "A group (instance) can logically be part of another group, for example in hierarchical taxonomies or graph relationships.\nAssigning a group to be part of another group is a lightweight and flexible approach to express such relationships.\n\nThis relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.",
+          "x-feature-status": "beta",
+          "x-introduced-in-version": "1.13.0"
         }
       },
       "required": [
