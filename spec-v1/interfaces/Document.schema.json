@@ -3,6 +3,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json#",
   "title": "Ord Document",
+  "x-ums-type": "ignore",
   "type": "object",
   "properties": {
     "$schema": {
@@ -248,6 +249,7 @@
     "Package": {
       "type": "object",
       "title": "Package",
+      "x-ums-type": "root",
       "description": "A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.\n\nThe Package can also be used to indicate which products or vendors provided the packaged resources.\nFor partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.\nIn any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.\n\nA Package SHOULD contain at least one resource. Avoid empty Packages.\n\nThe Package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.\n\nA Package does not have a `visibility` property.\nWhether it is displayed is decided by the fact, whether it contains any visible resources according to the visibility role of the aggregator.\n\nTo learn more about the concept and further guidance, see [Package](../concepts/grouping-and-bundling#package).",
       "properties": {
         "ordId": {
@@ -660,6 +662,7 @@
     "ConsumptionBundle": {
       "type": "object",
       "title": "Consumption Bundle",
+      "x-ums-type": "root",
       "description": "A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.\nIdeally it also includes instructions and details how to request access and credentials for resources.\n\nFor more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).\n\nA Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.\nA Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned\nby the system instance that defines the Consumption Bundle.\n\nPlease note that some ORD consumer use cases MAY depend on Consumption Bundle assignments to work with the resources.\n\nTo learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).",
       "properties": {
         "ordId": {
@@ -808,6 +811,7 @@
     "ConsumptionBundleReference": {
       "type": "object",
       "title": "Consumption Bundle Reference",
+      "x-ums-type": "embedded",
       "description": "Reference to a Consumption Bundle.\n\nThis is a complex object to allow additional properties / selections to be attached.",
       "properties": {
         "ordId": {
@@ -836,6 +840,7 @@
     "ApiResource": {
       "type": "object",
       "title": "Api Resource",
+      "x-ums-type": "root",
       "description": "The API Resource provides a high-level description of an exposed API.\nYou can find more information, such as the API resource definitions, in the links in the table below.\n\nAn API Resource bundles multiple endpoints and resources together.\nThey share the same API namespace and lifecycle (API major version).\nHowever, the exact granularity of this is up to the implementer of the API.\nAs a consequence, an API resource MUST NOT bundle together endpoints from different API versions or namespaces.\n\nA common practice is to bundle endpoints that are based on the same domain or Business Object.\n\nPlease note that APIs can be described, but still be [`disabled`](#api-resource_disabled).\n\nIf the API is not created or owned by the user of the system or by third parties (like partners), it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.",
       "properties": {
         "ordId": {
@@ -1652,6 +1657,7 @@
     "EventResource": {
       "type": "object",
       "title": "Event Resource",
+      "x-ums-type": "root",
       "description": "The event resource provides a high-level description of a collection of related Events. More detailed information, such as the event resource definitions, are provided in links in the table below.\nWhich events are considered \"related\" is up to the implementer. A common practice is to bundle events that are based on the same resource/Business Object. It is also an option to bundle all available events into a single event resource/event catalog.\nPlease note that event resources can be described, but still be [`disabled`](#event-resource_disabled).\nIf the event resource is not created or owned by the user / customer of the system or by partners / third parties, it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.",
       "properties": {
         "ordId": {
@@ -2320,6 +2326,7 @@
     "EntityType": {
       "type": "object",
       "title": "Entity Type",
+      "x-ums-type": "root",
       "description": "An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.\nThe same entity type can be exposed through one or multiple API and events resources.\n\nTo learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).",
       "x-introduced-in-version": "1.8.0",
       "properties": {
@@ -2686,6 +2693,7 @@
     "DataProduct": {
       "type": "object",
       "title": "Data Product",
+      "x-ums-type": "root",
       "x-introduced-in-version": "1.8.0",
       "description": "A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).\n\nPlease note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).",
       "properties": {
@@ -3395,6 +3403,7 @@
     "DataProductInputPort": {
       "type": "object",
       "title": "Data Product Input Port",
+      "x-ums-type": "embedded",
       "description": "An input port of a data product states where it retrieves its data inputs from.\n\nIt is described as via an ORD Integration Dependency.",
       "properties": {
         "ordId": {
@@ -3418,6 +3427,7 @@
     "DataProductOutputPort": {
       "type": "object",
       "title": "Data Product Output Port",
+      "x-ums-type": "embedded",
       "description": "A data product output port references the APIs or Events that can be used to access the data-set.\nIt MAY provide full access to the complete data set, but can also just expose a subset of it - if other output ports cover the missing parts.\n\nReferenced API or Event ORD resources don't need to be provided within the same ORD document.\nIf a data product is built against a specific API contract of another application or data product, this API resource should be referred to.\nIn this case the other application is responsible for the lifecycle of the API contract and will update its ORD description independently.",
       "properties": {
         "ordId": {
@@ -3444,6 +3454,7 @@
       "type": "object",
       "title": "Api Resource Definition",
       "description": "Link and categorization of a machine-readable API definition.\nFor example, OpenAPI definition, OData Metadata, etc.",
+      "x-ums-type": "custom",
       "properties": {
         "type": {
           "description": "Type of the API Resource Definition\nIf \"custom\" is chosen, a customType MUST be provided",
@@ -3606,6 +3617,7 @@
     "EventResourceDefinition": {
       "type": "object",
       "title": "Event Resource Definition",
+      "x-ums-type": "custom",
       "description": "Link and categorization of a machine-readable API definition.\nFor example, AsyncAPI or OpenAPI with callbacks, etc.",
       "properties": {
         "type": {
@@ -3721,6 +3733,7 @@
     "Product": {
       "type": "object",
       "title": "Product",
+      "x-ums-type": "root",
       "description": "A **product** in ORD is understood as a commercial product or service.\n\nIt is a high-level entity for structuring the software portfolio from a sales / software logistics perspective.\nWhile **system type** is a technical concept, **product** covers the commercial and marketing view.\n\nPlease note that the ORD concept of a product is very simple on purpose.\nThere is no distinction between products and services and concepts like product versions, variants, etc.\n\nORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.",
       "properties": {
         "ordId": {
@@ -3828,6 +3841,7 @@
     "Capability": {
       "type": "object",
       "title": "Capability",
+      "x-ums-type": "root",
       "x-introduced-in-version": "1.4.0",
       "description": "Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.\nThis is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).\n\nIf a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.\nThis is the same idea and mechanism as with API resources and their resource definition formats.",
       "properties": {
@@ -4098,6 +4112,7 @@
       "type": "object",
       "title": "Capability Definition",
       "x-introduced-in-version": "1.4.0",
+      "x-ums-type": "custom",
       "description": "Link and categorization of a machine-readable capability definition.",
       "properties": {
         "type": {
@@ -4209,6 +4224,7 @@
     "IntegrationDependency": {
       "type": "object",
       "title": "Integration Dependency",
+      "x-ums-type": "root",
       "x-introduced-in-version": "1.7.0",
       "description": "An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.\nThe purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.\n\nThe integration dependency includes a list of individual **aspects** that the integration consists of.\nAspects are an \"ingredient\" for the integration scenario (and are logically combined with AND condition).\nEach aspect can express alternatives (OR condition) on what API and event resources can be used to achieve the same outcome.\n\nThe direction of connection establishment, data flow is not directly implied and needs to be inferred from the referenced resources.\n\nIt is not in scope for the Integration Dependency to describe scenarios that external consumers have with the own exposed resources.\nThis would overstep the boundary of self-description.\n\nIf an integration scenario consists of two sides integration with each other, each need to describe its own part in it as an Integration Dependency.\nTherefore, if an integration with multiple types of systems need to be setup, this SHOULD be separated into distinct Integration Dependencies.\n\nAn integration dependency is also not meant to describe a bigger process.\nInstead it focuses on the technical necessaries to create an integration for one particular purpose.\n\nTo learn more about the concept, see [Integration Dependency](../concepts/integration-dependency).",
       "properties": {
@@ -4451,6 +4467,7 @@
       "type": "object",
       "title": "Aspect",
       "x-introduced-in-version": "1.7.0",
+      "x-ums-type": "custom",
       "description": "An (integration) aspect is the constituent part that makes up an Integration Dependency.\n\nEach aspect can list references to resources, which could be owned and defined by the integration target or by the described system itself.\nIn case the reference links to own resources, it is implied that they are to be used by the integration target to fulfill the Integration Dependency.\n\nIf multiple resources are given within an aspect, they are considered alternatives to each other (OR condition).\nIn case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.",
       "properties": {
         "title": {
@@ -4503,6 +4520,7 @@
       "type": "object",
       "title": "Api Resource Integration Aspect",
       "x-introduced-in-version": "1.7.0",
+      "x-ums-type": "custom",
       "description": "API resource related integration aspect",
       "properties": {
         "ordId": {
@@ -4533,6 +4551,7 @@
       "type": "object",
       "title": "Event Resource Integration Aspect",
       "x-introduced-in-version": "1.7.0",
+      "x-ums-type": "custom",
       "description": "Event resource related integration aspect",
       "properties": {
         "ordId": {
@@ -4585,6 +4604,7 @@
       "type": "object",
       "title": "Event Resource Integration Aspect Subset",
       "x-introduced-in-version": "1.7.0",
+      "x-ums-type": "custom",
       "description": "Defines that Event Resource Integration Aspect only requires a subset of the referenced contract.\n\nFor events, this could be a list of the events that need to be subscribed in order to make the integration work.\nThis information helps to narrow down what is really necessary and can help optimize the integration, e.g. by only publishing the events that are really needed.",
       "properties": {
         "eventType": {
@@ -4603,6 +4623,7 @@
     "Vendor": {
       "type": "object",
       "title": "Vendor",
+      "x-ums-type": "root",
       "description": "The vendor of a product or a package, usually a corporation or a customer / user.\n\nThe vendor of a `Package` is the owner or creator of the content of the package.\nThe vendor of a `Product` is the owner of the product.\n\nIf the resources are created by the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.\n\nBoth have already a [vendor namespace](../index.md#vendor-namespace) within their ORD ID.\nThe `Vendor` entity is giving more details on the vendor namespace.\nFor one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.\n\nFor example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.",
       "properties": {
         "ordId": {
@@ -4673,6 +4694,7 @@
       "type": "object",
       "title": "Changelog Entry",
       "description": "A changelog entry can be used to indicate changes.\nUsually they lead to a change of the version number or the release status.",
+      "x-ums-type": "custom",
       "properties": {
         "version": {
           "type": "string",
@@ -4740,6 +4762,7 @@
       "type": "object",
       "title": "Link",
       "description": "Link that can be attached to packages or Open Resource Discovery resources.\n",
+      "x-ums-type": "custom",
       "properties": {
         "title": {
           "type": "string",
@@ -4781,6 +4804,7 @@
     "PackageLink": {
       "type": "object",
       "title": "Package Link",
+      "x-ums-type": "custom",
       "description": "Links with specific semantic meaning that are related to `Package`.\n\nIf a generic [Link](#link) can also be expressed via a Package Link, the latter MUST be chosen.",
       "properties": {
         "type": {
@@ -4860,6 +4884,7 @@
     "APIEventResourceLink": {
       "type": "object",
       "title": "Api and Event Resource Link",
+      "x-ums-type": "custom",
       "description": "Links with specific semantic meaning that are related to API or event resources.\n\nIf a generic [Link](#link) can also be expressed via an API / Event Resource Link, the latter MUST be chosen.",
       "properties": {
         "type": {
@@ -4942,6 +4967,7 @@
     "DataProductLink": {
       "type": "object",
       "title": "Data Product Link",
+      "x-ums-type": "custom",
       "description": "Links with specific semantic meaning that are related to Data Product resources.\nIf a generic [Link](#link) can also be expressed via Data Product Link, the latter MUST be chosen.",
       "properties": {
         "type": {
@@ -5010,6 +5036,7 @@
     "SystemInstance": {
       "type": "object",
       "title": "System Instance",
+      "x-ums-type": "ignore",
       "description": "A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.\nIn a multi-tenant system, it corresponds to a tenant.\nIn a single-tenant system, it corresponds to the [system installation](../index.md#system-deployment) itself.",
       "properties": {
         "baseUrl": {
@@ -5074,6 +5101,7 @@
       "type": "object",
       "title": "System Type",
       "description": "A [system type](../index.md#system-type) is the abstract type of an application or service, from operational perspective.",
+      "x-ums-type": "ignore",
       "properties": {
         "systemNamespace": {
           "type": "string",
@@ -5128,6 +5156,7 @@
       "type": "object",
       "title": "System Version",
       "description": "A [system version](../index.md#system-version) states the design-time version / release of a [system instance](../index.md#system-instance).\nIt provides versioning for operational purposes for the [system type](../index.md#system-type).",
+      "x-ums-type": "ignore",
       "properties": {
         "version": {
           "type": "string",
@@ -5185,6 +5214,7 @@
       "type": "object",
       "title": "Metadata Definition Access Strategy",
       "description": "Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the resource definitions.",
+      "x-ums-type": "custom",
       "properties": {
         "type": {
           "type": "string",
@@ -5250,6 +5280,7 @@
       "type": "object",
       "title": "Credential Exchange Strategy",
       "x-feature-status": "alpha",
+      "x-ums-type": "custom",
       "description": "The credential exchange strategy specifies how a set of credentials for a particular usage\nof the APIs in the Consumption Bundle can be obtained.\nUntil a SAP-wide strategy for obtaining such credentials exists and is agreed upon,\nboth LoBs and aggregators (namely Unified Customer Landscape) can define their own strategy specifications.\n\nWhile the actual flow in term of API calls can differ between the different strategies,\nthe end goal would always be the possibility for automatically obtaining credentials for each client\nthat would like to use the APIs from a particular bundle.",
       "properties": {
         "type": {
@@ -5300,6 +5331,7 @@
       "title": "Labels",
       "type": "object",
       "description": "Generic labels that can be applied to most ORD information.\nThey are defined as an object that may have arbitrary keys.\nThe value of a key is an array of strings.\n\nLabels can be used to attach technical information that cannot be expressed natively in ORD.\nAn ORD aggregator should allow to categorize and query information based on the labels provided.\n\nIf multiple parties rely on the existence of certain label information,\nstandardization through ORD SHOULD be preferred.\n\nAll labels attached to a `Package` will be inherited to the resources they contain.\nDuplicate labels will be merged by the ORD aggregator according to the following rules:\n* Values of the same label key will be merged.\n* Duplicate values of the same label key will be removed.",
+      "x-ums-type": "custom",
       "patternProperties": {
         "^[a-zA-Z0-9-_.]*$": {
           "type": "array",
@@ -5321,6 +5353,7 @@
     "GroupType": {
       "title": "Group Type",
       "type": "object",
+      "x-ums-type": "root",
       "description": "A Group Type defines the semantics of [group assignments](#group).\nWhat the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).\n\nGroup Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).",
       "x-introduced-in-version": "1.9.0",
       "properties": {
@@ -5377,6 +5410,7 @@
     "Group": {
       "title": "Group",
       "type": "object",
+      "x-ums-type": "root",
       "description": "Group (instance) that resources can be assigned to.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).",
       "x-introduced-in-version": "1.9.0",
       "properties": {
@@ -5449,6 +5483,7 @@
       "type": "object",
       "description": "Generic documentation labels that can be applied to most ORD information.\nThey are defined as an object that may have arbitrary keys.\nThe value of a key is an array of [CommonMark](https://spec.commonmark.org/) (Markdown) text.\n\nDocumentation Labels can be used to attach human readable documentation that cannot be expressed natively in ORD.\nA documentation tool (like an API Catalog) can use the documentation labels to provide generic documentation \"snippets\".\nDue to the given structure they can be displayed e.g. as tables.\n\nThe key of the documentation Label is plain-text (MUST not contain line breaks) and denotes the subject matter that is described.\nThe values (multiple can be provided for the same key) are [CommonMark](https://spec.commonmark.org/) (Markdown) text\nwhich describes the subject matter or lists options for the key.\n\nIn contrast to regular labels, documentation labels are not meant to be used to categorize or query information.",
       "x-introduced-in-version": "1.1.0",
+      "x-ums-type": "custom",
       "patternProperties": {
         "^.*$": {
           "type": "array",
@@ -5469,6 +5504,7 @@
     "Extensible": {
       "title": "Extensible",
       "type": "object",
+      "x-ums-type": "embedded",
       "description": "Contains information about the extensibility of this resource.\n\nIf applicable, a description and further resources about extending this resource are provided.",
       "properties": {
         "supported": {
@@ -5504,6 +5540,7 @@
       "title": "Entity Type Mapping",
       "type": "object",
       "x-introduced-in-version": "1.6.0",
+      "x-ums-type": "custom",
       "description": "An API or Event resource may optionally define its `entityTypeMappings`.\nThis is used to map and correlate the API models to the underlying, conceptual **entity types**.\n\nIf the mapping from API resource to entity types is not defined,\ncertain use-cases that rely on this explicit connection will not be possible.\n\nThis mapping is meant to be rather fine granular.\nTherefore, the mapping needs to be done on basis of one of the referenced resource definitions,\nas only there we know the details and the actual contents of the API Model of the API resource.\n\nFor the various resource definition formats the selection of API models may need to be expressed differently.\nAs a consequence, there are different types of selectors that are specialized toward certain resource definition formats.\n\nThe target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)\nor to an [ORD ID](../index.md#ord-id) of an entity type.\nIt is assumed that the entity types are described in more detail or on a different abstraction level via metadata.\nWhen the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.\nThis can be determined either by the namespace of the correlation ID,\nor through a defined and known `implementationStandard` that can resolve the `localId` fragment of the correlation ID .\n\nAt SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.\nTo indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).\n\nODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the\ncorresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.",
       "properties": {
         "apiModelSelectors": {
@@ -5544,6 +5581,7 @@
     "ApiModelSelectorOData": {
       "title": "Api Model Selector (Odata)",
       "x-introduced-in-version": "1.6.0",
+      "x-ums-type": "custom",
       "type": "object",
       "description": "API Model Selector for OData, using entity set names for the selection.\n\nMUST only be used if the API Resource provides an API Resource Definition of type `edmx`.",
       "properties": {
@@ -5578,6 +5616,7 @@
     "ApiModelSelectorJsonPointer": {
       "title": "Api Model Selector (Json Pointer)",
       "x-introduced-in-version": "1.6.0",
+      "x-ums-type": "custom",
       "type": "object",
       "description": "Generic API Model Selector for JSON / YAML based resource definitions.\nIt uses a [JSON Pointer](https://datatracker.ietf.org/doc/html/rfc6901) that points to the\nentity type description within the resource definition.\n\nThe JSON Pointer always to refer to the structure of the document as originally provided, before further post-processing like resolving $ref properties.\n\nMUST only be used if the API Resource provides an API Resource Definition of media type `application/json` or `text/yaml`.",
       "properties": {
@@ -5614,6 +5653,7 @@
     "EntityTypeOrdIdTarget": {
       "title": "Entity Type Target (Ord Id)",
       "x-introduced-in-version": "1.6.0",
+      "x-ums-type": "custom",
       "type": "object",
       "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.",
       "properties": {
@@ -5640,6 +5680,7 @@
       "type": "object",
       "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [Correlation ID](../index.md#correlation-id).",
       "x-introduced-in-version": "1.6.0",
+      "x-ums-type": "custom",
       "properties": {
         "correlationId": {
           "type": "string",
@@ -5658,6 +5699,7 @@
     "RelatedEntityType": {
       "title": "Related Entity Type",
       "x-introduced-in-version": "1.9.0",
+      "x-ums-type": "embedded",
       "type": "object",
       "description": "Defines the relation between Entity Types (via its ORD ID).",
       "properties": {
@@ -5703,6 +5745,7 @@
       "type": "object",
       "description": "Defines which Entity Type is exposed through  (via its ORD ID).",
       "x-introduced-in-version": "1.11.0",
+      "x-ums-type": "embedded",
       "properties": {
         "ordId": {
           "type": "string",
@@ -5725,6 +5768,7 @@
     "Tombstone": {
       "type": "object",
       "title": "Tombstone",
+      "x-ums-type": "ignore",
       "description": "A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.\nThis MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.\n\nExactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.\n\nThe tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.",
       "properties": {
         "ordId": {
@@ -5805,6 +5849,7 @@
     "OrdResource": {
       "type": "object",
       "title": "Ord Resource (abstract)",
+      "x-ums-type": "root",
       "description": "Abstract definition of shared properties across ORD Resources.",
       "properties": {
         "ordId": {

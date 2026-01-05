@@ -43,6 +43,7 @@
       "type": "object",
       "title": "Ord V1 Support",
       "description": "The existence of this version indicates that Open Resource Discovery is supported in Version 1.x",
+      "x-ums-type": "ignore",
       "properties": {
         "documents": {
           "type": "array",
@@ -61,6 +62,7 @@
       "type": "object",
       "title": "Ord V1 Document Description",
       "description": "Describes an [ORD Document](../index.md#ord-document) that is available for pull transport consumption.",
+      "x-ums-type": "ignore",
       "properties": {
         "url": {
           "type": "string",
@@ -127,6 +129,7 @@
       "type": "object",
       "title": "Ord V1 Capabilities",
       "description": "List of capabilities that are supported by the ORD provider.",
+      "x-ums-type": "ignore",
       "properties": {
         "selector": {
           "type": "boolean",
@@ -139,6 +142,7 @@
       "type": "object",
       "title": "Ord V1 Document Access Strategy",
       "description": "Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the ORD documents from the ORD provider.",
+      "x-ums-type": "ignore",
       "properties": {
         "type": {
           "type": "string",
