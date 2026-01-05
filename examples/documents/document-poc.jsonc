@@ -5,5 +5,4 @@
   // JSONC can be helpful for PoCs where we start with writing example ORD documents with additional explanations.
   // Please note that this is not supported for a real productive implementation, where only plain JSON is allowed.
   // The API Metadata Validator will also not support JSONC, but we'll have VSCode internal code intelligence and schema validation.
-  // .jsonc documents in this folder will be ignored when validating examples files.
 }
