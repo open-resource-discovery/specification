@@ -22,16 +22,19 @@ jobs:
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "22"
           # registry-url is required for releasing packages
           registry-url: ${{ vars.NPM_REGISTRY }}
+
+      - name: Install latest npm cli
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: npm ci
@@ -40,10 +43,8 @@ jobs:
         run: npm run build
 
       - name: Publish to NPM
-        # --access public is only hard required for the initial release, but it doesn't hurt having it setup
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish
+
   githubRelease:
     needs: [npm]
     if: |
