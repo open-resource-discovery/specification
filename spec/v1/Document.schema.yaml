@@ -1166,9 +1166,10 @@ definitions:
           - const: rest
             description: |-
               Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.
-              Please not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.
-              An API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1` or `custom`.
+              Please note that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.
+
+              If apiProtocol is `rest`, it means that at least one API Resource definition in the array `resourceDefinitions` MUST be provided that describes the API in a RESTful way.
+              At least one array item in `resourceDefinitions` MUST be of type `openapi-v2`, `openapi-v3`, `openapi-v3.1+` or `raml-v1`.
           - const: graphql
             description: |-
               [GraphQL](https://graphql.org/) API.
