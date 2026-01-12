@@ -105,6 +105,10 @@ export interface OrdDocument {
    */
   dataProducts?: DataProduct[];
   /**
+   * Array of all AI Agents that are described in this ORD document.
+   */
+  agents?: Agent[];
+  /**
    * Array of all integration dependencies that are described in this ORD document.
    */
   integrationDependencies?: IntegrationDependency[];
@@ -2482,6 +2486,301 @@ export interface DataProductLink {
    * If a relative link is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
    */
   url: string;
+}
+/**
+ * An **Agent** provides a high-level description of an AI-powered autonomous system that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals.
+ *
+ * An Agent can relate to specific entity types it works with, declare integration dependencies on external systems it requires, and expose its capabilities through APIs using protocols like A2A (Agent-to-Agent).
+ *
+ * Agents enable intelligent automation and decision-making within business processes by providing semantic understanding and context-aware capabilities beyond traditional API-based integrations.
+ */
+export interface Agent {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+   * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
+   *
+   * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+   * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
+   */
+  localId?: string;
+  /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
+  /**
+   * Human-readable title.
+   *
+   * MUST NOT exceed 255 chars.
+   * MUST NOT contain line breaks.
+   */
+  title: string;
+  /**
+   * Plain text short description.
+   *
+   * MUST NOT exceed 255 chars.
+   * MUST NOT contain line breaks.
+   */
+  shortDescription?: string;
+  /**
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
+   * Detailed documentation SHOULD be attached as (typed) links.
+   */
+  description?: string;
+  /**
+   * Defines which Package the resource is part of.
+   *
+   * MUST be a valid reference to a [Package](#package) ORD ID.
+   *
+   * Every resource MUST be part of one package.
+   */
+  partOfPackage: string;
+  /**
+   * Defines which groups the resource is assigned to.
+   *
+   * The property is optional, but if given the value MUST be an array of valid Group IDs.
+   *
+   * Groups are a lightweight custom taxonomy concept.
+   * They express a "part of" relationship to the chosen group concept.
+   * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
+   *
+   * All resources that share the same group ID assignment are effectively grouped together.
+   */
+  partOfGroups?: string[];
+  /**
+   * The complete [SemVer](https://semver.org/) version string.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   * It SHOULD be changed if the ORD information or referenced resource definitions changed.
+   * It SHOULD express minor and patch changes that don't lead to incompatible changes.
+   *
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   *
+   * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
+   * The `version` MUST not be bumped for changes in extensions.
+   *
+   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   *
+   * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
+   */
+  version: string;
+  /**
+   * Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   *
+   * When retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.
+   * Therefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.
+   *
+   * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
+   *
+   * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+   */
+  lastUpdate?: string;
+  /**
+   * The visibility states who is allowed to "see" the described resource or capability.
+   */
+  visibility: "public" | "internal" | "private";
+  /**
+   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   */
+  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  /**
+   * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
+   * This can happen either because it has not been setup for use or disabled by an admin / user.
+   *
+   * If the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance-aware perspective.
+   *
+   * This property can only reflect the knowledge of the described system instance itself.
+   * Outside factors for availability can't need to be considered (e.g. network connectivity, middlewares).
+   *
+   * A disabled resource MAY skip describing its resource definitions.
+   *
+   */
+  disabled?: boolean;
+  /**
+   * The resource has been introduced in the given [system version](../index.md#system-version).
+   * This implies that the resource is only available if the system instance is of at least that system version.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   */
+  minSystemVersion?: string;
+  /**
+   * List of products the resources of the Package are a part of.
+   *
+   * MUST be a valid reference to a [Product](#product) ORD ID.
+   *
+   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   *
+   * @minItems 0
+   */
+  partOfProducts?: string[];
+  /**
+   * Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.
+   */
+  responsible?: string;
+  /**
+   * The deprecation date defines when the resource has been set as deprecated.
+   * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   */
+  deprecationDate?: string;
+  /**
+   * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
+   *
+   * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
+   * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   */
+  sunsetDate?: string;
+  /**
+   * The successor resource(s).
+   *
+   * MUST be a valid reference to an ORD ID.
+   *
+   * If the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.
+   * If `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`.
+   */
+  successors?: string[];
+  /**
+   * Contains changelog entries that summarize changes with special regards to version and releaseStatus
+   */
+  changelogEntries?: ChangelogEntry[];
+  /**
+   * A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.
+   * For each chosen policy level, additional expectations and validations rules will be applied.
+   *
+   * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
+   *
+   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   */
+  policyLevels?: string[];
+  /**
+   * List of countries that the Package resources are applicable to.
+   *
+   * MUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+   *
+   * `countries` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  countries?: string[];
+  /**
+   * List of line of business tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * `lineOfBusiness` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  lineOfBusiness?: ((
+    | string
+    | "Asset Management"
+    | "Commerce"
+    | "Finance"
+    | "Human Resources"
+    | "Manufacturing"
+    | "Marketing"
+    | "R&D Engineering"
+    | "Sales"
+    | "Service"
+    | "Sourcing and Procurement"
+    | "Strategy, Compliance, and Governance"
+    | "Supply Chain"
+    | "Sustainability"
+    | "Metering"
+    | "Grid Operations and Maintenance"
+    | "Plant Operations and Maintenance"
+    | "Maintenance and Engineering"
+  ) &
+    string)[];
+  /**
+   * List of industry tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * `industry` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  industry?: ((
+    | string
+    | "Aerospace and Defense"
+    | "Agribusiness"
+    | "Automotive"
+    | "Banking"
+    | "Chemicals"
+    | "Consumer Industries"
+    | "Consumer Products"
+    | "Defense and Security"
+    | "Discrete Industries"
+    | "Energy and Natural Resources"
+    | "Engineering Construction and Operations"
+    | "Financial Services"
+    | "Future Cities"
+    | "Healthcare"
+    | "High Tech"
+    | "Higher Education and Research"
+    | "Industrial Machinery and Components"
+    | "Insurance"
+    | "Life Sciences"
+    | "Media"
+    | "Mill Products"
+    | "Mining"
+    | "Oil and Gas"
+    | "Professional Services"
+    | "Public Sector"
+    | "Public Services"
+    | "Retail"
+    | "Service Industries"
+    | "Sports and Entertainment"
+    | "Telecommunications"
+    | "Travel and Transportation"
+    | "Utilities"
+    | "Wholesale Distribution"
+  ) &
+    string)[];
+  /**
+   * Optional list of related EntityType Resources.
+   *
+   * MUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.
+   */
+  relatedEntityTypes?: string[];
+  /**
+   * Optional list of API Resources that expose the functionality of the agent. Typically using the A2A protocol, but other protocols are possible as well.
+   *
+   * MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
+   */
+  exposedApiResources?: string[];
+  /**
+   * Optional list of integration dependencies that the agent relies on.
+   *
+   * MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+   */
+  integrationDependencies?: string[];
+  /**
+   * Generic Links with arbitrary meaning and content.
+   */
+  links?: Link[];
+  /**
+   * List of free text style tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  tags?: string[];
+  labels?: Labels;
+  documentationLabels?: DocumentationLabels;
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

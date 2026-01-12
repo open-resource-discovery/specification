@@ -1,0 +1,145 @@
+{
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
+  "openResourceDiscovery": "1.12",
+  "description": "Example based on ORD Reference App",
+  "policyLevels": ["sap:core:v1", "sap:ai-agent:v1"],
+  "describedSystemVersion": {
+    "version": "1.0.0"
+  },
+  "describedSystemInstance": {
+    "baseUrl": "https://tenant1.example-sap-system.com"
+  },
+  "apiResources": [
+    {
+      "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1",
+      "title": "Dispute Resolution Agent",
+      "shortDescription": "This is an Agent short description...",
+      "description": "A longer description of this Agent with **markdown** \n## headers\n etc...",
+      "version": "1.0.3",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "apiProtocol": "a2a",
+      "resourceDefinitions": [
+        {
+          "type": "a2a-agent-card",
+          "mediaType": "application/json",
+          "url": "/definitions/DisputeResolutionAgentcard.json",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ],
+      "partOfConsumptionBundles": [
+        {
+          "ordId": "sap.joule:consumptionBundle:mTLS:v1"
+        }
+      ],
+      "exposedEntityTypes": [
+        {
+          "ordId": "sap.foo:entityType:DisputeCase:v1"
+        },
+        {
+          "ordId": "sap.foo:entityType:DisputeResolution:v1"
+        },
+        {
+          "ordId": "sap.odm:entityType:Dispute:v1"
+        }
+      ],
+      "partOfGroups": ["sap.eab:process:sap.foo:DisputeResolutionProcess"],
+      "apiResourceLinks": [
+        {
+          "type": "api-documentation",
+          "url": "https://help.sap.com/some/agent-documentation"
+        }
+      ],
+      "extensible": {
+        "supported": "no"
+      }
+    }
+  ],
+  "agents": [
+    {
+      "ordId": "sap.foo:agent:disputeAgent:v1",
+      "title": "Dispute Resolution Agent",
+      "shortDescription": "AI agent specialized in financial dispute case resolution",
+      "description": "A longer description of this Agent with **markdown** \n## headers\n etc...",
+      "version": "1.0.3",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "partOfGroups": ["sap.aicore:llmModel:sap.aicore:anthropic--claude-3.7-sonnet"],
+      "partOfProducts": ["sap:product:S4HANA_OD:"],
+      "responsible": "sap:ach:FIN-DR-AG",
+      "industry": ["Financial Services"],
+      "lineOfBusiness": ["Finance"],
+      "countries": ["DE", "US"],
+      "minSystemVersion": "1.0.0",
+      "deprecationDate": "2025-12-08T15:47:04+00:00",
+      "sunsetDate": "2027-12-08T15:47:04+00:00",
+      "changelogEntries": [
+        {
+          "date": "2024-04-29",
+          "description": "## Changelog\n\nInitial release of the Dispute Resolution Agent with core capabilities.",
+          "releaseStatus": "active",
+          "version": "1.0.3",
+          "url": "https://www.sap.com/foo/bar"
+        }
+      ],
+      "relatedEntityTypes": [
+        "sap.foo:entityType:DisputeCase:v1",
+        "sap.foo:entityType:DisputeResolution:v1",
+        "sap.odm:entityType:Dispute:v1"
+      ],
+      "exposedApiResources": ["sap.foo:apiResource:DisputeResolutionAgent:v1"],
+      "integrationDependencies": ["sap.foo:integrationDependency:DisputeCaseManagement:v1"],
+      "labels": {
+        "llmModels": ["gpt-4", "claude-3.7-sonnet"],
+        "interactionMode": ["conversational", "system-triggered"]
+      },
+      "tags": ["finance", "billing", "dispute-resolution", "invoicing", "ai-agent"],
+      "links": [
+        {
+          "title": "Agent Documentation",
+          "url": "https://help.sap.com/some/agent-documentation",
+          "description": "Comprehensive documentation for the Dispute Resolution Agent"
+        }
+      ]
+    }
+  ],
+  "integrationDependencies": [
+    {
+      "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
+      "title": "Dispute Case Management Integration",
+      "shortDescription": "Integration dependency for dispute case management system",
+      "description": "This integration dependency is required to access external dispute case management capabilities.",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "mandatory": true,
+      "aspects": [
+        {
+          "title": "Case Management API Access",
+          "description": "Access to dispute case management APIs",
+          "mandatory": true,
+          "apiResources": [
+            {
+              "ordId": "sap.bar:apiResource:DisputeResolutionAPI:v1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "ordId": "sap.foo:package:ord-reference-app:v1",
+      "title": "ORD Reference Application Package",
+      "shortDescription": "Package containing reference application resources",
+      "description": "This package contains all resources related to the ORD reference application including agents and APIs.",
+      "version": "1.0.0",
+      "vendor": "sap:vendor:SAP:"
+    }
+  ]
+}

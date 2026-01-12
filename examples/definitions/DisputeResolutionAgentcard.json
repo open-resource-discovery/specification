@@ -1,0 +1,113 @@
+{
+  "name": "FI-CA Dispute Resolution Agent",
+  "description": "AI agent specialized in financial dispute case resolution with focus on reconciling invoiced amounts against contract terms. Automatically retrieves dispute cases, recalculates invoice amounts based on contractual terms, identifies valid discrepancies, and processes credit memos through established workflows.",
+  "url": "https://api.sap.foo.com/fica-dispute-agent/v1",
+  "preferredTransport": "HTTP+JSON",
+  "additionalInterfaces": [
+    {
+      "url": "https://api.sap.foo.com/fica-dispute-agent/v1",
+      "transport": "HTTP+JSON"
+    }
+  ],
+  "provider": {
+    "organization": "SAP",
+    "url": "https://www.sap.com"
+  },
+  "version": "1.0.5",
+  "protocolVersion": "0.3.0",
+  "documentationUrl": "https://help.sap.foo.com/docs/fica-dispute-agent",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "securitySchemes": {
+    "oidc": {
+      "type": "openIdConnect",
+      "description": "OpenID Connect authentication for SAP systems",
+      "openIdConnectUrl": "https://accounts.sap.foo.com/.well-known/openid_configuration"
+    }
+  },
+  "security": [
+    {
+      "oidc": []
+    }
+  ],
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "dispute-case-resolution",
+      "name": "Automated Dispute Case Resolution",
+      "description": "Processes FI-CA dispute cases of type 'A001 (Incorrect Invoice)' by retrieving case data, recalculating invoice amounts based on contract terms, identifying discrepancies, and automatically creating credit memos when valid discrepancies are found.",
+      "tags": ["finance", "billing", "dispute-resolution", "invoicing", "credit-memo", "contract-analysis"],
+      "examples": [
+        "Resolve dispute case 24240",
+        "Process the incorrect invoice dispute for case ID 12345",
+        "Analyze and resolve dispute case with contract recalculation"
+      ],
+      "inputModes": ["text/plain", "application/json"],
+      "outputModes": ["text/plain", "application/json"],
+      "security": [
+        {
+          "oidc": []
+        }
+      ]
+    },
+    {
+      "id": "dispute-case-verification",
+      "name": "Dispute Case Data Verification",
+      "description": "Retrieves and verifies dispute case information including disputed amounts, invoice line items, contract attachments, and dispute notes. Validates data completeness and currency consistency before processing.",
+      "tags": ["verification", "data-validation", "dispute-analysis", "contract-review"],
+      "examples": [
+        "Verify dispute case data for case 24240",
+        "Check if dispute case has complete information for processing",
+        "Validate contract attachment and invoice details"
+      ],
+      "inputModes": ["text/plain", "application/json"],
+      "outputModes": ["text/plain", "application/json"],
+      "security": [
+        {
+          "oidc": []
+        }
+      ]
+    },
+    {
+      "id": "invoice-recalculation",
+      "name": "Contract-Based Invoice Recalculation",
+      "description": "Recalculates invoice amounts based on contract terms including base fees, adjustment rates, and time-based adjustments. Handles complex calculations with tax inclusion/exclusion and period-based adjustments.",
+      "tags": ["calculation", "contract-analysis", "invoice-verification", "financial-analysis"],
+      "examples": [
+        "Recalculate invoice amount based on contract terms",
+        "Apply contract adjustments for the invoice due date",
+        "Calculate correct billing amount with time-based rate adjustments"
+      ],
+      "inputModes": ["application/json"],
+      "outputModes": ["application/json"],
+      "security": [
+        {
+          "oidc": []
+        }
+      ]
+    },
+    {
+      "id": "credit-memo-processing",
+      "name": "Credit Memo Creation and Processing",
+      "description": "Creates credit memos for valid dispute amounts, sets billing request status to 'ForChecking', updates dispute case status to 'Being Processed', and handles the complete credit memo lifecycle including release and dispute case closure.",
+      "tags": ["credit-memo", "billing", "financial-processing", "workflow-automation"],
+      "examples": [
+        "Create credit memo for dispute amount €150.00",
+        "Process and release credit memo for resolved dispute",
+        "Generate credit memo and close dispute case"
+      ],
+      "inputModes": ["application/json"],
+      "outputModes": ["application/json"],
+      "security": [
+        {
+          "oidc": []
+        }
+      ]
+    }
+  ],
+  "supportsAuthenticatedExtendedCard": false
+}
