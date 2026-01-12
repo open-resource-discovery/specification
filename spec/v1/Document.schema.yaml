@@ -2747,7 +2747,6 @@ definitions:
       changelogEntries:
         <<: *changelogEntries
 
-
       policyLevels:
         <<: *policyLevels
 
@@ -2823,9 +2822,6 @@ definitions:
 
       documentationLabels:
         <<: *documentationLabels
-
-      systemInstanceAware:
-        <<: *systemInstanceAware
 
     additionalProperties: false
     required:

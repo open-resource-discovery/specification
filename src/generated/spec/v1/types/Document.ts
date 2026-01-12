@@ -2616,6 +2616,8 @@ export interface Agent {
   /**
    * The resource has been introduced in the given [system version](../index.md#system-version).
    * This implies that the resource is only available if the system instance is of at least that system version.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    */
   minSystemVersion?: string;
   /**
@@ -2661,22 +2663,6 @@ export interface Agent {
    * Contains changelog entries that summarize changes with special regards to version and releaseStatus
    */
   changelogEntries?: ChangelogEntry[];
-  /**
-   * The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.
-   * Depending on the chosen policy level, additional expectations and validations rules will be applied.
-   *
-   * The policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
-   *
-   */
-  policyLevel?: (string | "none" | "custom") & string;
-  /**
-   * If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.
-   * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
-   *
-   * MUST only be provided if `policyLevel` is set to `custom`.
-   * MUST be a valid [Specification ID](../index.md#specification-id).
-   */
-  customPolicyLevel?: string;
   /**
    * A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.
    * For each chosen policy level, additional expectations and validations rules will be applied.
@@ -2795,19 +2781,6 @@ export interface Agent {
   tags?: string[];
   labels?: Labels;
   documentationLabels?: DocumentationLabels;
-  /**
-   * Defines whether this ORD resource is **system-instance-aware**.
-   * This is the case when the referenced resource definitions are potentially different between **system instances**.
-   *
-   * If this behavior applies, `systemInstanceAware` MUST be set to true.
-   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
-   *
-   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
-   *
-   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
-   */
-  systemInstanceAware?: boolean;
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

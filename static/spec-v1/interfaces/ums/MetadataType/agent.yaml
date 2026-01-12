@@ -84,7 +84,9 @@ spec:
       description: "Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.\nThis can happen either because it has not been setup for use or disabled by an admin / user.\n\nIf the resource is not available in principle for a particular system instance, e.g. due to lack of entitlement, it MUST not be described in the system-instance-aware perspective.\n\nThis property can only reflect the knowledge of the described system instance itself.\nOutside factors for availability can't need to be considered (e.g. network connectivity, middlewares).\n\nA disabled resource MAY skip describing its resource definitions.\n"
     - name: 'minSystemVersion'
       type: 'string'
-      description: "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version."
+      description: "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard."
+      constraints:
+        pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
     - name: 'partOfProducts_ID'
       type: 'guid'
       array: true
@@ -110,15 +112,6 @@ spec:
       customTypeName: 'ChangelogEntry'
       array: true
       description: 'Contains changelog entries that summarize changes with special regards to version and releaseStatus'
-    - name: 'policyLevel'
-      type: 'string'
-      description: "The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.\nDepending on the chosen policy level, additional expectations and validations rules will be applied.\n\nThe policy level can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n"
-    - name: 'customPolicyLevel'
-      type: 'string'
-      description: "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id)."
-      constraints:
-        maxLength: 255
-        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
     - name: 'policyLevels'
       type: 'string'
       array: true
@@ -164,9 +157,6 @@ spec:
       type: 'custom'
       customTypeName: 'DocumentationLabels'
       description: 'Generic documentation labels that can be applied to most ORD information.'
-    - name: 'systemInstanceAware'
-      type: 'boolean'
-      description: "Defines whether this ORD resource is **system-instance-aware**.\nThis is the case when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.\n\nThis concept is now **deprecated** in favor of the more explicit `perspective` attribute.\nAll resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.\n\nFor more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives)."
   customTypeDefinitions:
     - name: 'ChangelogEntry'
       metadataProperties:
