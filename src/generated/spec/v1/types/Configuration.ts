@@ -18,7 +18,7 @@ export interface OrdConfiguration {
   /**
    * Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.
    *
-   * The `baseUrl` MUST not contain a leading slash.
+   * The `baseUrl` MUST NOT contain a leading slash.
    *
    * If you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.
    * This implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.
@@ -66,7 +66,7 @@ export interface OrdV1DocumentDescription {
    *
    * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
    */
-  perspective?: "system-version" | "system-instance" | "system-independent";
+  perspective?: "system-type" | "system-version" | "system-instance" | "system-independent";
   /**
    * Whether the information in the ORD document is **system-instance-aware**.
    * This is the case when the provided ORD document potentially differs between **system instances** (e.g. due to multi-tenancy, configuration or extensibility).
