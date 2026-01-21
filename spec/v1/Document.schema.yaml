@@ -2647,7 +2647,7 @@ definitions:
     type: object
     title: Agent
     x-ums-type: root
-    x-introduced-in-version: "1.13.0"
+    x-introduced-in-version: "1.14.0"
     x-feature-status: beta
     x-ums-implements: "#/definitions/OrdResource"
     description: |-
@@ -2657,6 +2657,7 @@ definitions:
 
       Agents enable intelligent automation and decision-making within business processes by providing semantic understanding and context-aware capabilities beyond traditional API-based integrations.
 
+      For more details, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols.md).
     properties:
       ordId:
         <<: *ordId

@@ -2493,6 +2493,8 @@ export interface DataProductLink {
  * An Agent can relate to specific entity types it works with, declare integration dependencies on external systems it requires, and expose its capabilities through APIs using protocols like A2A (Agent-to-Agent).
  *
  * Agents enable intelligent automation and decision-making within business processes by providing semantic understanding and context-aware capabilities beyond traditional API-based integrations.
+ *
+ * For more details, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols.md).
  */
 export interface Agent {
   /**
