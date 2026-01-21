@@ -2786,13 +2786,17 @@ definitions:
         type: array
         description: |-
           Optional list of API Resources that expose the functionality of the agent. Typically using the A2A protocol, but other protocols are possible as well.
-
           MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
         items:
-          type: string
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
-        examples:
-          - ["sap.foo:apiResource:DisputeResolutionAgent:v1"]
+          type: object
+          required:
+          - ordId
+          properties:
+              ordId:
+                 type: string
+                 pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+                 examples:
+                    - "sap.foo:apiResource:DisputeResolutionAgent:v1"
 
       integrationDependencies:
         type: array
