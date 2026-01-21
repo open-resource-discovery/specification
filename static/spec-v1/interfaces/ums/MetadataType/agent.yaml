@@ -132,10 +132,6 @@ spec:
       type: 'guid'
       array: true
       description: "Optional list of related EntityType Resources.\n\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID."
-    - name: 'exposedApiResources'
-      type: 'string'
-      array: true
-      description: "Optional list of API Resources that expose the functionality of the agent. Typically using the A2A protocol, but other protocols are possible as well.\n\nMUST be a valid reference to an [API Resource](#api-resource) ORD ID."
     - name: 'integrationDependencies_ID'
       type: 'guid'
       array: true
@@ -249,6 +245,10 @@ spec:
       description: "Optional list of related EntityType Resources.\n\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID."
       reverseRelation:
         relationPropertyName: 'agents'
+    - propertyName: 'exposedApiResources'
+      relatedTypeName: 'ExposedApiResourcesTarget'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of API Resources that expose the functionality of the agent. Typically using the A2A protocol, but other protocols are possible as well.\n\nMUST be a valid reference to an [API Resource](#api-resource) ORD ID."
     - propertyName: 'integrationDependencies'
       relatedTypeName: 'IntegrationDependency'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

@@ -91,7 +91,7 @@
         "sap.foo:entityType:DisputeResolution:v1",
         "sap.odm:entityType:Dispute:v1"
       ],
-      "exposedApiResources": ["sap.foo:apiResource:DisputeResolutionAgent:v1"],
+      "exposedApiResources": [{"ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1"}],
       "integrationDependencies": ["sap.foo:integrationDependency:DisputeCaseManagement:v1"],
       "labels": {
         "llmModels": ["gpt-4", "claude-3.7-sonnet"],

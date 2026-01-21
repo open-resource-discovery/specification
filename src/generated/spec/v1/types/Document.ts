@@ -970,8 +970,8 @@ export interface EntityTypeMapping {
    * @minItems 1
    */
   entityTypeTargets: [
-    EntityTypeTargetOrdId | EntityTypeTargetCorrelationId,
-    ...(EntityTypeTargetOrdId | EntityTypeTargetCorrelationId)[]
+    EntityTypeTargetORDID | EntityTypeTargetCorrelationId,
+    ...(EntityTypeTargetORDID | EntityTypeTargetCorrelationId)[]
   ];
 }
 /**
@@ -1019,7 +1019,7 @@ export interface ApiModelSelectorJsonPointer {
  *
  * Entity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.
  */
-export interface EntityTypeTargetOrdId {
+export interface EntityTypeTargetORDID {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
@@ -2761,7 +2761,7 @@ export interface Agent {
    *
    * MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
    */
-  exposedApiResources?: string[];
+  exposedApiResources?: ExposedAPIResource[];
   /**
    * Optional list of integration dependencies that the agent relies on.
    *
@@ -2781,6 +2781,19 @@ export interface Agent {
   tags?: string[];
   labels?: Labels;
   documentationLabels?: DocumentationLabels;
+}
+/**
+ * Reference to an API Resource that exposes the functionality of an agent.
+ *
+ * This is a complex object to allow additional properties / selections to be attached in the future.
+ */
+export interface ExposedAPIResource {
+  /**
+   * The API Resource ORD ID that this reference points to.
+   *
+   * MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
+   */
+  ordId: string;
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.
