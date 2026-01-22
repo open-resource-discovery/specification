@@ -19,6 +19,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Added example document [document-agents.json](examples/documents/document-agents.json) demonstrating agent usage with A2A protocol
   - Added example A2A agent card definition [DisputeResolutionAgentcard.json](examples/definitions/DisputeResolutionAgentcard.json)
   - Added [AI Agents and Protocols](docs/spec-v1/concepts/ai-agents-and-protocols.md) concept documentation
+- Introduced `abstract` property for API, Event and Data Product Resources to indicate interface-only resources.
+
+### Fixed
+
+- BREAKING FIX: make `compatibleWith` an array of ORD IDs and a maximum version instead of an ORD ID value. Only this way one can correctly express compatibility with a dedicated contract versions.
+  - We're introducing this as a fix, because the feature has not been adopted so far and we think that the information missing otherwise would make the concept unviable for real scenarios.
 
 ## [1.13.0]
 
