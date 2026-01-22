@@ -48,7 +48,7 @@ IF the resources have already been published to the public [SAP Business Acceler
 
 ### Title Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.org/spec-v1/interfaces/Document/).
 
 - All `title` values (except link titles) MUST NOT exceed 120 characters, as per SAP API Style Guide and SAP Business Accelerator Hub guideline recommendations.
 - All `title` values (except link titles) MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
@@ -86,7 +86,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.org/spec-v1/interfaces/Document/).
 
 - All `description` values MUST NOT contain the short description.
   They are complementary to the short description and should not just be a longer replacement.
@@ -95,7 +95,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Short Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.org/spec-v1/interfaces/Document/).
 
 - All `shortDescription` values SHOULD NOT exceed 180 characters.
 - All `shortDescription` values MUST NOT repeat or start with the object name.
@@ -131,7 +131,7 @@ The following constraints apply in addition to the constraints defined in the [O
 - Although `Vendor` is technically not validated by a policy level, we need to ensure that within SAP we don't define the SAP vendor multiple times or reference it differently.
   - The SAP `Vendor` MUST NOT be defined by any SAP application or service, as this is done centrally.
   - The correct value for a SAP vendor reference is `sap:vendor:SAP:`.
-- For OpenAPI documents which are already published on Business Accelerator Hub, the existing `x-sap-` extension properties MUST be kept even if the information are now also in the ORD Document. This is to not break end-consumers that only have access to the OpenAPI file. We MAY remove this requirement in the future, by automatically post-processing the ORD information into the OpenAPI files centrally (feature request).
+- For OpenAPI documents which are already published on Business Accelerator Hub, the existing `x-sap-` extension properties MUST be kept even if the information is now also in the ORD Document. This is to not break end-consumers that only have access to the OpenAPI file. We MAY remove this requirement in the future, by automatically post-processing the ORD information into the OpenAPI files centrally (feature request).
 
 ## Context Specific Policies
 
@@ -173,7 +173,7 @@ The following constraints apply in addition to the constraints defined in the [O
   - CloudEvents MUST have a resource definition of `"type": "asyncapi-v2"` (see [AsyncAPI specification 2.0](https://www.asyncapi.com/docs/specifications/2.0.0)).
   - SAP Business Events (that conform to the SAP Event Specification:
     - MUST use the SAP Event Catalog standard, which is compatible to AsyncAPI 2.0 (`"type": "asyncapi-v2"`).
-    - MUST NOT be part of a consumption bundle.
+    - MUST NOT be part of a Consumption Bundle.
       - Events can only be consumed at an intermediary, i.e., the SAP Event Mesh.
       - Consequently, the producing application cannot describe how they are eventually consumed.
 - SAP Event Catalogs SHOULD be validated via the SAP API Metadata Validator, using `sap:core:v1` compliance level.
@@ -185,7 +185,7 @@ The following constraints apply in addition to the constraints defined in the [O
 ### Integration Dependencies
 
 - If an Integration Dependency is used to indicate Subscription Content for the [SAP Event Broker](https://help.sap.com/docs/event-broker/event-broker-service-guide/what-is):
-  - Each [EventResourceIntegrationAspect](../../spec-v1/index.md#event-resource-integration-aspect) MUST provide exactly one `systemTypeRestriction` application namespace.
+  - Each [EventResourceIntegrationAspect](../../spec-v1/interfaces/Document.md#eventresourceintegrationaspect) MUST provide exactly one `systemTypeRestriction` application namespace.
     The value of the `systemTypeRestriction` MUST always be the same within an integration dependency.
     These limitation MAY be reconsidered in the future.
 

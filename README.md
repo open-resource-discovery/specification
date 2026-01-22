@@ -9,7 +9,7 @@
 
 Open Resource Discovery (ORD) is a protocol that **enables applications and services to self-describe their exposed resources and capabilities**. It supports both static documentation and runtime tenant-specific configuration and extensions.
 
-**To learn more, have a look at the [Open Resource Discovery Specification](https://open-resource-discovery.github.io/specification/) documentation.**
+**To learn more, have a look at the [Open Resource Discovery Specification](https://open-resource-discovery.org/) documentation.**
 
 > ℹ ORD is an open standard by SAP, currently geared towards the SAP ecosystem.
 > However, it is designed as a generic standard that can be used outside SAP with appropriate infrastructure (aggregators and namespace registry).

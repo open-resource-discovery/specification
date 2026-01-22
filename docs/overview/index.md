@@ -17,7 +17,7 @@ The [Integration Dependencies](./spec-v1/interfaces/Document#integration-depende
 In case that the standardized concepts or attributes are not sufficient, there are extensibility attributes and [Capabilities](./spec-v1/interfaces/Document#capability).
 All of the described artifacts can share relationships, taxonomy and [grouping](../spec-v1/concepts/grouping-and-bundling.md) concepts, enabling a **well-connected metadata graph**.
 
-ORD can describe **[static](../spec-v1/index.md#def-static-perspective) documentation** (like API / data catalogs and marketplaces) or a **[dynamic](../spec-v1/index.md#def-dynamic-perspective) run-time system landscape** (with tenant-specific configuration and extensions).
+ORD can describe **[static](../spec-v1/index.md#perspectives) documentation** (like API / data catalogs and marketplaces) or a **[dynamic](../spec-v1/index.md#perspectives) run-time system landscape** (with tenant-specific configuration and extensions).
 
 </div>
 <div className="col">
@@ -89,7 +89,7 @@ Based on this, many end-user use cases can be realized, e.g.:
 
 ## Future Plans
 
-Now that ORD is [open-source](https://open-resource-discovery.github.io/specification/) and a neutrally governed standard via [Linux Foundation](https://www.linuxfoundation.org/), a next step is to work with partners to establish it as an industry wide standard.
+Now that ORD is [open-source](https://open-resource-discovery.org/) and a neutrally governed standard via [Linux Foundation](https://www.linuxfoundation.org/), a next step is to work with partners to establish it as an industry wide standard.
 We are also part of the publicly funded [IPCEI CIS](https://www.bmwk.de/Redaktion/EN/Artikel/Industry/ipcei-cis.html) / [ApeiroRA](https://apeirora.eu/) project, where we work towards this goal.
 
 The specification itself is designed to be generic, so most SAP specific aspects are described as [spec extensions](./spec-extensions).

@@ -33,7 +33,8 @@
       "packageName": "./node_modules/@open-resource-discovery/spec-toolkit/dist/plugin/ums/index.js",
       "options": {
         "metadataPath": "/sap/core/ucl/metadata/ord/v1",
-        "overrides": ["./spec/v1/Document.ums.yaml"]
+        "overrides": ["./spec/v1/Document.ums.yaml"],
+        "preservedPluginSpecificXProperties": ["x-ums-type"]
       }
     },
     {

@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: true
-  description: "Reference to a Consumption bundle.\n\nThis is a complex object to allow additional properties / selections to be attached."
+  description: "Reference to a Consumption Bundle.\n\nThis is a complex object to allow additional properties / selections to be attached."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -19,7 +19,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId_ID'
       type: 'guid'
-      description: 'The consumption bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.'
+      description: 'The Consumption Bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.'
       mandatory: true
       constraints:
         maxLength: 255
@@ -34,5 +34,5 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: true
       managedByProperty: 'ordId_ID'
-      description: 'The consumption bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.'
+      description: 'The Consumption Bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.'
       mandatory: true

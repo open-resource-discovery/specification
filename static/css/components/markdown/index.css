@@ -35,6 +35,10 @@ article .card {
 .markdown h4 {
   margin-bottom: 6px;
 }
+.markdown h5 {
+  font-size: 1em;
+  margin-bottom: 3px;
+}
 .markdown h6 {
   margin: 6px 0;
 }

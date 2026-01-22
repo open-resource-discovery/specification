@@ -24,7 +24,7 @@ First, it's important to understand that ORD may look bigger and more complex th
 This is, because **most of the specification is optional to implement** and the data interfaces share a lot of common attributes.
 An ORD document that returns one empty ORD document is technically a valid implementation - although it doesn't bring value to anyone.
 
-So it needs to be clarified first, which information need to be exposed via ORD that are useful to actual [ORD Consumers](../../spec-v1/index.md#ord-consumer). Typically the most essential resources to describe are APIs and Events and their Package assignments.
+So it needs to be clarified first, which information needs to be exposed via ORD that is useful to actual [ORD Consumers](../../spec-v1/index.md#ord-consumer). Typically the most essential resources to describe are APIs and Events and their Package assignments.
 
 > ℹ At SAP, the minimal scope of ORD adoption is to describe public APIs and Events and their Package assignments.
 > Everything else is optional, but may be a prerequisite for other Product integrations or use cases (like SAP Event Broker / Mesh or Data Products)
@@ -61,7 +61,7 @@ In fact, it's just serving files via HTTP GET request in a standard manner.
 This can even be achieved by using a static web server like [nginx](https://www.nginx.com/), without writing a single line of code.
 
 Just dropping the ORD configuration and documents and additional metadata files into a web server can already work.
-Please consider whether the information [need to be protected](#protect-ord-document-api-access) and do so if necessary.
+Please consider whether the information [need to be protected](#protect-ord-provider-api-access) and do so if necessary.
 
 > 🔗 See [./implementation-examples/nginx-no-auth](https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/nginx-no-auth) for an example implementation
 
@@ -76,7 +76,7 @@ The API itself consists just of three different types of API GET operations:
 - One to return all [ORD Documents](../../spec-v1/index.md#ord-document)
 - One to return the "attached" metadata documents (ORD Resource Definitions)
 
-Please note that you may need to [protect the API access](#protect-ord-document-api-access).
+Please note that you may need to [protect the API access](#protect-ord-provider-api-access).
 
 > 🔗 See [./implementation-examples/no-auth](https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/no-auth) for an example node.js implementation without authentication.
 
@@ -96,7 +96,7 @@ Now becomes a necessity to implement ORD as a REST API, where the GET operations
 The response (of at least some requests) will depend on tenant context, customizations and extensions.
 
 In practice it's more realistic that such an implementation will be a mix between static and dynamic metadata.
-Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to indicate this on a per resource basis via the `systemInstanceAware` attribute see [definition](../../spec-v1/index.md#def-system-instance-aware).
+Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to indicate this on a per resource basis via the `systemInstanceAware` attribute see [definition](../../spec-v1/index.md#system-instance-aware).
 
 > 🚧 The [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) showcases a mix between static and dynamic metadata. The source-code for it is yet to be made public, though.
 

@@ -15,6 +15,7 @@
   EventResource --> "1" Package : partOfPackage
   EntityType --> "1" Package : partOfPackage
   DataProduct --> "1" Package : partOfPackage
+  Agent --> "1" Package : partOfPackage
   Capability --> "1" Package : partOfPackage
   IntegrationDependency --> "1" Package : partOfPackage
   OrdResource --> "1" Package : partOfPackage
@@ -29,6 +30,7 @@
   click EventResource href "#eventresource" "Go to EventResource"
   click EntityType href "#entitytype" "Go to EntityType"
   click DataProduct href "#dataproduct" "Go to DataProduct"
+  click Agent href "#agent" "Go to Agent"
   click Capability href "#capability" "Go to Capability"
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
   click OrdResource href "#ordresource" "Go to OrdResource"
@@ -86,6 +88,7 @@
   ApiResource --> "0..*" ApiResource : successors
   ApiResource *-- "0..*" ChangelogEntry : changelogEntries
   ApiResource *-- "0..*" ApiResourceDefinition : resourceDefinitions
+  ApiResource *-- "0..*" ApiCompatibility : compatibleWith
   ApiResource *-- "0..*" EntityTypeMapping : entityTypeMappings
   ApiResource *-- "0..*" ExposedEntityType : exposedEntityTypes
   ApiResource *-- "0..*" APIEventResourceLink : apiResourceLinks
@@ -93,6 +96,7 @@
   ApiResource *-- "0..1" Extensible : extensible
   ApiResource *-- "0..1" Labels : labels
   ApiResource *-- "0..1" DocumentationLabels : documentationLabels
+  ExposedApiResourcesTarget --> "1" ApiResource : ordId
   click ApiResource href "#apiresource" "Go to ApiResource"
   click Package href "#package" "Go to Package"
   click Group href "#group" "Go to Group"
@@ -101,6 +105,7 @@
   click Product href "#product" "Go to Product"
   click ChangelogEntry href "#changelogentry" "Go to ChangelogEntry"
   click ApiResourceDefinition href "#apiresourcedefinition" "Go to ApiResourceDefinition"
+  click ApiCompatibility href "#apicompatibility" "Go to ApiCompatibility"
   click EntityTypeMapping href "#entitytypemapping" "Go to EntityTypeMapping"
   click ExposedEntityType href "#exposedentitytype" "Go to ExposedEntityType"
   click APIEventResourceLink href "#apieventresourcelink" "Go to APIEventResourceLink"
@@ -108,6 +113,7 @@
   click Extensible href "#extensible" "Go to Extensible"
   click Labels href "#labels" "Go to Labels"
   click DocumentationLabels href "#documentationlabels" "Go to DocumentationLabels"
+  click ExposedApiResourcesTarget href "#exposedapiresourcestarget" "Go to ExposedApiResourcesTarget"
   ```
   
 
@@ -124,6 +130,7 @@
   EventResource --> "0..*" EventResource : successors
   EventResource *-- "0..*" ChangelogEntry : changelogEntries
   EventResource *-- "0..*" EventResourceDefinition : resourceDefinitions
+  EventResource *-- "0..*" EventCompatibility : compatibleWith
   EventResource *-- "0..*" EntityTypeMapping : entityTypeMappings
   EventResource *-- "0..*" ExposedEntityType : exposedEntityTypes
   EventResource *-- "0..*" APIEventResourceLink : eventResourceLinks
@@ -139,6 +146,7 @@
   click Product href "#product" "Go to Product"
   click ChangelogEntry href "#changelogentry" "Go to ChangelogEntry"
   click EventResourceDefinition href "#eventresourcedefinition" "Go to EventResourceDefinition"
+  click EventCompatibility href "#eventcompatibility" "Go to EventCompatibility"
   click EntityTypeMapping href "#entitytypemapping" "Go to EntityTypeMapping"
   click ExposedEntityType href "#exposedentitytype" "Go to ExposedEntityType"
   click APIEventResourceLink href "#apieventresourcelink" "Go to APIEventResourceLink"
@@ -165,6 +173,7 @@
   EntityType *-- "0..1" Labels : labels
   EntityType *-- "0..1" DocumentationLabels : documentationLabels
   DataProduct --> "0..*" EntityType : entityTypes
+  Agent --> "0..*" EntityType : relatedEntityTypes
   Capability --> "0..*" EntityType : relatedEntityTypes
   EntityTypeOrdIdTarget --> "1" EntityType : ordId
   RelatedEntityType --> "1" EntityType : ordId
@@ -180,6 +189,7 @@
   click Labels href "#labels" "Go to Labels"
   click DocumentationLabels href "#documentationlabels" "Go to DocumentationLabels"
   click DataProduct href "#dataproduct" "Go to DataProduct"
+  click Agent href "#agent" "Go to Agent"
   click Capability href "#capability" "Go to Capability"
   click EntityTypeOrdIdTarget href "#entitytypeordidtarget" "Go to EntityTypeOrdIdTarget"
   click ExposedEntityType href "#exposedentitytype" "Go to ExposedEntityType"
@@ -267,6 +277,36 @@
   ```
   
 
+## Agent
+  ```mermaid
+  classDiagram
+  class Agent
+  style Agent stroke:#333,stroke-width:3px
+  Agent --> "1" Package : partOfPackage
+  Agent --> "0..*" Group : partOfGroups
+  Agent --> "0..*" Product : partOfProducts
+  Agent --> "0..*" Agent : successors
+  Agent *-- "0..*" ChangelogEntry : changelogEntries
+  Agent --> "0..*" EntityType : relatedEntityTypes
+  Agent *-- "0..*" ExposedApiResourcesTarget : exposedApiResources
+  Agent --> "0..*" IntegrationDependency : integrationDependencies
+  Agent *-- "0..*" Link : links
+  Agent *-- "0..1" Labels : labels
+  Agent *-- "0..1" DocumentationLabels : documentationLabels
+  click Agent href "#agent" "Go to Agent"
+  click Package href "#package" "Go to Package"
+  click Group href "#group" "Go to Group"
+  click Product href "#product" "Go to Product"
+  click ChangelogEntry href "#changelogentry" "Go to ChangelogEntry"
+  click EntityType href "#entitytype" "Go to EntityType"
+  click ExposedApiResourcesTarget href "#exposedapiresourcestarget" "Go to ExposedApiResourcesTarget"
+  click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
+  click Link href "#link" "Go to Link"
+  click Labels href "#labels" "Go to Labels"
+  click DocumentationLabels href "#documentationlabels" "Go to DocumentationLabels"
+  ```
+  
+
 ## Product
   ```mermaid
   classDiagram
@@ -277,6 +317,7 @@
   EventResource --> "0..*" Product : partOfProducts
   EntityType --> "0..*" Product : partOfProducts
   DataProduct --> "0..*" Product : partOfProducts
+  Agent --> "0..*" Product : partOfProducts
   Product --> "1" Vendor : vendor
   Product --> "0..1" Product : parent
   Product *-- "0..1" Labels : labels
@@ -286,6 +327,7 @@
   click EventResource href "#eventresource" "Go to EventResource"
   click EntityType href "#entitytype" "Go to EntityType"
   click DataProduct href "#dataproduct" "Go to DataProduct"
+  click Agent href "#agent" "Go to Agent"
   click Product href "#product" "Go to Product"
   click Vendor href "#vendor" "Go to Vendor"
   click Labels href "#labels" "Go to Labels"
@@ -335,6 +377,7 @@
   class IntegrationDependency
   style IntegrationDependency stroke:#333,stroke-width:3px
   DataProductInputPort --> "1" IntegrationDependency : ordId
+  Agent --> "0..*" IntegrationDependency : integrationDependencies
   IntegrationDependency --> "1" Package : partOfPackage
   IntegrationDependency --> "0..*" Group : partOfGroups
   IntegrationDependency --> "0..*" IntegrationDependency : successors
@@ -344,6 +387,7 @@
   IntegrationDependency *-- "0..1" Labels : labels
   IntegrationDependency *-- "0..1" DocumentationLabels : documentationLabels
   click DataProductInputPort href "#dataproductinputport" "Go to DataProductInputPort"
+  click Agent href "#agent" "Go to Agent"
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
   click Package href "#package" "Go to Package"
   click Group href "#group" "Go to Group"
@@ -429,10 +473,12 @@
   EventResource *-- "0..*" ChangelogEntry : changelogEntries
   EntityType *-- "0..*" ChangelogEntry : changelogEntries
   DataProduct *-- "0..*" ChangelogEntry : changelogEntries
+  Agent *-- "0..*" ChangelogEntry : changelogEntries
   click ApiResource href "#apiresource" "Go to ApiResource"
   click EventResource href "#eventresource" "Go to EventResource"
   click EntityType href "#entitytype" "Go to EntityType"
   click DataProduct href "#dataproduct" "Go to DataProduct"
+  click Agent href "#agent" "Go to Agent"
   ```
   
 
@@ -447,6 +493,7 @@
   EventResource *-- "0..*" Link : links
   EntityType *-- "0..*" Link : links
   DataProduct *-- "0..*" Link : links
+  Agent *-- "0..*" Link : links
   Capability *-- "0..*" Link : links
   IntegrationDependency *-- "0..*" Link : links
   OrdResource *-- "0..*" Link : links
@@ -456,6 +503,7 @@
   click EventResource href "#eventresource" "Go to EventResource"
   click EntityType href "#entitytype" "Go to EntityType"
   click DataProduct href "#dataproduct" "Go to DataProduct"
+  click Agent href "#agent" "Go to Agent"
   click Capability href "#capability" "Go to Capability"
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
   click OrdResource href "#ordresource" "Go to OrdResource"
@@ -568,6 +616,7 @@
   EventResource *-- "0..1" Labels : labels
   EntityType *-- "0..1" Labels : labels
   DataProduct *-- "0..1" Labels : labels
+  Agent *-- "0..1" Labels : labels
   Product *-- "0..1" Labels : labels
   Capability *-- "0..1" Labels : labels
   IntegrationDependency *-- "0..1" Labels : labels
@@ -584,6 +633,7 @@
   click EventResource href "#eventresource" "Go to EventResource"
   click EntityType href "#entitytype" "Go to EntityType"
   click DataProduct href "#dataproduct" "Go to DataProduct"
+  click Agent href "#agent" "Go to Agent"
   click Product href "#product" "Go to Product"
   click Capability href "#capability" "Go to Capability"
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
@@ -603,6 +653,7 @@
   class GroupType
   style GroupType stroke:#333,stroke-width:3px
   GroupType *-- "0..1" Labels : labels
+  GroupType --> "0..*" GroupType : partOfGroupTypes
   Group --> "1" GroupType : groupTypeId
   Tombstone --> "0..1" GroupType : groupTypeId
   click GroupType href "#grouptype" "Go to GroupType"
@@ -621,16 +672,19 @@
   EventResource --> "0..*" Group : partOfGroups
   EntityType --> "0..*" Group : partOfGroups
   DataProduct --> "0..*" Group : partOfGroups
+  Agent --> "0..*" Group : partOfGroups
   Capability --> "0..*" Group : partOfGroups
   IntegrationDependency --> "0..*" Group : partOfGroups
   Group --> "1" GroupType : groupTypeId
   Group *-- "0..1" Labels : labels
+  Group --> "0..*" Group : partOfGroups
   Tombstone --> "0..1" Group : groupId
   OrdResource --> "0..*" Group : partOfGroups
   click ApiResource href "#apiresource" "Go to ApiResource"
   click EventResource href "#eventresource" "Go to EventResource"
   click EntityType href "#entitytype" "Go to EntityType"
   click DataProduct href "#dataproduct" "Go to DataProduct"
+  click Agent href "#agent" "Go to Agent"
   click Capability href "#capability" "Go to Capability"
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
   click Group href "#group" "Go to Group"
@@ -652,6 +706,7 @@
   EventResource *-- "0..1" DocumentationLabels : documentationLabels
   EntityType *-- "0..1" DocumentationLabels : documentationLabels
   DataProduct *-- "0..1" DocumentationLabels : documentationLabels
+  Agent *-- "0..1" DocumentationLabels : documentationLabels
   Product *-- "0..1" DocumentationLabels : documentationLabels
   Capability *-- "0..1" DocumentationLabels : documentationLabels
   IntegrationDependency *-- "0..1" DocumentationLabels : documentationLabels
@@ -666,6 +721,7 @@
   click EventResource href "#eventresource" "Go to EventResource"
   click EntityType href "#entitytype" "Go to EntityType"
   click DataProduct href "#dataproduct" "Go to DataProduct"
+  click Agent href "#agent" "Go to Agent"
   click Product href "#product" "Go to Product"
   click Capability href "#capability" "Go to Capability"
   click IntegrationDependency href "#integrationdependency" "Go to IntegrationDependency"
@@ -712,6 +768,26 @@
   ```
   
 
+## ApiCompatibility
+  ```mermaid
+  classDiagram
+  class ApiCompatibility
+  style ApiCompatibility stroke:#333,stroke-width:3px
+  ApiResource *-- "0..*" ApiCompatibility : compatibleWith
+  click ApiResource href "#apiresource" "Go to ApiResource"
+  ```
+  
+
+## EventCompatibility
+  ```mermaid
+  classDiagram
+  class EventCompatibility
+  style EventCompatibility stroke:#333,stroke-width:3px
+  EventResource *-- "0..*" EventCompatibility : compatibleWith
+  click EventResource href "#eventresource" "Go to EventResource"
+  ```
+  
+
 ## ApiModelSelectorOData
   ```mermaid
   classDiagram
@@ -729,6 +805,19 @@
   style ApiModelSelectorJsonPointer stroke:#333,stroke-width:3px
   EntityTypeMapping *-- "0..1" ApiModelSelectorJsonPointer : apiModelSelectors
   click EntityTypeMapping href "#entitytypemapping" "Go to EntityTypeMapping"
+  ```
+  
+
+## ExposedApiResourcesTarget
+  ```mermaid
+  classDiagram
+  class ExposedApiResourcesTarget
+  style ExposedApiResourcesTarget stroke:#333,stroke-width:3px
+  Agent *-- "0..*" ExposedApiResourcesTarget : exposedApiResources
+  ExposedApiResourcesTarget --> "1" ApiResource : ordId
+  click Agent href "#agent" "Go to Agent"
+  click ExposedApiResourcesTarget href "#exposedapiresourcestarget" "Go to ExposedApiResourcesTarget"
+  click ApiResource href "#apiresource" "Go to ApiResource"
   ```
   
 

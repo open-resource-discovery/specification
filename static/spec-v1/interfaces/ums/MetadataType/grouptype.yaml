@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "A Group Type defines the semantics of [group assignments](#group).\nWhat the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).\n\nGroup Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#Groups)."
+  description: "A Group Type defines the semantics of [group assignments](#group).\nWhat the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).\n\nGroup Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups)."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -22,7 +22,7 @@ spec:
       description: 'GroupType ID, which MUST be a valid [Concept ID](../../spec-v1/#concept-id).'
       mandatory: true
       constraints:
-        pattern: '^([a-z0-9-]+(?:[.][a-z0-9-]+)*):([a-zA-Z0-9._\-\/]+)$'
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$'
     - name: 'title'
       type: 'string'
       description: 'Human readable title of the group type.'
@@ -43,6 +43,10 @@ spec:
       type: 'string'
       array: true
       description: "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id)."
+    - name: 'partOfGroupTypes_ID'
+      type: 'guid'
+      array: true
+      description: "A group type can logically be part of another group type, for example in hierarchical taxonomies or graph relationships.\nAssigning a group type to be part of another group type is a lightweight and flexible approach to express such relationships.\n\nThis relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios."
   customTypeDefinitions:
     - name: 'Labels'
       metadataProperties:
@@ -51,6 +55,19 @@ spec:
         - name: 'value'
           type: 'string'
   metadataRelations:
+    - propertyName: 'partOfGroupTypes'
+      relatedTypeName: 'GroupType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'partOfGroupTypes_ID'
+      description: "A group type can logically be part of another group type, for example in hierarchical taxonomies or graph relationships.\nAssigning a group type to be part of another group type is a lightweight and flexible approach to express such relationships.\n\nThis relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios."
+      reverseRelation:
+        relationPropertyName: 'inversePartOfGroupTypes'
+    - propertyName: 'inversePartOfGroupTypes'
+      relatedTypeName: 'GroupType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The Group Types that are part of the given Group Type, assigned from the inverse direction.'
+      mandatory: false
     - propertyName: 'groups'
       relatedTypeName: 'Group'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

@@ -65,7 +65,7 @@ Requirements express the following additional information:
 
 Integration Dependencies can also be mandatory, which implies that it's a prerequisite for provisioning the described system.
 They inherit the typical, shared ORD attributes that can be used to handle lifecycle, versioning, globally unique IDs, correlations and more.
-Integration Dependencies are not meant to describe complete processes, where multiple parties are involved. They are only meant to describe the technical ingredients that are involved in integrating with ideally only one type of target systems for exactly one integration purpose. Overarching information like processes and blueprints are usually governed and defined centrally as they go beyond just pure self-description of individual systems.
+Integration Dependencies are not meant to describe complete processes, where multiple parties are involved. They are only meant to describe the technical ingredients that are involved in integrating with ideally only one type of target systems for exactly one integration purpose. Overarching information like processes and blueprints is usually governed and defined centrally as they go beyond just pure self-description of individual systems.
 Also be aware that Integration Dependencies and Requirements are describing a type-level / "scenario-level" information. This proposal does not cover describing concrete integration instances. In our current target picture, we would prefer integrations to be setup via centralized tools like URM and UCL . In theory ORD could also be used to describe integration instances if only the application / service knows them itself (no central setup) – but this is out of scope of this proposal.
 
 ## Big Picture

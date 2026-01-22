@@ -12,6 +12,4 @@ These examples demonstrate ORD features but require customization before use. Sp
 All files in this folder will be used for example documentation and will also be validated.
 
 All ORD Documents MUST start with `document-` and all ORD Configs with `configuration-`.
-The file extension must be `.json`, so they are considered for documentation and validation.
-
-Files with `.jsonc` extension can be created for PoC / prototyping purposes, but they will essentially be ignored.
+The file extension must be `.json` or `.jsonc`, so they are considered for documentation and validation.
