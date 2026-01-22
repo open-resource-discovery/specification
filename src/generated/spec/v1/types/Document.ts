@@ -2714,6 +2714,25 @@ export interface ApiResourceIntegrationAspect {
    *
    */
   minVersion?: string;
+  /**
+   * List of individual API operations that are sufficient to achieve the aspect.
+   */
+  subset?: APIResourceIntegrationAspectSubset[];
+}
+/**
+ * Defines that API Resource Integration Aspect only requires a subset of the referenced contract.
+ *
+ * For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
+ * This information helps to narrow down what is really necessary and can help optimize the integration.
+ */
+export interface APIResourceIntegrationAspectSubset {
+  /**
+   * The ID of the individual API operation or tool.
+   *
+   * This MUST be an ID that is understood by the used protocol and resource definition format.
+   * E.g. for OpenAPI this is the `operationId`, for MCP this is the tool `name`.
+   */
+  operationId: string;
 }
 /**
  * Event resource related integration aspect

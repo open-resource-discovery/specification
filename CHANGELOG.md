@@ -10,6 +10,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `subset` property to `ApiResourceIntegrationAspect` with new `ApiResourceIntegrationAspectSubset` definition
+  - This allows narrowing down API resource integration aspects to specific operations or tools
+  - The `operationId` field can be used to specify individual API operations (e.g., OpenAPI `operationId`) or tools (e.g., MCP tool `name`)
+
 ## [1.13.0]
 
 ### Added
@@ -432,4 +438,3 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - In both cases, they share the same interface and predefined types
   - The internal interface name changed from `APIResourceLink` to `APIEventResourceLink`
     - This doesn't have any effect on the interface contract, but may need to be considered for internal refactoring / renaming.
-
