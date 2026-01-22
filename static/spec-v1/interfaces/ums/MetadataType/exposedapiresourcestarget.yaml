@@ -1,0 +1,35 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'exposedapiresourcestarget'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'ExposedApiResourcesTarget'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Reference to an API Resource that exposes the functionality of an agent.\n\nThis is a complex object to allow additional properties / selections to be attached in the future."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId_ID'
+      type: 'guid'
+      description: "The API Resource ORD ID that this reference points to.\n\nMUST be a valid reference to an [API Resource](#api-resource) ORD ID."
+      mandatory: true
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'ordId'
+      relatedTypeName: 'ApiResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'ordId_ID'
+      description: "The API Resource ORD ID that this reference points to.\n\nMUST be a valid reference to an [API Resource](#api-resource) ORD ID."
+      mandatory: true

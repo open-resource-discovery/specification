@@ -12,9 +12,24 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
+- Added `Agent` as a new top-level entity type in ORD
+  - Agents provide high-level descriptions of systems that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals. This may be an AI agent or a rule-based agent.
+  - Agents have `exposedApiResources` to describe their API interface, e.g. using the A2A protocol.
+  - Agents have `integrationDependencies` to describe which external resources like APIs, MCP Servers etc. they depend on.
+  - Added example document [document-agents.json](examples/documents/document-agents.json) demonstrating agent usage with A2A protocol
+  - Added example A2A agent card definition [DisputeResolutionAgentcard.json](examples/definitions/DisputeResolutionAgentcard.json)
+  - Added [AI Agents and Protocols](docs/spec-v1/concepts/ai-agents-and-protocols.md) concept documentation
+- Introduced `abstract` property for API, Event and Data Product Resources to indicate interface-only resources.
 - Added `subset` property to `ApiResourceIntegrationAspect` with new `ApiResourceIntegrationAspectSubset` definition
   - This allows narrowing down API resource integration aspects to specific operations or tools
   - The `operationId` field can be used to specify individual API operations (e.g., OpenAPI `operationId`) or tools (e.g., MCP tool `name`)
+- Added `labels` and `correlationIds` to group and group type.
+  - This allows to apply extensions / references to non ORD concepts via IDs, making the group concept more extensible.
+
+### Fixed
+
+- BREAKING FIX: make `compatibleWith` an array of ORD IDs and a maximum version instead of an ORD ID value. Only this way one can correctly express compatibility with a dedicated contract versions.
+  - We're introducing this as a fix, because the feature has not been adopted so far and we think that the information missing otherwise would make the concept unviable for real scenarios.
 
 ## [1.13.0]
 

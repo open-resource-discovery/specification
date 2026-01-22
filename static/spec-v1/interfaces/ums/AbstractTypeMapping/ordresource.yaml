@@ -18,5 +18,8 @@ spec:
         name: 'DataProduct'
         namespace: '/sap/core/ucl/metadata/ord/v1'
     - includedType:
+        name: 'Agent'
+        namespace: '/sap/core/ucl/metadata/ord/v1'
+    - includedType:
         name: 'Capability'
         namespace: '/sap/core/ucl/metadata/ord/v1'

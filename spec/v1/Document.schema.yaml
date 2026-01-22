@@ -14,6 +14,7 @@ x-property-order:
   - EntityType
   - Capability
   - DataProduct
+  - Agent
   - IntegrationDependency
   - Vendor
   - Product
@@ -237,6 +238,15 @@ properties:
     x-introduced-in-version: "1.8.0"
     items:
       $ref: "#/definitions/DataProduct"
+
+  agents:
+    type: array
+    description: |-
+      Array of all AI Agents that are described in this ORD document.
+    x-introduced-in-version: "1.14.0"
+    x-feature-status: beta
+    items:
+      $ref: "#/definitions/Agent"
 
   integrationDependencies:
     type: array
@@ -982,6 +992,17 @@ definitions:
       lastUpdate:
         <<: *lastUpdate
 
+      abstract: &abstract
+        type: boolean
+        default: false
+        x-introduced-in-version: "1.13.0"
+        x-feature-status: beta
+        description: |-
+          Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
+
+          Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+
+          More details can be found on the [Compatibility](../concepts/compatibility) concept page.
       visibility:
         <<: *visibility
 
@@ -1295,19 +1316,24 @@ definitions:
           - "Implemented as defined in the [S/4HANA Attachment Service documentation](https://api.sap.com/api/API_CV_ATTACHMENT_SRV/overview)"
 
       compatibleWith: &compatibleWith
+        x-introduced-in-version: "1.13.0"
+        x-feature-status: beta
         type: array
         description: |-
-          A reference to the interface (API contract) that this API implements.
-          Serves as a declaration of compatible implementation of API contract, effectively functioning as an "implementationOf" relationship.
+          A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
+
+          Serves as a declaration of compatible implementation of API contract, effectively functioning as an "implementationOf" relationship. The data that compatible APIs return follow the same schema, but itself can be different.
+          This means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.
 
           MUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.
 
           All APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+
+          More details can be found on the [Compatibility](../concepts/compatibility) concept page.
         items:
-          type: string
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          $ref: "#/definitions/ApiCompatibility"
         examples:
-          - [sap.s4com:apiResource:SomeSharedContract:v1]
+          - [{ "ordId": "sap.s4com:apiResource:SomeSharedContract:v1", "maxVersion": "1.2" }]
 
       # TODO: Clarify whether to include Data Slices or not
 
@@ -1593,6 +1619,9 @@ definitions:
       lastUpdate:
         <<: *lastUpdate
 
+      abstract:
+        <<: *abstract
+
       visibility:
         <<: *visibility
 
@@ -1684,17 +1713,18 @@ definitions:
       compatibleWith:
         <<: *compatibleWith
         description: |-
-          Declares this event resource is a compatible implementation of the referenced contract.
-          This is also sometimes known as [Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface).
+          A reference to the interface (event contract) and its maximum version that this event implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
 
-          MUST be a valid reference to an (usually external) [Event Resource](#event-resource) ORD ID.
+          Serves as a declaration of compatible implementation of event contract, effectively functioning as an "implementationOf" relationship. The data that compatible events return follow the same schema, but itself can be different.
+          This means that if one event is returning 1 record for a dedicated request, a compatible event could return multiple and different records, as long as they adhere to the same schema.
 
-          All event resources that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+          All events that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
+
+          More details can be found on the [Compatibility](../concepts/compatibility) concept page.
         items:
-          type: string
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          $ref: "#/definitions/EventCompatibility"
         examples:
-          - [sap.s4com:eventResource:SomeSharedContract:v1]
+          - [{ "ordId": "sap.s4:eventResource:BillofMaterialEvents:v1", "maxVersion": "1.2" }]
 
       responsible:
         <<: *responsible
@@ -2081,7 +2111,15 @@ definitions:
       disabled:
         x-feature-status: beta # but needs deprecation with datasphere & UCL
         <<: *disabled
-        x-hide-property: true
+        x-hide: true
+
+      abstract:
+        <<: *abstract
+        type: boolean
+        description: |-
+          Indicates that the data product serves as interface only. All output ports MUST be marked as abstract.
+
+          Implementations of this data product MUST declare compatible with on their specific output port resources as consumption of data products happens through the output ports.
 
       minSystemVersion:
         <<: *minSystemVersion
@@ -2630,6 +2668,199 @@ definitions:
       - type
       - mediaType
       - url
+
+  ############################################################################################################
+
+  Agent:
+    type: object
+    title: Agent
+    x-ums-type: root
+    x-introduced-in-version: "1.14.0"
+    x-feature-status: beta
+    x-ums-implements: "#/definitions/OrdResource"
+    description: |-
+      An **Agent** provides a high-level description of an AI-powered autonomous system that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals.
+
+      An Agent can relate to specific entity types it works with, declare integration dependencies on external systems it requires, and expose its capabilities through APIs using protocols like A2A (Agent-to-Agent).
+
+      Agents enable intelligent automation and decision-making within business processes by providing semantic understanding and context-aware capabilities beyond traditional API-based integrations.
+
+      For more details, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols.md).
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.foo.bar:agent:disputeAgent:v1"
+
+      localId:
+        <<: *localId
+
+      correlationIds:
+        <<: *correlationIds
+
+      title:
+        <<: *title
+        examples:
+          - Dispute Agent
+
+      shortDescription:
+        <<: *shortDescription
+
+      description:
+        <<: *description
+
+      partOfPackage:
+        <<: *partOfPackage
+        x-ums-reverse-relationship:
+          propertyName: agents
+          description: |-
+            The agents that are part the given Package.
+          min: 0
+          max: "*"
+
+      partOfGroups:
+        <<: *partOfGroups
+        x-ums-reverse-relationship:
+          propertyName: agentMembers
+          description: |-
+            The Agents that are part the given Group.
+
+      version:
+        <<: *version
+
+      lastUpdate:
+        <<: *lastUpdate
+
+      visibility:
+        <<: *visibility
+
+      releaseStatus:
+        <<: *releaseStatus
+
+      disabled:
+        <<: *disabled
+
+      minSystemVersion:
+        <<: *minSystemVersion
+
+      partOfProducts:
+        <<: *partOfProducts
+        minItems: 0
+
+      responsible:
+        <<: *responsible
+
+      deprecationDate:
+        <<: *deprecationDate
+
+      sunsetDate:
+        <<: *sunsetDate
+
+      successors:
+        type: array
+        description: |-
+          The successor resource(s).
+
+          MUST be a valid reference to an ORD ID.
+
+          If the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.
+          If `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          x-association-target:
+            - "#/definitions/Agent/ordId"
+          maxLength: 255
+
+      changelogEntries:
+        <<: *changelogEntries
+
+      policyLevels:
+        <<: *policyLevels
+
+      countries:
+        <<: *countries
+
+      lineOfBusiness:
+        <<: *lineOfBusiness
+
+      industry:
+        <<: *industry
+
+      relatedEntityTypes:
+        # NOTE: It would have been better for consistency and evolution to use the `RelatedEntityType` object
+        #       Like we do it on the Entity Type -> Entity Type relation
+        type: array
+        description: |-
+          Optional list of related EntityType Resources.
+
+          MUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          x-association-target:
+            - "#/definitions/EntityType/ordId"
+        x-ums-reverse-relationship:
+          propertyName: agents
+          description: |-
+            Agents associated to the Entity Type.
+          min: 0
+          max: "*"
+
+        examples:
+          - ["sap.odm:entityType:WorkforcePerson:v1"]
+
+      exposedApiResources:
+        type: array
+        description: |-
+          Optional list of API Resources that expose the functionality of the agent. Typically using the A2A protocol, but other protocols are possible as well.
+
+          MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
+        items:
+          $ref: "#/definitions/ExposedApiResourcesTarget"
+        examples:
+          - [{ "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1" }]
+
+      integrationDependencies:
+        type: array
+        description: |-
+          Optional list of integration dependencies that the agent relies on.
+
+          MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+        items:
+          type: string
+          pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          maxLength: 255
+          x-association-target:
+            - "#/definitions/IntegrationDependency/ordId"
+        examples:
+          - ["sap.foo.bar:integrationDependency:DisputeCaseManagement:v1"]
+
+      links:
+        <<: *links
+        description: |-
+          Generic Links with arbitrary meaning and content.
+
+      tags:
+        <<: *tags
+
+      labels:
+        <<: *labels
+
+      documentationLabels:
+        <<: *documentationLabels
+
+    additionalProperties: false
+    required:
+      - ordId
+      - title
+      - version
+      - releaseStatus
+      - visibility
+      - partOfPackage
+    x-recommended:
+      - lastUpdate
 
   ############################################################################################################
 
@@ -3976,6 +4207,12 @@ definitions:
       description:
         <<: *description
 
+      labels:
+        <<: *labels
+
+      correlationIds:
+        <<: *correlationIds
+
       partOfGroupTypes:
         type: array
         items:
@@ -4053,6 +4290,12 @@ definitions:
 
       description:
         <<: *description
+
+      labels:
+        <<: *labels
+
+      correlationIds:
+        <<: *correlationIds
 
       partOfGroups:
         <<: *partOfGroups
@@ -4224,6 +4467,87 @@ definitions:
       - entityTypeTargets
 
   ############################################################################################################
+  ApiCompatibility:
+    title: API Compatibility
+    x-introduced-in-version: "1.13.0"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Describes the compatibility of the API with other APIs. This can be used to express that an API is compatible with another API version.
+    properties:
+      ordId:
+        <<: *ordId
+
+        description: |-
+          ORD ID of the APIResource that serves as contract that this resource is compatible with.
+
+          MUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.s4:apiResource:API_BILL_OF_MATERIAL_SRV:v1"
+
+      maxVersion:
+        type: string
+        description: |-
+          Specifies the maximum version of the interface contract that this resource is compatible with. This is the version, that the resource fully implements and supports.
+
+          Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one. It is important to consider, given the example of an API version 1.0, that has the fields A and B.
+          Being compatible with version 1.0 means to have exactly the fields A and B and potential tenant specific extensions in a dedicated namespace.
+          If an API contract changes to version 1.1 compatible by adding field C, the API declaring compatibility towards 1.0, will miss field C. Only if adopting the contract of 1.1 with having fields A, B, and C, such an API is also
+          compatible with version 1.1 of the contract. However, a client relying on version 1.0 of the contract, can still work with the API being compatible with version 1.1 of the contract.
+
+          Following the [Semantic Versioning 2.0.0](https://semver.org/) standard, patch versions (x.y.Z) must not have impact on the schema/contract. Therefore, the maxVersion are only the major.minor parts of a semantic version.
+
+        pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)$
+        examples:
+          - "1.2"
+          - "2.0"
+    additionalProperties: false
+    required:
+      - ordId
+      - maxVersion
+
+  EventCompatibility:
+    title: Event Compatibility
+    x-introduced-in-version: "1.13.0"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Describes the compatibility of the Event with other Events. This can be used to express that an Event is compatible with another Event version.
+    properties:
+      ordId:
+        <<: *ordId
+
+        description: |-
+          ORD ID of the EventResource that serves as contract that this resource is compatible with.
+
+          MUST be a valid reference to an (usually external) [Event Resource](#event-resource) ORD ID.
+
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.s4:eventResource:BillofMaterialEvents:v1"
+
+      maxVersion:
+        type: string
+        description: |-
+          Specifies the maximum version of the interface contract that this resource is compatible with. This is the version, that the resource fully implements and supports.
+
+          Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one. It is important to consider, given the example of an event version 1.0, that has the fields A and B. Being compatible with version 1.0 means to have exactly the fields A and B and potential tenant specific extensions in a dedicated namespace.
+          If an event contract changes to version 1.1 compatible by adding field C, the event declaring compatibility towards 1.0, will miss field C. Only if adopting the contract of 1.1 with having fields A, B, and C, such an event is also
+          compatible with version 1.1 of the contract. However, a client relying on version 1.0 of the contract, can still work with the event being compatible with version 1.1 of the contract.
+
+          Following the [Semantic Versioning 2.0.0](https://semver.org/) standard, patch versions (x.y.Z) must not have impact on the schema/contract. Therefore, the maxVersion are only the major.minor parts of a semantic version.
+
+        pattern: ^(0|[1-9]\d*)\.(0|[1-9]\d*)$
+        examples:
+          - "1.2"
+          - "2.0"
+    additionalProperties: false
+    required:
+      - ordId
+      - maxVersion
+
+  ############################################################################################################
 
   ApiModelSelectorOData:
     title: Api Model Selector (Odata)
@@ -4319,8 +4643,36 @@ definitions:
 
   ############################################################################################################
 
+  ExposedApiResourcesTarget:
+    title: Exposed API Resource
+    x-introduced-in-version: "1.14.0"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Reference to an API Resource that exposes the functionality of an agent.
+
+      This is a complex object to allow additional properties / selections to be attached in the future.
+    properties:
+      ordId:
+        <<: *ordId
+        description: |-
+          The API Resource ORD ID that this reference points to.
+
+          MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/ApiResource/ordId"
+        examples:
+          - "sap.foo:apiResource:DisputeResolutionAgent:v1"
+
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
   EntityTypeOrdIdTarget:
-    title: Entity Type Target (Ord Id)
+    title: Entity Type Target (ORD ID)
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
     x-deprecation-text: |-
@@ -4454,7 +4806,7 @@ definitions:
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)?$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct|agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)?$
         x-association-target:
           - "#/definitions/Package/ordId"
           - "#/definitions/ConsumptionBundle/ordId"
@@ -4466,6 +4818,7 @@ definitions:
           - "#/definitions/EntityType/ordId"
           - "#/definitions/IntegrationDependency/ordId"
           - "#/definitions/DataProduct/ordId"
+          - "#/definitions/Agent/ordId"
         description: |-
           [ORD ID](../index.md#ord-id) of the ORD resource/taxonomy that has been removed.
       groupId:
@@ -4599,7 +4952,7 @@ definitions:
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource|eventResource|capability|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource|eventResource|capability|dataProduct|agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
         examples: []
 
       localId:
