@@ -3,7 +3,7 @@ sidebar_position: 0
 title: ORD Specification
 ---
 
-# Open Resource Discovery Specification 1.13
+# Open Resource Discovery Specification 1.14
 
 ## Notational Conventions
 
