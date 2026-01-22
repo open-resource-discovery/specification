@@ -10,6 +10,16 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `Agent` as a new top-level entity type in ORD
+  - Agents provide high-level descriptions of systems that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals. This may be an AI agent or a rule-based agent.
+  - Agents have `exposedApiResources` to describe their API interface, e.g. using the A2A protocol.
+  - Agents have `integrationDependencies` to describe which external resources like APIs, MCP Servers etc. they depend on.
+  - Added example document [document-agents.json](examples/documents/document-agents.json) demonstrating agent usage with A2A protocol
+  - Added example A2A agent card definition [DisputeResolutionAgentcard.json](examples/definitions/DisputeResolutionAgentcard.json)
+  - Added [AI Agents and Protocols](docs/spec-v1/concepts/ai-agents-and-protocols.md) concept documentation
+
 ## [1.13.0]
 
 ### Added
@@ -432,4 +442,3 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - In both cases, they share the same interface and predefined types
   - The internal interface name changed from `APIResourceLink` to `APIEventResourceLink`
     - This doesn't have any effect on the interface contract, but may need to be considered for internal refactoring / renaming.
-
