@@ -162,6 +162,17 @@ spec:
           description: "Minimum version of the references resource that the integration requires.\n"
           constraints:
             pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+        - name: 'subset'
+          type: 'custom'
+          customTypeName: 'ApiResourceIntegrationAspectSubset'
+          array: true
+          description: 'List of individual API operations that are sufficient to achieve the aspect.'
+    - name: 'ApiResourceIntegrationAspectSubset'
+      metadataProperties:
+        - name: 'operationId'
+          type: 'string'
+          description: "The ID of the individual API operation or tool.\n\nThis MUST be an ID that is understood by the used protocol and resource definition format.\nE.g. for OpenAPI this is the `operationId`, for MCP this is the tool `name`."
+          mandatory: true
     - name: 'EventResourceIntegrationAspect'
       metadataProperties:
         - name: 'ordId'
