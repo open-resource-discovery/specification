@@ -3393,13 +3393,20 @@ definitions:
         description: |
           Minimum version of the references resource that the integration requires.
 
+      subset:
+        type: array
+        description: |-
+          List of individual API operations that are sufficient to achieve the aspect.
+        items:
+          $ref: "#/definitions/ApiResourceIntegrationAspectSubset"
+
       # consumptionBundleRestriction: &consumptionBundleRestriction
       #   type: array
       #   description: |-
       #     Within the context of the Integration Dependency, there can be constraints which Consumption Bundles to use.
       #   items:
       #     type: string
-      #     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\-]+):(alpha|beta|v[0-9]+|)$
+      #     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+]*):(consumptionBundle):([a-zA-Z0-9._\-]+):(alpha|beta|v[0-9]+|)$
       #   examples:
       #     - ['sap.foo:consumptionBundle:basicAuth:v1']
 
@@ -3482,6 +3489,32 @@ definitions:
     additionalProperties: false
     required:
       - eventType
+
+  ApiResourceIntegrationAspectSubset:
+    type: object
+    title: API Resource Integration Aspect Subset
+    x-introduced-in-version: "1.10.0"
+    x-ums-type: "custom"
+    description: |-
+      Defines that API Resource Integration Aspect only requires a subset of the referenced contract.
+
+      For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
+      This information helps to narrow down what is really necessary and can help optimize the integration.
+    properties:
+      operationId:
+        type: string
+        description: |-
+          The ID of the individual API operation or tool.
+
+          This MUST be an ID that is understood by the used protocol and resource definition format.
+          E.g. for OpenAPI this is the `operationId`, for MCP this is the tool `name`.
+        examples:
+          - "getOrderById"
+          - "createCustomer"
+
+    additionalProperties: false
+    required:
+      - operationId
 
   Vendor:
     type: object

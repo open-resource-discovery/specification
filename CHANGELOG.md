@@ -20,6 +20,9 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Added example A2A agent card definition [DisputeResolutionAgentcard.json](examples/definitions/DisputeResolutionAgentcard.json)
   - Added [AI Agents and Protocols](docs/spec-v1/concepts/ai-agents-and-protocols.md) concept documentation
 - Introduced `abstract` property for API, Event and Data Product Resources to indicate interface-only resources.
+- Added `subset` property to `ApiResourceIntegrationAspect` with new `ApiResourceIntegrationAspectSubset` definition
+  - This allows narrowing down API resource integration aspects to specific operations or tools
+  - The `operationId` field can be used to specify individual API operations (e.g., OpenAPI `operationId`) or tools (e.g., MCP tool `name`)
 - Added `labels` and `correlationIds` to group and group type.
   - This allows to apply extensions / references to non ORD concepts via IDs, making the group concept more extensible.
 
