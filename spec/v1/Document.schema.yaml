@@ -4174,6 +4174,12 @@ definitions:
       description:
         <<: *description
 
+      labels:
+        <<: *labels
+
+      correlationIds:
+        <<: *correlationIds
+
       partOfGroupTypes:
         type: array
         items:
@@ -4251,6 +4257,12 @@ definitions:
 
       description:
         <<: *description
+
+      labels:
+        <<: *labels
+
+      correlationIds:
+        <<: *correlationIds
 
       partOfGroups:
         <<: *partOfGroups

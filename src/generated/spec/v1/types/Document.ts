@@ -3725,6 +3725,17 @@ export interface Group {
    * Detailed documentation SHOULD be attached as (typed) links.
    */
   description?: string;
+  labels?: Labels;
+  /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
   /**
    * A group (instance) can logically be part of another group, for example in hierarchical taxonomies or graph relationships.
    * Assigning a group to be part of another group is a lightweight and flexible approach to express such relationships.
@@ -3758,6 +3769,17 @@ export interface GroupType {
    * Detailed documentation SHOULD be attached as (typed) links.
    */
   description?: string;
+  labels?: Labels;
+  /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
   /**
    * A group type can logically be part of another group type, for example in hierarchical taxonomies or graph relationships.
    * Assigning a group type to be part of another group type is a lightweight and flexible approach to express such relationships.
