@@ -820,6 +820,7 @@ It MUST be constructed as defined here:
   - Use `entityType` for `EntityType`
   - Use `integrationDependency` for `IntegrationDependency`
   - Use `dataProduct` for `DataProduct`
+  - Use `agent` for `Agent`
 
 - **`<resourceName>`** := the technical resource name.
   - MUST only contain ASCII letters (`a-z`, `A-Z`), digits (`0-9`) and the special characters `-`, `_` and `.`.
@@ -848,7 +849,7 @@ It MUST be constructed as defined here:
 An ORD ID MUST match the following [regular expression](https://en.wikipedia.org/wiki/Regular_expression):
 
 ```regex
-^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
+^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct|agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)$
 ```
 
 Examples:
