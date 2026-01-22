@@ -2091,7 +2091,7 @@ definitions:
       disabled:
         x-feature-status: beta # but needs deprecation with datasphere & UCL
         <<: *disabled
-        x-hide-property: true
+        x-hide: true
 
       minSystemVersion:
         <<: *minSystemVersion
