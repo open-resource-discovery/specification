@@ -29,7 +29,7 @@ properties:
     description: |-
       Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.
 
-      The `baseUrl` MUST not contain a leading slash.
+      The `baseUrl` MUST NOT contain a leading slash.
 
       If you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.
       This implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.
@@ -109,6 +109,12 @@ definitions:
 
           Please read the [article on perspectives](../concepts/perspectives) for more explanations.
         oneOf:
+          - const: "system-type"
+            description: |-
+              Describes a static [system-type](../index.md#def-system-type) perspective, which is version independent.
+
+              If a system is not versioned (continuous delivery) or resources are not tied to a system, the system-type perspective
+              implies that the information apply, no matter which system version or instance.
           - const: "system-version"
             description: |-
               Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.
@@ -154,7 +160,7 @@ definitions:
         default: false
         x-deprecated-in-version: "1.12.0"
         x-deprecation-text: |-
-          Please use `perspectives` instead and split content of different perspectives into different ORD documents.
+          Please use `perspective` instead and split content of different perspectives into different ORD documents.
         examples:
           - true
 
@@ -245,7 +251,7 @@ definitions:
           MUST only be provided if `type` is set to `custom`.
         examples:
           - |-
-            To set up the access to OData APIs, please refer to the [SAP Cloud for Customer OData API](https://help.sap.com/viewer/1364b70b9cbb417ea5e2d80e966d4f49/CLOUD/en-US) help pages."
+            To set up the access to OData APIs, please refer to the [SAP Cloud for Customer OData API](https://help.sap.com/viewer/1364b70b9cbb417ea5e2d80e966d4f49/CLOUD/en-US) help pages.
     additionalProperties: false
     required:
       - "type"

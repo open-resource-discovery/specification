@@ -8,7 +8,7 @@ sidebar_position: 0
 
 ## Description
 
-The `open` access strategy indicates that there is no mandatory authentication and authorization to access the information. A regular HTTP GET call will be sufficient as the information are _unprotected_.
+The `open` access strategy indicates that there is no mandatory authentication and authorization to access the information. A regular HTTP GET call will be sufficient as the information is _unprotected_.
 
 Whether this is a valid choice depends on the security considerations that the ORD providers are subject to.
 
@@ -16,7 +16,7 @@ The `accessStrategy`.`type` value for it is: `open`.
 
 ## Optional Tenant HTTP Headers
 
-It may be necessary to indicate which tenant the information are requested for.
+It may be necessary to indicate which tenant the information is requested for.
 This becomes necessary when the ORD Provider is multi-tenant and the metadata it provides is different across those tenants (system-instance-aware).
 
 The HTTP headers are optional and will only be sent by the ORD Aggregator if they are applicable and known by it.

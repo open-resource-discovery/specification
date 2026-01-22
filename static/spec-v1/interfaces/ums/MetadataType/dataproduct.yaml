@@ -93,7 +93,9 @@ spec:
       description: "Indicates that the data product serves as interface only. All output ports MUST be marked as abstract.\n\nImplementations of this data product MUST declare compatible with on their specific output port resources as consumption of data products happens through the output ports."
     - name: 'minSystemVersion'
       type: 'string'
-      description: "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version."
+      description: "The resource has been introduced in the given [system version](../index.md#system-version).\nThis implies that the resource is only available if the system instance is of at least that system version.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard."
+      constraints:
+        pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
     - name: 'lifecycleStatus'
       type: 'string'
       description: "Lifecycle status of the Data Product as a whole.\n\nMUST be provided when describing the system-instance-aware (run-time) perspective.\nSHOULD NOT be provided in static (design-time) perspective. Static aggregators MUST ignore this property."

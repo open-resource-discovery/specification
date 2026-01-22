@@ -52,7 +52,7 @@ It can be freely implemented by SAP partners and customers.
 
 The standard is published at https://open-resource-discovery.org and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/).
 
-Please note that ORD being an open protocol does not imply that the resources and information described through it are "open".
+Please note that ORD being an open protocol does not imply that the resources and information described through it is "open".
 They can be categorized explicitly, for example through the `visibility` attribute.
 
 > 🎧 Checkout the openSAP podcast [The Open Source Way - Open Resource Discovery](https://podcast.opensap.info/open-source-way/2024/06/14/open-resource-discovery-ord/).

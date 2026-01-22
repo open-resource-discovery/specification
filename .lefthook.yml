@@ -5,11 +5,19 @@
 pre-commit:
   parallel: false
   commands:
+    check_merge_markers:
+      # Prevent committing files with unresolved merge conflict markers.
+      glob: "*.{js,ts,jsx,tsx,yaml,yml,json,md,mdx,css,html,mjs}"
+      run: |
+        if git diff --cached --name-only | xargs grep -l '^<<<<<<< \|^=======$\|^>>>>>>> ' 2>/dev/null; then
+          echo "Error: Merge conflict markers found in staged files. Please resolve conflicts before committing."
+          exit 1
+        fi
     generate:
-      run: npm run generate
-      stage_fixed: true
       # If generation fails, the commit is blocked.
       # `stage_fixed: true` will re-stage any updated files.
+      run: npm run generate
+      stage_fixed: true
     git_add_generated:
-      run: git add src/generated/ docs/spec-v1/interfaces/ docs/spec-v1/examples/ docs/spec-v1/diagrams/ static/spec-v1/interfaces/
       # Stage only the generated TypeScript types and copied documentation/schema files.
+      run: git add src/generated/ docs/spec-v1/interfaces/ docs/spec-v1/examples/ docs/spec-v1/diagrams/ static/spec-v1/interfaces/

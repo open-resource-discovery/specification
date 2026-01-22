@@ -4,7 +4,7 @@ info:
     Open Resource Discovery (ORD) is a protocol that standardizes how applications and services publish and discover their exposed resources such as APIs and Events.
 
     This API is an implementation of the [ORD Provider API](../index.md#ord-provider-api).
-  version: 1.9.0
+  version: 1.13.0
   title: Open Resource Discovery Document API
   license:
     name: Apache 2.0

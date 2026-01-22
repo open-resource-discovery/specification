@@ -13,7 +13,7 @@ An application or service can be described both from a static or a dynamic persp
 
 ### Static Perspective
 
-The static `system-version` perspective describes how an application or services looks like _in general_ at design-time.
+The static `system-version` or `system-type` perspective describes how an application or services looks like _in general_ at design-time.
 This perspective is especially useful for customers, who haven't purchased a product yet and need to understand what technical capabilities they would get.
 It also helps to understand the common baseline of what all systems of the same type provide and how it changes over time.
 
@@ -22,15 +22,31 @@ Static metadata is known at design-time or deploy-time, when a new version of an
 For cloud software with continuous delivery, the version may not be explicit or of interest to the consumer, a fallback to a "latest" version may be needed.
 But consider that also cloud software that is going through phased deployments therefore can have multiple versions active at the same time.
 
-The static perspective describes the shared metadata of all system instances (tenants) of the same system version.
+In the case that the system is not versioned (continuous delivery) or resources do not relate to a system directly, the `system-type` perspective can be used.
+The `system-type` information apply no matter which system version or instance is used.
+
+The static perspective describes the shared metadata of all system instances (tenants) of the same system version or version independent.
 Either the metadata is always the same or it explicitly ignores the tenant-specific extensibility, configuration and any feature toggles - describing what's generic and shared.
-The advantage of static metadata is that is always available, there is no need to first provision tenants to get it. It is also a good integration contract for everything that is meant to work potentially with _any_ tenant.
+The advantage of static metadata is that it is always available, there is no need to first provision tenants to get it. It is also a good integration contract for everything that is meant to work potentially with _any_ tenant.
 
 At SAP, we have the [SAP Business Accelerator Hub](https://api.sap.com/) that documents the static perspective.
 
+#### System Version Guidelines
+
+Versions and Lifecycle is often difficult. Putting a version on a system is not always straightforward.
+Here are some guidelines how to choose the correct version for the `system-version` perspective:
+
+- If the system has explicit versions (e.g. "v1.0.1", "v2.0.0"), use these versions.
+- If the system does not use SemVer, it has to be converted so that SemVer conventions apply (conservatively).
+  - E.g. if the system uses simple incremental versions like "1", "2" or "2404, convert these to "1.0.0", "2.0.0", "2404.0.0" respectively.
+  - E.g. if the system uses date-based versions like "2024-01-15", convert these to "2024.1.15".
+- If the system is continuously delivered and does not have explicit versions at all, use the `system-type` perspective instead.
+  - However, consider that you may still have different releases rolled out over time and on different stages. If this causes a problem, use `system-version` with below conventions.
+  - Alternatively, use a fixed `1.0.0` version and overwrite it with every new release.
+
 ### Dynamic Perspective
 
-The dynamic perspective describes an application or service how it really looks like, _at run-time_.
+The dynamic perspective describes an application or service as it really looks like, _at run-time_.
 This is more precise than the static perspective, because it can reflect configuration, customization and extensions of the system instance (tenant).
 
 In ORD, we describe this with `perspective`: `system-instance`.
@@ -42,7 +58,7 @@ It is not a "diff" on the static perspective, for this we may consider introduci
 Some examples when metadata can be dynamic:
 
 - APIs or Events can be activated and deactivated per system instance / tenant.
-- APIs or Events interfaces can be extended, e.g. through field extensibility.
+- API or Event interfaces can be extended, e.g. through field extensibility.
 - New resources can be created by the user of the application at run-time (typical situation for frameworks, platforms and extensible applications).
 - Endpoint URLs may be dynamic
 
@@ -50,7 +66,7 @@ At SAP, the run-time discovery of dynamic metadata (system-installation) is hand
 
 ### System Independent Perspective
 
-Some ORD information like Taxonomies, Products and Vendors are not dependent on systems and can use the `system-independent` perspective.
+Some ORD information like Taxonomies, Products and Vendors is not dependent on systems and can use the `system-independent` perspective.
 They can be considered global, static content that can be shared by multiple systems.
 
 Such content is of a "singleton" quality for the whole ORD aggregator and SHOULD not be republished by the individual systems.
@@ -98,24 +114,29 @@ If the system has dynamic metadata, it should describe both perspectives complet
 
 #### Static Aggregators
 
-Static aggregators only describe the `system-version` perspective.
+Static aggregators describe the static perspectives: `system-type` and/or `system-version`.
 
-- If both perspectives are described, it MUST only pick the `system-version` perspective
+- If both static and dynamic perspectives are described, it MUST only pick the static perspectives (`system-type` or `system-version`)
 - If only `system-instance` (or unspecified) perspective is available, we assume this is a generic system instance which is meant to describe all system instances as a subsidiary
+- When aggregating `system-type` perspective, the aggregator MAY derive it from the latest `system-version` if not explicitly provided
 
 #### Dynamic Aggregators
 
 If the aggregator supports both static and dynamic perspectives:
 
-- The ORD aggregator that to be able to aggregate and store both perspectives at the same time.
-- In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior.
+- The ORD aggregator must be able to aggregate and store all perspectives (`system-type`, `system-version`, and `system-instance`) at the same time.
+- In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior:
+  - When `system-instance` is requested but not available, fall back to `system-version`
+  - When `system-version` is requested but not available (or version is unknown), fall back to `system-type`
+  - The aggregator MAY derive `system-type` from the latest `system-version` if not explicitly provided
 
 If the `system-version` perspective is used, the described version MUST be provided via the ORD `describedSystemVersion`.`version` property.
-Ideally, ORD providers SHOULD define the `describedSystemVersion`.`version` property on both the static and the dynamic perspective.
+For the `system-type` perspective, the version property is NOT required as this perspective is version-independent.
+Ideally, ORD providers SHOULD define the `describedSystemVersion`.`version` property on both the `system-version` and `system-instance` perspectives.
 
-The `version` becomes effectively the "join" criteria how the dynamic metadata is associated to the static metadata.
+The `version` becomes effectively the "join" criteria for how the dynamic metadata is associated to the version-specific static metadata.
 
-Some addition considerations that need to be looked into:
+Some additional considerations that need to be looked into:
 
 - An older version of an application / service can have a resource which has been decommissioned (via a `Tombstone`) in a newer version.
   - The inheritance / fallback logic MUST not fall back to the now removed resource.

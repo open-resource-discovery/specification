@@ -6,3 +6,14 @@
 .theme-announcement-bar:has(.internal-banner-hidden) {
   display: none;
 }
+
+/* Allow announcement bar to grow with content on all screen sizes */
+.theme-announcement-bar {
+  height: auto !important;
+  min-height: 30px;
+}
+
+.theme-announcement-bar [class*="announcementBarContent"] {
+  white-space: normal;
+  word-wrap: break-word;
+}

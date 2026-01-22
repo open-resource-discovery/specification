@@ -77,6 +77,40 @@ function initInternalBanner() {
   }, 10000);
 }
 
+var BANNER_CACHE_KEY = "banner-server-cache";
+var BANNER_CACHE_TTL = 24 * 60 * 60 * 1000;
+
+function getBannerCache() {
+  try {
+    var cached = localStorage.getItem(BANNER_CACHE_KEY);
+    if (!cached) return null;
+
+    var parsed = JSON.parse(cached);
+    var now = Date.now();
+
+    if (parsed.timestamp && now - parsed.timestamp < BANNER_CACHE_TTL) {
+      return parsed.data;
+    }
+
+    localStorage.removeItem(BANNER_CACHE_KEY);
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function setBannerCache(data) {
+  try {
+    var cacheEntry = {
+      timestamp: Date.now(),
+      data: data,
+    };
+    localStorage.setItem(BANNER_CACHE_KEY, JSON.stringify(cacheEntry));
+  } catch (e) {
+    // Silent fail if localStorage is full or unavailable
+  }
+}
+
 function getBannerApiUrl() {
   var baseUrl = window.bannerServerBaseUrl || "";
   if (!baseUrl) return null;
@@ -109,6 +143,25 @@ async function fetchWithRetry(url, retries, delay) {
   return null;
 }
 
+function displayBanner(banner, data) {
+  if (!data || !data.url) return;
+
+  var content =
+    banner.querySelector(".announcementBarContent") ||
+    banner.querySelector("[class*='announcementBarContent']");
+
+  if (content) {
+    content.innerHTML =
+      '<b>This is PUBLIC version. For internal version, follow this URL: <a href="' +
+      data.url +
+      '">' +
+      data.url +
+      "</a></b>";
+    banner.style.display = "";
+    adjustLayoutForBanner();
+  }
+}
+
 async function fetchBannerContent(banner) {
   var apiUrl = getBannerApiUrl();
   if (!apiUrl) {
@@ -118,24 +171,18 @@ async function fetchBannerContent(banner) {
     return;
   }
 
+  var cachedData = getBannerCache();
+  if (cachedData) {
+    displayBanner(banner, cachedData);
+    return;
+  }
+
   try {
     var data = await fetchWithRetry(apiUrl, 2, 1000);
 
     if (data && data.url) {
-      var content =
-        banner.querySelector(".announcementBarContent") ||
-        banner.querySelector("[class*='announcementBarContent']");
-
-      if (content) {
-        content.innerHTML =
-          '<b>This is PUBLIC version. For internal version, follow this URL: <a href="' +
-          data.url +
-          '">' +
-          data.url +
-          "</a></b>";
-        banner.style.display = "";
-        adjustLayoutForBanner();
-      }
+      setBannerCache(data);
+      displayBanner(banner, data);
     }
   } catch (_error) {
     // Silent catch
@@ -147,19 +194,39 @@ function adjustLayoutForBanner() {
   var banner = document.querySelector(".theme-announcement-bar");
   var navbar = document.querySelector(".navbar");
   var mainWrapper = document.querySelector(".main-wrapper");
+  var docRoot = document.querySelector("[class*='docRoot_']");
 
   if (!banner || !navbar) return;
 
-  // Only apply on mobile/tablet (max-width: 996px)
-  if (window.innerWidth > 996) return;
-
   var bannerHeight = banner.offsetHeight;
+  var isDesktop = window.innerWidth > 996;
+
+  if (isDesktop) {
+    // Desktop: reset mobile styles
+    navbar.style.top = "";
+    if (mainWrapper) {
+      mainWrapper.style.paddingTop = "";
+    }
+    // Add padding to docRoot if banner is taller than default 30px
+    if (docRoot && bannerHeight > 30) {
+      docRoot.style.paddingTop = (bannerHeight - 30) + "px";
+    } else if (docRoot) {
+      docRoot.style.paddingTop = "";
+    }
+    return;
+  }
+
+  // Mobile/tablet: adjust navbar and main-wrapper
   if (bannerHeight > 0) {
     navbar.style.top = bannerHeight + "px";
     if (mainWrapper) {
       var navbarHeight = navbar.offsetHeight || 60;
       mainWrapper.style.paddingTop = bannerHeight + navbarHeight + "px";
     }
+  }
+  // Reset docRoot padding on mobile
+  if (docRoot) {
+    docRoot.style.paddingTop = "";
   }
 }
 

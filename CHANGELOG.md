@@ -14,6 +14,26 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Introduced `abstract` property for API, Event and Data Product Resources to indicate interface-only resources.
 
+### Fixed
+
+- BREAKING FIX: make `compatibleWith` an array of ORD IDs and a maximum version instead of an ORD ID value. Only this way one can correctly express compatibility with a dedicated contract versions.
+  - We're introducing this as a fix, because the feature has not been adopted so far and we think that the information missing otherwise would make the concept unviable for real scenarios.
+
+## [1.13.0]
+
+### Added
+
+- Added `system-type` perspective to describe static metadata that is not version dependent.
+- Added `data-loading` and `data-loading-error` as new `lifecycleStatus` for Data Products
+  - These statuses indicate that the Data Product metadata is ready, and data loading is in progress.
+- Added optional `visibility` to API Resource Definition, Event Resource Definition and Capability Definition
+  - By default the definitions have the same visibility as the resource they belong to
+  - The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+    E.g. a public resource can declare to have some resource definitions that are internal while others are public. An internal resource can't set a resource definition to be public.
+- Added expressing hierarchical taxonomies and graph relationships for both group types and group instances
+  - Added `partOfGroupTypes` to Group Types, allowing group types to be hierarchically organized
+  - Added `partOfGroups` to Groups, allowing group instances to be hierarchically organized
+
 ### Changed
 
 - The public ORD page changed its domain name:
@@ -26,8 +46,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Fixed
 
 - make AccessStrategy from ORD Configuration consistent with AccessStrategy from ORD Document (both should use `anyOf` for the allowed values)
-- BREAKING FIX: make `compatibleWith` an array of ORD IDs and a maximum version instead of an ORD ID value. Only this way one can correctly express compatibility with a dedicated contract versions.
-  - We're introducing this as a fix, because the feature has not been adopted so far and we think that the information missing otherwise would make the concept unviable for real scenarios.
+- Breaking: The `minSystemVersion` was not properly validated against semver, although the version it refers to (`describedSystemVersion.version`) is a mandatory semver.
+  - Fixed the regex to properly validate against [Semantic Versioning 2.0.0](https://semver.org/) standard.
+  - Added to documentation that this is an association to `SystemVersion.version`.
+  - Introducing this as bugfix, as this property was presumed to be semver. This change just adds validation and explicit mentioning to ensure it.
+  - If `minSystemVersion` is not a SemVer, it would be unclear how to do the version comparison anyway.
 
 ### Removed
 

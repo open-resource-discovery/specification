@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.12",
+  "openResourceDiscovery": "1.13",
   "policyLevels": ["sap:core:v1"],
   "products": [
     {
