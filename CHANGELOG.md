@@ -10,6 +10,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `namespaces` property to ORD Configuration to support namespace document references
+  - This allows ORD providers to specify where namespace definitions (as used in ORD IDs) can be retrieved
+
 ## [1.14.0]
 
 ### Added
