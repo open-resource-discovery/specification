@@ -35,6 +35,16 @@
         ]
       }
     ],
+    "namespaces": [
+      {
+        "url": "/namespaces.json",
+        "accessStrategies": [
+          {
+            "type": "open"
+          }
+        ]
+      }
+    ],
     "capabilities": {
       "selector": true
     }
