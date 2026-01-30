@@ -24,7 +24,7 @@ In ORD, an **Agent** is primarily a conceptual, "product-like" entity, similar t
 
 From a technical perspective, an Agent is simply a specialized type of application logic running within a **[System](../index.md#system-instance)**.
 
-*   **Deployment:** An Agent is deployed as a system, or as part of a system. A single system can host one or multiple agents.
+*   **Deployment:** An Agent is deployed as a [system](../index.md#system-instance), or as part of a system. A single system can host one or multiple agents.
 *   **Instantiation:** While the "Agent Resource" describes the *type* or *class* of the agent (Design Time), the running software represents an *instance* of that agent (Runtime).
     *   *See [System Landscape Model](./system-landscape-model.md) for more on the distinction between Systems, Tenants, and Resources.*
 
@@ -32,9 +32,9 @@ From a technical perspective, an Agent is simply a specialized type of applicati
 
 ## Connectivity & Protocols
 
-The Agent resource acts as a central hub that connects to other ORD concepts to define how to interact with it and what it needs to function.
+The ORD Agent resource acts as a central hub that connects to other ORD concepts to define how to interact with it and what it needs to function.
 
-ORD supports the discovery of **"AI Protocols"**. These are API protocols that are considered **"AI Native"**—specifically designed for simple consumption by LLMs and Agents, well-supported by the emerging AI ecosystem, and optimized for this use case.
+ORD supports the discovery of **AI-Native Protocols**. These are API protocols specifically designed for simple consumption by LLMs and AI Agents, well-supported by the emerging AI ecosystem, and optimized for this use case.
 
 ```mermaid
 graph TD
@@ -60,7 +60,7 @@ graph TD
 
 Once an agent is implemented, there must be a defined contract for interacting with it. In ORD, this is modeled by linking the Agent to an **[API Resource](../interfaces/Document#api-resource)**.
 
-*   **A2A (Agent-to-Agent):** While ORD is protocol-agnostic, the [Agent2Agent (A2A) Protocol](https://a2a-protocol.org/latest/) is the primary "AI Protocol" for this purpose. It enables seamless communication and collaboration between AI agents through standardized agent card definitions.
+*   **A2A (Agent-to-Agent):** While ORD is protocol-agnostic, the [Agent2Agent (A2A) Protocol](https://a2a-protocol.org/latest/) is the primary AI-Native Protocol for this purpose. It enables seamless communication and collaboration between AI agents through standardized agent card definitions.
 *   **Discovery:** This link allows consumers to find the technical interface (e.g., the A2A JSON schema or OpenAPI spec) required to send messages to the agent.
 
 ### Consuming Capabilities (Dependencies)
@@ -68,7 +68,7 @@ Once an agent is implemented, there must be a defined contract for interacting w
 Agents rarely work in isolation. They often need to access real-world data or invoke business functions. This is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**.
 
 *   **MCP (Model Context Protocol):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro). The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections to data sources and tools.
-*   **Other Resources:** Agents are not limited to AI-native protocols. They can also depend on any other ORD resource, such as **API Resources** (REST, OData, GraphQL) or **Event Resources**, to interact with existing business systems.
+*   **Other Resources:** Agents are not limited to AI-native protocols. They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
 *   **Agent Chaining:** Agents can also have dependencies on other Agents, forming complex workflows.
 
 ## Current Status
