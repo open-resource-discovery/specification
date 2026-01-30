@@ -41,7 +41,7 @@ From a technical perspective, an Agent is simply a specialized type of applicati
 
 The following example shows how an Agent is described in an ORD Document:
 
-```json5
+```json
 {
   "agents": [
     {
@@ -130,7 +130,7 @@ In ORD, this is modeled by linking the Agent to an **[API Resource](../interface
 
 Here's an example of an A2A API Resource linked to an agent:
 
-```json5
+```json
 {
   "apiResources": [
     {
@@ -172,7 +172,7 @@ This is modeled using **[Integration Dependencies](../interfaces/Document#integr
 
 Here's an example of an Integration Dependency for an agent:
 
-```json5
+```json
 {
   "integrationDependencies": [
     {
