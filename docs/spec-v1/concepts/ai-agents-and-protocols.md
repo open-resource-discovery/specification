@@ -8,11 +8,9 @@ title: AI Agents and Protocols
 
 > 🚧 Please note that the [Agents](../interfaces/Document#agent) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
 
-## Conceptual Model
+## Agents
 
 To understand how Agents fit into the ORD landscape, it is helpful to distinguish between their abstract definition and their technical realization.
-
-### Agent as a Product
 
 In ORD, an **Agent** is primarily a conceptual, "product-like" entity, similar to a [Data Product](./data-product.md). It represents a distinct capability or functional unit that can be discovered, understood, and managed independent of its specific deployment.
 
