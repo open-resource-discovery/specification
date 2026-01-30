@@ -94,7 +94,6 @@
       "exposedApiResources": [{"ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1"}],
       "integrationDependencies": ["sap.foo:integrationDependency:DisputeCaseManagement:v1"],
       "labels": {
-        "llmModels": ["gpt-4", "claude-3.7-sonnet"],
         "interactionMode": ["conversational", "system-triggered"]
       },
       "tags": ["finance", "billing", "dispute-resolution", "invoicing", "ai-agent"],
