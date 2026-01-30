@@ -104,7 +104,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       colorMode: {
-        defaultMode: "dark",
+        defaultMode: "light",
         disableSwitch: false,
         respectPrefersColorScheme: false,
       },
@@ -245,15 +245,9 @@ const config = {
             <div class="neonephos-logos">
               <a href="https://neonephos.org/" target="_blank" rel="noopener noreferrer" class="neonephos-link">
                 <img
-                  src="${baseUrl + "img/ord-footer-neonephos.svg"}"
+                  src="${baseUrl + "img/ord-footer-neonephos-light.svg"}"
                   alt="Neonephos Logo"
                   class="neonephos-logo neonephos-logo--dark"
-                />
-                <img
-                  src="${baseUrl + "img/ord-footer-neonephos-light.svg"}"
-                  alt=""
-                  aria-hidden="true"
-                  class="neonephos-logo neonephos-logo--light"
                 />
               </a>
             </div>
