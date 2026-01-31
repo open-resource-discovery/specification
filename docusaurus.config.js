@@ -58,6 +58,13 @@ const config = {
 
   headTags: [
     {
+      tagName: "meta",
+      attributes: {
+        name: "algolia-site-verification",
+        content: "FAC251E6B4A409BA",
+      },
+    },
+    {
       tagName: "script",
       attributes: {},
       innerHTML: `window.bannerServerBaseUrl = ${JSON.stringify(process.env.BANNER_SERVER_BASE_URL || "")};`,
@@ -84,21 +91,7 @@ const config = {
     ],
   ],
 
-  themes: [
-    "@docusaurus/theme-mermaid",
-    [
-      require.resolve("@easyops-cn/docusaurus-search-local"),
-      {
-        searchResultLimits: 10,
-        hashed: true,
-        indexBlog: false,
-        indexPages: false,
-        language: ["en"],
-        docsRouteBasePath: "/",
-        highlightSearchTermsOnTargetPage: true,
-      },
-    ],
-  ],
+  themes: ["@docusaurus/theme-mermaid"],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
@@ -114,6 +107,14 @@ const config = {
       },
       mermaid: {
         theme: { light: "neutral", dark: "dark" },
+      },
+      // Algolia DocSearch v4 configuration
+      // Note: The apiKey is a search-only key, safe to commit publicly
+      algolia: {
+        appId: "FSI9VJC3WH",
+        apiKey: "1cb30ee6813586a1c7b13352efdee208",
+        indexName: "ORD Public Specification",
+        contextualSearch: true,
       },
       navbar: {
         title: "Open Resource Discovery",
@@ -215,7 +216,17 @@ const config = {
                 label: "FAQ",
                 to: "help/faq/",
               },
+              {
+                label: "Ask AI (NotebookLM)",
+                href: "https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382",
+              },
             ],
+          },
+          {
+            href: "https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382",
+            label: "Ask AI",
+            position: "right",
+            className: "header-notebooklm-pill",
           },
           {
             href: "https://github.com/open-resource-discovery/specification",

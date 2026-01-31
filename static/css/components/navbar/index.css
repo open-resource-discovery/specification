@@ -269,6 +269,43 @@ nav.navbar .dropdown__menu a[aria-current="page"] {
   font-weight: var(--fw-header-pill-active);
 }
 
+/* NotebookLM AI pill in header */
+.header-notebooklm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #e9eef1;
+  font-weight: var(--fw-header-pill);
+  text-decoration: none;
+}
+.header-notebooklm-pill::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask: url("../../../img/icons/notebooklm.svg") center/contain no-repeat;
+  mask: url("../../../img/icons/notebooklm.svg") center/contain no-repeat;
+}
+.header-notebooklm-pill:hover {
+  color: #fff;
+  font-weight: var(--fw-header-pill-hover);
+}
+.header-notebooklm-pill > svg,
+.header-notebooklm-pill [class*="iconExternalLink"] {
+  display: none !important;
+}
+.header-notebooklm-pill:active,
+.header-notebooklm-pill[aria-current="page"],
+.header-notebooklm-pill:focus-visible {
+  font-weight: var(--fw-header-pill-active);
+}
+
 nav.navbar::before {
   content: "";
   position: absolute;
@@ -342,7 +379,7 @@ html[data-nav-scrolled="1"] :is(.navbar__title, .navbar__link) {
   color: #fff;
   opacity: 0.95;
 }
-html[data-theme="dark"] nav.navbar :is(.navbar__link, .header-github-pill) {
+html[data-theme="dark"] nav.navbar :is(.navbar__link, .header-github-pill, .header-notebooklm-pill) {
   color: var(--c-text, #e9eef1) !important;
 }
 html[data-nav-scrolled="1"] nav.navbar .navbar__link--active,
@@ -352,7 +389,7 @@ nav.navbar .navbar__link--active {
 html[data-theme="light"][data-nav-scrolled="0"] nav.navbar .navbar__title {
   color: var(--lp-c-text-1) !important;
 }
-html[data-theme="light"][data-nav-scrolled="0"] nav.navbar :is(.navbar__link, .header-github-pill) {
+html[data-theme="light"][data-nav-scrolled="0"] nav.navbar :is(.navbar__link, .header-github-pill, .header-notebooklm-pill) {
   color: var(--lp-c-text-2) !important;
 }
 
@@ -492,6 +529,20 @@ html[data-theme="light"] nav.navbar .header-github-pill:hover {
   font-weight: var(--fw-header-pill-hover);
 }
 
+html[data-theme="light"] nav.navbar .header-notebooklm-pill {
+  font-weight: var(--fw-header-pill);
+}
+html[data-theme="light"] nav.navbar .header-notebooklm-pill > svg {
+  display: none !important;
+}
+html[data-theme="light"] nav.navbar .header-notebooklm-pill:hover {
+  font-weight: var(--fw-header-pill-hover);
+}
+html[data-theme="light"] nav.navbar .header-notebooklm-pill:hover::before,
+html[data-theme="light"] nav.navbar .header-notebooklm-pill[aria-current="page"]::before {
+  filter: none !important;
+}
+
 html[data-theme="light"][data-nav-scrolled="1"] nav.navbar {
   background-color: var(--c-bg) !important;
   border-bottom: 1px solid var(--nav-border-scrolled);
@@ -510,7 +561,8 @@ html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .navbar__title {
   opacity: 1 !important;
 }
 html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .navbar__link,
-html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .header-github-pill {
+html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .header-github-pill,
+html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .header-notebooklm-pill {
   color: var(--c-text) !important;
   opacity: 1 !important;
 }
