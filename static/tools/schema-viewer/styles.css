@@ -555,13 +555,13 @@ body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    transform: translateX(0);
-    transition: transform var(--transition-normal);
+    margin-right: 0;
+    transition: margin-right var(--transition-normal);
     overflow: hidden;
 }
 
 .sidebar.collapsed {
-    transform: translateX(100%);
+    margin-right: calc(var(--sidebar-width) * -1);
 }
 
 .sidebar-header {
@@ -639,6 +639,48 @@ body {
     margin-bottom: var(--space-lg);
 }
 
+/* Markdown Content */
+.markdown-body {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+}
+
+.markdown-body p {
+    margin-bottom: var(--space-md);
+}
+
+.markdown-body p:last-child {
+    margin-bottom: 0;
+}
+
+.markdown-body a {
+    color: var(--color-brand);
+    text-decoration: none;
+}
+
+.markdown-body a:hover {
+    text-decoration: underline;
+}
+
+.markdown-body code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-sm);
+    padding: 2px 4px;
+    color: var(--color-text-primary);
+}
+
+.markdown-body ul, .markdown-body ol {
+    padding-left: var(--space-lg);
+    margin-bottom: var(--space-md);
+}
+
+.markdown-body li {
+    margin-bottom: var(--space-xs);
+}
+
 .section-title {
     font-size: 11px;
     font-weight: 600;
@@ -690,21 +732,39 @@ body {
 /* Relations list */
 .relation-list {
     list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
 }
 
 .relation-item {
     display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm);
-    border-radius: var(--radius-md);
+    align-items: center; /* keep vertical alignment */
+    padding: var(--space-xs) 0;
+    border-bottom: 1px solid var(--color-border-muted);
     cursor: pointer;
     transition: background var(--transition-fast);
-    margin-bottom: var(--space-xs);
+    /* No margin or background to match property row */
+}
+
+.relation-item:last-child {
+    border-bottom: none;
 }
 
 .relation-item:hover {
-    background: var(--color-hover);
+    background: transparent; /* or keep consistent with property row hover if any */
+}
+
+/* Hover feedback for clickable parts */
+.relation-name-clickable:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-brand);
+}
+
+.relation-target-clickable:hover span,
+.relation-target-clickable:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-brand);
 }
 
 .relation-item.in-graph {
@@ -712,10 +772,12 @@ body {
 }
 
 .relation-indicator {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: var(--radius-full);
     flex-shrink: 0;
+    margin-right: var(--space-sm);
+    margin-top: 1px; /* visual alignment with text */
 }
 
 .relation-indicator.composition {
@@ -726,15 +788,28 @@ body {
     background: var(--color-association);
 }
 
+/* Left side of relation (Name/Key) */
 .relation-name {
-    font-weight: 500;
-    color: var(--color-text-primary);
+    flex: 0 0 40%;
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono); /* Match property key */
+    font-size: 11px;
+    font-weight: normal;
+    word-break: break-word;
+    padding-right: var(--space-sm);
 }
 
-.relation-type {
+/* Right side of relation (Value/Type) */
+.relation-type-name, .relation-type {
+    flex: 1;
+    font-family: var(--font-mono); /* Match property value code */
     font-size: 11px;
-    color: var(--color-text-muted);
-    margin-left: auto;
+    color: var(--color-text-primary);
+    word-break: break-word;
+    /* Optional: background pill style like property code */
+    /* background: var(--color-bg-tertiary);
+       padding: 2px 6px;
+       border-radius: var(--radius-sm); */
 }
 
 .relation-via {

@@ -35,23 +35,30 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
     - **Depth Slider**: Sets the initial explosion level of the graph.
     - **Density Selector**: Toggles simulation forces between **Compact**, **Normal**, and **Sparse** to manage graph sprawl.
     - **Labels Toggle**: Show/hide property names on edges.
-    - **Fit Button**: Smoothly pans and zooms the viewport to fit all displayed nodes.
-    - **Reset/Expand Buttons**: Reset to root or show the entire schema hierarchy.
+    - **Action Buttons** (icon-only with Tippy.js tooltips):
+        - **Export**: Download current view as standalone SVG file.
+        - **Reset**: Return to initial graph state (root only).
+        - **Fit**: Smoothly pan and zoom to fit all displayed nodes.
+        - **Expand All**: Recursively expand entire schema hierarchy.
 - **Sidebar**:
     - **Dynamic Context**: Switches between **Node Details** and **Relationship Details**.
-    - **Tooltips**: Hovering over properties or relations in the sidebar reveals the full schema description as a tooltip.
+    - **Tooltips**: Tippy.js-powered rich tooltips on hover for relation items, displaying full schema descriptions.
     - **Connectivity**: For edges, shows the Source and Target nodes with interactive links to navigate between them.
 
 ### 2.4 Interaction Model
-- **Single Click (Node)**: Selects a node, highlights it, and opens its details in the sidebar.
-- **Double Click (Node)**: Expands all immediate forward and reverse relationships for that node.
+- **Single Click (Node)**: Selects a node and opens its details in the sidebar. Clicking the *same* node again expands all immediate forward and reverse relationships for that node.
 - **Single Click (Edge)**: Selects a relationship, highlights it with a glow, and shows its description and connectivity in the sidebar.
+- **Hover (Node)**: Highlights incoming and outgoing edges, dims all other nodes.
 - **URL Synchronization**: The application state (selected schema, depth, density, and label visibility) is persisted in URL parameters for easy sharing.
 - **Stability**: Automatic viewport centering is disabled during node selection to preserve the user's focus; manual "Fit" is used instead.
 
 ## 3. Technical Stack
 - **Languages**: HTML5, CSS3 (Vanilla), JavaScript (ES Modules).
-- **Libraries**: [D3.js (v7)](https://d3js.org/) for graph rendering and simulation.
+- **Libraries**:
+    - [D3.js (v7)](https://d3js.org/) for graph rendering and simulation.
+    - [Popper.js](https://popper.js.org/) for tooltip positioning.
+    - [Tippy.js](https://atomiks.github.io/tippyjs/) for rich tooltip interactions.
+    - [Marked.js](https://marked.js.org/) for markdown parsing in sidebar content.
 - **Integration**: Designed to run as a static tool within a Docusaurus project (`/static/tools/`).
 
 ---
@@ -68,6 +75,9 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
     - Updates `charge`, `linkDistance`, and `collision` radius based on the selected `density` level.
 7. **Selection Management**:
     - Centralized `selectNode(id)` and `selectLink(id)` functions update the state, graph classes, and sidebar HTML.
+8. **Tooltip Initialization**:
+    - Tippy.js instances are attached to button elements with `data-tooltip` attributes after DOM updates.
+    - Sidebar relation items get rich markdown-formatted tooltips using Marked.js.
 
 ---
 
@@ -77,12 +87,13 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
 - [x] Docusaurus theme parity and compact header.
 - [x] Dedicated "External Ownership" and "Ephemeral" categories.
 - [x] Interactive edge selection and sidebar details.
-- [x] Sidebar hover tooltips for descriptions.
+- [x] Tippy.js-powered rich tooltips on sidebar relation items.
 - [x] Variable density control (Compact/Normal/Sparse).
 - [x] Self-link visualization (Arcs).
 - [x] Manual "Fit to View" control.
-- [x] **SVG Export**: Export the current view as a standalone SVG file.
-- [x] **Highlight Related**: Hovering a node highlights all its incoming/outgoing edges.
+- [x] Icon-only action buttons with tooltips.
+- [ ] **SVG Export**: Export functionality exists but download behavior needs fixing.
+- [ ] **Highlight Related**: Current hover effect dims too much; needs refinement to subtly highlight connected neighbor nodes.
 
 ### Upcoming
 - [ ] **Search**: Integrated search bar for finding nodes by name or property.

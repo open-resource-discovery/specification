@@ -601,6 +601,9 @@ function updateGraph() {
             } else {
                 selectNode(d.id);
             }
+
+            // Re-initialize tooltips if sidebar was updated
+            setupTooltips();
         })
         .on('mouseenter', (event, d) => {
             // Find connected nodes
@@ -757,31 +760,126 @@ function selectNode(nodeId) {
     content.innerHTML = renderNodeDetails(node);
 
     // Add event listeners for forward relation clicks
+    // Add event listeners for forward relation clicks
     content.querySelectorAll('.relation-item:not(.reverse)').forEach(item => {
-        item.addEventListener('click', () => {
-            const targetId = item.dataset.target;
-            const property = item.dataset.property;
-            const type = item.dataset.type;
+        // Property name click -> select link
+        const nameSpan = item.querySelector('.relation-name-clickable');
+        if (nameSpan) {
+            nameSpan.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const targetId = item.dataset.target;
+                const property = item.dataset.property;
 
-            const relation = node.relations.find(r =>
-                r.target === targetId && r.property === property && r.type === type
-            );
+                // Find existing link in displayed links
+                const link = state.displayedLinks.find(l =>
+                    (l.source.id === nodeId || l.source === nodeId) &&
+                    (l.target.id === targetId || l.target === targetId) &&
+                    l.property === property
+                );
 
-            if (relation) {
-                addRelationToGraph(nodeId, relation);
-            }
-        });
+                if (link) {
+                    selectLink(link.id);
+                } else {
+                    // If not displayed, add it first then select
+                    const relation = node.relations.find(r => r.target === targetId && r.property === property);
+                    if (relation) {
+                        addRelationToGraph(nodeId, relation);
+                        // After adding, find and select
+                        setTimeout(() => {
+                            const newLink = state.displayedLinks.find(l =>
+                                (l.source.id === nodeId || l.source === nodeId) &&
+                                (l.target.id === targetId || l.target === targetId) &&
+                                l.property === property
+                            );
+                            if (newLink) selectLink(newLink.id);
+                        }, 50);
+                    }
+                }
+            });
+        }
+
+        // Target type click -> navigate to node
+        const targetSpan = item.querySelector('.relation-target-clickable');
+        if (targetSpan) {
+            targetSpan.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const targetId = item.dataset.target;
+
+                // Add relation if not exists, then select node
+                const property = item.dataset.property;
+                const relation = node.relations.find(r => r.target === targetId && r.property === property);
+
+                if (relation) {
+                   const linkExists = state.displayedLinks.some(l =>
+                        (l.source.id === nodeId || l.source === nodeId) &&
+                        (l.target.id === targetId || l.target === targetId) &&
+                        l.property === property
+                    );
+
+                    if (!linkExists) {
+                        addRelationToGraph(nodeId, relation);
+                    }
+                }
+
+                selectNode(targetId);
+            });
+        }
     });
 
     // Add event listeners for reverse relation clicks
     content.querySelectorAll('.relation-item.reverse').forEach(item => {
-        item.addEventListener('click', () => {
-            const sourceId = item.dataset.source;
-            const property = item.dataset.property;
-            const type = item.dataset.type;
+        // Property name click -> select link
+        const nameSpan = item.querySelector('.relation-name-clickable');
+        if (nameSpan) {
+            nameSpan.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const sourceId = item.dataset.source;
+                const property = item.dataset.property;
 
-            addReverseRelationToGraph(nodeId, sourceId, property, type);
-        });
+                const link = state.displayedLinks.find(l =>
+                    (l.source.id === sourceId || l.source === sourceId) &&
+                    (l.target.id === nodeId || l.target === nodeId) &&
+                    l.property === property
+                );
+
+                if (link) {
+                    selectLink(link.id);
+                } else {
+                    const type = item.dataset.type;
+                    addReverseRelationToGraph(nodeId, sourceId, property, type);
+                    setTimeout(() => {
+                         const newLink = state.displayedLinks.find(l =>
+                            (l.source.id === sourceId || l.source === sourceId) &&
+                            (l.target.id === nodeId || l.target === nodeId) &&
+                            l.property === property
+                        );
+                        if (newLink) selectLink(newLink.id);
+                    }, 50);
+                }
+            });
+        }
+
+        // Source node click -> navigate to node
+        const sourceSpan = item.querySelector('.relation-target-clickable');
+        if (sourceSpan) {
+            sourceSpan.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const sourceId = item.dataset.source;
+                const property = item.dataset.property;
+                const type = item.dataset.type;
+
+                const linkExists = state.displayedLinks.some(l =>
+                    (l.source.id === sourceId || l.source === sourceId) &&
+                    (l.target.id === nodeId || l.target === nodeId) &&
+                    l.property === property
+                );
+
+                if (!linkExists) {
+                    addReverseRelationToGraph(nodeId, sourceId, property, type);
+                }
+                selectNode(sourceId);
+            });
+        }
     });
 }
 
@@ -841,28 +939,42 @@ function renderLinkDetails(link) {
         html += `
             <div class="section">
                 <h3 class="section-title">Description</h3>
-                <div class="description">${escapeHtml(description)}</div>
+                <div class="description markdown-body">${marked.parse(description)}</div>
             </div>
         `;
     }
 
-    // Source Node
+    // Connections List
     html += `
         <div class="section">
-            <h3 class="section-title">Source Node</h3>
-            <div class="relation-item node-nav-link" data-node="${sourceNode ? sourceNode.id : link.source}">
-                <span class="relation-name">${sourceNode ? sourceNode.name : link.source}</span>
-            </div>
-        </div>
+            <h3 class="section-title">Connections</h3>
+            <ul class="relation-list">
     `;
 
-    // Target Node
+    // Source Node Item
+    const sourceColor = sourceNode ? (TYPE_COLORS[sourceNode.umsType] || TYPE_COLORS['default']) : TYPE_COLORS['default'];
+
     html += `
-        <div class="section">
-            <h3 class="section-title">Target Node</h3>
-            <div class="relation-item node-nav-link" data-node="${targetNode ? targetNode.id : link.target}">
-                <span class="relation-name">${targetNode ? targetNode.name : link.target}</span>
-            </div>
+        <li class="relation-item node-nav-link" data-node="${sourceNode ? sourceNode.id : link.source}" title="Go to Source Node">
+            <span class="relation-indicator" style="background-color: ${sourceColor}"></span>
+            <span class="relation-name" style="flex: 1; color: var(--color-text-primary); border-bottom: none;">${sourceNode ? sourceNode.name : link.source}</span>
+            <span class="relation-type-name" style="flex: 0 0 auto; color: var(--color-text-secondary); font-size: 11px;">Source</span>
+        </li>
+    `;
+
+    // Target Node Item
+    const targetColor = targetNode ? (TYPE_COLORS[targetNode.umsType] || TYPE_COLORS['default']) : TYPE_COLORS['default'];
+
+    html += `
+        <li class="relation-item node-nav-link" data-node="${targetNode ? targetNode.id : link.target}" title="Go to Target Node">
+            <span class="relation-indicator" style="background-color: ${targetColor}"></span>
+            <span class="relation-name" style="flex: 1; color: var(--color-text-primary); border-bottom: none;">${targetNode ? targetNode.name : link.target}</span>
+            <span class="relation-type-name" style="flex: 0 0 auto; color: var(--color-text-secondary); font-size: 11px;">Target</span>
+        </li>
+    `;
+
+    html += `
+            </ul>
         </div>
     `;
 
@@ -883,7 +995,7 @@ function renderNodeDetails(node) {
         html += `
             <div class="section">
                 <h3 class="section-title">Description</h3>
-                <div class="description">${escapeHtml(node.description.substring(0, 500))}${node.description.length > 500 ? '...' : ''}</div>
+                <div class="description markdown-body">${marked.parse(node.description)}</div>
             </div>
         `;
     }
@@ -904,15 +1016,22 @@ function renderNodeDetails(node) {
                 l.property === relation.property
             );
 
+            const tooltipAttr = relation.description ? `data-tippy-content="${escapeHtml(relation.description)}"` : '';
+
+            // Determine color based on target node type
+            const targetColor = targetNode ? (TYPE_COLORS[targetNode.umsType] || TYPE_COLORS['default']) : TYPE_COLORS['default'];
+
             html += `
                 <li class="relation-item ${hasLink ? 'in-graph' : ''}"
                     data-target="${relation.target}"
                     data-property="${relation.property}"
                     data-type="${relation.type}"
-                    title="${escapeHtml(relation.description)}">
-                    <span class="relation-indicator ${relation.type}"></span>
-                    <span class="relation-name">${relation.property}</span>:
-                    <span class="relation-type-name">${relation.isArray ? 'Array<' : ''}<span style="color: var(--color-text-primary)">${targetNode ? targetNode.name : relation.target}</span>${relation.isArray ? '>' : ''}</span>
+                    ${tooltipAttr}>
+                    <span class="relation-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${relation.property}${relation.isArray ? '[]' : ''}</span>
+                    <span class="relation-type-name relation-target-clickable" title="Go to Node" style="cursor: pointer; display: flex; align-items: center;">
+                        <span class="relation-indicator" style="background-color: ${targetColor}; margin-right: 6px;"></span>
+                        <span style="color: var(--color-text-primary)">${targetNode ? targetNode.name : relation.target}</span>
+                    </span>
                 </li>
             `;
         }
@@ -928,7 +1047,7 @@ function renderNodeDetails(node) {
     if (reverseRelations.length > 0) {
         html += `
             <div class="section">
-                <h3 class="section-title">← Referenced By (${reverseRelations.length})</h3>
+                <h3 class="section-title">← Inverse Relations (${reverseRelations.length})</h3>
                 <ul class="relation-list">
         `;
 
@@ -939,15 +1058,23 @@ function renderNodeDetails(node) {
                 l.property === reverse.property
             );
 
+            const tooltipAttr = reverse.description ? `data-tippy-content="${escapeHtml(reverse.description)}"` : '';
+
+            // Determine color based on source node type logic (we need to look up the source node)
+            const sourceNode = state.nodes.get(reverse.source);
+            const sourceColor = sourceNode ? (TYPE_COLORS[sourceNode.umsType] || TYPE_COLORS['default']) : TYPE_COLORS['default'];
+
             html += `
                 <li class="relation-item reverse ${hasLink ? 'in-graph' : ''}"
                     data-source="${reverse.source}"
                     data-property="${reverse.property}"
                     data-type="${reverse.type}"
-                    title="${escapeHtml(reverse.description)}">
-                    <span class="relation-indicator ${reverse.type}"></span>
-                    <span class="relation-name">${reverse.sourceName}</span>
-                    <span class="relation-type">via ${reverse.property}${reverse.isArray ? '[]' : ''}</span>
+                    ${tooltipAttr}>
+                    <span class="relation-name relation-target-clickable" title="Go to Node" style="cursor: pointer; display: flex; align-items: center;">
+                        <span class="relation-indicator" style="background-color: ${sourceColor}; margin-right: 6px;"></span>
+                        ${reverse.sourceName}
+                    </span>
+                    <span class="relation-type-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${reverse.property}${reverse.isArray ? '[]' : ''}</span>
                 </li>
             `;
         }
@@ -972,8 +1099,19 @@ function renderNodeDetails(node) {
             const type = getPropertyType(prop);
             const isRequired = node.required.includes(key);
 
+            // Try to find a description: direct, or via ref
+            let description = prop.description;
+            if (!description && prop.$ref) {
+                 // Attempt to resolve ref to find description
+                 const refName = extractRefTarget(prop.$ref);
+                 const refNode = state.nodes.get(refName || '');
+                 if (refNode) description = refNode.description;
+            }
+
+            const tooltipAttr = description ? `data-tippy-content="${escapeHtml(description)}"` : '';
+
             html += `
-                <div class="property-row" title="${escapeHtml(prop.description || '')}">
+                <div class="property-row" ${tooltipAttr}>
                     <div class="property-key">${key}${isRequired ? ' *' : ''}</div>
                     <div class="property-value code">${type}</div>
                 </div>
@@ -1201,6 +1339,37 @@ function setupEventListeners() {
 }
 
 // ===================================
+// Tooltips
+// ===================================
+
+function setupTooltips() {
+    // Initialize iconic button tooltips (header)
+    tippy('[data-tooltip]', {
+        content: (reference) => reference.getAttribute('data-tooltip'),
+        theme: 'light',
+        placement: 'bottom',
+        animation: 'scale',
+    });
+
+    // Initialize property description tooltips (sidebar)
+    // We use a delegate approach or re-init on sidebar update.
+    // For simplicity, we'll select elements with data-tippy-content that are property rows
+    tippy('.property-row[data-tippy-content], .relation-item[data-tippy-content]', {
+        content(reference) {
+            const markdown = reference.getAttribute('data-tippy-content');
+            if (!markdown) return '';
+            return marked.parse(markdown);
+        },
+        allowHTML: true,
+        theme: 'light',
+        placement: 'left',
+        maxWidth: 350,
+        interactive: true,
+        appendTo: document.body,
+    });
+}
+
+// ===================================
 // Export Functionality
 // ===================================
 
@@ -1350,6 +1519,9 @@ async function init() {
 
         // Setup listeners
         setupEventListeners();
+
+        // Initialize tooltips
+        setupTooltips();
 
         // Load initial schema
         await loadSchema(currentSchemaName);
