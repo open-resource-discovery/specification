@@ -1,0 +1,36 @@
+---
+title: Schema Explorer
+description: Interactive visualization of the ORD JSON Schemas
+---
+
+# Interactive Schema Explorer
+
+The **ORD Schema Explorer** provides an interactive, force-directed graph visualization of the ORD Document and Configuration JSON Schemas. It allows you to explore the complex relationships between ORD resources, including compositions and associations.
+
+<iframe
+  src="/tools/schema-viewer/index.html"
+  style={{
+    width: '100%',
+    height: '85vh',
+    border: '1px solid var(--ifm-color-emphasis-200)',
+    borderRadius: '12px',
+    background: 'var(--ifm-background-color)',
+    boxShadow: 'var(--ifm-global-shadow-lw)'
+  }}
+  title="ORD Schema Explorer"
+/>
+
+:::tip Usage
+- **Drag** nodes to reposition them.
+- **Scroll** to zoom in and out.
+- **Click** a node to see its full documentation and properties in the sidebar.
+- **Click again** on a selected node to expand all its immediate neighbors.
+- **Switch schemas** using the dropdown in the header to view either the **ORD Document** or **ORD Configuration** specification.
+:::
+
+## Key Features
+
+- **Interactive Navigation**: Seamlessly navigate through the schema by clicking on relations or nodes.
+- **Bidirectional Relationships**: Explore both outgoing relations and incoming references.
+- **Property Details**: View comprehensive property details, including types, constraints, and custom metadata.
+- **Aesthetic Design**: A modern, dark-themed interface designed for clarity and visual appeal.

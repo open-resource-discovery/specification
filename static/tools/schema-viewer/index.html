@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORD Document Schema Viewer</title>
+    <meta name="description" content="Interactive visualization of the Open Resource Discovery (ORD) Document JSON Schema as a force-directed graph">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="header-content">
+                <div style="display: flex; align-items: center;">
+                    <a href="/" class="logo logo-link">
+                        <img src="../../img/logo/ORD_Icon_Color_Logo.svg" alt="ORD Logo">
+                        <span class="logo-text">Schema Explorer</span>
+                    </a>
+                    <a href="/spec-v1/" class="back-link">Specification</a>
+                </div>
+                <div class="controls">
+                    <div class="control-group">
+                        <select id="schema-select" class="select-input">
+                            <option value="Document" selected>ORD Document</option>
+                            <option value="Configuration">ORD Configuration</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="depth-slider" class="control-label">Depth:</label>
+                        <input type="range" id="depth-slider" min="1" max="5" value="1" class="slider">
+                        <span id="depth-value" class="slider-value">1</span>
+                    </div>
+                    <div class="control-group">
+                        <label for="density-select" class="control-label">Density:</label>
+                        <select id="density-select" class="select-input">
+                            <option value="compact">Compact</option>
+                            <option value="normal">Normal</option>
+                            <option value="sparse">Sparse</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="show-labels" checked>
+                            <span class="checkmark"></span>
+                            Labels
+                        </label>
+                    </div>
+                    <button id="export-btn" class="btn btn-secondary">Export SVG</button>
+                    <button id="reset-btn" class="btn btn-secondary">Reset</button>
+                    <button id="fit-btn" class="btn btn-secondary">Fit</button>
+                    <button id="expand-all-btn" class="btn btn-primary">Expand All</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="graph-area">
+                <div id="graph-container" class="graph-container">
+                    <svg id="graph-svg"></svg>
+                </div>
+
+                <footer class="graph-legend">
+                    <div class="legend-group">
+                        <span class="legend-label">Node Types:</span>
+                        <div class="legend-item"><span class="legend-dot" style="background: var(--color-root)"></span> Root</div>
+                        <div class="legend-item"><span class="legend-dot" style="background: var(--color-subentity)"></span> Subentity</div>
+                        <div class="legend-item"><span class="legend-dot" style="background: var(--color-external-ownership)"></span> External Ownership</div>
+                        <div class="legend-item"><span class="legend-dot" style="background: var(--color-ephemeral)"></span> Ephemeral</div>
+                    </div>
+                    <div class="legend-group">
+                        <span class="legend-label">Edges:</span>
+                        <div class="legend-item"><span class="legend-line composition"></span> Composition</div>
+                        <div class="legend-item"><span class="legend-line association"></span> Association</div>
+                    </div>
+                </footer>
+            </div>
+
+            <aside id="sidebar" class="sidebar">
+                <div class="sidebar-header">
+                    <h2 id="sidebar-title">Select a node</h2>
+                    <button id="close-sidebar" class="close-btn">&times;</button>
+                </div>
+                <div id="sidebar-content" class="sidebar-content">
+                    <p class="empty-state">Click on a node in the graph to see its details</p>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="app.js" type="module"></script>
+</body>
+</html>
