@@ -83,7 +83,7 @@
   --ifm-navbar-padding-vertical: 0;
   --ifm-navbar-height: 3rem;
   --ifm-blockquote-border-left-width: 6px;
-  --doc-sidebar-width: 250px;
+  --doc-sidebar-width: 250px !important;
   --ifm-spacing-horizontal: 30px;
   --ifm-list-left-padding: 1.5rem;
   --prism-background-color: #1a2534;
@@ -141,7 +141,7 @@ html[data-theme="dark"] {
 
 /* Base component adjustments */
 .navbar__search {
-  margin-left: 0;
+  margin-left: 0 !important;
 }
 .navbar__search-input {
   border-radius: 8px;

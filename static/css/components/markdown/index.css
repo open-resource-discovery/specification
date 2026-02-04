@@ -15,15 +15,15 @@
 }
 
 article .card {
-  padding: 0 16px 16px;
+  padding: 0 16px 16px !important;
 }
 .margin-bottom--lg {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem !important;
 }
 
 .markdown h1 {
   font-size: 2.5rem;
-  margin: 0 0 8px 0;
+  margin: 0 0 8px 0 !important;
 }
 .markdown h2 {
   font-size: 1.8rem;
@@ -44,7 +44,7 @@ article .card {
 }
 .markdown hr {
   border: 0.5px solid #cecece;
-  height: 0;
+  height: 0 !important;
   margin: 6px 0 4px 0;
 }
 
@@ -100,7 +100,7 @@ article .card {
 }
 
 .theme-doc-markdown .table-legend-mobile {
-  display: none;
+  display: none !important;
 }
 
 .markdown code {
@@ -108,8 +108,8 @@ article .card {
   border-radius: 3px;
 }
 .markdown .highlight {
-  background: var(--lp-highlight-bg);
-  color: var(--lp-highlight-text);
+  background: var(--lp-highlight-bg) !important;
+  color: var(--lp-highlight-text) !important;
   border-radius: 3px;
   padding: 0 5px;
 }
@@ -117,7 +117,7 @@ article .card {
 .theme-doc-markdown
   p[align="left"]
   > img[src="https://apeirora.eu/assets/img/BMWK-EU.png"][width="250"] {
-  display: none;
+  display: none !important;
 }
 
 /* Tables, code and details */
@@ -176,7 +176,7 @@ iframe {
   padding: 4px 0 0;
 }
 .markdown .cardTitle_rnsV {
-  font-size: 1.4rem;
+  font-size: 1.4rem !important;
 }
 a[class*="cardContainer_"]:hover {
   border: 1px solid var(--c-accent);
@@ -201,7 +201,7 @@ html[data-theme="dark"]
   #__docusaurus:not(:has(.ord-home-flag))
   .theme-doc-markdown.markdown
   a {
-  color: var(--c-accent);
+  color: var(--c-accent) !important;
   text-decoration-color: color-mix(in oklab, var(--c-accent) 50%, transparent);
 }
 html[data-theme="dark"]
@@ -211,7 +211,7 @@ html[data-theme="dark"]
 html[data-theme="dark"]
   #__docusaurus:not(:has(.ord-home-flag))
   a[class*="cardContainer_"]:hover {
-  color: var(--c-accent);
+  color: var(--c-accent) !important;
   text-decoration-color: var(--c-accent);
   transition: border-color 0.2s ease;
 }
@@ -219,7 +219,7 @@ html[data-theme="dark"]
   #__docusaurus:not(:has(.ord-home-flag))
   .theme-doc-markdown
   .hash-link {
-  color: var(--c-text-dim);
+  color: var(--c-text-dim) !important;
 }
 html[data-theme="dark"]
   #__docusaurus:not(:has(.ord-home-flag))
@@ -260,8 +260,8 @@ html[data-theme="dark"]
   #__docusaurus:not(:has(.ord-home-flag))
   .theme-doc-markdown.markdown
   .highlight {
-  background: var(--lp-highlight-bg);
-  color: var(--lp-highlight-text);
+  background: var(--lp-highlight-bg) !important;
+  color: var(--lp-highlight-text) !important;
   border-radius: 3px;
   padding: 0 5px;
 }
@@ -352,7 +352,7 @@ html[data-theme="dark"]
   .row
   .col
   a {
-  color: var(--c-accent);
+  color: var(--c-accent) !important;
   text-decoration-color: color-mix(in oklab, var(--c-accent) 50%, transparent);
 }
 html[data-theme="dark"]
@@ -411,6 +411,6 @@ html {
 }
 
 .markdown :is(h1, h2, h3, h4, h5, h6).is-target .hash-link {
-  color: var(--c-accent);
+  color: var(--c-accent) !important;
   text-decoration-color: var(--c-accent);
 }

@@ -9,7 +9,7 @@
 
 /* Allow announcement bar to grow with content on all screen sizes */
 .theme-announcement-bar {
-  height: auto;
+  height: auto !important;
   min-height: 30px;
 }
 
