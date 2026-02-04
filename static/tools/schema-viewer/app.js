@@ -1336,11 +1336,96 @@ function setupEventListeners() {
                 .restart();
         }
     });
+
+    // Handle internal links in sidebar (markdown content)
+    const sidebarContent = document.getElementById('sidebar-content');
+    if (sidebarContent) {
+        sidebarContent.addEventListener('click', (e) => {
+            const link = e.target.closest('.internal-link');
+            if (link) {
+                e.preventDefault();
+                const targetId = link.dataset.target;
+                handleInternalLink(targetId);
+            }
+        });
+    }
 }
 
 // ===================================
 // Tooltips
 // ===================================
+
+// ===================================
+// Tooltips & Markdown
+// ===================================
+
+/**
+ * Configure marked.js renderer to handle links
+ */
+function configureMarked() {
+    const renderer = new marked.Renderer();
+    const originalLink = renderer.link.bind(renderer);
+
+    renderer.link = function(href, title, text) {
+        if (!href) return originalLink(href, title, text);
+
+        // 1. Handle internal anchor links (e.g. #vendor)
+        if (href.startsWith('#')) {
+            const targetId = href.substring(1);
+            return `<a href="#" class="internal-link" data-target="${targetId}" title="${title || ''}">${text}</a>`;
+        }
+
+        // 2. Handle relative links
+        // We assume links are relative to the schema file location (spec-v1/interfaces/)
+        // We interpret them relative to the viewer location (static/tools/schema-viewer/)
+        // The path from viewer to schema dir is ../../spec-v1/interfaces/
+        if (!href.startsWith('http') && !href.startsWith('https') && !href.startsWith('mailto:')) {
+            let newHref = `../../spec-v1/interfaces/${href}`;
+            // Remove .md extension to match Docusaurus clean URLs
+            newHref = newHref.replace(/\.md($|#)/, '$1');
+            return `<a href="${newHref}" title="${title || ''}" target="_blank">${text}</a>`;
+        }
+
+        // Default behavior for absolute links
+        return originalLink(href, title, text);
+    };
+
+    marked.use({ renderer });
+}
+
+/**
+ * Handle clicks on internal links to nodes
+ */
+function handleInternalLink(targetRef) {
+    // Find the node ID (case-insensitive search)
+    let nodeId = null;
+    if (state.nodes.has(targetRef)) {
+        nodeId = targetRef;
+    } else {
+        const lowerRef = targetRef.toLowerCase();
+        for (const id of state.nodes.keys()) {
+            if (id.toLowerCase() === lowerRef) {
+                nodeId = id;
+                break;
+            }
+        }
+    }
+
+    if (nodeId) {
+        // Ensure node is visible
+        if (!state.displayedNodes.has(nodeId)) {
+            state.displayedNodes.add(nodeId);
+            // If it's a new node, maybe add its relations too?
+            // For now, just adding the node itself is safer to avoid explosion.
+            // But we should probably add reverse links so it's connected.
+            autoAddReverseLinks(nodeId);
+            updateGraph();
+        }
+        selectNode(nodeId);
+    } else {
+        console.warn(`Could not find node for reference: ${targetRef}`);
+    }
+}
 
 function setupTooltips() {
     // Initialize iconic button tooltips (header)
@@ -1468,6 +1553,9 @@ async function loadSchema(schemaName) {
 
 async function init() {
     try {
+        // Configure Markdown renderer
+        configureMarked();
+
         // Initialize SVG
         const container = document.getElementById('graph-container');
         state.svg = d3.select('#graph-svg');
