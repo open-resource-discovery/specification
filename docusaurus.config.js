@@ -149,6 +149,11 @@ const config = {
                 to: "spec-v1/interfaces/Document",
               },
               {
+                label: "Schema Explorer (Interactive)",
+                href: "/tools/schema-viewer/index.html?schema=Document",
+                target: "_blank",
+              },
+              {
                 label: "ORD Concepts",
                 to: "spec-v1/concepts",
               },
