@@ -1203,10 +1203,13 @@ function getPropertyType(prop) {
         if (prop.items.$ref) {
             return `${extractRefTarget(prop.items.$ref) || 'ref'}[]`;
         }
-        return `${prop.items.type || 'any'}[]`;
+        const itemType = prop.items.type || 'any';
+        const itemFormat = prop.items.format ? ` (${prop.items.format})` : '';
+        return `${itemType}${itemFormat}[]`;
     }
     if (prop.type) {
-        return prop.type;
+        const format = prop.format ? ` (${prop.format})` : '';
+        return `${prop.type}${format}`;
     }
     if (prop.anyOf || prop.oneOf) {
         return 'union';
