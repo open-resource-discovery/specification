@@ -15,12 +15,12 @@
                 <div style="display: flex; align-items: center;">
                     <a href="/" class="logo logo-link">
                         <img src="../../img/logo/ORD_Icon_Color_Logo.svg" alt="ORD Logo">
-                        <span class="logo-text">Schema Explorer</span>
+                        <span class="logo-text">ORD Spec Explorer</span>
                     </a>
-                    <a href="/spec-v1/" class="back-link">Specification</a>
                 </div>
                 <div class="controls">
                     <div class="control-group">
+                        <label for="schema-select" class="control-label">Spec:</label>
                         <select id="schema-select" class="select-input">
                             <option value="Document" selected>ORD Document</option>
                             <option value="Configuration">ORD Configuration</option>
@@ -46,10 +46,18 @@
                             Labels
                         </label>
                     </div>
-                    <button id="export-btn" class="btn btn-secondary">Export SVG</button>
-                    <button id="reset-btn" class="btn btn-secondary">Reset</button>
-                    <button id="fit-btn" class="btn btn-secondary">Fit</button>
-                    <button id="expand-all-btn" class="btn btn-primary">Expand All</button>
+                    <button id="export-btn" class="btn icon-btn" data-tooltip="Export as SVG" aria-label="Export SVG">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </button>
+                    <button id="reset-btn" class="btn icon-btn" data-tooltip="Reset View" aria-label="Reset">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                    </button>
+                    <button id="fit-btn" class="btn icon-btn" data-tooltip="Fit to Screen" aria-label="Fit to Screen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                    </button>
+                    <button id="expand-all-btn" class="btn icon-btn" data-tooltip="Expand All Recursively" aria-label="Expand All">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path></svg>
+                    </button>
                 </div>
             </div>
         </header>

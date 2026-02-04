@@ -82,8 +82,8 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
 - [x] Self-link visualization (Arcs).
 - [x] Manual "Fit to View" control.
 - [x] **SVG Export**: Export the current view as a standalone SVG file.
+- [x] **Highlight Related**: Hovering a node highlights all its incoming/outgoing edges.
 
 ### Upcoming
 - [ ] **Search**: Integrated search bar for finding nodes by name or property.
 - [ ] **Raw Schema View**: Toggle in sidebar to see the source JSON Schema for the selected item.
-- [x] **Highlight Related**: Hovering a node highlights all its incoming/outgoing edges.

@@ -603,14 +603,22 @@ function updateGraph() {
             }
         })
         .on('mouseenter', (event, d) => {
+            // Find connected nodes
+            const connectedNodeIds = new Set();
+            connectedNodeIds.add(d.id);
+            state.linkLayer.selectAll('.link').each(l => {
+                if ((l.source.id || l.source) === d.id) connectedNodeIds.add(l.target.id || l.target);
+                if ((l.target.id || l.target) === d.id) connectedNodeIds.add(l.source.id || l.source);
+            });
+
             // Highlight incoming and outgoing edges
             state.linkLayer.selectAll('.link')
                 .classed('highlighted', l => (l.source.id || l.source) === d.id || (l.target.id || l.target) === d.id)
                 .classed('dimmed', l => (l.source.id || l.source) !== d.id && (l.target.id || l.target) !== d.id);
 
-            // Dim other nodes
+            // Dim other nodes, but keep connected nodes visible
             state.nodeLayer.selectAll('.node')
-                .classed('dimmed', n => n.id !== d.id);
+                .classed('dimmed', n => !connectedNodeIds.has(n.id));
         })
         .on('mouseleave', () => {
             // Remove highlighting and dimming
@@ -1213,6 +1221,12 @@ function serializeSVG() {
         .link.composition { stroke: #1e8f95; }
         .link.association { stroke: #32bcac; }
         .edge-label { font-size: 8px; fill: #6a6a71; }
+
+        /* Highlight states */
+        .node.dimmed { opacity: 0.3; }
+        .link.dimmed { opacity: 0.3; }
+        .link.highlighted { opacity: 1; stroke-width: 2.5px; }
+        .link.selected { opacity: 1; stroke-width: 3px; stroke: #dfdfd6; }
         .node.selected circle { stroke: #dfdfd6; stroke-width: 4px; }
     `;
     clone.prepend(styleEl);
@@ -1240,7 +1254,11 @@ function exportAsSVG() {
     const svgData = serializeSVG();
     const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(svgBlob);
-    triggerDownload(url, `ord-schema-${currentSchemaName.toLowerCase()}.svg`);
+
+    const now = new Date();
+    const timestamp = now.toISOString().replace(/T/, '_').replace(/:/g, '-').slice(0, 16);
+
+    triggerDownload(url, `${timestamp}_ord-schema-${currentSchemaName.toLowerCase()}.svg`);
     URL.revokeObjectURL(url);
 }
 
