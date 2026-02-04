@@ -923,8 +923,12 @@ function renderLinkDetails(link) {
 
     // Type badge (Composition vs Association)
     html += `
-        <div class="section">
+        <div class="section" style="display: flex; justify-content: space-between; align-items: center;">
             <span class="node-type-badge ${link.type}">${link.type.toUpperCase()}</span>
+            <a href="${getDocUrl(link.source.id || link.source, link.property)}" target="_blank" class="doc-link" title="Open Interface Documentation" style="display: flex; align-items: center; gap: 4px; color: var(--color-accent); text-decoration: none; font-size: 12px;">
+                <span>View Spec</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
         </div>
     `;
 
@@ -985,8 +989,12 @@ function renderNodeDetails(node) {
 
     // Node type badge
     html += `
-        <div class="section">
+        <div class="section" style="display: flex; justify-content: space-between; align-items: center;">
             <span class="node-type-badge ${node.umsType}">${TYPE_LABELS[node.umsType] || node.umsType}</span>
+            <a href="${getDocUrl(node.id)}" target="_blank" class="doc-link" title="Open Interface Documentation" style="display: flex; align-items: center; gap: 4px; color: var(--color-accent); text-decoration: none; font-size: 12px;">
+                <span>View Spec</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
         </div>
     `;
 
@@ -1425,6 +1433,58 @@ function handleInternalLink(targetRef) {
     } else {
         console.warn(`Could not find node for reference: ${targetRef}`);
     }
+}
+
+/**
+ * Generate a deep link to the original interface documentation
+ */
+function getDocUrl(nodeId, property = null) {
+    // Determine the base schema URL component
+    // Assuming the file structure ../../spec-v1/interfaces/{SchemaName}
+    let url = `../../spec-v1/interfaces/${currentSchemaName}`;
+    let nodeSlug = '';
+
+    try {
+        if (nodeId === currentSchemaName) {
+            // Root node: use schema title to match Docusaurus slug (e.g. "ORD Document" -> "ord-document")
+            // Fallback to nodeId if title missing
+            const useTitle = state.schema && state.schema.title ? state.schema.title : nodeId;
+            nodeSlug = toSlug(useTitle);
+        } else {
+            // Sub-definitions: format name (split CamelCase) and slugify
+            // e.g. "ApiResource" -> "Api Resource" -> "api-resource"
+            nodeSlug = toSlug(formatName(nodeId));
+        }
+
+        // Add property part if exists
+        if (property) {
+            // Property anchor format: node-slug_property-name (underscore separator)
+            // e.g. "api-resource_ordid"
+            url += `#${nodeSlug}_${property.toLowerCase()}`;
+        } else {
+             // Node anchor format: node-slug
+             // e.g. "api-resource"
+             url += `#${nodeSlug}`;
+        }
+    } catch (e) {
+        console.warn('Error generating doc url:', e);
+        return url;
+    }
+
+    return url;
+}
+
+function toSlug(text) {
+    if (!text) return '';
+    return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start
+        .replace(/-+$/, '');            // Trim - from end
 }
 
 function setupTooltips() {
