@@ -1330,7 +1330,15 @@ function setupEventListeners() {
     });
 
     // Click on empty space to deselect
-    state.svg.on('click', () => {
+    state.svg.on('click', (event) => {
+        // Only deselect if clicking directly on the SVG background, not on nodes or links
+        // Check if the click target is the SVG itself or the main group, not a child element
+        const target = event.target;
+        const isSvgBackground = target.tagName === 'svg' ||
+                                (target.tagName === 'g' && target === state.g.node());
+        if (!isSvgBackground) {
+            return; // Don't deselect when clicking on nodes/links
+        }
         state.selectedNode = null;
         state.selectedLink = null;
         state.g.selectAll('.node').classed('selected', false);
@@ -1376,15 +1384,28 @@ function setupEventListeners() {
  */
 function configureMarked() {
     const renderer = new marked.Renderer();
-    const originalLink = renderer.link.bind(renderer);
 
-    renderer.link = function(href, title, text) {
-        if (!href) return originalLink(href, title, text);
+    // Note: In marked.js v5+, the link function receives an object { href, title, text, tokens }
+    renderer.link = function(linkData) {
+        // Handle both old API (separate params) and new API (object)
+        let href, title, text;
+        if (typeof linkData === 'object' && linkData !== null && 'href' in linkData) {
+            href = linkData.href || '';
+            title = linkData.title || '';
+            text = linkData.text || '';
+        } else {
+            // Old API fallback
+            href = linkData || '';
+            title = arguments[1] || '';
+            text = arguments[2] || '';
+        }
+
+        const titleAttr = title ? ` title="${title}"` : '';
 
         // 1. Handle internal anchor links (e.g. #vendor)
         if (href.startsWith('#')) {
             const targetId = href.substring(1);
-            return `<a href="#" class="internal-link" data-target="${targetId}" title="${title || ''}">${text}</a>`;
+            return `<a href="#" class="internal-link" data-target="${targetId}"${titleAttr}>${text}</a>`;
         }
 
         // 2. Handle relative links
@@ -1395,11 +1416,11 @@ function configureMarked() {
             let newHref = `../../spec-v1/interfaces/${href}`;
             // Remove .md extension to match Docusaurus clean URLs
             newHref = newHref.replace(/\.md($|#)/, '$1');
-            return `<a href="${newHref}" title="${title || ''}" target="_blank">${text}</a>`;
+            return `<a href="${newHref}"${titleAttr} target="_blank">${text}</a>`;
         }
 
-        // Default behavior for absolute links
-        return originalLink(href, title, text);
+        // Default behavior for absolute/external links
+        return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
     };
 
     marked.use({ renderer });
