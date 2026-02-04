@@ -21,7 +21,7 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
 - **Force-Directed Layout**: Uses D3.js `forceSimulation` for a dynamic, interactive graph.
 - **Node Categorization**: Based on the `x-ums-type` hint and node names:
     - **Root Resource**: 🔵 Blue (`#58a6ff`) - Central entry point (e.g., ORD Document).
-    - **Subentity**: 🟣 Purple (`#a371f7`) - Resources categorized as `embedded` or `custom`.
+    - **Subentity**: 🟢 Green/Teal (`#1bc97e`) - Resources categorized as `embedded` or `custom`.
     - **External Ownership**: � Orange (`#f78166`) - Resources with `ignore` type whose ID starts with "System".
     - **Ephemeral**: 🔘 Grey (`#6e7681`) - Other `ignore` resources (e.g., Tombstone, Vendor).
 - **Reflexive Links (Self-Links)**: Relationships where a resource references itself (recursive structures) are rendered as curved arcs to ensure visibility.
@@ -92,9 +92,17 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
 - [x] Self-link visualization (Arcs).
 - [x] Manual "Fit to View" control.
 - [x] Icon-only action buttons with tooltips.
-- [ ] **SVG Export**: Export functionality exists but download behavior needs fixing.
-- [ ] **Highlight Related**: Current hover effect dims too much; needs refinement to subtly highlight connected neighbor nodes.
+- [x] Markdown rendering in descriptions (via Marked.js).
+- [x] Internal link support for cross-references between nodes.
+- [x] "View Spec" links to the detailed documentation.
+- [x] Clickable relations in sidebar (property name to view link, target to navigate).
+- [x] Fixed marked.js API compatibility (v5+ object-based link renderer).
+- [x] Fixed SVG click event handling to prevent sidebar reset on node clicks.
 
-### Upcoming
+### Known Issues
+- [ ] **SVG Export**: Export functionality exists but download behavior needs testing across different browsers.
+
+### Upcoming Features
+- [ ] **URL-based node selection**: Add query param to specify which node should be initially selected (deep linking).
 - [ ] **Search**: Integrated search bar for finding nodes by name or property.
 - [ ] **Raw Schema View**: Toggle in sidebar to see the source JSON Schema for the selected item.

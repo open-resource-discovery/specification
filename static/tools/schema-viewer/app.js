@@ -28,7 +28,7 @@ const DENSITY_CONFIGS = {
 // Color mapping for x-ums-type
 const TYPE_COLORS = {
     'root': '#58a6ff',
-    'subentity': '#a371f7',
+    'subentity': '#1bc97e',
     'external_ownership': '#f78166',
     'ephemeral': '#6e7681',
     'default': '#8b949e'
@@ -649,7 +649,7 @@ function updateGraph() {
             if (d.source.id === d.target.id) {
                 const x = d.source.x;
                 const y = d.source.y;
-                const loopSize = 35;
+                const loopSize = 50;
                 return `M ${x} ${y} C ${x + loopSize} ${y - loopSize * 1.5}, ${x + loopSize * 1.5} ${y + loopSize}, ${x} ${y}`;
             }
             return `M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.target.y}`;
@@ -658,11 +658,11 @@ function updateGraph() {
         if (state.edgeLabels) {
             state.edgeLabels
                 .attr('x', d => {
-                    if (d.source.id === d.target.id) return d.source.x + 40;
+                    if (d.source.id === d.target.id) return d.source.x + 55;
                     return (d.source.x + d.target.x) / 2;
                 })
                 .attr('y', d => {
-                    if (d.source.id === d.target.id) return d.source.y;
+                    if (d.source.id === d.target.id) return d.source.y - 5;
                     return (d.source.y + d.target.y) / 2;
                 });
         }
@@ -1581,8 +1581,8 @@ function serializeSVG() {
         .edge-label { font-size: 8px; fill: #6a6a71; }
 
         /* Highlight states */
-        .node.dimmed { opacity: 0.3; }
-        .link.dimmed { opacity: 0.3; }
+        .node.dimmed { opacity: 0.2; }
+        .link.dimmed { opacity: 0.2; }
         .link.highlighted { opacity: 1; stroke-width: 2.5px; }
         .link.selected { opacity: 1; stroke-width: 3px; stroke: #dfdfd6; }
         .node.selected circle { stroke: #dfdfd6; stroke-width: 4px; }

@@ -19,7 +19,7 @@
     /* Accent colors */
     --color-brand: #1e8f95;         /* --lp-c-brand-1 */
     --color-root: #58a6ff;
-    --color-subentity: #a371f7;
+    --color-subentity: #1bc97e;
     --color-external-ownership: #f78166;
     --color-ephemeral: #6e7681;
     --color-document: #f78166;
@@ -448,7 +448,7 @@ body {
 }
 
 .node.dimmed, .link.dimmed {
-    opacity: 0.3;
+    opacity: 0.2;
 }
 
 .link.highlighted {
