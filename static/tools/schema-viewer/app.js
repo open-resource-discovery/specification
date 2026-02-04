@@ -60,7 +60,8 @@ const state = {
     labelLayer: null,
     nodeLayer: null,
     selectedLink: null,
-    density: initialDensity
+    density: initialDensity,
+    sidebarTooltips: [] // Track sidebar tooltip instances
 };
 
 // ===================================
@@ -601,9 +602,6 @@ function updateGraph() {
             } else {
                 selectNode(d.id);
             }
-
-            // Re-initialize tooltips if sidebar was updated
-            setupTooltips();
         })
         .on('mouseenter', (event, d) => {
             // Find connected nodes
@@ -759,6 +757,9 @@ function selectNode(nodeId) {
 
     content.innerHTML = renderNodeDetails(node);
 
+    // Re-initialize tooltips for the new content
+    setupTooltips();
+
     // Add event listeners for forward relation clicks
     // Add event listeners for forward relation clicks
     content.querySelectorAll('.relation-item:not(.reverse)').forEach(item => {
@@ -910,6 +911,9 @@ function selectLink(linkId) {
             selectNode(item.dataset.node);
         });
     });
+
+    // Re-initialize tooltips for the new content
+    setupTooltips();
 }
 
 /**
@@ -1488,18 +1492,24 @@ function toSlug(text) {
 }
 
 function setupTooltips() {
-    // Initialize iconic button tooltips (header)
-    tippy('[data-tooltip]', {
-        content: (reference) => reference.getAttribute('data-tooltip'),
-        theme: 'light',
-        placement: 'bottom',
-        animation: 'scale',
-    });
+    // Initialize iconic button tooltips (header) - only once
+    if (!state.headerTooltipsInitialized) {
+        tippy('[data-tooltip]', {
+            content: (reference) => reference.getAttribute('data-tooltip'),
+            theme: 'light',
+            placement: 'bottom',
+            animation: 'scale',
+        });
+        state.headerTooltipsInitialized = true;
+    }
+
+    // Destroy old sidebar tooltips
+    destroySidebarTooltips();
 
     // Initialize property description tooltips (sidebar)
     // We use a delegate approach or re-init on sidebar update.
     // For simplicity, we'll select elements with data-tippy-content that are property rows
-    tippy('.property-row[data-tippy-content], .relation-item[data-tippy-content]', {
+    const instances = tippy('.property-row[data-tippy-content], .relation-item[data-tippy-content]', {
         content(reference) {
             const markdown = reference.getAttribute('data-tippy-content');
             if (!markdown) return '';
@@ -1512,6 +1522,19 @@ function setupTooltips() {
         interactive: true,
         appendTo: document.body,
     });
+
+    // Store instances so we can destroy them later
+    state.sidebarTooltips = Array.isArray(instances) ? instances : [instances];
+}
+
+/**
+ * Destroy existing sidebar tooltip instances
+ */
+function destroySidebarTooltips() {
+    for (const instance of state.sidebarTooltips) {
+        instance.destroy();
+    }
+    state.sidebarTooltips = [];
 }
 
 // ===================================
