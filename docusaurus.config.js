@@ -1,56 +1,56 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-import { themes as prismThemes } from "prism-react-renderer";
+import { themes as prismThemes } from 'prism-react-renderer';
 
-const baseUrl = process.env.BASE_URL ?? "/";
+const baseUrl = process.env.BASE_URL ?? '/';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Open Resource Discovery",
+  title: 'Open Resource Discovery',
   tagline:
-    "An aligned protocol for publishing and discovering metadata about systems.",
-  url: "https://open-resource-discovery.org",
+    'An aligned protocol for publishing and discovering metadata about systems.',
+  url: 'https://open-resource-discovery.org',
   baseUrl,
   trailingSlash: false,
-  onBrokenLinks: "throw",
-  onDuplicateRoutes: "throw",
-  staticDirectories: ["static"],
-  favicon: "img/favicon.svg",
+  onBrokenLinks: 'throw',
+  onDuplicateRoutes: 'throw',
+  staticDirectories: ['static'],
+  favicon: 'img/favicon.svg',
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: "en",
-    locales: ["en"],
+    defaultLocale: 'en',
+    locales: ['en'],
   },
 
   markdown: {
     mermaid: true,
     hooks: {
-      onBrokenMarkdownLinks: "throw",
+      onBrokenMarkdownLinks: 'throw',
     },
   },
 
   presets: [
     [
-      "classic",
+      'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: require.resolve("./sidebars.js"),
+          sidebarPath: require.resolve('./sidebars.js'),
           sidebarCollapsible: true,
           sidebarCollapsed: true,
-          routeBasePath: "/", // Serve the docs at the site's root
+          routeBasePath: '/', // Serve the docs at the site's root
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            "https://github.com/open-resource-discovery/specification/tree/main/",
+            'https://github.com/open-resource-discovery/specification/tree/main/',
         },
         blog: false, // disable the blog plugin
         theme: {
-          customCss: require.resolve("./static/css/custom.css"),
+          customCss: require.resolve('./static/css/custom.css'),
         },
       }),
     ],
@@ -58,9 +58,9 @@ const config = {
 
   headTags: [
     {
-      tagName: "script",
+      tagName: 'script',
       attributes: {},
-      innerHTML: `window.bannerServerBaseUrl = ${JSON.stringify(process.env.BANNER_SERVER_BASE_URL || "")};`,
+      innerHTML: `window.bannerServerBaseUrl = ${JSON.stringify(process.env.BANNER_SERVER_BASE_URL || '')};`,
     },
   ],
 
@@ -68,16 +68,16 @@ const config = {
 
   plugins: [
     [
-      "@docusaurus/plugin-client-redirects",
+      '@docusaurus/plugin-client-redirects',
       {
         redirects: [
           {
-            from: "/spec-v1/interfaces/configuration",
-            to: "/spec-v1/interfaces/Configuration",
+            from: '/spec-v1/interfaces/configuration',
+            to: '/spec-v1/interfaces/Configuration',
           },
           {
-            from: "/spec-v1/interfaces/document",
-            to: "/spec-v1/interfaces/Document",
+            from: '/spec-v1/interfaces/document',
+            to: '/spec-v1/interfaces/Document',
           },
         ],
       },
@@ -85,16 +85,16 @@ const config = {
   ],
 
   themes: [
-    "@docusaurus/theme-mermaid",
+    '@docusaurus/theme-mermaid',
     [
-      require.resolve("@easyops-cn/docusaurus-search-local"),
+      require.resolve('@easyops-cn/docusaurus-search-local'),
       {
         searchResultLimits: 10,
         hashed: true,
         indexBlog: false,
         indexPages: false,
-        language: ["en"],
-        docsRouteBasePath: "/",
+        language: ['en'],
+        docsRouteBasePath: '/',
         highlightSearchTermsOnTargetPage: true,
       },
     ],
@@ -104,7 +104,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       colorMode: {
-        defaultMode: "dark",
+        defaultMode: 'dark',
         disableSwitch: false,
         respectPrefersColorScheme: false,
       },
@@ -113,125 +113,125 @@ const config = {
         darkTheme: prismThemes.oceanicNext,
       },
       mermaid: {
-        theme: { light: "neutral", dark: "dark" },
+        theme: { light: 'neutral', dark: 'dark' },
       },
       navbar: {
-        title: "Open Resource Discovery",
+        title: 'Open Resource Discovery',
         logo: {
-          alt: "Open Resource Discovery",
-          src: "img/logo/ORD_Icon_Color_Logo.svg",
+          alt: 'Open Resource Discovery',
+          src: 'img/logo/ORD_Icon_Color_Logo.svg',
         },
         items: [
           {
-            label: "Overview",
-            to: "overview",
+            label: 'Overview',
+            to: 'overview',
           },
           {
-            label: "Primer",
-            to: "introduction",
+            label: 'Primer',
+            to: 'introduction',
           },
           {
-            type: "dropdown",
-            position: "left",
-            label: "Specification",
-            to: "spec-v1/",
+            type: 'dropdown',
+            position: 'left',
+            label: 'Specification',
+            to: 'spec-v1/',
             items: [
               {
-                label: "ORD Specification",
-                to: "/spec-v1/",
+                label: 'ORD Specification',
+                to: '/spec-v1/',
               },
               {
-                label: "ORD Configuration Interface",
-                to: "spec-v1/interfaces/Configuration",
+                label: 'ORD Configuration Interface',
+                to: 'spec-v1/interfaces/Configuration',
               },
               {
-                label: "ORD Document Interface",
-                to: "spec-v1/interfaces/Document",
+                label: 'ORD Document Interface',
+                to: 'spec-v1/interfaces/Document',
               },
               {
-                label: "Schema Explorer (Interactive)",
-                href: "/tools/schema-viewer/index.html?schema=Document",
-                target: "_blank",
+                label: 'Schema Explorer (Interactive)',
+                href: '/tools/schema-viewer/index.html?schema=Document',
+                target: '_blank',
               },
               {
-                label: "ORD Concepts",
-                to: "spec-v1/concepts",
+                label: 'ORD Concepts',
+                to: 'spec-v1/concepts',
               },
               {
-                label: "ORD Provider API",
-                to: "spec-v1/interfaces/document-api",
+                label: 'ORD Provider API',
+                to: 'spec-v1/interfaces/document-api',
               },
               {
-                label: "Example Files",
-                to: "spec-v1/examples",
+                label: 'Example Files',
+                to: 'spec-v1/examples',
               },
               {
-                label: "Changelog",
-                to: "https://github.com/open-resource-discovery/specification/blob/main/CHANGELOG.md",
+                label: 'Changelog',
+                to: 'https://github.com/open-resource-discovery/specification/blob/main/CHANGELOG.md',
               },
             ],
           },
           {
-            type: "dropdown",
-            position: "left",
-            label: "Extensions",
-            to: "spec-extensions",
+            type: 'dropdown',
+            position: 'left',
+            label: 'Extensions',
+            to: 'spec-extensions',
             items: [
               {
-                label: "Access Strategies",
-                to: "spec-extensions/access-strategies/",
+                label: 'Access Strategies',
+                to: 'spec-extensions/access-strategies/',
               },
               {
-                label: "Policy Levels",
-                to: "spec-extensions/policy-levels/",
+                label: 'Policy Levels',
+                to: 'spec-extensions/policy-levels/',
               },
               {
-                label: "Global Group Types",
-                to: "spec-extensions/group-types/",
+                label: 'Global Group Types',
+                to: 'spec-extensions/group-types/',
               },
             ],
           },
           {
-            label: "Ecosystem",
-            position: "left",
-            to: "ecosystem/",
+            label: 'Ecosystem',
+            position: 'left',
+            to: 'ecosystem/',
             items: [
               {
-                label: "ORD Reference Application",
-                href: "https://ord-reference-application.cfapps.sap.hana.ondemand.com/",
+                label: 'ORD Reference Application',
+                href: 'https://ord-reference-application.cfapps.sap.hana.ondemand.com/',
               },
             ],
           },
           {
-            type: "dropdown",
-            position: "left",
-            label: "Help",
-            to: "help/",
+            type: 'dropdown',
+            position: 'left',
+            label: 'Help',
+            to: 'help/',
             items: [
               // {
               //   label: "Overview",
               //   to: "help/",
               // },
               {
-                label: "Videos",
-                to: "help/videos/",
+                label: 'Videos',
+                to: 'help/videos/',
               },
               {
-                label: "FAQ",
-                to: "help/faq/",
+                label: 'FAQ',
+                to: 'help/faq/',
               },
             ],
           },
           {
-            href: "https://github.com/open-resource-discovery/specification",
-            label: "GitHub",
-            position: "right",
-            className: "header-github-pill",
+            href: 'https://github.com/open-resource-discovery/specification',
+            label: 'GitHub',
+            position: 'right',
+            className: 'header-github-pill',
           },
         ],
       },
       footer: {
-        style: "dark",
+        style: 'dark',
         copyright: `
           <div class="footer-container">
             <div class="footer-funding">
@@ -282,20 +282,20 @@ const config = {
       ...(process.env.PR_PREVIEW_NUMBER
         ? {
             announcementBar: {
-              id: "pr-preview-banner",
+              id: 'pr-preview-banner',
               content: `<b>This is a preview version of the website for <a href="https://github.com/open-resource-discovery/specification/pull/${process.env.PR_PREVIEW_NUMBER}" target="_blank">PR #${process.env.PR_PREVIEW_NUMBER}</a></b>`,
-              backgroundColor: "#e65050ff",
-              textColor: "#fff",
+              backgroundColor: '#e65050ff',
+              textColor: '#fff',
               isCloseable: false,
             },
           }
-        : process.env.NODE_ENV === "production" &&
+        : process.env.NODE_ENV === 'production' &&
             process.env.BANNER_SERVER_BASE_URL
           ? {
               announcementBar: {
-                id: "internal-banner",
-                backgroundColor: "#ffe900",
-                textColor: "#000000",
+                id: 'internal-banner',
+                backgroundColor: '#ffe900',
+                textColor: '#000000',
                 content: '<div class="internal-banner-hidden"></div>',
                 isCloseable: false,
               },

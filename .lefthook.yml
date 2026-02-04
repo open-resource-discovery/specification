@@ -13,6 +13,9 @@ pre-commit:
           echo "Error: Merge conflict markers found in staged files. Please resolve conflicts before committing."
           exit 1
         fi
+    lint:
+      glob: "*.{js,ts,jsx,tsx,json,css,mjs}"
+      run: npx @biomejs/biome check --write --staged
     generate:
       # If generation fails, the commit is blocked.
       # `stage_fixed: true` will re-stage any updated files.

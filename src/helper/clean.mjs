@@ -1,27 +1,27 @@
-import fs from "node:fs";
-import path from "node:path";
+import fs from 'node:fs';
+import path from 'node:path';
 
 // Config: what gets cleaned
 const config = {
   // Directories to remove entirely
-  removeDirs: ["dist", "build", "src/generated"],
+  removeDirs: ['dist', 'build', 'src/generated'],
   // Generated files to remove (absolute or workspace-relative)
   removeGeneratedFiles: [
     // Static generated schema artifacts
-    "static/spec-v1/interfaces/Configuration.schema.json",
-    "static/spec-v1/interfaces/Document.schema.json",
-    "docs/spec-v1/interfaces/Configuration.md",
-    "docs/spec-v1/interfaces/Document.md",
+    'static/spec-v1/interfaces/Configuration.schema.json',
+    'static/spec-v1/interfaces/Document.schema.json',
+    'docs/spec-v1/interfaces/Configuration.md',
+    'docs/spec-v1/interfaces/Document.md',
   ],
   // Folders where we remove all contents except certain keepers
   cleanFoldersExcept: [
     {
-      dir: "docs/spec-v1/examples",
-      keep: new Set(["index.mdx"]),
+      dir: 'docs/spec-v1/examples',
+      keep: new Set(['index.mdx']),
     },
     {
-      dir: "docs/spec-v1/diagrams",
-      keep: new Set(["index.mdx"]),
+      dir: 'docs/spec-v1/diagrams',
+      keep: new Set(['index.mdx']),
     },
   ],
 };
@@ -55,8 +55,8 @@ async function removeFilesWithPattern(pattern) {
   // Very simple glob handling for patterns like "*.log" and "npm-debug.log*" at workspace root
   const rootEntries = await fs.promises.readdir(workspaceRoot).catch(() => []);
   const toDelete = rootEntries.filter((name) => {
-    if (pattern === "*.log") return name.endsWith(".log");
-    if (pattern === "npm-debug.log*") return name.startsWith("npm-debug.log");
+    if (pattern === '*.log') return name.endsWith('.log');
+    if (pattern === 'npm-debug.log*') return name.startsWith('npm-debug.log');
     return false;
   });
   await Promise.all(
@@ -98,7 +98,7 @@ async function main() {
 
   // Remove root-level log patterns
   for (const f of config.removeGeneratedFiles) {
-    if (f.includes("*")) {
+    if (f.includes('*')) {
       await removeFilesWithPattern(f);
     } else {
       await removeFile(f);
@@ -110,7 +110,7 @@ async function main() {
     await cleanFolderExcept(dir, keep);
   }
 
-  console.log("clean complete");
+  console.log('clean complete');
 }
 
 main().catch((err) => {

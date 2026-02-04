@@ -1,18 +1,18 @@
 /* globals window, document */
 // Little script to highlight the links and definitions that were navigated to
-window.addEventListener("load", locationHashChanged, false);
-window.addEventListener("hashchange", locationHashChanged, false);
+window.addEventListener('load', locationHashChanged, false);
+window.addEventListener('hashchange', locationHashChanged, false);
 function locationHashChanged() {
-  document.querySelectorAll(".highlight").forEach((dfn) => {
-    dfn.classList.remove("highlight");
+  document.querySelectorAll('.highlight').forEach((dfn) => {
+    dfn.classList.remove('highlight');
   });
-  const highlightedElementId = window.location.hash.split("#")[1];
-  console.debug("highlighting", highlightedElementId);
+  const highlightedElementId = window.location.hash.split('#')[1];
+  console.debug('highlighting', highlightedElementId);
   const highlightedElement = document.getElementById(highlightedElementId);
   if (highlightedElement) {
-    highlightedElement.classList.add("highlight");
-    if (highlightedElement.getElementsByTagName("a")[0]) {
-      addAnchorTitle(highlightedElement.getElementsByTagName("a")[0].title);
+    highlightedElement.classList.add('highlight');
+    if (highlightedElement.getElementsByTagName('a')[0]) {
+      addAnchorTitle(highlightedElement.getElementsByTagName('a')[0].title);
     } else {
       addAnchorTitle(highlightedElement.textContent);
     }
@@ -20,8 +20,8 @@ function locationHashChanged() {
 }
 
 function addAnchorTitle(anchorTitle) {
-  const split = document.title.split(" | ");
-  anchorTitle = anchorTitle.replace("Direct link to ", "");
+  const split = document.title.split(' | ');
+  anchorTitle = anchorTitle.replace('Direct link to ', '');
   document.title = `${anchorTitle} | ${split[split.length - 1]} | ${split[split.length - 2]}`;
 }
 
@@ -31,10 +31,10 @@ let __navScrollTicking__ = false;
 function __applyNavScrolled__() {
   const scrolled =
     (window.scrollY || window.pageYOffset) > __NAV_SCROLL_THRESHOLD__;
-  const val = scrolled ? "1" : "0";
+  const val = scrolled ? '1' : '0';
   const html = document.documentElement;
-  if (html.getAttribute("data-nav-scrolled") !== val) {
-    html.setAttribute("data-nav-scrolled", val);
+  if (html.getAttribute('data-nav-scrolled') !== val) {
+    html.setAttribute('data-nav-scrolled', val);
   }
   __navScrollTicking__ = false;
 }
@@ -49,24 +49,24 @@ function __onNavScroll__() {
 // Internal banner: fetch content from API and display it (hidden by default)
 function initInternalBanner() {
   // Check localStorage to identify banner type - only proceed for internal-banner
-  const bannerId = localStorage.getItem("docusaurus.announcement.id");
-  if (bannerId !== "internal-banner") {
+  const bannerId = localStorage.getItem('docusaurus.announcement.id');
+  if (bannerId !== 'internal-banner') {
     return;
   }
 
-  const banner = document.querySelector(".theme-announcement-bar");
+  const banner = document.querySelector('.theme-announcement-bar');
   if (banner) {
-    banner.style.display = "none";
+    banner.style.display = 'none';
     fetchBannerContent(banner);
     return;
   }
 
   // Banner not yet rendered (React hydration pending), use MutationObserver
   const observer = new MutationObserver((_, obs) => {
-    const banner = document.querySelector(".theme-announcement-bar");
+    const banner = document.querySelector('.theme-announcement-bar');
     if (banner) {
       obs.disconnect();
-      banner.style.display = "none";
+      banner.style.display = 'none';
       fetchBannerContent(banner);
     }
   });
@@ -77,7 +77,7 @@ function initInternalBanner() {
   }, 10000);
 }
 
-const BANNER_CACHE_KEY = "banner-server-cache";
+const BANNER_CACHE_KEY = 'banner-server-cache';
 const BANNER_CACHE_TTL = 24 * 60 * 60 * 1000;
 
 function getBannerCache() {
@@ -112,10 +112,10 @@ function setBannerCache(data) {
 }
 
 function getBannerApiUrl() {
-  let baseUrl = window.bannerServerBaseUrl || "";
+  let baseUrl = window.bannerServerBaseUrl || '';
   if (!baseUrl) return null;
 
-  if (baseUrl.endsWith("/")) {
+  if (baseUrl.endsWith('/')) {
     baseUrl = baseUrl.slice(0, -1);
   }
   return `${baseUrl}/api/v1/content/open-resource-discovery/specification`;
@@ -147,7 +147,7 @@ function displayBanner(banner, data) {
   if (!data || !data.url) return;
 
   const content =
-    banner.querySelector(".announcementBarContent") ||
+    banner.querySelector('.announcementBarContent') ||
     banner.querySelector("[class*='announcementBarContent']");
 
   if (content) {
@@ -156,8 +156,8 @@ function displayBanner(banner, data) {
       data.url +
       '">' +
       data.url +
-      "</a></b>";
-    banner.style.display = "";
+      '</a></b>';
+    banner.style.display = '';
     adjustLayoutForBanner();
   }
 }
@@ -166,7 +166,7 @@ async function fetchBannerContent(banner) {
   const apiUrl = getBannerApiUrl();
   if (!apiUrl) {
     console.debug(
-      "BANNER_SERVER_BASE_URL not configured, skipping banner fetch",
+      'BANNER_SERVER_BASE_URL not configured, skipping banner fetch',
     );
     return;
   }
@@ -191,9 +191,9 @@ async function fetchBannerContent(banner) {
 
 // Adjust navbar and main-wrapper position based on announcement bar height
 function adjustLayoutForBanner() {
-  const banner = document.querySelector(".theme-announcement-bar");
-  const navbar = document.querySelector(".navbar");
-  const mainWrapper = document.querySelector(".main-wrapper");
+  const banner = document.querySelector('.theme-announcement-bar');
+  const navbar = document.querySelector('.navbar');
+  const mainWrapper = document.querySelector('.main-wrapper');
   const docRoot = document.querySelector("[class*='docRoot_']");
 
   if (!banner || !navbar) return;
@@ -203,15 +203,15 @@ function adjustLayoutForBanner() {
 
   if (isDesktop) {
     // Desktop: reset mobile styles
-    navbar.style.top = "";
+    navbar.style.top = '';
     if (mainWrapper) {
-      mainWrapper.style.paddingTop = "";
+      mainWrapper.style.paddingTop = '';
     }
     // Add padding to docRoot if banner is taller than default 30px
     if (docRoot && bannerHeight > 30) {
       docRoot.style.paddingTop = `${bannerHeight - 30}px`;
     } else if (docRoot) {
-      docRoot.style.paddingTop = "";
+      docRoot.style.paddingTop = '';
     }
     return;
   }
@@ -226,15 +226,15 @@ function adjustLayoutForBanner() {
   }
   // Reset docRoot padding on mobile
   if (docRoot) {
-    docRoot.style.paddingTop = "";
+    docRoot.style.paddingTop = '';
   }
 }
 
 // Re-adjust on resize
-window.addEventListener("resize", adjustLayoutForBanner);
-window.addEventListener("load", initInternalBanner, false);
+window.addEventListener('resize', adjustLayoutForBanner);
+window.addEventListener('load', initInternalBanner, false);
 
-window.addEventListener("load", __applyNavScrolled__, false);
-window.addEventListener("scroll", __onNavScroll__, { passive: true });
-window.addEventListener("resize", __onNavScroll__);
-window.addEventListener("orientationchange", __onNavScroll__);
+window.addEventListener('load', __applyNavScrolled__, false);
+window.addEventListener('scroll', __onNavScroll__, { passive: true });
+window.addEventListener('resize', __onNavScroll__);
+window.addEventListener('orientationchange', __onNavScroll__);

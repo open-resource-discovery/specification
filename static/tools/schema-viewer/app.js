@@ -9,27 +9,27 @@
  */
 
 // Schema configuration
-const SCHEMA_BASE_URL = "../../spec-v1/interfaces/";
+const SCHEMA_BASE_URL = '../../spec-v1/interfaces/';
 const SCHEMAS = {
-  Document: "Document.schema.json",
-  Configuration: "Configuration.schema.json",
+  Document: 'Document.schema.json',
+  Configuration: 'Configuration.schema.json',
 };
 
 // URL parameter handling
 const urlParams = new URLSearchParams(window.location.search);
-let currentSchemaName = urlParams.get("schema") || "Document";
+let currentSchemaName = urlParams.get('schema') || 'Document';
 
 // Ensure the schema name is valid, otherwise fallback to Document
 if (!SCHEMAS[currentSchemaName]) {
-  currentSchemaName = "Document";
+  currentSchemaName = 'Document';
 }
 
-const _initialNode = urlParams.get("node");
-const _initialLink = urlParams.get("link");
+const _initialNode = urlParams.get('node');
+const _initialLink = urlParams.get('link');
 
-const initialDepth = parseInt(urlParams.get("depth"), 10) || 1;
-const initialDensity = urlParams.get("density") || "normal";
-const showLabelsParam = urlParams.get("labels");
+const initialDepth = parseInt(urlParams.get('depth'), 10) || 1;
+const initialDensity = urlParams.get('density') || 'normal';
+const showLabelsParam = urlParams.get('labels');
 
 // Simulation configs for different density levels
 const DENSITY_CONFIGS = {
@@ -40,19 +40,19 @@ const DENSITY_CONFIGS = {
 
 // Color mapping for x-ums-type
 const TYPE_COLORS = {
-  root: "#58a6ff",
-  subentity: "#1bc97e",
-  external_ownership: "#f78166",
-  ephemeral: "#6e7681",
-  default: "#8b949e",
+  root: '#58a6ff',
+  subentity: '#1bc97e',
+  external_ownership: '#f78166',
+  ephemeral: '#6e7681',
+  default: '#8b949e',
 };
 
 const TYPE_LABELS = {
-  root: "Root Entity",
-  subentity: "Subentity",
-  external_ownership: "External Ownership",
-  ephemeral: "Ephemeral",
-  default: "Internal",
+  root: 'Root Entity',
+  subentity: 'Subentity',
+  external_ownership: 'External Ownership',
+  ephemeral: 'Ephemeral',
+  default: 'Internal',
 };
 
 // State management
@@ -67,7 +67,7 @@ const state = {
   svg: null,
   g: null,
   zoom: null,
-  showLabels: showLabelsParam === null ? true : showLabelsParam === "true",
+  showLabels: showLabelsParam === null ? true : showLabelsParam === 'true',
   edgeLabels: null,
   linkLayer: null,
   labelLayer: null,
@@ -84,13 +84,13 @@ function updateURL(params) {
   const newUrl = new URL(window.location);
 
   // If we specify a node, remove link and vice versa
-  if (params.node) newUrl.searchParams.delete("link");
-  if (params.link) newUrl.searchParams.delete("node");
+  if (params.node) newUrl.searchParams.delete('link');
+  if (params.link) newUrl.searchParams.delete('node');
 
   // If params is empty object, clear both
   if (Object.keys(params).length === 0) {
-    newUrl.searchParams.delete("node");
-    newUrl.searchParams.delete("link");
+    newUrl.searchParams.delete('node');
+    newUrl.searchParams.delete('link');
   }
 
   for (const [key, value] of Object.entries(params)) {
@@ -100,7 +100,7 @@ function updateURL(params) {
       newUrl.searchParams.set(key, value);
     }
   }
-  window.history.replaceState(null, "", newUrl);
+  window.history.replaceState(null, '', newUrl);
 }
 
 // ===================================
@@ -121,9 +121,9 @@ function parseSchema(schema, schemaName) {
   const rootNode = {
     id: rootId,
     name: rootName,
-    type: "root",
-    umsType: mapUmsType(schema["x-ums-type"] || "root", rootId, true),
-    description: schema.description || "",
+    type: 'root',
+    umsType: mapUmsType(schema['x-ums-type'] || 'root', rootId, true),
+    description: schema.description || '',
     properties: schema.properties || {},
     required: schema.required || [],
     relations: [],
@@ -137,10 +137,10 @@ function parseSchema(schema, schemaName) {
     const node = {
       id: name,
       name: formatName(name),
-      type: def.type || "object",
-      umsType: mapUmsType(def["x-ums-type"] || "default", name),
+      type: def.type || 'object',
+      umsType: mapUmsType(def['x-ums-type'] || 'default', name),
       title: def.title || name,
-      description: def.description || "",
+      description: def.description || '',
       properties: def.properties || {},
       required: def.required || [],
       relations: [],
@@ -172,7 +172,7 @@ function parseSchema(schema, schemaName) {
 function extractXProperties(obj) {
   const xProps = {};
   for (const [key, value] of Object.entries(obj)) {
-    if (key.startsWith("x-") && key !== "x-ums-type") {
+    if (key.startsWith('x-') && key !== 'x-ums-type') {
       xProps[key] = value;
     }
   }
@@ -184,7 +184,7 @@ function extractXProperties(obj) {
  */
 function formatName(name) {
   return name
-    .replace(/([A-Z])/g, " $1")
+    .replace(/([A-Z])/g, ' $1')
     .replace(/^./, (str) => str.toUpperCase())
     .trim();
 }
@@ -195,14 +195,14 @@ function formatName(name) {
 function mapUmsType(type, id, isRoot = false) {
   // For root nodes, respect the actual x-ums-type from the schema
   // If no type specified for root, default to 'root'
-  if (isRoot && !type) return "root";
+  if (isRoot && !type) return 'root';
 
-  if (type === "embedded" || type === "custom") return "subentity";
-  if (type === "ignore") {
-    if (id?.startsWith("System")) return "external_ownership";
-    return "ephemeral";
+  if (type === 'embedded' || type === 'custom') return 'subentity';
+  if (type === 'ignore') {
+    if (id?.startsWith('System')) return 'external_ownership';
+    return 'ephemeral';
   }
-  return type || "root";
+  return type || 'root';
 }
 
 /**
@@ -215,11 +215,11 @@ function extractRelations(sourceNode, properties, allNodes) {
       const target = extractRefTarget(propDef.$ref);
       if (target && allNodes.has(target)) {
         sourceNode.relations.push({
-          type: "composition",
+          type: 'composition',
           target: target,
           property: propName,
           isArray: false,
-          description: propDef.description || "",
+          description: propDef.description || '',
         });
       }
     }
@@ -229,45 +229,45 @@ function extractRelations(sourceNode, properties, allNodes) {
       const target = extractRefTarget(propDef.items.$ref);
       if (target && allNodes.has(target)) {
         sourceNode.relations.push({
-          type: "composition",
+          type: 'composition',
           target: target,
           property: propName,
           isArray: true,
-          description: propDef.description || "",
+          description: propDef.description || '',
         });
       }
     }
 
     // Check for x-association-target (association)
-    if (propDef["x-association-target"]) {
-      for (const assocTarget of propDef["x-association-target"]) {
+    if (propDef['x-association-target']) {
+      for (const assocTarget of propDef['x-association-target']) {
         const target = extractAssociationTarget(assocTarget);
         if (target && allNodes.has(target)) {
           sourceNode.relations.push({
-            type: "association",
+            type: 'association',
             target: target,
             property: propName,
             isArray: false,
             via: assocTarget,
-            description: propDef.description || "",
+            description: propDef.description || '',
           });
         }
       }
     }
 
     // Check for array items with x-association-target
-    if (propDef.items?.["x-association-target"]) {
-      for (const assocTarget of propDef.items["x-association-target"]) {
+    if (propDef.items?.['x-association-target']) {
+      for (const assocTarget of propDef.items['x-association-target']) {
         const target = extractAssociationTarget(assocTarget);
         if (target && allNodes.has(target)) {
           sourceNode.relations.push({
-            type: "association",
+            type: 'association',
             target: target,
             property: propName,
             isArray: true,
             via: assocTarget,
             description:
-              propDef.items?.description || propDef.description || "",
+              propDef.items?.description || propDef.description || '',
           });
         }
       }
@@ -399,7 +399,7 @@ function initializeGraph(depth = 1, startNodeId = null) {
   // Choose starting node: provided ID, or from URL, or default root
   const urlParams = new URLSearchParams(window.location.search);
   const effectiveStartNode =
-    startNodeId || urlParams.get("node") || currentSchemaName;
+    startNodeId || urlParams.get('node') || currentSchemaName;
 
   if (depth === 0) {
     // Depth 0: Only show the start node, no automatic expansion
@@ -558,7 +558,7 @@ function expandAllNeighbors(nodeId) {
  * Update the D3 graph visualization
  */
 function updateGraph() {
-  const container = document.getElementById("graph-container");
+  const container = document.getElementById('graph-container');
   const width = container.clientWidth;
   const height = container.clientHeight;
 
@@ -590,35 +590,35 @@ function updateGraph() {
     state.simulation = d3
       .forceSimulation()
       .force(
-        "link",
+        'link',
         d3
           .forceLink()
           .id((d) => d.id)
           .distance(config.distance),
       )
-      .force("charge", d3.forceManyBody().strength(config.strength))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collision", d3.forceCollide().radius(config.collision));
+      .force('charge', d3.forceManyBody().strength(config.strength))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('collision', d3.forceCollide().radius(config.collision));
   } else {
     const config = DENSITY_CONFIGS[state.density] || DENSITY_CONFIGS.normal;
-    state.simulation.force("link").distance(config.distance);
-    state.simulation.force("charge").strength(config.strength);
-    state.simulation.force("collision").radius(config.collision);
+    state.simulation.force('link').distance(config.distance);
+    state.simulation.force('charge').strength(config.strength);
+    state.simulation.force('collision').radius(config.collision);
   }
 
-  state.simulation.nodes(nodeData).force("link").links(linkData);
+  state.simulation.nodes(nodeData).force('link').links(linkData);
 
   // Draw links
-  const links = state.linkLayer.selectAll(".link").data(linkData, (d) => d.id);
+  const links = state.linkLayer.selectAll('.link').data(linkData, (d) => d.id);
 
   links.exit().remove();
 
   const linksEnter = links
     .enter()
-    .append("path")
-    .attr("class", (d) => `link ${d.type}`)
-    .attr("marker-end", (d) => `url(#arrow-${d.type})`)
-    .on("click", (event, d) => {
+    .append('path')
+    .attr('class', (d) => `link ${d.type}`)
+    .attr('marker-end', (d) => `url(#arrow-${d.type})`)
+    .on('click', (event, d) => {
       event.stopPropagation();
       selectLink(d.id);
     });
@@ -626,45 +626,45 @@ function updateGraph() {
   const allLinks = links.merge(linksEnter);
 
   // Update selection state for links
-  allLinks.classed("selected", (d) => d.id === state.selectedLink);
+  allLinks.classed('selected', (d) => d.id === state.selectedLink);
 
   // Draw edge labels
   const edgeLabels = state.labelLayer
-    .selectAll(".edge-label")
+    .selectAll('.edge-label')
     .data(linkData, (d) => d.id);
 
   edgeLabels.exit().remove();
 
   const edgeLabelsEnter = edgeLabels
     .enter()
-    .append("text")
-    .attr("class", "edge-label")
-    .attr("dy", -5)
-    .attr("text-anchor", "middle")
+    .append('text')
+    .attr('class', 'edge-label')
+    .attr('dy', -5)
+    .attr('text-anchor', 'middle')
     .text((d) => d.property);
 
   // Initial visibility based on state
-  edgeLabelsEnter.classed("hidden", !state.showLabels);
+  edgeLabelsEnter.classed('hidden', !state.showLabels);
 
   state.edgeLabels = edgeLabels.merge(edgeLabelsEnter);
 
   // Draw nodes
-  const nodes = state.nodeLayer.selectAll(".node").data(nodeData, (d) => d.id);
+  const nodes = state.nodeLayer.selectAll('.node').data(nodeData, (d) => d.id);
 
   nodes.exit().remove();
 
   const nodesEnter = nodes
     .enter()
-    .append("g")
-    .attr("class", "node")
+    .append('g')
+    .attr('class', 'node')
     .call(
       d3
         .drag()
-        .on("start", dragStarted)
-        .on("drag", dragged)
-        .on("end", dragEnded),
+        .on('start', dragStarted)
+        .on('drag', dragged)
+        .on('end', dragEnded),
     )
-    .on("click", (event, d) => {
+    .on('click', (event, d) => {
       event.stopPropagation();
       if (state.selectedNode === d.id) {
         expandAllNeighbors(d.id);
@@ -672,11 +672,11 @@ function updateGraph() {
         selectNode(d.id);
       }
     })
-    .on("mouseenter", (_event, d) => {
+    .on('mouseenter', (_event, d) => {
       // Find connected nodes
       const connectedNodeIds = new Set();
       connectedNodeIds.add(d.id);
-      state.linkLayer.selectAll(".link").each((l) => {
+      state.linkLayer.selectAll('.link').each((l) => {
         if ((l.source.id || l.source) === d.id)
           connectedNodeIds.add(l.target.id || l.target);
         if ((l.target.id || l.target) === d.id)
@@ -685,15 +685,15 @@ function updateGraph() {
 
       // Highlight incoming and outgoing edges
       state.linkLayer
-        .selectAll(".link")
+        .selectAll('.link')
         .classed(
-          "highlighted",
+          'highlighted',
           (l) =>
             (l.source.id || l.source) === d.id ||
             (l.target.id || l.target) === d.id,
         )
         .classed(
-          "dimmed",
+          'dimmed',
           (l) =>
             (l.source.id || l.source) !== d.id &&
             (l.target.id || l.target) !== d.id,
@@ -701,39 +701,39 @@ function updateGraph() {
 
       // Dim other nodes, but keep connected nodes visible
       state.nodeLayer
-        .selectAll(".node")
-        .classed("dimmed", (n) => !connectedNodeIds.has(n.id));
+        .selectAll('.node')
+        .classed('dimmed', (n) => !connectedNodeIds.has(n.id));
     })
-    .on("mouseleave", () => {
+    .on('mouseleave', () => {
       // Remove highlighting and dimming
       state.linkLayer
-        .selectAll(".link")
-        .classed("highlighted", false)
-        .classed("dimmed", false);
-      state.nodeLayer.selectAll(".node").classed("dimmed", false);
+        .selectAll('.link')
+        .classed('highlighted', false)
+        .classed('dimmed', false);
+      state.nodeLayer.selectAll('.node').classed('dimmed', false);
     });
 
   nodesEnter
-    .append("circle")
-    .attr("r", (d) => (d.id === currentSchemaName ? 24 : 18))
-    .attr("fill", (d) => TYPE_COLORS[d.umsType] || TYPE_COLORS.default)
-    .attr("stroke", (d) => TYPE_COLORS[d.umsType] || TYPE_COLORS.default)
-    .attr("stroke-opacity", 0.3);
+    .append('circle')
+    .attr('r', (d) => (d.id === currentSchemaName ? 24 : 18))
+    .attr('fill', (d) => TYPE_COLORS[d.umsType] || TYPE_COLORS.default)
+    .attr('stroke', (d) => TYPE_COLORS[d.umsType] || TYPE_COLORS.default)
+    .attr('stroke-opacity', 0.3);
 
   nodesEnter
-    .append("text")
-    .attr("dy", (d) => (d.id === currentSchemaName ? 40 : 34))
-    .attr("text-anchor", "middle")
+    .append('text')
+    .attr('dy', (d) => (d.id === currentSchemaName ? 40 : 34))
+    .attr('text-anchor', 'middle')
     .text((d) => d.name);
 
   const allNodes = nodes.merge(nodesEnter);
 
   // Update selection state
-  allNodes.classed("selected", (d) => d.id === state.selectedNode);
+  allNodes.classed('selected', (d) => d.id === state.selectedNode);
 
   // Update simulation tick
-  state.simulation.on("tick", () => {
-    allLinks.attr("d", (d) => {
+  state.simulation.on('tick', () => {
+    allLinks.attr('d', (d) => {
       if (d.source.id === d.target.id) {
         const x = d.source.x;
         const y = d.source.y;
@@ -745,17 +745,17 @@ function updateGraph() {
 
     if (state.edgeLabels) {
       state.edgeLabels
-        .attr("x", (d) => {
+        .attr('x', (d) => {
           if (d.source.id === d.target.id) return d.source.x + 55;
           return (d.source.x + d.target.x) / 2;
         })
-        .attr("y", (d) => {
+        .attr('y', (d) => {
           if (d.source.id === d.target.id) return d.source.y - 5;
           return (d.source.y + d.target.y) / 2;
         });
     }
 
-    allNodes.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+    allNodes.attr('transform', (d) => `translate(${d.x}, ${d.y})`);
   });
 
   state.simulation.alpha(0.3).restart();
@@ -767,7 +767,7 @@ function updateGraph() {
 function zoomToFit() {
   if (!state.g || state.displayedNodes.size === 0) return;
 
-  const container = document.getElementById("graph-container");
+  const container = document.getElementById('graph-container');
   const width = container.clientWidth;
   const height = container.clientHeight;
 
@@ -833,15 +833,15 @@ function selectNode(nodeId) {
   updateURL({ node: nodeId });
 
   // Update node/link selection in graph
-  state.g.selectAll(".node").classed("selected", (d) => d.id === nodeId);
-  state.g.selectAll(".link").classed("selected", false);
+  state.g.selectAll('.node').classed('selected', (d) => d.id === nodeId);
+  state.g.selectAll('.link').classed('selected', false);
 
   // Update sidebar
-  const sidebar = document.getElementById("sidebar");
-  const title = document.getElementById("sidebar-title");
-  const content = document.getElementById("sidebar-content");
+  const sidebar = document.getElementById('sidebar');
+  const title = document.getElementById('sidebar-title');
+  const content = document.getElementById('sidebar-content');
 
-  sidebar.classList.remove("collapsed");
+  sidebar.classList.remove('collapsed');
   title.textContent = node.name;
 
   content.innerHTML = renderNodeDetails(node);
@@ -851,11 +851,11 @@ function selectNode(nodeId) {
 
   // Add event listeners for forward relation clicks
   // Add event listeners for forward relation clicks
-  content.querySelectorAll(".relation-item:not(.reverse)").forEach((item) => {
+  content.querySelectorAll('.relation-item:not(.reverse)').forEach((item) => {
     // Property name click -> select link
-    const nameSpan = item.querySelector(".relation-name-clickable");
+    const nameSpan = item.querySelector('.relation-name-clickable');
     if (nameSpan) {
-      nameSpan.addEventListener("click", (e) => {
+      nameSpan.addEventListener('click', (e) => {
         e.stopPropagation();
         const targetId = item.dataset.target;
         const property = item.dataset.property;
@@ -893,9 +893,9 @@ function selectNode(nodeId) {
     }
 
     // Target type click -> navigate to node
-    const targetSpan = item.querySelector(".relation-target-clickable");
+    const targetSpan = item.querySelector('.relation-target-clickable');
     if (targetSpan) {
-      targetSpan.addEventListener("click", (e) => {
+      targetSpan.addEventListener('click', (e) => {
         e.stopPropagation();
         const targetId = item.dataset.target;
 
@@ -924,11 +924,11 @@ function selectNode(nodeId) {
   });
 
   // Add event listeners for reverse relation clicks
-  content.querySelectorAll(".relation-item.reverse").forEach((item) => {
+  content.querySelectorAll('.relation-item.reverse').forEach((item) => {
     // Property name click -> select link
-    const nameSpan = item.querySelector(".relation-name-clickable");
+    const nameSpan = item.querySelector('.relation-name-clickable');
     if (nameSpan) {
-      nameSpan.addEventListener("click", (e) => {
+      nameSpan.addEventListener('click', (e) => {
         e.stopPropagation();
         const sourceId = item.dataset.source;
         const property = item.dataset.property;
@@ -959,9 +959,9 @@ function selectNode(nodeId) {
     }
 
     // Source node click -> navigate to node
-    const sourceSpan = item.querySelector(".relation-target-clickable");
+    const sourceSpan = item.querySelector('.relation-target-clickable');
     if (sourceSpan) {
-      sourceSpan.addEventListener("click", (e) => {
+      sourceSpan.addEventListener('click', (e) => {
         e.stopPropagation();
         const sourceId = item.dataset.source;
         const property = item.dataset.property;
@@ -983,8 +983,8 @@ function selectNode(nodeId) {
   });
 
   // Add event listeners for property key clicks
-  content.querySelectorAll(".property-key-clickable").forEach((item) => {
-    item.addEventListener("click", (e) => {
+  content.querySelectorAll('.property-key-clickable').forEach((item) => {
+    item.addEventListener('click', (e) => {
       e.stopPropagation();
       const property = item.dataset.property;
       const targetId = item.dataset.target;
@@ -1030,25 +1030,25 @@ function selectLink(linkId) {
   if (!link) return;
 
   // Update graph selection
-  state.g.selectAll(".node").classed("selected", false);
-  state.g.selectAll(".link").classed("selected", (d) => d.id === linkId);
+  state.g.selectAll('.node').classed('selected', false);
+  state.g.selectAll('.link').classed('selected', (d) => d.id === linkId);
 
   // Update URL
   updateURL({ link: linkId });
 
   // Update sidebar
-  const sidebar = document.getElementById("sidebar");
-  const title = document.getElementById("sidebar-title");
-  const content = document.getElementById("sidebar-content");
+  const sidebar = document.getElementById('sidebar');
+  const title = document.getElementById('sidebar-title');
+  const content = document.getElementById('sidebar-content');
 
-  sidebar.classList.remove("collapsed");
+  sidebar.classList.remove('collapsed');
   title.textContent = `Relation: ${link.property}`;
 
   content.innerHTML = renderLinkDetails(link);
 
   // Add event listeners for source/target navigation
-  content.querySelectorAll(".node-nav-link").forEach((item) => {
-    item.addEventListener("click", () => {
+  content.querySelectorAll('.node-nav-link').forEach((item) => {
+    item.addEventListener('click', () => {
       selectNode(item.dataset.node);
     });
   });
@@ -1064,7 +1064,7 @@ function renderLinkDetails(link) {
   const sourceNode = state.nodes.get(link.source.id || link.source);
   const targetNode = state.nodes.get(link.target.id || link.target);
 
-  let html = "";
+  let html = '';
 
   // Type badge (Composition vs Association)
   const linkType = link.type; // link.type is controlled ('composition' or 'association'), safe for class names
@@ -1083,7 +1083,7 @@ function renderLinkDetails(link) {
     `;
 
   // Description (if we can find it)
-  let description = "";
+  let description = '';
   if (sourceNode) {
     const relation = sourceNode.relations.find(
       (r) =>
@@ -1147,7 +1147,7 @@ function renderLinkDetails(link) {
   return html;
 }
 function renderNodeDetails(node) {
-  let html = "";
+  let html = '';
 
   // Node type badge
   const docUrl = escapeHtml(getDocUrl(node.id));
@@ -1190,7 +1190,7 @@ function renderNodeDetails(node) {
 
       const tooltipAttr = relation.description
         ? `data-tippy-content="${escapeHtml(relation.description)}"`
-        : "";
+        : '';
 
       // Determine color based on target node type
       const targetColor = targetNode
@@ -1204,12 +1204,12 @@ function renderNodeDetails(node) {
       );
 
       html += `
-                <li class="relation-item ${hasLink ? "in-graph" : ""}"
+                <li class="relation-item ${hasLink ? 'in-graph' : ''}"
                     data-target="${relTarget}"
                     data-property="${relProperty}"
                     data-type="${relType}"
                     ${tooltipAttr}>
-                    <span class="relation-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${relProperty}${relation.isArray ? "[]" : ""}</span>
+                    <span class="relation-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${relProperty}${relation.isArray ? '[]' : ''}</span>
                     <span class="relation-type-name relation-target-clickable" title="Go to Node" style="cursor: pointer; display: flex; align-items: center;">
                         <span class="relation-indicator" style="background-color: ${targetColor}; margin-right: 6px;"></span>
                         <span style="color: var(--color-text-primary)">${targetName}</span>
@@ -1243,7 +1243,7 @@ function renderNodeDetails(node) {
 
       const tooltipAttr = reverse.description
         ? `data-tippy-content="${escapeHtml(reverse.description)}"`
-        : "";
+        : '';
 
       // Determine color based on source node type logic (we need to look up the source node)
       const sourceNode = state.nodes.get(reverse.source);
@@ -1256,7 +1256,7 @@ function renderNodeDetails(node) {
       const revSourceName = escapeHtml(reverse.sourceName);
 
       html += `
-                <li class="relation-item reverse ${hasLink ? "in-graph" : ""}"
+                <li class="relation-item reverse ${hasLink ? 'in-graph' : ''}"
                     data-source="${revSource}"
                     data-property="${revProperty}"
                     data-type="${revType}"
@@ -1265,7 +1265,7 @@ function renderNodeDetails(node) {
                         <span class="relation-indicator" style="background-color: ${sourceColor}; margin-right: 6px;"></span>
                         ${revSourceName}
                     </span>
-                    <span class="relation-type-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${revProperty}${reverse.isArray ? "[]" : ""}</span>
+                    <span class="relation-type-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${revProperty}${reverse.isArray ? '[]' : ''}</span>
                 </li>
             `;
     }
@@ -1295,7 +1295,7 @@ function renderNodeDetails(node) {
       if (!description && prop.$ref) {
         // Attempt to resolve ref to find description
         const refName = extractRefTarget(prop.$ref);
-        const refNode = state.nodes.get(refName || "");
+        const refNode = state.nodes.get(refName || '');
         if (refNode) description = refNode.description;
       }
 
@@ -1305,20 +1305,20 @@ function renderNodeDetails(node) {
 
       const tooltipAttr = description
         ? `data-tippy-content="${escapeHtml(description)}"`
-        : "";
+        : '';
       const escapedKey = escapeHtml(key);
       const escapedType = escapeHtml(type);
       const propDataAttrs = hasRelation
         ? `data-property="${escapeHtml(key)}" data-target="${escapeHtml(relation.target)}"`
-        : "";
-      const clickableClass = hasRelation ? "property-key-clickable" : "";
+        : '';
+      const clickableClass = hasRelation ? 'property-key-clickable' : '';
       const clickableStyle = hasRelation
-        ? "cursor: pointer; text-decoration: underline; text-decoration-style: dotted;"
-        : "";
+        ? 'cursor: pointer; text-decoration: underline; text-decoration-style: dotted;'
+        : '';
 
       html += `
                 <div class="property-row" ${tooltipAttr}>
-                    <div class="property-key ${clickableClass}" ${propDataAttrs} style="${clickableStyle}" ${hasRelation ? 'title="Click to view link"' : ""}>${escapedKey}${isRequired ? " *" : ""}</div>
+                    <div class="property-key ${clickableClass}" ${propDataAttrs} style="${clickableStyle}" ${hasRelation ? 'title="Click to view link"' : ''}>${escapedKey}${isRequired ? ' *' : ''}</div>
                     <div class="property-value code">${escapedType}</div>
                 </div>
             `;
@@ -1387,37 +1387,37 @@ function renderNodeDetails(node) {
  */
 function getPropertyType(prop) {
   if (prop.$ref) {
-    return extractRefTarget(prop.$ref) || "ref";
+    return extractRefTarget(prop.$ref) || 'ref';
   }
-  if (prop.type === "array" && prop.items) {
+  if (prop.type === 'array' && prop.items) {
     if (prop.items.$ref) {
-      return `${extractRefTarget(prop.items.$ref) || "ref"}[]`;
+      return `${extractRefTarget(prop.items.$ref) || 'ref'}[]`;
     }
-    const itemType = prop.items.type || "any";
-    const itemFormat = prop.items.format ? ` (${prop.items.format})` : "";
+    const itemType = prop.items.type || 'any';
+    const itemFormat = prop.items.format ? ` (${prop.items.format})` : '';
     return `${itemType}${itemFormat}[]`;
   }
   if (prop.type) {
-    const format = prop.format ? ` (${prop.format})` : "";
+    const format = prop.format ? ` (${prop.format})` : '';
     return `${prop.type}${format}`;
   }
   if (prop.anyOf || prop.oneOf) {
-    return "union";
+    return 'union';
   }
-  return "any";
+  return 'any';
 }
 
 /**
  * Format a property value for display
  */
 function formatPropertyValue(value) {
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     return escapeHtml(value);
   }
   if (Array.isArray(value)) {
-    return escapeHtml(value.join(", "));
+    return escapeHtml(value.join(', '));
   }
-  if (typeof value === "object") {
+  if (typeof value === 'object') {
     return escapeHtml(JSON.stringify(value));
   }
   return escapeHtml(String(value));
@@ -1427,7 +1427,7 @@ function formatPropertyValue(value) {
  * Escape HTML to prevent XSS
  */
 function escapeHtml(text) {
-  const div = document.createElement("div");
+  const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
@@ -1438,75 +1438,75 @@ function escapeHtml(text) {
 
 function setupEventListeners() {
   // Depth slider
-  const depthSlider = document.getElementById("depth-slider");
-  const depthValue = document.getElementById("depth-value");
+  const depthSlider = document.getElementById('depth-slider');
+  const depthValue = document.getElementById('depth-value');
 
   if (depthSlider) {
     depthSlider.value = initialDepth;
     if (depthValue) depthValue.textContent = initialDepth;
 
-    depthSlider.addEventListener("input", () => {
+    depthSlider.addEventListener('input', () => {
       depthValue.textContent = depthSlider.value;
     });
 
-    depthSlider.addEventListener("change", () => {
+    depthSlider.addEventListener('change', () => {
       const newDepth = parseInt(depthSlider.value, 10);
       initializeGraph(newDepth);
 
       // Update URL
       const newUrl = new URL(window.location);
-      newUrl.searchParams.set("depth", newDepth);
-      window.history.replaceState(null, "", newUrl);
+      newUrl.searchParams.set('depth', newDepth);
+      window.history.replaceState(null, '', newUrl);
     });
   }
 
   // Edge Labels Toggle
-  const labelCheckbox = document.getElementById("show-labels");
+  const labelCheckbox = document.getElementById('show-labels');
   if (labelCheckbox) {
     labelCheckbox.checked = state.showLabels;
-    labelCheckbox.addEventListener("change", (e) => {
+    labelCheckbox.addEventListener('change', (e) => {
       state.showLabels = e.target.checked;
       if (state.edgeLabels) {
-        state.edgeLabels.classed("hidden", !state.showLabels);
+        state.edgeLabels.classed('hidden', !state.showLabels);
       }
 
       // Update URL
       const newUrl = new URL(window.location);
-      newUrl.searchParams.set("labels", state.showLabels);
-      window.history.replaceState(null, "", newUrl);
+      newUrl.searchParams.set('labels', state.showLabels);
+      window.history.replaceState(null, '', newUrl);
     });
   }
 
   // Density Selection
-  const densitySelect = document.getElementById("density-select");
+  const densitySelect = document.getElementById('density-select');
   if (densitySelect) {
     densitySelect.value = state.density;
-    densitySelect.addEventListener("change", (e) => {
+    densitySelect.addEventListener('change', (e) => {
       state.density = e.target.value;
       updateGraph();
 
       // Update URL
       const newUrl = new URL(window.location);
-      newUrl.searchParams.set("density", state.density);
-      window.history.replaceState(null, "", newUrl);
+      newUrl.searchParams.set('density', state.density);
+      window.history.replaceState(null, '', newUrl);
     });
   }
 
   // Export Button
-  const exportBtn = document.getElementById("export-btn");
+  const exportBtn = document.getElementById('export-btn');
   if (exportBtn) {
-    exportBtn.addEventListener("click", () => {
+    exportBtn.addEventListener('click', () => {
       exportAsSVG();
     });
   }
 
   // Schema Selection
-  const schemaSelect = document.getElementById("schema-select");
+  const schemaSelect = document.getElementById('schema-select');
   if (schemaSelect) {
     // Set initial dropdown value based on URL
     schemaSelect.value = currentSchemaName;
 
-    schemaSelect.addEventListener("change", (e) => {
+    schemaSelect.addEventListener('change', (e) => {
       const newSchemaName = e.target.value;
 
       // Clear selection when changing schema
@@ -1517,15 +1517,15 @@ function setupEventListeners() {
 
       // Update URL query param without reloading page
       const newUrl = new URL(window.location);
-      newUrl.searchParams.set("schema", newSchemaName);
-      newUrl.searchParams.delete("node");
-      newUrl.searchParams.delete("link");
-      window.history.pushState({ schema: newSchemaName }, "", newUrl);
+      newUrl.searchParams.set('schema', newSchemaName);
+      newUrl.searchParams.delete('node');
+      newUrl.searchParams.delete('link');
+      window.history.pushState({ schema: newSchemaName }, '', newUrl);
     });
   }
 
   // Handle back/forward navigation
-  window.addEventListener("popstate", (e) => {
+  window.addEventListener('popstate', (e) => {
     if (e.state?.schema) {
       schemaSelect.value = e.state.schema;
       loadSchema(e.state.schema);
@@ -1533,59 +1533,59 @@ function setupEventListeners() {
   });
 
   // Reset button
-  document.getElementById("reset-btn").addEventListener("click", () => {
-    const depthSlider = document.getElementById("depth-slider");
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    const depthSlider = document.getElementById('depth-slider');
     state.selectedNode = null;
     state.selectedLink = null;
     updateURL({});
     initializeGraph(parseInt(depthSlider.value, 10), currentSchemaName);
-    document.getElementById("sidebar-content").innerHTML =
+    document.getElementById('sidebar-content').innerHTML =
       '<p class="empty-state">Click on a node in the graph to see its details</p>';
   });
 
   // Expand all button
-  document.getElementById("expand-all-btn").addEventListener("click", () => {
+  document.getElementById('expand-all-btn').addEventListener('click', () => {
     initializeGraph(10); // Large depth to expand all
   });
 
   // Fit button
-  document.getElementById("fit-btn").addEventListener("click", () => {
+  document.getElementById('fit-btn').addEventListener('click', () => {
     zoomToFit();
   });
 
   // Close sidebar
-  document.getElementById("close-sidebar").addEventListener("click", () => {
-    document.getElementById("sidebar").classList.add("collapsed");
+  document.getElementById('close-sidebar').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.add('collapsed');
     state.selectedNode = null;
-    state.g.selectAll(".node").classed("selected", false);
+    state.g.selectAll('.node').classed('selected', false);
   });
 
   // Click on empty space to deselect
-  state.svg.on("click", (event) => {
+  state.svg.on('click', (event) => {
     // Only deselect if clicking directly on the SVG background, not on nodes or links
     // Check if the click target is the SVG itself or the main group, not a child element
     const target = event.target;
     const isSvgBackground =
-      target.tagName === "svg" ||
-      (target.tagName === "g" && target === state.g.node());
+      target.tagName === 'svg' ||
+      (target.tagName === 'g' && target === state.g.node());
     if (!isSvgBackground) {
       return; // Don't deselect when clicking on nodes/links
     }
     state.selectedNode = null;
     state.selectedLink = null;
-    state.g.selectAll(".node").classed("selected", false);
-    state.g.selectAll(".link").classed("selected", false);
-    document.getElementById("sidebar").classList.add("collapsed");
+    state.g.selectAll('.node').classed('selected', false);
+    state.g.selectAll('.link').classed('selected', false);
+    document.getElementById('sidebar').classList.add('collapsed');
     updateURL({});
   });
 
   // Window resize
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     if (state.simulation) {
-      const container = document.getElementById("graph-container");
+      const container = document.getElementById('graph-container');
       state.simulation
         .force(
-          "center",
+          'center',
           d3.forceCenter(container.clientWidth / 2, container.clientHeight / 2),
         )
         .alpha(0.3)
@@ -1594,10 +1594,10 @@ function setupEventListeners() {
   });
 
   // Handle internal links in sidebar (markdown content)
-  const sidebarContent = document.getElementById("sidebar-content");
+  const sidebarContent = document.getElementById('sidebar-content');
   if (sidebarContent) {
-    sidebarContent.addEventListener("click", (e) => {
-      const link = e.target.closest(".internal-link");
+    sidebarContent.addEventListener('click', (e) => {
+      const link = e.target.closest('.internal-link');
       if (link) {
         e.preventDefault();
         const targetId = link.dataset.target;
@@ -1628,28 +1628,28 @@ function configureMarked() {
     let title;
     let text;
     if (
-      typeof linkData === "object" &&
+      typeof linkData === 'object' &&
       linkData !== null &&
-      "href" in linkData
+      'href' in linkData
     ) {
-      href = linkData.href || "";
-      title = linkData.title || "";
-      text = linkData.text || "";
+      href = linkData.href || '';
+      title = linkData.title || '';
+      text = linkData.text || '';
     } else {
       // Old API fallback
-      href = linkData || "";
-      title = args[0] || "";
-      text = args[1] || "";
+      href = linkData || '';
+      title = args[0] || '';
+      text = args[1] || '';
     }
 
     // Escape all user-provided values to prevent XSS
     const escapedHref = escapeHtml(href);
     const escapedTitle = escapeHtml(title);
     const escapedText = escapeHtml(text);
-    const titleAttr = title ? ` title="${escapedTitle}"` : "";
+    const titleAttr = title ? ` title="${escapedTitle}"` : '';
 
     // 1. Handle internal anchor links (e.g. #vendor)
-    if (href.startsWith("#")) {
+    if (href.startsWith('#')) {
       const targetId = href.substring(1);
       const escapedTargetId = escapeHtml(targetId);
       return `<a href="#" class="internal-link" data-target="${escapedTargetId}"${titleAttr}>${escapedText}</a>`;
@@ -1660,13 +1660,13 @@ function configureMarked() {
     // We interpret them relative to the viewer location (static/tools/schema-viewer/)
     // The path from viewer to schema dir is ../../spec-v1/interfaces/
     if (
-      !href.startsWith("http") &&
-      !href.startsWith("https") &&
-      !href.startsWith("mailto:")
+      !href.startsWith('http') &&
+      !href.startsWith('https') &&
+      !href.startsWith('mailto:')
     ) {
       let newHref = `../../spec-v1/interfaces/${href}`;
       // Remove .md extension to match Docusaurus clean URLs
-      newHref = newHref.replace(/\.md($|#)/, "$1");
+      newHref = newHref.replace(/\.md($|#)/, '$1');
       const escapedNewHref = escapeHtml(newHref);
       return `<a href="${escapedNewHref}"${titleAttr} target="_blank">${escapedText}</a>`;
     }
@@ -1719,7 +1719,7 @@ function getDocUrl(nodeId, property = null) {
   // Determine the base schema URL component
   // Assuming the file structure ../../spec-v1/interfaces/{SchemaName}
   let url = `../../spec-v1/interfaces/${currentSchemaName}`;
-  let nodeSlug = "";
+  let nodeSlug = '';
 
   try {
     if (nodeId === currentSchemaName) {
@@ -1744,7 +1744,7 @@ function getDocUrl(nodeId, property = null) {
       url += `#${nodeSlug}`;
     }
   } catch (e) {
-    console.warn("Error generating doc url:", e);
+    console.warn('Error generating doc url:', e);
     return url;
   }
 
@@ -1752,26 +1752,26 @@ function getDocUrl(nodeId, property = null) {
 }
 
 function toSlug(text) {
-  if (!text) return "";
+  if (!text) return '';
   return text
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(/[^\w-]+/g, "") // Remove all non-word chars
-    .replace(/--+/g, "-") // Replace multiple - with single -
-    .replace(/^-+/, "") // Trim - from start
-    .replace(/-+$/, ""); // Trim - from end
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/[^\w-]+/g, '') // Remove all non-word chars
+    .replace(/--+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start
+    .replace(/-+$/, ''); // Trim - from end
 }
 
 function setupTooltips() {
   // Initialize iconic button tooltips (header) - only once
   if (!state.headerTooltipsInitialized) {
-    tippy("[data-tooltip]", {
-      content: (reference) => reference.getAttribute("data-tooltip"),
-      theme: "dark-custom",
-      placement: "bottom",
-      animation: "scale",
+    tippy('[data-tooltip]', {
+      content: (reference) => reference.getAttribute('data-tooltip'),
+      theme: 'dark-custom',
+      placement: 'bottom',
+      animation: 'scale',
     });
     state.headerTooltipsInitialized = true;
   }
@@ -1783,16 +1783,16 @@ function setupTooltips() {
   // We use a delegate approach or re-init on sidebar update.
   // For simplicity, we'll select elements with data-tippy-content that are property rows
   const instances = tippy(
-    ".property-row[data-tippy-content], .relation-item[data-tippy-content]",
+    '.property-row[data-tippy-content], .relation-item[data-tippy-content]',
     {
       content(reference) {
-        const markdown = reference.getAttribute("data-tippy-content");
-        if (!markdown) return "";
+        const markdown = reference.getAttribute('data-tippy-content');
+        if (!markdown) return '';
         return marked.parse(markdown);
       },
       allowHTML: true,
-      theme: "dark-custom",
-      placement: "left",
+      theme: 'dark-custom',
+      placement: 'left',
       maxWidth: 350,
       interactive: true,
       appendTo: document.body,
@@ -1821,11 +1821,11 @@ function destroySidebarTooltips() {
  * Serialize the current SVG graph to a string, including necessary styles
  */
 function serializeSVG() {
-  const svgEl = document.getElementById("graph-svg");
+  const svgEl = document.getElementById('graph-svg');
   const clone = svgEl.cloneNode(true);
 
   // Add explicitly defined styles to the clone
-  const styleEl = document.createElement("style");
+  const styleEl = document.createElement('style');
   styleEl.textContent = `
         svg { background-color: #1b1b1f; font-family: "Inter", sans-serif; }
         .node circle { stroke-width: 2px; }
@@ -1852,7 +1852,7 @@ function serializeSVG() {
  * Trigger a browser download of a file
  */
 function triggerDownload(url, filename) {
-  const link = document.createElement("a");
+  const link = document.createElement('a');
   link.href = url;
   link.download = filename;
   document.body.appendChild(link);
@@ -1865,14 +1865,14 @@ function triggerDownload(url, filename) {
  */
 function exportAsSVG() {
   const svgData = serializeSVG();
-  const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(svgBlob);
 
   const now = new Date();
   const timestamp = now
     .toISOString()
-    .replace(/T/, "_")
-    .replace(/:/g, "-")
+    .replace(/T/, '_')
+    .replace(/:/g, '-')
     .slice(0, 16);
 
   triggerDownload(
@@ -1894,27 +1894,27 @@ window.copyNodeSchema = (nodeId) => {
   if (!node || !node.rawSchema) return;
 
   const schemaJson = JSON.stringify(node.rawSchema, null, 2);
-  const button = event.target.closest(".copy-btn");
+  const button = event.target.closest('.copy-btn');
 
   navigator.clipboard
     .writeText(schemaJson)
     .then(() => {
-      const textSpan = button.querySelector(".copy-text");
+      const textSpan = button.querySelector('.copy-text');
       const originalText = textSpan.textContent;
-      textSpan.textContent = "Copied!";
-      button.classList.add("copied");
+      textSpan.textContent = 'Copied!';
+      button.classList.add('copied');
 
       setTimeout(() => {
         textSpan.textContent = originalText;
-        button.classList.remove("copied");
+        button.classList.remove('copied');
       }, 2000);
     })
     .catch((err) => {
-      console.error("Failed to copy:", err);
-      const textSpan = button.querySelector(".copy-text");
-      textSpan.textContent = "Failed";
+      console.error('Failed to copy:', err);
+      const textSpan = button.querySelector('.copy-text');
+      textSpan.textContent = 'Failed';
       setTimeout(() => {
-        textSpan.textContent = "Copy";
+        textSpan.textContent = 'Copy';
       }, 2000);
     });
 };
@@ -1935,13 +1935,13 @@ async function loadSchema(schemaName) {
     state.schema = schemaData;
     state.nodes = parseSchema(schemaData, schemaName);
 
-    const depthSlider = document.getElementById("depth-slider");
+    const depthSlider = document.getElementById('depth-slider');
     const depth = parseInt(depthSlider?.value || 1, 10);
 
     // Handle initial deep link and starting point
     const urlParams = new URLSearchParams(window.location.search);
-    const nodeParam = urlParams.get("node");
-    const linkParam = urlParams.get("link");
+    const nodeParam = urlParams.get('node');
+    const linkParam = urlParams.get('link');
 
     // Initialize graph. If nodeParam is present, initializeGraph will use it as starting point.
     initializeGraph(depth);
@@ -1952,11 +1952,11 @@ async function loadSchema(schemaName) {
     } else if (linkParam) {
       // Select link if it exists in displayed links
       // linkId format: source-target-property
-      const parts = linkParam.split("-");
+      const parts = linkParam.split('-');
       if (parts.length >= 3) {
         const sourceId = parts[0];
         const targetId = parts[1];
-        const property = parts.slice(2).join("-"); // Property might contain hyphens
+        const property = parts.slice(2).join('-'); // Property might contain hyphens
 
         // Ensure nodes are visible
         let changed = false;
@@ -1999,15 +1999,15 @@ async function loadSchema(schemaName) {
       }
     } else {
       // Reset sidebar if no deep link
-      document.getElementById("sidebar").classList.add("collapsed");
-      document.getElementById("sidebar-content").innerHTML =
+      document.getElementById('sidebar').classList.add('collapsed');
+      document.getElementById('sidebar-content').innerHTML =
         '<p class="empty-state">Click on a node in the graph to see its details</p>';
     }
   } catch (error) {
-    console.error("Failed to load schema:", error);
-    const escapedMessage = escapeHtml(error.message || "Unknown error");
+    console.error('Failed to load schema:', error);
+    const escapedMessage = escapeHtml(error.message || 'Unknown error');
     const escapedUrl = escapeHtml(url);
-    document.getElementById("sidebar-content").innerHTML = `
+    document.getElementById('sidebar-content').innerHTML = `
             <div class="error-state" style="padding: 20px; color: #ff6b6b; background: rgba(255,107,107,0.1); border-radius: 8px;">
                 <h4>Failed to load schema</h4>
                 <p>${escapedMessage}</p>
@@ -2023,53 +2023,53 @@ async function init() {
     configureMarked();
 
     // Initialize SVG
-    const _container = document.getElementById("graph-container");
-    state.svg = d3.select("#graph-svg");
+    const _container = document.getElementById('graph-container');
+    state.svg = d3.select('#graph-svg');
 
     // Add arrow markers for links
-    const defs = state.svg.append("defs");
+    const defs = state.svg.append('defs');
 
     // Composition arrow (teal-blue)
     defs
-      .append("marker")
-      .attr("id", "arrow-composition")
-      .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 28)
-      .attr("refY", 0)
-      .attr("markerWidth", 6)
-      .attr("markerHeight", 6)
-      .attr("orient", "auto")
-      .append("path")
-      .attr("d", "M0,-5L10,0L0,5")
-      .attr("fill", "#1e8f95");
+      .append('marker')
+      .attr('id', 'arrow-composition')
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 28)
+      .attr('refY', 0)
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('fill', '#1e8f95');
 
     // Association arrow (teal)
     defs
-      .append("marker")
-      .attr("id", "arrow-association")
-      .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 28)
-      .attr("refY", 0)
-      .attr("markerWidth", 6)
-      .attr("markerHeight", 6)
-      .attr("orient", "auto")
-      .append("path")
-      .attr("d", "M0,-5L10,0L0,5")
-      .attr("fill", "#32bcac");
+      .append('marker')
+      .attr('id', 'arrow-association')
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 28)
+      .attr('refY', 0)
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('fill', '#32bcac');
 
-    state.g = state.svg.append("g");
+    state.g = state.svg.append('g');
 
     // Add layers for strict z-index control (last appended is on top)
-    state.linkLayer = state.g.append("g").attr("class", "links-layer");
-    state.labelLayer = state.g.append("g").attr("class", "labels-layer");
-    state.nodeLayer = state.g.append("g").attr("class", "nodes-layer");
+    state.linkLayer = state.g.append('g').attr('class', 'links-layer');
+    state.labelLayer = state.g.append('g').attr('class', 'labels-layer');
+    state.nodeLayer = state.g.append('g').attr('class', 'nodes-layer');
 
     // Setup zoom
     state.zoom = d3
       .zoom()
       .scaleExtent([0.1, 8])
-      .on("zoom", (event) => {
-        state.g.attr("transform", event.transform);
+      .on('zoom', (event) => {
+        state.g.attr('transform', event.transform);
       });
 
     state.svg.call(state.zoom);
@@ -2087,7 +2087,7 @@ async function init() {
     // The loadSchema calls initializeGraph(sliderValue), which is now correct since we set slider.value
     // but let's ensure it's explicitly done if needed.
   } catch (error) {
-    console.error("Initialization error:", error);
+    console.error('Initialization error:', error);
   }
 }
 
