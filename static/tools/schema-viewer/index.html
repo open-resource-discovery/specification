@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+    ⚠️ AI-GENERATED CODE - "VIBE-CODING" STYLE ⚠️
+
+    This code was generated using AI assistance in an experimental "vibe-coding" style.
+    It is intended solely for representing the spec in an alternative visual format.
+    The implementation details may change at any time without notice.
+
+    Use this viewer as a reference tool only - do not depend on its internal implementation.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORD Document Schema Viewer</title>
+    <meta name="description" content="Interactive visualization of the Open Resource Discovery (ORD) Document JSON Schema as a force-directed graph">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light.css"/>
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="header-content">
+                <div style="display: flex; align-items: center;">
+                    <a href="/" class="logo logo-link">
+                        <img src="../../img/logo/ORD_Icon_Color_Logo.svg" alt="ORD Logo">
+                        <span class="logo-text">ORD Spec Explorer</span>
+                    </a>
+                </div>
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="schema-select" class="control-label">Spec:</label>
+                        <select id="schema-select" class="select-input">
+                            <option value="Document" selected>ORD Document</option>
+                            <option value="Configuration">ORD Configuration</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="depth-slider" class="control-label">Depth:</label>
+                        <input type="range" id="depth-slider" min="0" max="5" value="1" class="slider">
+                        <span id="depth-value" class="slider-value">1</span>
+                    </div>
+                    <div class="control-group">
+                        <label for="density-select" class="control-label">Density:</label>
+                        <select id="density-select" class="select-input">
+                            <option value="compact">Compact</option>
+                            <option value="normal">Normal</option>
+                            <option value="sparse">Sparse</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="show-labels" checked>
+                            <span class="checkmark"></span>
+                            Labels
+                        </label>
+                    </div>
+                    <button id="export-btn" class="btn icon-btn" data-tooltip="Export as SVG" aria-label="Export SVG">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </button>
+                    <button id="reset-btn" class="btn icon-btn" data-tooltip="Reset View" aria-label="Reset">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                    </button>
+                    <button id="fit-btn" class="btn icon-btn" data-tooltip="Fit to Screen" aria-label="Fit to Screen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                    </button>
+                    <button id="expand-all-btn" class="btn icon-btn" data-tooltip="Expand All Recursively" aria-label="Expand All">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="graph-area">
+                <div id="graph-container" class="graph-container">
+                    <svg id="graph-svg"></svg>
+                </div>
+
+                <footer class="graph-legend">
+                    <div class="legend-group">
+                        <span class="legend-label">Node Types:</span>
+                        <div class="legend-item"><span class="legend-dot" style="background: var(--color-root)"></span> Root</div>
+                        <div class="legend-item"><span class="legend-dot" style="background: var(--color-subentity)"></span> Subentity</div>
+                        <div class="legend-item"><span class="legend-dot" style="background: var(--color-external-ownership)"></span> External Ownership</div>
+                        <div class="legend-item"><span class="legend-dot" style="background: var(--color-ephemeral)"></span> Ephemeral</div>
+                    </div>
+                    <div class="legend-group">
+                        <span class="legend-label">Edges:</span>
+                        <div class="legend-item"><span class="legend-line composition"></span> Composition</div>
+                        <div class="legend-item"><span class="legend-line association"></span> Association</div>
+                    </div>
+                    <div class="legend-group">
+                        <span class="legend-label">Tips:</span>
+                        <div class="legend-item">Click node twice to expand</div>
+                    </div>
+                </footer>
+            </div>
+
+            <aside id="sidebar" class="sidebar">
+                <div class="sidebar-header">
+                    <h2 id="sidebar-title">Select a node</h2>
+                    <button id="close-sidebar" class="close-btn">&times;</button>
+                </div>
+                <div id="sidebar-content" class="sidebar-content">
+                    <p class="empty-state">Click on a node in the graph to see its details</p>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="app.js" type="module"></script>
+</body>
+</html>
