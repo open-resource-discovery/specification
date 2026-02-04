@@ -152,13 +152,16 @@ function formatName(name) {
  * Map x-ums-type to internal categories
  */
 function mapUmsType(type, id, isRoot = false) {
-    if (isRoot) return 'root';
+    // For root nodes, respect the actual x-ums-type from the schema
+    // If no type specified for root, default to 'root'
+    if (isRoot && !type) return 'root';
+
     if (type === 'embedded' || type === 'custom') return 'subentity';
     if (type === 'ignore') {
         if (id && id.startsWith('System')) return 'external_ownership';
         return 'ephemeral';
     }
-    return type;
+    return type || 'root';
 }
 
 /**
@@ -351,8 +354,14 @@ function initializeGraph(depth = 1) {
     state.displayedNodes.clear();
     state.displayedLinks = [];
 
-    // Start with the root node of the selected schema
-    expandNode(currentSchemaName, depth);
+    if (depth === 0) {
+        // Depth 0: Only show the root node, no automatic expansion
+        // User can manually expand via sidebar navigation
+        state.displayedNodes.add(currentSchemaName);
+    } else {
+        // Start with the root node and expand to specified depth
+        expandNode(currentSchemaName, depth);
+    }
 
     updateGraph();
 }
