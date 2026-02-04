@@ -88,7 +88,8 @@ function parseSchema(schema, schemaName) {
         properties: schema.properties || {},
         required: schema.required || [],
         relations: [],
-        xProperties: extractXProperties(schema)
+        xProperties: extractXProperties(schema),
+        rawSchema: schema // Store the original schema
     };
     nodes.set(rootId, rootNode);
 
@@ -104,7 +105,8 @@ function parseSchema(schema, schemaName) {
             properties: def.properties || {},
             required: def.required || [],
             relations: [],
-            xProperties: extractXProperties(def)
+            xProperties: extractXProperties(def),
+            rawSchema: def // Store the original definition
         };
         nodes.set(name, node);
     }
@@ -1189,6 +1191,29 @@ function renderNodeDetails(node) {
         `;
     }
 
+    // JSON Schema Section (collapsible)
+    if (node.rawSchema) {
+        const schemaJson = JSON.stringify(node.rawSchema, null, 2);
+        const escapedSchema = escapeHtml(schemaJson);
+        const nodeIdSafe = escapeHtml(node.id);
+        html += `
+            <div class="section json-schema-section">
+                <div class="collapsible-header" onclick="this.parentElement.classList.toggle('expanded')">
+                    <h3 class="section-title" style="margin: 0; cursor: pointer; user-select: none;">
+                        <span class="collapse-icon">▶</span> JSON Schema
+                    </h3>
+                    <button class="copy-btn" onclick="event.stopPropagation(); copyNodeSchema('${nodeIdSafe}');" title="Copy JSON Schema">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <div class="collapsible-content">
+                    <pre class="schema-code"><code>${escapedSchema}</code></pre>
+                </div>
+            </div>
+        `;
+    }
+
     return html;
 }
 
@@ -1656,6 +1681,40 @@ function exportAsSVG() {
     triggerDownload(url, `${timestamp}_ord-schema-${currentSchemaName.toLowerCase()}.svg`);
     URL.revokeObjectURL(url);
 }
+
+// ===================================
+// Clipboard & Utility Functions
+// ===================================
+
+/**
+ * Copy node schema to clipboard
+ */
+window.copyNodeSchema = function(nodeId) {
+    const node = state.nodes.get(nodeId);
+    if (!node || !node.rawSchema) return;
+
+    const schemaJson = JSON.stringify(node.rawSchema, null, 2);
+    const button = event.target.closest('.copy-btn');
+
+    navigator.clipboard.writeText(schemaJson).then(() => {
+        const textSpan = button.querySelector('.copy-text');
+        const originalText = textSpan.textContent;
+        textSpan.textContent = 'Copied!';
+        button.classList.add('copied');
+
+        setTimeout(() => {
+            textSpan.textContent = originalText;
+            button.classList.remove('copied');
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        const textSpan = button.querySelector('.copy-text');
+        textSpan.textContent = 'Failed';
+        setTimeout(() => {
+            textSpan.textContent = 'Copy';
+        }, 2000);
+    });
+};
 
 // ===================================
 // Initialization

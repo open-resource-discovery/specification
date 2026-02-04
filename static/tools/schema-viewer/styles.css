@@ -969,3 +969,107 @@ body {
 .tippy-box[data-theme~='dark-custom'] .tippy-content a:hover {
     text-decoration: underline;
 }
+
+/* ===================================
+   JSON Schema Section (Collapsible)
+   =================================== */
+
+.json-schema-section {
+    margin-top: var(--space-lg);
+}
+
+.json-schema-section.expanded .collapse-icon {
+    transform: rotate(90deg);
+}
+
+.json-schema-section .collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.json-schema-section.expanded .collapsible-content {
+    max-height: none;
+    overflow: visible;
+    margin-top: var(--space-sm);
+}
+
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-sm);
+    transition: background 0.2s ease;
+}
+
+.collapsible-header:hover {
+    background: var(--color-bg-elevated);
+}
+
+.collapsible-header h3 {
+    flex: 1;
+    min-width: 0;
+}
+
+.collapse-icon {
+    display: inline-block;
+    margin-right: var(--space-xs);
+    transition: transform 0.2s ease;
+    font-size: 10px;
+    color: var(--color-text-secondary);
+}
+
+.schema-code {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.5;
+    overflow-x: auto;
+}
+
+.schema-code code {
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    white-space: pre;
+}
+
+.copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: var(--color-hover);
+    color: var(--color-text-primary);
+    border-color: var(--color-brand);
+}
+
+.copy-btn.copied {
+    background: var(--color-brand);
+    color: white;
+    border-color: var(--color-brand);
+}
+
+.copy-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.copy-text {
+    font-family: var(--font-sans);
+}
