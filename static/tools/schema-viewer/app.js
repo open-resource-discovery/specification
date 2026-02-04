@@ -1542,7 +1542,7 @@ function setupTooltips() {
     if (!state.headerTooltipsInitialized) {
         tippy('[data-tooltip]', {
             content: (reference) => reference.getAttribute('data-tooltip'),
-            theme: 'light',
+            theme: 'dark-custom',
             placement: 'bottom',
             animation: 'scale',
         });
@@ -1562,7 +1562,7 @@ function setupTooltips() {
             return marked.parse(markdown);
         },
         allowHTML: true,
-        theme: 'light',
+        theme: 'dark-custom',
         placement: 'left',
         maxWidth: 350,
         interactive: true,
