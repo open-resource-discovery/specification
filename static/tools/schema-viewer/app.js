@@ -370,7 +370,7 @@ function expandNode(nodeId, depth = 1) {
     const node = state.nodes.get(nodeId);
     for (const relation of node.relations) {
         if (state.nodes.has(relation.target)) {
-            // Add the link if not already present
+            // Add the link if not already present (during expansion or for self-loops)
             const linkId = `${nodeId}-${relation.target}-${relation.property}`;
             const existingLink = state.displayedLinks.find(l =>
                 l.source === nodeId && l.target === relation.target && l.property === relation.property
@@ -388,7 +388,7 @@ function expandNode(nodeId, depth = 1) {
                 });
             }
 
-            // Recursively expand
+            // Recursively expand if target is new
             if (!state.displayedNodes.has(relation.target)) {
                 expandNode(relation.target, depth - 1);
             }
