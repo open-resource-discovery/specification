@@ -893,6 +893,41 @@ function selectNode(nodeId) {
             });
         }
     });
+
+    // Add event listeners for property key clicks
+    content.querySelectorAll('.property-key-clickable').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const property = item.dataset.property;
+            const targetId = item.dataset.target;
+
+            // Find existing link in displayed links
+            const link = state.displayedLinks.find(l =>
+                (l.source.id === nodeId || l.source === nodeId) &&
+                (l.target.id === targetId || l.target === targetId) &&
+                l.property === property
+            );
+
+            if (link) {
+                selectLink(link.id);
+            } else {
+                // If not displayed, add it first then select
+                const relation = node.relations.find(r => r.target === targetId && r.property === property);
+                if (relation) {
+                    addRelationToGraph(nodeId, relation);
+                    // After adding, find and select
+                    setTimeout(() => {
+                        const newLink = state.displayedLinks.find(l =>
+                            (l.source.id === nodeId || l.source === nodeId) &&
+                            (l.target.id === targetId || l.target === targetId) &&
+                            l.property === property
+                        );
+                        if (newLink) selectLink(newLink.id);
+                    }, 50);
+                }
+            }
+        });
+    });
 }
 
 function selectLink(linkId) {
@@ -1147,13 +1182,20 @@ function renderNodeDetails(node) {
                  if (refNode) description = refNode.description;
             }
 
+            // Check if this property has a relation
+            const relation = node.relations.find(r => r.property === key);
+            const hasRelation = !!relation;
+
             const tooltipAttr = description ? `data-tippy-content="${escapeHtml(description)}"` : '';
             const escapedKey = escapeHtml(key);
             const escapedType = escapeHtml(type);
+            const propDataAttrs = hasRelation ? `data-property="${escapeHtml(key)}" data-target="${escapeHtml(relation.target)}"` : '';
+            const clickableClass = hasRelation ? 'property-key-clickable' : '';
+            const clickableStyle = hasRelation ? 'cursor: pointer; text-decoration: underline; text-decoration-style: dotted;' : '';
 
             html += `
                 <div class="property-row" ${tooltipAttr}>
-                    <div class="property-key">${escapedKey}${isRequired ? ' *' : ''}</div>
+                    <div class="property-key ${clickableClass}" ${propDataAttrs} style="${clickableStyle}" ${hasRelation ? 'title="Click to view link"' : ''}>${escapedKey}${isRequired ? ' *' : ''}</div>
                     <div class="property-value code">${escapedType}</div>
                 </div>
             `;
