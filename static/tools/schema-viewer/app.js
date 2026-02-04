@@ -926,10 +926,13 @@ function renderLinkDetails(link) {
     let html = '';
 
     // Type badge (Composition vs Association)
+    const linkType = link.type; // link.type is controlled ('composition' or 'association'), safe for class names
+    const linkTypeDisplay = escapeHtml(link.type); // Escape for text display
+    const docUrl = escapeHtml(getDocUrl(link.source.id || link.source, link.property));
     html += `
         <div class="section" style="display: flex; justify-content: space-between; align-items: center;">
-            <span class="node-type-badge ${link.type}">${link.type.toUpperCase()}</span>
-            <a href="${getDocUrl(link.source.id || link.source, link.property)}" target="_blank" class="doc-link" title="Open Interface Documentation" style="display: flex; align-items: center; gap: 4px; color: var(--color-accent); text-decoration: none; font-size: 12px;">
+            <span class="node-type-badge ${linkType}">${linkTypeDisplay.toUpperCase()}</span>
+            <a href="${docUrl}" target="_blank" class="doc-link" title="Open Interface Documentation" style="display: flex; align-items: center; gap: 4px; color: var(--color-accent); text-decoration: none; font-size: 12px;">
                 <span>View Spec</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </a>
@@ -961,22 +964,26 @@ function renderLinkDetails(link) {
 
     // Source Node Item
     const sourceColor = sourceNode ? (TYPE_COLORS[sourceNode.umsType] || TYPE_COLORS['default']) : TYPE_COLORS['default'];
+    const sourceId = escapeHtml(sourceNode ? sourceNode.id : link.source);
+    const sourceName = escapeHtml(sourceNode ? sourceNode.name : link.source);
 
     html += `
-        <li class="relation-item node-nav-link" data-node="${sourceNode ? sourceNode.id : link.source}" title="Go to Source Node">
+        <li class="relation-item node-nav-link" data-node="${sourceId}" title="Go to Source Node">
             <span class="relation-indicator" style="background-color: ${sourceColor}"></span>
-            <span class="relation-name" style="flex: 1; color: var(--color-text-primary); border-bottom: none;">${sourceNode ? sourceNode.name : link.source}</span>
+            <span class="relation-name" style="flex: 1; color: var(--color-text-primary); border-bottom: none;">${sourceName}</span>
             <span class="relation-type-name" style="flex: 0 0 auto; color: var(--color-text-secondary); font-size: 11px;">Source</span>
         </li>
     `;
 
     // Target Node Item
     const targetColor = targetNode ? (TYPE_COLORS[targetNode.umsType] || TYPE_COLORS['default']) : TYPE_COLORS['default'];
+    const targetId = escapeHtml(targetNode ? targetNode.id : link.target);
+    const targetName = escapeHtml(targetNode ? targetNode.name : link.target);
 
     html += `
-        <li class="relation-item node-nav-link" data-node="${targetNode ? targetNode.id : link.target}" title="Go to Target Node">
+        <li class="relation-item node-nav-link" data-node="${targetId}" title="Go to Target Node">
             <span class="relation-indicator" style="background-color: ${targetColor}"></span>
-            <span class="relation-name" style="flex: 1; color: var(--color-text-primary); border-bottom: none;">${targetNode ? targetNode.name : link.target}</span>
+            <span class="relation-name" style="flex: 1; color: var(--color-text-primary); border-bottom: none;">${targetName}</span>
             <span class="relation-type-name" style="flex: 0 0 auto; color: var(--color-text-secondary); font-size: 11px;">Target</span>
         </li>
     `;
@@ -992,10 +999,11 @@ function renderNodeDetails(node) {
     let html = '';
 
     // Node type badge
+    const docUrl = escapeHtml(getDocUrl(node.id));
     html += `
         <div class="section" style="display: flex; justify-content: space-between; align-items: center;">
             <span class="node-type-badge ${node.umsType}">${TYPE_LABELS[node.umsType] || node.umsType}</span>
-            <a href="${getDocUrl(node.id)}" target="_blank" class="doc-link" title="Open Interface Documentation" style="display: flex; align-items: center; gap: 4px; color: var(--color-accent); text-decoration: none; font-size: 12px;">
+            <a href="${docUrl}" target="_blank" class="doc-link" title="Open Interface Documentation" style="display: flex; align-items: center; gap: 4px; color: var(--color-accent); text-decoration: none; font-size: 12px;">
                 <span>View Spec</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </a>
@@ -1032,17 +1040,21 @@ function renderNodeDetails(node) {
 
             // Determine color based on target node type
             const targetColor = targetNode ? (TYPE_COLORS[targetNode.umsType] || TYPE_COLORS['default']) : TYPE_COLORS['default'];
+            const relTarget = escapeHtml(relation.target);
+            const relProperty = escapeHtml(relation.property);
+            const relType = escapeHtml(relation.type);
+            const targetName = escapeHtml(targetNode ? targetNode.name : relation.target);
 
             html += `
                 <li class="relation-item ${hasLink ? 'in-graph' : ''}"
-                    data-target="${relation.target}"
-                    data-property="${relation.property}"
-                    data-type="${relation.type}"
+                    data-target="${relTarget}"
+                    data-property="${relProperty}"
+                    data-type="${relType}"
                     ${tooltipAttr}>
-                    <span class="relation-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${relation.property}${relation.isArray ? '[]' : ''}</span>
+                    <span class="relation-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${relProperty}${relation.isArray ? '[]' : ''}</span>
                     <span class="relation-type-name relation-target-clickable" title="Go to Node" style="cursor: pointer; display: flex; align-items: center;">
                         <span class="relation-indicator" style="background-color: ${targetColor}; margin-right: 6px;"></span>
-                        <span style="color: var(--color-text-primary)">${targetNode ? targetNode.name : relation.target}</span>
+                        <span style="color: var(--color-text-primary)">${targetName}</span>
                     </span>
                 </li>
             `;
@@ -1075,18 +1087,22 @@ function renderNodeDetails(node) {
             // Determine color based on source node type logic (we need to look up the source node)
             const sourceNode = state.nodes.get(reverse.source);
             const sourceColor = sourceNode ? (TYPE_COLORS[sourceNode.umsType] || TYPE_COLORS['default']) : TYPE_COLORS['default'];
+            const revSource = escapeHtml(reverse.source);
+            const revProperty = escapeHtml(reverse.property);
+            const revType = escapeHtml(reverse.type);
+            const revSourceName = escapeHtml(reverse.sourceName);
 
             html += `
                 <li class="relation-item reverse ${hasLink ? 'in-graph' : ''}"
-                    data-source="${reverse.source}"
-                    data-property="${reverse.property}"
-                    data-type="${reverse.type}"
+                    data-source="${revSource}"
+                    data-property="${revProperty}"
+                    data-type="${revType}"
                     ${tooltipAttr}>
                     <span class="relation-name relation-target-clickable" title="Go to Node" style="cursor: pointer; display: flex; align-items: center;">
                         <span class="relation-indicator" style="background-color: ${sourceColor}; margin-right: 6px;"></span>
-                        ${reverse.sourceName}
+                        ${revSourceName}
                     </span>
-                    <span class="relation-type-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${reverse.property}${reverse.isArray ? '[]' : ''}</span>
+                    <span class="relation-type-name relation-name-clickable" title="View Link Details" style="cursor: pointer">${revProperty}${reverse.isArray ? '[]' : ''}</span>
                 </li>
             `;
         }
@@ -1121,11 +1137,13 @@ function renderNodeDetails(node) {
             }
 
             const tooltipAttr = description ? `data-tippy-content="${escapeHtml(description)}"` : '';
+            const escapedKey = escapeHtml(key);
+            const escapedType = escapeHtml(type);
 
             html += `
                 <div class="property-row" ${tooltipAttr}>
-                    <div class="property-key">${key}${isRequired ? ' *' : ''}</div>
-                    <div class="property-value code">${type}</div>
+                    <div class="property-key">${escapedKey}${isRequired ? ' *' : ''}</div>
+                    <div class="property-value code">${escapedType}</div>
                 </div>
             `;
         }
@@ -1147,9 +1165,10 @@ function renderNodeDetails(node) {
 
         for (const key of xPropKeys) {
             const value = node.xProperties[key];
+            const escapedXKey = escapeHtml(key);
             html += `
                 <div class="property-row">
-                    <div class="property-key">${key}</div>
+                    <div class="property-key">${escapedXKey}</div>
                     <div class="property-value">${formatPropertyValue(value)}</div>
                 </div>
             `;
@@ -1199,7 +1218,7 @@ function formatPropertyValue(value) {
     if (typeof value === 'object') {
         return escapeHtml(JSON.stringify(value));
     }
-    return String(value);
+    return escapeHtml(String(value));
 }
 
 /**
@@ -1400,12 +1419,17 @@ function configureMarked() {
             text = arguments[2] || '';
         }
 
-        const titleAttr = title ? ` title="${title}"` : '';
+        // Escape all user-provided values to prevent XSS
+        const escapedHref = escapeHtml(href);
+        const escapedTitle = escapeHtml(title);
+        const escapedText = escapeHtml(text);
+        const titleAttr = title ? ` title="${escapedTitle}"` : '';
 
         // 1. Handle internal anchor links (e.g. #vendor)
         if (href.startsWith('#')) {
             const targetId = href.substring(1);
-            return `<a href="#" class="internal-link" data-target="${targetId}"${titleAttr}>${text}</a>`;
+            const escapedTargetId = escapeHtml(targetId);
+            return `<a href="#" class="internal-link" data-target="${escapedTargetId}"${titleAttr}>${escapedText}</a>`;
         }
 
         // 2. Handle relative links
@@ -1416,11 +1440,12 @@ function configureMarked() {
             let newHref = `../../spec-v1/interfaces/${href}`;
             // Remove .md extension to match Docusaurus clean URLs
             newHref = newHref.replace(/\.md($|#)/, '$1');
-            return `<a href="${newHref}"${titleAttr} target="_blank">${text}</a>`;
+            const escapedNewHref = escapeHtml(newHref);
+            return `<a href="${escapedNewHref}"${titleAttr} target="_blank">${escapedText}</a>`;
         }
 
         // Default behavior for absolute/external links
-        return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
+        return `<a href="${escapedHref}"${titleAttr} target="_blank" rel="noopener noreferrer">${escapedText}</a>`;
     };
 
     marked.use({ renderer });
@@ -1644,11 +1669,13 @@ async function loadSchema(schemaName) {
         document.getElementById('sidebar-content').innerHTML = '<p class="empty-state">Click on a node in the graph to see its details</p>';
     } catch (error) {
         console.error('Failed to load schema:', error);
+        const escapedMessage = escapeHtml(error.message || 'Unknown error');
+        const escapedUrl = escapeHtml(url);
         document.getElementById('sidebar-content').innerHTML = `
             <div class="error-state" style="padding: 20px; color: #ff6b6b; background: rgba(255,107,107,0.1); border-radius: 8px;">
                 <h4>Failed to load schema</h4>
-                <p>${error.message}</p>
-                <p style="font-size: 11px; opacity: 0.7; margin-top: 10px;">URL: ${url}</p>
+                <p>${escapedMessage}</p>
+                <p style="font-size: 11px; opacity: 0.7; margin-top: 10px;">URL: ${escapedUrl}</p>
             </div>
         `;
     }
