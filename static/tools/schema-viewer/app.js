@@ -1,11 +1,20 @@
 /**
  * ORD Schema Viewer - Main Application Entry Point
  * Orchestrates modules and handles high-level initialization.
+ *
+ * ⚠️ AI-GENERATED CODE - "VIBE-CODING" STYLE ⚠️
+ *
+ * This code was generated using AI assistance in an experimental "vibe-coding" style.
+ * It is intended solely for representing the spec in an alternative visual format.
+ * The implementation details may change at any time without notice.
+ *
+ * Use this viewer as a reference tool only - do not depend on its internal implementation.
  */
-
 import { SCHEMA_BASE_URL, SCHEMAS } from './modules/config.js';
 import {
   initializeGraph,
+  removeLinkFromGraph,
+  removeNodeFromGraph,
   updateGraph,
   zoomToFit,
 } from './modules/graph.js';
@@ -276,8 +285,32 @@ function setupEventListeners() {
   document.getElementById('close-sidebar').addEventListener('click', () => {
     document.getElementById('sidebar').classList.add('collapsed');
     state.selectedNode = null;
+    state.selectedLink = null;
     state.g.selectAll('.node').classed('selected', false);
+    state.g.selectAll('.link').classed('selected', false);
+    document.getElementById('graph-remove-btn').style.display = 'none';
+    document.getElementById('sidebar-remove-btn').style.display = 'none';
+    updateURL({});
   });
+
+  // Remove selection
+  const handleRemoveSelection = () => {
+    if (state.selectedNode) {
+      removeNodeFromGraph(state.selectedNode);
+    } else if (state.selectedLink) {
+      removeLinkFromGraph(state.selectedLink);
+    }
+
+    state.selectedNode = null;
+    state.selectedLink = null;
+    document.getElementById('sidebar').classList.add('collapsed');
+    document.getElementById('graph-remove-btn').style.display = 'none';
+    document.getElementById('sidebar-remove-btn').style.display = 'none';
+    updateURL({});
+  };
+
+  document.getElementById('graph-remove-btn').addEventListener('click', handleRemoveSelection);
+  document.getElementById('sidebar-remove-btn').addEventListener('click', handleRemoveSelection);
 
   // Click on empty space to deselect
   state.svg.on('click', (event) => {
@@ -293,6 +326,8 @@ function setupEventListeners() {
     state.g.selectAll('.node').classed('selected', false);
     state.g.selectAll('.link').classed('selected', false);
     document.getElementById('sidebar').classList.add('collapsed');
+    document.getElementById('graph-remove-btn').style.display = 'none';
+    document.getElementById('sidebar-remove-btn').style.display = 'none';
     updateURL({});
   });
 

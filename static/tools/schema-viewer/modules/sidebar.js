@@ -71,6 +71,13 @@ export function selectNode(nodeId) {
 
   content.innerHTML = renderNodeDetails(node);
   setupSidebarInteractions(node, content);
+
+  const isRoot = nodeId === state.currentSchemaName;
+  const graphRemoveBtn = document.getElementById('graph-remove-btn');
+  const sidebarRemoveBtn = document.getElementById('sidebar-remove-btn');
+
+  if (graphRemoveBtn) graphRemoveBtn.style.display = isRoot ? 'none' : 'flex';
+  if (sidebarRemoveBtn) sidebarRemoveBtn.style.display = isRoot ? 'none' : 'flex';
 }
 
 /**
@@ -96,6 +103,12 @@ export function selectLink(linkId) {
   title.textContent = `Relation: ${link.property}`;
 
   content.innerHTML = renderLinkDetails(link);
+
+  const graphRemoveBtn = document.getElementById('graph-remove-btn');
+  const sidebarRemoveBtn = document.getElementById('sidebar-remove-btn');
+
+  if (graphRemoveBtn) graphRemoveBtn.style.display = 'flex';
+  if (sidebarRemoveBtn) sidebarRemoveBtn.style.display = 'flex';
 
   content.querySelectorAll('.node-nav-link').forEach((item) => {
     item.addEventListener('click', () => {

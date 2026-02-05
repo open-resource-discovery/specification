@@ -288,6 +288,33 @@ export function expandAllNeighbors(nodeId) {
 }
 
 /**
+ * Remove a node and all its connected links from the graph
+ */
+export function removeNodeFromGraph(nodeId) {
+  if (nodeId === state.currentSchemaName) {
+    console.warn('Cannot remove the root node');
+    return;
+  }
+
+  state.displayedNodes.delete(nodeId);
+  state.displayedLinks = state.displayedLinks.filter(
+    (l) =>
+      (l.source.id || l.source) !== nodeId &&
+      (l.target.id || l.target) !== nodeId,
+  );
+
+  updateGraph();
+}
+
+/**
+ * Remove a specific link from the graph
+ */
+export function removeLinkFromGraph(linkId) {
+  state.displayedLinks = state.displayedLinks.filter((l) => l.id !== linkId);
+  updateGraph();
+}
+
+/**
  * Update the D3 graph visualization
  */
 export function updateGraph() {

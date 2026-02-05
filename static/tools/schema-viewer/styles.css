@@ -402,7 +402,7 @@ body {
 .node.selected circle {
   stroke-width: 3px;
   stroke: #ffffff;
-  stroke-opacity: 1;
+  stroke-opacity: 0.8;
   filter: drop-shadow(0 0 15px currentColor);
 }
 
@@ -744,6 +744,32 @@ body {
   white-space: nowrap;
 }
 
+.sidebar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  border-radius: var(--radius-sm);
+}
+
+.action-btn:hover,
+.danger-btn:hover {
+  color: var(--color-danger, #ff4d4d);
+  background: rgba(255, 77, 77, 0.1);
+  transform: scale(1.1);
+}
+
 .close-btn {
   width: 28px;
   height: 28px;
@@ -1073,23 +1099,7 @@ body {
 }
 
 .section {
-  animation: fadeIn 0.3s ease both;
-}
-
-.section:nth-child(1) {
-  animation-delay: 0.05s;
-}
-.section:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.section:nth-child(3) {
-  animation-delay: 0.15s;
-}
-.section:nth-child(4) {
-  animation-delay: 0.2s;
-}
-.section:nth-child(5) {
-  animation-delay: 0.25s;
+  display: block;
 }
 
 /* ===================================
