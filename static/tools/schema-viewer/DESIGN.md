@@ -62,13 +62,15 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
 - **Stability**: Automatic viewport centering is disabled during node selection to preserve the user's focus; manual "Fit" is used instead.
 
 ## 3. Technical Stack
-- **Languages**: HTML5, CSS3 (Vanilla), JavaScript (ES Modules).
-- **Libraries**:
-    - [D3.js (v7)](https://d3js.org/) for graph rendering and simulation.
-    - [Popper.js](https://popper.js.org/) for tooltip positioning.
-    - [Tippy.js](https://atomiks.github.io/tippyjs/) for rich tooltip interactions.
-    - [Marked.js](https://marked.js.org/) for markdown parsing in sidebar content.
 - **Integration**: Designed to run as a static tool within a Docusaurus project (`/static/tools/`).
+- **Code Structure**: Modularized using ES Modules for maintainability:
+    - `app.js`: Main entry point and orchestration.
+    - `modules/config.js`: Centralized constants and theme configuration.
+    - `modules/state.js`: Shares central application state across modules.
+    - `modules/utils.js`: Pure utility functions and DOM helpers.
+    - `modules/parser.js`: Schema parsing and relationship extraction logic.
+    - `modules/graph.js`: D3.js visualization and force simulation management.
+    - `modules/sidebar.js`: Sidebar rendering, markdown configuration, and UI interactions.
 
 ---
 
@@ -119,14 +121,22 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
 - [x] Improved dimming effect (0.2 opacity for better visibility).
 - [x] Self-loop support with special handling to ensure reflexive relationships are visible.
 - [x] Self-loop edge positioning refinements (50px arc, labels at x+55/y-5) to prevent overlap.
+- [x] URL-based node selection: URL query params specify current state (deep linking).
+- [x] Raw Schema View: Collapsible JSON Schema view in the sidebar for the selected item.
+- [x] Copy JSON Schema to clipboard functionality.
+- [x] Enhanced compatibility for self-loops and complex edge labels.
+- [x] Improved "Relates To" and "Inverse Relations" sections.
+- [x] Fixed sidebar update bugs during rapid navigation.
+- [x] Modularized codebase for better maintainability and scale.
+- [x] Visual markers for property criticality: Red asterisk for mandatory (`required`), blue asterisk for recommended (`x-recommended`).
+- [x] Floating action menu in the graph area for quick access to tools (Fit, Reset, Expand, Export).
+- [x] Interactive Label toggle icon button replacing the standard checkbox.
 
 ### Known Issues
 - [ ] **SVG Export**: Export functionality exists but download behavior needs testing across different browsers.
 
 ### Upcoming Features
-- [ ] **URL-based node selection**: Add query param to specify which node should be initially selected (deep linking).
 - [ ] **Search**: Integrated search bar for finding nodes by name or property.
-- [ ] **Raw Schema View**: Toggle in sidebar to see the source JSON Schema for the selected item.
 ---
 
 ## 6. Key Technical Decisions & Challenges

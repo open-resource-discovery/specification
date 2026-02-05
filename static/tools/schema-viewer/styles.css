@@ -307,84 +307,8 @@ body {
   height: 20px;
 }
 
-/* Tooltips */
-[data-tooltip] {
-  position: relative;
-}
+/* Interactive States & Misc */
 
-[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 6px 10px;
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-primary);
-  font-size: 11px;
-  font-weight: 500;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.2s,
-    visibility 0.2s;
-  pointer-events: none;
-  z-index: 1000;
-  box-shadow: var(--shadow-md);
-}
-
-[data-tooltip]:hover::after {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Checkbox toggle */
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  cursor: pointer;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  user-select: none;
-}
-
-.checkbox-label input[type="checkbox"] {
-  display: none;
-}
-
-.checkbox-label .checkmark {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  position: relative;
-  transition: all var(--transition-fast);
-}
-
-.checkbox-label input[type="checkbox"]:checked + .checkmark {
-  background: var(--color-root);
-  border-color: var(--color-root);
-}
-
-.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
-  content: "";
-  position: absolute;
-  left: 4px;
-  top: 1px;
-  width: 4px;
-  height: 8px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-
-.checkbox-label:hover .checkmark {
-  border-color: var(--color-root);
-}
 
 /* ===================================
    Graph Container
@@ -411,6 +335,46 @@ body {
 
 #graph-svg:active {
   cursor: grabbing;
+}
+
+/* Floating Actions */
+.graph-actions {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.graph-actions .icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+}
+
+.graph-actions .icon-btn:hover {
+  background: var(--color-bg-elevated);
+  color: var(--color-brand);
+}
+
+.graph-actions .icon-btn.active {
+  color: var(--color-root);
+  background: var(--color-hover);
+}
+
+.graph-actions .divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 2px 4px;
 }
 
 /* Graph elements */
@@ -1119,4 +1083,17 @@ body {
 
 .copy-text {
   font-family: var(--font-sans);
+}
+
+/* Property Markers */
+.mandatory-marker {
+  color: #ff6b6b;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+.recommended-marker {
+  color: #4dabf7;
+  font-weight: bold;
+  margin-left: 2px;
 }
