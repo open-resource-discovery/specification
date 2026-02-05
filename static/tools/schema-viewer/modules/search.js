@@ -2,9 +2,14 @@
  * Search functionality for the Schema Viewer
  */
 
+import {
+  addRelationToGraph,
+  autoAddForwardLinks,
+  autoAddReverseLinks,
+  updateGraph,
+} from './graph.js';
+import { selectLink, selectNode } from './sidebar.js';
 import { state } from './state.js';
-import { selectNode, selectLink } from './sidebar.js';
-import { updateGraph, addRelationToGraph, autoAddReverseLinks, autoAddForwardLinks } from './graph.js';
 
 /**
  * Initialize search event listeners

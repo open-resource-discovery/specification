@@ -2,7 +2,7 @@
  * Utility functions for the Schema Viewer
  */
 
-import { SCHEMA_BASE_URL, SCHEMAS, TYPE_COLORS } from './config.js';
+import { SCHEMA_BASE_URL } from './config.js';
 import { state } from './state.js';
 
 /**
@@ -72,9 +72,7 @@ export function toSlug(text) {
  */
 export function getDocUrl(currentSchemaName, nodeId, property = null) {
   let url = `${SCHEMA_BASE_URL}${currentSchemaName}`; // Base URL
-  // Note: we might need to fix the extension if we want direct links to markdown or html
-  // But wait, the original code had: url = `../../spec-v1/interfaces/${currentSchemaName}`;
-  // Let's stick closer to original but fix the logic.
+  const node = state.nodes.get(nodeId);
 
   let nodeSlug = '';
   try {
@@ -82,10 +80,13 @@ export function getDocUrl(currentSchemaName, nodeId, property = null) {
       const useTitle = state.schema?.title ? state.schema.title : nodeId;
       nodeSlug = toSlug(useTitle);
     } else {
-      nodeSlug = toSlug(formatName(nodeId));
+      // Use definition title if available, otherwise format the ID
+      const title = node?.rawSchema?.title || formatName(nodeId);
+      nodeSlug = toSlug(title);
     }
 
     if (property) {
+      // Anchors for properties are nodeSlug_propertyNameLower
       url += `#${nodeSlug}_${property.toLowerCase()}`;
     } else {
       url += `#${nodeSlug}`;

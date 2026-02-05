@@ -133,7 +133,7 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
 - [x] Interactive Label toggle icon button replacing the standard checkbox.
 - [x] Integrated Search: Ability to find and jump to any entity, relation, or property with automatic graph expansion.
 - [x] Examples View: Dedicated section in the sidebar showing individual JSON examples for entities, with one-click copy.
-- [x] Enhanced Density Control: Expanded range of layout presets (Compact to Vacuum) to handle varying graph sizes.
+- [x] Enhanced Density Control: Expanded range of layout presets (Compact to Airy) to handle varying graph sizes.
 
 ### Known Issues
 - [ ] **SVG Export**: Export functionality exists but download behavior needs testing across different browsers.
@@ -220,14 +220,13 @@ svg.on('click', function(event) {
 - Users can still see the overall graph structure while focusing on specific relationships
 
 ### 6.7 Force Simulation Density Levels
-**Design**: Five preset configurations (Compact, Normal, Sparse, Airy, Vacuum) with carefully tuned parameters.
+**Design**: Four preset configurations (Compact, Normal, Sparse, Airy) with carefully tuned parameters.
 
 **Parameters**:
 - **Compact**: strength: -400, distance: 150, collision: 60 (for dense schemas)
 - **Normal**: strength: -800, distance: 200, collision: 80 (default, balanced)
 - **Sparse**: strength: -1500, distance: 350, collision: 120 (for detailed exploration)
 - **Airy**: strength: -2500, distance: 500, collision: 160 (for large expanded graphs)
-- **Vacuum**: strength: -4000, distance: 750, collision: 220 (maximum spacing for full-schema views)
 
 **Rationale**: Different schemas and expansion depths have different complexity levels. Providing presets allows users to optimize the layout for their specific use case without exposing low-level D3 force parameters.
 

@@ -2,8 +2,8 @@
  * Graph Rendering and Management for the Schema Viewer (D3.js)
  */
 
+import { DENSITY_CONFIGS, TYPE_COLORS } from './config.js';
 import { state } from './state.js';
-import { TYPE_COLORS, DENSITY_CONFIGS } from './config.js';
 
 /**
  * Initialize the graph starting from a specific node

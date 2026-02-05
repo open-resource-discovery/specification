@@ -2,11 +2,11 @@
  * Sidebar Rendering and Interaction for the Schema Viewer
  */
 
-import { state } from './state.js';
 import { TYPE_COLORS, TYPE_LABELS } from './config.js';
-import { escapeHtml, getDocUrl, updateURL } from './utils.js';
-import { extractRefTarget } from './parser.js';
 import { addRelationToGraph, addReverseRelationToGraph, getReverseRelations } from './graph.js';
+import { extractRefTarget } from './parser.js';
+import { state } from './state.js';
+import { escapeHtml, getDocUrl, updateURL } from './utils.js';
 
 /**
  * Configure tagged markdown renderer
@@ -515,6 +515,8 @@ export function setupTooltips() {
 }
 
 function destroySidebarTooltips() {
-  state.sidebarTooltips.forEach((instance) => instance.destroy());
+  state.sidebarTooltips.forEach((instance) => {
+    instance.destroy();
+  });
   state.sidebarTooltips = [];
 }

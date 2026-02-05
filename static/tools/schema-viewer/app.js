@@ -3,29 +3,27 @@
  * Orchestrates modules and handles high-level initialization.
  */
 
-import { state } from './modules/state.js';
-import { SCHEMAS, SCHEMA_BASE_URL } from './modules/config.js';
-import {
-  updateURL,
-  escapeHtml,
-  exportAsSVG,
-  copyToClipboard,
-} from './modules/utils.js';
-import { parseSchema } from './modules/parser.js';
+import { SCHEMA_BASE_URL, SCHEMAS } from './modules/config.js';
 import {
   initializeGraph,
   updateGraph,
   zoomToFit,
-  addRelationToGraph,
-  addReverseRelationToGraph,
 } from './modules/graph.js';
+import { parseSchema } from './modules/parser.js';
+import { setupSearch } from './modules/search.js';
 import {
   configureMarked,
-  selectNode,
   selectLink,
+  selectNode,
   setupTooltips,
 } from './modules/sidebar.js';
-import { setupSearch } from './modules/search.js';
+import { state } from './modules/state.js';
+import {
+  copyToClipboard,
+  escapeHtml,
+  exportAsSVG,
+  updateURL,
+} from './modules/utils.js';
 
 // URL state
 const urlParams = new URLSearchParams(window.location.search);

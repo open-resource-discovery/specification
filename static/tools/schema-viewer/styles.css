@@ -65,7 +65,7 @@
 
   /* Layout */
   --header-height: 52px; /* Matching Docusaurus 3rem approx */
-  --sidebar-width: 340px;
+  --sidebar-width: 370px;
 }
 
 /* ===================================
@@ -357,7 +357,6 @@ body {
   padding: var(--space-xs);
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   z-index: 100;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
