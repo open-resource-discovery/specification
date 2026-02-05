@@ -24,9 +24,6 @@ if (!SCHEMAS[currentSchemaName]) {
   currentSchemaName = 'Document';
 }
 
-const _initialNode = urlParams.get('node');
-const _initialLink = urlParams.get('link');
-
 const initialDepth = parseInt(urlParams.get('depth'), 10) || 1;
 const initialDensity = urlParams.get('density') || 'normal';
 const showLabelsParam = urlParams.get('labels');
@@ -76,32 +73,6 @@ const state = {
   density: initialDensity,
   sidebarTooltips: [], // Track sidebar tooltip instances
 };
-
-/**
- * Update URL parameters without reloading
- */
-function updateURL(params) {
-  const newUrl = new URL(window.location);
-
-  // If we specify a node, remove link and vice versa
-  if (params.node) newUrl.searchParams.delete('link');
-  if (params.link) newUrl.searchParams.delete('node');
-
-  // If params is empty object, clear both
-  if (Object.keys(params).length === 0) {
-    newUrl.searchParams.delete('node');
-    newUrl.searchParams.delete('link');
-  }
-
-  for (const [key, value] of Object.entries(params)) {
-    if (value === null) {
-      newUrl.searchParams.delete(key);
-    } else {
-      newUrl.searchParams.set(key, value);
-    }
-  }
-  window.history.replaceState(null, '', newUrl);
-}
 
 // ===================================
 // Schema Parsing
@@ -390,24 +361,19 @@ function addReverseRelationToGraph(targetId, sourceId, property, type) {
 // ===================================
 
 /**
- * Initialize the graph starting from a specific node
+ * Initialize the graph starting from the Document root
  */
-function initializeGraph(depth = 1, startNodeId = null) {
+function initializeGraph(depth = 1) {
   state.displayedNodes.clear();
   state.displayedLinks = [];
 
-  // Choose starting node: provided ID, or from URL, or default root
-  const urlParams = new URLSearchParams(window.location.search);
-  const effectiveStartNode =
-    startNodeId || urlParams.get('node') || currentSchemaName;
-
   if (depth === 0) {
-    // Depth 0: Only show the start node, no automatic expansion
+    // Depth 0: Only show the root node, no automatic expansion
     // User can manually expand via sidebar navigation
-    state.displayedNodes.add(effectiveStartNode);
+    state.displayedNodes.add(currentSchemaName);
   } else {
-    // Start with the start node and expand to specified depth
-    expandNode(effectiveStartNode, depth);
+    // Start with the root node and expand to specified depth
+    expandNode(currentSchemaName, depth);
   }
 
   updateGraph();
@@ -829,9 +795,6 @@ function selectNode(nodeId) {
     updateGraph();
   }
 
-  // Update URL
-  updateURL({ node: nodeId });
-
   // Update node/link selection in graph
   state.g.selectAll('.node').classed('selected', (d) => d.id === nodeId);
   state.g.selectAll('.link').classed('selected', false);
@@ -1032,9 +995,6 @@ function selectLink(linkId) {
   // Update graph selection
   state.g.selectAll('.node').classed('selected', false);
   state.g.selectAll('.link').classed('selected', (d) => d.id === linkId);
-
-  // Update URL
-  updateURL({ link: linkId });
 
   // Update sidebar
   const sidebar = document.getElementById('sidebar');
@@ -1508,18 +1468,11 @@ function setupEventListeners() {
 
     schemaSelect.addEventListener('change', (e) => {
       const newSchemaName = e.target.value;
-
-      // Clear selection when changing schema
-      state.selectedNode = null;
-      state.selectedLink = null;
-
       loadSchema(newSchemaName);
 
       // Update URL query param without reloading page
       const newUrl = new URL(window.location);
       newUrl.searchParams.set('schema', newSchemaName);
-      newUrl.searchParams.delete('node');
-      newUrl.searchParams.delete('link');
       window.history.pushState({ schema: newSchemaName }, '', newUrl);
     });
   }
@@ -1535,10 +1488,8 @@ function setupEventListeners() {
   // Reset button
   document.getElementById('reset-btn').addEventListener('click', () => {
     const depthSlider = document.getElementById('depth-slider');
+    initializeGraph(parseInt(depthSlider.value, 10));
     state.selectedNode = null;
-    state.selectedLink = null;
-    updateURL({});
-    initializeGraph(parseInt(depthSlider.value, 10), currentSchemaName);
     document.getElementById('sidebar-content').innerHTML =
       '<p class="empty-state">Click on a node in the graph to see its details</p>';
   });
@@ -1576,7 +1527,6 @@ function setupEventListeners() {
     state.g.selectAll('.node').classed('selected', false);
     state.g.selectAll('.link').classed('selected', false);
     document.getElementById('sidebar').classList.add('collapsed');
-    updateURL({});
   });
 
   // Window resize
@@ -1622,11 +1572,9 @@ function configureMarked() {
   const renderer = new marked.Renderer();
 
   // Note: In marked.js v5+, the link function receives an object { href, title, text, tokens }
-  renderer.link = (linkData, ...args) => {
+  renderer.link = function (linkData) {
     // Handle both old API (separate params) and new API (object)
-    let href;
-    let title;
-    let text;
+    let href, title, text;
     if (
       typeof linkData === 'object' &&
       linkData !== null &&
@@ -1638,8 +1586,8 @@ function configureMarked() {
     } else {
       // Old API fallback
       href = linkData || '';
-      title = args[0] || '';
-      text = args[1] || '';
+      title = arguments[1] || '';
+      text = arguments[2] || '';
     }
 
     // Escape all user-provided values to prevent XSS
@@ -1936,73 +1884,12 @@ async function loadSchema(schemaName) {
     state.nodes = parseSchema(schemaData, schemaName);
 
     const depthSlider = document.getElementById('depth-slider');
-    const depth = parseInt(depthSlider?.value || 1, 10);
+    initializeGraph(parseInt(depthSlider?.value || 1, 10));
 
-    // Handle initial deep link and starting point
-    const urlParams = new URLSearchParams(window.location.search);
-    const nodeParam = urlParams.get('node');
-    const linkParam = urlParams.get('link');
-
-    // Initialize graph. If nodeParam is present, initializeGraph will use it as starting point.
-    initializeGraph(depth);
-
-    if (nodeParam) {
-      // Ensure node is selected in sidebar
-      selectNode(nodeParam);
-    } else if (linkParam) {
-      // Select link if it exists in displayed links
-      // linkId format: source-target-property
-      const parts = linkParam.split('-');
-      if (parts.length >= 3) {
-        const sourceId = parts[0];
-        const targetId = parts[1];
-        const property = parts.slice(2).join('-'); // Property might contain hyphens
-
-        // Ensure nodes are visible
-        let changed = false;
-        if (!state.displayedNodes.has(sourceId)) {
-          state.displayedNodes.add(sourceId);
-          changed = true;
-        }
-        if (!state.displayedNodes.has(targetId)) {
-          state.displayedNodes.add(targetId);
-          changed = true;
-        }
-
-        // Check if link exists
-        const existingLink = state.displayedLinks.find(
-          (l) => l.id === linkParam,
-        );
-        if (!existingLink) {
-          const sourceNode = state.nodes.get(sourceId);
-          if (sourceNode) {
-            const relation = sourceNode.relations.find(
-              (r) => r.target === targetId && r.property === property,
-            );
-            if (relation) {
-              state.displayedLinks.push({
-                id: linkParam,
-                source: sourceId,
-                target: targetId,
-                type: relation.type,
-                property: relation.property,
-                isArray: relation.isArray,
-                via: relation.via,
-              });
-              changed = true;
-            }
-          }
-        }
-
-        if (changed) updateGraph();
-        selectLink(linkParam);
-      }
-    } else {
-      // Reset sidebar if no deep link
-      document.getElementById('sidebar').classList.add('collapsed');
-      document.getElementById('sidebar-content').innerHTML =
-        '<p class="empty-state">Click on a node in the graph to see its details</p>';
-    }
+    // Reset sidebar
+    document.getElementById('sidebar').classList.add('collapsed');
+    document.getElementById('sidebar-content').innerHTML =
+      '<p class="empty-state">Click on a node in the graph to see its details</p>';
   } catch (error) {
     console.error('Failed to load schema:', error);
     const escapedMessage = escapeHtml(error.message || 'Unknown error');
