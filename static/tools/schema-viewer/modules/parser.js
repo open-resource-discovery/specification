@@ -25,6 +25,7 @@ export function parseSchema(schema, schemaName) {
     required: schema.required || [],
     recommended: schema['x-recommended'] || [],
     relations: [],
+    examples: schema.examples || (schema.example ? [schema.example] : []),
     xProperties: extractXProperties(schema),
     rawSchema: schema, // Store the original schema
   };
@@ -43,6 +44,7 @@ export function parseSchema(schema, schemaName) {
       required: def.required || [],
       recommended: def['x-recommended'] || [],
       relations: [],
+      examples: def.examples || (def.example ? [def.example] : []),
       xProperties: extractXProperties(def),
       rawSchema: def, // Store the original definition
     };

@@ -125,6 +125,37 @@ export function autoAddReverseLinks(nodeId) {
 }
 
 /**
+ * Auto-add forward relationship links from the node to nodes already in the graph
+ */
+export function autoAddForwardLinks(nodeId) {
+  if (!state.nodes.has(nodeId)) return false;
+  const node = state.nodes.get(nodeId);
+  let addedLinks = false;
+
+  for (const relation of node.relations) {
+    if (state.displayedNodes.has(relation.target)) {
+      const linkId = `${nodeId}-${relation.target}-${relation.property}`;
+      const existingLink = state.displayedLinks.find((l) => l.id === linkId);
+
+      if (!existingLink) {
+        state.displayedLinks.push({
+          id: linkId,
+          source: nodeId,
+          target: relation.target,
+          type: relation.type,
+          property: relation.property,
+          isArray: relation.isArray,
+          via: relation.via,
+        });
+        addedLinks = true;
+      }
+    }
+  }
+
+  return addedLinks;
+}
+
+/**
  * Add a specific relation to the graph
  */
 export function addRelationToGraph(sourceId, relation) {

@@ -14,6 +14,7 @@ export const DENSITY_CONFIGS = {
   compact: { strength: -400, distance: 150, collision: 60 },
   normal: { strength: -800, distance: 200, collision: 80 },
   sparse: { strength: -1500, distance: 350, collision: 120 },
+  airy: { strength: -2500, distance: 500, collision: 160 },
 };
 
 // Color mapping for x-ums-type

@@ -25,6 +25,7 @@ import {
   selectLink,
   setupTooltips,
 } from './modules/sidebar.js';
+import { setupSearch } from './modules/search.js';
 
 // URL state
 const urlParams = new URLSearchParams(window.location.search);
@@ -329,6 +330,12 @@ window.copyNodeSchema = (nodeId) => {
   copyToClipboard(schemaJson, button);
 };
 
+window.copyNearestCode = (button) => {
+  const container = button.closest('.section') || button.closest('.json-schema-section');
+  const code = container.querySelector('code').textContent;
+  copyToClipboard(code, button);
+};
+
 async function init() {
   try {
     configureMarked();
@@ -379,6 +386,7 @@ async function init() {
 
     setupEventListeners();
     setupTooltips();
+    setupSearch();
 
     await loadSchema(currentSchemaName);
   } catch (error) {

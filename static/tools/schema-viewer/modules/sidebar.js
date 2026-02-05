@@ -377,6 +377,29 @@ function renderNodeDetails(node) {
     html += `</div></div>`;
   }
 
+  // Examples
+  if (node.examples && node.examples.length > 0) {
+    html += `<div class="section"><h3 class="section-title">Examples</h3>`;
+    node.examples.forEach((example, index) => {
+      const exampleJson = JSON.stringify(example, null, 2);
+      html += `
+        <div class="json-schema-section" style="margin-top: var(--space-sm);">
+          <div class="collapsible-header" onclick="this.parentElement.classList.toggle('expanded')">
+            <h4 style="margin: 0; font-size: 12px; cursor: pointer; user-select: none; color: var(--color-text-secondary);"><span class="collapse-icon">▶</span> Example ${node.examples.length > 1 ? index + 1 : ''}</h4>
+            <button class="copy-btn" onclick="event.stopPropagation(); window.copyNearestCode(this);" title="Copy Example">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span class="copy-text">Copy</span>
+            </button>
+          </div>
+          <div class="collapsible-content">
+            <pre class="schema-code"><code>${escapeHtml(exampleJson)}</code></pre>
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
   // JSON Schema
   if (node.rawSchema) {
     const schemaJson = JSON.stringify(node.rawSchema, null, 2);
