@@ -4,27 +4,45 @@ description: Interactive visualization of the ORD JSON Schemas
 hide_table_of_contents: true
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+export const SchemaExplorerIframe = () => {
+  const iframeSrc = useBaseUrl('/tools/schema-viewer/index.html');
+  return (
+    <iframe
+      src={iframeSrc}
+      style={{
+        width: '100%',
+        height: '85vh',
+        border: '1px solid var(--ifm-color-emphasis-200)',
+        borderRadius: '12px',
+        background: 'var(--ifm-background-color)',
+        boxShadow: 'var(--ifm-global-shadow-lw)'
+      }}
+      title="ORD Schema Explorer"
+    />
+  );
+};
+
 # Interactive Schema Explorer
 
-The **ORD Schema Explorer** provides an interactive, force-directed graph visualization of the ORD Document and Configuration JSON Schemas. It allows you to explore the complex relationships between ORD resources, including compositions and associations.
+The **ORD Schema Explorer** is an interactive visualization tool that helps you understand the structure and relationships within the Open Resource Discovery specification. It renders the ORD Document and Configuration JSON Schemas as a dynamic, force-directed graph where nodes represent schema entities (like Packages, APIs, Events, Data Products) and edges show their relationships through compositions, references, and associations.
 
-<iframe
-  src="/tools/schema-viewer/index.html"
-  style={{
-    width: '100%',
-    height: '85vh',
-    border: '1px solid var(--ifm-color-emphasis-200)',
-    borderRadius: '12px',
-    background: 'var(--ifm-background-color)',
-    boxShadow: 'var(--ifm-global-shadow-lw)'
-  }}
-  title="ORD Schema Explorer"
-/>
+This visual approach makes it easier to grasp the complex interconnections between different ORD resources, helping developers, architects, and integrators quickly understand how the specification is organized and how different components relate to each other. Instead of reading through dense schema definitions, you can explore the specification interactively and see the full property documentation for each entity on demand.
 
-:::tip Usage
-- **Drag** nodes to reposition them.
-- **Scroll** to zoom in and out.
-- **Click** a node to see its full documentation and properties in the sidebar.
-- **Click again** on a selected node to expand all its immediate neighbors.
-- **Switch schemas** using the dropdown in the header to view either the **ORD Document** or **ORD Configuration** specification.
-:::
+<SchemaExplorerIframe />
+
+## How to Use
+
+**Navigate the Graph:**
+- **Drag** nodes to reposition them and reorganize the layout
+- **Scroll** to zoom in and out for different levels of detail
+- The graph uses physics simulation to automatically arrange nodes based on their relationships
+
+**Explore Schema Entities:**
+- **Click** any node to view its complete documentation and property definitions in the right sidebar
+- **Click again** on an already selected node to expand and reveal all its immediate neighbors
+- The sidebar shows detailed information including property types, descriptions, and constraints
+
+**Switch Between Schemas:**
+- Use the dropdown menu in the header to toggle between the **ORD Document** schema (which describes resources like APIs, Events, and Integrations) and the **ORD Configuration** schema (which describes metadata about ORD providers and service endpoints)
