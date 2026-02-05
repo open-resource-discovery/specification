@@ -3,7 +3,11 @@
  */
 
 import { TYPE_COLORS, TYPE_LABELS } from './config.js';
-import { addRelationToGraph, addReverseRelationToGraph, getReverseRelations } from './graph.js';
+import {
+  addRelationToGraph,
+  addReverseRelationToGraph,
+  getReverseRelations,
+} from './graph.js';
 import { extractRefTarget } from './parser.js';
 import { state } from './state.js';
 import { escapeHtml, getDocUrl, updateURL } from './utils.js';
@@ -16,7 +20,11 @@ export function configureMarked() {
 
   renderer.link = (linkData, ...args) => {
     let href, title, text;
-    if (typeof linkData === 'object' && linkData !== null && 'href' in linkData) {
+    if (
+      typeof linkData === 'object' &&
+      linkData !== null &&
+      'href' in linkData
+    ) {
       href = linkData.href || '';
       title = linkData.title || '';
       text = linkData.text || '';
@@ -35,7 +43,11 @@ export function configureMarked() {
       return `<a href="#" class="internal-link" data-target="${escapeHtml(href.substring(1))}"${titleAttr}>${escapedText}</a>`;
     }
 
-    if (!href.startsWith('http') && !href.startsWith('https') && !href.startsWith('mailto:')) {
+    if (
+      !href.startsWith('http') &&
+      !href.startsWith('https') &&
+      !href.startsWith('mailto:')
+    ) {
       let newHref = `../../spec-v1/interfaces/${href}`;
       newHref = newHref.replace(/\.md($|#)/, '$1');
       return `<a href="${escapeHtml(newHref)}"${titleAttr} target="_blank">${escapedText}</a>`;
@@ -77,7 +89,8 @@ export function selectNode(nodeId) {
   const sidebarRemoveBtn = document.getElementById('sidebar-remove-btn');
 
   if (graphRemoveBtn) graphRemoveBtn.style.display = isRoot ? 'none' : 'flex';
-  if (sidebarRemoveBtn) sidebarRemoveBtn.style.display = isRoot ? 'none' : 'flex';
+  if (sidebarRemoveBtn)
+    sidebarRemoveBtn.style.display = isRoot ? 'none' : 'flex';
 }
 
 /**
@@ -124,49 +137,57 @@ function setupSidebarInteractions(node, content) {
     const targetId = item.dataset.target;
     const property = item.dataset.property;
 
-    item.querySelector('.relation-name-clickable')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const link = state.displayedLinks.find(
-        (l) =>
-          (l.source.id === node.id || l.source === node.id) &&
-          (l.target.id === targetId || l.target === targetId) &&
-          l.property === property,
-      );
+    item
+      .querySelector('.relation-name-clickable')
+      ?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const link = state.displayedLinks.find(
+          (l) =>
+            (l.source.id === node.id || l.source === node.id) &&
+            (l.target.id === targetId || l.target === targetId) &&
+            l.property === property,
+        );
 
-      if (link) {
-        selectLink(link.id);
-      } else {
-        const relation = node.relations.find((r) => r.target === targetId && r.property === property);
-        if (relation) {
-          addRelationToGraph(node.id, relation);
-          setTimeout(() => {
-            const newLink = state.displayedLinks.find(
-              (l) =>
-                (l.source.id === node.id || l.source === node.id) &&
-                (l.target.id === targetId || l.target === targetId) &&
-                l.property === property,
-            );
-            if (newLink) selectLink(newLink.id);
-          }, 50);
+        if (link) {
+          selectLink(link.id);
+        } else {
+          const relation = node.relations.find(
+            (r) => r.target === targetId && r.property === property,
+          );
+          if (relation) {
+            addRelationToGraph(node.id, relation);
+            setTimeout(() => {
+              const newLink = state.displayedLinks.find(
+                (l) =>
+                  (l.source.id === node.id || l.source === node.id) &&
+                  (l.target.id === targetId || l.target === targetId) &&
+                  l.property === property,
+              );
+              if (newLink) selectLink(newLink.id);
+            }, 50);
+          }
         }
-      }
-    });
+      });
 
-    item.querySelector('.relation-target-clickable')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const linkExists = state.displayedLinks.some(
-        (l) =>
-          (l.source.id === node.id || l.source === node.id) &&
-          (l.target.id === targetId || l.target === targetId) &&
-          l.property === property,
-      );
+    item
+      .querySelector('.relation-target-clickable')
+      ?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const linkExists = state.displayedLinks.some(
+          (l) =>
+            (l.source.id === node.id || l.source === node.id) &&
+            (l.target.id === targetId || l.target === targetId) &&
+            l.property === property,
+        );
 
-      if (!linkExists) {
-        const relation = node.relations.find((r) => r.target === targetId && r.property === property);
-        if (relation) addRelationToGraph(node.id, relation);
-      }
-      selectNode(targetId);
-    });
+        if (!linkExists) {
+          const relation = node.relations.find(
+            (r) => r.target === targetId && r.property === property,
+          );
+          if (relation) addRelationToGraph(node.id, relation);
+        }
+        selectNode(targetId);
+      });
   });
 
   content.querySelectorAll('.relation-item.reverse').forEach((item) => {
@@ -174,45 +195,49 @@ function setupSidebarInteractions(node, content) {
     const property = item.dataset.property;
     const type = item.dataset.type;
 
-    item.querySelector('.relation-name-clickable')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const link = state.displayedLinks.find(
-        (l) =>
-          (l.source.id === sourceId || l.source === sourceId) &&
-          (l.target.id === node.id || l.target === node.id) &&
-          l.property === property,
-      );
+    item
+      .querySelector('.relation-name-clickable')
+      ?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const link = state.displayedLinks.find(
+          (l) =>
+            (l.source.id === sourceId || l.source === sourceId) &&
+            (l.target.id === node.id || l.target === node.id) &&
+            l.property === property,
+        );
 
-      if (link) {
-        selectLink(link.id);
-      } else {
-        addReverseRelationToGraph(node.id, sourceId, property, type);
-        setTimeout(() => {
-          const newLink = state.displayedLinks.find(
-            (l) =>
-              (l.source.id === sourceId || l.source === sourceId) &&
-              (l.target.id === node.id || l.target === node.id) &&
-              l.property === property,
-          );
-          if (newLink) selectLink(newLink.id);
-        }, 50);
-      }
-    });
+        if (link) {
+          selectLink(link.id);
+        } else {
+          addReverseRelationToGraph(node.id, sourceId, property, type);
+          setTimeout(() => {
+            const newLink = state.displayedLinks.find(
+              (l) =>
+                (l.source.id === sourceId || l.source === sourceId) &&
+                (l.target.id === node.id || l.target === node.id) &&
+                l.property === property,
+            );
+            if (newLink) selectLink(newLink.id);
+          }, 50);
+        }
+      });
 
-    item.querySelector('.relation-target-clickable')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const linkExists = state.displayedLinks.some(
-        (l) =>
-          (l.source.id === sourceId || l.source === sourceId) &&
-          (l.target.id === node.id || l.target === node.id) &&
-          l.property === property,
-      );
+    item
+      .querySelector('.relation-target-clickable')
+      ?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const linkExists = state.displayedLinks.some(
+          (l) =>
+            (l.source.id === sourceId || l.source === sourceId) &&
+            (l.target.id === node.id || l.target === node.id) &&
+            l.property === property,
+        );
 
-      if (!linkExists) {
-        addReverseRelationToGraph(node.id, sourceId, property, type);
-      }
-      selectNode(sourceId);
-    });
+        if (!linkExists) {
+          addReverseRelationToGraph(node.id, sourceId, property, type);
+        }
+        selectNode(sourceId);
+      });
   });
 
   content.querySelectorAll('.property-key-clickable').forEach((item) => {
@@ -231,7 +256,9 @@ function setupSidebarInteractions(node, content) {
       if (link) {
         selectLink(link.id);
       } else {
-        const relation = node.relations.find((r) => r.target === targetId && r.property === property);
+        const relation = node.relations.find(
+          (r) => r.target === targetId && r.property === property,
+        );
         if (relation) {
           addRelationToGraph(node.id, relation);
           setTimeout(() => {
@@ -290,8 +317,12 @@ function renderNodeDetails(node) {
           (l.target === relation.target || l.target.id === relation.target) &&
           l.property === relation.property,
       );
-      const targetColor = targetNode ? TYPE_COLORS[targetNode.umsType] || TYPE_COLORS.default : TYPE_COLORS.default;
-      const tooltipAttr = relation.description ? `data-tippy-content="${escapeHtml(relation.description)}"` : '';
+      const targetColor = targetNode
+        ? TYPE_COLORS[targetNode.umsType] || TYPE_COLORS.default
+        : TYPE_COLORS.default;
+      const tooltipAttr = relation.description
+        ? `data-tippy-content="${escapeHtml(relation.description)}"`
+        : '';
 
       html += `
         <li class="relation-item ${hasLink ? 'in-graph' : ''}" data-target="${escapeHtml(relation.target)}" data-property="${escapeHtml(relation.property)}" data-type="${escapeHtml(relation.type)}" ${tooltipAttr}>
@@ -322,8 +353,12 @@ function renderNodeDetails(node) {
           l.property === reverse.property,
       );
       const sourceNode = state.nodes.get(reverse.source);
-      const sourceColor = sourceNode ? TYPE_COLORS[sourceNode.umsType] || TYPE_COLORS.default : TYPE_COLORS.default;
-      const tooltipAttr = reverse.description ? `data-tippy-content="${escapeHtml(reverse.description)}"` : '';
+      const sourceColor = sourceNode
+        ? TYPE_COLORS[sourceNode.umsType] || TYPE_COLORS.default
+        : TYPE_COLORS.default;
+      const tooltipAttr = reverse.description
+        ? `data-tippy-content="${escapeHtml(reverse.description)}"`
+        : '';
 
       html += `
         <li class="relation-item reverse ${hasLink ? 'in-graph' : ''}" data-source="${escapeHtml(reverse.source)}" data-property="${escapeHtml(reverse.property)}" data-type="${escapeHtml(reverse.type)}" ${tooltipAttr}>
@@ -356,13 +391,16 @@ function renderNodeDetails(node) {
 
       const relation = node.relations.find((r) => r.property === key);
       const hasRelation = !!relation;
-      const tooltipAttr = description ? `data-tippy-content="${escapeHtml(description)}"` : '';
+      const tooltipAttr = description
+        ? `data-tippy-content="${escapeHtml(description)}"`
+        : '';
 
       let marker = '';
       if (isRequired) {
         marker = ' <span class="mandatory-marker" title="Mandatory">*</span>';
       } else if (node.recommended?.includes(key)) {
-        marker = ' <span class="recommended-marker" title="Recommended">*</span>';
+        marker =
+          ' <span class="recommended-marker" title="Recommended">*</span>';
       }
 
       html += `
@@ -438,7 +476,13 @@ function renderNodeDetails(node) {
 function renderLinkDetails(link) {
   const sourceNode = state.nodes.get(link.source.id || link.source);
   const targetNode = state.nodes.get(link.target.id || link.target);
-  const docUrl = escapeHtml(getDocUrl(state.currentSchemaName, link.source.id || link.source, link.property));
+  const docUrl = escapeHtml(
+    getDocUrl(
+      state.currentSchemaName,
+      link.source.id || link.source,
+      link.property,
+    ),
+  );
 
   let html = `
     <div class="section" style="display: flex; justify-content: space-between; align-items: center;">
@@ -452,7 +496,12 @@ function renderLinkDetails(link) {
 
   let description = '';
   if (sourceNode) {
-    const relation = sourceNode.relations.find((r) => r.property === link.property && r.target === (targetNode ? targetNode.id : (link.target.id || link.target)));
+    const relation = sourceNode.relations.find(
+      (r) =>
+        r.property === link.property &&
+        r.target ===
+          (targetNode ? targetNode.id : link.target.id || link.target),
+    );
     if (relation) description = relation.description;
   }
 
@@ -465,8 +514,12 @@ function renderLinkDetails(link) {
     `;
   }
 
-  const sourceColor = sourceNode ? TYPE_COLORS[sourceNode.umsType] || TYPE_COLORS.default : TYPE_COLORS.default;
-  const targetColor = targetNode ? TYPE_COLORS[targetNode.umsType] || TYPE_COLORS.default : TYPE_COLORS.default;
+  const sourceColor = sourceNode
+    ? TYPE_COLORS[sourceNode.umsType] || TYPE_COLORS.default
+    : TYPE_COLORS.default;
+  const targetColor = targetNode
+    ? TYPE_COLORS[targetNode.umsType] || TYPE_COLORS.default
+    : TYPE_COLORS.default;
 
   html += `
     <div class="section">
@@ -492,10 +545,15 @@ function renderLinkDetails(link) {
 function getPropertyType(prop) {
   if (prop.$ref) return extractRefTarget(prop.$ref) || 'ref';
   if (prop.type === 'array' && prop.items) {
-    if (prop.items.$ref) return `${extractRefTarget(prop.items.$ref) || 'ref'}[]`;
+    if (prop.items.$ref)
+      return `${extractRefTarget(prop.items.$ref) || 'ref'}[]`;
     return `${prop.items.type || 'any'}${prop.items.format ? ` (${prop.items.format})` : ''}[]`;
   }
-  return prop.type ? `${prop.type}${prop.format ? ` (${prop.format})` : ''}` : (prop.anyOf || prop.oneOf ? 'union' : 'any');
+  return prop.type
+    ? `${prop.type}${prop.format ? ` (${prop.format})` : ''}`
+    : prop.anyOf || prop.oneOf
+      ? 'union'
+      : 'any';
 }
 
 export function setupTooltips() {
@@ -511,18 +569,21 @@ export function setupTooltips() {
 
   destroySidebarTooltips();
 
-  const instances = tippy('.property-row[data-tippy-content], .relation-item[data-tippy-content]', {
-    content(reference) {
-      const markdown = reference.getAttribute('data-tippy-content');
-      return markdown ? marked.parse(markdown) : '';
+  const instances = tippy(
+    '.property-row[data-tippy-content], .relation-item[data-tippy-content]',
+    {
+      content(reference) {
+        const markdown = reference.getAttribute('data-tippy-content');
+        return markdown ? marked.parse(markdown) : '';
+      },
+      allowHTML: true,
+      theme: 'dark-custom',
+      placement: 'left',
+      maxWidth: 350,
+      interactive: true,
+      appendTo: document.body,
     },
-    allowHTML: true,
-    theme: 'dark-custom',
-    placement: 'left',
-    maxWidth: 350,
-    interactive: true,
-    appendTo: document.body,
-  });
+  );
 
   state.sidebarTooltips = Array.isArray(instances) ? instances : [instances];
 }

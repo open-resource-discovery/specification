@@ -341,8 +341,12 @@ export function updateGraph() {
   // Create link data with node references
   const linkData = state.displayedLinks.map((link) => ({
     ...link,
-    source: nodeData.find((n) => n.id === (link.source.id || link.source)) || link.source,
-    target: nodeData.find((n) => n.id === (link.target.id || link.target)) || link.target,
+    source:
+      nodeData.find((n) => n.id === (link.source.id || link.source)) ||
+      link.source,
+    target:
+      nodeData.find((n) => n.id === (link.target.id || link.target)) ||
+      link.target,
   }));
 
   // Update simulation
@@ -357,15 +361,21 @@ export function updateGraph() {
           .id((d) => d.id)
           .distance(config.distance),
       )
-      .force('charge', d3.forceManyBody().strength((d) => {
-        const weight = (TYPE_SIZES[d.umsType] || TYPE_SIZES.default) / 18;
-        return config.strength * weight;
-      }))
+      .force(
+        'charge',
+        d3.forceManyBody().strength((d) => {
+          const weight = (TYPE_SIZES[d.umsType] || TYPE_SIZES.default) / 18;
+          return config.strength * weight;
+        }),
+      )
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius((d) => {
-        const weight = (TYPE_SIZES[d.umsType] || TYPE_SIZES.default) / 18;
-        return config.collision * weight;
-      }));
+      .force(
+        'collision',
+        d3.forceCollide().radius((d) => {
+          const weight = (TYPE_SIZES[d.umsType] || TYPE_SIZES.default) / 18;
+          return config.collision * weight;
+        }),
+      );
   } else {
     const config = DENSITY_CONFIGS[state.density] || DENSITY_CONFIGS.normal;
     state.simulation.force('link').distance(config.distance);
@@ -520,11 +530,13 @@ export function updateGraph() {
     if (state.edgeLabels) {
       state.edgeLabels
         .attr('x', (d) => {
-          if ((d.source.id || d.source) === (d.target.id || d.target)) return d.source.x + 55;
+          if ((d.source.id || d.source) === (d.target.id || d.target))
+            return d.source.x + 55;
           return (d.source.x + d.target.x) / 2;
         })
         .attr('y', (d) => {
-          if ((d.source.id || d.source) === (d.target.id || d.target)) return d.source.y - 5;
+          if ((d.source.id || d.source) === (d.target.id || d.target))
+            return d.source.y - 5;
           return (d.source.y + d.target.y) / 2;
         });
     }
