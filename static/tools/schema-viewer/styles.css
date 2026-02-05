@@ -390,32 +390,28 @@ body {
 }
 
 .node circle {
-  stroke-width: 2px;
+  stroke: none;
   transition: all var(--transition-fast);
 }
 
 .node:hover circle {
-  stroke-width: 3px;
-  filter: drop-shadow(0 0 8px currentColor);
+  stroke-width: 2px;
+  filter: drop-shadow(0 0 8px #ffffff);
 }
 
 .node.selected circle {
-  stroke-width: 3px;
+  stroke-width: 2px;
   stroke: #ffffff;
-  stroke-opacity: 0.8;
-  filter: drop-shadow(0 0 15px currentColor);
+  stroke-opacity: 0.6;
+  filter: drop-shadow(0 0 15px #ffffff);
 }
 
 .node text {
   font-size: 11px;
-  font-weight: 500;
-  fill: var(--color-text-primary);
+  font-weight: 600;
+  fill: #ffffff;
   pointer-events: none;
-  text-shadow:
-    -1px -1px 0 var(--color-bg-primary),
-    1px -1px 0 var(--color-bg-primary),
-    -1px 1px 0 var(--color-bg-primary),
-    1px 1px 0 var(--color-bg-primary);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .link {

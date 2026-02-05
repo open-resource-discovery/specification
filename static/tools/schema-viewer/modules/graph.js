@@ -2,7 +2,7 @@
  * Graph Rendering and Management for the Schema Viewer (D3.js)
  */
 
-import { DENSITY_CONFIGS, TYPE_COLORS } from './config.js';
+import { DENSITY_CONFIGS, TYPE_COLORS, TYPE_SIZES } from './config.js';
 import { state } from './state.js';
 
 /**
@@ -357,14 +357,26 @@ export function updateGraph() {
           .id((d) => d.id)
           .distance(config.distance),
       )
-      .force('charge', d3.forceManyBody().strength(config.strength))
+      .force('charge', d3.forceManyBody().strength((d) => {
+        const weight = (TYPE_SIZES[d.umsType] || TYPE_SIZES.default) / 18;
+        return config.strength * weight;
+      }))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(config.collision));
+      .force('collision', d3.forceCollide().radius((d) => {
+        const weight = (TYPE_SIZES[d.umsType] || TYPE_SIZES.default) / 18;
+        return config.collision * weight;
+      }));
   } else {
     const config = DENSITY_CONFIGS[state.density] || DENSITY_CONFIGS.normal;
     state.simulation.force('link').distance(config.distance);
-    state.simulation.force('charge').strength(config.strength);
-    state.simulation.force('collision').radius(config.collision);
+    state.simulation.force('charge').strength((d) => {
+      const weight = (TYPE_SIZES[d.umsType] || TYPE_SIZES.default) / 18;
+      return config.strength * weight;
+    });
+    state.simulation.force('collision').radius((d) => {
+      const weight = (TYPE_SIZES[d.umsType] || TYPE_SIZES.default) / 18;
+      return config.collision * weight;
+    });
   }
 
   state.simulation.nodes(nodeData).force('link').links(linkData);
@@ -468,19 +480,31 @@ export function updateGraph() {
 
   nodesEnter
     .append('circle')
-    .attr('r', (d) => (d.id === state.currentSchemaName ? 24 : 18))
-    .attr('fill', (d) => TYPE_COLORS[d.umsType] || TYPE_COLORS.default)
-    .attr('stroke', (d) => TYPE_COLORS[d.umsType] || TYPE_COLORS.default)
-    .attr('stroke-opacity', 0.3);
+    .attr('r', (d) => TYPE_SIZES[d.umsType] || TYPE_SIZES.default)
+    .attr('fill', (d) => TYPE_COLORS[d.umsType] || TYPE_COLORS.default);
 
   nodesEnter
     .append('text')
-    .attr('dy', (d) => (d.id === state.currentSchemaName ? 40 : 34))
     .attr('text-anchor', 'middle')
-    .text((d) => d.name);
+    .each(function (d) {
+      const el = d3.select(this);
+      const words = d.name.split(/\s+/);
+      const lineHeight = 12;
+      const totalHeight = (words.length - 1) * lineHeight;
+      const startDy = 4 - totalHeight / 2;
+
+      for (let i = 0; i < words.length; i++) {
+        el.append('tspan')
+          .attr('x', 0)
+          .attr('dy', i === 0 ? startDy : lineHeight)
+          .text(words[i]);
+      }
+    });
 
   const allNodes = nodes.merge(nodesEnter);
-  allNodes.classed('selected', (d) => d.id === state.selectedNode);
+  allNodes
+    .classed('selected', (d) => d.id === state.selectedNode)
+    .style('color', (d) => TYPE_COLORS[d.umsType] || TYPE_COLORS.default);
 
   state.simulation.on('tick', () => {
     allLinks.attr('d', (d) => {

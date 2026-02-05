@@ -33,3 +33,12 @@ export const TYPE_LABELS = {
   ephemeral: 'Ephemeral',
   default: 'Internal',
 };
+
+// Node radius and visual weight based on type
+export const TYPE_SIZES = {
+  root: 28,
+  subentity: 18,
+  external_ownership: 18,
+  ephemeral: 25,
+  default: 18,
+};
