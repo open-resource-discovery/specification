@@ -456,7 +456,12 @@ export interface ApiResource {
    */
   abstract?: boolean;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
@@ -1313,7 +1318,12 @@ export interface EventResource {
    */
   abstract?: boolean;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
@@ -1766,7 +1776,12 @@ export interface EntityType {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
@@ -2009,7 +2024,12 @@ export interface Capability {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
@@ -2667,7 +2687,12 @@ export interface Agent {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
@@ -2989,7 +3014,12 @@ export interface IntegrationDependency {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
@@ -3643,7 +3673,12 @@ export interface ConsumptionBundle {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility?: "public" | "internal" | "private";
   /**
