@@ -15,6 +15,10 @@ Usually SAP applications and services will use the more complete and opinionated
 
 ## General Policies
 
+### Policy Levels
+- SAP applications and services MAY define custom policy levels, but they MUST be namespaced under their application-specific namespace, e.g. `sap.s4:core:v1`.
+- Only centrally aligned policy levels (such as `sap:base:v1` or `sap:core:v1`) MAY use the root `sap` namespace. Custom policy levels MUST NOT use the root `sap` namespace, e.g. `sap:s4:v1` is not allowed.
+
 ### Namespaces
 
 - All SAP [namespaces](../../spec-v1/index.md#namespaces) MUST be registered in the SAP namespace-registry.
