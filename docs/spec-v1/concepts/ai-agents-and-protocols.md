@@ -107,15 +107,16 @@ graph TD
 
     Agent["Agent<br/>(Product-like Concept)"]:::concept
     System["System / Application"]:::tech
-    API["API Resource<br/>(Interaction Contract)"]:::tech
+    API["API Resource<br/>(Interaction Contract)"]
     Dep["Integration Dependency<br/>(Required External Data/Tools)"]:::dep
 
     System -- Hosts --> Agent
+    System -- Exposes --> MCPExposed[MCP Server]
     Agent -- Exposes --> API
     Agent -- Requires --> Dep
 
     API -.->|Protocol: A2A| A2A[A2A Protocol]
-    Dep -.->|Protocol: MCP| MCP[MCP Server]
+    Dep -.->|Protocol: MCP| MCPDep[MCP Server]
     Dep -.->|Generic| Other["Other Resources (APIs, Events, etc.)"]
 ```
 
