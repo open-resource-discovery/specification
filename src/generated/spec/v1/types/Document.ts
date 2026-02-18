@@ -465,7 +465,14 @@ export interface ApiResource {
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -815,7 +822,14 @@ export interface ChangelogEntry {
    */
   version: string;
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -1327,7 +1341,14 @@ export interface EventResource {
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -1785,7 +1806,14 @@ export interface EntityType {
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -2033,7 +2061,14 @@ export interface Capability {
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -2696,7 +2731,14 @@ export interface Agent {
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -3023,7 +3065,14 @@ export interface IntegrationDependency {
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**

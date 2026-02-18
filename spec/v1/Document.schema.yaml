@@ -1029,28 +1029,44 @@ definitions:
       releaseStatus: &releaseStatus
         type: string
         description: |-
-          The `releaseStatus` specifies the stability of the resource and its external contract.
+          Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+
+          This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+          of depending on the resource and whether it's suitable for production use.
+
+          Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+
+          See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
         oneOf:
           - const: beta
             description: |-
-              The contract for the resource is beta and may not be meant for productive use.
-              Resources of `beta` status MAY be changed or deleted at the providers discretion.
+              The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.
+
+              Not recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,
+              and feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion.
+
           - const: active
             description: |-
-              Resource is meant for productive use and provides a stable API contract.
+              The API contract is stable and recommended for production use.
+
+              Breaking changes will only be introduced through proper deprecation cycles or new major versions,
+              following versioning and compatibility policies. Consumers can rely on active resources with confidence.
+
           - const: deprecated
             description: |-
-              Resource has been deprecated.
+              The resource is still functional but scheduled for removal. No new development should depend on it.
 
               If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
 
               If successor resources exist, they MUST be referenced through `successors`.
 
-              A deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.
+              A deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.
               Once the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`.
+
           - const: sunset
             description: |-
-              Resource has been sunset, but is still described.
+              The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.
+
               If the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided.
         examples:
           - active
