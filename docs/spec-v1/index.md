@@ -311,7 +311,7 @@ The push API endpoint MUST:
   - `200 OK` or `201 Created` on success
   - `400 Bad Request` for any client error (malformed JSON, invalid ORD document, validation failures). Details SHOULD be provided in the response body.
   - `401 Unauthorized` or `403 Forbidden` for authentication/authorization failures
-  - **TODO**: The exact response format for validation errors is not yet formally specified.
+  - **TODO**: The exact response format for validation errors is not yet formally specified, it's up to the aggregator to define it.
 
 Example request:
 ```http
