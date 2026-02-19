@@ -209,7 +209,8 @@ Push transport is particularly suitable for:
 - No need to implement and host an ORD Provider API (simpler provider implementation)
 - Can be integrated into CI/CD pipelines (design-time or deploy-time)
 - Changes are pushed immediately when they occur (no polling delay)
-- Direct feedback channel for validation errors from the aggregator
+- Direct feedback channel for validation errors from the aggregator: validation issues can be returned as part of the push response, making it easier for providers to detect and fix problems immediately (compared to pull where issues may go unnoticed)
+- More efficient for tenant-specific (system-instance-aware) metadata: the provider knows exactly when changes occur and can push updates selectively, avoiding the need for aggregators to poll all tenants repeatedly
 
 ##### Push Transport - Cons
 
@@ -308,9 +309,9 @@ The push API endpoint MUST:
 - Support the `definitions` property for inline resource definitions
 - Return appropriate HTTP status codes:
   - `200 OK` or `201 Created` on success
-  - `400 Bad Request` for invalid ORD document format
+  - `400 Bad Request` for any client error (malformed JSON, invalid ORD document, validation failures). Details SHOULD be provided in the response body.
   - `401 Unauthorized` or `403 Forbidden` for authentication/authorization failures
-  - `422 Unprocessable Entity` for validation errors (with details in response body)
+  - **TODO**: The exact response format for validation errors is not yet formally specified.
 
 Example request:
 ```http
