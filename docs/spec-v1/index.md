@@ -270,7 +270,7 @@ Example structure:
 
 An [ORD aggregator](#ord-aggregator) that supports push transport MUST provide a dedicated push API endpoint for receiving ORD documents.
 
-The aggregator MAY advertise its push API capabilities via its own ORD configuration endpoint at `/.well-known/open-resource-discovery`.
+<!-- The aggregator MAY advertise its push API capabilities via its own ORD configuration endpoint at `/.well-known/open-resource-discovery`.
 The aggregator configuration MAY include:
 - The URL of the push API endpoint
 - Supported access strategies for authenticating providers
@@ -298,7 +298,7 @@ Example aggregator configuration:
     }
   }
 }
-```
+``` -->
 
 ###### Push API Contract
 
