@@ -1036,7 +1036,7 @@ definitions:
 
           Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
 
-          See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+          See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
         oneOf:
           - const: beta
             description: |-

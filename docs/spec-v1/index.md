@@ -985,6 +985,8 @@ A Specification ID MUST match the following [regular expression](https://en.wiki
 
 ## Version and Lifecycle
 
+### Versioning
+
 The `version` expresses the complete/full resource version number of an [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy).
 
 It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and therefore express minor and patch changes that don't lead to incompatible changes.
@@ -997,6 +999,8 @@ If the resource definition also contains a version number, it SHOULD be in sync 
 
 When a breaking change is introduced, the rules on constructing [ORD IDs](#ord-id) will ensure that the old version of the resource is not replaced.
 The new version will lead to the creation of a separate and new successor resource (see `successor` property).
+
+### Lifecycle
 
 Once a newer resource succeeds an older resource, the old resource SHOULD be deprecated via [`releaseStatus`](./interfaces/Document.md#api-resource_releasestatus) set to `deprecated`.
 This is not mandatory, because deprecating a resource is a separate decision to creating a successor.

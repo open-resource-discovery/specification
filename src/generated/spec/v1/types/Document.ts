@@ -472,7 +472,7 @@ export interface ApiResource {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -829,7 +829,7 @@ export interface ChangelogEntry {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -1348,7 +1348,7 @@ export interface EventResource {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -1813,7 +1813,7 @@ export interface EntityType {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -2068,7 +2068,7 @@ export interface Capability {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -2738,7 +2738,7 @@ export interface Agent {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -3072,7 +3072,7 @@ export interface IntegrationDependency {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Version and Lifecycle](../index.md#version-and-lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
