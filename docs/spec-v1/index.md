@@ -227,6 +227,8 @@ For push transport, the standard [ORD document](#ord-document) format is used wi
 When using pull transport, resource definitions are referenced via URLs and fetched separately by the aggregator.
 In push transport, these definitions can be provided inline within the ORD document itself using the `definitions` property.
 
+When embedding definitions, the resource definition's access strategy SHOULD be set to [`embedded`](../spec-extensions/access-strategies/embedded.md) to explicitly indicate that the content is inline rather than fetched from a URL.
+
 The `definitions` property is a dictionary where:
 - The **key** is the URL path (as referenced by resources via `resourceDefinitions[].url`)
 - The **value** is the raw content of the resource definition as a **string**
@@ -250,7 +252,10 @@ Example structure:
         {
           "type": "openapi-v3",
           "url": "/api/my-api/openapi.json",
-          "mediaType": "application/json"
+          "mediaType": "application/json",
+          "accessStrategies": [
+            { "type": "embedded" }
+          ]
         }
       ]
     }
@@ -269,16 +274,27 @@ The aggregator MAY advertise its push API capabilities via its own ORD configura
 The aggregator configuration MAY include:
 - The URL of the push API endpoint
 - Supported access strategies for authenticating providers
+- Description and documentation links for onboarding
+
+> For a more detailed draft proposal of the aggregator configuration schema, see [Aggregator Configuration (Draft)](./concepts/aggregator-configuration.md).
 
 Example aggregator configuration:
 ```json
 {
-  "openResourceDiscoveryV1": {
-    "push": {
-      "url": "/ord/v1/push",
-      "accessStrategies": [
-        { "type": "sap:ums-mtls:v1" }
-      ]
+  "openResourceDiscoveryAggregator": {
+    "supportedVersions": ["1.14", "1.15"],
+    "supportedTransportModes": {
+      "push": {
+        "publishDocumentEndpoint": "/ord-publishing-api/v1/documents",
+        "validationResultsEndpoint": "/ord-publishing-api/v1/validationResults",
+        "accessStrategies": [
+          {
+            "type": "sap:oauth-client-credentials:v1",
+            "description": "Contact ord-support@example.com to request push credentials.",
+            "documentationLink": "https://help.example.com/ord/push-onboarding"
+          }
+        ]
+      }
     }
   }
 }
@@ -310,6 +326,18 @@ Authorization: Bearer <token>
   "definitions": { ... }
 }
 ```
+
+###### Validation Results Endpoint (Draft)
+
+> **Status**: Draft Proposal - See [Aggregator Configuration (Draft)](./concepts/aggregator-configuration.md) for details.
+
+Some validations can only be performed after the aggregator has processed multiple documents (e.g., cross-document reference checks, namespace consistency).
+To support deferred validation feedback, aggregators MAY provide a validation results endpoint where providers can retrieve errors, warnings, and info messages.
+
+This enables:
+- Async validation that doesn't block the push request
+- Aggregated feedback across multiple pushed documents
+- Scoped queries by namespace or package
 
 ###### Provider Authorization
 

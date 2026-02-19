@@ -30,7 +30,12 @@
         {
           "type": "openapi-v3",
           "mediaType": "application/json",
-          "url": "/api/hello/openapi.json"
+          "url": "/api/hello/openapi.json",
+          "accessStrategies": [
+            {
+              "type": "embedded"
+            }
+          ]
         }
       ],
       "entryPoints": ["/api/hello"]

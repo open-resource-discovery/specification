@@ -1,0 +1,193 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!! DRAFT PROPOSAL - WORK IN PROGRESS !!!
+# !!!
+# !!! This schema is a forward-looking draft proposal for how ORD Aggregators
+# !!! could advertise their capabilities via a .well-known configuration.
+# !!! It is NOT yet part of the official ORD specification.
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://sap.github.io/open-resource-discovery/spec/v1/generated/AggregatorConfiguration.schema.json
+
+title: ORD Aggregator Configuration
+description: |-
+  **DRAFT PROPOSAL - WORK IN PROGRESS**
+
+  This schema defines the structure for an ORD Aggregator's `.well-known/open-resource-discovery` configuration.
+
+  While ORD Providers use the configuration to advertise where their ORD documents can be pulled from,
+  ORD Aggregators can use the same well-known endpoint to advertise their capabilities and supported transport modes.
+
+  This enables ORD Providers to discover:
+  - Which ORD versions the aggregator supports
+  - Which transport modes are available (pull, push)
+  - How to authenticate and access the aggregator's Publishing API
+  - Where to push ORD documents and retrieve validation results
+
+type: object
+properties:
+  openResourceDiscoveryAggregator:
+    type: object
+    title: ORD Aggregator Configuration
+    description: |-
+      Configuration object for ORD Aggregator capabilities.
+    properties:
+      supportedVersions:
+        type: array
+        title: Supported ORD Versions
+        description: |-
+          List of ORD specification versions that this aggregator supports.
+          Providers should ensure their documents conform to one of these versions.
+        items:
+          type: string
+          pattern: "^[0-9]+\\.[0-9]+$"
+        minItems: 1
+        examples:
+          - ["1.14", "1.15"]
+
+      supportedTransportModes:
+        type: object
+        title: Supported Transport Modes
+        description: |-
+          Describes which transport modes the aggregator supports and how to use them.
+        properties:
+          pull:
+            type: object
+            title: Pull Transport Configuration
+            description: |-
+              Configuration for pull transport mode.
+              Describes how the aggregator will pull ORD information from providers.
+            properties:
+              accessStrategies:
+                type: array
+                title: Supported Access Strategies
+                description: |-
+                  Access strategies that this aggregator can use when pulling from ORD providers.
+                items:
+                  $ref: "#/$defs/AggregatorAccessStrategy"
+            additionalProperties: false
+
+          push:
+            type: object
+            title: Push Transport Configuration
+            description: |-
+              Configuration for push transport mode.
+              Describes how providers can push ORD information to this aggregator.
+            properties:
+              publishDocumentEndpoint:
+                type: string
+                format: uri-reference
+                title: Publish Document Endpoint
+                description: |-
+                  Relative or absolute URL where ORD documents should be POSTed.
+                  Providers send ORD documents (with inline definitions) to this endpoint.
+                examples:
+                  - "/ord-publishing-api/v1/documents"
+
+              validationResultsEndpoint:
+                type: string
+                format: uri-reference
+                title: Validation Results Endpoint
+                description: |-
+                  Relative or absolute URL where providers can retrieve validation results.
+                  This allows async validation feedback after pushing documents.
+                examples:
+                  - "/ord-publishing-api/v1/validationResults"
+
+              accessStrategies:
+                type: array
+                title: Access Strategies
+                description: |-
+                  Access strategies that providers must use to authenticate with the Publishing API.
+                items:
+                  $ref: "#/$defs/AggregatorAccessStrategy"
+            additionalProperties: false
+
+        additionalProperties: false
+
+    required:
+      - supportedVersions
+    additionalProperties: false
+
+required:
+  - openResourceDiscoveryAggregator
+additionalProperties: false
+
+$defs:
+  AggregatorAccessStrategy:
+    type: object
+    title: Aggregator Access Strategy
+    description: |-
+      Describes an access strategy supported by the aggregator.
+    properties:
+      type:
+        type: string
+        description: |-
+          The access strategy type identifier.
+        examples:
+          - "open"
+          - "sap:cmp-mtls:v1"
+          - "sap:oauth-client-credentials:v1"
+
+      description:
+        type: string
+        title: Description
+        description: |-
+          Human-readable description of how to use this access strategy, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          SHOULD explain:
+          - How authentication/authorization works
+          - How to obtain credentials (if applicable)
+          - Any prerequisites or onboarding steps required
+        examples:
+          - "Contact the ORD Aggregator team at ord-support@example.com to request OAuth client credentials. Specify your application namespace(s) in the request."
+
+      documentationLink:
+        type: string
+        format: uri
+        title: Documentation Link
+        description: |-
+          URL to detailed documentation explaining how to use this access strategy.
+
+          This should point to a page that describes:
+          - Step-by-step onboarding instructions
+          - How to request and manage credentials
+          - Code examples for authentication
+          - Troubleshooting information
+        examples:
+          - "https://help.sap.com/docs/ord-aggregator/push-api-authentication"
+
+      parameters:
+        type: object
+        title: Strategy Parameters
+        description: |-
+          Additional parameters required for the access strategy.
+          The structure depends on the access strategy type.
+        additionalProperties: true
+        examples:
+          - certIssuer: "C=DE, O=SAP SE, CN=SAP Cloud Platform Client CA"
+            certSubject: "C=DE, O=SAP SE, OU=SAP Cloud Platform Clients"
+
+    required:
+      - type
+    additionalProperties: false
+
+examples:
+  - openResourceDiscoveryAggregator:
+      supportedVersions:
+        - "1.14"
+        - "1.15"
+      supportedTransportModes:
+        pull:
+          accessStrategies:
+            - type: "sap:cmp-mtls:v1"
+              parameters:
+                certIssuer: "C=DE, O=SAP SE, CN=SAP Cloud Platform Client CA"
+                certSubject: "C=DE, O=SAP SE, OU=SAP Cloud Platform Clients"
+        push:
+          publishDocumentEndpoint: "/ord-publishing-api/v1/documents"
+          validationResultsEndpoint: "/ord-publishing-api/v1/validationResults"
+          accessStrategies:
+            - type: "sap:oauth-client-credentials:v1"
+              description: "Request OAuth client credentials by contacting ord-support@example.com. Specify the namespace(s) you want to publish."
+              documentationLink: "https://help.example.com/ord-aggregator/push-api-onboarding"

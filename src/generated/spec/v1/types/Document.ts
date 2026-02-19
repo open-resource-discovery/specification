@@ -917,7 +917,7 @@ export interface MetadataDefinitionAccessStrategy {
   /**
    * Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.
    */
-  type: (string | "open" | "basic-auth" | "custom") & string;
+  type: (string | "open" | "embedded" | "basic-auth" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
