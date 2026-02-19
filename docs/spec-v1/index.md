@@ -193,18 +193,164 @@ Manual import of the [ORD document](#ord-document) as a JSON file into an intere
 - The ORD document alone is sufficient for this type of consumption
 - All URLs in the document MUST be resolvable (e.g. through `baseUrl` or full URLs)
 
-#### Push Transport
+### Push Transport
 
-> 🚧 The specification currently does not cover this mode.
+In push transport mode, [ORD information](#ord-information) is pushed directly to an [ORD aggregator](#ord-aggregator) via HTTP POST requests.
+This mode eliminates the need for an [ORD Provider](#ord-provider) to implement the [ORD Provider API](#ord-provider-api) with its configuration and document endpoints.
 
-The Document can be pushed to the interested ORD aggregator, e.g. via a webhook, a known HTTP POST endpoint, or via file upload.
+Push transport is particularly suitable for:
 
-- Every system instance needs to know where the ORD documents need to be pushed to.
-- An ORD aggregator might provide a dedicated HTTP POST endpoint for this.
-- Changes can be pushed faster and more efficiently compared to the [pull transport](#pull-transport).
-- The specification currently does not cover this mode.
+- Static metadata that is known at design-time or deploy-time
+- CI/CD pipeline integration where metadata is pushed as part of the build/deployment process
+- Providers that cannot or prefer not to host a runtime ORD Provider API
 
-#### Event-Driven Transport
+##### Push Transport - Pros
+
+- No need to implement and host an ORD Provider API (simpler provider implementation)
+- Can be integrated into CI/CD pipelines (design-time or deploy-time)
+- Changes are pushed immediately when they occur (no polling delay)
+- Direct feedback channel for validation errors from the aggregator
+
+##### Push Transport - Cons
+
+- Every provider needs to know where to push (aggregator endpoint must be known)
+- Provider must actively push updates (compared to passive pull)
+- Additional authentication/authorization setup between provider and aggregator
+- Centralized approach (aggregator must be available to receive pushes)
+
+##### Push Transport Implementation
+
+###### ORD Push Document
+
+For push transport, the standard [ORD document](#ord-document) format is used with one addition: a `definitions` property that allows inline [resource definitions](#resource-definition).
+
+When using pull transport, resource definitions are referenced via URLs and fetched separately by the aggregator.
+In push transport, these definitions can be provided inline within the ORD document itself using the `definitions` property.
+
+The `definitions` property is a dictionary where:
+- The **key** is the URL path (as referenced by resources via `resourceDefinitions[].url`)
+- The **value** is the raw content of the resource definition as a **string**
+
+The content is treated as an opaque text blob, preserving original formatting and whitespace.
+This works uniformly for all definition formats (OpenAPI JSON/YAML, AsyncAPI, WSDL, JSON Schema, etc.).
+
+This enables the aggregator to correlate inline definitions with the resources that reference them, keeping all metadata self-contained in a single push request.
+
+Example structure:
+```json
+{
+  "openResourceDiscovery": "1.14",
+  "describedSystemInstance": {
+    "baseUrl": "https://example.com"
+  },
+  "apiResources": [
+    {
+      "ordId": "sap.example:apiResource:my-api:v1",
+      "resourceDefinitions": [
+        {
+          "type": "openapi-v3",
+          "url": "/api/my-api/openapi.json",
+          "mediaType": "application/json"
+        }
+      ]
+    }
+  ],
+  "definitions": {
+    "/api/my-api/openapi.json": "{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"My API\",\"version\":\"1.0.0\"}}"
+  }
+}
+```
+
+###### ORD Aggregator Push API
+
+An [ORD aggregator](#ord-aggregator) that supports push transport MUST provide a dedicated push API endpoint for receiving ORD documents.
+
+The aggregator MAY advertise its push API capabilities via its own ORD configuration endpoint at `/.well-known/open-resource-discovery`.
+The aggregator configuration MAY include:
+- The URL of the push API endpoint
+- Supported access strategies for authenticating providers
+
+Example aggregator configuration:
+```json
+{
+  "openResourceDiscoveryV1": {
+    "push": {
+      "url": "/ord/v1/push",
+      "accessStrategies": [
+        { "type": "sap:ums-mtls:v1" }
+      ]
+    }
+  }
+}
+```
+
+###### Push API Contract
+
+The push API endpoint MUST:
+- Accept HTTP `POST` requests with `Content-Type: application/json`
+- Expect the request body to be a valid [ORD document](#ord-document)
+- Support the `definitions` property for inline resource definitions
+- Return appropriate HTTP status codes:
+  - `200 OK` or `201 Created` on success
+  - `400 Bad Request` for invalid ORD document format
+  - `401 Unauthorized` or `403 Forbidden` for authentication/authorization failures
+  - `422 Unprocessable Entity` for validation errors (with details in response body)
+
+Example request:
+```http
+POST /ord/v1/push HTTP/1.1
+Host: aggregator.example.com
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "openResourceDiscovery": "1.14",
+  "describedSystemInstance": { ... },
+  "apiResources": [ ... ],
+  "definitions": { ... }
+}
+```
+
+###### Provider Authorization
+
+The aggregator MUST ensure that providers can only push content they are authorized to manage.
+Authorization rules depend on the aggregator implementation but typically include:
+- Validating that the provider is allowed to describe the claimed [system instance](#system-instance), e.g. by verifying ownership of the `baseUrl` and/or other identifiers in the ORD document
+- Validating that the provider owns the [namespaces](#namespace) used in the pushed ORD IDs
+- Validating that the push credentials match the expected provider identity
+
+###### Push Transport Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant Provider as ORD Provider
+    participant CI as CI/CD Pipeline
+    participant Aggregator as ORD Aggregator
+
+    Provider->>CI: Trigger build/deployment
+    CI->>CI: Generate ORD document with inline definitions
+    CI->>Aggregator: POST ORD document (using access strategy)
+    Aggregator->>Aggregator: Validate document and authorization
+    Aggregator-->>CI: Response (success/errors)
+
+    opt On validation errors
+        CI->>CI: Handle errors, notify developers
+    end
+```
+
+#### Other Modes of Transport
+
+Other modes of transport have not yet been standardized/specified.
+They are only listed here to outline potential modes that we anticipate.
+
+##### Import Transport
+
+Manual import of the [ORD document](#ord-document) as a JSON file into an interested system or tool (offline mode):
+
+- The system instances do not need to know each other or be integrated in any way
+- The ORD document alone is sufficient for this type of consumption, it should include all necessary information and definitions inline (via the `definitions` property as described in the push transport section)
+
+##### Event-Driven Transport
 
 > 🚧 The specification currently does not cover this mode.
 
