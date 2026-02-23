@@ -277,7 +277,6 @@ The aggregator configuration MAY include:
 - Supported access strategies for authenticating providers
 - Description and documentation links for onboarding
 
-> For a more detailed draft proposal of the aggregator configuration schema, see [Aggregator Configuration (Draft)](./concepts/aggregator-configuration.md).
 
 Example aggregator configuration:
 ```json
