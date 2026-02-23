@@ -456,11 +456,23 @@ export interface ApiResource {
    */
   abstract?: boolean;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -810,7 +822,14 @@ export interface ChangelogEntry {
    */
   version: string;
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -1313,11 +1332,23 @@ export interface EventResource {
    */
   abstract?: boolean;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -1766,11 +1797,23 @@ export interface EntityType {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -2009,11 +2052,23 @@ export interface Capability {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -2667,11 +2722,23 @@ export interface Agent {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -2989,11 +3056,23 @@ export interface IntegrationDependency {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
   releaseStatus: "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -3643,7 +3722,12 @@ export interface ConsumptionBundle {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility?: "public" | "internal" | "private";
   /**
