@@ -208,7 +208,7 @@ Push transport is particularly suitable for:
 
 - No need to implement and host an ORD Provider API (simpler provider implementation)
 - Can be integrated into CI/CD pipelines (design-time or deploy-time)
-- Changes are pushed immediately when they occur (no polling delay)
+- Configuration or extensibility changes are pushed immediately when they occur (no polling delay)
 - Direct feedback channel for validation errors from the aggregator: validation issues can be returned as part of the push response, making it easier for providers to detect and fix problems immediately (compared to pull where issues may go unnoticed)
 - More efficient for tenant-specific (system-instance-aware) metadata: the provider knows exactly when changes occur and can push updates selectively, avoiding the need for aggregators to poll all tenants repeatedly
 
