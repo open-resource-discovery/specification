@@ -755,19 +755,19 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" the described resource or capability.",
+          "description": "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences.",
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
@@ -1005,41 +1005,41 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" the described resource or capability.",
+          "description": "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences.",
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
         "releaseStatus": {
           "type": "string",
-          "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "beta",
-              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
-              "description": "Resource is meant for productive use and provides a stable API contract."
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
             },
             {
               "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
               "const": "sunset",
-              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -1835,41 +1835,41 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" the described resource or capability.",
+          "description": "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences.",
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
         "releaseStatus": {
           "type": "string",
-          "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "beta",
-              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
-              "description": "Resource is meant for productive use and provides a stable API contract."
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
             },
             {
               "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
               "const": "sunset",
-              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -2497,41 +2497,41 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" the described resource or capability.",
+          "description": "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences.",
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
         "releaseStatus": {
           "type": "string",
-          "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "beta",
-              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
-              "description": "Resource is meant for productive use and provides a stable API contract."
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
             },
             {
               "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
               "const": "sunset",
-              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -2854,15 +2854,15 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
@@ -2872,19 +2872,19 @@
           "oneOf": [
             {
               "const": "beta",
-              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
-              "description": "Resource is meant for productive use and provides a stable API contract."
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
             },
             {
               "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
               "const": "sunset",
-              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -3618,15 +3618,15 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
@@ -3749,15 +3749,15 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         }
@@ -3879,41 +3879,41 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" the described resource or capability.",
+          "description": "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences.",
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
         "releaseStatus": {
           "type": "string",
-          "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "beta",
-              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
-              "description": "Resource is meant for productive use and provides a stable API contract."
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
             },
             {
               "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
               "const": "sunset",
-              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -4555,41 +4555,41 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" the described resource or capability.",
+          "description": "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences.",
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
         "releaseStatus": {
           "type": "string",
-          "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "beta",
-              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
-              "description": "Resource is meant for productive use and provides a stable API contract."
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
             },
             {
               "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
               "const": "sunset",
-              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -4778,15 +4778,15 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         }
@@ -4907,41 +4907,41 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" the described resource or capability.",
+          "description": "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences.",
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
         "releaseStatus": {
           "type": "string",
-          "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "beta",
-              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
-              "description": "Resource is meant for productive use and provides a stable API contract."
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
             },
             {
               "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
               "const": "sunset",
-              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -5311,23 +5311,23 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "beta",
-              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
-              "description": "Resource is meant for productive use and provides a stable API contract."
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
             },
             {
               "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
               "const": "sunset",
-              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
@@ -6667,41 +6667,41 @@
         },
         "visibility": {
           "type": "string",
-          "description": "The visibility states who is allowed to \"see\" the described resource or capability.",
+          "description": "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences.",
           "oneOf": [
             {
               "const": "public",
-              "description": "Publicly visible to customers and 3rd parties.\nUsually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html)."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
-              "description": "Visible to other applications within the same [vendor](#vendor).\nHowever, they are not officially exposed and communicated to customers and 3rd parties.\nThey might not come with the same guarantees on API stability.\n\nInternal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.\nInternal resources MAY be published through an internal API Catalog if the access permissions are ensured by it."
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
             },
             {
               "const": "private",
-              "description": "Visible only to the provider application or service, usually within the same system namespace / system type.\n\nPrivate resources MUST NOT be made available to public consumers or consumers outside of the \"private\" scope of the described application."
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ]
         },
         "releaseStatus": {
           "type": "string",
-          "description": "The `releaseStatus` specifies the stability of the resource and its external contract.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "beta",
-              "description": "The contract for the resource is beta and may not be meant for productive use.\nResources of `beta` status MAY be changed or deleted at the providers discretion."
+              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
-              "description": "Resource is meant for productive use and provides a stable API contract."
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
             },
             {
               "const": "deprecated",
-              "description": "Resource has been deprecated.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
             },
             {
               "const": "sunset",
-              "description": "Resource has been sunset, but is still described.\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
             }
           ],
           "examples": [
