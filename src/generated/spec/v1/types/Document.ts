@@ -144,6 +144,7 @@ export interface OrdDocument {
    * A tombstone entry MAY be removed after a grace period of 31 days.
    */
   tombstones?: Tombstone[];
+  definitions?: InlineDefinitions;
 }
 /**
  * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
@@ -935,7 +936,7 @@ export interface MetadataDefinitionAccessStrategy {
   /**
    * Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.
    */
-  type: (string | "open" | "basic-auth" | "custom") & string;
+  type: (string | "open" | "embedded" | "basic-auth" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -3928,4 +3929,24 @@ export interface Tombstone {
    */
   description?: string;
   [k: string]: unknown | undefined;
+}
+/**
+ * A dictionary of inline [resource definitions](../index.md#resource-definition) for [push transport](../index.md#push-transport).
+ *
+ * When using push transport, resource definitions can be provided inline within the ORD document
+ * instead of being referenced via URLs and fetched separately.
+ *
+ * The **key** MUST be the URL path as referenced by resources via `resourceDefinitions[].url`.
+ * The **value** MUST be a string containing the raw content of the resource definition.
+ *
+ * The content is treated as an opaque text blob, preserving original formatting and whitespace.
+ * This works uniformly for all definition formats (OpenAPI JSON/YAML, AsyncAPI, WSDL, JSON Schema, etc.).
+ *
+ * This enables the aggregator to correlate inline definitions with the resources that reference them,
+ * keeping all metadata self-contained in a single push request.
+ *
+ * For pull transport, this property is typically not used as the aggregator fetches definitions via URLs.
+ */
+export interface InlineDefinitions {
+  [k: string]: string | undefined;
 }

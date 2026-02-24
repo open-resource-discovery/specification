@@ -10,6 +10,18 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added **Push Transport** mode documentation and schema support
+  - Push transport allows ORD providers to push ORD documents directly to aggregators via HTTP POST
+  - Introduced `definitions` property on ORD Document for embedding resource definitions inline
+    - The key is the URL path (matching `resourceDefinitions[].url`), the value is the raw content as a string
+    - Content is treated as an opaque text blob, preserving original formatting for all formats (OpenAPI, AsyncAPI, WSDL, etc.)
+  - Added `embedded` access strategy type for resource definitions that are inline rather than fetched
+  - Added [embedded access strategy documentation](docs/spec-extensions/access-strategies/embedded.md)
+  - Added [push transport example document](examples/documents/document-push-transport.json)
+  - Added draft proposal for [Aggregator Configuration](docs/spec-v1/concepts/aggregator-configuration.md) including validation results endpoint concept
+
 ## [1.14.0]
 
 ### Added

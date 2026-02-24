@@ -1,0 +1,47 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
+  "openResourceDiscovery": "1.14",
+  "description": "Minimal example for push transport with inline resource definition",
+  "describedSystemInstance": {
+    "baseUrl": "https://example.com"
+  },
+  "packages": [
+    {
+      "ordId": "sap.example:package:push-demo:v1",
+      "title": "Push Transport Demo",
+      "shortDescription": "Demonstrates push transport with inline definitions",
+      "description": "This package demonstrates push transport with inline resource definitions.",
+      "version": "1.0.0",
+      "vendor": "sap:vendor:SAP:"
+    }
+  ],
+  "apiResources": [
+    {
+      "ordId": "sap.example:apiResource:hello-api:v1",
+      "title": "Hello API",
+      "shortDescription": "Simple greeting API",
+      "description": "A simple greeting API that demonstrates push transport.",
+      "version": "1.0.0",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "partOfPackage": "sap.example:package:push-demo:v1",
+      "apiProtocol": "rest",
+      "resourceDefinitions": [
+        {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "url": "/api/hello/openapi.json",
+          "accessStrategies": [
+            {
+              "type": "embedded"
+            }
+          ]
+        }
+      ],
+      "entryPoints": ["/api/hello"]
+    }
+  ],
+  "definitions": {
+    "/api/hello/openapi.json": "{\"openapi\":\"3.0.3\",\"info\":{\"title\":\"Hello API\",\"version\":\"1.0.0\"},\"paths\":{\"/hello\":{\"get\":{\"summary\":\"Get greeting\",\"responses\":{\"200\":{\"description\":\"A greeting message\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}}}}}}}}}"
+  }
+}
