@@ -147,6 +147,7 @@ definitions:
 
       systemInstanceAware:
         type: boolean
+        x-hide: true
         description: |-
           Whether the information in the ORD document is **system-instance-aware**.
           This is the case when the provided ORD document potentially differs between **system instances** (e.g. due to multi-tenancy, configuration or extensibility).

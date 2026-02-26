@@ -1535,6 +1535,7 @@ definitions:
 
       systemInstanceAware: &systemInstanceAware
         type: boolean
+        x-hide: true
         description: |-
           Defines whether this ORD resource is **system-instance-aware**.
           This is the case when the referenced resource definitions are potentially different between **system instances**.
