@@ -283,7 +283,7 @@ Which attributes support information reuse and how it works is described in the 
 ##### Document Level Inheritance
 
 Some ORD information is described on the document root level and applies to all information that the ORD Document contains.
-In some cases (like `policyLevel`), it is also possible to override the values locally.
+In some cases (like `policyLevels`), it is also possible to override the values locally.
 
 ##### Package Level Inheritance
 
@@ -521,7 +521,7 @@ The following rules need to be implemented by ORD aggregators:
   - This ensures that consumers can rely on `lastUpdate` to be always available and to understand if a change happened, even if the ORD Provider did not update it at the source
   - Ideally this situation doesn't happen and the ORD Providers update `lastUpdate`. Then the date can also better reflect the time when the change happened, not when it was detected.
 - The aggregator MUST apply all defined inheritances from root document properties to all the ORD information that it contains.
-  - `policyLevel` (and the corresponding `customPolicyLevel`) MUST be inherited to the resource / Package level, with the latter taking precedence.
+  - `policyLevels` MUST be inherited to the resource / Package level, with the latter taking precedence.
 - The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
   - `vendor`, `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
   - `labels` MUST be merged without duplicated values.

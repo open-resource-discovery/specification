@@ -10,6 +10,18 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Hidden deprecated properties from documentation using `x-hide: true`:
+  - `policyLevel` and `customPolicyLevel` (deprecated since v1.9.9) - use `policyLevels` instead
+  - `entityTypeMappings` (deprecated since v1.11.0) - use `exposedEntityTypes` instead
+  - `systemInstanceAware` (deprecated since v1.12.0) - use `perspective` instead
+  - Related definitions: `EntityTypeMapping`, `ApiModelSelectorOData`, `ApiModelSelectorJsonPointer`, `EntityTypeOrdIdTarget`, `EntityTypeCorrelationIdTarget`
+- Updated documentation to reference current concepts instead of deprecated ones:
+  - Changed `policyLevel`/`customPolicyLevel` references to `policyLevels` in spec index
+  - Changed `systemInstanceAware` references to `perspective` in access strategy docs and FAQ
+- Removed deprecated property usage from example files (`systemInstanceAware`, `policyLevel`, `customPolicyLevel`)
+
 ## [1.14.0]
 
 ### Added

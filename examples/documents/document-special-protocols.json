@@ -30,7 +30,6 @@
       "lastUpdate": "2022-12-19T15:47:04+00:00",
       "visibility": "internal",
       "releaseStatus": "active",
-      "systemInstanceAware": true,
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "apiProtocol": "sap-rfc",
       "partOfConsumptionBundles": [
@@ -64,7 +63,6 @@
       "lastUpdate": "2022-12-19T15:47:04+00:00",
       "visibility": "internal",
       "releaseStatus": "active",
-      "systemInstanceAware": true,
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "apiProtocol": "websocket",
       "direction": "mixed",
@@ -87,7 +85,6 @@
       "lastUpdate": "2022-12-19T15:47:04+00:00",
       "visibility": "internal",
       "releaseStatus": "active",
-      "systemInstanceAware": true,
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "partOfConsumptionBundles": [
         {
