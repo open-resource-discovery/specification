@@ -141,6 +141,7 @@ properties:
       Information on the [system version](../index.md#system-version) that this ORD document describes.
   policyLevel: &policyLevel
     type: string
+    x-hide: true
     description: |
       The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.
       Depending on the chosen policy level, additional expectations and validations rules will be applied.
@@ -155,7 +156,6 @@ properties:
         description: |-
           No policy level chosen. Only the base rules on how to create correct ORD documents apply.
       - const: custom
-        # TODO: Deprecate this?
         description: |-
           Custom policy level.
           Further validation MAY be defined and implemented by the policy-level owner.
@@ -170,7 +170,7 @@ properties:
 
   customPolicyLevel: &customPolicyLevel
     type: string
-    # TODO: Deprecate this?
+    x-hide: true
     description: |-
       If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.
       The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
@@ -1450,6 +1450,7 @@ definitions:
 
       entityTypeMappings: &entityTypeMappings
         type: array
+        x-hide: true
         x-introduced-in-version: "1.6.0"
         x-deprecated-in-version: "1.11.0"
         x-deprecation-text: |-
@@ -4432,6 +4433,7 @@ definitions:
   EntityTypeMapping:
     title: Entity Type Mapping
     type: object
+    x-hide: true
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
     x-deprecation-text: |-
@@ -4589,6 +4591,7 @@ definitions:
     title: Api Model Selector (Odata)
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
+    x-hide: true
     x-deprecation-text: |-
       Use the simplified `relatedEntityTypes` instead.
 
@@ -4630,6 +4633,7 @@ definitions:
     title: Api Model Selector (Json Pointer)
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
+    x-hide: true
     x-deprecation-text: |-
       Use the simplified `relatedEntityTypes` instead.
 
@@ -4711,6 +4715,7 @@ definitions:
     title: Entity Type Target (ORD ID)
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
+    x-hide: true
     x-deprecation-text: |-
       Use the simplified `relatedEntityTypes` instead.
     x-ums-type: "custom"
@@ -4737,6 +4742,7 @@ definitions:
   EntityTypeCorrelationIdTarget:
     title: Entity Type Target (Correlation Id)
     type: object
+    x-hide: true
     description: |-
       Define which entity type is the target of an entity type mapping
 

@@ -191,8 +191,7 @@
         "Scope Items": [
           "[Basic Bank Account Management (BFA)](https://rapid.sap.com/bp/#/scopeitems/BFA \\\" Link To BP \\\")"
         ]
-      },
-      "systemInstanceAware": true
+      }
     },
     {
       "ordId": "sap.xref:dataProduct:AbstractCustomer:v1",
