@@ -64,6 +64,15 @@ definitions:
         items:
           "$ref": "#/definitions/V1DocumentDescription"
 
+      namespaces:
+        type: array
+        description: |-
+          List of namespace documents that can be retrieved.
+
+          TODO: Link to JSON Schema that defines the namespace JSON format.
+        items:
+          "$ref": "#/definitions/V1NamespaceDescription"
+
       capabilities:
         "$ref": "#/definitions/V1Capabilities"
 
@@ -179,6 +188,49 @@ definitions:
     required:
       - url
       - accessStrategies
+
+  ############################################################################################################
+
+  V1NamespaceDescription:
+    type: object
+    title: Ord V1 Namespace Description
+    description: |-
+      Describes a namespace document that is available for retrieval.
+    x-ums-type: "ignore"
+    properties:
+      url:
+        type: string
+        format: uri-reference
+        description: |-
+          URL or relative URL to the namespace document.
+
+          It is RECOMMENDED to provide a relative URL (to `baseUrl`).
+          If a `baseUrl` is given, the relative URLs will be resolved with it.
+
+          If the URL is not relative to the system providing this information or no well-known URI is used,
+          either the baseUrl or a full URL to the document MUST be provided.
+        examples:
+          - "/namespaces.json"
+          - "../../namespaces.json"
+          - "https://example.com/namespaces.json"
+
+      accessStrategies:
+        type: array
+        description: |-
+          List of supported access strategies for retrieving the namespace document from the ORD provider.
+
+          An ORD Consumer/ORD Aggregator MAY freely choose any of the listed strategies.
+
+        items:
+          $ref: "#/definitions/AccessStrategy"
+        minItems: 1
+
+    additionalProperties: false
+    required:
+      - url
+      - accessStrategies
+
+  ############################################################################################################
 
   #/definitions/V1Capabilities"
   V1Capabilities:

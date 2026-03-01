@@ -39,6 +39,12 @@ export interface OrdV1Support {
    * For more details how to implement this correctly, please refer to the [ORD configuration endpoint](../index.md#ord-configuration-endpoint) section and the [considerations on the granularity of ORD documents](../index.md#considerations-on-the-granularity-of-ord-documents).
    */
   documents?: OrdV1DocumentDescription[];
+  /**
+   * List of namespace documents that can be retrieved.
+   *
+   * TODO: Link to JSON Schema that defines the namespace JSON format.
+   */
+  namespaces?: OrdV1NamespaceDescription[];
   capabilities?: OrdV1Capabilities;
 }
 /**
@@ -110,6 +116,29 @@ export interface OrdV1DocumentAccessStrategy {
    * MUST only be provided if `type` is set to `custom`.
    */
   customDescription?: string;
+}
+/**
+ * Describes a namespace document that is available for retrieval.
+ */
+export interface OrdV1NamespaceDescription {
+  /**
+   * URL or relative URL to the namespace document.
+   *
+   * It is RECOMMENDED to provide a relative URL (to `baseUrl`).
+   * If a `baseUrl` is given, the relative URLs will be resolved with it.
+   *
+   * If the URL is not relative to the system providing this information or no well-known URI is used,
+   * either the baseUrl or a full URL to the document MUST be provided.
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving the namespace document from the ORD provider.
+   *
+   * An ORD Consumer/ORD Aggregator MAY freely choose any of the listed strategies.
+   *
+   * @minItems 1
+   */
+  accessStrategies: [OrdV1DocumentAccessStrategy, ...OrdV1DocumentAccessStrategy[]];
 }
 /**
  * List of capabilities that are supported by the ORD provider.
