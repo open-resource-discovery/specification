@@ -12,7 +12,10 @@
     :is(.navbar__toggle, [class*="toggleButton_"]) {
     color: var(--lp-c-text-2) !important;
   }
-  html[data-theme="light"] .navbar-sidebar__items .menu__link.header-github-pill svg {
+  html[data-theme="light"]
+    .navbar-sidebar__items
+    .menu__link.header-github-pill
+    svg {
     filter: invert(0) opacity(0.95) !important;
   }
   html[data-theme="light"][data-nav-scrolled="1"] nav.navbar {
@@ -29,7 +32,9 @@
   html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .navbar__title {
     color: var(--c-text-strong) !important;
   }
-  html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .navbar__link:hover {
+  html[data-theme="light"][data-nav-scrolled="1"]
+    nav.navbar
+    .navbar__link:hover {
     color: var(--c-text-strong) !important;
   }
   html[data-theme="light"] .navbar-sidebar {
@@ -71,7 +76,9 @@
       [class*="searchbarContainer_"],
       [class*="navbarSearchContainer_"]
     )::before,
-  html[data-theme="light"] .navbar-sidebar__search [class*="searchBar_"]::before {
+  html[data-theme="light"]
+    .navbar-sidebar__search
+    [class*="searchBar_"]::before {
     filter: invert(1) opacity(0.65) !important;
   }
   html[data-theme="light"] .navbar-sidebar__search input {
@@ -81,7 +88,10 @@
     color: color-mix(in oklab, var(--c-text) 55%, #fff);
   }
   html[data-theme="light"] .navbar-sidebar [class*="dropdownMenu_"],
-  html[data-theme="light"] .navbar-sidebar__search [class*="searchBar_"] [class*="dropdownMenu_"] {
+  html[data-theme="light"]
+    .navbar-sidebar__search
+    [class*="searchBar_"]
+    [class*="dropdownMenu_"] {
     background: #fff !important;
     border: 1px solid var(--lp-c-border) !important;
     box-shadow: var(--shadow-md, 0 10px 30px rgba(4, 13, 18, 0.08));
@@ -118,17 +128,27 @@
     color: var(--c-text) !important;
     background: transparent !important;
   }
-  html[data-theme="light"] .navbar-sidebar__items .menu__link.header-github-pill {
+  html[data-theme="light"]
+    .navbar-sidebar__items
+    .menu__link.header-github-pill {
     color: var(--c-text) !important;
   }
-  html[data-theme="light"] .navbar-sidebar__items .menu__link:hover:not(.menu__link--active),
-  html[data-theme="light"] .theme-doc-sidebar-menu .menu__link:hover:not(.menu__link--active) {
+  html[data-theme="light"]
+    .navbar-sidebar__items
+    .menu__link:hover:not(.menu__link--active),
+  html[data-theme="light"]
+    .theme-doc-sidebar-menu
+    .menu__link:hover:not(.menu__link--active) {
     color: var(--c-text-strong) !important;
     background: rgba(0, 0, 0, 0.04) !important;
     transform: none !important;
   }
-  html[data-theme="light"] .navbar-sidebar__items .menu__link.menu__link--sublist:hover,
-  html[data-theme="light"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist:hover {
+  html[data-theme="light"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist:hover,
+  html[data-theme="light"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist:hover {
     background: transparent !important;
   }
   html[data-theme="light"] .navbar-sidebar__items .menu__link--active,
@@ -138,24 +158,40 @@
     font-weight: var(--fw-sidebar-active) !important;
     transform: none !important;
   }
-  html[data-theme="light"] .navbar-sidebar__items .menu__link.menu__link--sublist[aria-expanded="true"],
-  html[data-theme="light"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist[aria-expanded="true"] {
+  html[data-theme="light"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist[aria-expanded="true"],
+  html[data-theme="light"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist[aria-expanded="true"] {
     color: var(--c-text-strong) !important;
     background: transparent !important;
     font-weight: var(--fw-sidebar-active) !important;
     transform: none !important;
   }
-  html[data-theme="light"] .navbar-sidebar__items .menu__link.menu__link--sublist.active,
-  html[data-theme="light"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist.active,
-  html[data-theme="light"] .navbar-sidebar__items .menu__link.menu__link--sublist[aria-current="page"],
-  html[data-theme="light"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist[aria-current="page"] {
+  html[data-theme="light"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist.active,
+  html[data-theme="light"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist.active,
+  html[data-theme="light"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist[aria-current="page"],
+  html[data-theme="light"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist[aria-current="page"] {
     color: var(--c-text-strong) !important;
     background: transparent !important;
     font-weight: var(--fw-sidebar-active) !important;
     transform: none !important;
   }
-  html[data-theme="light"] .navbar-sidebar__items .menu__link.menu__link--sublist.menu__link--active,
-  html[data-theme="light"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist.menu__link--active {
+  html[data-theme="light"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist.menu__link--active,
+  html[data-theme="light"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist.menu__link--active {
     background: transparent !important;
   }
   html[data-theme="light"] .navbar-sidebar .menu__list-item-collapsible {
@@ -166,14 +202,22 @@
   }
   html[data-theme="light"]
     .navbar-sidebar
-    .menu__list-item-collapsible:has(.menu__link.menu__link--sublist.menu__link--active),
+    .menu__list-item-collapsible:has(
+      .menu__link.menu__link--sublist.menu__link--active
+    ),
   html[data-theme="light"]
     .navbar-sidebar
-    .menu__list-item-collapsible:has(.menu__link.menu__link--sublist[aria-expanded="true"]),
-  html[data-theme="light"] .navbar-sidebar .menu__list-item-collapsible:has(.menu__link.menu__link--sublist.active),
+    .menu__list-item-collapsible:has(
+      .menu__link.menu__link--sublist[aria-expanded="true"]
+    ),
   html[data-theme="light"]
     .navbar-sidebar
-    .menu__list-item-collapsible:has(.menu__link.menu__link--sublist[aria-current="page"]) {
+    .menu__list-item-collapsible:has(.menu__link.menu__link--sublist.active),
+  html[data-theme="light"]
+    .navbar-sidebar
+    .menu__list-item-collapsible:has(
+      .menu__link.menu__link--sublist[aria-current="page"]
+    ) {
     background: rgba(0, 0, 0, 0.08) !important;
   }
 }
@@ -189,7 +233,9 @@
   html[data-theme="dark"] .navbar-sidebar__items,
   html[data-theme="dark"] .navbar-sidebar__items--show-secondary,
   html[data-theme="dark"] .navbar-sidebar__items > .navbar-sidebar__item.menu,
-  html[data-theme="dark"] .navbar-sidebar__items .theme-layout-navbar-sidebar-panel.navbar-sidebar__item.menu,
+  html[data-theme="dark"]
+    .navbar-sidebar__items
+    .theme-layout-navbar-sidebar-panel.navbar-sidebar__item.menu,
   html[data-theme="dark"] .navbar-sidebar__item.menu {
     background: var(--c-bg, #0f1419) !important;
   }
@@ -205,11 +251,17 @@
     color: #fff !important;
     background: rgba(255, 255, 255, 0.06) !important;
   }
-  html[data-theme="dark"] .navbar-sidebar__items .menu__link.menu__link--sublist:hover,
-  html[data-theme="dark"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist:hover {
+  html[data-theme="dark"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist:hover,
+  html[data-theme="dark"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist:hover {
     background: transparent !important;
   }
-  html[data-theme="dark"] .navbar-sidebar__items .menu__link--active:not(.menu__link--sublist) {
+  html[data-theme="dark"]
+    .navbar-sidebar__items
+    .menu__link--active:not(.menu__link--sublist) {
     color: #fff !important;
     background: rgba(255, 255, 255, 0.1) !important;
   }
@@ -220,24 +272,40 @@
     font-weight: var(--fw-sidebar-active) !important;
     transform: none !important;
   }
-  html[data-theme="dark"] .navbar-sidebar__items .menu__link.menu__link--sublist[aria-expanded="true"],
-  html[data-theme="dark"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist[aria-expanded="true"] {
+  html[data-theme="dark"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist[aria-expanded="true"],
+  html[data-theme="dark"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist[aria-expanded="true"] {
     color: #fff !important;
     background: rgba(255, 255, 255, 0.1) !important;
     font-weight: var(--fw-sidebar-active) !important;
     transform: none !important;
   }
-  html[data-theme="dark"] .navbar-sidebar__items .menu__link.menu__link--sublist.active,
-  html[data-theme="dark"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist.active,
-  html[data-theme="dark"] .navbar-sidebar__items .menu__link.menu__link--sublist[aria-current="page"],
-  html[data-theme="dark"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist[aria-current="page"] {
+  html[data-theme="dark"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist.active,
+  html[data-theme="dark"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist.active,
+  html[data-theme="dark"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist[aria-current="page"],
+  html[data-theme="dark"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist[aria-current="page"] {
     color: #fff !important;
     background: transparent !important;
     font-weight: var(--fw-sidebar-active) !important;
     transform: none !important;
   }
-  html[data-theme="dark"] .navbar-sidebar__items .menu__link.menu__link--sublist.menu__link--active,
-  html[data-theme="dark"] .theme-doc-sidebar-menu .menu__link.menu__link--sublist.menu__link--active {
+  html[data-theme="dark"]
+    .navbar-sidebar__items
+    .menu__link.menu__link--sublist.menu__link--active,
+  html[data-theme="dark"]
+    .theme-doc-sidebar-menu
+    .menu__link.menu__link--sublist.menu__link--active {
     background: transparent !important;
   }
   html[data-theme="dark"] .navbar-sidebar .menu__list-item-collapsible {
@@ -248,14 +316,22 @@
   }
   html[data-theme="dark"]
     .navbar-sidebar
-    .menu__list-item-collapsible:has(.menu__link.menu__link--sublist.menu__link--active),
+    .menu__list-item-collapsible:has(
+      .menu__link.menu__link--sublist.menu__link--active
+    ),
   html[data-theme="dark"]
     .navbar-sidebar
-    .menu__list-item-collapsible:has(.menu__link.menu__link--sublist[aria-expanded="true"]),
-  html[data-theme="dark"] .navbar-sidebar .menu__list-item-collapsible:has(.menu__link.menu__link--sublist.active),
+    .menu__list-item-collapsible:has(
+      .menu__link.menu__link--sublist[aria-expanded="true"]
+    ),
   html[data-theme="dark"]
     .navbar-sidebar
-    .menu__list-item-collapsible:has(.menu__link.menu__link--sublist[aria-current="page"]) {
+    .menu__list-item-collapsible:has(.menu__link.menu__link--sublist.active),
+  html[data-theme="dark"]
+    .navbar-sidebar
+    .menu__list-item-collapsible:has(
+      .menu__link.menu__link--sublist[aria-current="page"]
+    ) {
     background: rgba(255, 255, 255, 0.1) !important;
   }
   html[data-theme="dark"] .navbar-sidebar__brand {

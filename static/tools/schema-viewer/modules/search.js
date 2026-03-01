@@ -90,7 +90,7 @@ function performSearch(query) {
         id: id,
         name: node.name,
         color: node.color || 'var(--color-root)',
-        meta: id !== node.name ? id : (node.description || '')
+        meta: id !== node.name ? id : node.description || '',
       });
     }
 
@@ -99,7 +99,7 @@ function performSearch(query) {
       for (const [propName, propDef] of Object.entries(node.properties)) {
         if (propName.toLowerCase().includes(query)) {
           // Find if it's a relation
-          const relation = node.relations.find(r => r.property === propName);
+          const relation = node.relations.find((r) => r.property === propName);
 
           results.push({
             type: relation ? 'relation' : 'property',
@@ -108,7 +108,7 @@ function performSearch(query) {
             nodeId: id,
             nodeName: node.name,
             relation: relation,
-            meta: propDef.description || ''
+            meta: propDef.description || '',
           });
         }
       }
@@ -116,31 +116,33 @@ function performSearch(query) {
   }
 
   // Sort results: Entity (1) > Relation (2) > Property (3)
-  return results.sort((a, b) => {
-    const typeWeight = { entity: 1, relation: 2, property: 3 };
-    if (typeWeight[a.type] !== typeWeight[b.type]) {
-      return typeWeight[a.type] - typeWeight[b.type];
-    }
+  return results
+    .sort((a, b) => {
+      const typeWeight = { entity: 1, relation: 2, property: 3 };
+      if (typeWeight[a.type] !== typeWeight[b.type]) {
+        return typeWeight[a.type] - typeWeight[b.type];
+      }
 
-    const aLower = a.name.toLowerCase();
-    const bLower = b.name.toLowerCase();
+      const aLower = a.name.toLowerCase();
+      const bLower = b.name.toLowerCase();
 
-    // For properties/relations, only check the part after the dot for startsWith
-    const aMatchPart = a.type === 'entity' ? aLower : aLower.split('.').pop();
-    const bMatchPart = b.type === 'entity' ? bLower : bLower.split('.').pop();
+      // For properties/relations, only check the part after the dot for startsWith
+      const aMatchPart = a.type === 'entity' ? aLower : aLower.split('.').pop();
+      const bMatchPart = b.type === 'entity' ? bLower : bLower.split('.').pop();
 
-    const aStartsWith = aMatchPart.startsWith(query);
-    const bStartsWith = bMatchPart.startsWith(query);
+      const aStartsWith = aMatchPart.startsWith(query);
+      const bStartsWith = bMatchPart.startsWith(query);
 
-    if (aStartsWith && !bStartsWith) return -1;
-    if (!aStartsWith && bStartsWith) return 1;
+      if (aStartsWith && !bStartsWith) return -1;
+      if (!aStartsWith && bStartsWith) return 1;
 
-    if (aLower.length !== bLower.length) {
-      return aLower.length - bLower.length;
-    }
+      if (aLower.length !== bLower.length) {
+        return aLower.length - bLower.length;
+      }
 
-    return aLower.localeCompare(bLower);
-  }).slice(0, 50);
+      return aLower.localeCompare(bLower);
+    })
+    .slice(0, 50);
 }
 
 /**
@@ -148,7 +150,10 @@ function performSearch(query) {
  */
 function highlightMatch(text, query) {
   if (!query) return text;
-  const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  const regex = new RegExp(
+    `(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
+    'gi',
+  );
   return text.replace(regex, '<mark>$1</mark>');
 }
 
@@ -160,9 +165,12 @@ function renderResults(results) {
   const query = document.getElementById('search-input').value.trim();
 
   if (results.length === 0) {
-    searchResults.innerHTML = '<div class="search-result-item" style="cursor: default; background: transparent;"><div class="result-info"><div class="result-name">No results found</div></div></div>';
+    searchResults.innerHTML =
+      '<div class="search-result-item" style="cursor: default; background: transparent;"><div class="result-info"><div class="result-name">No results found</div></div></div>';
   } else {
-    searchResults.innerHTML = results.map(result => `
+    searchResults.innerHTML = results
+      .map(
+        (result) => `
       <div class="search-result-item" data-type="${result.type}" data-id="${result.id}" data-node-id="${result.nodeId || ''}">
         <div class="result-type-icon ${result.type}" style="${result.type === 'entity' ? `background: ${result.color}; box-shadow: 0 0 5px ${result.color};` : ''}"></div>
         <div class="result-info">
@@ -171,14 +179,16 @@ function renderResults(results) {
         </div>
         <div class="result-tag">${result.type}</div>
       </div>
-    `).join('');
+    `,
+      )
+      .join('');
 
-    searchResults.querySelectorAll('.search-result-item').forEach(item => {
+    searchResults.querySelectorAll('.search-result-item').forEach((item) => {
       item.addEventListener('click', () => {
         const type = item.dataset.type;
         const id = item.dataset.id;
         const nodeId = item.dataset.nodeId;
-        const selectedResult = results.find(r => r.id === id);
+        const selectedResult = results.find((r) => r.id === id);
 
         handleResultSelection(type, id, nodeId, selectedResult);
         searchResults.style.display = 'none';

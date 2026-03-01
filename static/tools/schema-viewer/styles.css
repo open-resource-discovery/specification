@@ -317,7 +317,6 @@ body {
 
 /* Interactive States & Misc */
 
-
 /* ===================================
    Graph Container
    =================================== */
@@ -755,7 +754,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color var(--transition-fast), transform var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    transform var(--transition-fast);
   border-radius: var(--radius-sm);
 }
 

@@ -40,7 +40,14 @@
       "id": "dispute-case-resolution",
       "name": "Automated Dispute Case Resolution",
       "description": "Processes FI-CA dispute cases of type 'A001 (Incorrect Invoice)' by retrieving case data, recalculating invoice amounts based on contract terms, identifying discrepancies, and automatically creating credit memos when valid discrepancies are found.",
-      "tags": ["finance", "billing", "dispute-resolution", "invoicing", "credit-memo", "contract-analysis"],
+      "tags": [
+        "finance",
+        "billing",
+        "dispute-resolution",
+        "invoicing",
+        "credit-memo",
+        "contract-analysis"
+      ],
       "examples": [
         "Resolve dispute case 24240",
         "Process the incorrect invoice dispute for case ID 12345",
@@ -58,7 +65,12 @@
       "id": "dispute-case-verification",
       "name": "Dispute Case Data Verification",
       "description": "Retrieves and verifies dispute case information including disputed amounts, invoice line items, contract attachments, and dispute notes. Validates data completeness and currency consistency before processing.",
-      "tags": ["verification", "data-validation", "dispute-analysis", "contract-review"],
+      "tags": [
+        "verification",
+        "data-validation",
+        "dispute-analysis",
+        "contract-review"
+      ],
       "examples": [
         "Verify dispute case data for case 24240",
         "Check if dispute case has complete information for processing",
@@ -76,7 +88,12 @@
       "id": "invoice-recalculation",
       "name": "Contract-Based Invoice Recalculation",
       "description": "Recalculates invoice amounts based on contract terms including base fees, adjustment rates, and time-based adjustments. Handles complex calculations with tax inclusion/exclusion and period-based adjustments.",
-      "tags": ["calculation", "contract-analysis", "invoice-verification", "financial-analysis"],
+      "tags": [
+        "calculation",
+        "contract-analysis",
+        "invoice-verification",
+        "financial-analysis"
+      ],
       "examples": [
         "Recalculate invoice amount based on contract terms",
         "Apply contract adjustments for the invoice due date",
@@ -94,7 +111,12 @@
       "id": "credit-memo-processing",
       "name": "Credit Memo Creation and Processing",
       "description": "Creates credit memos for valid dispute amounts, sets billing request status to 'ForChecking', updates dispute case status to 'Being Processed', and handles the complete credit memo lifecycle including release and dispute case closure.",
-      "tags": ["credit-memo", "billing", "financial-processing", "workflow-automation"],
+      "tags": [
+        "credit-memo",
+        "billing",
+        "financial-processing",
+        "workflow-automation"
+      ],
       "examples": [
         "Create credit memo for dispute amount €150.00",
         "Process and release credit memo for resolved dispute",

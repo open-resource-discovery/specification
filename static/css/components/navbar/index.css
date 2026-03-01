@@ -121,7 +121,8 @@ nav.navbar .dropdown > .navbar__link {
   outline: none;
   font-size: 14px;
 }
-.navbar :is(input.navbar__search-input, input[class*="searchInput_"])::placeholder {
+.navbar
+  :is(input.navbar__search-input, input[class*="searchInput_"])::placeholder {
   color: #9ca3af;
   opacity: 0.9;
 }
@@ -133,7 +134,7 @@ nav.navbar .dropdown > .navbar__link {
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  background: url("../../../img/icons/search.svg") center/contain no-repeat;
+  background: url("../../../img/icons/search.svg") center / contain no-repeat;
   opacity: 0.9;
 }
 .navbar :is([class*="searchHintContainer_"]) {
@@ -157,17 +158,28 @@ nav.navbar .dropdown > .navbar__link {
   display: block;
   width: 100%;
   height: 100%;
-  background: url("../../../img/icons/cmd-k.svg") center/contain no-repeat;
+  background: url("../../../img/icons/cmd-k.svg") center / contain no-repeat;
 }
 
 /* search: prevent overflow, keep dropdown visible, reserve space for clear button */
-nav.navbar :is(.navbar__search, [class*="searchbarContainer_"], [class*="searchBarContainer_"]),
-.navbar-sidebar__search :is(.navbar__search, [class*="searchbarContainer_"], [class*="searchBarContainer_"]) {
+nav.navbar
+:is(
+  .navbar__search,
+  [class*="searchbarContainer_"],
+  [class*="searchBarContainer_"]
+),
+.navbar-sidebar__search
+  :is(
+    .navbar__search,
+    [class*="searchbarContainer_"],
+    [class*="searchBarContainer_"]
+  ) {
   position: relative !important;
   min-width: 0 !important;
 }
 
-:is(nav.navbar, .navbar-sidebar__search) :is(.searchBar_RVTs, [class*="searchBar_"]) {
+:is(nav.navbar, .navbar-sidebar__search)
+  :is(.searchBar_RVTs, [class*="searchBar_"]) {
   display: block !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -253,8 +265,8 @@ nav.navbar .dropdown__menu a[aria-current="page"] {
   height: 20px;
   display: inline-block;
   background-color: currentColor;
-  -webkit-mask: url("../../../img/icons/github.svg") center/contain no-repeat;
-  mask: url("../../../img/icons/github.svg") center/contain no-repeat;
+  -webkit-mask: url("../../../img/icons/github.svg") center / contain no-repeat;
+  mask: url("../../../img/icons/github.svg") center / contain no-repeat;
 }
 .header-github-pill:hover {
   color: #fff;
@@ -275,7 +287,12 @@ nav.navbar::before {
   inset: 0;
   pointer-events: none;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(8, 16, 18, 0.52) 0%, rgba(8, 16, 18, 0.32) 58%, rgba(8, 16, 18, 0) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(8, 16, 18, 0.52) 0%,
+    rgba(8, 16, 18, 0.32) 58%,
+    rgba(8, 16, 18, 0) 100%
+  );
   backdrop-filter: blur(var(--navbar-bg-blur)) saturate(140%);
   -webkit-backdrop-filter: blur(var(--navbar-bg-blur)) saturate(140%);
   opacity: 0 !important;
@@ -297,7 +314,8 @@ html:not([data-nav-scrolled="1"]) .navbar {
   border: 0 !important;
   box-shadow: none !important;
 }
-html[data-nav-scrolled="0"]:not(:has(.ord-home-flag)) nav.navbar:not(.navbar-sidebar--show),
+html[data-nav-scrolled="0"]:not(:has(.ord-home-flag))
+  nav.navbar:not(.navbar-sidebar--show),
 html:not([data-nav-scrolled="1"]):not(:has(.ord-home-flag)) .navbar {
   border-bottom: 1px solid var(--nav-border-scrolled) !important;
 }
@@ -315,7 +333,8 @@ html[data-theme="light"] nav.navbar {
   background-color: var(--c-bg) !important;
   border-bottom: 1px solid var(--nav-border-scrolled) !important;
 }
-html[data-theme="light"][data-nav-scrolled="1"] nav.navbar:not(.navbar-sidebar--show) {
+html[data-theme="light"][data-nav-scrolled="1"]
+  nav.navbar:not(.navbar-sidebar--show) {
   background-color: var(--c-bg) !important;
   box-shadow: 0 2px 12px rgba(4, 13, 18, 0.04) !important;
 }
@@ -327,7 +346,8 @@ html[data-theme="dark"] nav.navbar {
   border-bottom: 1px solid var(--nav-border-scrolled) !important;
   opacity: 1 !important;
 }
-html[data-theme="dark"][data-nav-scrolled="1"] nav.navbar:not(.navbar-sidebar--show) {
+html[data-theme="dark"][data-nav-scrolled="1"]
+  nav.navbar:not(.navbar-sidebar--show) {
   background-color: var(--c-bg, #1b1b1f) !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
@@ -352,7 +372,9 @@ nav.navbar .navbar__link--active {
 html[data-theme="light"][data-nav-scrolled="0"] nav.navbar .navbar__title {
   color: var(--lp-c-text-1) !important;
 }
-html[data-theme="light"][data-nav-scrolled="0"] nav.navbar :is(.navbar__link, .header-github-pill) {
+html[data-theme="light"][data-nav-scrolled="0"]
+  nav.navbar
+  :is(.navbar__link, .header-github-pill) {
   color: var(--lp-c-text-2) !important;
 }
 
@@ -416,15 +438,25 @@ nav.navbar [class*="toggleButton_"]:focus-visible {
   nav.navbar [class*="darkToggleIcon_"] {
     transform: translateY(-2px);
   }
-  nav.navbar .navbar__items--right [class*="toggleButton_"]:hover [class*="toggleIcon_"] {
+  nav.navbar
+    .navbar__items--right
+    [class*="toggleButton_"]:hover
+    [class*="toggleIcon_"] {
     color: var(--c-accent);
-    filter: drop-shadow(0 0 6px color-mix(in oklab, var(--c-accent) 60%, transparent));
+    filter: drop-shadow(
+      0 0 6px color-mix(in oklab, var(--c-accent) 60%, transparent)
+    );
     transition:
       color 0.2s ease,
       filter 0.2s ease;
   }
-  nav.navbar .navbar__items--right [class*="toggleButton_"]:active [class*="toggleIcon_"] {
-    filter: drop-shadow(0 0 8px color-mix(in oklab, var(--c-accent) 80%, transparent));
+  nav.navbar
+    .navbar__items--right
+    [class*="toggleButton_"]:active
+    [class*="toggleIcon_"] {
+    filter: drop-shadow(
+      0 0 8px color-mix(in oklab, var(--c-accent) 80%, transparent)
+    );
   }
 }
 /* Light theme variations */
@@ -447,7 +479,9 @@ html[data-theme="light"] nav.navbar .navbar__link--active {
 }
 
 html[data-theme="light"] nav.navbar .header-github-pill:hover::before,
-html[data-theme="light"] nav.navbar .header-github-pill[aria-current="page"]::before {
+html[data-theme="light"]
+  nav.navbar
+  .header-github-pill[aria-current="page"]::before {
   filter: none !important;
 }
 
@@ -455,14 +489,20 @@ html[data-theme="light"] nav.navbar .navbar__toggle {
   color: var(--lp-c-text-2);
 }
 
-html[data-theme="light"] nav.navbar :is(.navbar__search, [class*="searchBarContainer_"]) {
+html[data-theme="light"]
+  nav.navbar
+  :is(.navbar__search, [class*="searchBarContainer_"]) {
   background: #eef3f6 !important;
   border-radius: 8px;
 }
-html[data-theme="light"] nav.navbar :is(input.navbar__search-input, input[class*="searchInput_"]) {
+html[data-theme="light"]
+  nav.navbar
+  :is(input.navbar__search-input, input[class*="searchInput_"]) {
   color: var(--lp-c-text-2) !important;
 }
-html[data-theme="light"] nav.navbar :is(input.navbar__search-input, input[class*="searchInput_"])::placeholder {
+html[data-theme="light"]
+  nav.navbar
+  :is(input.navbar__search-input, input[class*="searchInput_"])::placeholder {
   color: color-mix(in oklab, var(--lp-c-text-2) 60%, #fff);
 }
 
@@ -515,7 +555,9 @@ html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .header-github-pill {
   opacity: 1 !important;
 }
 html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .navbar__link:hover,
-html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .navbar__link--active {
+html[data-theme="light"][data-nav-scrolled="1"]
+  nav.navbar
+  .navbar__link--active {
   color: var(--c-text-strong) !important;
 }
 
@@ -523,7 +565,9 @@ html[data-theme="light"][data-nav-scrolled="1"] nav.navbar .navbar__toggle {
   color: var(--c-text) !important;
 }
 
-html[data-theme="light"][data-nav-scrolled="1"] nav.navbar :is(.navbar__search, [class*="searchBarContainer_"]) {
+html[data-theme="light"][data-nav-scrolled="1"]
+  nav.navbar
+  :is(.navbar__search, [class*="searchBarContainer_"]) {
   background: #eef3f6 !important;
   border-radius: 8px;
 }
@@ -533,7 +577,9 @@ html[data-theme="light"][data-nav-scrolled="1"]
   color: var(--lp-c-text-2) !important;
 }
 
-html[data-theme="light"] nav.navbar :is([class*="colorModeToggle"], [class*="toggle_"]) {
+html[data-theme="light"]
+  nav.navbar
+  :is([class*="colorModeToggle"], [class*="toggle_"]) {
   display: inline-flex;
   align-items: center;
 }
@@ -559,12 +605,16 @@ html[data-theme="light"] nav.navbar [class*="toggleButton"]:focus-visible {
   outline-offset: 2px;
   border-color: transparent;
 }
-html[data-theme="light"][data-nav-scrolled="1"] nav.navbar [class*="toggleButton"] {
+html[data-theme="light"][data-nav-scrolled="1"]
+  nav.navbar
+  [class*="toggleButton"] {
   color: var(--c-text);
   background: transparent !important;
   border-color: transparent;
 }
-html[data-theme="light"][data-nav-scrolled="1"] nav.navbar [class*="toggleButton"]:hover {
+html[data-theme="light"][data-nav-scrolled="1"]
+  nav.navbar
+  [class*="toggleButton"]:hover {
   color: var(--c-text-strong);
 }
 html[data-theme="light"] nav.navbar .header-github-pill::before {
@@ -577,15 +627,23 @@ nav.navbar .header-github-pill [class*="iconExternalLink"] {
 html[data-theme="light"] .navbar [class*="searchHintContainer_"] {
   filter: invert(1) opacity(0.95);
 }
-html[data-theme="light"] :is(nav.navbar, .navbar-sidebar) :is(.navbar__search, [class*="searchBarContainer_"])::before {
-  filter: invert(1) opacity(0.95);
-}
-html[data-theme="light"] :is(nav.navbar, .navbar-sidebar) :is(.navbar__search, [class*="searchBarContainer_"]) svg {
+html[data-theme="light"]
+  :is(nav.navbar, .navbar-sidebar)
+  :is(.navbar__search, [class*="searchBarContainer_"])::before {
   filter: invert(1) opacity(0.95);
 }
 html[data-theme="light"]
   :is(nav.navbar, .navbar-sidebar)
-  :is(.navbar__search, [class*="searchBarContainer_"])[class*="focused_"]::before {
+  :is(.navbar__search, [class*="searchBarContainer_"])
+  svg {
+  filter: invert(1) opacity(0.95);
+}
+html[data-theme="light"]
+  :is(nav.navbar, .navbar-sidebar)
+  :is(
+    .navbar__search,
+    [class*="searchBarContainer_"]
+  )[class*="focused_"]::before {
   filter: invert(1) opacity(1);
 }
 html[data-theme="light"][data-nav-scrolled="1"]

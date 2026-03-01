@@ -610,7 +610,10 @@ html[data-theme="light"] {
   --ifm-link-color: var(--c-accent);
   --ifm-link-hover-color: var(--c-accent);
 }
-html[data-theme="light"] #__docusaurus :where(.markdown, .theme-doc-markdown, .container, article) a:hover {
+html[data-theme="light"]
+  #__docusaurus
+  :where(.markdown, .theme-doc-markdown, .container, article)
+  a:hover {
   text-decoration-color: var(--c-accent);
 }
 html[data-theme="light"] .lp-home .actions .action a {

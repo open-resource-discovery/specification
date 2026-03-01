@@ -1,5 +1,5 @@
-import SearchBar from "@theme/SearchBar";
-import OriginalPrimaryMenu from "@theme-original/Navbar/MobileSidebar/PrimaryMenu";
+import SearchBar from '@theme/SearchBar';
+import OriginalPrimaryMenu from '@theme-original/Navbar/MobileSidebar/PrimaryMenu';
 
 interface PrimaryMenuWrapperProps {
   [key: string]: unknown;
@@ -8,9 +8,9 @@ interface PrimaryMenuWrapperProps {
 export default function PrimaryMenuWrapper(props: PrimaryMenuWrapperProps) {
   return (
     <>
-      <div className="navbar-sidebar__search" role="search" aria-label="Site search">
+      <search className="navbar-sidebar__search" aria-label="Site search">
         <SearchBar />
-      </div>
+      </search>
       <OriginalPrimaryMenu {...props} />
     </>
   );

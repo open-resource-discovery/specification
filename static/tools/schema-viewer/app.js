@@ -97,7 +97,9 @@ async function loadSchema(schemaName) {
           changed = true;
         }
 
-        const existingLink = state.displayedLinks.find((l) => l.id === linkParam);
+        const existingLink = state.displayedLinks.find(
+          (l) => l.id === linkParam,
+        );
         if (!existingLink) {
           const sourceNode = state.nodes.get(sourceId);
           if (sourceNode) {
@@ -309,8 +311,12 @@ function setupEventListeners() {
     updateURL({});
   };
 
-  document.getElementById('graph-remove-btn').addEventListener('click', handleRemoveSelection);
-  document.getElementById('sidebar-remove-btn').addEventListener('click', handleRemoveSelection);
+  document
+    .getElementById('graph-remove-btn')
+    .addEventListener('click', handleRemoveSelection);
+  document
+    .getElementById('sidebar-remove-btn')
+    .addEventListener('click', handleRemoveSelection);
 
   // Click on empty space to deselect
   state.svg.on('click', (event) => {
@@ -364,7 +370,8 @@ window.copyNodeSchema = (nodeId) => {
 };
 
 window.copyNearestCode = (button) => {
-  const container = button.closest('.section') || button.closest('.json-schema-section');
+  const container =
+    button.closest('.section') || button.closest('.json-schema-section');
   const code = container.querySelector('code').textContent;
   copyToClipboard(code, button);
 };

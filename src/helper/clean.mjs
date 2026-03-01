@@ -4,29 +4,25 @@ import path from 'node:path';
 // Config: what gets cleaned
 const config = {
   // Directories to remove entirely
-  removeDirs: [
-    'dist',
-    'build',
-    'src/generated',
-  ],
+  removeDirs: ['dist', 'build', 'src/generated'],
   // Generated files to remove (absolute or workspace-relative)
   removeGeneratedFiles: [
     // Static generated schema artifacts
     'static/spec-v1/interfaces/Configuration.schema.json',
     'static/spec-v1/interfaces/Document.schema.json',
     'docs/spec-v1/interfaces/Configuration.md',
-    'docs/spec-v1/interfaces/Document.md'
+    'docs/spec-v1/interfaces/Document.md',
   ],
   // Folders where we remove all contents except certain keepers
   cleanFoldersExcept: [
     {
       dir: 'docs/spec-v1/examples',
-      keep: new Set(['index.mdx'])
+      keep: new Set(['index.mdx']),
     },
     {
       dir: 'docs/spec-v1/diagrams',
-      keep: new Set(['index.mdx'])
-    }
+      keep: new Set(['index.mdx']),
+    },
   ],
 };
 
@@ -40,7 +36,7 @@ async function removeDir(dirPath) {
   try {
     await fs.promises.rm(resolve(dirPath), { recursive: true, force: true });
     console.log(`removed directory: ${dirPath}`);
-  } catch (err) {
+  } catch (_err) {
     // silently skip if not found
   }
 }
@@ -50,7 +46,7 @@ async function removeFile(filePath) {
   try {
     await fs.promises.rm(abs, { force: true });
     console.log(`removed file: ${filePath}`);
-  } catch (err) {
+  } catch (_err) {
     // silently skip if not found (glob patterns handled separately)
   }
 }
@@ -64,9 +60,13 @@ async function removeFilesWithPattern(pattern) {
     return false;
   });
   await Promise.all(
-    toDelete.map((name) => fs.promises.rm(path.join(workspaceRoot, name), { force: true }))
+    toDelete.map((name) =>
+      fs.promises.rm(path.join(workspaceRoot, name), { force: true }),
+    ),
   );
-  toDelete.forEach((name) => console.log(`removed file: ${name}`));
+  toDelete.forEach((name) => {
+    console.log(`removed file: ${name}`);
+  });
 }
 
 async function cleanFolderExcept(dir, keep) {
@@ -83,9 +83,9 @@ async function cleanFolderExcept(dir, keep) {
           await fs.promises.rm(target, { force: true });
         }
         console.log(`removed entry: ${path.relative(workspaceRoot, target)}`);
-      })
+      }),
     );
-  } catch (err) {
+  } catch (_err) {
     // silently skip if folder does not exist
   }
 }

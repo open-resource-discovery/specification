@@ -26,10 +26,15 @@
       "vendor": "sap:vendor:SAP:",
       "tags": ["reference application"],
       "labels": {
-        "customLabel": ["labels are more flexible than tags as you can define your own keys"]
+        "customLabel": [
+          "labels are more flexible than tags as you can define your own keys"
+        ]
       },
       "documentationLabels": {
-        "Some Aspect": ["Markdown Documentation [with links](#)", "With multiple values"]
+        "Some Aspect": [
+          "Markdown Documentation [with links](#)",
+          "With multiple values"
+        ]
       }
     }
   ],

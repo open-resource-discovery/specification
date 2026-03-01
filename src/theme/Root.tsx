@@ -1,26 +1,37 @@
-import React, { useEffect, useRef } from "react";
-import OriginalRoot from "@theme-original/Root";
-import { useLocation } from "@docusaurus/router";
+import { useLocation } from '@docusaurus/router';
+import OriginalRoot from '@theme-original/Root';
+import type React from 'react';
+import { useEffect, useRef } from 'react';
 
 /** Idempotent: only sets data-label, no structural mutations */
 function enhanceTables(root: Document | HTMLElement = document) {
-  const tables = root.querySelectorAll<HTMLTableElement>(".theme-doc-markdown table, .markdown table");
+  const tables = root.querySelectorAll<HTMLTableElement>(
+    '.theme-doc-markdown table, .markdown table',
+  );
   tables.forEach((t) => {
-    const heads = Array.from(t.querySelectorAll("thead th")).map((th) => (th.textContent || "").trim());
+    const heads = Array.from(t.querySelectorAll('thead th')).map((th) =>
+      (th.textContent || '').trim(),
+    );
     if (!heads.length) return;
-    t.querySelectorAll<HTMLTableRowElement>("tbody tr").forEach((tr) => {
+    t.querySelectorAll<HTMLTableRowElement>('tbody tr').forEach((tr) => {
       Array.from(tr.children).forEach((td, i) => {
-        const label = heads[i] || "";
-        if (td.getAttribute("data-label") !== label) td.setAttribute("data-label", label);
+        const label = heads[i] || '';
+        if (td.getAttribute('data-label') !== label)
+          td.setAttribute('data-label', label);
       });
     });
   });
 }
 
 /** Run last */
-function runWhenContentStable(run: () => void, opts?: { quietMs?: number; maxMs?: number }) {
-  if (typeof document === "undefined") return;
-  const root = document.querySelector<HTMLElement>(".theme-doc-markdown, .markdown") || document.body;
+function runWhenContentStable(
+  run: () => void,
+  opts?: { quietMs?: number; maxMs?: number },
+) {
+  if (typeof document === 'undefined') return;
+  const root =
+    document.querySelector<HTMLElement>('.theme-doc-markdown, .markdown') ||
+    document.body;
   const quietMs = opts?.quietMs ?? 120;
   const maxMs = opts?.maxMs ?? 2000;
 
@@ -30,11 +41,14 @@ function runWhenContentStable(run: () => void, opts?: { quietMs?: number; maxMs?
   const finish = () => {
     if (settledTimer) window.clearTimeout(settledTimer);
     if (hardStopTimer) window.clearTimeout(hardStopTimer);
-    try { mo.disconnect(); } catch {}
+    try {
+      mo.disconnect();
+    } catch {}
     run();
   };
 
-  const afterPaint = (cb: () => void) => requestAnimationFrame(() => requestAnimationFrame(cb));
+  const afterPaint = (cb: () => void) =>
+    requestAnimationFrame(() => requestAnimationFrame(cb));
   let mo: MutationObserver;
 
   afterPaint(() => {
@@ -58,7 +72,7 @@ function runWhenContentStable(run: () => void, opts?: { quietMs?: number; maxMs?
 }
 
 function forceAlignToHashTarget() {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
   const raw = window.location.hash?.slice(1);
   if (!raw) return;
   const id = decodeURIComponent(raw);
@@ -66,16 +80,16 @@ function forceAlignToHashTarget() {
   if (!el) return;
 
   const prev = document.documentElement.style.scrollBehavior;
-  document.documentElement.style.scrollBehavior = "auto";
+  document.documentElement.style.scrollBehavior = 'auto';
 
-  const nav = document.querySelector<HTMLElement>(".navbar");
+  const nav = document.querySelector<HTMLElement>('.navbar');
   const offset = (nav?.getBoundingClientRect().height ?? 0) + 8;
 
   const rect = el.getBoundingClientRect();
   const y = window.scrollY + rect.top - offset;
 
   window.scrollTo({ top: y, left: 0 });
-  el.classList?.add("is-target");
+  el.classList?.add('is-target');
 
   document.documentElement.style.scrollBehavior = prev;
 }
@@ -88,7 +102,7 @@ function widthStepIndex(w: number, start = 1400, step = 200) {
 }
 
 export default function Root({ children }: { children: React.ReactNode }) {
-  const loc = useLocation();
+  const _loc = useLocation();
   const navSeq = useRef(0);
   const lastStep = useRef<number | null>(null);
   const rafTid = useRef<number | null>(null);
@@ -112,7 +126,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
       enhanceTables(document);
       forceAlignToHashTarget();
     });
-  }, [loc.pathname, loc.hash, loc.search]);
+  }, []);
 
   // Re-align every 200px step, Also when getting bigger.
   useEffect(() => {
@@ -127,15 +141,17 @@ export default function Root({ children }: { children: React.ReactNode }) {
         }
         if (idx !== lastStep.current) {
           lastStep.current = idx;
-          requestAnimationFrame(() => requestAnimationFrame(forceAlignToHashTarget));
+          requestAnimationFrame(() =>
+            requestAnimationFrame(forceAlignToHashTarget),
+          );
         }
       });
     };
     // Init
     lastStep.current = widthStepIndex(window.innerWidth, 1400, 200);
-    window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
     return () => {
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener('resize', onResize);
       if (rafTid.current) cancelAnimationFrame(rafTid.current);
     };
   }, []);

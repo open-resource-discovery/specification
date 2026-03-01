@@ -134,7 +134,10 @@
       ],
       "type": "derived",
       "category": "business-object",
-      "entityTypes": ["sap.odm:entityType:CustomerOrder:v1", "sap.odm:entityType:RetailTransaction:v1"],
+      "entityTypes": [
+        "sap.odm:entityType:CustomerOrder:v1",
+        "sap.odm:entityType:RetailTransaction:v1"
+      ],
       "inputPorts": [
         {
           "ordId": "sap.xref:integrationDependency:CustomerOrder:v1"
@@ -531,10 +534,12 @@
           "ordId": "sap.odm:entityType:CustomerOrder:v1"
         }
       ],
-      "compatibleWith": [{
+      "compatibleWith": [
+        {
           "ordId": "sap.xref:apiResource:AbstractCustomerOrderDeltaSharing:v1",
           "maxVersion": "1.2"
-      }],
+        }
+      ],
       "apiResourceLinks": [
         {
           "type": "api-documentation",
@@ -562,7 +567,8 @@
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]
       }
-    },{
+    },
+    {
       "ordId": "sap.xref:apiResource:AbstractCustomerOrderDeltaSharing:v1",
       "localId": "AbstractCustomerOrderDeltaSharing",
       "title": "Customer Order Data Contract",

@@ -177,7 +177,8 @@
   .navbar__toggle {
     width: 24px;
     height: 24px;
-    background: url("../../../img/icons/Menu.svg") center/24px no-repeat !important;
+    background:
+      url("../../../img/icons/Menu.svg") center / 24px no-repeat !important;
     border: none;
     display: inline-flex !important;
     align-items: center;
@@ -365,7 +366,8 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: url("../../../img/icons/close.svg") center/44px no-repeat !important;
+    background:
+      url("../../../img/icons/close.svg") center / 44px no-repeat !important;
     border: none !important;
     border-radius: 8px !important;
     cursor: pointer;
@@ -469,11 +471,11 @@
 
   /* prevent overflow + keep clear button non-overlapping */
   .navbar-sidebar__search
-    :is(
-      .navbar__search,
-      [class*="searchbarContainer_"],
-      [class*="searchBarContainer_"]
-    ) {
+  :is(
+    .navbar__search,
+    [class*="searchbarContainer_"],
+    [class*="searchBarContainer_"]
+  ) {
     position: relative !important;
     min-width: 0 !important;
   }
@@ -698,8 +700,9 @@
     height: 20px;
     background: none;
     background-color: currentColor;
-    -webkit-mask: url("../../../img/icons/github.svg") center/contain no-repeat;
-    mask: url("../../../img/icons/github.svg") center/contain no-repeat;
+    -webkit-mask:
+      url("../../../img/icons/github.svg") center / contain no-repeat;
+    mask: url("../../../img/icons/github.svg") center / contain no-repeat;
   }
   .navbar-sidebar__items .menu__link--active,
   html[data-theme="light"] .theme-doc-sidebar-menu .menu__link--active {
