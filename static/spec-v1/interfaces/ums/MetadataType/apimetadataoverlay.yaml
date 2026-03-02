@@ -1,0 +1,28 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'apimetadataoverlay'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'APIMetadataOverlay'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: 'Describes a metadata overlay for API resources.'
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: '$schema'
+      type: 'string'
+      description: "Optional [URL](https://tools.ietf.org/html/rfc3986) to the API Metadata Overlay schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools."
+    - name: 'apiMetadataOverlay'
+      type: 'string'
+      description: 'Version of the API Metadata Overlay specification.'
+      mandatory: true
+  customTypeDefinitions: []
+  metadataRelations: []

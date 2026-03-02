@@ -26,6 +26,16 @@
         "description": "Describes the technical interface / schema for ORD Document."
       },
       "examplesFolderPath": "./examples/documents/"
+    },
+    {
+      "type": "spec",
+      "id": "ApiMetadataOverlay",
+      "sourceFilePath": "./spec-extension/models/ApiMetadataOverlay.schema.yaml",
+      "mdFrontmatter": {
+        "title": "API Metadata Overlay",
+        "sidebar_position": "2",
+        "description": "Describes the technical interface / schema for API Metadata Overlay."
+      }
     }
   ],
   "plugins": [
