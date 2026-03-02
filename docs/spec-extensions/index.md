@@ -12,9 +12,9 @@ Those specification extensions that have been centrally aligned can be hosted on
 
 Most notably, you'll find:
 
-- [Registered **Access Strategies**](./access-strategies/) that standardize how ORD information can be accessed by the ORD Aggregators.
-- [Registered **Policy Levels**](./policy-levels/) that standardize (ideally verifiable) rules how ORD should be implemented by ORD Providers.
-- [Registered **Global Group Types**](./group-types/) for globally aligned and pre-defined group types (and potentially also predefined group instances).
-- [**Model Extensions**](./models/) that provide additional model schemas for specific use cases.
+- [Registered **Access Strategies**](/spec-extensions/access-strategies/) that standardize how ORD information can be accessed by the ORD Aggregators.
+- [Registered **Policy Levels**](/spec-extensions/policy-levels/) that standardize (ideally verifiable) rules how ORD should be implemented by ORD Providers.
+- [Registered **Global Group Types**](/spec-extensions/group-types/) for globally aligned and pre-defined group types (and potentially also predefined group instances).
+- [**Model Extensions**](/spec-extensions/models/) that provide additional model schemas for specific use cases.
 
 Specification Extensions have registered [Specification IDs](../spec-v1/index.md#specification-id).
