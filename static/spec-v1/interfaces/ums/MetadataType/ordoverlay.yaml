@@ -1,0 +1,29 @@
+```yaml
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'ordoverlay'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OrdOverlay'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: 'Describes a metadata overlay for ORD resources. Allows to enrich or annotate ORD resources with additional metadata like group assignments or labels, without modifying the original ORD documents. Incompatible ORD-level changes are not allowed.'
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: '$schema'
+      type: 'string'
+      description: "Optional [URL](https://tools.ietf.org/html/rfc3986) to the ORD Overlay schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools."
+    - name: 'ordOverlay'
+      type: 'string'
+      description: 'Version of the ORD Overlay specification.'
+      mandatory: true
+  customTypeDefinitions: []
+  metadataRelations: []
