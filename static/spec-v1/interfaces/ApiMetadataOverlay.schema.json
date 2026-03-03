@@ -1,0 +1,38 @@
+{
+  "description": "Describes a metadata overlay for API resources.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://open-resource-discovery.org/spec-extension/models/ApiMetadataOverlay.schema.json#",
+  "title": "API Metadata Overlay",
+  "x-ums-type": "root",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference",
+      "description": "Optional [URL](https://tools.ietf.org/html/rfc3986) to the API Metadata Overlay schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools.",
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        {
+          "const": "https://open-resource-discovery.org/spec-extension/models/ApiMetadataOverlay.schema.json#"
+        }
+      ]
+    },
+    "apiMetadataOverlay": {
+      "type": "string",
+      "description": "Version of the API Metadata Overlay specification.",
+      "enum": [
+        "1.0"
+      ],
+      "examples": [
+        "1.0"
+      ]
+    }
+  },
+  "required": [
+    "apiMetadataOverlay"
+  ],
+  "definitions": {}
+}

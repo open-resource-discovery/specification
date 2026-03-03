@@ -39,7 +39,6 @@
     "@docusaurus/plugin-client-redirects": "3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
     "@docusaurus/theme-mermaid": "3.9.2",
-    "@easyops-cn/docusaurus-search-local": "0.52.3",
     "@mdx-js/react": "3.1.1",
     "@open-resource-discovery/spec-toolkit": "0.7.0",
     "@types/fs-extra": "11.0.4",
