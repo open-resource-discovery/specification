@@ -190,7 +190,7 @@ const config = {
                 to: "spec-extensions/group-types/",
               },
               {
-                label: "Models",
+                label: "Model Extensions",
                 to: "spec-extensions/models/",
               },
             ],
