@@ -1,3 +1,4 @@
 export * from "./Configuration";
 export * from "./Document";
-export * from "./ApiMetadataOverlay";
+export * from "./ResourceDefinitionOverlay";
+export * from "./OrdOverlay";

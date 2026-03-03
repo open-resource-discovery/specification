@@ -1,0 +1,32 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#
+title: Resource Definition Overlay
+x-status: alpha
+description: |-
+  ⚠️ ALPHA: This specification is in alpha and subject to change.
+
+  Describes a metadata overlay for resource definitions.
+x-ums-type: root
+type: object
+properties:
+  $schema:
+    type: string
+    format: uri-reference
+    description: |-
+      Optional [URL](https://tools.ietf.org/html/rfc3986) to the Resource Definition Overlay schema (defined as a JSON Schema).
+      If provided, this enables code intelligence and validation in supported editors (like VSCode) and tools.
+    anyOf:
+      - type: string
+        format: uri-reference
+      - const: "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#"
+
+  resourceDefinitionOverlay:
+    type: string
+    description: Version of the Resource Definition Overlay specification.
+    enum:
+      - "0.1"
+    examples:
+      - "0.1"
+
+required:
+  - resourceDefinitionOverlay

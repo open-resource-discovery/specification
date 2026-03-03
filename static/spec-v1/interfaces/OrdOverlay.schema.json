@@ -1,0 +1,38 @@
+{
+  "description": "⚠️ ALPHA: This specification is in alpha and subject to change.\n\nDescribes a metadata overlay for ORD resources.\nAllows to enrich or annotate ORD resources with additional metadata like group assignments or labels,\nwithout modifying the original ORD documents.\nIncompatible ORD-level changes are not allowed.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "title": "ORD Overlay",
+  "x-ums-type": "root",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference",
+      "description": "Optional [URL](https://tools.ietf.org/html/rfc3986) to the ORD Overlay schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools.",
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        {
+          "const": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#"
+        }
+      ]
+    },
+    "ordOverlay": {
+      "type": "string",
+      "description": "Version of the ORD Overlay specification.",
+      "enum": [
+        "0.1"
+      ],
+      "examples": [
+        "0.1"
+      ]
+    }
+  },
+  "required": [
+    "ordOverlay"
+  ],
+  "definitions": {}
+}

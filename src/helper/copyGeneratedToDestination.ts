@@ -14,7 +14,8 @@ export async function copyGeneratedToDestination(): Promise<void> {
 
     // Copy Model Extensions
     await fs.ensureDir("docs/spec-extensions/models/");
-    await fs.copy("./src/generated/spec/v1/docs/ApiMetadataOverlay.md", "docs/spec-extensions/models/ApiMetadataOverlay.md");
+    await fs.copy("./src/generated/spec/v1/docs/ResourceDefinitionOverlay.md", "docs/spec-extensions/models/ResourceDefinitionOverlay.md");
+    await fs.copy("./src/generated/spec/v1/docs/OrdOverlay.md", "docs/spec-extensions/models/OrdOverlay.md");
 
     // Create docs/spec-v1/examples/ directory and copy examples specifically
     await fs.ensureDir("docs/spec-v1/examples/");
