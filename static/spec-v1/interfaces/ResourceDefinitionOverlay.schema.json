@@ -1,5 +1,5 @@
 {
-  "description": "⚠️ ALPHA: This specification is in alpha and subject to change.\n\nDescribes a metadata overlay for resource definitions.",
+  "description": "⚠️ ALPHA: This specification is in alpha and subject to change.\n\nDescribes an overlay document for patching resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL, MCP)\nor ORD resources, without modifying the original files.\n\nPatches use concept-level selectors that are independent of the internal structure of the target format,\nmaking overlays resilient to format changes (e.g. OpenAPI 3.0 → 3.1, OData CSDL JSON → XML).\nA JSON Path selector is available as a generic fallback for JSON/YAML-based targets.\n\nConceptual selector levels (from high to low):\n  - Resource level: ORD ID (resolved via the ORD registry)\n  - Operation level: operationId (REST operation, MCP tool, AsyncAPI operation, …)\n  - Entity type level: entityTypeId (OData EntitySet, CSN entity, JSON Schema object, …)\n  - Property level: propertyId (OData Property, CSN element, JSON Schema property, …)\n  - Generic fallback: jsonPath (any JSON/YAML document, structure-bound)",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#",
   "title": "Resource Definition Overlay",
@@ -29,10 +29,181 @@
       "examples": [
         "0.1"
       ]
+    },
+    "info": {
+      "$ref": "#/definitions/OverlayInfo"
+    },
+    "target": {
+      "description": "Reference to the single resource being patched by this overlay.\nMUST provide at least one identifier: an ORD ID, a URL, or one or more correlationIds.\nMultiple identifiers are treated as all pointing to the same resource,\nproviding redundant ways to resolve it.",
+      "$ref": "#/definitions/OverlayTarget"
+    },
+    "patches": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered sequence of patches to apply to the targeted resource(s).\nPatches are applied in the order listed.",
+      "items": {
+        "$ref": "#/definitions/Patch"
+      }
     }
   },
   "required": [
-    "resourceDefinitionOverlay"
+    "resourceDefinitionOverlay",
+    "patches"
   ],
-  "definitions": {}
+  "definitions": {
+    "OverlayInfo": {
+      "type": "object",
+      "title": "Overlay Info",
+      "x-ums-type": "embedded",
+      "description": "Human-readable metadata about this overlay document.",
+      "required": [
+        "title",
+        "version"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Short human-readable title describing the purpose of this overlay.",
+          "examples": [
+            "Add deprecation notices to legacy operations"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of this overlay document (not the spec version).",
+          "examples": [
+            "1.0.0"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "Longer description of what this overlay does and why."
+        }
+      }
+    },
+    "OverlayTarget": {
+      "type": "object",
+      "title": "Overlay Target",
+      "x-ums-type": "embedded",
+      "description": "Reference to the resource being patched.\nAt least one of ordId, url, or correlationIds MUST be provided.\nMultiple identifiers are treated as all pointing to the same resource,\nproviding redundant ways to resolve it.",
+      "minProperties": 1,
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "description": "ORD ID of the resource being patched (e.g. an API Resource, Event Resource, Data Product).\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "maxLength": 255,
+          "examples": [
+            "sap.s4:apiResource:OP_API_BUSINESS_PARTNER_SRV:v1"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri-reference",
+          "description": "URL or URI pointing directly to the resource definition file to be patched\n(e.g. an OpenAPI document URL, an OData metadata endpoint).",
+          "examples": [
+            "https://example.com/api/openapi.json",
+            "./openapi.yaml"
+          ]
+        },
+        "correlationIds": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Correlation IDs referencing the target resource in external registries or systems of record.\nReuses the ORD correlation ID format: `namespace:type:localId`.\nAll listed IDs are treated as pointing to the same resource.",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
+            "maxLength": 255
+          },
+          "examples": [
+            [
+              "sap.s4:communicationScenario:SAP_COM_0008"
+            ]
+          ]
+        }
+      }
+    },
+    "Patch": {
+      "type": "object",
+      "title": "Patch",
+      "x-ums-type": "embedded",
+      "description": "A single patch action to apply to the element identified by the selector.",
+      "required": [
+        "action",
+        "selector"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "The patch operation to perform on the selected element:\n\n- `update`: Replace the selected element entirely with `data`.\n- `merge`: Deep-merge `data` into the selected element (properties are added or overwritten, others preserved).\n- `remove`: Remove the selected element from the document entirely. No `data` required.",
+          "enum": [
+            "update",
+            "merge",
+            "remove"
+          ]
+        },
+        "selector": {
+          "$ref": "#/definitions/Selector"
+        },
+        "data": {
+          "$ref": "#/definitions/PatchValue"
+        }
+      }
+    },
+    "Selector": {
+      "type": "object",
+      "title": "Selector",
+      "x-ums-type": "embedded",
+      "required": [
+        "type"
+      ],
+      "description": "Identifies the element within the resource definition to patch.\nExactly one selector type is used per patch. Types represent different conceptual levels:\n\n- `ordId`: resource level — targets an ORD resource (API, Event, Data Product, …)\n- `operationId`: operation level — targets an operation by its concept-level ID\n- `entityTypeId`: entity type level — targets an entity/type by its concept-level ID\n- `propertyId`: property level — targets a property/element within an entity type\n- `jsonPath`: generic fallback — targets any location in a JSON/YAML document by path\n\nPrefer concept-level selectors (operationId, entityTypeId, propertyId) over jsonPath\nwhere possible, as they are resilient to structural changes in the target format.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The selector type. Determines how the `value` is interpreted:\n\n- `jsonPath`: A JSONPath expression targeting any location in a JSON/YAML document (structure-bound, generic fallback).\n- `operationId`: An operation identifier (OpenAPI operationId, MCP tool name, AsyncAPI operationId, …).\n- `entityTypeId`: An entity type identifier (OData EntitySet/EntityType, CSN entity, JSON Schema definition, …).\n- `propertyId`: A property/element identifier within an entity type (requires `entityTypeId` to be set).\n- `ordId`: An ORD ID targeting an ORD resource (API, Event, Data Product, …).",
+          "enum": [
+            "jsonPath",
+            "operationId",
+            "entityTypeId",
+            "propertyId",
+            "ordId"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "The selector value. Interpretation depends on the `type`:\n\n- For `jsonPath`: A JSONPath expression (MUST start with `$`).\n- For `operationId`: The concept-level operation identifier (e.g. OpenAPI `operationId`, MCP tool `name`).\n- For `entityTypeId`: The concept-level entity type name (e.g. OData EntitySet name, CSN entity name).\n- For `propertyId`: The concept-level property/element name (e.g. OData Property name, CSN element name).\n- For `ordId`: A valid ORD ID of the resource to patch.",
+          "examples": [
+            "$.paths./business-partners.get",
+            "getBusinessPartner",
+            "BusinessPartner",
+            "BusinessPartnerFullName",
+            "sap.s4:apiResource:OP_API_BUSINESS_PARTNER_SRV:v1"
+          ]
+        },
+        "entityTypeId": {
+          "type": "string",
+          "description": "Required when `type` is `propertyId`. Specifies the entity type that contains the target property.\nThis scopes the property lookup to avoid ambiguity (the same property name may exist in multiple types).",
+          "examples": [
+            "BusinessPartner"
+          ]
+        },
+        "resourceType": {
+          "type": "string",
+          "description": "Optional hint when `type` is `ordId`. Specifies the ORD resource type to speed up resolution.\nIf omitted, implementations SHOULD scan all resource types.",
+          "examples": [
+            "apiResource",
+            "eventResource",
+            "dataProduct"
+          ]
+        }
+      }
+    },
+    "PatchValue": {
+      "type": "object",
+      "title": "Patch Value",
+      "x-ums-type": "embedded",
+      "description": "The value to be merged into or used to replace the selected element.\nWhen used together with `merge: true` on the patch, performs a deep merge.\nWhen used without `merge` (or `merge: false`), replaces the selected element entirely.\nMutually exclusive with `remove`.\n\nThis is a free-form object whose structure depends on the target being patched."
+    }
+  }
 }

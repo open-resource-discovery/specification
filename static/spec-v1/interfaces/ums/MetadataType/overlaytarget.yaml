@@ -1,0 +1,34 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlaytarget'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlayTarget'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Reference to the resource being patched.\nAt least one of ordId, url, or correlationIds MUST be provided.\nMultiple identifiers are treated as all pointing to the same resource,\nproviding redundant ways to resolve it."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId'
+      type: 'string'
+      description: "ORD ID of the resource being patched (e.g. an API Resource, Event Resource, Data Product).\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id)."
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'url'
+      type: 'string'
+      description: "URL or URI pointing directly to the resource definition file to be patched\n(e.g. an OpenAPI document URL, an OData metadata endpoint)."
+    - name: 'correlationIds'
+      type: 'string'
+      array: true
+      description: "Correlation IDs referencing the target resource in external registries or systems of record.\nReuses the ORD correlation ID format: `namespace:type:localId`.\nAll listed IDs are treated as pointing to the same resource."
+  customTypeDefinitions: []
+  metadataRelations: []

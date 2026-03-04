@@ -1,0 +1,51 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#",
+  "resourceDefinitionOverlay": "0.1",
+  "info": {
+    "title": "Astronomy API – Deprecation and Documentation Overlay",
+    "version": "1.0.0",
+    "description": "Adds deprecation notices and supplementary documentation to the Astronomy REST API without modifying the original OpenAPI specification."
+  },
+  "target": {
+    "ordId": "sap.foo:apiResource:astronomy:v1",
+    "url": "/ord/metadata/astronomy-v1.oas3.json"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": {
+        "type": "operationId",
+        "value": "getConstellationByAbbreviation"
+      },
+      "data": {
+        "deprecated": true,
+        "x-deprecation-notice": "Use getConstellationByIAUCode instead. This operation will be removed in v2."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "type": "propertyId",
+        "value": "magnitude",
+        "entityTypeId": "Star"
+      },
+      "data": {
+        "description": "Apparent magnitude of the star as observed from Earth. Lower values indicate greater brightness (e.g. the Sun is -26.7).",
+        "x-sap-visibility": "public"
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "type": "entityTypeId",
+        "value": "Constellation"
+      },
+      "data": {
+        "externalDocs": {
+          "description": "IAU constellation reference catalogue",
+          "url": "https://www.iau.org/public/themes/constellations/"
+        }
+      }
+    }
+  ]
+}

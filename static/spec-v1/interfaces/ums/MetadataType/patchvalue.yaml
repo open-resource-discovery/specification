@@ -1,0 +1,21 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'patchvalue'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'PatchValue'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "The value to be merged into or used to replace the selected element.\nWhen used together with `merge: true` on the patch, performs a deep merge.\nWhen used without `merge` (or `merge: false`), replaces the selected element entirely.\nMutually exclusive with `remove`.\n\nThis is a free-form object whose structure depends on the target being patched."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+  customTypeDefinitions: []
+  metadataRelations: []

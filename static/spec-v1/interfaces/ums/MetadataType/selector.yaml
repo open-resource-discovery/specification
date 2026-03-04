@@ -1,0 +1,34 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'selector'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'Selector'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Identifies the element within the resource definition to patch.\nExactly one selector type is used per patch. Types represent different conceptual levels:\n\n- `ordId`: resource level — targets an ORD resource (API, Event, Data Product, …)\n- `operationId`: operation level — targets an operation by its concept-level ID\n- `entityTypeId`: entity type level — targets an entity/type by its concept-level ID\n- `propertyId`: property level — targets a property/element within an entity type\n- `jsonPath`: generic fallback — targets any location in a JSON/YAML document by path\n\nPrefer concept-level selectors (operationId, entityTypeId, propertyId) over jsonPath\nwhere possible, as they are resilient to structural changes in the target format."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'type'
+      type: 'string'
+      description: "The selector type. Determines how the `value` is interpreted:\n\n- `jsonPath`: A JSONPath expression targeting any location in a JSON/YAML document (structure-bound, generic fallback).\n- `operationId`: An operation identifier (OpenAPI operationId, MCP tool name, AsyncAPI operationId, …).\n- `entityTypeId`: An entity type identifier (OData EntitySet/EntityType, CSN entity, JSON Schema definition, …).\n- `propertyId`: A property/element identifier within an entity type (requires `entityTypeId` to be set).\n- `ordId`: An ORD ID targeting an ORD resource (API, Event, Data Product, …)."
+      mandatory: true
+    - name: 'value'
+      type: 'string'
+      description: "The selector value. Interpretation depends on the `type`:\n\n- For `jsonPath`: A JSONPath expression (MUST start with `$`).\n- For `operationId`: The concept-level operation identifier (e.g. OpenAPI `operationId`, MCP tool `name`).\n- For `entityTypeId`: The concept-level entity type name (e.g. OData EntitySet name, CSN entity name).\n- For `propertyId`: The concept-level property/element name (e.g. OData Property name, CSN element name).\n- For `ordId`: A valid ORD ID of the resource to patch."
+    - name: 'entityTypeId'
+      type: 'string'
+      description: "Required when `type` is `propertyId`. Specifies the entity type that contains the target property.\nThis scopes the property lookup to avoid ambiguity (the same property name may exist in multiple types)."
+    - name: 'resourceType'
+      type: 'string'
+      description: "Optional hint when `type` is `ordId`. Specifies the ORD resource type to speed up resolution.\nIf omitted, implementations SHOULD scan all resource types."
+  customTypeDefinitions: []
+  metadataRelations: []

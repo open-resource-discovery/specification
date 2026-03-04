@@ -1,0 +1,55 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#",
+  "resourceDefinitionOverlay": "0.1",
+  "info": {
+    "title": "FI-CA Dispute Resolution Agent – Documentation Overlay",
+    "version": "1.0.0",
+    "description": "Enriches the Dispute Resolution Agent Card with extended descriptions, usage guidance, and classification metadata without modifying the original Agent Card file."
+  },
+  "target": {
+    "ordId": "sap.foo:apiResource:FICADisputeResolutionAgent:v1",
+    "url": "./DisputeResolutionAgentcard.json"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": {
+        "type": "operationId",
+        "value": "dispute-case-resolution"
+      },
+      "data": {
+        "description": "Processes FI-CA dispute cases of type 'A001 (Incorrect Invoice)' by retrieving case data, recalculating invoice amounts based on contract terms, identifying discrepancies, and automatically creating credit memos when valid discrepancies are found.\n\n**Prerequisites**: The dispute case must exist in FI-CA and have status 'Open'. Contract attachments must be available.\n\n**Side effects**: Creates credit memos in billing, updates dispute case status to 'Being Processed'.",
+        "examples": [
+          "Resolve dispute case 24240",
+          "Process the incorrect invoice dispute for case ID 12345",
+          "Analyze and resolve dispute case with contract recalculation",
+          "Automatically resolve all open A001 disputes from last week"
+        ]
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "type": "operationId",
+        "value": "invoice-recalculation"
+      },
+      "data": {
+        "description": "Recalculates invoice amounts based on contract terms including base fees, adjustment rates, and time-based adjustments. Handles complex calculations with tax inclusion/exclusion and period-based adjustments.\n\n**Note**: Calculation logic follows SAP FI-CA standard billing rules. Results are deterministic for a given contract and invoice date.",
+        "tags": [
+          "calculation",
+          "contract-analysis",
+          "invoice-verification",
+          "financial-analysis",
+          "deterministic"
+        ]
+      }
+    },
+    {
+      "action": "remove",
+      "selector": {
+        "type": "operationId",
+        "value": "legacy-dispute-lookup"
+      }
+    }
+  ]
+}

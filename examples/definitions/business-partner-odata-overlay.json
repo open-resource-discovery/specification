@@ -1,0 +1,56 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#",
+  "resourceDefinitionOverlay": "0.1",
+  "info": {
+    "title": "Business Partner OData API – Annotation Overlay",
+    "version": "1.0.0",
+    "description": "Adds human-readable descriptions and deprecation annotations to the Business Partner OData CSDL without modifying the original $metadata document."
+  },
+  "target": {
+    "ordId": "sap.foo:apiResource:BusinessPartnerODataV2:v1",
+    "url": "https://api.sap.foo.com/sap/opu/odata/sap/API_BUSINESS_PARTNER/$metadata"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": {
+        "type": "entityTypeId",
+        "value": "A_BusinessPartnerType"
+      },
+      "data": {
+        "Core.Description": "Represents a natural or legal person involved in business transactions such as customers, vendors, or internal business units.",
+        "Core.LongDescription": "A Business Partner is the central master data object for customer and vendor management. It consolidates all party information and supports both individual persons and organizations."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "type": "propertyId",
+        "value": "LegacySearchTerm1",
+        "entityTypeId": "A_BusinessPartnerType"
+      },
+      "data": {
+        "Core.Revisions": [
+          {
+            "Version": "2.0.0",
+            "Kind": "Deprecated",
+            "Description": "Use SearchTerm1 instead. This property will be removed in a future API version."
+          }
+        ]
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "type": "propertyId",
+        "value": "CreditScore",
+        "entityTypeId": "A_BusinessPartnerType"
+      },
+      "data": {
+        "Core.Description": "Numeric credit score for the business partner. Range: 100 (excellent) to 600 (poor).",
+        "Common.FieldControl": { "@EnumMember": "Common.FieldControlType/ReadOnly" },
+        "PersonalData.IsPotentiallyPersonalData": true
+      }
+    }
+  ]
+}

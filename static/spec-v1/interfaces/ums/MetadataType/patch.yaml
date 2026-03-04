@@ -1,0 +1,32 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'patch'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'Patch'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: 'A single patch action to apply to the element identified by the selector.'
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'action'
+      type: 'string'
+      description: "The patch operation to perform on the selected element:\n\n- `update`: Replace the selected element entirely with `data`.\n- `merge`: Deep-merge `data` into the selected element (properties are added or overwritten, others preserved).\n- `remove`: Remove the selected element from the document entirely. No `data` required."
+      mandatory: true
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'selector'
+      relatedTypeName: 'Selector'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      mandatory: true
+    - propertyName: 'data'
+      relatedTypeName: 'PatchValue'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
