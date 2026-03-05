@@ -9,7 +9,6 @@
   "visibility": "internal",
   "target": {
     "ordId": "sap.foo:apiResource:BusinessPartnerODataV2:v1",
-    "url": "https://api.sap.foo.com/sap/opu/odata/sap/API_BUSINESS_PARTNER/$metadata",
     "definitionType": "edmx"
   },
   "patches": [
