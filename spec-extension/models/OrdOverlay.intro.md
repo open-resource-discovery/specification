@@ -6,19 +6,59 @@ The **ORD Overlay** is an optional ORD model extension that allows patching both
 and referenced resource definition files (e.g. OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards)
 without modifying the original source files.
 
+```json
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "target": { "definitionType": "openapi-v3" },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": { "operation": "getBusinessPartner" },
+      "data": {
+        "summary": "Retrieve a Business Partner by ID",
+        "description": "Returns the full profile of a business partner including addresses, roles, and tax data.\nUsed in order-to-cash and procurement processes."
+      }
+    }
+  ]
+}
+```
+
 ## Distribution
 
-Overlays can be distributed in two ways:
+### Via the ORD Configuration Endpoint
 
-1. **Via the [ORD Configuration Endpoint](../../spec-v1/index.md#ord-configuration-endpoint)** — published independently of any single resource; suitable for cross-cutting overlays that also patch ORD resource metadata itself.
-2. **Attached to an API or Event resource** — registered as a `resourceDefinitions` entry with type `ord:overlay:v1` on the resource it belongs to.
+Overlays can be listed directly in the [ORD Configuration Endpoint](../../spec-v1/index.md#ord-configuration-endpoint) under `openResourceDiscoveryV1.overlays`.
+This is the preferred approach for cross-cutting overlays that are not tied to a single resource, or when patching ORD resource metadata itself.
 
-See [Referencing from ORD Documents](#referencing-from-ord-documents) below for a code example.
+```json
+{
+  "openResourceDiscoveryV1": {
+    "overlays": [
+      { "url": "/ord/overlays/my-api.overlay.json", "accessStrategies": [{ "type": "open" }] }
+    ]
+  }
+}
+```
+
+### Attached to an ORD Resource
+
+Overlays can also be attached directly to an API or Event resource as a `resourceDefinitions` entry with type `ord:overlay:v1`.
+This keeps the overlay co-located with the resource it patches.
+
+```json
+{
+  "resourceDefinitions": [
+    { "type": "openapi-v3", "url": "/ord/metadata/my-api.oas3.json", "accessStrategies": [{ "type": "open" }] },
+    { "type": "ord:overlay:v1", "url": "/ord/overlays/my-api.overlay.json", "accessStrategies": [{ "type": "open" }] }
+  ]
+}
+```
 
 ## Target Resolution
 
-The optional [`target`](#overlaytarget) object narrows which document the overlay applies to.
-When omitted, all patches in the file are context-free and each patch's [`selector`](#selector) alone identifies the element. When overlays are applied local only, the necessary context is often implicit, so `target` can be omitted for brevity.
+The optional [`target`](#overlay-target) object narrows which document the overlay applies to.
+When omitted, all patches in the file are context-free and each patch's [`selector`](#selector) alone identifies the element.
 
 Key fields on `target`:
 
@@ -31,7 +71,7 @@ Key fields on `target`:
 Example of ambiguity: an OData API resource may expose both `edmx` and `openapi-v3` definitions.
 Provide `definitionType` and/or `url` to make the concrete patch target explicit.
 
-For overlays that only patch ORD metadata via [`selector.ordId`](#selectorbyordid), `target` may be omitted.
+For overlays that only patch ORD metadata via [`selector.ordId`](#selector-by-ord-id), `target` may be omitted.
 Multiple resources can be patched in a single file using multiple patches with different selector `ordId` values.
 
 ## Selectors
@@ -42,13 +82,13 @@ Concept-level selectors are preferred over `jsonPath` because they are resilient
 
 | Selector | Level | Supported formats |
 |---|---|---|
-| [`ordId`](#selectorbyordid) | Resource | ORD resource metadata |
-| [`operation`](#selectorbyoperation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (Specification ID), A2A Agent Card (`a2a-agent-card`) |
-| [`entityType`](#selectorbyentitytype) | Entity type | OData (`edmx`, `csdl-json`) |
-| [`propertyType`](#selectorbypropertytype) | Property | OData (`edmx`, `csdl-json`) |
-| [`jsonPath`](#selectorbyjsonpath) | Any location | Any JSON/YAML metadata file (generic fallback) |
+| [`ordId`](#selector-by-ord-id) | Resource | ORD resource metadata |
+| [`operation`](#selector-by-operation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (MCP Server Card), A2A Agent Card (`a2a-agent-card`) |
+| [`entityType`](#selector-by-entity-type) | Entity type | OData (`edmx`, `csdl-json`) |
+| [`propertyType`](#selector-by-property-type) | Property | OData (`edmx`, `csdl-json`) |
+| [`jsonPath`](#selector-by-jsonpath) | Any location | Any JSON/YAML metadata file (generic fallback) |
 
-The [`operation`](#selectorbyoperation) selector maps to different identifiers depending on the format:
+The [`operation`](#selector-by-operation) selector maps to different identifiers depending on the format:
 
 - **OpenAPI** → `operationId` of an HTTP operation in `paths.{path}.{method}`
 - **MCP** (any [Specification ID](../../spec-v1/index.md#specification-id)) → `tools[].name`
@@ -59,7 +99,7 @@ Using the `operation` selector with a named format constant that has no operatio
 
 ## Patch Actions
 
-Each [patch](#patch) specifies an [`action`](#patch) and a [`selector`](#selector), plus an optional [`data`](#patchvalue) value.
+Each [patch](#patch) specifies an [`action`](#patch) and a [`selector`](#selector), plus an optional [`data`](#patch-value) value.
 The full semantics of each action (`update`, `merge`, `append`, `remove`) are defined on the [`action`](#patch) field.
 
 Key point for `merge`: arrays are appended, not replaced.
@@ -75,33 +115,10 @@ After applying an overlay, validate the merged output with the corresponding for
 
 Optional top-level fields scope an overlay to a specific system context:
 
-- [`describedSystemType`](#overlaysystemtype), [`describedSystemVersion`](#overlaysystemversion), [`describedSystemInstance`](#overlaysysteminstance) — narrow the overlay to a particular system type, version, or instance.
+- [`describedSystemType`](#overlay-system-type), [`describedSystemVersion`](#overlay-system-version), [`describedSystemInstance`](#overlay-system-instance) — narrow the overlay to a particular system type, version, or instance.
 - [`visibility`](#visibility) — controls who can discover this overlay document (`public`, `internal`, `private`).
-- [`description`](#-2) — human-readable Markdown description of the overlay document itself.
-- [`ordId`](#-3) — optional stable ORD ID for this overlay, using pattern `*:overlay:*:v*`.
-
-## Referencing from ORD Documents
-
-ORD Overlay files can be referenced from ORD documents using a `resourceDefinitions` entry with type `ord:overlay:v1`:
-
-```json
-{
-  "resourceDefinitions": [
-    {
-      "type": "openapi-v3",
-      "mediaType": "application/json",
-      "url": "/ord/metadata/my-api.oas3.json",
-      "accessStrategies": [{ "type": "open" }]
-    },
-    {
-      "type": "ord:overlay:v1",
-      "mediaType": "application/json",
-      "url": "/ord/overlays/my-api.overlay.json",
-      "accessStrategies": [{ "type": "open" }]
-    }
-  ]
-}
-```
+- `description` — human-readable Markdown description of the overlay document itself.
+- `ordId` — optional stable ORD ID for this overlay, using pattern `*:overlay:*:v*`.
 
 ## Open TODOs
 
