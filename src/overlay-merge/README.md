@@ -19,17 +19,28 @@ The library applies `patches` from an `ORDOverlay` document in order.
 Selector support implemented now:
 - `jsonPath`: generic JSONPath selector for JSON files
 - `ordId`: selector for ORD Document resources (top-level resource arrays)
+- `operation`: concept-level operation selector
+  - OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): matches `operationId` in `paths.{path}.{method}`
+  - MCP: matches `tools[].name`
+  - A2A Agent Card (`a2a-agent-card`): matches `skills[].id`
+  - Without `definitionType`: tries OpenAPI → MCP → A2A in order
 
 Selectors currently not implemented in this script:
-- `operation`, `entityType`, `propertyType`
+- `entityType`, `propertyType`
 
 ## TODO / Open Decisions
 
 - `target.url` is currently treated as informational context and is not used for strict target matching.
 - `definitionType` document validation is currently implemented only for `openapi-v3`.
-- Concept-level selector execution (`operation`, `entityType`, `propertyType`) is not implemented yet.
+- Concept-level selectors `entityType` and `propertyType` (OData) are not implemented yet.
 - Decide whether strict URL matching should be defaulted, optional, or profile-specific.
 - Extend `definitionType` validation coverage for OData and MCP metadata formats.
+- Add YAML input support: `--overlay` and `--input` CLI flags currently accept only JSON files.
+- Decide whether `deepMerge` type mismatches (e.g. merging an object into an array)
+  should emit a warning or throw, rather than silently replacing the base value.
+- Consider adding a `--dry-run` or `--validate-only` mode to the CLI.
+- Evaluate whether the `jsonpath` npm package (CommonJS-only) should be replaced
+  with a native ESM alternative once a stable option is available.
 
 ## Merge Semantics
 
@@ -144,9 +155,11 @@ Coverage includes:
 Integration-style tests also apply overlay files from `examples/overlay` to existing metadata files in `examples/`.
 
 ## TODOs
-- Decide mandatory vs optional target resolution fields (target, target.ordId, etc.) in OrdOverlay.intro.md (line 60).
-- Decide whether overlay document ordId should be mandatory in OrdOverlay.intro.md (line 9).
-- Confirm OData operation mapping with domain experts in OrdOverlay.intro.md (line 65).
-- Implement concept-level selectors (operation, entityType, propertyType) in merge runtime (tracked in README).
-- Decide whether/when strict target.url matching should be enabled (tracked in types.ts (line 43) and README).
-- Extend definitionType structure checks beyond openapi-v3 (tracked in types.ts (line 107)).
+- Decide mandatory vs optional target resolution fields (`target`, `target.ordId`, etc.) — see `TODO (target resolution model)` in `OrdOverlay.intro.md`.
+- Decide whether overlay document `ordId` should be mandatory — see `TODO (Overlay ordId)` in `OrdOverlay.intro.md`.
+- Confirm OData `operation` selector mapping with OData domain experts — see `TODO (OData operations)` in `OrdOverlay.intro.md`.
+- Implement concept-level selectors (`entityType`, `propertyType`) — see TODO comments in `selectors.ts`.
+- Decide whether/when strict `target.url` matching should be enabled — see TODO comment in `types.ts` (`requireTargetMatch`).
+- Extend `definitionType` structure validation beyond `openapi-v3` — see TODO comment in `types.ts` (`validateTargetDocumentForDefinitionType`).
+- Add YAML input support for `--overlay` and `--input` CLI flags — see TODO comment in `cli.ts`.
+- Clarify `deepMerge` behavior on type mismatches (object vs array, etc.) — see TODO comment in `merge.ts`.

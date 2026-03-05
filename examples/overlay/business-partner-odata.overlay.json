@@ -2,14 +2,15 @@
   "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:business-partner-odata:v1",
-  "description": "TODO: Unclear how to do this correctly for OData, we need an expert to help out here",
+  "description": "Enriches OData Business Partner API metadata with extended descriptions and deprecation annotations using concept-level selectors.\n\nNote: the 'entityType' and 'propertyType' selectors are defined in the ORD Overlay spec but are NOT YET IMPLEMENTED in the reference overlay-merge script.\nTODO: Validate the OData operation mapping (selector 'operation' for Action/Function names) with OData domain experts before finalizing this example.",
   "describedSystemType": {
     "systemNamespace": "sap.foo"
   },
   "visibility": "internal",
   "target": {
     "ordId": "sap.foo:apiResource:BusinessPartnerODataV2:v1",
-    "definitionType": "edmx" },
+    "definitionType": "edmx"
+  },
   "patches": [
     {
       "action": "merge",

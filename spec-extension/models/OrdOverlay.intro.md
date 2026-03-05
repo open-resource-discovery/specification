@@ -29,9 +29,14 @@ When patching ORD resources themselves, the ORD ID becomes the selector (`ordId`
 
 Selector support by metadata format:
 
-- `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP metadata files.
-  For OpenAPI this maps to `operationId`. For MCP this maps to Tool `name`
-  ([MCP Tool Name](https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name)).
+- `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP and A2A Agent Card metadata files.
+  - OpenAPI: maps to `operationId` of an HTTP operation inside `paths.{path}.{method}`.
+  - MCP: maps to Tool `name` (`tools[].name`).
+    See [MCP Tool Name](https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name).
+  - A2A Agent Card (`a2a-agent-card`): maps to Agent Skill `id` (`skills[].id`).
+    See [A2A AgentSkill object](https://google.github.io/A2A/specification/#agentskill-object).
+  - When `definitionType` is not given, the implementation tries OpenAPI paths first,
+    then MCP tools, then A2A skills.
 - `entityType` and `propertyType`: OData (`edmx` for v2/v4 and `csdl-json` for v4).
 - `jsonPath`: generic fallback for any JSON/YAML-based metadata file, including OpenAPI and MCP.
 

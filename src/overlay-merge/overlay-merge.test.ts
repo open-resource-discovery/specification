@@ -395,3 +395,169 @@ test("warns instead of throwing when configured for no-match warnings", async ()
   assert.equal(warnings.length, 1);
   assert.match(warnings[0], /did not match any target element/);
 });
+
+test("applies operation selector to OpenAPI operationId", () => {
+  const source = {
+    openapi: "3.0.0",
+    paths: {
+      "/things": {
+        get: { operationId: "listThings", summary: "List things" },
+        post: { operationId: "createThing", summary: "Create a thing" },
+      },
+      "/things/{id}": {
+        get: { operationId: "getThing", summary: "Get a thing" },
+      },
+    },
+  } as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    target: { definitionType: "openapi-v3" },
+    patches: [
+      {
+        action: "merge",
+        selector: { operation: "listThings" },
+        data: { deprecated: true },
+      },
+    ],
+  } as unknown as ORDOverlay;
+
+  const merged = applyOverlayToDocument(source, overlay, {
+    context: { definitionType: "openapi-v3" },
+  }) as Record<string, unknown>;
+
+  const paths = merged.paths as Record<string, Record<string, Record<string, unknown>>>;
+  assert.equal(paths["/things"].get.deprecated, true);
+  assert.equal("deprecated" in (paths["/things"].post as Record<string, unknown>), false);
+  assert.equal("deprecated" in (paths["/things/{id}"].get as Record<string, unknown>), false);
+});
+
+test("applies operation selector to MCP tools by name", () => {
+  const source = {
+    tools: [
+      { name: "search-documents", description: "Search documents" },
+      { name: "create-document", description: "Create a document" },
+    ],
+  } as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    patches: [
+      {
+        action: "merge",
+        selector: { operation: "search-documents" },
+        data: { "x-rate-limit": 100 },
+      },
+    ],
+  } as unknown as ORDOverlay;
+
+  const merged = applyOverlayToDocument(source, overlay, {
+    context: { definitionType: "sap.mcp:myService:v1" },
+  }) as Record<string, unknown>;
+
+  const tools = merged.tools as Array<Record<string, unknown>>;
+  assert.equal(tools[0]["x-rate-limit"], 100);
+  assert.equal("x-rate-limit" in tools[1], false);
+});
+
+test("applies operation selector to A2A skills by id", () => {
+  const source = {
+    skills: [
+      { id: "run-analysis", name: "Run Analysis", description: "Runs the analysis" },
+      { id: "export-results", name: "Export Results", description: "Exports results" },
+    ],
+  } as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    target: { definitionType: "a2a-agent-card" },
+    patches: [
+      {
+        action: "merge",
+        selector: { operation: "run-analysis" },
+        data: { "x-status": "promoted", tags: ["batch"] },
+      },
+    ],
+  } as unknown as ORDOverlay;
+
+  const merged = applyOverlayToDocument(source, overlay, {
+    context: { definitionType: "a2a-agent-card" },
+  }) as Record<string, unknown>;
+
+  const skills = merged.skills as Array<Record<string, unknown>>;
+  assert.equal(skills[0]["x-status"], "promoted");
+  assert.deepEqual(skills[0].tags, ["batch"]);
+  assert.equal("x-status" in skills[1], false);
+});
+
+test("auto-detects OpenAPI operation selector when no definitionType is given", () => {
+  const source = {
+    openapi: "3.0.0",
+    paths: {
+      "/items": {
+        get: { operationId: "listItems", description: "List all items" },
+      },
+    },
+  } as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    patches: [
+      {
+        action: "merge",
+        selector: { operation: "listItems" },
+        data: { "x-auto-detected": true },
+      },
+    ],
+  } as unknown as ORDOverlay;
+
+  const merged = applyOverlayToDocument(source, overlay) as Record<string, unknown>;
+  const paths = merged.paths as Record<string, Record<string, Record<string, unknown>>>;
+  assert.equal(paths["/items"].get["x-auto-detected"], true);
+});
+
+test("removes A2A skill using operation selector", () => {
+  const source = {
+    skills: [
+      { id: "active-skill", name: "Active Skill" },
+      { id: "legacy-skill", name: "Legacy Skill (deprecated)" },
+    ],
+  } as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    target: { definitionType: "a2a-agent-card" },
+    patches: [
+      {
+        action: "remove",
+        selector: { operation: "legacy-skill" },
+      },
+    ],
+  } as unknown as ORDOverlay;
+
+  const merged = applyOverlayToDocument(source, overlay, {
+    context: { definitionType: "a2a-agent-card" },
+  }) as Record<string, unknown>;
+
+  const skills = merged.skills as Array<Record<string, unknown>>;
+  assert.equal(skills.length, 1);
+  assert.equal(skills[0].id, "active-skill");
+});
+
+test("throws when operation selector is used with an unsupported definitionType", () => {
+  const source = { edmx: {} } as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    target: { definitionType: "edmx" },
+    patches: [{ action: "merge", selector: { operation: "MyAction" }, data: { deprecated: true } }],
+  } as unknown as ORDOverlay;
+
+  assert.throws(
+    () => applyOverlayToDocument(source, overlay, { context: { definitionType: "edmx" }, validateDefinitionType: false }),
+    (err: Error) => {
+      assert.ok(err.message.includes("not supported for definitionType"), `unexpected message: ${err.message}`);
+      return true;
+    },
+  );
+});

@@ -34,6 +34,9 @@ async function main(): Promise<void> {
   process.stdout.write(rendered);
 }
 
+// TODO: add YAML input support for --overlay and --input flags.
+// YAML overlays and YAML metadata files are valid per spec but currently not supported by this CLI.
+// Consider using a YAML parser (e.g. js-yaml) and normalizing to JSONValue before processing.
 async function readJsonFile(path: string): Promise<JSONValue> {
   const content = await readFile(path, "utf8");
   const parsed = JSON.parse(content) as unknown;

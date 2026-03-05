@@ -35,9 +35,14 @@ When patching ORD resources themselves, the ORD ID becomes the selector (`ordId`
 
 Selector support by metadata format:
 
-- `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP metadata files.
-  For OpenAPI this maps to `operationId`. For MCP this maps to Tool `name`
-  ([MCP Tool Name](https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name)).
+- `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP and A2A Agent Card metadata files.
+  - OpenAPI: maps to `operationId` of an HTTP operation inside `paths.{path}.{method}`.
+  - MCP: maps to Tool `name` (`tools[].name`).
+    See [MCP Tool Name](https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name).
+  - A2A Agent Card (`a2a-agent-card`): maps to Agent Skill `id` (`skills[].id`).
+    See [A2A AgentSkill object](https://google.github.io/A2A/specification/#agentskill-object).
+  - When `definitionType` is not given, the implementation tries OpenAPI paths first,
+    then MCP tools, then A2A skills.
 - `entityType` and `propertyType`: OData (`edmx` for v2/v4 and `csdl-json` for v4).
 - `jsonPath`: generic fallback for any JSON/YAML-based metadata file, including OpenAPI and MCP.
 
@@ -348,7 +353,7 @@ One of the following:
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="selector-by-operation_operation">operation<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#selector-by-operation_operation" title="#selector-by-operation_operation"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level operation identifier.<br/>Supported mappings:<br/>- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to OpenAPI `operationId`.<br/>- MCP metadata (identified via `definitionType` as a Specification ID): maps to MCP Tool `name`.<br/>  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name<br/><br/>Not currently supported for OData selectors.<br/>Best current guess for future OData support:<br/>- map to `Action`/`Function` names (prefer fully-qualified name)<br/>- or `ActionImport`/`FunctionImport` names when exposed via the entity container<br/>TODO: validate this mapping with OData experts.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"getBusinessPartner"`</li><li>`"dispute-case-resolution"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="selector-by-operation_operation">operation<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#selector-by-operation_operation" title="#selector-by-operation_operation"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level operation identifier.<br/>Supported mappings by format:<br/>- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to the `operationId` field on<br/>  an HTTP operation inside `paths.{path}.{method}`.<br/>- MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.<br/>  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name<br/>- A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.<br/>  See: https://google.github.io/A2A/specification/#agentskill-object<br/><br/>When `definitionType` is not provided, the implementation tries OpenAPI paths first,<br/>then MCP tools, then A2A skills, returning the first match found.<br/><br/>Not currently supported for OData selectors.<br/>Best current guess for future OData support:<br/>- map to `Action`/`Function` names (prefer fully-qualified name)<br/>- or `ActionImport`/`FunctionImport` names when exposed via the entity container<br/>TODO: validate this mapping with OData experts.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"getBusinessPartner"`</li><li>`"dispute-case-resolution"`</li></ul></div>|
 
 
 ### Selector By Entity Type

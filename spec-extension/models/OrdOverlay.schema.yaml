@@ -526,10 +526,16 @@ definitions:
         minLength: 1
         description: |-
           Concept-level operation identifier.
-          Supported mappings:
-          - OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to OpenAPI `operationId`.
-          - MCP metadata (identified via `definitionType` as a Specification ID): maps to MCP Tool `name`.
+          Supported mappings by format:
+          - OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to the `operationId` field on
+            an HTTP operation inside `paths.{path}.{method}`.
+          - MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.
             See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name
+          - A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.
+            See: https://google.github.io/A2A/specification/#agentskill-object
+
+          When `definitionType` is not provided, the implementation tries OpenAPI paths first,
+          then MCP tools, then A2A skills, returning the first match found.
 
           Not currently supported for OData selectors.
           Best current guess for future OData support:

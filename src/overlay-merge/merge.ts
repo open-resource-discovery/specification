@@ -25,12 +25,12 @@ export function applyOverlayToDocument<T extends JSONValue>(
     throw new OverlayMergeError("Overlay target does not match the provided document context.");
   }
 
+  const definitionType =
+    options.context?.definitionType ??
+    (typeof overlay.target?.definitionType === "string" ? overlay.target.definitionType : undefined);
+
   const validateDefinitionType = options.validateDefinitionType ?? true;
   if (validateDefinitionType) {
-    const definitionType =
-      options.context?.definitionType ??
-      (typeof overlay.target?.definitionType === "string" ? overlay.target.definitionType : undefined);
-
     if (!validateTargetDocumentForDefinitionType(sourceDocument, definitionType)) {
       throw new OverlayMergeError(
         `Target document does not match the expected definitionType${definitionType !== undefined ? ` (${definitionType})` : ""}.`,
@@ -42,7 +42,7 @@ export function applyOverlayToDocument<T extends JSONValue>(
   const noMatchBehavior = resolveNoMatchBehavior(options);
 
   overlay.patches.forEach((patch, patchIndex) => {
-    const matches = resolveSelector(rootHolder.value, patch.selector);
+    const matches = resolveSelector(rootHolder.value, patch.selector, definitionType);
 
     if (matches.length === 0) {
       const message = `Patch #${patchIndex + 1} did not match any target element.`;
@@ -208,6 +208,9 @@ function deepMerge(base: JSONValue, incoming: JSONValue): JSONValue {
     return result;
   }
 
+  // When types are incompatible (e.g. merging a string into an object, or an object
+  // into an array), the incoming value silently replaces the base value.
+  // TODO: decide whether a type mismatch should emit a warning or throw an error.
   return cloneJSONValue(incoming);
 }
 

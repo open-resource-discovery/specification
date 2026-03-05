@@ -104,8 +104,13 @@ export function validateTargetDocumentForDefinitionType(
     return typeof openapiVersion === "string" && openapiVersion.startsWith("3.");
   }
 
-  // TODO: add structural validators for additional definition types
-  // (e.g. openapi-v2, openapi-v3.1+, mcp, edmx, csdl-json).
+  // TODO: add structural validators for additional definition types.
+  // Suggested checks:
+  // - openapi-v2: targetDocument.swagger must be a string starting with "2."
+  // - openapi-v3.1+: targetDocument.openapi must be a string starting with "3.1"
+  // - a2a-agent-card: targetDocument must have "skills" array (A2A format) or "tools" array (MCP format)
+  // - edmx: targetDocument must contain top-level "edmx:Edmx" key (CSDL XML/JSON)
+  // - csdl-json: targetDocument must contain "$Version" key
 
   return true;
 }

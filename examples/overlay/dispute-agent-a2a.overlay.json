@@ -1,12 +1,13 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
-  "ordId": "sap.foo:overlay:dispute-agent-mcp:v1",
-  "description": "Enriches the Dispute Resolution Agent Card with extended descriptions, usage guidance, and classification metadata without modifying the original Agent Card file.",
+  "ordId": "sap.foo:overlay:dispute-agent-a2a:v1",
+  "description": "Enriches the Dispute Resolution Agent Card (A2A format) with extended descriptions, usage guidance, and classification metadata without modifying the original Agent Card file.\n\nThe 'operation' selector maps to A2A Agent Card skill IDs (skills[].id).",
   "visibility": "private",
   "target": {
     "ordId": "sap.foo:apiResource:FICADisputeResolutionAgent:v1",
-    "url": "./DisputeResolutionAgentcard.json"
+    "url": "./DisputeResolutionAgentcard.json",
+    "definitionType": "a2a-agent-card"
   },
   "patches": [
     {
