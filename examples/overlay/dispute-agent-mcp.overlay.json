@@ -6,8 +6,7 @@
   "visibility": "private",
   "target": {
     "ordId": "sap.foo:apiResource:FICADisputeResolutionAgent:v1",
-    "url": "./DisputeResolutionAgentcard.json",
-    "definitionType": "custom"
+    "url": "./DisputeResolutionAgentcard.json"
   },
   "patches": [
     {
