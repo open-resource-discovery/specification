@@ -2,120 +2,83 @@
 This specification is in **alpha** and subject to change.
 :::
 
-The **ORD Overlay** is an optional ORD model extension.
+The **ORD Overlay** is an optional ORD model extension that allows patching both ORD resource metadata
+and referenced resource definition files (e.g. OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards)
+without modifying the original source files.
 
-An overlay can optionally have its own `ordId` with pattern `*:overlay:*:v*`.
+## Distribution
 
-TODO (Overlay `ordId`):
+Overlays can be distributed in two ways:
 
-- Do we need this?
-- If overlays are published/discovered via the configuration endpoint without direct ORD resource context, what should their stable ID be?
-- Should this be mandatory or optional?
+1. **Via the [ORD Configuration Endpoint](../../spec-v1/index.md#ord-configuration-endpoint)** — published independently of any single resource; suitable for cross-cutting overlays that also patch ORD resource metadata itself.
+2. **Attached to an API or Event resource** — registered as a `resourceDefinitions` entry with type `ord:overlay:v1` on the resource it belongs to.
 
-Overlay files can be provided via the [ORD Configuration Endpoint](../../spec-v1/index.md#ord-configuration-endpoint).
-In this case, they can be published independently of a particular resource and can also patch metadata on ORD resource level itself.
+See [Referencing from ORD Documents](#referencing-from-ord-documents) below for a code example.
 
-Alternatively, an overlay can be attached to APIs or events as an additional `resourceDefinitions` file for a concrete resource.
-The registered resource definition type is `ord:overlay:v1`.
+## Target Resolution
 
-Overlays can patch on both levels:
+The optional [`target`](#overlaytarget) object narrows which document the overlay applies to.
+When omitted, all patches in the file are context-free and each patch's [`selector`](#selector) alone identifies the element. When overlays are applied local only, the necessary context is often implicit, so `target` can be omitted for brevity.
 
-- ORD resource level metadata
-- referenced resource definition level metadata
+Key fields on `target`:
 
-The patch format is intentionally unopinionated and can patch any JSON/YAML-based file.
-In addition, it explicitly supports patching API, event, and data model metadata through concept-level selectors (`operation`, `entityType`, `propertyType`).
-When patching ORD resources themselves, the ORD ID becomes the selector (`ordId`).
+| Field | Purpose |
+|---|---|
+| `ordId` | Identifies the ORD resource being patched (API, Event, Data Product, …). Selects the ORD resource metadata itself. |
+| `url` | Direct URL to the specific metadata definition file (e.g. an OpenAPI JSON file). |
+| `definitionType` | Declares the format of the file (e.g. `openapi-v3`, `a2a-agent-card`). Disambiguates when a resource has multiple definitions attached. |
 
-Selector support by metadata format:
+Example of ambiguity: an OData API resource may expose both `edmx` and `openapi-v3` definitions.
+Provide `definitionType` and/or `url` to make the concrete patch target explicit.
 
-- `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP and A2A Agent Card metadata files.
-  - OpenAPI: maps to `operationId` of an HTTP operation inside `paths.{path}.{method}`.
-  - MCP: maps to Tool `name` (`tools[].name`).
-    See [MCP Tool Name](https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name).
-  - A2A Agent Card (`a2a-agent-card`): maps to Agent Skill `id` (`skills[].id`).
-    See [A2A AgentSkill object](https://google.github.io/A2A/specification/#agentskill-object).
-  - When `definitionType` is not given, the implementation tries OpenAPI paths first,
-    then MCP tools, then A2A skills.
-- `entityType` and `propertyType`: OData (`edmx` for v2/v4 and `csdl-json` for v4).
-- `jsonPath`: generic fallback for any JSON/YAML-based metadata file, including OpenAPI and MCP.
+For overlays that only patch ORD metadata via [`selector.ordId`](#selectorbyordid), `target` may be omitted.
+Multiple resources can be patched in a single file using multiple patches with different selector `ordId` values.
 
-On `target`, `definitionType` can optionally declare the metadata definition type being patched.
-It accepts:
+## Selectors
 
-- Any valid [Specification ID](../../spec-v1/index.md#specification-id)
-- Values reused from API/Event/Capability resource definition `type` fields
-  (for example `openapi-v3`, `asyncapi-v2`, `edmx`, `csdl-json`, `sap.mdo:mdi-capability-definition:v1`, `ord:overlay:v1`)
+Each [patch](#patch) identifies the element to patch using exactly one [selector](#selector).
+Concept-level selectors are preferred over `jsonPath` because they are resilient to structural format changes
+(e.g. OpenAPI 3.0 → 3.1, OData CSDL XML → JSON).
 
-The literal `custom` is deprecated for `definitionType`. Use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
+| Selector | Level | Supported formats |
+|---|---|---|
+| [`ordId`](#selectorbyordid) | Resource | ORD resource metadata |
+| [`operation`](#selectorbyoperation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (Specification ID), A2A Agent Card (`a2a-agent-card`) |
+| [`entityType`](#selectorbyentitytype) | Entity type | OData (`edmx`, `csdl-json`) |
+| [`propertyType`](#selectorbypropertytype) | Property | OData (`edmx`, `csdl-json`) |
+| [`jsonPath`](#selectorbyjsonpath) | Any location | Any JSON/YAML metadata file (generic fallback) |
 
-Target resolution notes:
+The [`operation`](#selectorbyoperation) selector maps to different identifiers depending on the format:
 
-- `target` is optional context metadata for target resolution.
-- `ordId` in `target` selects the ORD resource metadata itself.
-- If the patch is meant for a resource definition file (not only ORD-level metadata),
-  `ordId` alone can be ambiguous when the resource has multiple definitions.
-- Use `url` and/or `definitionType` to make the concrete definition file explicit.
-  Example: one OData API can expose both `edmx` and `openapi-v3` definitions.
-- For overlays that only patch ORD-level metadata via selector `ordId`, `target` may be omitted
-  (or provided as an empty object). In this mode, multiple resources can be patched by multiple
-  patch entries using different selector `ordId` values.
-- If the ORD document URL is known, `target.url` can still be provided as informational context.
+- **OpenAPI** → `operationId` of an HTTP operation in `paths.{path}.{method}`
+- **MCP** (any [Specification ID](../../spec-v1/index.md#specification-id)) → `tools[].name`
+- **A2A Agent Card** → `skills[].id`
 
-TODO (target resolution model):
+When `definitionType` is not provided, the implementation auto-detects the format by trying OpenAPI → MCP → A2A in order.
+Using the `operation` selector with a named format constant that has no operation support (e.g. `edmx`, `asyncapi-v2`) raises an error.
 
-- Decide what should be optional vs mandatory.
-- Review cleanup after discussion: this proposal adds transparency-oriented fields; some may be dropped again.
+## Patch Actions
 
-TODO (OData operations):
+Each [patch](#patch) specifies an [`action`](#patch) and a [`selector`](#selector), plus an optional [`data`](#patchvalue) value.
+The full semantics of each action (`update`, `merge`, `append`, `remove`) are defined on the [`action`](#patch) field.
 
-- Best current guess for selector `operation` in OData:
-  use schema-level `Action` / `Function` names (prefer fully-qualified names),
-  or entity-container `ActionImport` / `FunctionImport` names when the operation is container-exposed.
-  This still needs expert validation.
-  See [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
+Key point for `merge`: arrays are appended, not replaced.
+To fully replace an array, use two ordered patches — first `remove` the array, then `merge` the new value.
 
-Concept-level selectors are preferred over structural selectors (`jsonPath`) because they are more resilient to format evolution (for example OpenAPI 3.0 to 3.1, or OData CSDL XML to JSON).
+## Validation
 
-Validation assumption:
-
-- Overlays and overlay application assume the target document is already valid for its native format.
-- The merge tool does not fully validate target metadata formats.
-- After applying overlays, the resulting merged document should be validated again with the target format's validator/tooling.
-
-Patch action semantics for `append`:
-
-- `data` must be a string.
-- The selected value must be a string/text field.
-- The `data` string is appended to the selected string.
-- Typical use-case: extend an existing `description` without replacing it.
-
-Patch action semantics for `merge`:
-
-- Objects are deep-merged recursively.
-- Scalar values are overwritten by values from `data`.
-- Arrays are appended (`data` items are added after existing items).
-- Existing properties not mentioned in `data` are preserved.
-
-To fully replace an array, use two ordered patches:
-
-1. Remove the array at the selected location.
-2. Merge the new array value.
-
-Patch action semantics for `remove`:
-
-- Without `data`: remove the full element selected by `selector`.
-- With `data`: remove fields that are set to `null`
-  (recursively, including nested fields; JSON Merge Patch-style delete semantics), for example:
-  `data: { "foo": { "bar": null } }`.
+Overlays assume the target document is already valid for its native format.
+The merge tool does not fully re-validate target formats.
+After applying an overlay, validate the merged output with the corresponding format-specific tooling.
 
 ## Overlay Document Metadata
 
-- `description`: Human-readable Markdown description of the overlay document itself.
-- `describedSystemType`: System type context for which the overlay applies.
-- `describedSystemVersion`: System version context for which the overlay applies.
-- `describedSystemInstance`: System instance context for which the overlay applies.
-- `visibility`: Discovery visibility (`public`, `internal`, or `private`) for the overlay metadata.
+Optional top-level fields scope an overlay to a specific system context:
+
+- [`describedSystemType`](#overlaysystemtype), [`describedSystemVersion`](#overlaysystemversion), [`describedSystemInstance`](#overlaysysteminstance) — narrow the overlay to a particular system type, version, or instance.
+- [`visibility`](#visibility) — controls who can discover this overlay document (`public`, `internal`, `private`).
+- [`description`](#-2) — human-readable Markdown description of the overlay document itself.
+- [`ordId`](#-3) — optional stable ORD ID for this overlay, using pattern `*:overlay:*:v*`.
 
 ## Referencing from ORD Documents
 
@@ -139,3 +102,22 @@ ORD Overlay files can be referenced from ORD documents using a `resourceDefiniti
   ]
 }
 ```
+
+## Open TODOs
+
+**Overlay `ordId`:**
+
+- Do we need this field at all?
+- If overlays are published via the configuration endpoint without direct ORD resource context, what should their stable ID be?
+- Should this be mandatory or optional?
+
+**Target resolution model:**
+
+- Decide what should be optional vs mandatory on `target`.
+- Review cleanup after discussion: some transparency-oriented fields may be dropped again.
+
+**OData `operation` selector:**
+
+- Best current guess: map selector `operation` to OData operation names — schema-level `Action`/`Function` (prefer fully-qualified names), or container-level `ActionImport`/`FunctionImport` when exposed via entity container.
+- Needs validation with OData experts.
+- See [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
