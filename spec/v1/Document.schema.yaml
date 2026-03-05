@@ -123,12 +123,6 @@ properties:
     examples:
       - "system-instance"
 
-  describedSystemInstance:
-    $ref: "#/definitions/SystemInstance"
-    description: |-
-      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
-
-      Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   describedSystemType:
     $ref: "#/definitions/SystemType"
     x-introduced-in-version: "1.10.0"
@@ -139,6 +133,12 @@ properties:
     x-introduced-in-version: "1.10.0"
     description: |-
       Information on the [system version](../index.md#system-version) that this ORD document describes.
+  describedSystemInstance:
+    $ref: "#/definitions/SystemInstance"
+    description: |-
+      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
+
+      Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   policyLevel: &policyLevel
     type: string
     description: |
@@ -2555,6 +2555,11 @@ definitions:
               [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.
               The `mediaType` MUST be be set to `application/json`.
             x-introduced-in-version: "1.9.4"
+          - const: ord:overlay:v1
+            description: |-
+              ORD Overlay file for patching ORD resources and/or referenced resource definition files.
+              For details, see [ORD Overlay](../../spec-extensions/models/OrdOverlay).
+              The `mediaType` MUST be set to `application/json`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
@@ -2675,6 +2680,11 @@ definitions:
               WARNING: Only expose the CDS Service definition that effectively is governed by the API contract and stability. Do not expose internal models!
 
               The `mediaType` MUST be be set to `application/json`.
+          - const: ord:overlay:v1
+            description: |-
+              ORD Overlay file for patching ORD resources and/or referenced resource definition files.
+              For details, see [ORD Overlay](../../spec-extensions/models/OrdOverlay).
+              The `mediaType` MUST be set to `application/json`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.

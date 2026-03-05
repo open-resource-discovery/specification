@@ -1,0 +1,32 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlayinfo'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlayInfo'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: 'Human-readable metadata about this overlay document.'
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'title'
+      type: 'string'
+      description: 'Short human-readable title describing the purpose of this overlay.'
+      mandatory: true
+    - name: 'version'
+      type: 'string'
+      description: 'Version of this overlay document (not the spec version).'
+      mandatory: true
+    - name: 'description'
+      type: 'string'
+      description: 'Longer description of what this overlay does and why.'
+  customTypeDefinitions: []
+  metadataRelations: []

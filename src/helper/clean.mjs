@@ -14,8 +14,12 @@ const config = {
     // Static generated schema artifacts
     'static/spec-v1/interfaces/Configuration.schema.json',
     'static/spec-v1/interfaces/Document.schema.json',
+    'static/spec-v1/interfaces/OrdOverlay.schema.json',
+    'static/spec-v1/interfaces/ums/MetadataType/ordoverlay.yaml',
+    'static/spec-extension/models/OrdOverlay.schema.json',
     'docs/spec-v1/interfaces/Configuration.md',
-    'docs/spec-v1/interfaces/Document.md'
+    'docs/spec-v1/interfaces/Document.md',
+    'docs/spec-extensions/models/OrdOverlay.md'
   ],
   // Folders where we remove all contents except certain keepers
   cleanFoldersExcept: [

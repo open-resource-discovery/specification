@@ -1,0 +1,32 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'patch'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'Patch'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: 'A single patch action to apply to the element identified by the selector.'
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'action'
+      type: 'string'
+      description: "The patch operation to perform on the selected element:\n\n- `update`: Replace the selected element entirely with `data`.\n- `append`:\n  - append string `data` to the selected string value.\n  - only valid when the selected element is a text/string field.\n  - useful to extend existing descriptions without replacing them.\n- `merge`:\n  - objects are deep-merged recursively.\n  - scalar values are overwritten by the value from `data`.\n  - arrays are appended (new array items are added after existing items).\n  - existing object properties not mentioned in `data` are preserved.\n\n  To fully replace an array, use two ordered patches:\n  1. `remove` the array at the selected location.\n  2. `merge` the new array content.\n- `remove`:\n  - without `data`: remove the selected element from the document entirely.\n  - with `data`: remove fields that are set to `null`.\n    This applies recursively, so nested `null` values remove nested fields as well\n    (JSON Merge Patch-style delete semantics).\n\nExample for nested removal:\n`data: { \"foo\": { \"bar\": null } }` removes `foo.bar` inside the selected element."
+      mandatory: true
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'selector'
+      relatedTypeName: 'Selector'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      mandatory: true
+    - propertyName: 'data'
+      relatedTypeName: 'PatchValue'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

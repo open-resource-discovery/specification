@@ -1,0 +1,63 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'ordoverlay'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'ORDOverlay'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: "⚠️ ALPHA: This specification is in alpha and subject to change.\n\nThe ORD Overlay is an optional ORD model extension.\n\nIt allows patching both ORD resources and referenced resource definition files (e.g. OpenAPI,\nAsyncAPI, OData CSDL, MCP Agent Cards) without modifying the original source files.\n\nOverlay files can be provided through the ORD configuration endpoint\n(https://open-resource-discovery.org/spec-v1/index#ord-configuration-endpoint),\nor attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`.\n\nPatches use concept-level selectors that are independent of the internal structure of the target format,\nmaking overlays resilient to format changes (e.g. OpenAPI 3.0 → 3.1, OData CSDL JSON → XML).\nA JSON Path selector is available as a generic fallback for any JSON/YAML-based target format.\n\nConceptual selector levels (from high to low):\n  - Resource level: ORD ID (resolved via the ORD registry)\n  - Operation level: operation (OpenAPI `operationId`, MCP tool `name`)\n  - Entity type level: entityType (OData EntityType)\n  - Property type level: propertyType (OData Property scoped by entity type)\n  - Generic fallback: jsonPath (any JSON/YAML document, structure-bound)\n\nSelector support by metadata format:\n  - `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP (identified via a Specification ID in `definitionType`).\n  - `entityType` and `propertyType`: OData (`edmx` for v2/v4, `csdl-json` for v4).\n  - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).\n  - `ordId`: ORD resource metadata level (patching ORD resources themselves).\n\nTODO (OData operations):\n  - Best current guess: map selector `operation` to OData operation names:\n    - schema-level `Action`/`Function` names (prefer fully-qualified name)\n    - container-level `ActionImport`/`FunctionImport` names when exposed via entity container\n    Needs validation with OData experts.\n\nValidation assumption:\n  - overlays and overlay application assume the selected target document is already valid\n    for its native metadata format.\n  - the merge process does not fully validate all target metadata formats.\n  - the merged output should be validated again with the corresponding format-specific tooling."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: '$schema'
+      type: 'string'
+      description: "Optional [URL](https://tools.ietf.org/html/rfc3986) to the ORD Overlay schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools."
+    - name: 'ordOverlay'
+      type: 'string'
+      description: 'Version of the ORD Overlay specification.'
+      mandatory: true
+    - name: 'ordId'
+      type: 'string'
+      description: "Optional ORD ID of this overlay document.\nMUST follow the ORD ID shape `*:overlay:*:v*`.\n\nTODO:\n- Do we need this?\n- If overlays are published via the configuration endpoint without direct ORD resource context, what should their stable ID be?\n- Should this be mandatory or optional?"
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'description'
+      type: 'string'
+      description: "Optional description of the overlay document itself.\n\nNotated in [CommonMark](https://spec.commonmark.org/) (Markdown)."
+      constraints:
+        minLength: 1
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'describedSystemType'
+      relatedTypeName: 'OverlaySystemType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.'
+    - propertyName: 'describedSystemVersion'
+      relatedTypeName: 'OverlaySystemVersion'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.'
+    - propertyName: 'describedSystemInstance'
+      relatedTypeName: 'OverlaySystemInstance'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.'
+    - propertyName: 'visibility'
+      relatedTypeName: 'Visibility'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+    - propertyName: 'target'
+      relatedTypeName: 'OverlayTarget'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional target context for this overlay.\nThe target can reference an ORD resource or a referenced resource definition file.\n\n`ordId` selects the ORD resource metadata itself.\nIf patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous\nwhen the resource exposes multiple definitions.\nIn that case, use `url` and/or `definitionType` to clarify the intended file.\n\nExample: an OData API resource may provide both `edmx` and `openapi-v3` definitions.\nUse `definitionType` and/or an explicit `url` to identify which one is patched.\n\nFor overlays that only patch ORD-level metadata via patch selectors (`selector.ordId`),\na `target.ordId` is often not needed. In that case, `target` may be omitted entirely,\nor provided as an empty object for informational purposes.\nMultiple resources can still be patched by defining multiple patches with different selector `ordId` values.\n\nIf the ORD document URL is known, it can be provided via `target.url` as additional context.\n\nTODO:\n- decide what should be optional vs mandatory on target resolution\n- review cleanup after discussion: this proposal adds fields for transparency; some may be dropped again"
+    - propertyName: 'patches'
+      relatedTypeName: 'Patch'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Ordered sequence of patches to apply to the targeted resource(s).\nPatches are applied in the order listed."
+      mandatory: true

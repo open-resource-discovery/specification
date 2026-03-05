@@ -1,0 +1,26 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'selectorbyentitytype'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'SelectorByEntityType'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'entityType'
+      type: 'string'
+      description: "Concept-level entity type identifier.\nCurrently supported for OData metadata:\n- `edmx` (OData v2/v4 CSDL XML)\n- `csdl-json` (OData v4 CSDL JSON)"
+      mandatory: true
+      constraints:
+        minLength: 1
+  customTypeDefinitions: []
+  metadataRelations: []

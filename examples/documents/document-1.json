@@ -85,6 +85,16 @@
               "type": "open"
             }
           ]
+        },
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/ord/overlays/astronomy-api-openapi-overlay.json",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
         }
       ],
       "entryPoints": ["/astronomy/v1"],

@@ -1,0 +1,27 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'selectorbyjsonpath'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'SelectorByJsonPath'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'jsonPath'
+      type: 'string'
+      description: "JSONPath expression targeting any location in a JSON/YAML-based target document.\nMUST start with `$`.\nThis is the generic fallback selector and is supported for all JSON/YAML-based metadata formats,\nincluding OpenAPI and MCP metadata files."
+      mandatory: true
+      constraints:
+        minLength: 1
+        pattern: '^\$'
+  customTypeDefinitions: []
+  metadataRelations: []

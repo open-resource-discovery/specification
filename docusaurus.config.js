@@ -189,6 +189,10 @@ const config = {
                 label: "Global Group Types",
                 to: "spec-extensions/group-types/",
               },
+              {
+                label: "Model Extensions",
+                to: "spec-extensions/models/",
+              },
             ],
           },
           {

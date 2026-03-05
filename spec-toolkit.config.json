@@ -26,6 +26,17 @@
         "description": "Describes the technical interface / schema for ORD Document."
       },
       "examplesFolderPath": "./examples/documents/"
+    },
+    {
+      "type": "spec",
+      "id": "OrdOverlay",
+      "sourceFilePath": "./spec-extension/models/OrdOverlay.schema.yaml",
+      "sourceIntroFilePath": "./spec-extension/models/OrdOverlay.intro.md",
+      "mdFrontmatter": {
+        "title": "ORD Overlay",
+        "sidebar_position": "2",
+        "description": "Describes the technical interface / schema for the ORD Overlay (alpha), used to patch ORD resources and their resource definitions."
+      }
     }
   ],
   "plugins": [

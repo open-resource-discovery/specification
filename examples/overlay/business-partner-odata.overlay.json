@@ -1,0 +1,54 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:business-partner-odata:v1",
+  "description": "Enriches OData Business Partner API metadata with extended descriptions and deprecation annotations using concept-level selectors.\n\nNote: the 'entityType' and 'propertyType' selectors are defined in the ORD Overlay spec but are NOT YET IMPLEMENTED in the reference overlay-merge script.\nTODO: Validate the OData operation mapping (selector 'operation' for Action/Function names) with OData domain experts before finalizing this example.",
+  "describedSystemType": {
+    "systemNamespace": "sap.foo"
+  },
+  "visibility": "internal",
+  "target": {
+    "ordId": "sap.foo:apiResource:BusinessPartnerODataV2:v1",
+    "definitionType": "edmx"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": {
+        "entityType": "A_BusinessPartnerType"
+      },
+      "data": {
+        "Core.Description": "Represents a natural or legal person involved in business transactions such as customers, vendors, or internal business units.",
+        "Core.LongDescription": "A Business Partner is the central master data object for customer and vendor management. It consolidates all party information and supports both individual persons and organizations."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "propertyType": "LegacySearchTerm1",
+        "entityType": "A_BusinessPartnerType"
+      },
+      "data": {
+        "Core.Revisions": [
+          {
+            "Version": "2.0.0",
+            "Kind": "Deprecated",
+            "Description": "Use SearchTerm1 instead. This property will be removed in a future API version."
+          }
+        ]
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "propertyType": "CreditScore",
+        "entityType": "A_BusinessPartnerType"
+      },
+      "data": {
+        "Core.Description": "Numeric credit score for the business partner. Range: 100 (excellent) to 600 (poor).",
+        "Common.FieldControl": { "@EnumMember": "Common.FieldControlType/ReadOnly" },
+        "PersonalData.IsPotentiallyPersonalData": true
+      }
+    }
+  ]
+}

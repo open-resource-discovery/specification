@@ -12,6 +12,19 @@ export async function copyGeneratedToDestination(): Promise<void> {
     await fs.copy("./src/generated/spec/v1/docs/Configuration.md", "docs/spec-v1/interfaces/Configuration.md");
     await fs.copy("./src/generated/spec/v1/docs/Document.md", "docs/spec-v1/interfaces/Document.md");
 
+    // Copy Model Extensions
+    await fs.ensureDir("docs/spec-extensions/models/");
+    await fs.copy("./src/generated/spec/v1/docs/OrdOverlay.md", "docs/spec-extensions/models/OrdOverlay.md");
+
+    // Publish OrdOverlay schema at its canonical $id URL path so that $schema references resolve correctly.
+    // The generated schema $id is https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#
+    // TODO: if additional model extension schemas are added, generalise this into a loop over spec-extension/models/*.schema.yaml.
+    await fs.ensureDir("static/spec-extension/models/");
+    await fs.copy(
+      "./src/generated/spec/v1/schemas/OrdOverlay.schema.json",
+      "static/spec-extension/models/OrdOverlay.schema.json",
+    );
+
     // Create docs/spec-v1/examples/ directory and copy examples specifically
     await fs.ensureDir("docs/spec-v1/examples/");
     await fs.copy("./src/generated/spec/v1/docs/examples", "docs/spec-v1/examples/");
