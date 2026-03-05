@@ -142,3 +142,11 @@ Coverage includes:
 - no-match failure behavior
 
 Integration-style tests also apply overlay files from `examples/overlay` to existing metadata files in `examples/`.
+
+## TODOs
+- Decide mandatory vs optional target resolution fields (target, target.ordId, etc.) in OrdOverlay.intro.md (line 60).
+- Decide whether overlay document ordId should be mandatory in OrdOverlay.intro.md (line 9).
+- Confirm OData operation mapping with domain experts in OrdOverlay.intro.md (line 65).
+- Implement concept-level selectors (operation, entityType, propertyType) in merge runtime (tracked in README).
+- Decide whether/when strict target.url matching should be enabled (tracked in types.ts (line 43) and README).
+- Extend definitionType structure checks beyond openapi-v3 (tracked in types.ts (line 107)).
