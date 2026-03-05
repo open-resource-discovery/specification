@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Clarification: The `type` field on `ApiResourceDefinition` and `EventResourceDefinition` accepts not only the predefined enum values and `custom`, but also any valid [Specification ID](./docs/spec-v1/index.md#specification-id) as an extension point. All `apiProtocol` descriptions that listed allowed `type` values now consistently mention this option alongside `custom`.
+
 ## [1.14.0]
 
 ### Added
