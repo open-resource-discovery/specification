@@ -26,6 +26,9 @@ export type Visibility2 = string;
  *   - API Resource Definition `type`
  *   - Event Resource Definition `type`
  *   - Capability Definition `type`
+ *
+ * The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
+ * In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
  */
 export type OverlayDefinitionType = OverlayDefinitionType1 & OverlayDefinitionType2;
 export type OverlayDefinitionType1 =
@@ -45,8 +48,7 @@ export type OverlayDefinitionType1 =
   | "sap-csn-interop-effective-v1"
   | "asyncapi-v2"
   | "sap.mdo:mdi-capability-definition:v1"
-  | "ord:overlay:v1"
-  | "custom";
+  | "ord:overlay:v1";
 export type OverlayDefinitionType2 = string;
 /**
  * Identifies the element in the target to patch.
@@ -92,7 +94,7 @@ export type Selector =
  *   - Generic fallback: jsonPath (any JSON/YAML document, structure-bound)
  *
  * Selector support by metadata format:
- *   - `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP (typically `custom` API Resource Definition today).
+ *   - `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP (identified via a Specification ID in `definitionType`).
  *   - `entityType` and `propertyType`: OData (`edmx` for v2/v4, `csdl-json` for v4).
  *   - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).
  *   - `ordId`: ORD resource metadata level (patching ORD resources themselves).
@@ -301,7 +303,7 @@ export interface SelectorByOperation {
    * Concept-level operation identifier.
    * Supported mappings:
    * - OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to OpenAPI `operationId`.
-   * - MCP metadata (typically provided via API Resource Definition type `custom` today): maps to MCP Tool `name`.
+   * - MCP metadata (identified via `definitionType` as a Specification ID): maps to MCP Tool `name`.
    *   See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name
    *
    * Not currently supported for OData selectors.

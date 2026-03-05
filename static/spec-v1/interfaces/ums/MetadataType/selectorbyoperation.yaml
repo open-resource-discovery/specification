@@ -18,7 +18,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'operation'
       type: 'string'
-      description: "Concept-level operation identifier.\nSupported mappings:\n- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to OpenAPI `operationId`.\n- MCP metadata (typically provided via API Resource Definition type `custom` today): maps to MCP Tool `name`.\n  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name\n\nNot currently supported for OData selectors.\nBest current guess for future OData support:\n- map to `Action`/`Function` names (prefer fully-qualified name)\n- or `ActionImport`/`FunctionImport` names when exposed via the entity container\nTODO: validate this mapping with OData experts."
+      description: "Concept-level operation identifier.\nSupported mappings:\n- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to OpenAPI `operationId`.\n- MCP metadata (identified via `definitionType` as a Specification ID): maps to MCP Tool `name`.\n  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name\n\nNot currently supported for OData selectors.\nBest current guess for future OData support:\n- map to `Action`/`Function` names (prefer fully-qualified name)\n- or `ActionImport`/`FunctionImport` names when exposed via the entity container\nTODO: validate this mapping with OData experts."
       mandatory: true
       constraints:
         minLength: 1

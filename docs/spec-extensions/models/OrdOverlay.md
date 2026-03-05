@@ -46,7 +46,9 @@ It accepts:
 
 - Any valid [Specification ID](../../spec-v1/index.md#specification-id)
 - Values reused from API/Event/Capability resource definition `type` fields
-  (for example `openapi-v3`, `asyncapi-v2`, `edmx`, `csdl-json`, `sap.mdo:mdi-capability-definition:v1`, `ord:overlay:v1`, `custom`)
+  (for example `openapi-v3`, `asyncapi-v2`, `edmx`, `csdl-json`, `sap.mdo:mdi-capability-definition:v1`, `ord:overlay:v1`)
+
+The literal `custom` is deprecated for `definitionType`. Use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
 
 Target resolution notes:
 
@@ -167,8 +169,11 @@ MUST be either:
   - Event Resource Definition `type`
   - Capability Definition `type`
 
+The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
+In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
+
 **Type:** string<br/>
-**Allowed Values (extensible)**: <ul><li><em>Any</em> string: Any valid [Specification ID](../../spec-v1/index.md#specification-id).</li><li>`"openapi-v2"`</li><li>`"openapi-v3"`</li><li>`"openapi-v3.1+"`</li><li>`"raml-v1"`</li><li>`"edmx"`</li><li>`"csdl-json"`</li><li>`"graphql-sdl"`</li><li>`"wsdl-v1"`</li><li>`"wsdl-v2"`</li><li>`"a2a-agent-card"`</li><li>`"sap-rfc-metadata-v1"`</li><li>`"sap-sql-api-definition-v1"`</li><li>`"sap-csn-interop-effective-v1"`</li><li>`"asyncapi-v2"`</li><li>`"sap.mdo:mdi-capability-definition:v1"`</li><li>`"ord:overlay:v1"`</li><li>`"custom"`</li></ul>
+**Allowed Values (extensible)**: <ul><li><em>Any</em> string: Any valid [Specification ID](../../spec-v1/index.md#specification-id).</li><li>`"openapi-v2"`</li><li>`"openapi-v3"`</li><li>`"openapi-v3.1+"`</li><li>`"raml-v1"`</li><li>`"edmx"`</li><li>`"csdl-json"`</li><li>`"graphql-sdl"`</li><li>`"wsdl-v1"`</li><li>`"wsdl-v2"`</li><li>`"a2a-agent-card"`</li><li>`"sap-rfc-metadata-v1"`</li><li>`"sap-sql-api-definition-v1"`</li><li>`"sap-csn-interop-effective-v1"`</li><li>`"asyncapi-v2"`</li><li>`"sap.mdo:mdi-capability-definition:v1"`</li><li>`"ord:overlay:v1"`</li></ul>
 
 ###### Example Values:
 
@@ -325,7 +330,7 @@ One of the following:
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="selector-by-operation_operation">operation<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#selector-by-operation_operation" title="#selector-by-operation_operation"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level operation identifier.<br/>Supported mappings:<br/>- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to OpenAPI `operationId`.<br/>- MCP metadata (typically provided via API Resource Definition type `custom` today): maps to MCP Tool `name`.<br/>  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name<br/><br/>Not currently supported for OData selectors.<br/>Best current guess for future OData support:<br/>- map to `Action`/`Function` names (prefer fully-qualified name)<br/>- or `ActionImport`/`FunctionImport` names when exposed via the entity container<br/>TODO: validate this mapping with OData experts.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"getBusinessPartner"`</li><li>`"dispute-case-resolution"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="selector-by-operation_operation">operation<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#selector-by-operation_operation" title="#selector-by-operation_operation"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level operation identifier.<br/>Supported mappings:<br/>- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to OpenAPI `operationId`.<br/>- MCP metadata (identified via `definitionType` as a Specification ID): maps to MCP Tool `name`.<br/>  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name<br/><br/>Not currently supported for OData selectors.<br/>Best current guess for future OData support:<br/>- map to `Action`/`Function` names (prefer fully-qualified name)<br/>- or `ActionImport`/`FunctionImport` names when exposed via the entity container<br/>TODO: validate this mapping with OData experts.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"getBusinessPartner"`</li><li>`"dispute-case-resolution"`</li></ul></div>|
 
 
 ### Selector By Entity Type

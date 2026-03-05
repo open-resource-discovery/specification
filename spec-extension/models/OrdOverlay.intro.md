@@ -40,7 +40,9 @@ It accepts:
 
 - Any valid [Specification ID](../../spec-v1/index.md#specification-id)
 - Values reused from API/Event/Capability resource definition `type` fields
-  (for example `openapi-v3`, `asyncapi-v2`, `edmx`, `csdl-json`, `sap.mdo:mdi-capability-definition:v1`, `ord:overlay:v1`, `custom`)
+  (for example `openapi-v3`, `asyncapi-v2`, `edmx`, `csdl-json`, `sap.mdo:mdi-capability-definition:v1`, `ord:overlay:v1`)
+
+The literal `custom` is deprecated for `definitionType`. Use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
 
 Target resolution notes:
 
