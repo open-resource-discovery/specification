@@ -35,6 +35,7 @@ jobs:
           BASE_URL: /pr-preview/specification/pr-${{ github.event.pull_request.number }}/
         run: |
           npm ci
+          npm test
           npm run build
 
       - name: Deploy / Remove preview in spec-preview repo

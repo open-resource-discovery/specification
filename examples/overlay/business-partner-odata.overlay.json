@@ -2,15 +2,14 @@
   "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:business-partner-odata:v1",
-  "description": "Adds human-readable descriptions and deprecation annotations to the Business Partner OData CSDL without modifying the original $metadata document.",
+  "description": "TODO: Unclear how to do this correctly for OData, we need an expert to help out here",
   "describedSystemType": {
     "systemNamespace": "sap.foo"
   },
   "visibility": "internal",
   "target": {
     "ordId": "sap.foo:apiResource:BusinessPartnerODataV2:v1",
-    "definitionType": "edmx"
-  },
+    "definitionType": "edmx" },
   "patches": [
     {
       "action": "merge",

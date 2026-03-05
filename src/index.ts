@@ -3,6 +3,9 @@ import * as staticConfigurationSchema from "./generated/spec/v1/schemas/Configur
 import { SpecJsonSchemaRoot } from "@open-resource-discovery/spec-toolkit";
 
 export * from "./generated/spec/v1/types";
+export { applyOverlayToDocument } from "./overlay-merge/merge";
+export { OverlayMergeError } from "./overlay-merge/types";
+export type { ApplyOverlayOptions, JSONValue, OverlayMergeContext } from "./overlay-merge/types";
 
 /**
  * The JSON Schema (draft-07) describing the ORD Document interface
