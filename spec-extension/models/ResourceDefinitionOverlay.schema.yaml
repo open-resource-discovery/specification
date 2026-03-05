@@ -90,6 +90,7 @@ properties:
 
 required:
   - resourceDefinitionOverlay
+  - target
   - patches
 
 definitions:

@@ -58,7 +58,7 @@ export interface ResourceDefinitionOverlay {
   describedSystemVersion?: SystemVersion;
   describedSystemInstance?: SystemInstance;
   visibility?: Visibility;
-  target?: OverlayTarget;
+  target: OverlayTarget;
   /**
    * Ordered sequence of patches to apply to the targeted resource(s).
    * Patches are applied in the order listed.
