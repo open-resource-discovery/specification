@@ -36,6 +36,12 @@ description: |-
       - schema-level `Action`/`Function` names (prefer fully-qualified name)
       - container-level `ActionImport`/`FunctionImport` names when exposed via entity container
       Needs validation with OData experts.
+
+  Validation assumption:
+    - overlays and overlay application assume the selected target document is already valid
+      for its native metadata format.
+    - the merge process does not fully validate all target metadata formats.
+    - the merged output should be validated again with the corresponding format-specific tooling.
 x-ums-type: root
 type: object
 
@@ -106,8 +112,8 @@ properties:
 
   target:
     description: |-
-      Reference to the single target being patched by this overlay.
-      The target can be an ORD resource or a referenced resource definition file.
+      Optional target context for this overlay.
+      The target can reference an ORD resource or a referenced resource definition file.
 
       `ordId` selects the ORD resource metadata itself.
       If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous
@@ -117,9 +123,12 @@ properties:
       Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.
       Use `definitionType` and/or an explicit `url` to identify which one is patched.
 
-      MUST provide at least one identifier: an ORD ID, a URL, or one or more correlationIds.
-      Multiple identifiers are treated as all pointing to the same resource,
-      providing redundant ways to resolve it.
+      For overlays that only patch ORD-level metadata via patch selectors (`selector.ordId`),
+      a `target.ordId` is often not needed. In that case, `target` may be omitted entirely,
+      or provided as an empty object for informational purposes.
+      Multiple resources can still be patched by defining multiple patches with different selector `ordId` values.
+
+      If the ORD document URL is known, it can be provided via `target.url` as additional context.
 
       TODO:
       - decide what should be optional vs mandatory on target resolution
@@ -137,7 +146,6 @@ properties:
 
 required:
   - ordOverlay
-  - target
   - patches
 
 definitions:
@@ -327,8 +335,8 @@ definitions:
     title: Overlay Target
     x-ums-type: "embedded"
     description: |-
-      Reference to the target being patched.
-      The target can be an ORD resource or a referenced resource definition file.
+      Optional context about the target being patched.
+      The target can refer to an ORD resource or to a referenced resource definition file.
 
       `ordId` targets the ORD resource metadata itself.
       For patching a specific resource definition file of that resource, use `url` and/or `definitionType`
@@ -337,14 +345,14 @@ definitions:
       Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
       In such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.
 
-      At least one of ordId, url, or correlationIds MUST be provided.
-      Multiple identifiers are treated as all pointing to the same resource,
-      providing redundant ways to resolve it.
+      For ORD-level-only overlays, this object can be omitted (or left empty) and
+      selectors can directly identify resources via `selector.ordId`.
+      Multiple identifiers, if provided, are treated as all pointing to the same resource.
 
       TODO:
       - decide what should be optional vs mandatory here
       - revisit cleanup after discussion; some transparency-focused fields may be removed
-    minProperties: 1
+    additionalProperties: false
     properties:
       ordId:
         type: string
@@ -401,6 +409,10 @@ definitions:
           The patch operation to perform on the selected element:
 
           - `update`: Replace the selected element entirely with `data`.
+          - `append`:
+            - append string `data` to the selected string value.
+            - only valid when the selected element is a text/string field.
+            - useful to extend existing descriptions without replacing them.
           - `merge`:
             - objects are deep-merged recursively.
             - scalar values are overwritten by the value from `data`.
@@ -420,6 +432,7 @@ definitions:
           `data: { "foo": { "bar": null } }` removes `foo.bar` inside the selected element.
         enum:
           - update
+          - append
           - merge
           - remove
 
@@ -579,11 +592,15 @@ definitions:
           - "A_BusinessPartnerType"
 
   PatchValue:
-    type: object
+    type:
+      - object
+      - string
     title: Patch Value
     x-ums-type: "embedded"
     description: |-
       The value to be used together with patch actions:
+      - with `action: append`:
+        - string value appended to selected text field
       - with `action: merge`:
         - objects are deep-merged recursively
         - scalar values overwrite existing values
@@ -598,4 +615,4 @@ definitions:
       1. remove the array
       2. merge the new array value
 
-      This is a free-form object whose structure depends on the target being patched.
+      This is a free-form value whose structure depends on the target being patched.

@@ -4,8 +4,13 @@ TypeScript implementation for applying ORD overlays to JSON-based metadata files
 
 Current scope:
 - Supports selector types: `jsonPath`, `ordId`
-- Supports actions: `merge`, `update`, `remove`
+- Supports actions: `merge`, `update`, `remove`, `append`
 - Uses `jsonpath` for JSONPath evaluation
+
+Validation assumption:
+- The input target document is assumed to already be valid for its native metadata format.
+- This merge tool does not fully validate target metadata formats.
+- Validate the merged output again with the target format-specific validator/tooling.
 
 ## What It Does
 
@@ -18,10 +23,22 @@ Selector support implemented now:
 Selectors currently not implemented in this script:
 - `operation`, `entityType`, `propertyType`
 
+## TODO / Open Decisions
+
+- `target.url` is currently treated as informational context and is not used for strict target matching.
+- `definitionType` document validation is currently implemented only for `openapi-v3`.
+- Concept-level selector execution (`operation`, `entityType`, `propertyType`) is not implemented yet.
+- Decide whether strict URL matching should be defaulted, optional, or profile-specific.
+- Extend `definitionType` validation coverage for OData and MCP metadata formats.
+
 ## Merge Semantics
 
 Implemented patch semantics:
 - `update`: replaces the selected element with `data`
+- `append`:
+  - `data` must be a string
+  - selected target value must be a string
+  - appends `data` to the existing text value
 - `merge`:
   - objects: deep-merged recursively
   - scalars: overwritten
@@ -55,7 +72,7 @@ It intentionally does not patch nested reference objects by default (for example
 
 Resolution behavior:
 - The implementation discovers root-level arrays of objects that contain an `ordId` field, and only scans those collections
-- If `selector.resourceType` is provided, it filters candidate collections by exact collection name (or simple plural fallback by appending `s`)
+- If `selector.resourceType` is provided, it filters candidate collections by exact collection name (with simple plural fallbacks such as `s` and `y -> ies`)
 - There is no hardcoded ORD resource type map in the resolver
 
 ## Library Usage
@@ -104,7 +121,7 @@ Flags:
 - `--input <path>` required
 - `--output <path>` optional (otherwise writes to stdout)
 - `--target-ord-id <ordId>` optional
-- `--target-url <url>` optional
+- `--target-url <url>` optional (currently informational context)
 - `--target-definition-type <type>` optional
 - `--allow-no-match` optional
 - `--warn-on-no-match` optional

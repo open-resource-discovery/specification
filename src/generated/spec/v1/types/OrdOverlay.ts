@@ -69,6 +69,31 @@ export type Selector =
   | SelectorByOperation
   | SelectorByEntityType
   | SelectorByPropertyType;
+/**
+ * The value to be used together with patch actions:
+ * - with `action: append`:
+ *   - string value appended to selected text field
+ * - with `action: merge`:
+ *   - objects are deep-merged recursively
+ *   - scalar values overwrite existing values
+ *   - arrays are appended to existing arrays
+ * - with `action: update`, it replaces the selected element entirely
+ * - with `action: remove`:
+ *   - if omitted, the selected element is removed entirely
+ *   - if provided, fields set to `null` are deleted (recursively, including nested fields;
+ *     JSON Merge Patch-style delete semantics)
+ *
+ * To fully replace an existing array, use two ordered patches:
+ * 1. remove the array
+ * 2. merge the new array value
+ *
+ * This is a free-form value whose structure depends on the target being patched.
+ */
+export type PatchValue =
+  | {
+      [k: string]: unknown | undefined;
+    }
+  | string;
 
 /**
  * ⚠️ ALPHA: This specification is in alpha and subject to change.
@@ -104,6 +129,12 @@ export type Selector =
  *     - schema-level `Action`/`Function` names (prefer fully-qualified name)
  *     - container-level `ActionImport`/`FunctionImport` names when exposed via entity container
  *     Needs validation with OData experts.
+ *
+ * Validation assumption:
+ *   - overlays and overlay application assume the selected target document is already valid
+ *     for its native metadata format.
+ *   - the merge process does not fully validate all target metadata formats.
+ *   - the merged output should be validated again with the corresponding format-specific tooling.
  */
 export interface ORDOverlay {
   /**
@@ -135,7 +166,7 @@ export interface ORDOverlay {
   describedSystemVersion?: OverlaySystemVersion;
   describedSystemInstance?: OverlaySystemInstance;
   visibility?: Visibility;
-  target: OverlayTarget;
+  target?: OverlayTarget;
   /**
    * Ordered sequence of patches to apply to the targeted resource(s).
    * Patches are applied in the order listed.
@@ -202,8 +233,8 @@ export interface OverlaySystemInstance {
   correlationIds?: [CorrelationID, ...CorrelationID[]];
 }
 /**
- * Reference to the single target being patched by this overlay.
- * The target can be an ORD resource or a referenced resource definition file.
+ * Optional target context for this overlay.
+ * The target can reference an ORD resource or a referenced resource definition file.
  *
  * `ordId` selects the ORD resource metadata itself.
  * If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous
@@ -213,9 +244,12 @@ export interface OverlaySystemInstance {
  * Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.
  * Use `definitionType` and/or an explicit `url` to identify which one is patched.
  *
- * MUST provide at least one identifier: an ORD ID, a URL, or one or more correlationIds.
- * Multiple identifiers are treated as all pointing to the same resource,
- * providing redundant ways to resolve it.
+ * For overlays that only patch ORD-level metadata via patch selectors (`selector.ordId`),
+ * a `target.ordId` is often not needed. In that case, `target` may be omitted entirely,
+ * or provided as an empty object for informational purposes.
+ * Multiple resources can still be patched by defining multiple patches with different selector `ordId` values.
+ *
+ * If the ORD document URL is known, it can be provided via `target.url` as additional context.
  *
  * TODO:
  * - decide what should be optional vs mandatory on target resolution
@@ -242,7 +276,6 @@ export interface OverlayTarget {
    */
   correlationIds?: [string, ...string[]];
   definitionType?: OverlayDefinitionType;
-  [k: string]: unknown | undefined;
 }
 /**
  * A single patch action to apply to the element identified by the selector.
@@ -252,6 +285,10 @@ export interface Patch {
    * The patch operation to perform on the selected element:
    *
    * - `update`: Replace the selected element entirely with `data`.
+   * - `append`:
+   *   - append string `data` to the selected string value.
+   *   - only valid when the selected element is a text/string field.
+   *   - useful to extend existing descriptions without replacing them.
    * - `merge`:
    *   - objects are deep-merged recursively.
    *   - scalar values are overwritten by the value from `data`.
@@ -270,7 +307,7 @@ export interface Patch {
    * Example for nested removal:
    * `data: { "foo": { "bar": null } }` removes `foo.bar` inside the selected element.
    */
-  action: "update" | "merge" | "remove";
+  action: "update" | "append" | "merge" | "remove";
   selector: Selector;
   data?: PatchValue;
   [k: string]: unknown | undefined;
@@ -337,25 +374,4 @@ export interface SelectorByPropertyType {
    * For OData metadata, this identifies the containing EntityType.
    */
   entityType: string;
-}
-/**
- * The value to be used together with patch actions:
- * - with `action: merge`:
- *   - objects are deep-merged recursively
- *   - scalar values overwrite existing values
- *   - arrays are appended to existing arrays
- * - with `action: update`, it replaces the selected element entirely
- * - with `action: remove`:
- *   - if omitted, the selected element is removed entirely
- *   - if provided, fields set to `null` are deleted (recursively, including nested fields;
- *     JSON Merge Patch-style delete semantics)
- *
- * To fully replace an existing array, use two ordered patches:
- * 1. remove the array
- * 2. merge the new array value
- *
- * This is a free-form object whose structure depends on the target being patched.
- */
-export interface PatchValue {
-  [k: string]: unknown | undefined;
 }

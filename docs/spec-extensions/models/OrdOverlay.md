@@ -30,7 +30,7 @@ Overlays can patch on both levels:
 - referenced resource definition level metadata
 
 The patch format is intentionally unopinionated and can patch any JSON/YAML-based file.
-In addition, it explicitly supports patching API and data model metadata through concept-level selectors (`operation`, `entityType`, `propertyType`).
+In addition, it explicitly supports patching API, event, and data model metadata through concept-level selectors (`operation`, `entityType`, `propertyType`).
 When patching ORD resources themselves, the ORD ID becomes the selector (`ordId`).
 
 Selector support by metadata format:
@@ -52,11 +52,16 @@ The literal `custom` is deprecated for `definitionType`. Use a concrete [Specifi
 
 Target resolution notes:
 
-- `ordId` selects the ORD resource metadata itself.
+- `target` is optional context metadata for target resolution.
+- `ordId` in `target` selects the ORD resource metadata itself.
 - If the patch is meant for a resource definition file (not only ORD-level metadata),
   `ordId` alone can be ambiguous when the resource has multiple definitions.
 - Use `url` and/or `definitionType` to make the concrete definition file explicit.
   Example: one OData API can expose both `edmx` and `openapi-v3` definitions.
+- For overlays that only patch ORD-level metadata via selector `ordId`, `target` may be omitted
+  (or provided as an empty object). In this mode, multiple resources can be patched by multiple
+  patch entries using different selector `ordId` values.
+- If the ORD document URL is known, `target.url` can still be provided as informational context.
 
 TODO (target resolution model):
 
@@ -72,6 +77,19 @@ TODO (OData operations):
   See [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
 
 Concept-level selectors are preferred over structural selectors (`jsonPath`) because they are more resilient to format evolution (for example OpenAPI 3.0 to 3.1, or OData CSDL XML to JSON).
+
+Validation assumption:
+
+- Overlays and overlay application assume the target document is already valid for its native format.
+- The merge tool does not fully validate target metadata formats.
+- After applying overlays, the resulting merged document should be validated again with the target format's validator/tooling.
+
+Patch action semantics for `append`:
+
+- `data` must be a string.
+- The selected value must be a string/text field.
+- The `data` string is appended to the selected string.
+- Typical use-case: extend an existing `description` without replacing it.
 
 Patch action semantics for `merge`:
 
@@ -143,7 +161,7 @@ ORD Overlay files can be referenced from ORD documents using a `resourceDefiniti
 |<div className="interface-property-name anchor" id="ord-overlay_describedsystemversion">describedSystemVersion<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsystemversion" title="#ord-overlay_describedsystemversion"></a></div>|<div className="interface-property-type">[Overlay System Version](#overlay-system-version)</div>|<div className="interface-property-description">Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.</div>|
 |<div className="interface-property-name anchor" id="ord-overlay_describedsysteminstance">describedSystemInstance<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsysteminstance" title="#ord-overlay_describedsysteminstance"></a></div>|<div className="interface-property-type">[Overlay System Instance](#overlay-system-instance)</div>|<div className="interface-property-description">Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.</div>|
 |<div className="interface-property-name anchor" id="ord-overlay_visibility">visibility<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_visibility" title="#ord-overlay_visibility"></a></div>|<div className="interface-property-type">[Visibility](#visibility)</div>|<div className="interface-property-description">Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.<br/><br/>This controls who can see that the resource exists and retrieve its metadata level information.<br/>It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.<br/><br/>Use this to prevent exposing internal implementation details to inappropriate consumer audiences.</div>|
-|<div className="interface-property-name anchor" id="ord-overlay_target">target<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#ord-overlay_target" title="#ord-overlay_target"></a></div>|<div className="interface-property-type">[Overlay Target](#overlay-target)</div>|<div className="interface-property-description">Reference to the single target being patched by this overlay.<br/>The target can be an ORD resource or a referenced resource definition file.<br/><br/>`ordId` selects the ORD resource metadata itself.<br/>If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous<br/>when the resource exposes multiple definitions.<br/>In that case, use `url` and/or `definitionType` to clarify the intended file.<br/><br/>Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.<br/>Use `definitionType` and/or an explicit `url` to identify which one is patched.<br/><br/>MUST provide at least one identifier: an ORD ID, a URL, or one or more correlationIds.<br/>Multiple identifiers are treated as all pointing to the same resource,<br/>providing redundant ways to resolve it.<br/><br/>TODO:<br/>- decide what should be optional vs mandatory on target resolution<br/>- review cleanup after discussion: this proposal adds fields for transparency; some may be dropped again</div>|
+|<div className="interface-property-name anchor" id="ord-overlay_target">target<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_target" title="#ord-overlay_target"></a></div>|<div className="interface-property-type">[Overlay Target](#overlay-target)</div>|<div className="interface-property-description">Optional target context for this overlay.<br/>The target can reference an ORD resource or a referenced resource definition file.<br/><br/>`ordId` selects the ORD resource metadata itself.<br/>If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous<br/>when the resource exposes multiple definitions.<br/>In that case, use `url` and/or `definitionType` to clarify the intended file.<br/><br/>Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.<br/>Use `definitionType` and/or an explicit `url` to identify which one is patched.<br/><br/>For overlays that only patch ORD-level metadata via patch selectors (`selector.ordId`),<br/>a `target.ordId` is often not needed. In that case, `target` may be omitted entirely,<br/>or provided as an empty object for informational purposes.<br/>Multiple resources can still be patched by defining multiple patches with different selector `ordId` values.<br/><br/>If the ORD document URL is known, it can be provided via `target.url` as additional context.<br/><br/>TODO:<br/>- decide what should be optional vs mandatory on target resolution<br/>- review cleanup after discussion: this proposal adds fields for transparency; some may be dropped again</div>|
 |<div className="interface-property-name anchor" id="ord-overlay_patches">patches<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#ord-overlay_patches" title="#ord-overlay_patches"></a></div>|<div className="interface-property-type">Array&lt;[Patch](#patch)&gt;</div>|<div className="interface-property-description">Ordered sequence of patches to apply to the targeted resource(s).<br/>Patches are applied in the order listed.<hr/>**Array Constraint**: MUST have at least 1 items</div>|
 
 
@@ -247,8 +265,8 @@ A [system version](../../spec-v1/index.md#system-version) describes a version/re
 
 ### Overlay Target
 
-Reference to the target being patched.
-The target can be an ORD resource or a referenced resource definition file.
+Optional context about the target being patched.
+The target can refer to an ORD resource or to a referenced resource definition file.
 
 `ordId` targets the ORD resource metadata itself.
 For patching a specific resource definition file of that resource, use `url` and/or `definitionType`
@@ -257,9 +275,9 @@ to disambiguate.
 Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
 In such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.
 
-At least one of ordId, url, or correlationIds MUST be provided.
-Multiple identifiers are treated as all pointing to the same resource,
-providing redundant ways to resolve it.
+For ORD-level-only overlays, this object can be omitted (or left empty) and
+selectors can directly identify resources via `selector.ordId`.
+Multiple identifiers, if provided, are treated as all pointing to the same resource.
 
 TODO:
 - decide what should be optional vs mandatory here
@@ -283,9 +301,9 @@ A single patch action to apply to the element identified by the selector.
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="patch_action">action<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#patch_action" title="#patch_action"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">The patch operation to perform on the selected element:<br/><br/>- `update`: Replace the selected element entirely with `data`.<br/>- `merge`:<br/>  - objects are deep-merged recursively.<br/>  - scalar values are overwritten by the value from `data`.<br/>  - arrays are appended (new array items are added after existing items).<br/>  - existing object properties not mentioned in `data` are preserved.<br/><br/>  To fully replace an array, use two ordered patches:<br/>  1. `remove` the array at the selected location.<br/>  2. `merge` the new array content.<br/>- `remove`:<br/>  - without `data`: remove the selected element from the document entirely.<br/>  - with `data`: remove fields that are set to `null`.<br/>    This applies recursively, so nested `null` values remove nested fields as well<br/>    (JSON Merge Patch-style delete semantics).<br/><br/>Example for nested removal:<br/>`data: { "foo": { "bar": null } }` removes `foo.bar` inside the selected element.<hr/>**Allowed Values**: <ul><li>`"update"`</li><li>`"merge"`</li><li>`"remove"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="patch_action">action<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#patch_action" title="#patch_action"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">The patch operation to perform on the selected element:<br/><br/>- `update`: Replace the selected element entirely with `data`.<br/>- `append`:<br/>  - append string `data` to the selected string value.<br/>  - only valid when the selected element is a text/string field.<br/>  - useful to extend existing descriptions without replacing them.<br/>- `merge`:<br/>  - objects are deep-merged recursively.<br/>  - scalar values are overwritten by the value from `data`.<br/>  - arrays are appended (new array items are added after existing items).<br/>  - existing object properties not mentioned in `data` are preserved.<br/><br/>  To fully replace an array, use two ordered patches:<br/>  1. `remove` the array at the selected location.<br/>  2. `merge` the new array content.<br/>- `remove`:<br/>  - without `data`: remove the selected element from the document entirely.<br/>  - with `data`: remove fields that are set to `null`.<br/>    This applies recursively, so nested `null` values remove nested fields as well<br/>    (JSON Merge Patch-style delete semantics).<br/><br/>Example for nested removal:<br/>`data: { "foo": { "bar": null } }` removes `foo.bar` inside the selected element.<hr/>**Allowed Values**: <ul><li>`"update"`</li><li>`"append"`</li><li>`"merge"`</li><li>`"remove"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="patch_selector">selector<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#patch_selector" title="#patch_selector"></a></div>|<div className="interface-property-type">[Selector](#selector)</div>|<div className="interface-property-description">Identifies the element in the target to patch.<br/>Exactly one selector type is used per patch. The selector object uses one explicit key:<br/><br/>- `ordId`: resource level - targets an ORD resource (API, Event, Data Product, ...)<br/>- `operation`: operation level - targets an operation by its concept-level ID<br/>- `entityType`: entity type level - targets an entity/type by its concept-level ID<br/>- `propertyType`: property type level - targets a property/element within an entity type<br/>- `jsonPath`: generic fallback - targets any location in a JSON/YAML-based target document by path<br/><br/>Prefer concept-level selectors (operation, entityType, propertyType) over jsonPath<br/>where possible, as they are resilient to structural changes in the target format.</div>|
-|<div className="interface-property-name anchor" id="patch_data">data<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#patch_data" title="#patch_data"></a></div>|<div className="interface-property-type">[Patch Value](#patch-value)</div>|<div className="interface-property-description">The value to be used together with patch actions:<br/>- with `action: merge`:<br/>  - objects are deep-merged recursively<br/>  - scalar values overwrite existing values<br/>  - arrays are appended to existing arrays<br/>- with `action: update`, it replaces the selected element entirely<br/>- with `action: remove`:<br/>  - if omitted, the selected element is removed entirely<br/>  - if provided, fields set to `null` are deleted (recursively, including nested fields;<br/>    JSON Merge Patch-style delete semantics)<br/><br/>To fully replace an existing array, use two ordered patches:<br/>1. remove the array<br/>2. merge the new array value<br/><br/>This is a free-form object whose structure depends on the target being patched.</div>|
+|<div className="interface-property-name anchor" id="patch_data">data<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#patch_data" title="#patch_data"></a></div>|<div className="interface-property-type">[Patch Value](#patch-value)</div>|<div className="interface-property-description">The value to be used together with patch actions:<br/>- with `action: append`:<br/>  - string value appended to selected text field<br/>- with `action: merge`:<br/>  - objects are deep-merged recursively<br/>  - scalar values overwrite existing values<br/>  - arrays are appended to existing arrays<br/>- with `action: update`, it replaces the selected element entirely<br/>- with `action: remove`:<br/>  - if omitted, the selected element is removed entirely<br/>  - if provided, fields set to `null` are deleted (recursively, including nested fields;<br/>    JSON Merge Patch-style delete semantics)<br/><br/>To fully replace an existing array, use two ordered patches:<br/>1. remove the array<br/>2. merge the new array value<br/><br/>This is a free-form value whose structure depends on the target being patched.</div>|
 
 
 ### Selector
@@ -355,6 +373,8 @@ One of the following:
 ### Patch Value
 
 The value to be used together with patch actions:
+- with `action: append`:
+  - string value appended to selected text field
 - with `action: merge`:
   - objects are deep-merged recursively
   - scalar values overwrite existing values
@@ -369,5 +389,7 @@ To fully replace an existing array, use two ordered patches:
 1. remove the array
 2. merge the new array value
 
-This is a free-form object whose structure depends on the target being patched.
+This is a free-form value whose structure depends on the target being patched.
+
+**Type:** object,string
 

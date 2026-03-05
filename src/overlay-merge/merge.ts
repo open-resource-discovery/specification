@@ -29,7 +29,7 @@ export function applyOverlayToDocument<T extends JSONValue>(
   if (validateDefinitionType) {
     const definitionType =
       options.context?.definitionType ??
-      (typeof overlay.target.definitionType === "string" ? overlay.target.definitionType : undefined);
+      (typeof overlay.target?.definitionType === "string" ? overlay.target.definitionType : undefined);
 
     if (!validateTargetDocumentForDefinitionType(sourceDocument, definitionType)) {
       throw new OverlayMergeError(
@@ -88,6 +88,21 @@ function applyPatch(rootHolder: RootHolder, patch: Patch, matches: NodeReference
     return;
   }
 
+  if (patch.action === "append") {
+    if (typeof patch.data !== "string") {
+      throw new OverlayMergeError("Patch action 'append' requires string data.");
+    }
+
+    matches.forEach((match) => {
+      if (typeof match.value !== "string") {
+        throw new OverlayMergeError(`Patch action 'append' requires a string target value (at ${match.path}).`);
+      }
+
+      setNode(rootHolder, match, `${match.value}${patch.data}`);
+    });
+    return;
+  }
+
   if (patch.action === "merge") {
     if (patch.data === undefined) {
       throw new OverlayMergeError("Patch action 'merge' requires data.");
@@ -100,20 +115,25 @@ function applyPatch(rootHolder: RootHolder, patch: Patch, matches: NodeReference
     return;
   }
 
-  if (patch.data === undefined) {
-    removeMatchedNodes(matches);
-    return;
-  }
-
-  matches.forEach((match) => {
-    const updated = removeFieldsMarkedAsNull(match.value, patch.data as unknown as JSONValue);
-    if (updated === REMOVE_SENTINEL) {
-      removeNode(match);
+  if (patch.action === "remove") {
+    if (patch.data === undefined) {
+      removeMatchedNodes(matches);
       return;
     }
 
-    setNode(rootHolder, match, updated);
-  });
+    matches.forEach((match) => {
+      const updated = removeFieldsMarkedAsNull(match.value, patch.data as unknown as JSONValue);
+      if (updated === REMOVE_SENTINEL) {
+        removeNode(match);
+        return;
+      }
+
+      setNode(rootHolder, match, updated);
+    });
+    return;
+  }
+
+  throw new OverlayMergeError(`Unsupported patch action: ${String((patch as { action?: unknown }).action)}`);
 }
 
 function removeMatchedNodes(matches: NodeReference[]): void {

@@ -34,6 +34,14 @@ export interface ApplyOverlayOptions {
    * Defaults to true.
    */
   validateDefinitionType?: boolean;
+  /**
+   * When true, compare overlay `target` metadata against `context`.
+   * Current comparison checks:
+   * - `ordId` equality (if both are provided)
+   * - `definitionType` equality (if both are provided)
+   *
+   * TODO: decide whether/when `url` should be compared strictly.
+   */
   requireTargetMatch?: boolean;
   context?: OverlayMergeContext;
 }
@@ -60,6 +68,9 @@ export function cloneJSONValue<T>(value: T): T {
 
 export function matchesOverlayTarget(overlay: ORDOverlay, context: OverlayMergeContext): boolean {
   const target = overlay.target;
+  if (target === undefined) {
+    return true;
+  }
 
   if (context.ordId !== undefined && target.ordId !== undefined && context.ordId !== target.ordId) {
     return false;
@@ -92,6 +103,9 @@ export function validateTargetDocumentForDefinitionType(
     const openapiVersion = targetDocument.openapi;
     return typeof openapiVersion === "string" && openapiVersion.startsWith("3.");
   }
+
+  // TODO: add structural validators for additional definition types
+  // (e.g. openapi-v2, openapi-v3.1+, mcp, edmx, csdl-json).
 
   return true;
 }

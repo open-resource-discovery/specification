@@ -3,9 +3,6 @@
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:document-1-ord:v1",
   "description": "Patches ORD resource metadata in document-1.json using ordId selectors.",
-  "target": {
-    "url": "/examples/documents/document-1.json"
-  },
   "patches": [
     {
       "action": "merge",

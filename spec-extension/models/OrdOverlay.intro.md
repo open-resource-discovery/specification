@@ -24,7 +24,7 @@ Overlays can patch on both levels:
 - referenced resource definition level metadata
 
 The patch format is intentionally unopinionated and can patch any JSON/YAML-based file.
-In addition, it explicitly supports patching API and data model metadata through concept-level selectors (`operation`, `entityType`, `propertyType`).
+In addition, it explicitly supports patching API, event, and data model metadata through concept-level selectors (`operation`, `entityType`, `propertyType`).
 When patching ORD resources themselves, the ORD ID becomes the selector (`ordId`).
 
 Selector support by metadata format:
@@ -46,11 +46,16 @@ The literal `custom` is deprecated for `definitionType`. Use a concrete [Specifi
 
 Target resolution notes:
 
-- `ordId` selects the ORD resource metadata itself.
+- `target` is optional context metadata for target resolution.
+- `ordId` in `target` selects the ORD resource metadata itself.
 - If the patch is meant for a resource definition file (not only ORD-level metadata),
   `ordId` alone can be ambiguous when the resource has multiple definitions.
 - Use `url` and/or `definitionType` to make the concrete definition file explicit.
   Example: one OData API can expose both `edmx` and `openapi-v3` definitions.
+- For overlays that only patch ORD-level metadata via selector `ordId`, `target` may be omitted
+  (or provided as an empty object). In this mode, multiple resources can be patched by multiple
+  patch entries using different selector `ordId` values.
+- If the ORD document URL is known, `target.url` can still be provided as informational context.
 
 TODO (target resolution model):
 
@@ -66,6 +71,19 @@ TODO (OData operations):
   See [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
 
 Concept-level selectors are preferred over structural selectors (`jsonPath`) because they are more resilient to format evolution (for example OpenAPI 3.0 to 3.1, or OData CSDL XML to JSON).
+
+Validation assumption:
+
+- Overlays and overlay application assume the target document is already valid for its native format.
+- The merge tool does not fully validate target metadata formats.
+- After applying overlays, the resulting merged document should be validated again with the target format's validator/tooling.
+
+Patch action semantics for `append`:
+
+- `data` must be a string.
+- The selected value must be a string/text field.
+- The `data` string is appended to the selected string.
+- Typical use-case: extend an existing `description` without replacing it.
 
 Patch action semantics for `merge`:
 

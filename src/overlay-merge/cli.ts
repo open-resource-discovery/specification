@@ -146,7 +146,7 @@ function printHelp(): void {
   process.stderr.write(`Options:\n`);
   process.stderr.write(`  --output <path>                  Write output file instead of stdout\n`);
   process.stderr.write(`  --target-ord-id <ordId>          Validate overlay.target.ordId against this value\n`);
-  process.stderr.write(`  --target-url <url>               Validate overlay.target.url against this value\n`);
+  process.stderr.write(`  --target-url <url>               Provide target URL context (currently informational)\n`);
   process.stderr.write(`  --target-definition-type <type>  Validate overlay.target.definitionType against this value\n`);
   process.stderr.write(`  --allow-no-match                 Do not fail if a patch selector has no matches\n`);
   process.stderr.write(`  --warn-on-no-match               Warn instead of failing if a patch selector has no matches\n`);

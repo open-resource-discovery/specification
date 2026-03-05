@@ -155,6 +155,113 @@ test("applies ordId selectors to ORD document resources", async () => {
   assert.deepEqual(merged.simpleScalarArray, ["a", "b", "c"]);
 });
 
+test("accepts singular resourceType hints that pluralize to 'ies'", () => {
+  const source = {
+    capabilities: [
+      {
+        ordId: "sap.foo:capability:catalog-search:v1",
+        title: "Catalog Search",
+      },
+    ],
+  } as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    patches: [
+      {
+        action: "merge",
+        selector: {
+          ordId: "sap.foo:capability:catalog-search:v1",
+          resourceType: "capability",
+        },
+        data: {
+          description: "Overlay enriched capability",
+        },
+      },
+    ],
+  } as unknown as ORDOverlay;
+
+  const merged = applyOverlayToDocument(source, overlay) as Record<string, unknown>;
+  const capabilities = merged.capabilities as Array<Record<string, unknown>>;
+  assert.equal(capabilities[0].description, "Overlay enriched capability");
+});
+
+test("appends text to selected string fields", async () => {
+  const openApiSource = (await loadJson(
+    "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
+  )) as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    target: {
+      definitionType: "openapi-v3",
+    },
+    patches: [
+      {
+        action: "append",
+        selector: {
+          jsonPath: "$.info.description",
+        },
+        data: " Additional overlay details.",
+      },
+    ],
+  } as unknown as ORDOverlay;
+
+  const merged = applyOverlayToDocument(openApiSource, overlay) as Record<string, unknown>;
+  const info = merged.info as Record<string, unknown>;
+  assert.equal(info.description, "This is just a sample API Additional overlay details.");
+});
+
+test("fails append when selected value is not a string", async () => {
+  const openApiSource = (await loadJson(
+    "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
+  )) as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    target: {
+      definitionType: "openapi-v3",
+    },
+    patches: [
+      {
+        action: "append",
+        selector: {
+          jsonPath: "$.servers[0]",
+        },
+        data: " invalid",
+      },
+    ],
+  } as unknown as ORDOverlay;
+
+  assert.throws(() => applyOverlayToDocument(openApiSource, overlay), OverlayMergeError);
+});
+
+test("fails append when data is not a string", async () => {
+  const openApiSource = (await loadJson(
+    "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
+  )) as JSONValue;
+
+  const overlay = {
+    ordOverlay: "0.1",
+    target: {
+      definitionType: "openapi-v3",
+    },
+    patches: [
+      {
+        action: "append",
+        selector: {
+          jsonPath: "$.info.description",
+        },
+        data: {
+          text: " invalid",
+        },
+      },
+    ],
+  } as unknown as ORDOverlay;
+
+  assert.throws(() => applyOverlayToDocument(openApiSource, overlay), OverlayMergeError);
+});
+
 test("throws when selector has no match by default", async () => {
   const openApiSource = (await loadJson(
     "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",

@@ -95,8 +95,16 @@ function resolveCandidateCollections(ordCollections: string[], resourceType: str
     return ordCollections;
   }
 
-  const pluralResourceType = resourceType.endsWith("s") ? resourceType : `${resourceType}s`;
-  return ordCollections.filter((collectionName) => collectionName === resourceType || collectionName === pluralResourceType);
+  const candidates = new Set<string>([resourceType]);
+  if (!resourceType.endsWith("s")) {
+    candidates.add(`${resourceType}s`);
+  }
+
+  if (resourceType.endsWith("y")) {
+    candidates.add(`${resourceType.slice(0, -1)}ies`);
+  }
+
+  return ordCollections.filter((collectionName) => candidates.has(collectionName));
 }
 
 function resolveJsonPath(root: JSONValue, expression: string): NodeReference[] {
