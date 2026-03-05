@@ -64,6 +64,16 @@ definitions:
         items:
           "$ref": "#/definitions/V1DocumentDescription"
 
+      overlays:
+        type: array
+        description: |-
+          List of all Resource Definition Overlay documents that can be retrieved.
+
+          Overlay documents enrich or patch resource definitions without changing the original source files.
+          For more details, see [Resource Definition Overlay](../../spec-extensions/models/ResourceDefinitionOverlay).
+        items:
+          "$ref": "#/definitions/V1OverlayDescription"
+
       capabilities:
         "$ref": "#/definitions/V1Capabilities"
 
@@ -171,6 +181,41 @@ definitions:
 
           An ORD Consumer/ORD Aggregator MAY freely choose any of the listed strategies.
 
+        items:
+          $ref: "#/definitions/AccessStrategy"
+        minItems: 1
+
+    additionalProperties: false
+    required:
+      - url
+      - accessStrategies
+
+  V1OverlayDescription:
+    type: object
+    title: Ord V1 Overlay Description
+    description: |-
+      Describes a Resource Definition Overlay document that is available for pull transport consumption.
+    x-ums-type: "ignore"
+    properties:
+      url:
+        type: string
+        format: uri-reference
+        description: |-
+          URL or relative URL to the Resource Definition Overlay document.
+
+          It is RECOMMENDED to provide a relative URL (to `baseUrl`).
+          If a `baseUrl` is given, the relative URLs will be resolved with it.
+        examples:
+          - "/open-resource-discovery/v1/overlays/example1"
+          - "../../overlays/example1"
+          - "https://example.com/open-resource-discovery/v1/overlays/example1"
+
+      accessStrategies:
+        type: array
+        description: |-
+          List of supported access strategies for retrieving the overlay document from the ORD provider.
+
+          An ORD Consumer/ORD Aggregator MAY freely choose any of the listed strategies.
         items:
           $ref: "#/definitions/AccessStrategy"
         minItems: 1

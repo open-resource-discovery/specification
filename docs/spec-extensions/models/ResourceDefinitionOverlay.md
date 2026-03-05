@@ -91,7 +91,7 @@ It does NOT control runtime access to the resource itself - that is managed sepa
 Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
 
 **Type:** string<br/>
-**Allowed Values**: <ul><li><p>`"public"`: The overlay can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.</p></li><li><p>`"internal"`: The overlay can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).<br/>MUST NOT be made available to external parties or vendor customers.</p></li><li><p>`"private"`: The overlay should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).<br/>Used for metadata completeness when describing implementation details or dependencies.</p></li></ul>
+**Allowed Values**: <ul><li><p>`"public"`: The overlay can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.</p></li><li><p>`"internal"`: The overlay can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).<br/>MUST NOT be made available to external parties or vendor customers.</p></li><li><p>`"private"`: The overlay should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).</p></li></ul>
 
 
 ### System Instance

@@ -123,12 +123,6 @@ properties:
     examples:
       - "system-instance"
 
-  describedSystemInstance:
-    $ref: "#/definitions/SystemInstance"
-    description: |-
-      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
-
-      Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   describedSystemType:
     $ref: "#/definitions/SystemType"
     x-introduced-in-version: "1.10.0"
@@ -139,6 +133,12 @@ properties:
     x-introduced-in-version: "1.10.0"
     description: |-
       Information on the [system version](../index.md#system-version) that this ORD document describes.
+  describedSystemInstance:
+    $ref: "#/definitions/SystemInstance"
+    description: |-
+      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
+
+      Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   policyLevel: &policyLevel
     type: string
     description: |
