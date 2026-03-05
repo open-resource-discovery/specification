@@ -118,17 +118,16 @@ definitions:
     oneOf:
       - const: public
         description: |-
-          Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.
+          The overlay can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.
 
       - const: internal
         description: |-
-          Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).
+          The overlay can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).
           MUST NOT be made available to external parties or vendor customers.
 
       - const: private
         description: |-
-          Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).
-          Used for metadata completeness when describing implementation details or dependencies.
+          The overlay should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).
 
   SystemInstance:
     type: object

@@ -96,7 +96,7 @@
         },
         {
           "const": "private",
-          "description": "The overlay should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies."
+          "description": "The overlay should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type)."
         }
       ]
     },
