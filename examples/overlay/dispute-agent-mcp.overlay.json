@@ -1,11 +1,17 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#",
   "resourceDefinitionOverlay": "0.1",
-  "info": {
-    "title": "FI-CA Dispute Resolution Agent – Documentation Overlay",
-    "version": "1.0.0",
-    "description": "Enriches the Dispute Resolution Agent Card with extended descriptions, usage guidance, and classification metadata without modifying the original Agent Card file."
+  "description": "Enriches the Dispute Resolution Agent Card with extended descriptions, usage guidance, and classification metadata without modifying the original Agent Card file.",
+  "describedSystemType": {
+    "systemNamespace": "sap.foo"
   },
+  "describedSystemVersion": {
+    "version": "1.3.0"
+  },
+  "describedSystemInstance": {
+    "localId": "tenant-123"
+  },
+  "visibility": "private",
   "target": {
     "ordId": "sap.foo:apiResource:FICADisputeResolutionAgent:v1",
     "url": "./DisputeResolutionAgentcard.json"

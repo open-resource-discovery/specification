@@ -1,6 +1,23 @@
 // AUTO-GENERATED definition files. Do not modify directly.
 
 /**
+ * Correlation ID identifying related records in external systems of record.
+ * MUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).
+ */
+export type CorrelationID = string;
+/**
+ * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+ *
+ * This controls who can see that the resource exists and retrieve its metadata level information.
+ * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+ *
+ * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
+ */
+export type Visibility = Visibility1 & Visibility2;
+export type Visibility1 = "public" | "internal" | "private";
+export type Visibility2 = string;
+
+/**
  * ⚠️ ALPHA: This specification is in alpha and subject to change.
  *
  * Describes an overlay document for patching resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL, MCP)
@@ -31,7 +48,16 @@ export interface ResourceDefinitionOverlay {
    * Version of the Resource Definition Overlay specification.
    */
   resourceDefinitionOverlay: "0.1";
-  info?: OverlayInfo;
+  /**
+   * Optional description of the overlay document itself.
+   *
+   * Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   */
+  description?: string;
+  describedSystemType?: SystemType;
+  describedSystemVersion?: SystemVersion;
+  describedSystemInstance?: SystemInstance;
+  visibility?: Visibility;
   target?: OverlayTarget;
   /**
    * Ordered sequence of patches to apply to the targeted resource(s).
@@ -43,22 +69,60 @@ export interface ResourceDefinitionOverlay {
   [k: string]: unknown | undefined;
 }
 /**
- * Human-readable metadata about this overlay document.
+ * Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.
  */
-export interface OverlayInfo {
+export interface SystemType {
   /**
-   * Short human-readable title describing the purpose of this overlay.
+   * The [system namespace](../../spec-v1/index.md#system-namespace) is a unique identifier for the system type.
    */
-  title: string;
+  systemNamespace?: string;
   /**
-   * Version of this overlay document (not the spec version).
+   * Correlation IDs for linking this system type to external systems of record.
+   *
+   * @minItems 1
    */
-  version: string;
+  correlationIds?: [CorrelationID, ...CorrelationID[]];
+}
+/**
+ * Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.
+ */
+export interface SystemVersion {
   /**
-   * Longer description of what this overlay does and why.
+   * The version of the system instance (run-time) or the version of the described system-version perspective.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    */
-  description?: string;
-  [k: string]: unknown | undefined;
+  version?: string;
+  /**
+   * Human-readable title of the system version.
+   */
+  title?: string;
+  /**
+   * Correlation IDs for linking this system version to external systems of record.
+   *
+   * @minItems 1
+   */
+  correlationIds?: [CorrelationID, ...CorrelationID[]];
+}
+/**
+ * Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.
+ */
+export interface SystemInstance {
+  /**
+   * Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.
+   * By providing the base URL, relative URLs in the overlay are resolved relative to it.
+   */
+  baseUrl?: string;
+  /**
+   * Optional local ID for the system instance, as known by the described system.
+   */
+  localId?: string;
+  /**
+   * Correlation IDs for linking this system instance to external systems of record.
+   *
+   * @minItems 1
+   */
+  correlationIds?: [CorrelationID, ...CorrelationID[]];
 }
 /**
  * Reference to the single resource being patched by this overlay.

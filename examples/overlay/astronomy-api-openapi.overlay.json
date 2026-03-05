@@ -1,11 +1,17 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#",
   "resourceDefinitionOverlay": "0.1",
-  "info": {
-    "title": "Astronomy API – Deprecation and Documentation Overlay",
-    "version": "1.0.0",
-    "description": "Adds deprecation notices and supplementary documentation to the Astronomy REST API without modifying the original OpenAPI specification."
+  "description": "Adds deprecation notices and supplementary documentation to the Astronomy REST API without modifying the original OpenAPI specification.",
+  "describedSystemType": {
+    "systemNamespace": "sap.foo"
   },
+  "describedSystemVersion": {
+    "version": "1.0.0"
+  },
+  "describedSystemInstance": {
+    "baseUrl": "https://api.sap.foo.com"
+  },
+  "visibility": "public",
   "target": {
     "ordId": "sap.foo:apiResource:astronomy:v1",
     "url": "/ord/metadata/astronomy-v1.oas3.json"

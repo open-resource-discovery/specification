@@ -1,11 +1,17 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#",
   "resourceDefinitionOverlay": "0.1",
-  "info": {
-    "title": "Business Partner OData API – Annotation Overlay",
-    "version": "1.0.0",
-    "description": "Adds human-readable descriptions and deprecation annotations to the Business Partner OData CSDL without modifying the original $metadata document."
+  "description": "Adds human-readable descriptions and deprecation annotations to the Business Partner OData CSDL without modifying the original $metadata document.",
+  "describedSystemType": {
+    "systemNamespace": "sap.foo"
   },
+  "describedSystemVersion": {
+    "version": "2.0.0"
+  },
+  "describedSystemInstance": {
+    "baseUrl": "https://api.sap.foo.com"
+  },
+  "visibility": "internal",
   "target": {
     "ordId": "sap.foo:apiResource:BusinessPartnerODataV2:v1",
     "url": "https://api.sap.foo.com/sap/opu/odata/sap/API_BUSINESS_PARTNER/$metadata"
