@@ -108,9 +108,22 @@ properties:
     description: |-
       Reference to the single target being patched by this overlay.
       The target can be an ORD resource or a referenced resource definition file.
+
+      `ordId` selects the ORD resource metadata itself.
+      If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous
+      when the resource exposes multiple definitions.
+      In that case, use `url` and/or `definitionType` to clarify the intended file.
+
+      Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.
+      Use `definitionType` and/or an explicit `url` to identify which one is patched.
+
       MUST provide at least one identifier: an ORD ID, a URL, or one or more correlationIds.
       Multiple identifiers are treated as all pointing to the same resource,
       providing redundant ways to resolve it.
+
+      TODO:
+      - decide what should be optional vs mandatory on target resolution
+      - review cleanup after discussion: this proposal adds fields for transparency; some may be dropped again
     $ref: "#/definitions/OverlayTarget"
 
   patches:
@@ -314,9 +327,21 @@ definitions:
     description: |-
       Reference to the target being patched.
       The target can be an ORD resource or a referenced resource definition file.
+
+      `ordId` targets the ORD resource metadata itself.
+      For patching a specific resource definition file of that resource, use `url` and/or `definitionType`
+      to disambiguate.
+
+      Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
+      In such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.
+
       At least one of ordId, url, or correlationIds MUST be provided.
       Multiple identifiers are treated as all pointing to the same resource,
       providing redundant ways to resolve it.
+
+      TODO:
+      - decide what should be optional vs mandatory here
+      - revisit cleanup after discussion; some transparency-focused fields may be removed
     minProperties: 1
     properties:
       ordId:
@@ -357,6 +382,7 @@ definitions:
           Optional type of the target definition being patched.
           If provided, this SHOULD match the `type` of the referenced metadata definition
           (as used in API/Event/Capability resource definitions).
+          This is especially useful when `ordId` resolves to a resource with multiple attached definitions.
 
   Patch:
     type: object

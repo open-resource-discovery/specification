@@ -202,9 +202,22 @@ export interface OverlaySystemInstance {
 /**
  * Reference to the single target being patched by this overlay.
  * The target can be an ORD resource or a referenced resource definition file.
+ *
+ * `ordId` selects the ORD resource metadata itself.
+ * If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous
+ * when the resource exposes multiple definitions.
+ * In that case, use `url` and/or `definitionType` to clarify the intended file.
+ *
+ * Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.
+ * Use `definitionType` and/or an explicit `url` to identify which one is patched.
+ *
  * MUST provide at least one identifier: an ORD ID, a URL, or one or more correlationIds.
  * Multiple identifiers are treated as all pointing to the same resource,
  * providing redundant ways to resolve it.
+ *
+ * TODO:
+ * - decide what should be optional vs mandatory on target resolution
+ * - review cleanup after discussion: this proposal adds fields for transparency; some may be dropped again
  */
 export interface OverlayTarget {
   /**

@@ -42,6 +42,19 @@ It accepts:
 - Values reused from API/Event/Capability resource definition `type` fields
   (for example `openapi-v3`, `asyncapi-v2`, `edmx`, `csdl-json`, `sap.mdo:mdi-capability-definition:v1`, `ord:overlay:v1`, `custom`)
 
+Target resolution notes:
+
+- `ordId` selects the ORD resource metadata itself.
+- If the patch is meant for a resource definition file (not only ORD-level metadata),
+  `ordId` alone can be ambiguous when the resource has multiple definitions.
+- Use `url` and/or `definitionType` to make the concrete definition file explicit.
+  Example: one OData API can expose both `edmx` and `openapi-v3` definitions.
+
+TODO (target resolution model):
+
+- Decide what should be optional vs mandatory.
+- Review cleanup after discussion: this proposal adds transparency-oriented fields; some may be dropped again.
+
 TODO (OData operations):
 
 - Best current guess for selector `operation` in OData:

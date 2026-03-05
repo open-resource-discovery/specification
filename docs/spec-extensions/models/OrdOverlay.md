@@ -48,6 +48,19 @@ It accepts:
 - Values reused from API/Event/Capability resource definition `type` fields
   (for example `openapi-v3`, `asyncapi-v2`, `edmx`, `csdl-json`, `sap.mdo:mdi-capability-definition:v1`, `ord:overlay:v1`, `custom`)
 
+Target resolution notes:
+
+- `ordId` selects the ORD resource metadata itself.
+- If the patch is meant for a resource definition file (not only ORD-level metadata),
+  `ordId` alone can be ambiguous when the resource has multiple definitions.
+- Use `url` and/or `definitionType` to make the concrete definition file explicit.
+  Example: one OData API can expose both `edmx` and `openapi-v3` definitions.
+
+TODO (target resolution model):
+
+- Decide what should be optional vs mandatory.
+- Review cleanup after discussion: this proposal adds transparency-oriented fields; some may be dropped again.
+
 TODO (OData operations):
 
 - Best current guess for selector `operation` in OData:
@@ -128,7 +141,7 @@ ORD Overlay files can be referenced from ORD documents using a `resourceDefiniti
 |<div className="interface-property-name anchor" id="ord-overlay_describedsystemversion">describedSystemVersion<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsystemversion" title="#ord-overlay_describedsystemversion"></a></div>|<div className="interface-property-type">[Overlay System Version](#overlay-system-version)</div>|<div className="interface-property-description">Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.</div>|
 |<div className="interface-property-name anchor" id="ord-overlay_describedsysteminstance">describedSystemInstance<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsysteminstance" title="#ord-overlay_describedsysteminstance"></a></div>|<div className="interface-property-type">[Overlay System Instance](#overlay-system-instance)</div>|<div className="interface-property-description">Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.</div>|
 |<div className="interface-property-name anchor" id="ord-overlay_visibility">visibility<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_visibility" title="#ord-overlay_visibility"></a></div>|<div className="interface-property-type">[Visibility](#visibility)</div>|<div className="interface-property-description">Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.<br/><br/>This controls who can see that the resource exists and retrieve its metadata level information.<br/>It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.<br/><br/>Use this to prevent exposing internal implementation details to inappropriate consumer audiences.</div>|
-|<div className="interface-property-name anchor" id="ord-overlay_target">target<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#ord-overlay_target" title="#ord-overlay_target"></a></div>|<div className="interface-property-type">[Overlay Target](#overlay-target)</div>|<div className="interface-property-description">Reference to the single target being patched by this overlay.<br/>The target can be an ORD resource or a referenced resource definition file.<br/>MUST provide at least one identifier: an ORD ID, a URL, or one or more correlationIds.<br/>Multiple identifiers are treated as all pointing to the same resource,<br/>providing redundant ways to resolve it.</div>|
+|<div className="interface-property-name anchor" id="ord-overlay_target">target<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#ord-overlay_target" title="#ord-overlay_target"></a></div>|<div className="interface-property-type">[Overlay Target](#overlay-target)</div>|<div className="interface-property-description">Reference to the single target being patched by this overlay.<br/>The target can be an ORD resource or a referenced resource definition file.<br/><br/>`ordId` selects the ORD resource metadata itself.<br/>If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous<br/>when the resource exposes multiple definitions.<br/>In that case, use `url` and/or `definitionType` to clarify the intended file.<br/><br/>Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.<br/>Use `definitionType` and/or an explicit `url` to identify which one is patched.<br/><br/>MUST provide at least one identifier: an ORD ID, a URL, or one or more correlationIds.<br/>Multiple identifiers are treated as all pointing to the same resource,<br/>providing redundant ways to resolve it.<br/><br/>TODO:<br/>- decide what should be optional vs mandatory on target resolution<br/>- review cleanup after discussion: this proposal adds fields for transparency; some may be dropped again</div>|
 |<div className="interface-property-name anchor" id="ord-overlay_patches">patches<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#ord-overlay_patches" title="#ord-overlay_patches"></a></div>|<div className="interface-property-type">Array&lt;[Patch](#patch)&gt;</div>|<div className="interface-property-description">Ordered sequence of patches to apply to the targeted resource(s).<br/>Patches are applied in the order listed.<hr/>**Array Constraint**: MUST have at least 1 items</div>|
 
 
@@ -231,9 +244,21 @@ A [system version](../../spec-v1/index.md#system-version) describes a version/re
 
 Reference to the target being patched.
 The target can be an ORD resource or a referenced resource definition file.
+
+`ordId` targets the ORD resource metadata itself.
+For patching a specific resource definition file of that resource, use `url` and/or `definitionType`
+to disambiguate.
+
+Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
+In such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.
+
 At least one of ordId, url, or correlationIds MUST be provided.
 Multiple identifiers are treated as all pointing to the same resource,
 providing redundant ways to resolve it.
+
+TODO:
+- decide what should be optional vs mandatory here
+- revisit cleanup after discussion; some transparency-focused fields may be removed
 
 **Type**: Object(<a href="#overlay-target_ordid">ordId</a>, <a href="#overlay-target_url">url</a>, <a href="#overlay-target_correlationids">correlationIds</a>, <a href="#overlay-target_definitiontype">definitionType</a>)
 
@@ -242,7 +267,7 @@ providing redundant ways to resolve it.
 |<div className="interface-property-name anchor" id="overlay-target_ordid">ordId<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_ordid" title="#overlay-target_ordid"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).<br/>MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).<hr/>**Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:([a-zA-Z0-9._\\-]+)\:([a-zA-Z0-9._\\-]+)\:(v0\|v[1-9][0-9]\*)$</code><br/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"sap.s4:apiResource:OP_API_BUSINESS_PARTNER_SRV:v1"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="overlay-target_url">url<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_url" title="#overlay-target_url"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">URL or URI pointing directly to the file being patched.<br/>This is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),<br/>but can also point to any JSON/YAML-based target document.<hr/>**JSON Schema Format**: `uri-reference`<br/>**Example Values**: <ul className="examples"><li>`"https://example.com/api/openapi.json"`</li><li>`"./openapi.yaml"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="overlay-target_correlationids">correlationIds<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_correlationids" title="#overlay-target_correlationids"></a></div>|<div className="interface-property-type">Array&lt;string&gt;</div>|<div className="interface-property-description">Correlation IDs referencing the target resource in external registries or systems of record.<br/>Reuses the ORD correlation ID format: `namespace:type:localId`.<br/>All listed IDs are treated as pointing to the same resource.<hr/>**Array Constraint**: MUST have at least 1 items<br/>**Array Item Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:([a-zA-Z0-9._\\-\\/]+)\:([a-zA-Z0-9._\\-\\/]+)$</code><br/>**Example Values**: <ul className="examples"><li>`["sap.s4:communicationScenario:SAP_COM_0008"]`</li></ul></div>|
-|<div className="interface-property-name anchor" id="overlay-target_definitiontype">definitionType<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_definitiontype" title="#overlay-target_definitiontype"></a></div>|<div className="interface-property-type">[Overlay Definition Type](#overlay-definition-type)</div>|<div className="interface-property-description">Optional type of the target definition being patched.<br/>If provided, this SHOULD match the `type` of the referenced metadata definition<br/>(as used in API/Event/Capability resource definitions).</div>|
+|<div className="interface-property-name anchor" id="overlay-target_definitiontype">definitionType<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_definitiontype" title="#overlay-target_definitiontype"></a></div>|<div className="interface-property-type">[Overlay Definition Type](#overlay-definition-type)</div>|<div className="interface-property-description">Optional type of the target definition being patched.<br/>If provided, this SHOULD match the `type` of the referenced metadata definition<br/>(as used in API/Event/Capability resource definitions).<br/>This is especially useful when `ordId` resolves to a resource with multiple attached definitions.</div>|
 
 
 ### Patch
