@@ -2,12 +2,102 @@
 This specification is in **alpha** and subject to change.
 :::
 
-Use ORD Overlays to patch the ORD resources themselves, e.g. to add `partOfGroups` assignments, `labels`, and other ORD-level metadata.
+The **ORD Overlay** is an optional ORD model extension.
 
-This allows external parties to enrich or annotate ORD resources without modifying the original ORD documents.
-This can be necessary when the ownership or lifecycle of the original ORD documents is different from the enhancements in the overlay.
+An overlay can optionally have its own `ordId` with pattern `*:overlay:*:v*`.
 
-:::warning
-Incompatible ORD-level changes are not allowed through ORD Overlays.
-Only additive or non-breaking changes (such as adding group assignments or labels) are permitted.
-:::
+TODO (Overlay `ordId`):
+
+- Do we need this?
+- If overlays are published/discovered via the configuration endpoint without direct ORD resource context, what should their stable ID be?
+- Should this be mandatory or optional?
+
+Overlay files can be provided via the [ORD Configuration Endpoint](../../spec-v1/index.md#ord-configuration-endpoint).
+In this case, they can be published independently of a particular resource and can also patch metadata on ORD resource level itself.
+
+Alternatively, an overlay can be attached to APIs or events as an additional `resourceDefinitions` file for a concrete resource.
+The registered resource definition type is `ord:overlay:v1`.
+
+Overlays can patch on both levels:
+
+- ORD resource level metadata
+- referenced resource definition level metadata
+
+The patch format is intentionally unopinionated and can patch any JSON/YAML-based file.
+In addition, it explicitly supports patching API and data model metadata through concept-level selectors (`operation`, `entityType`, `propertyType`).
+When patching ORD resources themselves, the ORD ID becomes the selector (`ordId`).
+
+Selector support by metadata format:
+
+- `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP metadata files.
+  For OpenAPI this maps to `operationId`. For MCP this maps to Tool `name`
+  ([MCP Tool Name](https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name)).
+- `entityType` and `propertyType`: OData (`edmx` for v2/v4 and `csdl-json` for v4).
+- `jsonPath`: generic fallback for any JSON/YAML-based metadata file, including OpenAPI and MCP.
+
+On `target`, `definitionType` can optionally declare the metadata definition type being patched.
+It accepts:
+
+- Any valid [Specification ID](../../spec-v1/index.md#specification-id)
+- Values reused from API/Event/Capability resource definition `type` fields
+  (for example `openapi-v3`, `asyncapi-v2`, `edmx`, `csdl-json`, `sap.mdo:mdi-capability-definition:v1`, `ord:overlay:v1`, `custom`)
+
+TODO (OData operations):
+
+- Best current guess for selector `operation` in OData:
+  use schema-level `Action` / `Function` names (prefer fully-qualified names),
+  or entity-container `ActionImport` / `FunctionImport` names when the operation is container-exposed.
+  This still needs expert validation.
+  See [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
+
+Concept-level selectors are preferred over structural selectors (`jsonPath`) because they are more resilient to format evolution (for example OpenAPI 3.0 to 3.1, or OData CSDL XML to JSON).
+
+Patch action semantics for `merge`:
+
+- Objects are deep-merged recursively.
+- Scalar values are overwritten by values from `data`.
+- Arrays are appended (`data` items are added after existing items).
+- Existing properties not mentioned in `data` are preserved.
+
+To fully replace an array, use two ordered patches:
+
+1. Remove the array at the selected location.
+2. Merge the new array value.
+
+Patch action semantics for `remove`:
+
+- Without `data`: remove the full element selected by `selector`.
+- With `data`: remove fields that are set to `null`
+  (recursively, including nested fields; JSON Merge Patch-style delete semantics), for example:
+  `data: { "foo": { "bar": null } }`.
+
+## Overlay Document Metadata
+
+- `description`: Human-readable Markdown description of the overlay document itself.
+- `describedSystemType`: System type context for which the overlay applies.
+- `describedSystemVersion`: System version context for which the overlay applies.
+- `describedSystemInstance`: System instance context for which the overlay applies.
+- `visibility`: Discovery visibility (`public`, `internal`, or `private`) for the overlay metadata.
+
+## Referencing from ORD Documents
+
+ORD Overlay files can be referenced from ORD documents using a `resourceDefinitions` entry with type `ord:overlay:v1`:
+
+```json
+{
+  "resourceDefinitions": [
+    {
+      "type": "openapi-v3",
+      "mediaType": "application/json",
+      "url": "/ord/metadata/my-api.oas3.json",
+      "accessStrategies": [{ "type": "open" }]
+    },
+    {
+      "type": "ord:overlay:v1",
+      "mediaType": "application/json",
+      "url": "/ord/overlays/my-api.overlay.json",
+      "accessStrategies": [{ "type": "open" }]
+    }
+  ]
+}
+```

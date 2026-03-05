@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: true
-  description: "The value to be merged into or used to replace the selected element.\nWhen used together with `merge: true` on the patch, performs a deep merge.\nWhen used without `merge` (or `merge: false`), replaces the selected element entirely.\nMutually exclusive with `remove`.\n\nThis is a free-form object whose structure depends on the target being patched."
+  description: "The value to be used together with patch actions:\n- with `action: merge`:\n  - objects are deep-merged recursively\n  - scalar values overwrite existing values\n  - arrays are appended to existing arrays\n- with `action: update`, it replaces the selected element entirely\n- with `action: remove`:\n  - if omitted, the selected element is removed entirely\n  - if provided, fields set to `null` are deleted (recursively, including nested fields;\n    JSON Merge Patch-style delete semantics)\n\nTo fully replace an existing array, use two ordered patches:\n1. remove the array\n2. merge the new array value\n\nThis is a free-form object whose structure depends on the target being patched."
   metadataProperties:
     - name: 'id'
       type: 'guid'

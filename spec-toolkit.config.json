@@ -29,24 +29,13 @@
     },
     {
       "type": "spec",
-      "id": "ResourceDefinitionOverlay",
-      "sourceFilePath": "./spec-extension/models/ResourceDefinitionOverlay.schema.yaml",
-      "sourceIntroFilePath": "./spec-extension/models/ResourceDefinitionOverlay.intro.md",
-      "mdFrontmatter": {
-        "title": "Resource Definition Overlay",
-        "sidebar_position": "2",
-        "description": "Describes the technical interface / schema for the Resource Definition Overlay (alpha), e.g. API definition overlays."
-      }
-    },
-    {
-      "type": "spec",
       "id": "OrdOverlay",
       "sourceFilePath": "./spec-extension/models/OrdOverlay.schema.yaml",
       "sourceIntroFilePath": "./spec-extension/models/OrdOverlay.intro.md",
       "mdFrontmatter": {
         "title": "ORD Overlay",
-        "sidebar_position": "3",
-        "description": "Describes the technical interface / schema for the ORD Overlay (alpha), used to enrich ORD resources with additional metadata."
+        "sidebar_position": "2",
+        "description": "Describes the technical interface / schema for the ORD Overlay (alpha), used to patch ORD resources and their resource definitions."
       }
     }
   ],

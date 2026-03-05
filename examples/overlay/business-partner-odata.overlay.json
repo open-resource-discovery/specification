@@ -1,27 +1,22 @@
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#",
-  "resourceDefinitionOverlay": "0.1",
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:business-partner-odata:v1",
   "description": "Adds human-readable descriptions and deprecation annotations to the Business Partner OData CSDL without modifying the original $metadata document.",
   "describedSystemType": {
     "systemNamespace": "sap.foo"
   },
-  "describedSystemVersion": {
-    "version": "2.0.0"
-  },
-  "describedSystemInstance": {
-    "baseUrl": "https://api.sap.foo.com"
-  },
   "visibility": "internal",
   "target": {
     "ordId": "sap.foo:apiResource:BusinessPartnerODataV2:v1",
-    "url": "https://api.sap.foo.com/sap/opu/odata/sap/API_BUSINESS_PARTNER/$metadata"
+    "url": "https://api.sap.foo.com/sap/opu/odata/sap/API_BUSINESS_PARTNER/$metadata",
+    "definitionType": "edmx"
   },
   "patches": [
     {
       "action": "merge",
       "selector": {
-        "type": "entityTypeId",
-        "value": "A_BusinessPartnerType"
+        "entityType": "A_BusinessPartnerType"
       },
       "data": {
         "Core.Description": "Represents a natural or legal person involved in business transactions such as customers, vendors, or internal business units.",
@@ -31,9 +26,8 @@
     {
       "action": "merge",
       "selector": {
-        "type": "propertyId",
-        "value": "LegacySearchTerm1",
-        "entityTypeId": "A_BusinessPartnerType"
+        "propertyType": "LegacySearchTerm1",
+        "entityType": "A_BusinessPartnerType"
       },
       "data": {
         "Core.Revisions": [
@@ -48,9 +42,8 @@
     {
       "action": "merge",
       "selector": {
-        "type": "propertyId",
-        "value": "CreditScore",
-        "entityTypeId": "A_BusinessPartnerType"
+        "propertyType": "CreditScore",
+        "entityType": "A_BusinessPartnerType"
       },
       "data": {
         "Core.Description": "Numeric credit score for the business partner. Range: 100 (excellent) to 600 (poor).",

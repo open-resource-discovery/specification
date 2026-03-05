@@ -1,27 +1,22 @@
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/ResourceDefinitionOverlay.schema.json#",
-  "resourceDefinitionOverlay": "0.1",
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:astronomy-api-openapi:v1",
   "description": "Adds deprecation notices and supplementary documentation to the Astronomy REST API without modifying the original OpenAPI specification.",
   "describedSystemType": {
     "systemNamespace": "sap.foo"
   },
-  "describedSystemVersion": {
-    "version": "1.0.0"
-  },
-  "describedSystemInstance": {
-    "baseUrl": "https://api.sap.foo.com"
-  },
-  "visibility": "public",
+  "visibility": "internal",
   "target": {
     "ordId": "sap.foo:apiResource:astronomy:v1",
-    "url": "/ord/metadata/astronomy-v1.oas3.json"
+    "url": "/ord/metadata/astronomy-v1.oas3.json",
+    "definitionType": "openapi-v3"
   },
   "patches": [
     {
       "action": "merge",
       "selector": {
-        "type": "operationId",
-        "value": "getConstellationByAbbreviation"
+        "operation": "getConstellationByAbbreviation"
       },
       "data": {
         "deprecated": true,
@@ -31,9 +26,7 @@
     {
       "action": "merge",
       "selector": {
-        "type": "propertyId",
-        "value": "magnitude",
-        "entityTypeId": "Star"
+        "jsonPath": "$.components.schemas.Star.properties.magnitude"
       },
       "data": {
         "description": "Apparent magnitude of the star as observed from Earth. Lower values indicate greater brightness (e.g. the Sun is -26.7).",
@@ -43,8 +36,7 @@
     {
       "action": "merge",
       "selector": {
-        "type": "entityTypeId",
-        "value": "Constellation"
+        "jsonPath": "$.components.schemas.Constellation"
       },
       "data": {
         "externalDocs": {

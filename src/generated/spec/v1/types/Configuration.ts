@@ -40,10 +40,10 @@ export interface OrdV1Support {
    */
   documents?: OrdV1DocumentDescription[];
   /**
-   * List of all Resource Definition Overlay documents that can be retrieved.
+   * List of all ORD Overlay documents that can be retrieved.
    *
-   * Overlay documents enrich or patch resource definitions without changing the original source files.
-   * For more details, see [Resource Definition Overlay](../../spec-extensions/models/ResourceDefinitionOverlay).
+   * Overlay documents can patch ORD resources themselves and/or referenced resource definitions without changing the original source files.
+   * For more details, see [ORD Overlay](../../spec-extensions/models/OrdOverlay).
    */
   overlays?: OrdV1OverlayDescription[];
   capabilities?: OrdV1Capabilities;
@@ -119,11 +119,11 @@ export interface OrdV1DocumentAccessStrategy {
   customDescription?: string;
 }
 /**
- * Describes a Resource Definition Overlay document that is available for pull transport consumption.
+ * Describes an ORD Overlay document that is available for pull transport consumption.
  */
 export interface OrdV1OverlayDescription {
   /**
-   * URL or relative URL to the Resource Definition Overlay document.
+   * URL or relative URL to the ORD Overlay document.
    *
    * It is RECOMMENDED to provide a relative URL (to `baseUrl`).
    * If a `baseUrl` is given, the relative URLs will be resolved with it.

@@ -19,7 +19,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'action'
       type: 'string'
-      description: "The patch operation to perform on the selected element:\n\n- `update`: Replace the selected element entirely with `data`.\n- `merge`: Deep-merge `data` into the selected element (properties are added or overwritten, others preserved).\n- `remove`: Remove the selected element from the document entirely. No `data` required."
+      description: "The patch operation to perform on the selected element:\n\n- `update`: Replace the selected element entirely with `data`.\n- `merge`:\n  - objects are deep-merged recursively.\n  - scalar values are overwritten by the value from `data`.\n  - arrays are appended (new array items are added after existing items).\n  - existing object properties not mentioned in `data` are preserved.\n\n  To fully replace an array, use two ordered patches:\n  1. `remove` the array at the selected location.\n  2. `merge` the new array content.\n- `remove`:\n  - without `data`: remove the selected element from the document entirely.\n  - with `data`: remove fields that are set to `null`.\n    This applies recursively, so nested `null` values remove nested fields as well\n    (JSON Merge Patch-style delete semantics).\n\nExample for nested removal:\n`data: { \"foo\": { \"bar\": null } }` removes `foo.bar` inside the selected element."
       mandatory: true
   customTypeDefinitions: []
   metadataRelations:
