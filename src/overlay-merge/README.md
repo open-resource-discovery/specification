@@ -155,10 +155,12 @@ Coverage includes:
 Integration-style tests also apply overlay files from `examples/overlay` to existing metadata files in `examples/`.
 
 ## TODOs
-- Decide mandatory vs optional target resolution fields (`target`, `target.ordId`, etc.) — see `TODO (target resolution model)` in `OrdOverlay.intro.md`.
-- Decide whether overlay document `ordId` should be mandatory — see `TODO (Overlay ordId)` in `OrdOverlay.intro.md`.
-- Confirm OData `operation` selector mapping with OData domain experts — see `TODO (OData operations)` in `OrdOverlay.intro.md`.
+- Decide mandatory vs optional target resolution fields (`target`, `target.ordId`, etc.) — see `spec-extension/models/OrdOverlay.outro.md`.
+- Decide whether overlay document `ordId` should be mandatory — see `spec-extension/models/OrdOverlay.outro.md`.
+- Confirm OData `operation` selector mapping with OData domain experts — see `spec-extension/models/OrdOverlay.outro.md`.
+- Align `PatchValue` schema/types with the documented merge/update semantics so arrays and scalar JSON values are schema-valid.
 - Implement concept-level selectors (`entityType`, `propertyType`) — see TODO comments in `selectors.ts`.
+- Decide whether `requireTargetMatch` should also evaluate `target.correlationIds`, and whether `target.url` should remain informational or become enforceable.
 - Decide whether/when strict `target.url` matching should be enabled — see TODO comment in `types.ts` (`requireTargetMatch`).
 - Extend `definitionType` structure validation beyond `openapi-v3` — see TODO comment in `types.ts` (`validateTargetDocumentForDefinitionType`).
 - Add YAML input support for `--overlay` and `--input` CLI flags — see TODO comment in `cli.ts`.

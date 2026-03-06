@@ -1,11 +1,11 @@
 apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
 type: 'MetadataType'
 metadata:
-  name: 'patchvalue'
+  name: 'overlaypatchvalue'
   path: '/sap/core/ucl/metadata/ord/v1'
   labels: {}
 spec:
-  typeName: 'PatchValue'
+  typeName: 'OverlayPatchValue'
   key:
     - 'id'
   visibility: 'public'

@@ -32,6 +32,7 @@
       "id": "OrdOverlay",
       "sourceFilePath": "./spec-extension/models/OrdOverlay.schema.yaml",
       "sourceIntroFilePath": "./spec-extension/models/OrdOverlay.intro.md",
+      "sourceOutroFilePath": "./spec-extension/models/OrdOverlay.outro.md",
       "mdFrontmatter": {
         "title": "ORD Overlay",
         "sidebar_position": "2",

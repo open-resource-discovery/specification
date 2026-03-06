@@ -1,11 +1,11 @@
 apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
 type: 'MetadataType'
 metadata:
-  name: 'patch'
+  name: 'overlaypatch'
   path: '/sap/core/ucl/metadata/ord/v1'
   labels: {}
 spec:
-  typeName: 'Patch'
+  typeName: 'OverlayPatch'
   key:
     - 'id'
   visibility: 'public'
@@ -24,9 +24,9 @@ spec:
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'selector'
-      relatedTypeName: 'Selector'
+      relatedTypeName: 'OverlaySelector'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       mandatory: true
     - propertyName: 'data'
-      relatedTypeName: 'PatchValue'
+      relatedTypeName: 'OverlayPatchValue'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

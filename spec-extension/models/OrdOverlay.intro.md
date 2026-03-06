@@ -58,7 +58,7 @@ This keeps the overlay co-located with the resource it patches.
 ## Target Resolution
 
 The optional [`target`](#overlay-target) object narrows which document the overlay applies to.
-When omitted, all patches in the file are context-free and each patch's [`selector`](#selector) alone identifies the element.
+When omitted, all patches in the file are context-free and each patch's [`selector`](#overlay-selector) alone identifies the element.
 
 Key fields on `target`:
 
@@ -71,24 +71,24 @@ Key fields on `target`:
 Example of ambiguity: an OData API resource may expose both `edmx` and `openapi-v3` definitions.
 Provide `definitionType` and/or `url` to make the concrete patch target explicit.
 
-For overlays that only patch ORD metadata via [`selector.ordId`](#selector-by-ord-id), `target` may be omitted.
+For overlays that only patch ORD metadata via [`selector.ordId`](#overlay-selector-by-ord-id), `target` may be omitted.
 Multiple resources can be patched in a single file using multiple patches with different selector `ordId` values.
 
 ## Selectors
 
-Each [patch](#patch) identifies the element to patch using exactly one [selector](#selector).
+Each [patch](#overlay-patch) identifies the element to patch using exactly one [selector](#overlay-selector).
 Concept-level selectors are preferred over `jsonPath` because they are resilient to structural format changes
 (e.g. OpenAPI 3.0 → 3.1, OData CSDL XML → JSON).
 
 | Selector | Level | Supported formats |
 |---|---|---|
-| [`ordId`](#selector-by-ord-id) | Resource | ORD resource metadata |
-| [`operation`](#selector-by-operation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (MCP Server Card), A2A Agent Card (`a2a-agent-card`) |
-| [`entityType`](#selector-by-entity-type) | Entity type | OData (`edmx`, `csdl-json`) |
-| [`propertyType`](#selector-by-property-type) | Property | OData (`edmx`, `csdl-json`) |
-| [`jsonPath`](#selector-by-jsonpath) | Any location | Any JSON/YAML metadata file (generic fallback) |
+| [`ordId`](#overlay-selector-by-ord-id) | Resource | ORD resource metadata |
+| [`operation`](#overlay-selector-by-operation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (MCP Server Card), A2A Agent Card (`a2a-agent-card`) |
+| [`entityType`](#overlay-selector-by-entity-type) | Entity type | OData (`edmx`, `csdl-json`) |
+| [`propertyType`](#overlay-selector-by-property-type) | Property | OData (`edmx`, `csdl-json`) |
+| [`jsonPath`](#overlay-selector-by-jsonpath) | Any location | Any JSON/YAML metadata file (generic fallback) |
 
-The [`operation`](#selector-by-operation) selector maps to different identifiers depending on the format:
+The [`operation`](#overlay-selector-by-operation) selector maps to different identifiers depending on the format:
 
 - **OpenAPI** → `operationId` of an HTTP operation in `paths.{path}.{method}`
 - **MCP** (any [Specification ID](../../spec-v1/index.md#specification-id)) → `tools[].name`
@@ -99,8 +99,8 @@ Using the `operation` selector with a named format constant that has no operatio
 
 ## Patch Actions
 
-Each [patch](#patch) specifies an [`action`](#patch) and a [`selector`](#selector), plus an optional [`data`](#patch-value) value.
-The full semantics of each action (`update`, `merge`, `append`, `remove`) are defined on the [`action`](#patch) field.
+Each [patch](#overlay-patch) specifies an [`action`](#overlay-patch) and a [`selector`](#overlay-selector), plus an optional [`data`](#overlay-patch-value) value.
+The full semantics of each action (`update`, `merge`, `append`, `remove`) are defined on the [`action`](#overlay-patch) field.
 
 Key point for `merge`: arrays are appended, not replaced.
 To fully replace an array, use two ordered patches — first `remove` the array, then `merge` the new value.
@@ -115,26 +115,14 @@ After applying an overlay, validate the merged output with the corresponding for
 
 Optional top-level fields scope an overlay to a specific system context:
 
+- [`perspective`](#overlay-perspective) — declares whether the overlay applies at system-type, system-version, or system-instance scope.
 - [`describedSystemType`](#overlay-system-type), [`describedSystemVersion`](#overlay-system-version), [`describedSystemInstance`](#overlay-system-instance) — narrow the overlay to a particular system type, version, or instance.
-- [`visibility`](#visibility) — controls who can discover this overlay document (`public`, `internal`, `private`).
+- [`visibility`](#overlay-visibility) — controls who can discover this overlay document (`public`, `internal`, `private`).
 - `description` — human-readable Markdown description of the overlay document itself.
 - `ordId` — optional stable ORD ID for this overlay, using pattern `*:overlay:*:v*`.
 
-## Open TODOs
+For overlays, `perspective` answers a different question than document transport scope: it declares where the patch should be applied.
 
-**Overlay `ordId`:**
-
-- Do we need this field at all?
-- If overlays are published via the configuration endpoint without direct ORD resource context, what should their stable ID be?
-- Should this be mandatory or optional?
-
-**Target resolution model:**
-
-- Decide what should be optional vs mandatory on `target`.
-- Review cleanup after discussion: some transparency-oriented fields may be dropped again.
-
-**OData `operation` selector:**
-
-- Best current guess: map selector `operation` to OData operation names — schema-level `Action`/`Function` (prefer fully-qualified names), or container-level `ActionImport`/`FunctionImport` when exposed via entity container.
-- Needs validation with OData experts.
-- See [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
+- `system-type` means the same overlay can patch the targeted resource across versions and instances of the same system type, typically for the same ORD resource major version.
+- `system-version` means the overlay patches one concrete released system version only.
+- `system-instance` means the overlay patches one concrete tenant / runtime instance only.

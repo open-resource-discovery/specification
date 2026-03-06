@@ -1,10 +1,18 @@
 // AUTO-GENERATED definition files. Do not modify directly.
 
 /**
+ * Overlay-specific [perspective](../../spec-v1/index.md#perspectives) that scopes where this overlay should be applied.
+ *
+ * Use this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`
+ * to describe whether the overlay applies broadly to a system type, to one released system version,
+ * or only to a specific system instance.
+ */
+export type OverlayPerspective = ("system-type" | "system-version" | "system-instance") & string;
+/**
  * Correlation ID identifying related records in external systems of record.
  * MUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).
  */
-export type CorrelationID = string;
+export type OverlayCorrelationID = string;
 /**
  * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
  *
@@ -13,9 +21,9 @@ export type CorrelationID = string;
  *
  * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
  */
-export type Visibility = Visibility1 & Visibility2;
-export type Visibility1 = "public" | "internal" | "private";
-export type Visibility2 = string;
+export type OverlayVisibility = OverlayVisibility1 & OverlayVisibility2;
+export type OverlayVisibility1 = "public" | "internal" | "private";
+export type OverlayVisibility2 = string;
 /**
  * Type of the targeted metadata definition file.
  * This can be used to disambiguate how selectors are interpreted for the target.
@@ -63,12 +71,12 @@ export type OverlayDefinitionType2 = string;
  * Prefer concept-level selectors (operation, entityType, propertyType) over jsonPath
  * where possible, as they are resilient to structural changes in the target format.
  */
-export type Selector =
-  | SelectorByJsonPath
-  | SelectorByORDID
-  | SelectorByOperation
-  | SelectorByEntityType
-  | SelectorByPropertyType;
+export type OverlaySelector =
+  | OverlaySelectorByJsonPath
+  | OverlaySelectorByORDID
+  | OverlaySelectorByOperation
+  | OverlaySelectorByEntityType
+  | OverlaySelectorByPropertyType;
 /**
  * The value to be used together with patch actions:
  * - with `action: append`:
@@ -89,11 +97,15 @@ export type Selector =
  *
  * This is a free-form value whose structure depends on the target being patched.
  */
-export type PatchValue =
+export type OverlayPatchValue =
   | {
       [k: string]: unknown | undefined;
     }
-  | string;
+  | unknown[]
+  | string
+  | number
+  | boolean
+  | null;
 
 /**
  * ⚠️ ALPHA: This specification is in alpha and subject to change.
@@ -124,12 +136,6 @@ export type PatchValue =
  *   - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).
  *   - `ordId`: ORD resource metadata level (patching ORD resources themselves).
  *
- * TODO (OData operations):
- *   - Best current guess: map selector `operation` to OData operation names:
- *     - schema-level `Action`/`Function` names (prefer fully-qualified name)
- *     - container-level `ActionImport`/`FunctionImport` names when exposed via entity container
- *     Needs validation with OData experts.
- *
  * Validation assumption:
  *   - overlays and overlay application assume the selected target document is already valid
  *     for its native metadata format.
@@ -149,11 +155,6 @@ export interface ORDOverlay {
   /**
    * Optional ORD ID of this overlay document.
    * MUST follow the ORD ID shape `*:overlay:*:v*`.
-   *
-   * TODO:
-   * - Do we need this?
-   * - If overlays are published via the configuration endpoint without direct ORD resource context, what should their stable ID be?
-   * - Should this be mandatory or optional?
    */
   ordId?: string;
   /**
@@ -162,10 +163,11 @@ export interface ORDOverlay {
    * Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    */
   description?: string;
+  perspective?: OverlayPerspective;
   describedSystemType?: OverlaySystemType;
   describedSystemVersion?: OverlaySystemVersion;
   describedSystemInstance?: OverlaySystemInstance;
-  visibility?: Visibility;
+  visibility?: OverlayVisibility;
   target?: OverlayTarget;
   /**
    * Ordered sequence of patches to apply to the targeted resource(s).
@@ -173,11 +175,13 @@ export interface ORDOverlay {
    *
    * @minItems 1
    */
-  patches: [Patch, ...Patch[]];
+  patches: [OverlayPatch, ...OverlayPatch[]];
   [k: string]: unknown | undefined;
 }
 /**
  * Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.
+ * This is the primary context object for `perspective: system-type`, and also the parent context
+ * for more specific `system-version` and `system-instance` overlays.
  */
 export interface OverlaySystemType {
   /**
@@ -189,10 +193,11 @@ export interface OverlaySystemType {
    *
    * @minItems 1
    */
-  correlationIds?: [CorrelationID, ...CorrelationID[]];
+  correlationIds?: [OverlayCorrelationID, ...OverlayCorrelationID[]];
 }
 /**
  * Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.
+ * Use this when the overlay should only patch metadata for one specific released system version.
  */
 export interface OverlaySystemVersion {
   /**
@@ -210,10 +215,11 @@ export interface OverlaySystemVersion {
    *
    * @minItems 1
    */
-  correlationIds?: [CorrelationID, ...CorrelationID[]];
+  correlationIds?: [OverlayCorrelationID, ...OverlayCorrelationID[]];
 }
 /**
  * Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.
+ * Use this when the overlay should only patch metadata for one concrete tenant / runtime instance.
  */
 export interface OverlaySystemInstance {
   /**
@@ -230,7 +236,7 @@ export interface OverlaySystemInstance {
    *
    * @minItems 1
    */
-  correlationIds?: [CorrelationID, ...CorrelationID[]];
+  correlationIds?: [OverlayCorrelationID, ...OverlayCorrelationID[]];
 }
 /**
  * Optional target context for this overlay.
@@ -250,10 +256,6 @@ export interface OverlaySystemInstance {
  * Multiple resources can still be patched by defining multiple patches with different selector `ordId` values.
  *
  * If the ORD document URL is known, it can be provided via `target.url` as additional context.
- *
- * TODO:
- * - decide what should be optional vs mandatory on target resolution
- * - review cleanup after discussion: this proposal adds fields for transparency; some may be dropped again
  */
 export interface OverlayTarget {
   /**
@@ -280,7 +282,7 @@ export interface OverlayTarget {
 /**
  * A single patch action to apply to the element identified by the selector.
  */
-export interface Patch {
+export interface OverlayPatch {
   /**
    * The patch operation to perform on the selected element:
    *
@@ -308,11 +310,11 @@ export interface Patch {
    * `data: { "foo": { "bar": null } }` removes `foo.bar` inside the selected element.
    */
   action: "update" | "append" | "merge" | "remove";
-  selector: Selector;
-  data?: PatchValue;
+  selector: OverlaySelector;
+  data?: OverlayPatchValue;
   [k: string]: unknown | undefined;
 }
-export interface SelectorByJsonPath {
+export interface OverlaySelectorByJsonPath {
   /**
    * JSONPath expression targeting any location in a JSON/YAML-based target document.
    * MUST start with `$`.
@@ -321,7 +323,7 @@ export interface SelectorByJsonPath {
    */
   jsonPath: string;
 }
-export interface SelectorByORDID {
+export interface OverlaySelectorByORDID {
   /**
    * ORD ID targeting an ORD resource (API, Event, Data Product, ...).
    * MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).
@@ -335,7 +337,7 @@ export interface SelectorByORDID {
    */
   resourceType?: string;
 }
-export interface SelectorByOperation {
+export interface OverlaySelectorByOperation {
   /**
    * Concept-level operation identifier.
    * Supported mappings by format:
@@ -350,14 +352,10 @@ export interface SelectorByOperation {
    * then MCP tools, then A2A skills, returning the first match found.
    *
    * Not currently supported for OData selectors.
-   * Best current guess for future OData support:
-   * - map to `Action`/`Function` names (prefer fully-qualified name)
-   * - or `ActionImport`/`FunctionImport` names when exposed via the entity container
-   * TODO: validate this mapping with OData experts.
    */
   operation: string;
 }
-export interface SelectorByEntityType {
+export interface OverlaySelectorByEntityType {
   /**
    * Concept-level entity type identifier.
    * Currently supported for OData metadata:
@@ -366,7 +364,7 @@ export interface SelectorByEntityType {
    */
   entityType: string;
 }
-export interface SelectorByPropertyType {
+export interface OverlaySelectorByPropertyType {
   /**
    * Concept-level property/element identifier.
    * Currently supported for OData metadata:

@@ -1,4 +1,4 @@
-import { ORDOverlay, Patch } from "../generated/spec/v1/types";
+import { ORDOverlay, OverlayPatch } from "../generated/spec/v1/types";
 import { NodeReference, resolveSelector } from "./selectors";
 import {
   ApplyOverlayOptions,
@@ -75,7 +75,7 @@ function resolveNoMatchBehavior(options: ApplyOverlayOptions): "error" | "warn" 
   return "error";
 }
 
-function applyPatch(rootHolder: RootHolder, patch: Patch, matches: NodeReference[]): void {
+function applyPatch(rootHolder: RootHolder, patch: OverlayPatch, matches: NodeReference[]): void {
   if (patch.action === "update") {
     if (patch.data === undefined) {
       throw new OverlayMergeError("Patch action 'update' requires data.");

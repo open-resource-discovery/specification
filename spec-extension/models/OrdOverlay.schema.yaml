@@ -31,12 +31,6 @@ description: |-
     - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).
     - `ordId`: ORD resource metadata level (patching ORD resources themselves).
 
-  TODO (OData operations):
-    - Best current guess: map selector `operation` to OData operation names:
-      - schema-level `Action`/`Function` names (prefer fully-qualified name)
-      - container-level `ActionImport`/`FunctionImport` names when exposed via entity container
-      Needs validation with OData experts.
-
   Validation assumption:
     - overlays and overlay application assume the selected target document is already valid
       for its native metadata format.
@@ -72,11 +66,6 @@ properties:
     description: |-
       Optional ORD ID of this overlay document.
       MUST follow the ORD ID shape `*:overlay:*:v*`.
-
-      TODO:
-      - Do we need this?
-      - If overlays are published via the configuration endpoint without direct ORD resource context, what should their stable ID be?
-      - Should this be mandatory or optional?
     examples:
       - "sap.foo:overlay:astronomy-api-openapi:v1"
 
@@ -92,23 +81,36 @@ properties:
         This overlay adds descriptive metadata for AI use-cases
         without modifying the original resource definition.
 
+  perspective:
+    $ref: "#/definitions/OverlayPerspective"
+    description: |-
+      Overlay-specific [perspective](../../spec-v1/index.md#perspectives) that scopes where this overlay should be applied.
+
+      Use this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`
+      to describe whether the overlay applies broadly to a system type, to one released system version,
+      or only to a specific system instance.
+
   describedSystemType:
     $ref: "#/definitions/OverlaySystemType"
     description: |-
       Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.
+      This is the primary context object for `perspective: system-type`, and also the parent context
+      for more specific `system-version` and `system-instance` overlays.
 
   describedSystemVersion:
     $ref: "#/definitions/OverlaySystemVersion"
     description: |-
       Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.
+      Use this when the overlay should only patch metadata for one specific released system version.
 
   describedSystemInstance:
     $ref: "#/definitions/OverlaySystemInstance"
     description: |-
       Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.
+      Use this when the overlay should only patch metadata for one concrete tenant / runtime instance.
 
   visibility:
-    $ref: "#/definitions/Visibility"
+    $ref: "#/definitions/OverlayVisibility"
 
   target:
     description: |-
@@ -129,10 +131,6 @@ properties:
       Multiple resources can still be patched by defining multiple patches with different selector `ordId` values.
 
       If the ORD document URL is known, it can be provided via `target.url` as additional context.
-
-      TODO:
-      - decide what should be optional vs mandatory on target resolution
-      - review cleanup after discussion: this proposal adds fields for transparency; some may be dropped again
     $ref: "#/definitions/OverlayTarget"
 
   patches:
@@ -142,16 +140,16 @@ properties:
       Ordered sequence of patches to apply to the targeted resource(s).
       Patches are applied in the order listed.
     items:
-      $ref: "#/definitions/Patch"
+      $ref: "#/definitions/OverlayPatch"
 
 required:
   - ordOverlay
   - patches
 
 definitions:
-  CorrelationId:
+  OverlayCorrelationId:
     type: string
-    title: Correlation ID
+    title: Overlay Correlation ID
     x-ums-type: "ignore"
     description: |-
       Correlation ID identifying related records in external systems of record.
@@ -202,9 +200,9 @@ definitions:
       - "asyncapi-v2"
       - "sap.mdo:mdi-capability-definition:v1"
 
-  Visibility:
+  OverlayVisibility:
     type: string
-    title: Visibility
+    title: Overlay Visibility
     x-ums-type: "ignore"
     description: |-
       Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
@@ -226,6 +224,47 @@ definitions:
       - const: private
         description: |-
           The overlay should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).
+
+  OverlayPerspective:
+    type: string
+    title: Overlay Perspective
+    x-ums-type: "ignore"
+    description: |-
+      Declares from which system landscape perspective this overlay is meant to be applied.
+
+      Unlike an ORD Document perspective, an overlay perspective scopes where the patch content should be consumed:
+      - `system-type`: patch the targeted resource metadata across the system type in general.
+      - `system-version`: patch the targeted resource metadata only for one released system version.
+      - `system-instance`: patch the targeted resource metadata only for one concrete system instance / tenant.
+
+      Use this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`
+      to make the intended overlay scope explicit.
+    oneOf:
+      - const: "system-type"
+        description: |-
+          Applies the overlay at system-type level.
+
+          Use this when the overlay should patch the same targeted resource across versions and instances
+          of the same system type, typically for the same ORD resource major version.
+          `describedSystemType` SHOULD be provided as the identifying context.
+      - const: "system-version"
+        description: |-
+          Applies the overlay to one concrete system version.
+
+          Use this when metadata differs between released versions and the patch should only affect
+          a specific version of the target resource.
+          `describedSystemVersion` SHOULD be provided, and `describedSystemType` SHOULD also be provided as parent context.
+      - const: "system-instance"
+        description: |-
+          Applies the overlay to one concrete system instance / tenant.
+
+          Use this when the patch reflects tenant-specific configuration, extensions, or runtime differences
+          in the target metadata.
+          `describedSystemInstance` SHOULD be provided.
+    examples:
+      - "system-type"
+      - "system-version"
+      - "system-instance"
 
   OverlaySystemInstance:
     type: object
@@ -259,7 +298,7 @@ definitions:
           Correlation IDs for linking this system instance to external systems of record.
         minItems: 1
         items:
-          $ref: "#/definitions/CorrelationId"
+          $ref: "#/definitions/OverlayCorrelationId"
         examples:
           - ["sap.cld:tenant:741234567"]
     additionalProperties: false
@@ -288,7 +327,7 @@ definitions:
           Correlation IDs for linking this system type to external systems of record.
         minItems: 1
         items:
-          $ref: "#/definitions/CorrelationId"
+          $ref: "#/definitions/OverlayCorrelationId"
         examples:
           - ["sap.cld:systemRole:S4_PC"]
     additionalProperties: false
@@ -325,7 +364,7 @@ definitions:
           Correlation IDs for linking this system version to external systems of record.
         minItems: 1
         items:
-          $ref: "#/definitions/CorrelationId"
+          $ref: "#/definitions/OverlayCorrelationId"
         examples:
           - ["sap.cld:release:2408"]
     additionalProperties: false
@@ -348,10 +387,6 @@ definitions:
       For ORD-level-only overlays, this object can be omitted (or left empty) and
       selectors can directly identify resources via `selector.ordId`.
       Multiple identifiers, if provided, are treated as all pointing to the same resource.
-
-      TODO:
-      - decide what should be optional vs mandatory here
-      - revisit cleanup after discussion; some transparency-focused fields may be removed
     additionalProperties: false
     properties:
       ordId:
@@ -394,9 +429,9 @@ definitions:
           (as used in API/Event/Capability resource definitions).
           This is especially useful when `ordId` resolves to a resource with multiple attached definitions.
 
-  Patch:
+  OverlayPatch:
     type: object
-    title: Patch
+    title: Overlay Patch
     x-ums-type: "embedded"
     description: A single patch action to apply to the element identified by the selector.
     required:
@@ -437,14 +472,14 @@ definitions:
           - remove
 
       selector:
-        $ref: "#/definitions/Selector"
+        $ref: "#/definitions/OverlaySelector"
 
       data:
-        $ref: "#/definitions/PatchValue"
+        $ref: "#/definitions/OverlayPatchValue"
 
-  Selector:
+  OverlaySelector:
     type: object
-    title: Selector
+    title: Overlay Selector
     x-ums-type: "embedded"
     description: |-
       Identifies the element in the target to patch.
@@ -459,15 +494,15 @@ definitions:
       Prefer concept-level selectors (operation, entityType, propertyType) over jsonPath
       where possible, as they are resilient to structural changes in the target format.
     oneOf:
-      - $ref: "#/definitions/SelectorByJsonPath"
-      - $ref: "#/definitions/SelectorByOrdId"
-      - $ref: "#/definitions/SelectorByOperation"
-      - $ref: "#/definitions/SelectorByEntityType"
-      - $ref: "#/definitions/SelectorByPropertyType"
+      - $ref: "#/definitions/OverlaySelectorByJsonPath"
+      - $ref: "#/definitions/OverlaySelectorByOrdId"
+      - $ref: "#/definitions/OverlaySelectorByOperation"
+      - $ref: "#/definitions/OverlaySelectorByEntityType"
+      - $ref: "#/definitions/OverlaySelectorByPropertyType"
 
-  SelectorByJsonPath:
+  OverlaySelectorByJsonPath:
     type: object
-    title: Selector By JsonPath
+    title: Overlay Selector By JsonPath
     x-ums-type: "embedded"
     additionalProperties: false
     required:
@@ -485,9 +520,9 @@ definitions:
         examples:
           - "$.paths./business-partners.get"
 
-  SelectorByOrdId:
+  OverlaySelectorByOrdId:
     type: object
-    title: Selector By ORD ID
+    title: Overlay Selector By ORD ID
     x-ums-type: "embedded"
     additionalProperties: false
     required:
@@ -513,9 +548,9 @@ definitions:
           - "eventResource"
           - "dataProduct"
 
-  SelectorByOperation:
+  OverlaySelectorByOperation:
     type: object
-    title: Selector By Operation
+    title: Overlay Selector By Operation
     x-ums-type: "embedded"
     additionalProperties: false
     required:
@@ -538,17 +573,13 @@ definitions:
           then MCP tools, then A2A skills, returning the first match found.
 
           Not currently supported for OData selectors.
-          Best current guess for future OData support:
-          - map to `Action`/`Function` names (prefer fully-qualified name)
-          - or `ActionImport`/`FunctionImport` names when exposed via the entity container
-          TODO: validate this mapping with OData experts.
         examples:
           - "getBusinessPartner"
           - "dispute-case-resolution"
 
-  SelectorByEntityType:
+  OverlaySelectorByEntityType:
     type: object
-    title: Selector By Entity Type
+    title: Overlay Selector By Entity Type
     x-ums-type: "embedded"
     additionalProperties: false
     required:
@@ -566,9 +597,9 @@ definitions:
           - "BusinessPartner"
           - "A_BusinessPartnerType"
 
-  SelectorByPropertyType:
+  OverlaySelectorByPropertyType:
     type: object
-    title: Selector By Property Type
+    title: Overlay Selector By Property Type
     x-ums-type: "embedded"
     additionalProperties: false
     required:
@@ -597,11 +628,15 @@ definitions:
           - "BusinessPartner"
           - "A_BusinessPartnerType"
 
-  PatchValue:
+  OverlayPatchValue:
     type:
       - object
+      - array
       - string
-    title: Patch Value
+      - number
+      - boolean
+      - "null"
+    title: Overlay Patch Value
     x-ums-type: "embedded"
     description: |-
       The value to be used together with patch actions:

@@ -1,4 +1,4 @@
-import { Selector } from "../generated/spec/v1/types";
+import { OverlaySelector } from "../generated/spec/v1/types";
 import { JSONValue, OverlayMergeError, isJSONObject } from "./types";
 
 const jsonpath = require("jsonpath") as {
@@ -16,7 +16,7 @@ interface NodeReference {
   path: string;
 }
 
-export function resolveSelector(root: JSONValue, selector: Selector, definitionType?: string): NodeReference[] {
+export function resolveSelector(root: JSONValue, selector: OverlaySelector, definitionType?: string): NodeReference[] {
   if (isJSONObject(selector) && typeof selector.jsonPath === "string") {
     return resolveJsonPath(root, selector.jsonPath);
   }

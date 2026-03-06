@@ -1,11 +1,11 @@
 apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
 type: 'MetadataType'
 metadata:
-  name: 'selector'
+  name: 'overlayselector'
   path: '/sap/core/ucl/metadata/ord/v1'
   labels: {}
 spec:
-  typeName: 'Selector'
+  typeName: 'OverlaySelector'
   key:
     - 'id'
   visibility: 'public'

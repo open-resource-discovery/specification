@@ -11,12 +11,6 @@ const config = {
   ],
   // Generated files to remove (absolute or workspace-relative)
   removeGeneratedFiles: [
-    // Static generated schema artifacts
-    'static/spec-v1/interfaces/Configuration.schema.json',
-    'static/spec-v1/interfaces/Document.schema.json',
-    'static/spec-v1/interfaces/OrdOverlay.schema.json',
-    'static/spec-v1/interfaces/ums/MetadataType/ordoverlay.yaml',
-    'static/spec-extension/models/OrdOverlay.schema.json',
     'docs/spec-v1/interfaces/Configuration.md',
     'docs/spec-v1/interfaces/Document.md',
     'docs/spec-extensions/models/OrdOverlay.md'
@@ -24,12 +18,28 @@ const config = {
   // Folders where we remove all contents except certain keepers
   cleanFoldersExcept: [
     {
+      dir: 'docs/spec-v1/interfaces',
+      keep: new Set(['index.mdx', 'explorer.mdx', 'document-api.mdx'])
+    },
+    {
+      dir: 'docs/spec-extensions/models',
+      keep: new Set(['index.mdx'])
+    },
+    {
       dir: 'docs/spec-v1/examples',
       keep: new Set(['index.mdx'])
     },
     {
       dir: 'docs/spec-v1/diagrams',
       keep: new Set(['index.mdx'])
+    },
+    {
+      dir: 'static/spec-v1/interfaces',
+      keep: new Set([])
+    },
+    {
+      dir: 'static/spec-extension/models',
+      keep: new Set([])
     }
   ],
 };

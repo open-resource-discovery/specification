@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: true
-  description: "Optional context about the target being patched.\nThe target can refer to an ORD resource or to a referenced resource definition file.\n\n`ordId` targets the ORD resource metadata itself.\nFor patching a specific resource definition file of that resource, use `url` and/or `definitionType`\nto disambiguate.\n\nExample: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.\nIn such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.\n\nFor ORD-level-only overlays, this object can be omitted (or left empty) and\nselectors can directly identify resources via `selector.ordId`.\nMultiple identifiers, if provided, are treated as all pointing to the same resource.\n\nTODO:\n- decide what should be optional vs mandatory here\n- revisit cleanup after discussion; some transparency-focused fields may be removed"
+  description: "Optional context about the target being patched.\nThe target can refer to an ORD resource or to a referenced resource definition file.\n\n`ordId` targets the ORD resource metadata itself.\nFor patching a specific resource definition file of that resource, use `url` and/or `definitionType`\nto disambiguate.\n\nExample: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.\nIn such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.\n\nFor ORD-level-only overlays, this object can be omitted (or left empty) and\nselectors can directly identify resources via `selector.ordId`.\nMultiple identifiers, if provided, are treated as all pointing to the same resource."
   metadataProperties:
     - name: 'id'
       type: 'guid'
