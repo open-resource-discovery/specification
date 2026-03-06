@@ -65,7 +65,7 @@ properties:
     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
     description: |-
       Optional ORD ID of this overlay document.
-      MUST follow the ORD ID shape `*:overlay:*:v*`.
+      MUST be provided if the ORD Overlay is published via ORD Configuration endpoint.
     examples:
       - "sap.foo:overlay:astronomy-api-openapi:v1"
 

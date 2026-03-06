@@ -26,7 +26,7 @@ spec:
       mandatory: true
     - name: 'ordId'
       type: 'string'
-      description: "Optional ORD ID of this overlay document.\nMUST follow the ORD ID shape `*:overlay:*:v*`."
+      description: "Optional ORD ID of this overlay document.\nMUST be provided if the ORD Overlay is published via ORD Configuration endpoint."
       constraints:
         maxLength: 255
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
