@@ -26,11 +26,13 @@ without modifying the original source files.
 
 ## Distribution
 
+Decision guidance for choosing a distribution mode is collected in the
+[Appendix: ORD Configuration vs. Attached Resource Definition](#deep-dive-ord-configuration-vs-attached-resource-definition).
+
 ### Via the ORD Configuration Endpoint
 
 Overlays can be listed directly in the [ORD Configuration Endpoint](../../spec-v1/index.md#ord-configuration-endpoint) under `openResourceDiscoveryV1.overlays`.
 This is the preferred approach for cross-cutting overlays that are not tied to a single resource, or when patching ORD resource metadata itself.
-See also [Appendix: ORD Configuration vs. Attached Resource Definition](#deep-dive-ord-configuration-vs-attached-resource-definition) for guidance on when to choose which distribution mode.
 
 ```json
 {
@@ -46,7 +48,6 @@ See also [Appendix: ORD Configuration vs. Attached Resource Definition](#deep-di
 
 Overlays can also be attached directly to an API or Event resource as a `resourceDefinitions` entry with type `ord:overlay:v1`.
 This keeps the overlay co-located with the resource it patches.
-See also [Appendix: ORD Configuration vs. Attached Resource Definition](#deep-dive-ord-configuration-vs-attached-resource-definition) for guidance on when to choose which distribution mode.
 
 ```json
 {
