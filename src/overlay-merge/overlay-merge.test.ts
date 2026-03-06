@@ -114,7 +114,6 @@ test("applies ordId selectors to ORD document resources", async () => {
         action: "remove",
         selector: {
           ordId: "sap.foo:apiResource:astronomy:v1",
-          resourceType: "apiResources",
         },
         data: {
           description: null,
@@ -155,7 +154,7 @@ test("applies ordId selectors to ORD document resources", async () => {
   assert.deepEqual(merged.simpleScalarArray, ["a", "b", "c"]);
 });
 
-test("accepts singular resourceType hints that pluralize to 'ies'", () => {
+test("derives ORD collection names from ordId resource types ending in 'y'", () => {
   const source = {
     capabilities: [
       {
@@ -172,7 +171,6 @@ test("accepts singular resourceType hints that pluralize to 'ies'", () => {
         action: "merge",
         selector: {
           ordId: "sap.foo:capability:catalog-search:v1",
-          resourceType: "capability",
         },
         data: {
           description: "Overlay enriched capability",

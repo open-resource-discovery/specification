@@ -328,14 +328,9 @@ export interface OverlaySelectorByORDID {
    * ORD ID targeting an ORD resource (API, Event, Data Product, ...).
    * MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).
    * Use this selector when patching ORD resource metadata itself.
+   * The ORD resource type is derived from the ORD ID itself.
    */
   ordId: string;
-  /**
-   * Optional hint when selecting by `ordId`.
-   * Specifies the ORD resource type to speed up resolution.
-   * If omitted, implementations SHOULD scan all resource types.
-   */
-  resourceType?: string;
 }
 export interface OverlaySelectorByOperation {
   /**
@@ -370,12 +365,15 @@ export interface OverlaySelectorByPropertyType {
    * Currently supported for OData metadata:
    * - `edmx` (OData v2/v4 CSDL XML)
    * - `csdl-json` (OData v4 CSDL JSON)
+   *
+   * If the property type is globally unique in the targeted metadata, this field alone is sufficient.
+   * If it is ambiguous, `entityType` SHOULD be provided in addition to disambiguate the lookup.
    */
   propertyType: string;
   /**
-   * Entity type context of the selected property.
-   * This scopes the property lookup to avoid ambiguity.
+   * Optional entity type context of the selected property.
+   * Provide this when `propertyType` alone is ambiguous.
    * For OData metadata, this identifies the containing EntityType.
    */
-  entityType: string;
+  entityType?: string;
 }

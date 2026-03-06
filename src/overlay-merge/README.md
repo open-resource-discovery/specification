@@ -83,7 +83,7 @@ It intentionally does not patch nested reference objects by default (for example
 
 Resolution behavior:
 - The implementation discovers root-level arrays of objects that contain an `ordId` field, and only scans those collections
-- If `selector.resourceType` is provided, it filters candidate collections by exact collection name (with simple plural fallbacks such as `s` and `y -> ies`)
+- The implementation derives the ORD resource type from the `ordId` itself and uses simple collection-name fallbacks such as `s` and `y -> ies`
 - There is no hardcoded ORD resource type map in the resolver
 
 ## Library Usage

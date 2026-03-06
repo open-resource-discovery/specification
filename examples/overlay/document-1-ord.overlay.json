@@ -21,8 +21,7 @@
     {
       "action": "remove",
       "selector": {
-        "ordId": "sap.foo:apiResource:astronomy:v1",
-        "resourceType": "apiResources"
+        "ordId": "sap.foo:apiResource:astronomy:v1"
       },
       "data": {
         "description": null

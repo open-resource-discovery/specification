@@ -22,7 +22,7 @@ export function resolveSelector(root: JSONValue, selector: OverlaySelector, defi
   }
 
   if (isJSONObject(selector) && typeof selector.ordId === "string") {
-    return resolveOrdIdSelector(root, selector.ordId, typeof selector.resourceType === "string" ? selector.resourceType : undefined);
+    return resolveOrdIdSelector(root, selector.ordId);
   }
 
   if (isJSONObject(selector) && typeof selector.operation === "string") {
@@ -30,9 +30,10 @@ export function resolveSelector(root: JSONValue, selector: OverlaySelector, defi
   }
 
   // TODO: implement entityType and propertyType selectors for OData CSDL.
-  // For edmx: find EntityType[@Name=entityType] and Property[@Name=propertyType] in XML.
-  // For csdl-json: find Schema.*.EntityType[entityType] and its properties.
-  if (isJSONObject(selector) && "entityType" in selector && "propertyType" in selector) {
+  // For edmx: find Property[@Name=propertyType] globally when unique, or scope lookup via
+  // EntityType[@Name=entityType] when entityType is provided.
+  // For csdl-json: find matching properties globally when unique, or under Schema.*.EntityType[entityType].
+  if (isJSONObject(selector) && "propertyType" in selector) {
     throw new OverlayMergeError(
       "Unsupported selector: propertyType. This merge script currently supports only jsonPath, ordId, and operation.",
     );
@@ -196,13 +197,13 @@ function resolveA2ASkill(root: Record<string, JSONValue>, operationName: string)
   return matches;
 }
 
-function resolveOrdIdSelector(root: JSONValue, ordId: string, resourceType: string | undefined): NodeReference[] {
+function resolveOrdIdSelector(root: JSONValue, ordId: string): NodeReference[] {
   if (!isJSONObject(root)) {
     throw new OverlayMergeError("ordId selector requires an ORD Document object as target.");
   }
 
   const ordCollections = findOrdCollections(root);
-  const collectionNames = resolveCandidateCollections(ordCollections, resourceType);
+  const collectionNames = resolveCandidateCollections(ordCollections, deriveResourceTypeFromOrdId(ordId));
   const matches: NodeReference[] = [];
 
   for (const collectionName of collectionNames) {
@@ -228,6 +229,15 @@ function resolveOrdIdSelector(root: JSONValue, ordId: string, resourceType: stri
   }
 
   return matches;
+}
+
+function deriveResourceTypeFromOrdId(ordId: string): string | undefined {
+  const segments = ordId.split(":");
+  if (segments.length !== 4) {
+    return undefined;
+  }
+
+  return segments[1];
 }
 
 function findOrdCollections(root: Record<string, JSONValue>): string[] {

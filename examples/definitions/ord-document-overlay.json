@@ -11,8 +11,7 @@
     {
       "action": "merge",
       "selector": {
-        "ordId": "sap.foo:apiResource:astronomy:v1",
-        "resourceType": "apiResource"
+        "ordId": "sap.foo:apiResource:astronomy:v1"
       },
       "data": {
         "partOfGroups": [
@@ -28,8 +27,7 @@
     {
       "action": "merge",
       "selector": {
-        "ordId": "sap.foo:eventResource:ExampleEventResource:v1",
-        "resourceType": "eventResource"
+        "ordId": "sap.foo:eventResource:ExampleEventResource:v1"
       },
       "data": {
         "partOfGroups": [
@@ -43,8 +41,7 @@
     {
       "action": "merge",
       "selector": {
-        "ordId": "sap.foo:package:ord-reference-app:v0",
-        "resourceType": "package"
+        "ordId": "sap.foo:package:ord-reference-app:v0"
       },
       "data": {
         "labels": {

@@ -147,6 +147,7 @@ required:
   - patches
 
 definitions:
+  # Based on the ORD Document Correlation ID item shape; ORD Document schema is leading for the shared format constraints.
   OverlayCorrelationId:
     type: string
     title: Overlay Correlation ID
@@ -157,6 +158,7 @@ definitions:
     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
     maxLength: 255
 
+  # Based on ORD Document resource definition type values and Specification ID usage; ORD Document schema is leading for the reused values and constraints.
   OverlayDefinitionType:
     type: string
     title: Overlay Definition Type
@@ -200,6 +202,7 @@ definitions:
       - "asyncapi-v2"
       - "sap.mdo:mdi-capability-definition:v1"
 
+  # Based on the ORD Document shared visibility definition; ORD Document schema is leading for the shared values and semantics, while this overlay variant adapts the wording to overlays.
   OverlayVisibility:
     type: string
     title: Overlay Visibility
@@ -225,6 +228,7 @@ definitions:
         description: |-
           The overlay should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).
 
+  # Based on the ORD Document `perspective` field; ORD Document schema is leading for the shared values and core semantics, while this overlay variant narrows the meaning to overlay application scope.
   OverlayPerspective:
     type: string
     title: Overlay Perspective
@@ -266,6 +270,7 @@ definitions:
       - "system-version"
       - "system-instance"
 
+  # Copy from ORD Document definition "SystemInstance"; ORD Document schema is leading and this copy MUST be kept in sync for the shared fields.
   OverlaySystemInstance:
     type: object
     title: Overlay System Instance
@@ -303,6 +308,7 @@ definitions:
           - ["sap.cld:tenant:741234567"]
     additionalProperties: false
 
+  # Copy from ORD Document definition "SystemType"; ORD Document schema is leading and this copy MUST be kept in sync for the shared fields.
   OverlaySystemType:
     type: object
     title: Overlay System Type
@@ -332,6 +338,7 @@ definitions:
           - ["sap.cld:systemRole:S4_PC"]
     additionalProperties: false
 
+  # Copy from ORD Document definition "SystemVersion"; ORD Document schema is leading and this copy MUST be kept in sync for the shared fields.
   OverlaySystemVersion:
     type: object
     title: Overlay System Version
@@ -534,19 +541,10 @@ definitions:
           ORD ID targeting an ORD resource (API, Event, Data Product, ...).
           MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).
           Use this selector when patching ORD resource metadata itself.
+          The ORD resource type is derived from the ORD ID itself.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         examples:
           - "sap.s4:apiResource:OP_API_BUSINESS_PARTNER_SRV:v1"
-      resourceType:
-        type: string
-        description: |-
-          Optional hint when selecting by `ordId`.
-          Specifies the ORD resource type to speed up resolution.
-          If omitted, implementations SHOULD scan all resource types.
-        examples:
-          - "apiResource"
-          - "eventResource"
-          - "dataProduct"
 
   OverlaySelectorByOperation:
     type: object
@@ -604,7 +602,6 @@ definitions:
     additionalProperties: false
     required:
       - propertyType
-      - entityType
     properties:
       propertyType:
         type: string
@@ -614,6 +611,9 @@ definitions:
           Currently supported for OData metadata:
           - `edmx` (OData v2/v4 CSDL XML)
           - `csdl-json` (OData v4 CSDL JSON)
+
+          If the property type is globally unique in the targeted metadata, this field alone is sufficient.
+          If it is ambiguous, `entityType` SHOULD be provided in addition to disambiguate the lookup.
         examples:
           - "BusinessPartnerFullName"
           - "LegacySearchTerm1"
@@ -621,13 +621,18 @@ definitions:
         type: string
         minLength: 1
         description: |-
-          Entity type context of the selected property.
-          This scopes the property lookup to avoid ambiguity.
+          Optional entity type context of the selected property.
+          Provide this when `propertyType` alone is ambiguous.
           For OData metadata, this identifies the containing EntityType.
         examples:
           - "BusinessPartner"
           - "A_BusinessPartnerType"
 
+  # Intended shape: unconstrained value (`unknown` / `any`) because patch data depends on the selected target.
+  # Current fallback: explicit JSON-type union because spec-toolkit currently rejects a typeless schema object here.
+  # TODO: Consider extending spec-toolkit to support unconstrained value definitions and generate `unknown` cleanly.
+  # TODO: Clarify how to best handle an unconstrained patch value in UMS.
+  # TODO: Decide whether this has to remain its own definition with x-ums-type "embedded".
   OverlayPatchValue:
     type:
       - object

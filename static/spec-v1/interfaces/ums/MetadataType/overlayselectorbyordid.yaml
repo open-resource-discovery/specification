@@ -18,12 +18,9 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId'
       type: 'string'
-      description: "ORD ID targeting an ORD resource (API, Event, Data Product, ...).\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).\nUse this selector when patching ORD resource metadata itself."
+      description: "ORD ID targeting an ORD resource (API, Event, Data Product, ...).\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).\nUse this selector when patching ORD resource metadata itself.\nThe ORD resource type is derived from the ORD ID itself."
       mandatory: true
       constraints:
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
-    - name: 'resourceType'
-      type: 'string'
-      description: "Optional hint when selecting by `ordId`.\nSpecifies the ORD resource type to speed up resolution.\nIf omitted, implementations SHOULD scan all resource types."
   customTypeDefinitions: []
   metadataRelations: []

@@ -18,14 +18,13 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'propertyType'
       type: 'string'
-      description: "Concept-level property/element identifier.\nCurrently supported for OData metadata:\n- `edmx` (OData v2/v4 CSDL XML)\n- `csdl-json` (OData v4 CSDL JSON)"
+      description: "Concept-level property/element identifier.\nCurrently supported for OData metadata:\n- `edmx` (OData v2/v4 CSDL XML)\n- `csdl-json` (OData v4 CSDL JSON)\n\nIf the property type is globally unique in the targeted metadata, this field alone is sufficient.\nIf it is ambiguous, `entityType` SHOULD be provided in addition to disambiguate the lookup."
       mandatory: true
       constraints:
         minLength: 1
     - name: 'entityType'
       type: 'string'
-      description: "Entity type context of the selected property.\nThis scopes the property lookup to avoid ambiguity.\nFor OData metadata, this identifies the containing EntityType."
-      mandatory: true
+      description: "Optional entity type context of the selected property.\nProvide this when `propertyType` alone is ambiguous.\nFor OData metadata, this identifies the containing EntityType."
       constraints:
         minLength: 1
   customTypeDefinitions: []
