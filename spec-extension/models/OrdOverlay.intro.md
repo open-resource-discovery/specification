@@ -30,6 +30,7 @@ without modifying the original source files.
 
 Overlays can be listed directly in the [ORD Configuration Endpoint](../../spec-v1/index.md#ord-configuration-endpoint) under `openResourceDiscoveryV1.overlays`.
 This is the preferred approach for cross-cutting overlays that are not tied to a single resource, or when patching ORD resource metadata itself.
+See also [Appendix: ORD Configuration vs. Attached Resource Definition](#deep-dive-ord-configuration-vs-attached-resource-definition) for guidance on when to choose which distribution mode.
 
 ```json
 {
@@ -45,6 +46,7 @@ This is the preferred approach for cross-cutting overlays that are not tied to a
 
 Overlays can also be attached directly to an API or Event resource as a `resourceDefinitions` entry with type `ord:overlay:v1`.
 This keeps the overlay co-located with the resource it patches.
+See also [Appendix: ORD Configuration vs. Attached Resource Definition](#deep-dive-ord-configuration-vs-attached-resource-definition) for guidance on when to choose which distribution mode.
 
 ```json
 {
@@ -110,6 +112,14 @@ To fully replace an array, use two ordered patches — first `remove` the array,
 Overlays assume the target document is already valid for its native format.
 The merge tool does not fully re-validate target formats.
 After applying an overlay, validate the merged output with the corresponding format-specific tooling.
+
+## ORD Aggregator Expectations
+
+An ORD Aggregator MUST apply overlays that patch ORD resource metadata when building its ORD Discovery API and related indexes.
+This is necessary so that ORD-level overlay changes are reflected in discovery responses, filtering, searching, and similar aggregator behavior.
+
+An ORD Aggregator SHOULD enforce that overlay sources are permitted to patch the target metadata.
+Without such enforcement, consumers could be exposed to unauthorized metadata changes through overlay processing.
 
 ## Overlay Document Metadata
 
