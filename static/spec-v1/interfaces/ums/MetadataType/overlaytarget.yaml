@@ -35,4 +35,4 @@ spec:
     - propertyName: 'definitionType'
       relatedTypeName: 'OverlayDefinitionType'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Optional type of the target definition being patched.\nIf provided, this SHOULD match the `type` of the referenced metadata definition\n(as used in API/Event/Capability resource definitions).\nThis is especially useful when `ordId` resolves to a resource with multiple attached definitions."
+      description: "Optional, but RECOMMENDED type of the target definition being patched.\nIf provided, this SHOULD match the `type` of the referenced metadata definition\n(as used in API/Event/Capability resource definitions).\nThis is especially useful when `ordId` resolves to a resource with multiple attached definitions."

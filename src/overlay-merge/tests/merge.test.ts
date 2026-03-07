@@ -1,49 +1,37 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
-import { ORDOverlay } from "../generated/spec/v1/types";
-import { applyOverlayToDocument } from "./merge";
-import { JSONValue, OverlayMergeError } from "./types";
-
-const repositoryRoot = resolve(__dirname, "../../");
-
-async function loadJson(relativePath: string): Promise<unknown> {
-  const content = await readFile(resolve(repositoryRoot, relativePath), "utf8");
-  return JSON.parse(content) as unknown;
-}
+import { applyOverlayToDocument } from "../merge";
+import { JSONValue, OverlayMergeError } from "../types";
+import { captureWarnings, createOrdOverlay, createOverlayPatch, loadJsonFixture } from "./test-helpers";
 
 test("applies JSONPath-based merge, update and remove patches to a JSON metadata file", async () => {
-  const openApiSource = (await loadJson(
+  const openApiSource = await loadJsonFixture<JSONValue>(
     "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
-  )) as JSONValue;
+  );
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: {
       url: "/ord/metadata/astronomy-v1.oas3.json",
       definitionType: "openapi-v3",
     },
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: {
           jsonPath: "$.info",
         },
         data: {
           "x-overlay-note": "metadata enriched",
         },
-      },
-      {
-        action: "merge",
+      }),
+      createOverlayPatch({
         selector: {
           jsonPath: "$",
         },
         data: {
           tags: ["overlay-tag"],
         },
-      },
-      {
+      }),
+      createOverlayPatch({
         action: "remove",
         selector: {
           jsonPath: "$.info",
@@ -51,8 +39,8 @@ test("applies JSONPath-based merge, update and remove patches to a JSON metadata
         data: {
           description: null,
         },
-      },
-      {
+      }),
+      createOverlayPatch({
         action: "update",
         selector: {
           jsonPath: "$.servers[0]",
@@ -60,15 +48,15 @@ test("applies JSONPath-based merge, update and remove patches to a JSON metadata
         data: {
           url: "https://example.invalid/astronomy/v1",
         },
-      },
-      {
+      }),
+      createOverlayPatch({
         action: "remove",
         selector: {
           jsonPath: "$.paths",
         },
-      },
+      }, { omitData: true }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   const merged = applyOverlayToDocument(openApiSource, overlay, {
     context: {
@@ -88,18 +76,16 @@ test("applies JSONPath-based merge, update and remove patches to a JSON metadata
 });
 
 test("applies ordId selectors to ORD document resources", async () => {
-  const documentSource = (await loadJson("examples/documents/document-1.json")) as Record<string, JSONValue>;
+  const documentSource = await loadJsonFixture<Record<string, JSONValue>>("examples/documents/document-1.json");
   documentSource.customArrayWithoutOrdId = [{ id: "foo", title: "bar" }];
   documentSource.simpleScalarArray = ["a", "b", "c"];
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: {
       ordId: "sap.foo:apiResource:astronomy:v1",
     },
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: {
           ordId: "sap.foo:apiResource:astronomy:v1",
         },
@@ -109,8 +95,8 @@ test("applies ordId selectors to ORD document resources", async () => {
             source: ["overlay"],
           },
         },
-      },
-      {
+      }),
+      createOverlayPatch({
         action: "remove",
         selector: {
           ordId: "sap.foo:apiResource:astronomy:v1",
@@ -121,15 +107,15 @@ test("applies ordId selectors to ORD document resources", async () => {
             supported: null,
           },
         },
-      },
-      {
+      }),
+      createOverlayPatch({
         action: "remove",
         selector: {
           ordId: "sap.foo:eventResource:ExampleEventResource:v1",
         },
-      },
+      }, { omitData: true }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   const merged = applyOverlayToDocument(documentSource as JSONValue, overlay, {
     context: {
@@ -164,20 +150,18 @@ test("derives ORD collection names from ordId resource types ending in 'y'", () 
     ],
   } as JSONValue;
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: {
           ordId: "sap.foo:capability:catalog-search:v1",
         },
         data: {
           description: "Overlay enriched capability",
         },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   const merged = applyOverlayToDocument(source, overlay) as Record<string, unknown>;
   const capabilities = merged.capabilities as Array<Record<string, unknown>>;
@@ -185,25 +169,24 @@ test("derives ORD collection names from ordId resource types ending in 'y'", () 
 });
 
 test("appends text to selected string fields", async () => {
-  const openApiSource = (await loadJson(
+  const openApiSource = await loadJsonFixture<JSONValue>(
     "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
-  )) as JSONValue;
+  );
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: {
       definitionType: "openapi-v3",
     },
     patches: [
-      {
+      createOverlayPatch({
         action: "append",
         selector: {
           jsonPath: "$.info.description",
         },
         data: " Additional overlay details.",
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   const merged = applyOverlayToDocument(openApiSource, overlay) as Record<string, unknown>;
   const info = merged.info as Record<string, unknown>;
@@ -211,41 +194,39 @@ test("appends text to selected string fields", async () => {
 });
 
 test("fails append when selected value is not a string", async () => {
-  const openApiSource = (await loadJson(
+  const openApiSource = await loadJsonFixture<JSONValue>(
     "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
-  )) as JSONValue;
+  );
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: {
       definitionType: "openapi-v3",
     },
     patches: [
-      {
+      createOverlayPatch({
         action: "append",
         selector: {
           jsonPath: "$.servers[0]",
         },
         data: " invalid",
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   assert.throws(() => applyOverlayToDocument(openApiSource, overlay), OverlayMergeError);
 });
 
 test("fails append when data is not a string", async () => {
-  const openApiSource = (await loadJson(
+  const openApiSource = await loadJsonFixture<JSONValue>(
     "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
-  )) as JSONValue;
+  );
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: {
       definitionType: "openapi-v3",
     },
     patches: [
-      {
+      createOverlayPatch({
         action: "append",
         selector: {
           jsonPath: "$.info.description",
@@ -253,62 +234,58 @@ test("fails append when data is not a string", async () => {
         data: {
           text: " invalid",
         },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   assert.throws(() => applyOverlayToDocument(openApiSource, overlay), OverlayMergeError);
 });
 
 test("throws when selector has no match by default", async () => {
-  const openApiSource = (await loadJson(
+  const openApiSource = await loadJsonFixture<JSONValue>(
     "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
-  )) as JSONValue;
+  );
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: {
       definitionType: "openapi-v3",
     },
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: {
           jsonPath: "$.does.not.exist",
         },
         data: {
           foo: "bar",
         },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   assert.throws(() => applyOverlayToDocument(openApiSource, overlay), OverlayMergeError);
 });
 
 test("does not use URL equality for target matching", async () => {
-  const openApiSource = (await loadJson(
+  const openApiSource = await loadJsonFixture<JSONValue>(
     "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
-  )) as JSONValue;
+  );
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: {
       url: "/ord/metadata/astronomy-v1.oas3.json",
       definitionType: "openapi-v3",
     },
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: {
           jsonPath: "$.info",
         },
         data: {
           "x-url-check": "disabled",
         },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   const merged = applyOverlayToDocument(openApiSource, overlay, {
     requireTargetMatch: true,
@@ -331,65 +308,53 @@ test("validates openapi-v3 targets by document content", () => {
     },
   } as JSONValue;
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: {
       definitionType: "openapi-v3",
     },
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: {
           jsonPath: "$.info",
         },
         data: {
           "x-should-not-apply": true,
         },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   assert.throws(() => applyOverlayToDocument(notOpenApiV3, overlay), OverlayMergeError);
 });
 
 test("warns instead of throwing when configured for no-match warnings", async () => {
-  const openApiSource = (await loadJson(
+  const openApiSource = await loadJsonFixture<JSONValue>(
     "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
-  )) as JSONValue;
+  );
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: {
       definitionType: "openapi-v3",
     },
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: {
           jsonPath: "$.does.not.exist",
         },
         data: {
           foo: "bar",
         },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
-  const warnings: string[] = [];
-  const originalWarn = console.warn;
-  console.warn = (message?: unknown): void => {
-    warnings.push(String(message));
-  };
-
-  try {
-    const merged = applyOverlayToDocument(openApiSource, overlay, {
+  const { result: merged, warnings } = await captureWarnings(() =>
+    applyOverlayToDocument(openApiSource, overlay, {
       noMatchBehavior: "warn",
-    });
-    assert.deepEqual(merged, openApiSource);
-  } finally {
-    console.warn = originalWarn;
-  }
+    }),
+  );
 
+  assert.deepEqual(merged, openApiSource);
   assert.equal(warnings.length, 1);
   assert.match(warnings[0], /did not match any target element/);
 });
@@ -408,17 +373,15 @@ test("applies operation selector to OpenAPI operationId", () => {
     },
   } as JSONValue;
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: { definitionType: "openapi-v3" },
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: { operation: "listThings" },
         data: { deprecated: true },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   const merged = applyOverlayToDocument(source, overlay, {
     context: { definitionType: "openapi-v3" },
@@ -438,16 +401,14 @@ test("applies operation selector to MCP tools by name", () => {
     ],
   } as JSONValue;
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: { operation: "search-documents" },
         data: { "x-rate-limit": 100 },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   const merged = applyOverlayToDocument(source, overlay, {
     context: { definitionType: "sap.mcp:myService:v1" },
@@ -466,17 +427,15 @@ test("applies operation selector to A2A skills by id", () => {
     ],
   } as JSONValue;
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: { definitionType: "a2a-agent-card" },
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: { operation: "run-analysis" },
         data: { "x-status": "promoted", tags: ["batch"] },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   const merged = applyOverlayToDocument(source, overlay, {
     context: { definitionType: "a2a-agent-card" },
@@ -488,7 +447,7 @@ test("applies operation selector to A2A skills by id", () => {
   assert.equal("x-status" in skills[1], false);
 });
 
-test("auto-detects OpenAPI operation selector when no definitionType is given", () => {
+test("auto-detects OpenAPI operation selector when no definitionType is given", async () => {
   const source = {
     openapi: "3.0.0",
     paths: {
@@ -498,20 +457,22 @@ test("auto-detects OpenAPI operation selector when no definitionType is given", 
     },
   } as JSONValue;
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     patches: [
-      {
-        action: "merge",
+      createOverlayPatch({
         selector: { operation: "listItems" },
         data: { "x-auto-detected": true },
-      },
+      }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
-  const merged = applyOverlayToDocument(source, overlay) as Record<string, unknown>;
-  const paths = merged.paths as Record<string, Record<string, Record<string, unknown>>>;
+  const { result: merged, warnings } = await captureWarnings(() => applyOverlayToDocument(source, overlay));
+
+  const paths = (merged as Record<string, unknown>).paths as Record<string, Record<string, Record<string, unknown>>>;
   assert.equal(paths["/items"].get["x-auto-detected"], true);
+  assert.equal(warnings.length, 2);
+  assert.ok(warnings.some((message) => message.includes("target.definitionType is RECOMMENDED")));
+  assert.ok(warnings.some((message) => message.includes("operation\" selector works best")));
 });
 
 test("removes A2A skill using operation selector", () => {
@@ -522,16 +483,15 @@ test("removes A2A skill using operation selector", () => {
     ],
   } as JSONValue;
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: { definitionType: "a2a-agent-card" },
     patches: [
-      {
+      createOverlayPatch({
         action: "remove",
         selector: { operation: "legacy-skill" },
-      },
+      }, { omitData: true }),
     ],
-  } as unknown as ORDOverlay;
+  });
 
   const merged = applyOverlayToDocument(source, overlay, {
     context: { definitionType: "a2a-agent-card" },
@@ -545,11 +505,15 @@ test("removes A2A skill using operation selector", () => {
 test("throws when operation selector is used with an unsupported definitionType", () => {
   const source = { edmx: {} } as JSONValue;
 
-  const overlay = {
-    ordOverlay: "0.1",
+  const overlay = createOrdOverlay({
     target: { definitionType: "edmx" },
-    patches: [{ action: "merge", selector: { operation: "MyAction" }, data: { deprecated: true } }],
-  } as unknown as ORDOverlay;
+    patches: [
+      createOverlayPatch({
+        selector: { operation: "MyAction" },
+        data: { deprecated: true },
+      }),
+    ],
+  });
 
   assert.throws(
     () => applyOverlayToDocument(source, overlay, { context: { definitionType: "edmx" }, validateDefinitionType: false }),
@@ -558,4 +522,148 @@ test("throws when operation selector is used with an unsupported definitionType"
       return true;
     },
   );
+});
+
+test("overlay factory creates a valid overlay and deep-merges nested overrides", () => {
+  const overlay = createOrdOverlay({
+    target: {
+      definitionType: "openapi-v3",
+    },
+    patches: [
+      createOverlayPatch({
+        selector: {
+          jsonPath: "$.info",
+        },
+        data: {
+          title: "patched",
+        },
+      }),
+    ],
+  });
+
+  assert.equal(overlay.ordOverlay, "0.1");
+  assert.equal(overlay.target?.definitionType, "openapi-v3");
+  assert.equal(overlay.patches.length, 1);
+  assert.deepEqual(overlay.patches[0].selector, { jsonPath: "$.info" });
+});
+
+test("updates the root document when the selector targets the root", () => {
+  const overlay = createOrdOverlay({
+    patches: [
+      createOverlayPatch({
+        action: "update",
+        selector: {
+          jsonPath: "$",
+        },
+        data: {
+          replaced: true,
+        },
+      }),
+    ],
+  });
+
+  const merged = applyOverlayToDocument(
+    {
+      keep: false,
+    },
+    overlay,
+  );
+
+  assert.deepEqual(merged, { replaced: true });
+});
+
+test("throws when remove targets the root document", () => {
+  const overlay = createOrdOverlay({
+    patches: [
+      createOverlayPatch(
+        {
+          action: "remove",
+          selector: {
+            jsonPath: "$",
+          },
+        },
+        { omitData: true },
+      ),
+    ],
+  });
+
+  assert.throws(() => applyOverlayToDocument({ keep: true }, overlay), /Removing the root document is not supported/);
+});
+
+test('supports noMatchBehavior "ignore" by ignoring missing selectors', async () => {
+  const openApiSource = await loadJsonFixture<JSONValue>(
+    "examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
+  );
+
+  const overlay = createOrdOverlay({
+    target: {
+      definitionType: "openapi-v3",
+    },
+    patches: [
+      createOverlayPatch({
+        selector: {
+          jsonPath: "$.does.not.exist",
+        },
+        data: {
+          ignored: true,
+        },
+      }),
+    ],
+  });
+
+  const merged = applyOverlayToDocument(openApiSource, overlay, {
+    noMatchBehavior: "ignore",
+  });
+
+  assert.deepEqual(merged, openApiSource);
+});
+
+test("remove masks can delete array entries and nested fields in one patch", () => {
+  const overlay = createOrdOverlay({
+    patches: [
+      createOverlayPatch({
+        action: "remove",
+        selector: {
+          jsonPath: "$.items",
+        },
+        data: [null, { keep: null }],
+      }),
+    ],
+  });
+
+  const merged = applyOverlayToDocument(
+    {
+      items: [
+        { id: 1, keep: true },
+        { id: 2, keep: true, label: "two" },
+      ],
+    },
+    overlay,
+  ) as { items: Array<Record<string, unknown>> };
+
+  assert.deepEqual(merged.items, [{ id: 2, label: "two" }]);
+});
+
+test("merge replaces the target value when the incoming type is incompatible", () => {
+  const overlay = createOrdOverlay({
+    patches: [
+      createOverlayPatch({
+        selector: {
+          jsonPath: "$.info",
+        },
+        data: {
+          structured: true,
+        },
+      }),
+    ],
+  });
+
+  const merged = applyOverlayToDocument(
+    {
+      info: "plain text",
+    },
+    overlay,
+  ) as Record<string, unknown>;
+
+  assert.deepEqual(merged.info as Record<string, unknown>, { structured: true });
 });

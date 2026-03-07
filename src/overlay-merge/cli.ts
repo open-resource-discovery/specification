@@ -1,8 +1,9 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { extname, resolve } from "node:path";
 import { ORDOverlay } from "../generated/spec/v1/types";
 import { applyOverlayToDocument } from "./merge";
 import { JSONValue, OverlayMergeContext, OverlayMergeError, isJSONObject } from "./types";
+import { emitOverlayValidationWarnings, throwOnOverlayValidationErrors, validateOverlayInput } from "./validation";
 
 interface ParsedArguments {
   overlayPath: string;
@@ -15,13 +16,24 @@ interface ParsedArguments {
 async function main(): Promise<void> {
   const args = parseArguments(process.argv.slice(2));
 
+  assertJsonCliPath(args.overlayPath, "Overlay");
+  assertJsonCliPath(args.inputPath, "Input");
+  if (args.outputPath !== undefined) {
+    assertJsonCliPath(args.outputPath, "Output");
+  }
+
   const overlay = (await readJsonFile(resolve(args.overlayPath))) as ORDOverlay;
+  const validation = validateOverlayInput(overlay, { context: args.context });
+  throwOnOverlayValidationErrors(validation.errors);
+  emitOverlayValidationWarnings(validation.warnings, (message) => process.stderr.write(`${message}\n`));
+
   const inputDocument = await readJsonFile(resolve(args.inputPath));
 
   const merged = applyOverlayToDocument(inputDocument, overlay, {
     noMatchBehavior: args.noMatchBehavior,
     requireTargetMatch: true,
     context: args.context,
+    validateOverlaySemantics: false,
   });
 
   const rendered = `${JSON.stringify(merged, null, 2)}\n`;
@@ -34,9 +46,6 @@ async function main(): Promise<void> {
   process.stdout.write(rendered);
 }
 
-// TODO: add YAML input support for --overlay and --input flags.
-// YAML overlays and YAML metadata files are valid per spec but currently not supported by this CLI.
-// Consider using a YAML parser (e.g. js-yaml) and normalizing to JSONValue before processing.
 async function readJsonFile(path: string): Promise<JSONValue> {
   const content = await readFile(path, "utf8");
   const parsed = JSON.parse(content) as unknown;
@@ -45,6 +54,16 @@ async function readJsonFile(path: string): Promise<JSONValue> {
   }
 
   return parsed;
+}
+
+function assertJsonCliPath(path: string, label: "Overlay" | "Input" | "Output"): void {
+  const extension = extname(path).toLowerCase();
+
+  if (extension === ".yaml" || extension === ".yml") {
+    throw new OverlayMergeError(
+      `${label} file ${path} is YAML. YAML overlays and YAML target documents are valid per spec, but this CLI currently supports JSON only.`,
+    );
+  }
 }
 
 function parseArguments(argv: string[]): ParsedArguments {
@@ -153,6 +172,7 @@ function printHelp(): void {
   process.stderr.write(`  --target-definition-type <type>  Validate overlay.target.definitionType against this value\n`);
   process.stderr.write(`  --allow-no-match                 Do not fail if a patch selector has no matches\n`);
   process.stderr.write(`  --warn-on-no-match               Warn instead of failing if a patch selector has no matches\n`);
+  process.stderr.write(`                                 Note: the CLI currently supports JSON files only; YAML is not yet implemented\n`);
   process.stderr.write(`  --help                           Print this help\n`);
 }
 

@@ -6,6 +6,13 @@ export * from "./generated/spec/v1/types";
 export { applyOverlayToDocument } from "./overlay-merge/merge";
 export { OverlayMergeError } from "./overlay-merge/types";
 export type { ApplyOverlayOptions, JSONValue, OverlayMergeContext } from "./overlay-merge/types";
+export {
+  validateOverlayInput,
+  validateOverlaySchema,
+  validateOverlaySemantics,
+  validateTargetDocumentForDefinitionType,
+} from "./overlay-merge/validation";
+export type { OverlayValidationIssue, OverlayValidationResult } from "./overlay-merge/validation";
 
 /**
  * The JSON Schema (draft-07) describing the ORD Document interface

@@ -3,14 +3,21 @@
 TypeScript implementation for applying ORD overlays to JSON-based metadata files.
 
 Current scope:
-- Supports selector types: `jsonPath`, `ordId`
+- Supports selector types: `jsonPath`, `ordId`, `operation`
 - Supports actions: `merge`, `update`, `remove`, `append`
 - Uses `jsonpath` for JSONPath evaluation
+- Validates overlay input against the generated `OrdOverlay` JSON Schema
+- Emits semantic validation errors for documented `MUST` constraints and warnings for documented `SHOULD` guidance where the merge script can evaluate them
 
 Validation assumption:
 - The input target document is assumed to already be valid for its native metadata format.
 - This merge tool does not fully validate target metadata formats.
 - Validate the merged output again with the target format-specific validator/tooling.
+
+Current CLI limitation:
+- The merge library operates on parsed JSON values.
+- The CLI currently accepts JSON files only.
+- YAML overlays and YAML target files are valid per spec, but the CLI does not yet parse YAML or preserve YAML output formatting.
 
 ## What It Does
 
@@ -31,16 +38,16 @@ Selectors currently not implemented in this script:
 ## TODO / Open Decisions
 
 - `target.url` is currently treated as informational context and is not used for strict target matching.
-- `definitionType` document validation is currently implemented only for `openapi-v3`.
 - Concept-level selectors `entityType` and `propertyType` (OData) are not implemented yet.
 - Decide whether strict URL matching should be defaulted, optional, or profile-specific.
-- Extend `definitionType` validation coverage for OData and MCP metadata formats.
-- Add YAML input support: `--overlay` and `--input` CLI flags currently accept only JSON files.
+- Extend `definitionType` validation coverage for additional metadata formats beyond the currently checked OpenAPI, A2A, AsyncAPI, CSDL JSON, MCP-style Specification IDs, and ORD Overlay shapes.
+- Add YAML input/output support so the CLI can read `.yaml` / `.yml` overlays and target files, preserve the original serialization format on write, and detect JSON vs YAML automatically.
 - Decide whether `deepMerge` type mismatches (e.g. merging an object into an array)
   should emit a warning or throw, rather than silently replacing the base value.
 - Consider adding a `--dry-run` or `--validate-only` mode to the CLI.
 - Evaluate whether the `jsonpath` npm package (CommonJS-only) should be replaced
   with a native ESM alternative once a stable option is available.
+- TODO: move overlay validation into a separate project once the overlay merge tooling is split out of this repository.
 
 ## Merge Semantics
 
@@ -106,9 +113,9 @@ Options:
   - `"error"` throw when a selector matches nothing
   - `"warn"` continue and log warning
   - `"ignore"` continue silently
-- `failOnNoMatch` (deprecated): `true` -> `"error"`, `false` -> `"ignore"`
 - `requireTargetMatch` (default `false`): validate overlay target against `context`
-- `validateDefinitionType` (default `true`): validates basic structure for known types (currently `openapi-v3`)
+- `validateDefinitionType` (default `true`): validates basic target structure for known `definitionType` values
+- `validateOverlaySemantics` (default `true`): validates selector/action support and documented overlay semantics before applying patches
 - `context`: expected `ordId`, `url`, `definitionType` of the file being patched
   - `url` is currently informational and not used for strict target equality checks
 
@@ -136,6 +143,7 @@ Flags:
 - `--target-definition-type <type>` optional
 - `--allow-no-match` optional
 - `--warn-on-no-match` optional
+- CLI note: only JSON file inputs/outputs are currently supported
 
 ## Tests
 
@@ -151,6 +159,8 @@ Coverage includes:
 - JSONPath patching on OpenAPI example JSON
 - `ordId` selector patching on ORD Document example JSON
 - no-match failure behavior
+- overlay schema validation
+- semantic MUST/SHOULD validation and definition-type compatibility checks
 
 Integration-style tests also apply overlay files from `examples/overlay` to existing metadata files in `examples/`.
 
@@ -163,5 +173,6 @@ Integration-style tests also apply overlay files from `examples/overlay` to exis
 - Decide whether `requireTargetMatch` should also evaluate `target.correlationIds`, and whether `target.url` should remain informational or become enforceable.
 - Decide whether/when strict `target.url` matching should be enabled — see TODO comment in `types.ts` (`requireTargetMatch`).
 - Extend `definitionType` structure validation beyond `openapi-v3` — see TODO comment in `types.ts` (`validateTargetDocumentForDefinitionType`).
-- Add YAML input support for `--overlay` and `--input` CLI flags — see TODO comment in `cli.ts`.
+- Add YAML input/output support for the CLI and preserve the source serialization format on write.
 - Clarify `deepMerge` behavior on type mismatches (object vs array, etc.) — see TODO comment in `merge.ts`.
+- Move the overlay validator into a separate project once overlay tooling is extracted from this repository.

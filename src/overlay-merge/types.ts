@@ -22,11 +22,6 @@ export interface ApplyOverlayOptions {
    */
   noMatchBehavior?: "error" | "warn" | "ignore";
   /**
-   * @deprecated Use noMatchBehavior instead.
-   * true -> error, false -> ignore
-   */
-  failOnNoMatch?: boolean;
-  /**
    * Validate that the target document structure matches the selected definition type.
    * Currently implemented checks:
    * - openapi-v3: target document must contain `openapi` version string starting with `3.`
@@ -34,6 +29,13 @@ export interface ApplyOverlayOptions {
    * Defaults to true.
    */
   validateDefinitionType?: boolean;
+  /**
+   * Validate overlay selector/action semantics before applying patches.
+   * Schema validation of raw overlay files is handled separately by the CLI.
+   *
+   * Defaults to true.
+   */
+  validateOverlaySemantics?: boolean;
   /**
    * When true, compare overlay `target` metadata against `context`.
    * Current comparison checks:
@@ -83,34 +85,6 @@ export function matchesOverlayTarget(overlay: ORDOverlay, context: OverlayMergeC
   ) {
     return false;
   }
-
-  return true;
-}
-
-export function validateTargetDocumentForDefinitionType(
-  targetDocument: JSONValue,
-  definitionType: string | undefined,
-): boolean {
-  if (definitionType === undefined) {
-    return true;
-  }
-
-  if (definitionType === "openapi-v3") {
-    if (!isJSONObject(targetDocument)) {
-      return false;
-    }
-
-    const openapiVersion = targetDocument.openapi;
-    return typeof openapiVersion === "string" && openapiVersion.startsWith("3.");
-  }
-
-  // TODO: add structural validators for additional definition types.
-  // Suggested checks:
-  // - openapi-v2: targetDocument.swagger must be a string starting with "2."
-  // - openapi-v3.1+: targetDocument.openapi must be a string starting with "3.1"
-  // - a2a-agent-card: targetDocument must have "skills" array (A2A format) or "tools" array (MCP format)
-  // - edmx: targetDocument must contain top-level "edmx:Edmx" key (CSDL XML/JSON)
-  // - csdl-json: targetDocument must contain "$Version" key
 
   return true;
 }

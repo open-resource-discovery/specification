@@ -7,8 +7,13 @@ import {
   cloneJSONValue,
   isJSONObject,
   matchesOverlayTarget,
-  validateTargetDocumentForDefinitionType,
 } from "./types";
+import {
+  emitOverlayValidationWarnings,
+  throwOnOverlayValidationErrors,
+  validateOverlaySemantics,
+  validateTargetDocumentForDefinitionType,
+} from "./validation";
 
 const REMOVE_SENTINEL = Symbol("remove");
 
@@ -21,6 +26,13 @@ export function applyOverlayToDocument<T extends JSONValue>(
   overlay: ORDOverlay,
   options: ApplyOverlayOptions = {},
 ): T {
+  const validateOverlay = options.validateOverlaySemantics ?? true;
+  if (validateOverlay) {
+    const validation = validateOverlaySemantics(overlay, { context: options.context });
+    throwOnOverlayValidationErrors(validation.errors);
+    emitOverlayValidationWarnings(validation.warnings);
+  }
+
   if (options.requireTargetMatch === true && options.context !== undefined && !matchesOverlayTarget(overlay, options.context)) {
     throw new OverlayMergeError("Overlay target does not match the provided document context.");
   }
@@ -31,11 +43,8 @@ export function applyOverlayToDocument<T extends JSONValue>(
 
   const validateDefinitionType = options.validateDefinitionType ?? true;
   if (validateDefinitionType) {
-    if (!validateTargetDocumentForDefinitionType(sourceDocument, definitionType)) {
-      throw new OverlayMergeError(
-        `Target document does not match the expected definitionType${definitionType !== undefined ? ` (${definitionType})` : ""}.`,
-      );
-    }
+    const definitionTypeIssues = validateTargetDocumentForDefinitionType(sourceDocument, definitionType, overlay);
+    throwOnOverlayValidationErrors(definitionTypeIssues);
   }
 
   const rootHolder: RootHolder = { value: cloneJSONValue(sourceDocument) };
@@ -66,10 +75,6 @@ export function applyOverlayToDocument<T extends JSONValue>(
 function resolveNoMatchBehavior(options: ApplyOverlayOptions): "error" | "warn" | "ignore" {
   if (options.noMatchBehavior !== undefined) {
     return options.noMatchBehavior;
-  }
-
-  if (options.failOnNoMatch !== undefined) {
-    return options.failOnNoMatch ? "error" : "ignore";
   }
 
   return "error";

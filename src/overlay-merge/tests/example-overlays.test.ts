@@ -1,21 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
-import { ORDOverlay } from "../generated/spec/v1/types";
-import { applyOverlayToDocument } from "./merge";
-import { JSONValue } from "./types";
-
-const repositoryRoot = resolve(__dirname, "../../");
-
-async function loadJson(relativePath: string): Promise<unknown> {
-  const content = await readFile(resolve(repositoryRoot, relativePath), "utf8");
-  return JSON.parse(content) as unknown;
-}
+import { ORDOverlay } from "../../generated/spec/v1/types";
+import { applyOverlayToDocument } from "../merge";
+import { JSONValue } from "../types";
+import { loadJsonFixture } from "./test-helpers";
 
 test("applies JSONPath overlay example to OpenAPI metadata example", async () => {
-  const overlay = (await loadJson("examples/overlay/astronomy-api-openapi-jsonpath.overlay.json")) as ORDOverlay;
-  const target = (await loadJson("examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json")) as JSONValue;
+  const overlay = await loadJsonFixture<ORDOverlay>("examples/overlay/astronomy-api-openapi-jsonpath.overlay.json");
+  const target = await loadJsonFixture<JSONValue>("examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json");
 
   const merged = applyOverlayToDocument(target, overlay, {
     requireTargetMatch: true,
@@ -33,8 +25,8 @@ test("applies JSONPath overlay example to OpenAPI metadata example", async () =>
 });
 
 test("applies ORD document overlay example to ORD document metadata example", async () => {
-  const overlay = (await loadJson("examples/overlay/document-1-ord.overlay.json")) as ORDOverlay;
-  const target = (await loadJson("examples/documents/document-1.json")) as JSONValue;
+  const overlay = await loadJsonFixture<ORDOverlay>("examples/overlay/document-1-ord.overlay.json");
+  const target = await loadJsonFixture<JSONValue>("examples/documents/document-1.json");
 
   const merged = applyOverlayToDocument(target, overlay, {
     requireTargetMatch: true,
@@ -59,8 +51,8 @@ test("applies ORD document overlay example to ORD document metadata example", as
 });
 
 test("applies operation selector (OpenAPI) overlay example to OpenAPI metadata example", async () => {
-  const overlay = (await loadJson("examples/overlay/astronomy-api-openapi.overlay.json")) as ORDOverlay;
-  const target = (await loadJson("examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json")) as JSONValue;
+  const overlay = await loadJsonFixture<ORDOverlay>("examples/overlay/astronomy-api-openapi.overlay.json");
+  const target = await loadJsonFixture<JSONValue>("examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json");
 
   const merged = applyOverlayToDocument(target, overlay, {
     requireTargetMatch: true,
@@ -86,8 +78,8 @@ test("applies operation selector (OpenAPI) overlay example to OpenAPI metadata e
 });
 
 test("applies operation selector (A2A) overlay example to A2A Agent Card example", async () => {
-  const overlay = (await loadJson("examples/overlay/dispute-agent-a2a.overlay.json")) as ORDOverlay;
-  const target = (await loadJson("examples/definitions/DisputeResolutionAgentcard.json")) as JSONValue;
+  const overlay = await loadJsonFixture<ORDOverlay>("examples/overlay/dispute-agent-a2a.overlay.json");
+  const target = await loadJsonFixture<JSONValue>("examples/definitions/DisputeResolutionAgentcard.json");
 
   const merged = applyOverlayToDocument(target, overlay, {
     requireTargetMatch: true,
