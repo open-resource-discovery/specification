@@ -14,6 +14,16 @@ export type OverlayPerspective = ("system-type" | "system-version" | "system-ins
  */
 export type OverlayCorrelationID = string;
 /**
+ * Correlation ID identifying related records in external systems of record.
+ * MUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).
+ */
+export type OverlayCorrelationID1 = string;
+/**
+ * Correlation ID identifying related records in external systems of record.
+ * MUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).
+ */
+export type OverlayCorrelationID2 = string;
+/**
  * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
  *
  * This controls who can see that the resource exists and retrieve its metadata level information.
@@ -21,11 +31,13 @@ export type OverlayCorrelationID = string;
  *
  * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
  */
-export type OverlayVisibility = OverlayVisibility1 & OverlayVisibility2;
-export type OverlayVisibility1 = "public" | "internal" | "private";
-export type OverlayVisibility2 = string;
+export type OverlayVisibility = ("public" | "internal" | "private") & string;
 /**
- * Type of the targeted metadata definition file.
+ * Optional, but RECOMMENDED type of the target definition being patched.
+ * If provided, this SHOULD match the `type` of the referenced metadata definition
+ * (as used in API/Event/Capability resource definitions).
+ * This is especially useful when `ordId` resolves to a resource with multiple attached definitions.
+ *
  * This can be used to disambiguate how selectors are interpreted for the target.
  *
  * MUST be either:
@@ -38,8 +50,7 @@ export type OverlayVisibility2 = string;
  * The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
  * In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
  */
-export type OverlayDefinitionType = OverlayDefinitionType1 & OverlayDefinitionType2;
-export type OverlayDefinitionType1 =
+export type OverlayDefinitionType = (
   | string
   | "openapi-v2"
   | "openapi-v3"
@@ -56,8 +67,9 @@ export type OverlayDefinitionType1 =
   | "sap-csn-interop-effective-v1"
   | "asyncapi-v2"
   | "sap.mdo:mdi-capability-definition:v1"
-  | "ord:overlay:v1";
-export type OverlayDefinitionType2 = string;
+  | "ord:overlay:v1"
+) &
+  string;
 /**
  * Identifies the element in the target to patch.
  * Exactly one selector type is used per patch. The selector object uses one explicit key:
@@ -180,8 +192,13 @@ export interface ORDOverlay {
 }
 /**
  * Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.
+ * This object is identical to the ORD Document [`describedSystemType`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemtype) object.
+ *
+ * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
  * This is the primary context object for `perspective: system-type`, and also the parent context
  * for more specific `system-version` and `system-instance` overlays.
+ *
+ * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
  */
 export interface OverlaySystemType {
   /**
@@ -197,7 +214,12 @@ export interface OverlaySystemType {
 }
 /**
  * Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.
+ * This object is identical to the ORD Document [`describedSystemVersion`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemversion) object.
+ *
+ * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
  * Use this when the overlay should only patch metadata for one specific released system version.
+ *
+ * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
  */
 export interface OverlaySystemVersion {
   /**
@@ -215,11 +237,16 @@ export interface OverlaySystemVersion {
    *
    * @minItems 1
    */
-  correlationIds?: [OverlayCorrelationID, ...OverlayCorrelationID[]];
+  correlationIds?: [OverlayCorrelationID1, ...OverlayCorrelationID1[]];
 }
 /**
  * Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.
+ * This object is identical to the ORD Document [`describedSystemInstance`](../../spec-v1/interfaces/Document.md#ord-document_describedsysteminstance) object.
+ *
+ * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
  * Use this when the overlay should only patch metadata for one concrete tenant / runtime instance.
+ *
+ * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
  */
 export interface OverlaySystemInstance {
   /**
@@ -228,7 +255,7 @@ export interface OverlaySystemInstance {
    */
   baseUrl?: string;
   /**
-   * Optional local ID for the system instance, as known by the described system.
+   * Optional local ID for the system instance (usually tenant ID), as known by the described system.
    */
   localId?: string;
   /**
@@ -236,7 +263,7 @@ export interface OverlaySystemInstance {
    *
    * @minItems 1
    */
-  correlationIds?: [OverlayCorrelationID, ...OverlayCorrelationID[]];
+  correlationIds?: [OverlayCorrelationID2, ...OverlayCorrelationID2[]];
 }
 /**
  * Optional target context for this overlay.

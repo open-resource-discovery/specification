@@ -160,145 +160,13 @@ For overlays, `perspective` answers a different question than document transport
 |<div className="interface-property-name anchor" id="ord-overlay_ordoverlay">ordOverlay<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#ord-overlay_ordoverlay" title="#ord-overlay_ordoverlay"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Version of the ORD Overlay specification.<hr/>**Allowed Values**: <ul><li>`"0.1"`</li></ul><br/>**Example Values**: <ul className="examples"><li>`"0.1"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="ord-overlay_ordid">ordId<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_ordid" title="#ord-overlay_ordid"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optional ORD ID of this overlay document.<br/>MUST be provided if the ORD Overlay is published via ORD Configuration endpoint.<hr/>**Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:(overlay)\:([a-zA-Z0-9._\\-]+)\:(v0\|v[1-9][0-9]\*)$</code><br/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"sap.foo:overlay:astronomy-api-openapi:v1"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="ord-overlay_description">description<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_description" title="#ord-overlay_description"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optional description of the overlay document itself.<br/><br/>Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"This overlay adds descriptive metadata for AI use-cases\nwithout modifying the original resource definition.\n"`</li></ul></div>|
-|<div className="interface-property-name anchor" id="ord-overlay_perspective">perspective<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_perspective" title="#ord-overlay_perspective"></a></div>|<div className="interface-property-type">[Overlay Perspective](#overlay-perspective)</div>|<div className="interface-property-description">Overlay-specific [perspective](../../spec-v1/index.md#perspectives) that scopes where this overlay should be applied.<br/><br/>Use this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`<br/>to describe whether the overlay applies broadly to a system type, to one released system version,<br/>or only to a specific system instance.</div>|
-|<div className="interface-property-name anchor" id="ord-overlay_describedsystemtype">describedSystemType<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsystemtype" title="#ord-overlay_describedsystemtype"></a></div>|<div className="interface-property-type">[Overlay System Type](#overlay-system-type)</div>|<div className="interface-property-description">Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.<br/>This is the primary context object for `perspective: system-type`, and also the parent context<br/>for more specific `system-version` and `system-instance` overlays.</div>|
-|<div className="interface-property-name anchor" id="ord-overlay_describedsystemversion">describedSystemVersion<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsystemversion" title="#ord-overlay_describedsystemversion"></a></div>|<div className="interface-property-type">[Overlay System Version](#overlay-system-version)</div>|<div className="interface-property-description">Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.<br/>Use this when the overlay should only patch metadata for one specific released system version.</div>|
-|<div className="interface-property-name anchor" id="ord-overlay_describedsysteminstance">describedSystemInstance<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsysteminstance" title="#ord-overlay_describedsysteminstance"></a></div>|<div className="interface-property-type">[Overlay System Instance](#overlay-system-instance)</div>|<div className="interface-property-description">Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.<br/>Use this when the overlay should only patch metadata for one concrete tenant / runtime instance.</div>|
-|<div className="interface-property-name anchor" id="ord-overlay_visibility">visibility<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_visibility" title="#ord-overlay_visibility"></a></div>|<div className="interface-property-type">[Overlay Visibility](#overlay-visibility)</div>|<div className="interface-property-description">Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.<br/><br/>This controls who can see that the resource exists and retrieve its metadata level information.<br/>It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.<br/><br/>Use this to prevent exposing internal implementation details to inappropriate consumer audiences.</div>|
+|<div className="interface-property-name anchor" id="ord-overlay_perspective">perspective<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_perspective" title="#ord-overlay_perspective"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Overlay Perspective<br/><br/>Overlay-specific [perspective](../../spec-v1/index.md#perspectives) that scopes where this overlay should be applied.<br/><br/>Use this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`<br/>to describe whether the overlay applies broadly to a system type, to one released system version,<br/>or only to a specific system instance.<hr/>**Allowed Values**: <ul><li><p>`"system-type"`: Applies the overlay at system-type level.<br/><br/>Use this when the overlay should patch the same targeted resource across versions and instances<br/>of the same system type, typically for the same ORD resource major version.<br/>`describedSystemType` SHOULD be provided as the identifying context.</p></li><li><p>`"system-version"`: Applies the overlay to one concrete system version.<br/><br/>Use this when metadata differs between released versions and the patch should only affect<br/>a specific version of the target resource.<br/>`describedSystemVersion` SHOULD be provided, and `describedSystemType` SHOULD also be provided as parent context.</p></li><li><p>`"system-instance"`: Applies the overlay to one concrete system instance / tenant.<br/><br/>Use this when the patch reflects tenant-specific configuration, extensions, or runtime differences<br/>in the target metadata.<br/>`describedSystemInstance` SHOULD be provided.</p></li></ul><br/>**Example Values**: <ul className="examples"><li>`"system-type"`</li><li>`"system-version"`</li><li>`"system-instance"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="ord-overlay_describedsystemtype">describedSystemType<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsystemtype" title="#ord-overlay_describedsystemtype"></a></div>|<div className="interface-property-type">[Overlay System Type](#overlay-system-type)</div>|<div className="interface-property-description">Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.<br/>This object is identical to the ORD Document [`describedSystemType`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemtype) object.<br/><br/>Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.<br/>This is the primary context object for `perspective: system-type`, and also the parent context<br/>for more specific `system-version` and `system-instance` overlays.<br/><br/>Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.</div>|
+|<div className="interface-property-name anchor" id="ord-overlay_describedsystemversion">describedSystemVersion<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsystemversion" title="#ord-overlay_describedsystemversion"></a></div>|<div className="interface-property-type">[Overlay System Version](#overlay-system-version)</div>|<div className="interface-property-description">Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.<br/>This object is identical to the ORD Document [`describedSystemVersion`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemversion) object.<br/><br/>Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.<br/>Use this when the overlay should only patch metadata for one specific released system version.<br/><br/>Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.</div>|
+|<div className="interface-property-name anchor" id="ord-overlay_describedsysteminstance">describedSystemInstance<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_describedsysteminstance" title="#ord-overlay_describedsysteminstance"></a></div>|<div className="interface-property-type">[Overlay System Instance](#overlay-system-instance)</div>|<div className="interface-property-description">Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.<br/>This object is identical to the ORD Document [`describedSystemInstance`](../../spec-v1/interfaces/Document.md#ord-document_describedsysteminstance) object.<br/><br/>Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.<br/>Use this when the overlay should only patch metadata for one concrete tenant / runtime instance.<br/><br/>Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.</div>|
+|<div className="interface-property-name anchor" id="ord-overlay_visibility">visibility<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_visibility" title="#ord-overlay_visibility"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Overlay Visibility<br/><br/>Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.<br/><br/>This controls who can see that the resource exists and retrieve its metadata level information.<br/>It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.<br/><br/>Use this to prevent exposing internal implementation details to inappropriate consumer audiences.<hr/>**Allowed Values**: <ul><li><p>`"public"`: The overlay can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.</p></li><li><p>`"internal"`: The overlay can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).<br/>MUST NOT be made available to external parties or vendor customers.</p></li><li><p>`"private"`: The overlay should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).</p></li></ul></div>|
 |<div className="interface-property-name anchor" id="ord-overlay_target">target<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#ord-overlay_target" title="#ord-overlay_target"></a></div>|<div className="interface-property-type">[Overlay Target](#overlay-target)</div>|<div className="interface-property-description">Optional target context for this overlay.<br/>The target can reference an ORD resource or a referenced resource definition file.<br/><br/>`ordId` selects the ORD resource metadata itself.<br/>If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous<br/>when the resource exposes multiple definitions.<br/>In that case, use `url` and/or `definitionType` to clarify the intended file.<br/><br/>Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.<br/>Use `definitionType` and/or an explicit `url` to identify which one is patched.<br/><br/>For overlays that only patch ORD-level metadata via patch selectors (`selector.ordId`),<br/>a `target.ordId` is often not needed. In that case, `target` may be omitted entirely,<br/>or provided as an empty object for informational purposes.<br/>Multiple resources can still be patched by defining multiple patches with different selector `ordId` values.<br/><br/>If the ORD document URL is known, it can be provided via `target.url` as additional context.</div>|
 |<div className="interface-property-name anchor" id="ord-overlay_patches">patches<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#ord-overlay_patches" title="#ord-overlay_patches"></a></div>|<div className="interface-property-type">Array&lt;[Overlay Patch](#overlay-patch)&gt;</div>|<div className="interface-property-description">Ordered sequence of patches to apply to the targeted resource(s).<br/>Patches are applied in the order listed.<hr/>**Array Constraint**: MUST have at least 1 items</div>|
-
-
-### Overlay Correlation ID
-
-Correlation ID identifying related records in external systems of record.
-MUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).
-
-**Type:** string<br/>
-**Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:([a-zA-Z0-9._\\-\\/]+)\:([a-zA-Z0-9._\\-\\/]+)$</code><br/>
-**Maximum Length**: `255`
-
-
-### Overlay Definition Type
-
-Type of the targeted metadata definition file.
-This can be used to disambiguate how selectors are interpreted for the target.
-
-MUST be either:
-- any valid [Specification ID](../../spec-v1/index.md#specification-id), or
-- one of the pre-defined values reused from:
-  - API Resource Definition `type`
-  - Event Resource Definition `type`
-  - Capability Definition `type`
-
-The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
-In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
-
-**Type:** string<br/>
-**Allowed Values (extensible)**: <ul><li><em>Any</em> string: Any valid [Specification ID](../../spec-v1/index.md#specification-id).</li><li>`"openapi-v2"`</li><li>`"openapi-v3"`</li><li>`"openapi-v3.1+"`</li><li>`"raml-v1"`</li><li>`"edmx"`</li><li>`"csdl-json"`</li><li>`"graphql-sdl"`</li><li>`"wsdl-v1"`</li><li>`"wsdl-v2"`</li><li>`"a2a-agent-card"`</li><li>`"sap-rfc-metadata-v1"`</li><li>`"sap-sql-api-definition-v1"`</li><li>`"sap-csn-interop-effective-v1"`</li><li>`"asyncapi-v2"`</li><li>`"sap.mdo:mdi-capability-definition:v1"`</li><li>`"ord:overlay:v1"`</li></ul>
-
-###### Example Values:
-
-
-```js
-"openapi-v3"
-```
-
-
-```js
-"asyncapi-v2"
-```
-
-
-```js
-"sap.mdo:mdi-capability-definition:v1"
-```
-
-
-
-### Overlay Visibility
-
-Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
-
-This controls who can see that the resource exists and retrieve its metadata level information.
-It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
-
-Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
-
-**Type:** string<br/>
-**Allowed Values**: <ul><li><p>`"public"`: The overlay can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.</p></li><li><p>`"internal"`: The overlay can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).<br/>MUST NOT be made available to external parties or vendor customers.</p></li><li><p>`"private"`: The overlay should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).</p></li></ul>
-
-
-### Overlay Perspective
-
-Declares from which system landscape perspective this overlay is meant to be applied.
-
-Unlike an ORD Document perspective, an overlay perspective scopes where the patch content should be consumed:
-- `system-type`: patch the targeted resource metadata across the system type in general.
-- `system-version`: patch the targeted resource metadata only for one released system version.
-- `system-instance`: patch the targeted resource metadata only for one concrete system instance / tenant.
-
-Use this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`
-to make the intended overlay scope explicit.
-
-**Type:** string<br/>
-**Allowed Values**: <ul><li><p>`"system-type"`: Applies the overlay at system-type level.<br/><br/>Use this when the overlay should patch the same targeted resource across versions and instances<br/>of the same system type, typically for the same ORD resource major version.<br/>`describedSystemType` SHOULD be provided as the identifying context.</p></li><li><p>`"system-version"`: Applies the overlay to one concrete system version.<br/><br/>Use this when metadata differs between released versions and the patch should only affect<br/>a specific version of the target resource.<br/>`describedSystemVersion` SHOULD be provided, and `describedSystemType` SHOULD also be provided as parent context.</p></li><li><p>`"system-instance"`: Applies the overlay to one concrete system instance / tenant.<br/><br/>Use this when the patch reflects tenant-specific configuration, extensions, or runtime differences<br/>in the target metadata.<br/>`describedSystemInstance` SHOULD be provided.</p></li></ul>
-
-###### Example Values:
-
-
-```js
-"system-type"
-```
-
-
-```js
-"system-version"
-```
-
-
-```js
-"system-instance"
-```
-
-
-
-### Overlay System Instance
-
-A [system instance](../../spec-v1/index.md#system-instance) is a concrete, running instance of a system type.
-
-**Type**: Object(<a href="#overlay-system-instance_baseurl">baseUrl</a>, <a href="#overlay-system-instance_localid">localId</a>, <a href="#overlay-system-instance_correlationids">correlationIds</a>)
-
-| Property | Type | Description |
-| -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="overlay-system-instance_baseurl">baseUrl<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-instance_baseurl" title="#overlay-system-instance_baseurl"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.<br/>By providing the base URL, relative URLs in the overlay are resolved relative to it.<hr/>**JSON Schema Format**: `uri-reference`<br/>**Regex Pattern**: <code className="regex">^http[s]?\:\\/\\/[^\:\\/\\s]+\\.[^\:\\/\\s\\.]+(\:\\d+)?(\\/[a-zA-Z0-9-\\._~]+)\*$</code><br/>**Example Values**: <ul className="examples"><li>`"https://example-sap-system.com"`</li><li>`"https://sub.foo.bar.com/api/v1"`</li></ul></div>|
-|<div className="interface-property-name anchor" id="overlay-system-instance_localid">localId<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-instance_localid" title="#overlay-system-instance_localid"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optional local ID for the system instance, as known by the described system.<hr/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"LocalTenantId123"`</li></ul></div>|
-|<div className="interface-property-name anchor" id="overlay-system-instance_correlationids">correlationIds<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-instance_correlationids" title="#overlay-system-instance_correlationids"></a></div>|<div className="interface-property-type">Array&lt;[Overlay Correlation ID](#overlay-correlation-id)&gt;</div>|<div className="interface-property-description">Correlation IDs for linking this system instance to external systems of record.<hr/>**Array Constraint**: MUST have at least 1 items<br/>**Example Values**: <ul className="examples"><li>`["sap.cld:tenant:741234567"]`</li></ul></div>|
-
-
-### Overlay System Type
-
-A [system type](../../spec-v1/index.md#system-type) is the abstract type of an application or service, from operational perspective.
-
-**Type**: Object(<a href="#overlay-system-type_systemnamespace">systemNamespace</a>, <a href="#overlay-system-type_correlationids">correlationIds</a>)
-
-| Property | Type | Description |
-| -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="overlay-system-type_systemnamespace">systemNamespace<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-type_systemnamespace" title="#overlay-system-type_systemnamespace"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">The [system namespace](../../spec-v1/index.md#system-namespace) is a unique identifier for the system type.<hr/>**Regex Pattern**: <code className="regex">^[a-z0-9]+(?\:[.][a-z0-9]+)\{1\}$</code><br/>**Maximum Length**: `32`<br/>**Example Values**: <ul className="examples"><li>`"sap.s4"`</li><li>`"sap.c4c"`</li><li>`"sap.cld"`</li></ul></div>|
-|<div className="interface-property-name anchor" id="overlay-system-type_correlationids">correlationIds<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-type_correlationids" title="#overlay-system-type_correlationids"></a></div>|<div className="interface-property-type">Array&lt;[Overlay Correlation ID](#overlay-correlation-id)&gt;</div>|<div className="interface-property-description">Correlation IDs for linking this system type to external systems of record.<hr/>**Array Constraint**: MUST have at least 1 items<br/>**Example Values**: <ul className="examples"><li>`["sap.cld:systemRole:S4_PC"]`</li></ul></div>|
-
-
-### Overlay System Version
-
-A [system version](../../spec-v1/index.md#system-version) describes a version/release of the system.
-
-**Type**: Object(<a href="#overlay-system-version_version">version</a>, <a href="#overlay-system-version_title">title</a>, <a href="#overlay-system-version_correlationids">correlationIds</a>)
-
-| Property | Type | Description |
-| -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="overlay-system-version_version">version<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-version_version" title="#overlay-system-version_version"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">The version of the system instance (run-time) or the version of the described system-version perspective.<br/><br/>It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.<hr/>**Regex Pattern**: <code className="regex">^(0\|[1-9]\\d\*)\\.(0\|[1-9]\\d\*)\\.(0\|[1-9]\\d\*)(?\:-((?\:0\|[1-9]\\d\*\|\\d\*[a-zA-Z-][0-9a-zA-Z-]\*)(?\:\\.(?\:0\|[1-9]\\d\*\|\\d\*[a-zA-Z-][0-9a-zA-Z-]\*))\*))?(?\:\\+([0-9a-zA-Z-]+(?\:\\.[0-9a-zA-Z-]+)\*))?$</code><br/>**Example Values**: <ul className="examples"><li>`"1.2.3"`</li><li>`"2024.8.0"`</li></ul></div>|
-|<div className="interface-property-name anchor" id="overlay-system-version_title">title<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-version_title" title="#overlay-system-version_title"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Human-readable title of the system version.<hr/>**Minimum Length**: `1`<br/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"SAP S/4HANA Cloud 2408"`</li></ul></div>|
-|<div className="interface-property-name anchor" id="overlay-system-version_correlationids">correlationIds<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-version_correlationids" title="#overlay-system-version_correlationids"></a></div>|<div className="interface-property-type">Array&lt;[Overlay Correlation ID](#overlay-correlation-id)&gt;</div>|<div className="interface-property-description">Correlation IDs for linking this system version to external systems of record.<hr/>**Array Constraint**: MUST have at least 1 items<br/>**Example Values**: <ul className="examples"><li>`["sap.cld:release:2408"]`</li></ul></div>|
 
 
 ### Overlay Target
@@ -324,7 +192,7 @@ Multiple identifiers, if provided, are treated as all pointing to the same resou
 |<div className="interface-property-name anchor" id="overlay-target_ordid">ordId<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_ordid" title="#overlay-target_ordid"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).<br/>MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).<hr/>**Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:([a-zA-Z0-9._\\-]+)\:([a-zA-Z0-9._\\-]+)\:(v0\|v[1-9][0-9]\*)$</code><br/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"sap.s4:apiResource:OP_API_BUSINESS_PARTNER_SRV:v1"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="overlay-target_url">url<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_url" title="#overlay-target_url"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">URL or URI pointing directly to the file being patched.<br/>This is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),<br/>but can also point to any JSON/YAML-based target document.<hr/>**JSON Schema Format**: `uri-reference`<br/>**Example Values**: <ul className="examples"><li>`"https://example.com/api/openapi.json"`</li><li>`"./openapi.yaml"`</li></ul></div>|
 |<div className="interface-property-name anchor" id="overlay-target_correlationids">correlationIds<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_correlationids" title="#overlay-target_correlationids"></a></div>|<div className="interface-property-type">Array&lt;string&gt;</div>|<div className="interface-property-description">Correlation IDs referencing the target resource in external registries or systems of record.<br/>Reuses the ORD correlation ID format: `namespace:type:localId`.<br/>All listed IDs are treated as pointing to the same resource.<hr/>**Array Constraint**: MUST have at least 1 items<br/>**Array Item Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:([a-zA-Z0-9._\\-\\/]+)\:([a-zA-Z0-9._\\-\\/]+)$</code><br/>**Example Values**: <ul className="examples"><li>`["sap.s4:communicationScenario:SAP_COM_0008"]`</li></ul></div>|
-|<div className="interface-property-name anchor" id="overlay-target_definitiontype">definitionType<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_definitiontype" title="#overlay-target_definitiontype"></a></div>|<div className="interface-property-type">[Overlay Definition Type](#overlay-definition-type)</div>|<div className="interface-property-description">Optional, but RECOMMENDED type of the target definition being patched.<br/>If provided, this SHOULD match the `type` of the referenced metadata definition<br/>(as used in API/Event/Capability resource definitions).<br/>This is especially useful when `ordId` resolves to a resource with multiple attached definitions.</div>|
+|<div className="interface-property-name anchor" id="overlay-target_definitiontype">definitionType<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-target_definitiontype" title="#overlay-target_definitiontype"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Overlay Definition Type<br/><br/>Optional, but RECOMMENDED type of the target definition being patched.<br/>If provided, this SHOULD match the `type` of the referenced metadata definition<br/>(as used in API/Event/Capability resource definitions).<br/>This is especially useful when `ordId` resolves to a resource with multiple attached definitions.<br/><br/>This can be used to disambiguate how selectors are interpreted for the target.<br/><br/>MUST be either:<br/>- any valid [Specification ID](../../spec-v1/index.md#specification-id), or<br/>- one of the pre-defined values reused from:<br/>  - API Resource Definition `type`<br/>  - Event Resource Definition `type`<br/>  - Capability Definition `type`<br/><br/>The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.<br/>In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.<hr/>**Array Item Allowed Values (extensible)**: <ul><li><em>Any</em> string: Any valid [Specification ID](../../spec-v1/index.md#specification-id).</li><li>`"openapi-v2"`</li><li>`"openapi-v3"`</li><li>`"openapi-v3.1+"`</li><li>`"raml-v1"`</li><li>`"edmx"`</li><li>`"csdl-json"`</li><li>`"graphql-sdl"`</li><li>`"wsdl-v1"`</li><li>`"wsdl-v2"`</li><li>`"a2a-agent-card"`</li><li>`"sap-rfc-metadata-v1"`</li><li>`"sap-sql-api-definition-v1"`</li><li>`"sap-csn-interop-effective-v1"`</li><li>`"asyncapi-v2"`</li><li>`"sap.mdo:mdi-capability-definition:v1"`</li><li>`"ord:overlay:v1"`</li></ul><br/>**Example Values**: <ul className="examples"><li>`"openapi-v3"`</li><li>`"asyncapi-v2"`</li><li>`"sap.mdo:mdi-capability-definition:v1"`</li></ul></div>|
 
 
 ### Overlay Patch
@@ -425,6 +293,56 @@ To fully replace an existing array, use two ordered patches:
 This is a free-form value whose structure depends on the target being patched.
 
 **Type:** object,array,string,number,boolean,null
+
+
+### Overlay System Instance
+
+A [system instance](../../spec-v1/index.md#system-instance) is a concrete, running instance of a system type.
+This object is identical to the ORD Document [`describedSystemInstance`](../../spec-v1/interfaces/Document.md#ord-document_describedsysteminstance) object.
+
+Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
+Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
+
+**Type**: Object(<a href="#overlay-system-instance_baseurl">baseUrl</a>, <a href="#overlay-system-instance_localid">localId</a>, <a href="#overlay-system-instance_correlationids">correlationIds</a>)
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+|<div className="interface-property-name anchor" id="overlay-system-instance_baseurl">baseUrl<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-instance_baseurl" title="#overlay-system-instance_baseurl"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.<br/>By providing the base URL, relative URLs in the overlay are resolved relative to it.<hr/>**JSON Schema Format**: `uri-reference`<br/>**Regex Pattern**: <code className="regex">^http[s]?\:\\/\\/[^\:\\/\\s]+\\.[^\:\\/\\s\\.]+(\:\\d+)?(\\/[a-zA-Z0-9-\\._~]+)\*$</code><br/>**Example Values**: <ul className="examples"><li>`"https://example-sap-system.com"`</li><li>`"https://sub.foo.bar.com/api/v1"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-system-instance_localid">localId<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-instance_localid" title="#overlay-system-instance_localid"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optional local ID for the system instance (usually tenant ID), as known by the described system.<hr/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"LocalTenantId123"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-system-instance_correlationids">correlationIds<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-instance_correlationids" title="#overlay-system-instance_correlationids"></a></div>|<div className="interface-property-type">Array&lt;string&gt;</div>|<div className="interface-property-description">Correlation IDs for linking this system instance to external systems of record.<hr/>**Array Constraint**: MUST have at least 1 items<br/>**Array Item Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:([a-zA-Z0-9._\\-\\/]+)\:([a-zA-Z0-9._\\-\\/]+)$</code><br/>**Example Values**: <ul className="examples"><li>`["sap.cld:tenant:741234567"]`</li></ul></div>|
+
+
+### Overlay System Type
+
+A [system type](../../spec-v1/index.md#system-type) is the abstract type of an application or service, from operational perspective.
+This object is identical to the ORD Document [`describedSystemType`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemtype) object.
+
+Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
+Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
+
+**Type**: Object(<a href="#overlay-system-type_systemnamespace">systemNamespace</a>, <a href="#overlay-system-type_correlationids">correlationIds</a>)
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+|<div className="interface-property-name anchor" id="overlay-system-type_systemnamespace">systemNamespace<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-type_systemnamespace" title="#overlay-system-type_systemnamespace"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">The [system namespace](../../spec-v1/index.md#system-namespace) is a unique identifier for the system type.<hr/>**Regex Pattern**: <code className="regex">^[a-z0-9]+(?\:[.][a-z0-9]+)\{1\}$</code><br/>**Maximum Length**: `32`<br/>**Example Values**: <ul className="examples"><li>`"sap.s4"`</li><li>`"sap.c4c"`</li><li>`"sap.cld"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-system-type_correlationids">correlationIds<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-type_correlationids" title="#overlay-system-type_correlationids"></a></div>|<div className="interface-property-type">Array&lt;string&gt;</div>|<div className="interface-property-description">Correlation IDs for linking this system type to external systems of record.<hr/>**Array Constraint**: MUST have at least 1 items<br/>**Array Item Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:([a-zA-Z0-9._\\-\\/]+)\:([a-zA-Z0-9._\\-\\/]+)$</code><br/>**Example Values**: <ul className="examples"><li>`["sap.cld:systemRole:S4_PC"]`</li></ul></div>|
+
+
+### Overlay System Version
+
+A [system version](../../spec-v1/index.md#system-version) describes a version/release of the system.
+This object is identical to the ORD Document [`describedSystemVersion`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemversion) object.
+
+Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
+Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
+
+**Type**: Object(<a href="#overlay-system-version_version">version</a>, <a href="#overlay-system-version_title">title</a>, <a href="#overlay-system-version_correlationids">correlationIds</a>)
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+|<div className="interface-property-name anchor" id="overlay-system-version_version">version<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-version_version" title="#overlay-system-version_version"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">The version of the system instance (run-time) or the version of the described system-version perspective.<br/><br/>It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.<hr/>**Regex Pattern**: <code className="regex">^(0\|[1-9]\\d\*)\\.(0\|[1-9]\\d\*)\\.(0\|[1-9]\\d\*)(?\:-((?\:0\|[1-9]\\d\*\|\\d\*[a-zA-Z-][0-9a-zA-Z-]\*)(?\:\\.(?\:0\|[1-9]\\d\*\|\\d\*[a-zA-Z-][0-9a-zA-Z-]\*))\*))?(?\:\\+([0-9a-zA-Z-]+(?\:\\.[0-9a-zA-Z-]+)\*))?$</code><br/>**Example Values**: <ul className="examples"><li>`"1.2.3"`</li><li>`"2024.8.0"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-system-version_title">title<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-version_title" title="#overlay-system-version_title"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Human-readable title of the system version.<hr/>**Minimum Length**: `1`<br/>**Maximum Length**: `255`<br/>**Example Values**: <ul className="examples"><li>`"SAP S/4HANA Cloud 2408"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-system-version_correlationids">correlationIds<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-system-version_correlationids" title="#overlay-system-version_correlationids"></a></div>|<div className="interface-property-type">Array&lt;string&gt;</div>|<div className="interface-property-description">Correlation IDs for linking this system version to external systems of record.<hr/>**Array Constraint**: MUST have at least 1 items<br/>**Array Item Regex Pattern**: <code className="regex">^([a-z0-9]+(?\:[.][a-z0-9]+)\*)\:([a-zA-Z0-9._\\-\\/]+)\:([a-zA-Z0-9._\\-\\/]+)$</code><br/>**Example Values**: <ul className="examples"><li>`["sap.cld:release:2408"]`</li></ul></div>|
 
 ## Appendix
 
