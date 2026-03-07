@@ -1,0 +1,178 @@
+# Overlay Merge Library (`src/overlay-merge`)
+
+TypeScript implementation for applying ORD overlays to JSON-based metadata files.
+
+Current scope:
+- Supports selector types: `jsonPath`, `ordId`, `operation`
+- Supports actions: `merge`, `update`, `remove`, `append`
+- Uses `jsonpath` for JSONPath evaluation
+- Validates overlay input against the generated `OrdOverlay` JSON Schema
+- Emits semantic validation errors for documented `MUST` constraints and warnings for documented `SHOULD` guidance where the merge script can evaluate them
+
+Validation assumption:
+- The input target document is assumed to already be valid for its native metadata format.
+- This merge tool does not fully validate target metadata formats.
+- Validate the merged output again with the target format-specific validator/tooling.
+
+Current CLI limitation:
+- The merge library operates on parsed JSON values.
+- The CLI currently accepts JSON files only.
+- YAML overlays and YAML target files are valid per spec, but the CLI does not yet parse YAML or preserve YAML output formatting.
+
+## What It Does
+
+The library applies `patches` from an `ORDOverlay` document in order.
+
+Selector support implemented now:
+- `jsonPath`: generic JSONPath selector for JSON files
+- `ordId`: selector for ORD Document resources (top-level resource arrays)
+- `operation`: concept-level operation selector
+  - OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): matches `operationId` in `paths.{path}.{method}`
+  - MCP: matches `tools[].name`
+  - A2A Agent Card (`a2a-agent-card`): matches `skills[].id`
+  - Without `definitionType`: tries OpenAPI → MCP → A2A in order
+
+Selectors currently not implemented in this script:
+- `entityType`, `propertyType`
+
+## TODO / Open Decisions
+
+- `target.url` is currently treated as informational context and is not used for strict target matching.
+- Concept-level selectors `entityType` and `propertyType` (OData) are not implemented yet.
+- Decide whether strict URL matching should be defaulted, optional, or profile-specific.
+- Extend `definitionType` validation coverage for additional metadata formats beyond the currently checked OpenAPI, A2A, AsyncAPI, CSDL JSON, MCP-style Specification IDs, and ORD Overlay shapes.
+- Add YAML input/output support so the CLI can read `.yaml` / `.yml` overlays and target files, preserve the original serialization format on write, and detect JSON vs YAML automatically.
+- Decide whether `deepMerge` type mismatches (e.g. merging an object into an array)
+  should emit a warning or throw, rather than silently replacing the base value.
+- Consider adding a `--dry-run` or `--validate-only` mode to the CLI.
+- Evaluate whether the `jsonpath` npm package (CommonJS-only) should be replaced
+  with a native ESM alternative once a stable option is available.
+- TODO: move overlay validation into a separate project once the overlay merge tooling is split out of this repository.
+
+## Merge Semantics
+
+Implemented patch semantics:
+- `update`: replaces the selected element with `data`
+- `append`:
+  - `data` must be a string
+  - selected target value must be a string
+  - appends `data` to the existing text value
+- `merge`:
+  - objects: deep-merged recursively
+  - scalars: overwritten
+  - arrays: appended (existing + incoming)
+- `remove`:
+  - without `data`: removes the selected element
+  - with `data`: removes fields marked as `null` recursively
+
+Example (`remove` with nested deletion):
+
+```json
+{
+  "action": "remove",
+  "selector": { "jsonPath": "$.info" },
+  "data": { "foo": { "bar": null } }
+}
+```
+
+This removes `info.foo.bar`.
+
+## JSONPath Support
+
+JSONPath evaluation is delegated to the `jsonpath` npm package (`jsonpath@1.2.1`).
+Supported syntax is therefore whatever that library supports.
+
+## ORD ID Selector Behavior
+
+`ordId` selector resolves against top-level ORD Document collections (for example `apiResources`, `eventResources`, `entityTypes`, `dataProducts`, `capabilities`, ...).
+
+It intentionally does not patch nested reference objects by default (for example `{ "ordId": "..." }` entries inside `partOfConsumptionBundles`), because those are not full resource metadata objects.
+
+Resolution behavior:
+- The implementation discovers root-level arrays of objects that contain an `ordId` field, and only scans those collections
+- The implementation derives the ORD resource type from the `ordId` itself and uses simple collection-name fallbacks such as `s` and `y -> ies`
+- There is no hardcoded ORD resource type map in the resolver
+
+## Library Usage
+
+```ts
+import { applyOverlayToDocument } from "@open-resource-discovery/specification";
+
+const merged = applyOverlayToDocument(targetDocument, overlay, {
+  noMatchBehavior: "error",
+  requireTargetMatch: true,
+  context: {
+    ordId: "sap.foo:apiResource:astronomy:v1",
+    definitionType: "openapi-v3",
+  },
+});
+```
+
+Options:
+- `noMatchBehavior` (default `"error"`):
+  - `"error"` throw when a selector matches nothing
+  - `"warn"` continue and log warning
+  - `"ignore"` continue silently
+- `requireTargetMatch` (default `false`): validate overlay target against `context`
+- `validateDefinitionType` (default `true`): validates basic target structure for known `definitionType` values
+- `validateOverlaySemantics` (default `true`): validates selector/action support and documented overlay semantics before applying patches
+- `context`: expected `ordId`, `url`, `definitionType` of the file being patched
+  - `url` is currently informational and not used for strict target equality checks
+
+## CLI Script
+
+A CLI is provided at `src/overlay-merge/cli.ts`.
+
+After build:
+
+```bash
+node dist/overlay-merge/cli.js \
+  --overlay examples/overlay/astronomy-api-openapi.overlay.json \
+  --input examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json \
+  --target-url /ord/metadata/astronomy-v1.oas3.json \
+  --target-definition-type openapi-v3 \
+  --output /tmp/astronomy-patched.json
+```
+
+Flags:
+- `--overlay <path>` required
+- `--input <path>` required
+- `--output <path>` optional (otherwise writes to stdout)
+- `--target-ord-id <ordId>` optional
+- `--target-url <url>` optional (currently informational context)
+- `--target-definition-type <type>` optional
+- `--allow-no-match` optional
+- `--warn-on-no-match` optional
+- CLI note: only JSON file inputs/outputs are currently supported
+
+## Tests
+
+Tests use Node.js built-in test runner (`node:test`) and real files from `examples/`.
+
+Run:
+
+```bash
+npm run test:overlay-merge
+```
+
+Coverage includes:
+- JSONPath patching on OpenAPI example JSON
+- `ordId` selector patching on ORD Document example JSON
+- no-match failure behavior
+- overlay schema validation
+- semantic MUST/SHOULD validation and definition-type compatibility checks
+
+Integration-style tests also apply overlay files from `examples/overlay` to existing metadata files in `examples/`.
+
+## TODOs
+- Decide mandatory vs optional target resolution fields (`target`, `target.ordId`, etc.) — see `spec-extension/models/OrdOverlay.outro.md`.
+- Decide whether overlay document `ordId` should be mandatory — see `spec-extension/models/OrdOverlay.outro.md`.
+- Confirm OData `operation` selector mapping with OData domain experts — see `spec-extension/models/OrdOverlay.outro.md`.
+- Align `PatchValue` schema/types with the documented merge/update semantics so arrays and scalar JSON values are schema-valid.
+- Implement concept-level selectors (`entityType`, `propertyType`) — see TODO comments in `selectors.ts`.
+- Decide whether `requireTargetMatch` should also evaluate `target.correlationIds`, and whether `target.url` should remain informational or become enforceable.
+- Decide whether/when strict `target.url` matching should be enabled — see TODO comment in `types.ts` (`requireTargetMatch`).
+- Extend `definitionType` structure validation beyond `openapi-v3` — see TODO comment in `types.ts` (`validateTargetDocumentForDefinitionType`).
+- Add YAML input/output support for the CLI and preserve the source serialization format on write.
+- Clarify `deepMerge` behavior on type mismatches (object vs array, etc.) — see TODO comment in `merge.ts`.
+- Move the overlay validator into a separate project once overlay tooling is extracted from this repository.

@@ -1,15 +1,34 @@
-import * as staticDocumentSchema from "./generated/spec/v1/schemas/Document.schema.json";
+import type { SpecJsonSchemaRoot } from "@open-resource-discovery/spec-toolkit";
 import * as staticConfigurationSchema from "./generated/spec/v1/schemas/Configuration.schema.json";
-import { SpecJsonSchemaRoot } from "@open-resource-discovery/spec-toolkit";
+import * as staticDocumentSchema from "./generated/spec/v1/schemas/Document.schema.json";
 
 export * from "./generated/spec/v1/types";
+export { applyOverlayToDocument } from "./overlay-merge/merge";
+export type {
+	ApplyOverlayOptions,
+	JSONValue,
+	OverlayMergeContext,
+} from "./overlay-merge/types";
+export { OverlayMergeError } from "./overlay-merge/types";
+export type {
+	OverlayValidationIssue,
+	OverlayValidationResult,
+} from "./overlay-merge/validation";
+export {
+	validateOverlayInput,
+	validateOverlaySchema,
+	validateOverlaySemantics,
+	validateTargetDocumentForDefinitionType,
+} from "./overlay-merge/validation";
 
 /**
  * The JSON Schema (draft-07) describing the ORD Document interface
  */
-export const ordDocumentSchema = staticDocumentSchema as unknown as SpecJsonSchemaRoot;
+export const ordDocumentSchema =
+	staticDocumentSchema as unknown as SpecJsonSchemaRoot;
 
 /**
  * The JSON Schema (draft-07) describing the ORD Configuration interface
  */
-export const ordConfigurationSchema = staticConfigurationSchema as unknown as SpecJsonSchemaRoot;
+export const ordConfigurationSchema =
+	staticConfigurationSchema as unknown as SpecJsonSchemaRoot;

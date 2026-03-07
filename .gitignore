@@ -24,6 +24,9 @@ docs/spec-v1/examples/*
 !docs/spec-v1/examples/index.mdx
 docs/spec-v1/diagrams/*
 !docs/spec-v1/diagrams/index.mdx
+docs/spec-extensions/models/OrdOverlay.md
 
 /static/spec-v1/interfaces/Configuration.schema.json
 /static/spec-v1/interfaces/Document.schema.json
+/static/spec-v1/interfaces/OrdOverlay.schema.json
+/static/spec-extension/

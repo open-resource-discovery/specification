@@ -1,54 +1,63 @@
 {
-  "$schema": "http://json.schemastore.org/package",
-  "name": "@open-resource-discovery/specification",
-  "version": "1.14.0",
-  "description": "Open Resource Discovery (ORD) Specification",
-  "author": "SAP SE",
-  "license": "Apache-2.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "engines": {
-    "node": ">=22.0.0",
-    "npm": ">=10.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/open-resource-discovery/specification.git"
-  },
-  "files": [
-    "README.md",
-    "dist/index.js",
-    "dist/index.d.ts",
-    "dist/generated/spec/v1"
-  ],
-  "scripts": {
-    "docusaurus": "docusaurus",
-    "build": "npm run generate && npm run build-ts && npm run build-docusaurus",
-    "clean": "node src/helper/clean.mjs",
-    "build-ts": "tsc -p ./tsconfig.json",
-    "build-docusaurus": "docusaurus build",
-    "serve": "docusaurus serve",
-    "start": "docusaurus start",
-    "deploy": "npm run build && gh-pages -d ./build",
-    "pregenerate": "npm run clean",
-    "generate": "npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json",
-    "postgenerate": "ts-node ./src/helper/copyGeneratedToDestination.ts"
-  },
-  "devDependencies": {
-    "@docusaurus/core": "3.9.2",
-    "@docusaurus/plugin-client-redirects": "3.9.2",
-    "@docusaurus/preset-classic": "3.9.2",
-    "@docusaurus/theme-mermaid": "3.9.2",
-    "@easyops-cn/docusaurus-search-local": "0.52.3",
-    "@mdx-js/react": "3.1.1",
-    "@open-resource-discovery/spec-toolkit": "0.7.0",
-    "@types/fs-extra": "11.0.4",
-    "clsx": "2.1.1",
-    "fs-extra": "11.3.3",
-    "lefthook": "2.1.0",
-    "prism-react-renderer": "2.4.1",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "ts-node": "10.9.2"
-  }
+	"$schema": "http://json.schemastore.org/package",
+	"name": "@open-resource-discovery/specification",
+	"version": "1.14.0",
+	"description": "Open Resource Discovery (ORD) Specification",
+	"author": "SAP SE",
+	"license": "Apache-2.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"engines": {
+		"node": ">=22.0.0",
+		"npm": ">=10.0.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/open-resource-discovery/specification.git"
+	},
+	"files": [
+		"README.md",
+		"dist/index.js",
+		"dist/index.d.ts",
+		"dist/generated/spec/v1"
+	],
+	"scripts": {
+		"docusaurus": "docusaurus",
+		"build": "npm run generate && npm run build-ts && npm run build-docusaurus",
+		"clean": "node src/helper/clean.mjs",
+		"build-ts": "tsc -p ./tsconfig.json",
+		"build-docusaurus": "docusaurus build",
+		"format": "biome format --write .",
+		"lint": "biome lint .",
+		"test": "npm run build-ts && node --test dist/**/*.test.js",
+		"test:overlay-merge": "npm run build-ts && node --test dist/overlay-merge/**/*.test.js",
+		"serve": "docusaurus serve",
+		"start": "docusaurus start",
+		"deploy": "npm run build && gh-pages -d ./build",
+		"pregenerate": "npm run clean",
+		"generate": "npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json",
+		"postgenerate": "ts-node ./src/helper/copyGeneratedToDestination.ts"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.6",
+		"@docusaurus/core": "3.9.2",
+		"@docusaurus/plugin-client-redirects": "3.9.2",
+		"@docusaurus/preset-classic": "3.9.2",
+		"@docusaurus/theme-mermaid": "3.9.2",
+		"@easyops-cn/docusaurus-search-local": "0.55.1",
+		"@mdx-js/react": "3.1.1",
+		"@open-resource-discovery/spec-toolkit": "0.7.1",
+		"@types/fs-extra": "11.0.4",
+		"ajv": "8.18.0",
+		"ajv-formats": "3.0.1",
+		"clsx": "2.1.1",
+		"fs-extra": "11.3.3",
+		"jsonpath": "1.2.1",
+		"lefthook": "2.1.2",
+		"prism-react-renderer": "2.4.1",
+		"react": "18.3.1",
+		"react-dom": "18.3.1",
+		"ts-node": "10.9.2",
+		"tslog": "4.10.2"
+	}
 }

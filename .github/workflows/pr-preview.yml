@@ -35,7 +35,10 @@ jobs:
           BASE_URL: /pr-preview/specification/pr-${{ github.event.pull_request.number }}/
         run: |
           npm ci
-          npm run build
+          npm run generate
+          npm run lint
+          npm test
+          npm run build-docusaurus
 
       - name: Deploy / Remove preview in spec-preview repo
         uses: rossjrw/pr-preview-action@v1

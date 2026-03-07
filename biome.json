@@ -1,0 +1,18 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+	"files": {
+		"ignoreUnknown": true,
+		"includes": [
+			"package.json",
+			"tsconfig.json",
+			"spec-toolkit.config.json",
+			"docusaurus.config.js",
+			"sidebars.js",
+			"src/index.ts",
+			"src/helper/**",
+			"src/overlay-merge/**",
+			"src/theme/**",
+			"examples/implementation/no-auth/server.js"
+		]
+	}
+}

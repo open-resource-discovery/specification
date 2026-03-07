@@ -1,0 +1,26 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlayselectorbyoperation'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlaySelectorByOperation'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'operation'
+      type: 'string'
+      description: "Concept-level operation identifier.\nSupported mappings by format:\n- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to the `operationId` field on\n  an HTTP operation inside `paths.{path}.{method}`.\n- MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.\n  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name\n- A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.\n  See: https://google.github.io/A2A/specification/#agentskill-object\n\nWhen `definitionType` is not provided, the implementation tries OpenAPI paths first,\nthen MCP tools, then A2A skills, returning the first match found.\n\nNot currently supported for OData selectors."
+      mandatory: true
+      constraints:
+        minLength: 1
+  customTypeDefinitions: []
+  metadataRelations: []
