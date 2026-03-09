@@ -8,9 +8,8 @@ without modifying the original source files.
 
 ```json
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
-  "target": { "definitionType": "openapi-v3" },
+  "target": { "ordId": "sap.foo:apiResource:BusinessPartner:v1", "definitionType": "openapi-v3" },
   "patches": [
     {
       "action": "merge",
