@@ -1,4 +1,4 @@
-# Lefthook configuration to ensure code generation runs before commit
+﻿# Lefthook configuration to ensure code generation runs before commit
 # Runs `npm run generate` and re-stages any changed files so they are included
 # in the current commit.
 
@@ -8,11 +8,7 @@ pre-commit:
     check_merge_markers:
       # Prevent committing files with unresolved merge conflict markers.
       glob: "*.{js,ts,jsx,tsx,yaml,yml,json,md,mdx,css,html,mjs}"
-      run: |
-        if git diff --cached --name-only | xargs grep -l '^<<<<<<< \|^=======$\|^>>>>>>> ' 2>/dev/null; then
-          echo "Error: Merge conflict markers found in staged files. Please resolve conflicts before committing."
-          exit 1
-        fi
+      run: "! git diff --cached --name-only | xargs grep -nE '^(<{7}|={7}|>{7})' 2>/dev/null"
     generate:
       # If generation fails, the commit is blocked.
       # `stage_fixed: true` will re-stage any updated files.

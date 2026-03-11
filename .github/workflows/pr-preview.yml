@@ -4,13 +4,13 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, closed]
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
-  preview:
-    if: github.event.pull_request.head.repo.full_name == github.repository
+  pr-preview:
+    permissions:
+      contents: read
+      actions: write
+      pull-requests: read
+
     runs-on: ubuntu-latest
 
     concurrency:
@@ -18,31 +18,31 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - name: Checkout source repo
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        if: github.event.action != 'closed'
+        uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: 22
 
-      - name: Build with PR-specific baseUrl
+      - name: Build preview
         if: github.event.action != 'closed'
         env:
           PR_PREVIEW_NUMBER: ${{ github.event.pull_request.number }}
           BASE_URL: /pr-preview/specification/pr-${{ github.event.pull_request.number }}/
         run: |
+          set -euo pipefail
           npm ci
           npm run build
 
-      - name: Deploy / Remove preview in spec-preview repo
-        uses: rossjrw/pr-preview-action@v1
+      - name: PR preview
+        uses: open-resource-discovery/pr-preview-action@main
         with:
-          source-dir: build
-          deploy-repository: open-resource-discovery/pr-preview
-          preview-branch: main
-          umbrella-dir: ./specification
-          pages-base-url: open-resource-discovery.github.io/pr-preview
+          fork: true
+          target-repo: open-resource-discovery/pr-preview
+          pages-base-url: https://open-resource-discovery.github.io/pr-preview
+          umbrella-dir: specification
           token: ${{ secrets.PR_PREVIEW_TOKEN }}
