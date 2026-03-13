@@ -105,6 +105,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
   }, []);
 
   // SPA navigation: realign after stabilization
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional navigation trigger — deps used to detect route changes, not consumed inside callback
   useEffect(() => {
     const seq = ++navSeq.current;
     runWhenContentStable(() => {
