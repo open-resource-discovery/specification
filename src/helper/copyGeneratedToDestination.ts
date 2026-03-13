@@ -1,4 +1,5 @@
 import fs from "fs-extra";
+import path from "node:path";
 import { log } from "./log";
 
 export async function copyGeneratedToDestination(): Promise<void> {
@@ -18,21 +19,45 @@ export async function copyGeneratedToDestination(): Promise<void> {
 			"docs/spec-v1/interfaces/Document.md",
 		);
 
-		// Copy Model Extensions
+		// Copy Model Extensions (any .md files in docs/ that aren't Configuration or Document)
 		await fs.ensureDir("docs/spec-extensions/models/");
-		await fs.copy(
-			"./src/generated/spec/v1/docs/OrdOverlay.md",
-			"docs/spec-extensions/models/OrdOverlay.md",
-		);
+		const generatedDocsPath = "./src/generated/spec/v1/docs";
+		if (await fs.pathExists(generatedDocsPath)) {
+			const generatedDocs = await fs.readdir(generatedDocsPath);
+			const modelExtensionDocs = generatedDocs.filter(
+				(file) =>
+					file.endsWith(".md") &&
+					file !== "Configuration.md" &&
+					file !== "Document.md",
+			);
+			for (const doc of modelExtensionDocs) {
+				await fs.copy(
+					path.join(generatedDocsPath, doc),
+					path.join("docs/spec-extensions/models", doc),
+				);
+				log.info(`Copied model extension doc: ${doc}`);
+			}
+		}
 
-		// Publish OrdOverlay schema at its canonical $id URL path so that $schema references resolve correctly.
-		// The generated schema $id is https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#
-		// TODO: if additional model extension schemas are added, generalise this into a loop over spec-extension/models/*.schema.yaml.
+		// Copy Model Extension schemas to their canonical $id URL path
 		await fs.ensureDir("static/spec-extension/models/");
-		await fs.copy(
-			"./src/generated/spec/v1/schemas/OrdOverlay.schema.json",
-			"static/spec-extension/models/OrdOverlay.schema.json",
-		);
+		const generatedSchemasPath = "./src/generated/spec/v1/schemas";
+		if (await fs.pathExists(generatedSchemasPath)) {
+			const generatedSchemas = await fs.readdir(generatedSchemasPath);
+			const modelExtensionSchemas = generatedSchemas.filter(
+				(file) =>
+					file.endsWith(".schema.json") &&
+					file !== "Configuration.schema.json" &&
+					file !== "Document.schema.json",
+			);
+			for (const schema of modelExtensionSchemas) {
+				await fs.copy(
+					path.join(generatedSchemasPath, schema),
+					path.join("static/spec-extension/models", schema),
+				);
+				log.info(`Copied model extension schema: ${schema}`);
+			}
+		}
 
 		// Create docs/spec-v1/examples/ directory and copy examples specifically
 		await fs.ensureDir("docs/spec-v1/examples/");

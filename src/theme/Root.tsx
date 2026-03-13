@@ -102,7 +102,7 @@ function widthStepIndex(w: number, start = 1400, step = 200) {
 }
 
 export default function Root({ children }: { children: React.ReactNode }) {
-	const _loc = useLocation();
+	const loc = useLocation();
 	const navSeq = useRef(0);
 	const lastStep = useRef<number | null>(null);
 	const rafTid = useRef<number | null>(null);
@@ -119,6 +119,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
 	}, []);
 
 	// SPA navigation: realign after stabilization
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional navigation trigger — deps used to detect route changes, not consumed inside callback
 	useEffect(() => {
 		const seq = ++navSeq.current;
 		runWhenContentStable(() => {
@@ -126,7 +127,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
 			enhanceTables(document);
 			forceAlignToHashTarget();
 		});
-	}, []);
+	}, [loc.pathname, loc.hash, loc.search]);
 
 	// Re-align every 200px step, Also when getting bigger.
 	useEffect(() => {

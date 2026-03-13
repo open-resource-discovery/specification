@@ -9,7 +9,6 @@ const config = {
 	removeGeneratedFiles: [
 		"docs/spec-v1/interfaces/Configuration.md",
 		"docs/spec-v1/interfaces/Document.md",
-		"docs/spec-extensions/models/OrdOverlay.md",
 	],
 	// Folders where we remove all contents except certain keepers
 	cleanFoldersExcept: [
