@@ -133,7 +133,7 @@ Optional top-level fields scope an overlay to a specific system context:
 
 - [`perspective`](#overlay-perspective) — declares whether the overlay applies at system-type, system-version, or system-instance scope.
 - [`describedSystemType`](#overlay-system-type), [`describedSystemVersion`](#overlay-system-version), [`describedSystemInstance`](#overlay-system-instance) — narrow the overlay to a particular system type, version, or instance.
-- [`visibility`](#overlay-visibility) — controls who can discover this overlay document (`public`, `internal`, `private`).
+- [`visibility`](#ord-overlay_visibility) — controls who can discover this overlay document (`public`, `internal`, `private`).
 - `description` — human-readable Markdown description of the overlay document itself.
 - `ordId` — optional stable ORD ID for this overlay, using pattern `*:overlay:*:v*`.
 
