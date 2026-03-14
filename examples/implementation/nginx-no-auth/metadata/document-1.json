@@ -1,5 +1,5 @@
 {
-  "openResourceDiscovery": "1.12",
+  "openResourceDiscovery": "1.14",
   "policyLevels": ["sap:core:v1"],
   "apiResources": [
     {
@@ -11,9 +11,7 @@
       "lastUpdate": "2022-12-19T15:47:04+00:00",
       "visibility": "public",
       "releaseStatus": "active",
-      "systemInstanceAware": false,
-      "policyLevel": "custom",
-      "customPolicyLevel": "sap.foo:custom:v1",
+      "policyLevels": ["sap.foo:custom:v1"],
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "partOfConsumptionBundles": [
         {

@@ -50,4 +50,4 @@ Global-Tenant-Id: c6c80b52-ecc1-47f8-9303-0d55fb67fd41
 ### General Remarks
 
 > ℹ If the metadata is not different across tenants (system-instance-unaware), the response is static and the same across tenants.
-> In this case, this should be indicated via `systemInstanceAware`: `false` to avoid unnecessary requests for each tenant.
+> In this case, the ORD document should use `perspective`: `system-version` instead of `system-instance` to avoid unnecessary requests for each tenant.
