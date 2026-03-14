@@ -1,0 +1,7 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+	"files": {
+		"ignoreUnknown": true,
+		"includes": ["*.{json,js}", "src/**", "examples/implementation/no-auth/server.js", "!src/generated/**"]
+	}
+}
