@@ -31,6 +31,13 @@ description: |-
     - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).
     - `ordId`: ORD resource metadata level (patching ORD resources themselves).
 
+  Intended use and compatibility:
+    - Overlays MUST NOT introduce breaking / incompatible changes to the original API or metadata.
+    - Typical use-cases are non-breaking enrichments: adding extensions, annotations, or updating
+      non-critical properties such as descriptions, summaries, or display names.
+    - An exception is intentionally restricting exposure: an overlay MAY remove or hide elements
+      (e.g. operations, fields) that should not be visible in a given context or to a given audience.
+
   Validation assumption:
     - overlays and overlay application assume the selected target document is already valid
       for its native metadata format.
@@ -330,6 +337,14 @@ definitions:
             - append string `data` to the selected string value.
             - only valid when the selected element is a text/string field.
             - useful to extend existing descriptions without replacing them.
+          - `remove`:
+            - without `data`: remove the selected element from the document entirely.
+            - with `data`: remove fields that are set to `null`.
+              This applies recursively, so nested `null` values remove nested fields as well
+              (JSON Merge Patch-style delete semantics).
+
+          Example for nested removal:
+          `data: { "foo": { "bar": null } }` removes `foo.bar` inside the selected element.
           - `merge`:
             - objects are deep-merged recursively.
             - scalar values are overwritten by the value from `data`.
@@ -339,19 +354,11 @@ definitions:
             To fully replace an array, use two ordered patches:
             1. `remove` the array at the selected location.
             2. `merge` the new array content.
-          - `remove`:
-            - without `data`: remove the selected element from the document entirely.
-            - with `data`: remove fields that are set to `null`.
-              This applies recursively, so nested `null` values remove nested fields as well
-              (JSON Merge Patch-style delete semantics).
-
-          Example for nested removal:
-          `data: { "foo": { "bar": null } }` removes `foo.bar` inside the selected element.
         enum:
           - update
           - append
-          - merge
           - remove
+          - merge
 
       selector:
         $ref: "#/definitions/OverlaySelector"
