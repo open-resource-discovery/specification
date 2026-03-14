@@ -1,0 +1,66 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'ordoverlay'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'ORDOverlay'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: "⚠️ ALPHA: This specification is in alpha and subject to change.\n\nThe ORD Overlay is an optional ORD model extension.\n\nIt allows patching both ORD resources and referenced resource definition files (e.g. OpenAPI,\nAsyncAPI, OData CSDL, MCP Agent Cards) without modifying the original source files.\n\nOverlay files can be provided through the ORD configuration endpoint\n(https://open-resource-discovery.org/spec-v1/index#ord-configuration-endpoint),\nor attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`.\n\nPatches use concept-level selectors that are independent of the internal structure of the target format,\nmaking overlays resilient to format changes (e.g. OpenAPI 3.0 → 3.1, OData CSDL JSON → XML).\nA JSON Path selector is available as a generic fallback for any JSON/YAML-based target format.\n\nConceptual selector levels (from high to low):\n  - Resource level: ORD ID (resolved via the ORD registry)\n  - Operation level: operation (OpenAPI `operationId`, MCP tool `name`)\n  - Entity type level: entityType (OData EntityType)\n  - Property type level: propertyType (OData Property scoped by entity type)\n  - Generic fallback: jsonPath (any JSON/YAML document, structure-bound)\n\nSelector support by metadata format:\n  - `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP (identified via a Specification ID in `definitionType`).\n  - `entityType` and `propertyType`: OData (`edmx` for v2/v4, `csdl-json` for v4).\n  - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).\n  - `ordId`: ORD resource metadata level (patching ORD resources themselves).\n\nIntended use and compatibility:\n  - Overlays MUST NOT introduce breaking / incompatible changes to the original API or metadata.\n  - Typical use-cases are non-breaking enrichments: adding extensions, annotations, or updating\n    non-critical properties such as descriptions, summaries, or display names.\n  - An exception is intentionally restricting exposure: an overlay MAY remove or hide elements\n    (e.g. operations, fields) that should not be visible in a given context or to a given audience.\n\nValidation assumption:\n  - overlays and overlay application assume the selected target document is already valid\n    for its native metadata format.\n  - the merge process does not fully validate all target metadata formats.\n  - the merged output should be validated again with the corresponding format-specific tooling."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: '$schema'
+      type: 'string'
+      description: "Optional [URL](https://tools.ietf.org/html/rfc3986) to the ORD Overlay schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools."
+    - name: 'ordOverlay'
+      type: 'string'
+      description: 'Version of the ORD Overlay specification.'
+      mandatory: true
+    - name: 'ordId'
+      type: 'string'
+      description: "Optional ORD ID of this overlay document.\nMUST be provided if the ORD Overlay is published via ORD Configuration endpoint."
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'description'
+      type: 'string'
+      description: "Optional description of the overlay document itself.\n\nNotated in [CommonMark](https://spec.commonmark.org/) (Markdown)."
+      constraints:
+        minLength: 1
+    - name: 'perspective'
+      type: 'string'
+      description: "Overlay-specific [perspective](../../spec-v1/index.md#perspectives) that scopes where this overlay should be applied.\n\nUse this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`\nto describe whether the overlay applies broadly to a system type, to one released system version,\nor only to a specific system instance."
+    - name: 'visibility'
+      type: 'string'
+      description: "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences."
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'describedSystemType'
+      relatedTypeName: 'OverlaySystemType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.\nThis object is identical to the ORD Document [`describedSystemType`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemtype) object.\n\nIts purpose is to link the overlay to the same system landscape model as ORD resources, if needed.\nThis is the primary context object for `perspective: system-type`, and also the parent context\nfor more specific `system-version` and `system-instance` overlays.\n\nUsually this is not necessary for static overlays if the patched resource is already selected via ORD ID."
+    - propertyName: 'describedSystemVersion'
+      relatedTypeName: 'OverlaySystemVersion'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.\nThis object is identical to the ORD Document [`describedSystemVersion`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemversion) object.\n\nIts purpose is to link the overlay to the same system landscape model as ORD resources, if needed.\nUse this when the overlay should only patch metadata for one specific released system version.\n\nUsually this is not necessary for static overlays if the patched resource is already selected via ORD ID."
+    - propertyName: 'describedSystemInstance'
+      relatedTypeName: 'OverlaySystemInstance'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.\nThis object is identical to the ORD Document [`describedSystemInstance`](../../spec-v1/interfaces/Document.md#ord-document_describedsysteminstance) object.\n\nIts purpose is to link the overlay to the same system landscape model as ORD resources, if needed.\nUse this when the overlay should only patch metadata for one concrete tenant / runtime instance.\n\nUsually this is not necessary for static overlays if the patched resource is already selected via ORD ID."
+    - propertyName: 'target'
+      relatedTypeName: 'OverlayTarget'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional target context for this overlay.\nThe target can reference an ORD resource or a referenced resource definition file.\n\n`ordId` selects the ORD resource metadata itself.\nIf patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous\nwhen the resource exposes multiple definitions.\nIn that case, use `url` and/or `definitionType` to clarify the intended file.\n\nExample: an OData API resource may provide both `edmx` and `openapi-v3` definitions.\nUse `definitionType` and/or an explicit `url` to identify which one is patched.\n\nFor overlays that only patch ORD-level metadata via patch selectors (`selector.ordId`),\na `target.ordId` is often not needed. In that case, `target` may be omitted entirely,\nor provided as an empty object for informational purposes.\nMultiple resources can still be patched by defining multiple patches with different selector `ordId` values.\n\nIf the ORD document URL is known, it can be provided via `target.url` as additional context."
+    - propertyName: 'patches'
+      relatedTypeName: 'OverlayPatch'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Ordered sequence of patches to apply to the targeted resource(s).\nPatches are applied in the order listed."
+      mandatory: true

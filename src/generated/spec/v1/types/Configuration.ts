@@ -39,6 +39,13 @@ export interface OrdV1Support {
    * For more details how to implement this correctly, please refer to the [ORD configuration endpoint](../index.md#ord-configuration-endpoint) section and the [considerations on the granularity of ORD documents](../index.md#considerations-on-the-granularity-of-ord-documents).
    */
   documents?: OrdV1DocumentDescription[];
+  /**
+   * List of all ORD Overlay documents that can be retrieved.
+   *
+   * Overlay documents can patch ORD resources themselves and/or referenced resource definitions without changing the original source files.
+   * For more details, see [ORD Overlay](../../spec-extensions/models/OrdOverlay).
+   */
+  overlays?: OrdV1OverlayDescription[];
   capabilities?: OrdV1Capabilities;
 }
 /**
@@ -110,6 +117,26 @@ export interface OrdV1DocumentAccessStrategy {
    * MUST only be provided if `type` is set to `custom`.
    */
   customDescription?: string;
+}
+/**
+ * Describes an ORD Overlay document that is available for pull transport consumption.
+ */
+export interface OrdV1OverlayDescription {
+  /**
+   * URL or relative URL to the ORD Overlay document.
+   *
+   * It is RECOMMENDED to provide a relative URL (to `baseUrl`).
+   * If a `baseUrl` is given, the relative URLs will be resolved with it.
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving the overlay document from the ORD provider.
+   *
+   * An ORD Consumer/ORD Aggregator MAY freely choose any of the listed strategies.
+   *
+   * @minItems 1
+   */
+  accessStrategies: [OrdV1DocumentAccessStrategy, ...OrdV1DocumentAccessStrategy[]];
 }
 /**
  * List of capabilities that are supported by the ORD provider.

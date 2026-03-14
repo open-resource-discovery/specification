@@ -1,0 +1,39 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:astronomy-api-openapi-jsonpath:v1",
+  "description": "Patches the sample Astronomy OpenAPI metadata using JSONPath selectors only.",
+  "target": {
+    "url": "/ord/metadata/astronomy-v1.oas3.json",
+    "definitionType": "openapi-v3"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": {
+        "jsonPath": "$.info"
+      },
+      "data": {
+        "x-overlay-note": "Overlay applied from example file"
+      }
+    },
+    {
+      "action": "remove",
+      "selector": {
+        "jsonPath": "$.info"
+      },
+      "data": {
+        "description": null
+      }
+    },
+    {
+      "action": "update",
+      "selector": {
+        "jsonPath": "$.servers[0]"
+      },
+      "data": {
+        "url": "https://overlay.example.invalid/astronomy/v1"
+      }
+    }
+  ]
+}
