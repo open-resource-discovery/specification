@@ -269,6 +269,43 @@ nav.navbar .dropdown__menu a[aria-current="page"] {
   font-weight: var(--fw-header-pill-active);
 }
 
+/* NotebookLM AI pill in header */
+.header-notebooklm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #e9eef1;
+  font-weight: var(--fw-header-pill);
+  text-decoration: none;
+}
+.header-notebooklm-pill::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask: url("../../../img/icons/notebooklm.svg") center/contain no-repeat;
+  mask: url("../../../img/icons/notebooklm.svg") center/contain no-repeat;
+}
+.header-notebooklm-pill:hover {
+  color: #fff;
+  font-weight: var(--fw-header-pill-hover);
+}
+.header-notebooklm-pill > svg,
+.header-notebooklm-pill [class*="iconExternalLink"] {
+  display: none !important;
+}
+.header-notebooklm-pill:active,
+.header-notebooklm-pill[aria-current="page"],
+.header-notebooklm-pill:focus-visible {
+  font-weight: var(--fw-header-pill-active);
+}
+
 nav.navbar::before {
   content: "";
   position: absolute;
