@@ -400,13 +400,13 @@ export interface OverlaySelectorByOperation {
    * - A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.
    *   See: https://google.github.io/A2A/specification/#agentskill-object
    * - OData (`edmx`, `csdl-json`): maps to the Action or Function name.
-   *   Use the unqualified name (e.g. `Approval`) if unique within the document,
-   *   or the namespace-qualified name (e.g. `OData.Demo.Approval`) to be explicit.
+   *   MUST use the namespace-qualified name (e.g. `OData.Demo.Approval`) to be unambiguous.
    *   For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback
    *   to target the specific overload.
    *
-   * When `definitionType` is not provided, the implementation tries OpenAPI paths first,
-   * then MCP tools, then A2A skills, then OData, returning the first match found.
+   * When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.
+   * When `definitionType` is absent, the implementation SHOULD infer the format from the target
+   * document's content (e.g. the `openapi` field, `$schema`, or `$kind` markers).
    */
   operation: string;
 }

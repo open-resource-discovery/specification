@@ -85,9 +85,9 @@ Concept-level selectors are preferred over `jsonPath` because they are resilient
 | Selector | Level | Supported formats |
 |---|---|---|
 | [`ordId`](#overlay-selector-by-ord-id) | Resource | ORD resource metadata |
-| [`operation`](#overlay-selector-by-operation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (MCP Server Card), A2A Agent Card (`a2a-agent-card`) |
-| [`entityType`](#overlay-selector-by-entity-type) | Entity type | OData (`edmx`, `csdl-json`) |
-| [`propertyType`](#overlay-selector-by-property-type) | Property | OData (`edmx`, `csdl-json`) |
+| [`operation`](#overlay-selector-by-operation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (MCP Server Card), A2A Agent Card (`a2a-agent-card`), OData (`edmx`, `csdl-json`) |
+| [`entityType`](#overlay-selector-by-entity-type) | Entity type | OData (`edmx`, `csdl-json`), CSN Interop (`sap-csn-interop-effective-v1`) |
+| [`propertyType`](#overlay-selector-by-property-type) | Property | OData (`edmx`, `csdl-json`), CSN Interop (`sap-csn-interop-effective-v1`) |
 | [`jsonPath`](#overlay-selector-by-jsonpath) | Any location | Any JSON/YAML metadata file (generic fallback) |
 
 The [`operation`](#overlay-selector-by-operation) selector maps to different identifiers depending on the format:
@@ -95,9 +95,11 @@ The [`operation`](#overlay-selector-by-operation) selector maps to different ide
 - **OpenAPI** → `operationId` of an HTTP operation in `paths.{path}.{method}`
 - **MCP** (any [Specification ID](../../spec-v1/index.md#specification-id)) → `tools[].name`
 - **A2A Agent Card** → `skills[].id`
+- **OData** (`edmx`, `csdl-json`) → Action or Function name, namespace-qualified (e.g. `OData.Demo.Approval`)
 
-When `definitionType` is not provided, the implementation auto-detects the format by trying OpenAPI → MCP → A2A in order.
-Using the `operation` selector with a named format constant that has no operation support (e.g. `edmx`, `asyncapi-v2`) raises an error.
+When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.
+When `definitionType` is absent, the implementation SHOULD infer the format from the target document's content (e.g. the `openapi` field, `$schema`, or `$kind` markers).
+Using the `operation` selector with a named format constant that has no operation support (e.g. `asyncapi-v2`) raises an error.
 
 ## Patch Actions
 
@@ -123,16 +125,6 @@ Without such enforcement, consumers could be exposed to unauthorized metadata ch
 
 ## Overlay Document Metadata
 
-Optional top-level fields scope an overlay to a specific system context:
-
-- [`perspective`](#overlay-perspective) — declares whether the overlay applies at system-type, system-version, or system-instance scope.
-- [`describedSystemType`](#overlay-system-type), [`describedSystemVersion`](#overlay-system-version), [`describedSystemInstance`](#overlay-system-instance) — narrow the overlay to a particular system type, version, or instance.
-- [`visibility`](#overlay-visibility) — controls who can discover this overlay document (`public`, `internal`, `private`).
-- `description` — human-readable Markdown description of the overlay document itself.
-- `ordId` — optional stable ORD ID for this overlay, using pattern `*:overlay:*:v*`.
-
-For overlays, `perspective` answers a different question than document transport scope: it declares where the patch should be applied.
-
-- `system-type` means the same overlay can patch the targeted resource across versions and instances of the same system type, typically for the same ORD resource major version.
-- `system-version` means the overlay patches one concrete released system version only.
-- `system-instance` means the overlay patches one concrete tenant / runtime instance only.
+Note on [`perspective`](#overlay-perspective): unlike its use in ORD Documents (which scopes transport),
+`perspective` on an overlay declares *where the patch should be applied* — at system-type, system-version, or system-instance level.
+See the field description for details.

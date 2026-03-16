@@ -367,12 +367,12 @@
         "operation": {
           "type": "string",
           "minLength": 1,
-          "description": "Concept-level operation identifier.\nSupported mappings by format:\n- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to the `operationId` field on\n  an HTTP operation inside `paths.{path}.{method}`.\n- MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.\n  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name\n- A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.\n  See: https://google.github.io/A2A/specification/#agentskill-object\n- OData (`edmx`, `csdl-json`): maps to the Action or Function name.\n  Use the unqualified name (e.g. `Approval`) if unique within the document,\n  or the namespace-qualified name (e.g. `OData.Demo.Approval`) to be explicit.\n  For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback\n  to target the specific overload.\n\nWhen `definitionType` is not provided, the implementation tries OpenAPI paths first,\nthen MCP tools, then A2A skills, then OData, returning the first match found.",
+          "description": "Concept-level operation identifier.\nSupported mappings by format:\n- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to the `operationId` field on\n  an HTTP operation inside `paths.{path}.{method}`.\n- MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.\n  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name\n- A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.\n  See: https://google.github.io/A2A/specification/#agentskill-object\n- OData (`edmx`, `csdl-json`): maps to the Action or Function name.\n  MUST use the namespace-qualified name (e.g. `OData.Demo.Approval`) to be unambiguous.\n  For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback\n  to target the specific overload.\n\nWhen `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.\nWhen `definitionType` is absent, the implementation SHOULD infer the format from the target\ndocument's content (e.g. the `openapi` field, `$schema`, or `$kind` markers).",
           "examples": [
             "getBusinessPartner",
             "dispute-case-resolution",
             "OData.Demo.Approval",
-            "Approval"
+            "OData.Demo.Rejection"
           ]
         }
       }

@@ -108,8 +108,7 @@ Rule of thumb:
 
 **OData selectors:**
 
-- Validate the `operation` selector mapping with OData experts.
-- Best current guess: map selector `operation` to schema-level `Action`/`Function` names, preferring fully-qualified names, or to container-level `ActionImport`/`FunctionImport` names when exposed via the entity container.
+- `operation` selector: maps to schema-level `Action`/`Function` names (preferring fully-qualified names such as `OData.Demo.Approval`). For bound operations with the same name on multiple entity types (overloads), use `jsonPath` as a fallback to target the specific overload.
 - Define the implementation roadmap for `entityType` and `propertyType` selector support in the reference merge library.
 
 Reference: [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).

@@ -91,9 +91,9 @@ Concept-level selectors are preferred over `jsonPath` because they are resilient
 | Selector | Level | Supported formats |
 |---|---|---|
 | [`ordId`](#overlay-selector-by-ord-id) | Resource | ORD resource metadata |
-| [`operation`](#overlay-selector-by-operation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (MCP Server Card), A2A Agent Card (`a2a-agent-card`) |
-| [`entityType`](#overlay-selector-by-entity-type) | Entity type | OData (`edmx`, `csdl-json`) |
-| [`propertyType`](#overlay-selector-by-property-type) | Property | OData (`edmx`, `csdl-json`) |
+| [`operation`](#overlay-selector-by-operation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (MCP Server Card), A2A Agent Card (`a2a-agent-card`), OData (`edmx`, `csdl-json`) |
+| [`entityType`](#overlay-selector-by-entity-type) | Entity type | OData (`edmx`, `csdl-json`), CSN Interop (`sap-csn-interop-effective-v1`) |
+| [`propertyType`](#overlay-selector-by-property-type) | Property | OData (`edmx`, `csdl-json`), CSN Interop (`sap-csn-interop-effective-v1`) |
 | [`jsonPath`](#overlay-selector-by-jsonpath) | Any location | Any JSON/YAML metadata file (generic fallback) |
 
 The [`operation`](#overlay-selector-by-operation) selector maps to different identifiers depending on the format:
@@ -101,9 +101,11 @@ The [`operation`](#overlay-selector-by-operation) selector maps to different ide
 - **OpenAPI** → `operationId` of an HTTP operation in `paths.{path}.{method}`
 - **MCP** (any [Specification ID](../../spec-v1/index.md#specification-id)) → `tools[].name`
 - **A2A Agent Card** → `skills[].id`
+- **OData** (`edmx`, `csdl-json`) → Action or Function name, namespace-qualified (e.g. `OData.Demo.Approval`)
 
-When `definitionType` is not provided, the implementation auto-detects the format by trying OpenAPI → MCP → A2A in order.
-Using the `operation` selector with a named format constant that has no operation support (e.g. `edmx`, `asyncapi-v2`) raises an error.
+When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.
+When `definitionType` is absent, the implementation SHOULD infer the format from the target document's content (e.g. the `openapi` field, `$schema`, or `$kind` markers).
+Using the `operation` selector with a named format constant that has no operation support (e.g. `asyncapi-v2`) raises an error.
 
 ## Patch Actions
 
@@ -129,19 +131,9 @@ Without such enforcement, consumers could be exposed to unauthorized metadata ch
 
 ## Overlay Document Metadata
 
-Optional top-level fields scope an overlay to a specific system context:
-
-- [`perspective`](#overlay-perspective) — declares whether the overlay applies at system-type, system-version, or system-instance scope.
-- [`describedSystemType`](#overlay-system-type), [`describedSystemVersion`](#overlay-system-version), [`describedSystemInstance`](#overlay-system-instance) — narrow the overlay to a particular system type, version, or instance.
-- [`visibility`](#overlay-visibility) — controls who can discover this overlay document (`public`, `internal`, `private`).
-- `description` — human-readable Markdown description of the overlay document itself.
-- `ordId` — optional stable ORD ID for this overlay, using pattern `*:overlay:*:v*`.
-
-For overlays, `perspective` answers a different question than document transport scope: it declares where the patch should be applied.
-
-- `system-type` means the same overlay can patch the targeted resource across versions and instances of the same system type, typically for the same ORD resource major version.
-- `system-version` means the overlay patches one concrete released system version only.
-- `system-instance` means the overlay patches one concrete tenant / runtime instance only.
+Note on [`perspective`](#overlay-perspective): unlike its use in ORD Documents (which scopes transport),
+`perspective` on an overlay declares *where the patch should be applied* — at system-type, system-version, or system-instance level.
+See the field description for details.
 
 ## Schema Definitions
 
@@ -224,13 +216,88 @@ where possible, as they are resilient to structural changes in the target format
 One of the following: 
 [Overlay Selector By JsonPath](#overlay-selector-by-jsonpath) \| [Overlay Selector By ORD ID](#overlay-selector-by-ord-id) \| [Overlay Selector By Operation](#overlay-selector-by-operation) \| [Overlay Selector By Entity Type](#overlay-selector-by-entity-type) \| [Overlay Selector By Property Type](#overlay-selector-by-property-type)<br/>
 
+###### Example Values:
+
+
+```js
+{
+  "ordId": "sap.foo:apiResource:astronomy:v1"
+}
+```
+
+
+```js
+{
+  "operation": "getConstellationByAbbreviation"
+}
+```
+
+
+```js
+{
+  "operation": "OData.Demo.Approval"
+}
+```
+
+
+```js
+{
+  "operation": "dispute-case-resolution"
+}
+```
+
+
+```js
+{
+  "entityType": "OData.Demo.Customer"
+}
+```
+
+
+```js
+{
+  "entityType": "AirlineService.Airline"
+}
+```
+
+
+```js
+{
+  "propertyType": "BirthDate",
+  "entityType": "OData.Demo.Customer"
+}
+```
+
+
+```js
+{
+  "propertyType": "AirlineID",
+  "entityType": "AirlineService.Airline"
+}
+```
+
+
+```js
+{
+  "jsonPath": "$.info.description"
+}
+```
+
+
+```js
+{
+  "jsonPath": "$.paths['/constellations'].get"
+}
+```
+
+
 ### Overlay Selector By JsonPath
 
 **Type**: Object(<a href="#overlay-selector-by-jsonpath_jsonpath">jsonPath</a>)
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="overlay-selector-by-jsonpath_jsonpath">jsonPath<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#overlay-selector-by-jsonpath_jsonpath" title="#overlay-selector-by-jsonpath_jsonpath"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">JSONPath expression targeting any location in a JSON/YAML-based target document.<br/>MUST start with `$`.<br/>This is the generic fallback selector and is supported for all JSON/YAML-based metadata formats,<br/>including OpenAPI and MCP metadata files.<hr/>**Regex Pattern**: <code className="regex">^\\$</code><br/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"$.paths./business-partners.get"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-selector-by-jsonpath_jsonpath">jsonPath<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#overlay-selector-by-jsonpath_jsonpath" title="#overlay-selector-by-jsonpath_jsonpath"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">JSONPath expression targeting any location in a JSON/YAML-based target document.<br/>MUST start with `$`.<br/>This is the generic fallback selector and is supported for all JSON/YAML-based metadata formats,<br/>including OpenAPI and MCP metadata files.<hr/>**Regex Pattern**: <code className="regex">^\\$</code><br/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"$.info.description"`</li><li>`"$.paths['/constellations'].get"`</li></ul></div>|
 
 
 ### Overlay Selector By ORD ID
@@ -248,7 +315,7 @@ One of the following:
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="overlay-selector-by-operation_operation">operation<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#overlay-selector-by-operation_operation" title="#overlay-selector-by-operation_operation"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level operation identifier.<br/>Supported mappings by format:<br/>- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to the `operationId` field on<br/>  an HTTP operation inside `paths.{path}.{method}`.<br/>- MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.<br/>  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name<br/>- A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.<br/>  See: https://google.github.io/A2A/specification/#agentskill-object<br/>- OData (`edmx`, `csdl-json`): maps to the Action or Function name.<br/>  Use the unqualified name (e.g. `Approval`) if unique within the document,<br/>  or the namespace-qualified name (e.g. `OData.Demo.Approval`) to be explicit.<br/>  For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback<br/>  to target the specific overload.<br/><br/>When `definitionType` is not provided, the implementation tries OpenAPI paths first,<br/>then MCP tools, then A2A skills, then OData, returning the first match found.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"getBusinessPartner"`</li><li>`"dispute-case-resolution"`</li><li>`"OData.Demo.Approval"`</li><li>`"Approval"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-selector-by-operation_operation">operation<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#overlay-selector-by-operation_operation" title="#overlay-selector-by-operation_operation"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level operation identifier.<br/>Supported mappings by format:<br/>- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to the `operationId` field on<br/>  an HTTP operation inside `paths.{path}.{method}`.<br/>- MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.<br/>  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name<br/>- A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.<br/>  See: https://google.github.io/A2A/specification/#agentskill-object<br/>- OData (`edmx`, `csdl-json`): maps to the Action or Function name.<br/>  MUST use the namespace-qualified name (e.g. `OData.Demo.Approval`) to be unambiguous.<br/>  For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback<br/>  to target the specific overload.<br/><br/>When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.<br/>When `definitionType` is absent, the implementation SHOULD infer the format from the target<br/>document's content (e.g. the `openapi` field, `$schema`, or `$kind` markers).<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"getBusinessPartner"`</li><li>`"dispute-case-resolution"`</li><li>`"OData.Demo.Approval"`</li><li>`"OData.Demo.Rejection"`</li></ul></div>|
 
 
 ### Overlay Selector By Entity Type
@@ -257,7 +324,7 @@ One of the following:
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="overlay-selector-by-entity-type_entitytype">entityType<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#overlay-selector-by-entity-type_entitytype" title="#overlay-selector-by-entity-type_entitytype"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level entity type identifier.<br/>Supported metadata formats:<br/>- `edmx` (OData v2/v4 CSDL XML): targets the EntityType element declared in the schema.<br/>  Use the unqualified name (e.g. `Customer`) if unique in the document,<br/>  or the namespace-qualified name (e.g. `OData.Demo.Customer`) to be explicit.<br/>  Note: EntitySet-level patching (e.g. Capabilities annotations) is not covered;<br/>  use `jsonPath` as a fallback for those cases.<br/>- `csdl-json` (OData v4 CSDL JSON): same name resolution as `edmx`.<br/>- `sap-csn-interop-effective-v1` (CSN Interop): targets a `definitions` entry by its<br/>  fully qualified key (e.g. `AirlineService.Airline`). In CSN Interop the key is always<br/>  fully qualified, so the fully qualified form MUST be used.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"Customer"`</li><li>`"OData.Demo.Customer"`</li><li>`"BusinessPartner"`</li><li>`"A_BusinessPartnerType"`</li><li>`"AirlineService.Airline"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-selector-by-entity-type_entitytype">entityType<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#overlay-selector-by-entity-type_entitytype" title="#overlay-selector-by-entity-type_entitytype"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level entity type identifier.<br/>Supported metadata formats:<br/>- `edmx` (OData v2/v4 CSDL XML): targets the EntityType element declared in the schema.<br/>  Use the unqualified name (e.g. `Customer`) if unique in the document,<br/>  or the namespace-qualified name (e.g. `OData.Demo.Customer`) to be explicit.<br/>  Note: EntitySet-level patching (e.g. Capabilities annotations) is not covered;<br/>  use `jsonPath` as a fallback for those cases.<br/>- `csdl-json` (OData v4 CSDL JSON): same name resolution as `edmx`.<br/>- `sap-csn-interop-effective-v1` (CSN Interop): targets a `definitions` entry by its<br/>  fully qualified key (e.g. `AirlineService.Airline`). In CSN Interop the key is always<br/>  fully qualified, so the fully qualified form MUST be used.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"OData.Demo.Customer"`</li><li>`"OData.Demo.LeaveRequest"`</li><li>`"Customer"`</li><li>`"AirlineService.Airline"`</li></ul></div>|
 
 
 ### Overlay Selector By Property Type
@@ -266,8 +333,8 @@ One of the following:
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-|<div className="interface-property-name anchor" id="overlay-selector-by-property-type_propertytype">propertyType<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#overlay-selector-by-property-type_propertytype" title="#overlay-selector-by-property-type_propertytype"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level property/element identifier.<br/>Supported metadata formats:<br/>- `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType<br/>  or ComplexType. Use the unqualified property name (e.g. `BirthDate`).<br/>- `csdl-json` (OData v4 CSDL JSON): same resolution as `edmx`.<br/>- `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of<br/>  the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).<br/><br/>If the property/element name is unique across all types in the document, this field alone<br/>is sufficient. If it is ambiguous (same name on multiple types), provide `entityType`<br/>to disambiguate — which is RECOMMENDED for CSN Interop since element names like `Name`<br/>are commonly repeated across entities.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"BirthDate"`</li><li>`"BusinessPartnerFullName"`</li><li>`"LegacySearchTerm1"`</li><li>`"AirlineID"`</li><li>`"Name"`</li></ul></div>|
-|<div className="interface-property-name anchor" id="overlay-selector-by-property-type_entitytype">entityType<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-selector-by-property-type_entitytype" title="#overlay-selector-by-property-type_entitytype"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optional entity type context for the selected property.<br/>Provide this when `propertyType` alone is ambiguous (same property name on multiple types).<br/>- For OData: identifies the containing EntityType or ComplexType. Use the unqualified<br/>  name (e.g. `Customer`) or namespace-qualified name (e.g. `OData.Demo.Customer`).<br/>- For CSN Interop: the fully qualified `definitions` key of the containing entity<br/>  (e.g. `AirlineService.Airline`). RECOMMENDED whenever `propertyType` is ambiguous,<br/>  which is common since element names like `Name` appear in many entities.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"Customer"`</li><li>`"OData.Demo.Customer"`</li><li>`"BusinessPartner"`</li><li>`"A_BusinessPartnerType"`</li><li>`"AirlineService.Airline"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-selector-by-property-type_propertytype">propertyType<br/><span className="mandatory">MANDATORY</span><a className="hash-link" href="#overlay-selector-by-property-type_propertytype" title="#overlay-selector-by-property-type_propertytype"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Concept-level property/element identifier.<br/>Supported metadata formats:<br/>- `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType<br/>  or ComplexType. Use the unqualified property name (e.g. `BirthDate`).<br/>- `csdl-json` (OData v4 CSDL JSON): same resolution as `edmx`.<br/>- `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of<br/>  the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).<br/><br/>If the property/element name is unique across all types in the document, this field alone<br/>is sufficient. If it is ambiguous (same name on multiple types), provide `entityType`<br/>to disambiguate — which is RECOMMENDED for CSN Interop since element names like `Name`<br/>are commonly repeated across entities.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"BirthDate"`</li><li>`"CountryName"`</li><li>`"Fax"`</li><li>`"AirlineID"`</li><li>`"Name"`</li></ul></div>|
+|<div className="interface-property-name anchor" id="overlay-selector-by-property-type_entitytype">entityType<br/><span className="optional">OPTIONAL</span><a className="hash-link" href="#overlay-selector-by-property-type_entitytype" title="#overlay-selector-by-property-type_entitytype"></a></div>|<div className="interface-property-type">string</div>|<div className="interface-property-description">Optional entity type context for the selected property.<br/>Provide this when `propertyType` alone is ambiguous (same property name on multiple types).<br/>- For OData: identifies the containing EntityType or ComplexType. Use the unqualified<br/>  name (e.g. `Customer`) or namespace-qualified name (e.g. `OData.Demo.Customer`).<br/>- For CSN Interop: the fully qualified `definitions` key of the containing entity<br/>  (e.g. `AirlineService.Airline`). RECOMMENDED whenever `propertyType` is ambiguous,<br/>  which is common since element names like `Name` appear in many entities.<hr/>**Minimum Length**: `1`<br/>**Example Values**: <ul className="examples"><li>`"OData.Demo.Customer"`</li><li>`"OData.Demo.LeaveRequest"`</li><li>`"Customer"`</li><li>`"AirlineService.Airline"`</li></ul></div>|
 
 
 ### Overlay Patch Value
@@ -465,8 +532,7 @@ Rule of thumb:
 
 **OData selectors:**
 
-- Validate the `operation` selector mapping with OData experts.
-- Best current guess: map selector `operation` to schema-level `Action`/`Function` names, preferring fully-qualified names, or to container-level `ActionImport`/`FunctionImport` names when exposed via the entity container.
+- `operation` selector: maps to schema-level `Action`/`Function` names (preferring fully-qualified names such as `OData.Demo.Approval`). For bound operations with the same name on multiple entity types (overloads), use `jsonPath` as a fallback to target the specific overload.
 - Define the implementation roadmap for `entityType` and `propertyType` selector support in the reference merge library.
 
 Reference: [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
