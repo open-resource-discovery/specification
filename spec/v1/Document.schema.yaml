@@ -1213,40 +1213,40 @@ definitions:
             description: |-
               [OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.
               An API Resource definition of type `edmx` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: odata-v4
             description: |-
               [OData Version 4](https://www.odata.org/documentation/) API.
               An OData V4 API MUST be described via a Common Schema Definition Language (CSDL).
               An API Resource definition of type `edmx` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: rest
             description: |-
               Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.
               Please not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.
               An API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: graphql
             description: |-
               [GraphQL](https://graphql.org/) API.
               An API Resource definition of type `graphql-sdl` SHOULD be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `graphql-sdl`, `sap-csn-interop-effective-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `graphql-sdl`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: delta-sharing
             x-introduced-in-version: "1.8.0"
             description: |-
               [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) Protocol, where one API Resource corresponds to a share.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1` or to `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
               For delta-sharing APIs the resource definition MAY be omitted, as the protocol itself allows for metadata discovery at runtime.
           - const: soap-inbound
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.
               An API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: soap-outbound
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides/describes outbound interfaces for async communication.
               An API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: mcp
             description: |-
               [MCP](https://modelcontextprotocol.io) is an open protocol that standardizes how applications provide context to LLMs, based on JSON-RPC message format.
@@ -1257,7 +1257,7 @@ definitions:
             description: |-
               Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.
               Since WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.
-              The API Resource definitions `type` MUST ONLY be set to `custom`.
+              The API Resource definitions `type` MUST ONLY be set to `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: a2a
             x-introduced-in-version: "1.12.2"
             description: |-
@@ -1265,16 +1265,18 @@ definitions:
 
               As API Resource definition the `a2a-agent-card` MUST be provided, usually put under `/.well-known/agent.json`.
           - const: sap-rfc
+            x-introduced-in-version: "1.5.0"
             description: |-
               [SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html) (Remote Function Call)  is the standard SAP interface for communication between SAP systems.
               RFC calls a function to be executed in a remote system.
               An API Resource definition of type `sap-rfc-metadata-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: sap-sql-api-v1
+            x-introduced-in-version: "1.9.2"
             description: |-
               SAP SQL API that follows the [SQL interface specification for SAP ecosystem](https://github.com/SAP/sql-interface-specification).
-              An API Resource definition of type `sap-sql-api-definition-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-sql-api-definition-v1`, `sap-csn-interop-effective-v1` or `custom`.
+              An API Resource definition of type `sap-sql-api-definition-v1` SHOULD be provided.
+              For each API Resource definition: `type` MUST ONLY be set to `sap-sql-api-definition-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: sap-ina-api-v1
             x-introduced-in-version: "1.8.0"
             description: |-
