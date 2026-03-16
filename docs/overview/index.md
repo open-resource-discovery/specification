@@ -32,10 +32,22 @@ To adopt ORD, an application implements a read-only entry point ([Service Provid
 
 > The ORD interface (JSON Schema) and TypeScript types are available via npm: [`@open-resource-discovery/specification`](https://www.npmjs.com/package/@open-resource-discovery/specification).
 
+## Quick Start
+
+1. **Understand** — Read the [5-minute primer](../introduction.mdx) to grasp the core concepts
+2. **Explore** — Check the [example files](./spec-v1/examples) to see ORD in action
+3. **Implement** — Follow the [ORD Configuration Interface](./spec-v1/interfaces/Configuration) to add ORD to your application
+4. **Validate** — Use the [JSON Schema](https://www.npmjs.com/package/@open-resource-discovery/specification) to validate your ORD documents
+
 ## Learn More
 
+:::tip Ask AI About ORD
+Have questions? Get instant answers from our AI assistant trained on ORD documentation.
+
+**[Open ORD NotebookLM →](https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382)**
+:::
+
 - Read the 📄 [ORD Introduction](../introduction.mdx) and watch the 🎦[ORD Videos](./help/videos).
-- Ask an AI via the public 🤖 [ORD NotebookLM](https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382) about ORD.
 - Read blog post: 📄 [Why we created Open Resource Discovery](https://community.sap.com/t5/technology-blog-posts-by-sap/why-we-created-open-resource-discovery/ba-p/14172057) and listen to 🔉 [podcast on ORD](https://podcast.opensap.info/open-source-way/2024/06/14/open-resource-discovery-ord/).
 
 <div className="videoContainer">

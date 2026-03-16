@@ -23,6 +23,7 @@
   nav.navbar :is(.navbar__items--left, .navbar__items--right) > *,
   nav.navbar .navbar__items :is(.navbar__link, .dropdown),
   nav.navbar .header-github-pill,
+  nav.navbar .header-notebooklm-pill,
   nav.navbar :is(.navbar__search, [class*="searchbarContainer_"]) {
     display: none !important;
   }
@@ -700,6 +701,31 @@
     background-color: currentColor;
     -webkit-mask: url("../../../img/icons/github.svg") center/contain no-repeat;
     mask: url("../../../img/icons/github.svg") center/contain no-repeat;
+  }
+  /* NotebookLM pill in mobile sidebar */
+  .navbar-sidebar__items .menu__link.header-notebooklm-pill {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start;
+    font-size: 16px !important;
+    font-weight: var(--fw-sidebar);
+    color: inherit !important;
+    opacity: 0.9;
+  }
+  .navbar-sidebar__items
+    .menu__link.header-notebooklm-pill
+    [class*="iconExternalLink_"] {
+    display: none !important;
+  }
+  .navbar-sidebar__items .menu__link.header-notebooklm-pill::before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: none;
+    background-color: currentColor;
+    -webkit-mask: url("../../../img/icons/notebooklm.svg") center/contain no-repeat;
+    mask: url("../../../img/icons/notebooklm.svg") center/contain no-repeat;
   }
   .navbar-sidebar__items .menu__link--active,
   html[data-theme="light"] .theme-doc-sidebar-menu .menu__link--active {
