@@ -20,16 +20,27 @@ description: |-
 
   Conceptual selector levels (from high to low):
     - Resource level: ORD ID (resolved via the ORD registry)
-    - Operation level: operation (OpenAPI `operationId`, MCP tool `name`)
-    - Entity type level: entityType (OData EntityType)
-    - Property type level: propertyType (OData Property scoped by entity type)
+    - Operation level: operation (OpenAPI `operationId`, MCP tool `name`, OData Action/Function name)
+    - Entity type level: entityType (OData EntityType — the type definition, not the EntitySet in the container)
+    - Property type level: propertyType (OData Property on an EntityType or ComplexType)
     - Generic fallback: jsonPath (any JSON/YAML document, structure-bound)
 
   Selector support by metadata format:
-    - `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`) and MCP (identified via a Specification ID in `definitionType`).
-    - `entityType` and `propertyType`: OData (`edmx` for v2/v4, `csdl-json` for v4).
+    - `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`), MCP (identified via a Specification ID in `definitionType`), and OData (`edmx`, `csdl-json`) for Action and Function names.
+    - `entityType` and `propertyType`: OData (`edmx` for v2/v4, `csdl-json` for v4). `entityType` targets the EntityType definition, not the EntitySet in the container.
     - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).
     - `ordId`: ORD resource metadata level (patching ORD resources themselves).
+
+  Patch data format for OData:
+    When patching OData metadata (`edmx` or `csdl-json` targets), the `data` value in each patch
+    MUST be expressed in CSDL JSON annotation format, regardless of whether the actual target file
+    is EDMX XML or CSDL JSON.
+    See: https://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html
+    Annotation keys follow the `@TermName` convention (e.g. `@Core.Description`).
+    For available standard vocabulary terms, see:
+    https://docs.oasis-open.org/odata/odata-vocabularies/v4.0/odata-vocabularies-v4.0.html
+    When the target file is EDMX XML (`edmx`), the overlay merge implementation converts
+    the CSDL JSON patch data to equivalent `<Annotation>` XML elements in the output.
 
   Intended use and compatibility:
     - Overlays MUST NOT introduce breaking / incompatible changes to the original API or metadata.
@@ -375,9 +386,9 @@ definitions:
       Exactly one selector type is used per patch. The selector object uses one explicit key:
 
       - `ordId`: resource level - targets an ORD resource (API, Event, Data Product, ...)
-      - `operation`: operation level - targets an operation by its concept-level ID
-      - `entityType`: entity type level - targets an entity/type by its concept-level ID
-      - `propertyType`: property type level - targets a property/element within an entity type
+      - `operation`: operation level - targets an operation (OpenAPI: operationId, MCP: tool name, OData: Action/Function name)
+      - `entityType`: entity type level - targets an OData EntityType by name (not the EntitySet in the container)
+      - `propertyType`: property type level - targets a property on an OData EntityType or ComplexType
       - `jsonPath`: generic fallback - targets any location in a JSON/YAML-based target document by path
 
       Prefer concept-level selectors (operation, entityType, propertyType) over jsonPath
@@ -448,14 +459,19 @@ definitions:
             See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name
           - A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.
             See: https://google.github.io/A2A/specification/#agentskill-object
+          - OData (`edmx`, `csdl-json`): maps to the Action or Function name.
+            Use the unqualified name (e.g. `Approval`) if unique within the document,
+            or the namespace-qualified name (e.g. `OData.Demo.Approval`) to be explicit.
+            For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback
+            to target the specific overload.
 
           When `definitionType` is not provided, the implementation tries OpenAPI paths first,
-          then MCP tools, then A2A skills, returning the first match found.
-
-          Not currently supported for OData selectors.
+          then MCP tools, then A2A skills, then OData, returning the first match found.
         examples:
           - "getBusinessPartner"
           - "dispute-case-resolution"
+          - "OData.Demo.Approval"
+          - "Approval"
 
   OverlaySelectorByEntityType:
     type: object
@@ -473,7 +489,17 @@ definitions:
           Currently supported for OData metadata:
           - `edmx` (OData v2/v4 CSDL XML)
           - `csdl-json` (OData v4 CSDL JSON)
+
+          For OData, this targets the EntityType definition (the type declared in the schema),
+          not the EntitySet in the EntityContainer.
+          Use the unqualified name (e.g. `Customer`) if unique within the document,
+          or the namespace-qualified name (e.g. `OData.Demo.Customer`) to be explicit.
+
+          Note: EntitySet-level patching (e.g. for Capability annotations on a specific entity set)
+          is not supported by this selector. Use `jsonPath` as a fallback in those cases.
         examples:
+          - "Customer"
+          - "OData.Demo.Customer"
           - "BusinessPartner"
           - "A_BusinessPartnerType"
 
@@ -494,19 +520,25 @@ definitions:
           - `edmx` (OData v2/v4 CSDL XML)
           - `csdl-json` (OData v4 CSDL JSON)
 
-          If the property type is globally unique in the targeted metadata, this field alone is sufficient.
-          If it is ambiguous, `entityType` SHOULD be provided in addition to disambiguate the lookup.
+          For OData, this targets a Property (or NavigationProperty) on an EntityType or ComplexType.
+          Use the unqualified property name (e.g. `BirthDate`).
+          If the property name is unique across all types in the document, this field alone is sufficient.
+          If it is ambiguous (same name on multiple types), provide `entityType` to disambiguate.
         examples:
+          - "BirthDate"
           - "BusinessPartnerFullName"
           - "LegacySearchTerm1"
       entityType:
         type: string
         minLength: 1
         description: |-
-          Optional entity type context of the selected property.
-          Provide this when `propertyType` alone is ambiguous.
-          For OData metadata, this identifies the containing EntityType.
+          Optional entity type context for the selected property.
+          Provide this when `propertyType` alone is ambiguous (same property name on multiple types).
+          For OData, this identifies the containing EntityType or ComplexType by name.
+          Use the unqualified name (e.g. `Customer`) or namespace-qualified name (e.g. `OData.Demo.Customer`).
         examples:
+          - "Customer"
+          - "OData.Demo.Customer"
           - "BusinessPartner"
           - "A_BusinessPartnerType"
 
@@ -543,6 +575,12 @@ definitions:
       To fully replace an existing array, use two ordered patches:
       1. remove the array
       2. merge the new array value
+
+      For OData targets (`edmx`, `csdl-json`), the value MUST be expressed in CSDL JSON
+      annotation format. Annotation keys use the `@TermName` convention:
+      e.g. `{ "@Core.Description": "...", "@Core.Revisions": [...] }`.
+      When the target is EDMX XML, the merge implementation converts this to `<Annotation>` elements.
+      See: https://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html
 
       This is a free-form value whose structure depends on the target being patched.
  # Copy from ORD Document definition "SystemInstance"; ORD Document schema is leading and this copy MUST be kept in sync for the shared fields.

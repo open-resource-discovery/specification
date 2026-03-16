@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: true
-  description: "Identifies the element in the target to patch.\nExactly one selector type is used per patch. The selector object uses one explicit key:\n\n- `ordId`: resource level - targets an ORD resource (API, Event, Data Product, ...)\n- `operation`: operation level - targets an operation by its concept-level ID\n- `entityType`: entity type level - targets an entity/type by its concept-level ID\n- `propertyType`: property type level - targets a property/element within an entity type\n- `jsonPath`: generic fallback - targets any location in a JSON/YAML-based target document by path\n\nPrefer concept-level selectors (operation, entityType, propertyType) over jsonPath\nwhere possible, as they are resilient to structural changes in the target format."
+  description: "Identifies the element in the target to patch.\nExactly one selector type is used per patch. The selector object uses one explicit key:\n\n- `ordId`: resource level - targets an ORD resource (API, Event, Data Product, ...)\n- `operation`: operation level - targets an operation (OpenAPI: operationId, MCP: tool name, OData: Action/Function name)\n- `entityType`: entity type level - targets an OData EntityType by name (not the EntitySet in the container)\n- `propertyType`: property type level - targets a property on an OData EntityType or ComplexType\n- `jsonPath`: generic fallback - targets any location in a JSON/YAML-based target document by path\n\nPrefer concept-level selectors (operation, entityType, propertyType) over jsonPath\nwhere possible, as they are resilient to structural changes in the target format."
   metadataProperties:
     - name: 'id'
       type: 'guid'

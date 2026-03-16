@@ -18,13 +18,13 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'propertyType'
       type: 'string'
-      description: "Concept-level property/element identifier.\nCurrently supported for OData metadata:\n- `edmx` (OData v2/v4 CSDL XML)\n- `csdl-json` (OData v4 CSDL JSON)\n\nIf the property type is globally unique in the targeted metadata, this field alone is sufficient.\nIf it is ambiguous, `entityType` SHOULD be provided in addition to disambiguate the lookup."
+      description: "Concept-level property/element identifier.\nCurrently supported for OData metadata:\n- `edmx` (OData v2/v4 CSDL XML)\n- `csdl-json` (OData v4 CSDL JSON)\n\nFor OData, this targets a Property (or NavigationProperty) on an EntityType or ComplexType.\nUse the unqualified property name (e.g. `BirthDate`).\nIf the property name is unique across all types in the document, this field alone is sufficient.\nIf it is ambiguous (same name on multiple types), provide `entityType` to disambiguate."
       mandatory: true
       constraints:
         minLength: 1
     - name: 'entityType'
       type: 'string'
-      description: "Optional entity type context of the selected property.\nProvide this when `propertyType` alone is ambiguous.\nFor OData metadata, this identifies the containing EntityType."
+      description: "Optional entity type context for the selected property.\nProvide this when `propertyType` alone is ambiguous (same property name on multiple types).\nFor OData, this identifies the containing EntityType or ComplexType by name.\nUse the unqualified name (e.g. `Customer`) or namespace-qualified name (e.g. `OData.Demo.Customer`)."
       constraints:
         minLength: 1
   customTypeDefinitions: []

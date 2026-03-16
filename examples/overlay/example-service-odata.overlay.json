@@ -1,0 +1,83 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:example-service-odata:v1",
+  "description": "Enriches the OData.Demo example service with AI-facing descriptions and deprecation annotations.\n\nPatch data for OData targets (edmx / csdl-json) is expressed in CSDL JSON annotation format:\nhttps://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html\nAnnotation keys use the @TermName convention (e.g. @Core.Description).\nThis applies to both XML (edmx) and JSON (csdl-json) target files. When the target is EDMX XML,\nthe overlay merge implementation converts the CSDL JSON patch to equivalent <Annotation> elements.",
+  "target": {
+    "ordId": "sap.foo:apiResource:ODataDemoService:v1",
+    "definitionType": "edmx"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": { "entityType": "Customer" },
+      "data": {
+        "@Core.Description": "Represents a person or organisation that purchases goods or services.",
+        "@Core.LongDescription": "A Customer is the central entity for managing purchasing relationships. It holds personal contact details, address information, and links to orders and sales records."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "propertyType": "CountryName", "entityType": "Customer" },
+      "data": {
+        "@Core.Description": "Name of the customer's country. Consider navigating to the related Country entity for structured ISO code access instead of relying on this denormalized field."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "propertyType": "BirthDate", "entityType": "Customer" },
+      "data": {
+        "@Core.Description": "Date of birth of the customer contact person. This field contains personal data and must be handled in accordance with applicable data privacy regulations."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "propertyType": "Fax", "entityType": "Customer" },
+      "data": {
+        "@Core.Revisions": [
+          {
+            "Version": "2.0.0",
+            "Kind": "Deprecated",
+            "Description": "Fax communication is no longer supported. Use Phone or EmailAddresses instead."
+          }
+        ]
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "entityType": "Product" },
+      "data": {
+        "@Core.Description": "A sellable item offered by the company. Products are organised by category and supplied by one vendor."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "propertyType": "Thumbnail", "entityType": "Product" },
+      "data": {
+        "@Core.Description": "URL of a product thumbnail image. Rendered by UI components to visually represent the product in listings and detail views.",
+        "@Core.IsURL": true
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "entityType": "LeaveRequest" },
+      "data": {
+        "@Core.Description": "A formal request by an employee for approved time off, subject to manager approval or rejection."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "operation": "OData.Demo.Approval" },
+      "data": {
+        "@Core.Description": "Approves a pending leave request. The first bound parameter is the LeaveRequest instance to approve. The requesting employee is notified upon completion."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "operation": "OData.Demo.Rejection" },
+      "data": {
+        "@Core.Description": "Rejects a pending leave request. A mandatory rejection reason must be provided and is communicated back to the employee."
+      }
+    }
+  ]
+}

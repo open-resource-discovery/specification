@@ -18,7 +18,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'entityType'
       type: 'string'
-      description: "Concept-level entity type identifier.\nCurrently supported for OData metadata:\n- `edmx` (OData v2/v4 CSDL XML)\n- `csdl-json` (OData v4 CSDL JSON)"
+      description: "Concept-level entity type identifier.\nCurrently supported for OData metadata:\n- `edmx` (OData v2/v4 CSDL XML)\n- `csdl-json` (OData v4 CSDL JSON)\n\nFor OData, this targets the EntityType definition (the type declared in the schema),\nnot the EntitySet in the EntityContainer.\nUse the unqualified name (e.g. `Customer`) if unique within the document,\nor the namespace-qualified name (e.g. `OData.Demo.Customer`) to be explicit.\n\nNote: EntitySet-level patching (e.g. for Capability annotations on a specific entity set)\nis not supported by this selector. Use `jsonPath` as a fallback in those cases."
       mandatory: true
       constraints:
         minLength: 1
