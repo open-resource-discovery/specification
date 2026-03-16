@@ -263,6 +263,40 @@
       "title": "Overlay Selector",
       "x-ums-type": "embedded",
       "description": "Identifies the element in the target to patch.\nExactly one selector type is used per patch. The selector object uses one explicit key:\n\n- `ordId`: resource level - targets an ORD resource (API, Event, Data Product, ...)\n- `operation`: operation level - targets an operation (OpenAPI: operationId, MCP: tool name, OData: Action/Function name)\n- `entityType`: entity type level - targets an OData EntityType or CSN entity definition by name\n- `propertyType`: property type level - targets a property/element on an OData EntityType/ComplexType or a CSN entity element\n- `jsonPath`: generic fallback - targets any location in a JSON/YAML-based target document by path\n\nPrefer concept-level selectors (operation, entityType, propertyType) over jsonPath\nwhere possible, as they are resilient to structural changes in the target format.",
+      "examples": [
+        {
+          "ordId": "sap.foo:apiResource:astronomy:v1"
+        },
+        {
+          "operation": "getConstellationByAbbreviation"
+        },
+        {
+          "operation": "OData.Demo.Approval"
+        },
+        {
+          "operation": "dispute-case-resolution"
+        },
+        {
+          "entityType": "OData.Demo.Customer"
+        },
+        {
+          "entityType": "AirlineService.Airline"
+        },
+        {
+          "propertyType": "BirthDate",
+          "entityType": "OData.Demo.Customer"
+        },
+        {
+          "propertyType": "AirlineID",
+          "entityType": "AirlineService.Airline"
+        },
+        {
+          "jsonPath": "$.info.description"
+        },
+        {
+          "jsonPath": "$.paths['/constellations'].get"
+        }
+      ],
       "oneOf": [
         {
           "$ref": "#/definitions/OverlaySelectorByJsonPath"
@@ -296,7 +330,8 @@
           "pattern": "^\\$",
           "description": "JSONPath expression targeting any location in a JSON/YAML-based target document.\nMUST start with `$`.\nThis is the generic fallback selector and is supported for all JSON/YAML-based metadata formats,\nincluding OpenAPI and MCP metadata files.",
           "examples": [
-            "$.paths./business-partners.get"
+            "$.info.description",
+            "$.paths['/constellations'].get"
           ]
         }
       }
@@ -356,10 +391,9 @@
           "minLength": 1,
           "description": "Concept-level entity type identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets the EntityType element declared in the schema.\n  Use the unqualified name (e.g. `Customer`) if unique in the document,\n  or the namespace-qualified name (e.g. `OData.Demo.Customer`) to be explicit.\n  Note: EntitySet-level patching (e.g. Capabilities annotations) is not covered;\n  use `jsonPath` as a fallback for those cases.\n- `csdl-json` (OData v4 CSDL JSON): same name resolution as `edmx`.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets a `definitions` entry by its\n  fully qualified key (e.g. `AirlineService.Airline`). In CSN Interop the key is always\n  fully qualified, so the fully qualified form MUST be used.",
           "examples": [
-            "Customer",
             "OData.Demo.Customer",
-            "BusinessPartner",
-            "A_BusinessPartnerType",
+            "OData.Demo.LeaveRequest",
+            "Customer",
             "AirlineService.Airline"
           ]
         }
@@ -380,8 +414,8 @@
           "description": "Concept-level property/element identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType\n  or ComplexType. Use the unqualified property name (e.g. `BirthDate`).\n- `csdl-json` (OData v4 CSDL JSON): same resolution as `edmx`.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of\n  the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).\n\nIf the property/element name is unique across all types in the document, this field alone\nis sufficient. If it is ambiguous (same name on multiple types), provide `entityType`\nto disambiguate — which is RECOMMENDED for CSN Interop since element names like `Name`\nare commonly repeated across entities.",
           "examples": [
             "BirthDate",
-            "BusinessPartnerFullName",
-            "LegacySearchTerm1",
+            "CountryName",
+            "Fax",
             "AirlineID",
             "Name"
           ]
@@ -391,10 +425,9 @@
           "minLength": 1,
           "description": "Optional entity type context for the selected property.\nProvide this when `propertyType` alone is ambiguous (same property name on multiple types).\n- For OData: identifies the containing EntityType or ComplexType. Use the unqualified\n  name (e.g. `Customer`) or namespace-qualified name (e.g. `OData.Demo.Customer`).\n- For CSN Interop: the fully qualified `definitions` key of the containing entity\n  (e.g. `AirlineService.Airline`). RECOMMENDED whenever `propertyType` is ambiguous,\n  which is common since element names like `Name` appear in many entities.",
           "examples": [
-            "Customer",
             "OData.Demo.Customer",
-            "BusinessPartner",
-            "A_BusinessPartnerType",
+            "OData.Demo.LeaveRequest",
+            "Customer",
             "AirlineService.Airline"
           ]
         }

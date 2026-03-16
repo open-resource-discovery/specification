@@ -393,6 +393,19 @@ definitions:
 
       Prefer concept-level selectors (operation, entityType, propertyType) over jsonPath
       where possible, as they are resilient to structural changes in the target format.
+    examples:
+      - ordId: "sap.foo:apiResource:astronomy:v1"
+      - operation: "getConstellationByAbbreviation"
+      - operation: "OData.Demo.Approval"
+      - operation: "dispute-case-resolution"
+      - entityType: "OData.Demo.Customer"
+      - entityType: "AirlineService.Airline"
+      - propertyType: "BirthDate"
+        entityType: "OData.Demo.Customer"
+      - propertyType: "AirlineID"
+        entityType: "AirlineService.Airline"
+      - jsonPath: "$.info.description"
+      - jsonPath: "$.paths['/constellations'].get"
     oneOf:
       - $ref: "#/definitions/OverlaySelectorByJsonPath"
       - $ref: "#/definitions/OverlaySelectorByOrdId"
@@ -418,7 +431,8 @@ definitions:
           This is the generic fallback selector and is supported for all JSON/YAML-based metadata formats,
           including OpenAPI and MCP metadata files.
         examples:
-          - "$.paths./business-partners.get"
+          - "$.info.description"
+          - "$.paths['/constellations'].get"
 
   OverlaySelectorByOrdId:
     type: object
@@ -497,10 +511,9 @@ definitions:
             fully qualified key (e.g. `AirlineService.Airline`). In CSN Interop the key is always
             fully qualified, so the fully qualified form MUST be used.
         examples:
-          - "Customer"
           - "OData.Demo.Customer"
-          - "BusinessPartner"
-          - "A_BusinessPartnerType"
+          - "OData.Demo.LeaveRequest"
+          - "Customer"
           - "AirlineService.Airline"
 
   OverlaySelectorByPropertyType:
@@ -509,6 +522,7 @@ definitions:
     x-ums-type: "embedded"
     additionalProperties: false
     required:
+      # - entityType # TODO: Is entityType always required? It looks like for the formats we have, we always state entity type then property type last
       - propertyType
     properties:
       propertyType:
@@ -529,8 +543,8 @@ definitions:
           are commonly repeated across entities.
         examples:
           - "BirthDate"
-          - "BusinessPartnerFullName"
-          - "LegacySearchTerm1"
+          - "CountryName"
+          - "Fax"
           - "AirlineID"
           - "Name"
       entityType:
@@ -545,10 +559,9 @@ definitions:
             (e.g. `AirlineService.Airline`). RECOMMENDED whenever `propertyType` is ambiguous,
             which is common since element names like `Name` appear in many entities.
         examples:
-          - "Customer"
           - "OData.Demo.Customer"
-          - "BusinessPartner"
-          - "A_BusinessPartnerType"
+          - "OData.Demo.LeaveRequest"
+          - "Customer"
           - "AirlineService.Airline"
 
   # TODO / Future idea: add a `schema` selector that targets a named schema definition by its identifier.
