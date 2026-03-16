@@ -127,7 +127,7 @@ After build:
 
 ```bash
 node dist/overlay-merge/cli.js \
-  --overlay examples/overlay/astronomy-api-openapi.overlay.json \
+  --overlay examples/overlay/openapi-astronomy-api.overlay.json \
   --input examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json \
   --target-url /ord/metadata/astronomy-v1.oas3.json \
   --target-definition-type openapi-v3 \

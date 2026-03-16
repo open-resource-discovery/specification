@@ -7,7 +7,7 @@ import { loadJsonFixture } from "./test-helpers";
 
 test("applies JSONPath overlay example to OpenAPI metadata example", async () => {
 	const overlay = await loadJsonFixture<ORDOverlay>(
-		"examples/overlay/astronomy-api-openapi-jsonpath.overlay.json",
+		"examples/overlay/openapi-astronomy-api-jsonpath.overlay.json",
 	);
 	const target = await loadJsonFixture<JSONValue>(
 		"examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
@@ -32,7 +32,7 @@ test("applies JSONPath overlay example to OpenAPI metadata example", async () =>
 
 test("applies ORD document overlay example to ORD document metadata example", async () => {
 	const overlay = await loadJsonFixture<ORDOverlay>(
-		"examples/overlay/document-1-ord.overlay.json",
+		"examples/overlay/ord-document-1.overlay.json",
 	);
 	const target = await loadJsonFixture<JSONValue>(
 		"examples/documents/document-1.json",
@@ -71,7 +71,7 @@ test("applies ORD document overlay example to ORD document metadata example", as
 
 test("applies operation selector (OpenAPI) overlay example to OpenAPI metadata example", async () => {
 	const overlay = await loadJsonFixture<ORDOverlay>(
-		"examples/overlay/astronomy-api-openapi.overlay.json",
+		"examples/overlay/openapi-astronomy-api.overlay.json",
 	);
 	const target = await loadJsonFixture<JSONValue>(
 		"examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
@@ -114,7 +114,7 @@ test("applies operation selector (OpenAPI) overlay example to OpenAPI metadata e
 
 test("applies operation selector (A2A) overlay example to A2A Agent Card example", async () => {
 	const overlay = await loadJsonFixture<ORDOverlay>(
-		"examples/overlay/dispute-agent-a2a.overlay.json",
+		"examples/overlay/a2a-dispute-agent.overlay.json",
 	);
 	const target = await loadJsonFixture<JSONValue>(
 		"examples/definitions/DisputeResolutionAgentcard.json",
