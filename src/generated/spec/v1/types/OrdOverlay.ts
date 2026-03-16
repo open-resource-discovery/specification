@@ -24,12 +24,11 @@ export type OverlayCorrelationID1 = string;
  */
 export type OverlayCorrelationID2 = string;
 /**
- * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+ * Controls which consumers can discover and access this overlay document.
  *
- * This controls who can see that the resource exists and retrieve its metadata level information.
- * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+ * It does NOT control runtime access to the resources being patched — that is managed separately through authentication and authorization mechanisms.
  *
- * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
+ * Use this to prevent exposing internal overlay enrichments to inappropriate consumer audiences.
  */
 export type OverlayVisibility = ("public" | "internal" | "private") & string;
 /**
@@ -150,8 +149,8 @@ export type OverlayPatchValue =
  * Conceptual selector levels (from high to low):
  *   - Resource level: ORD ID (resolved via the ORD registry)
  *   - Operation level: operation (OpenAPI `operationId`, MCP tool `name`, OData Action/Function name)
- *   - Entity type level: entityType (OData EntityType — the type definition, not the EntitySet in the container)
- *   - Property type level: propertyType (OData Property on an EntityType or ComplexType)
+ *   - Entity type level: entityType (OData EntityType or CSN Interop entity definition — targets the type definition, not an EntitySet)
+ *   - Property type level: propertyType (OData Property/NavigationProperty on an EntityType or ComplexType, or CSN Interop element)
  *   - Generic fallback: jsonPath (any JSON/YAML document, structure-bound)
  *
  * Selector support by metadata format:
@@ -415,8 +414,7 @@ export interface OverlaySelectorByEntityType {
    * Concept-level entity type identifier.
    * Supported metadata formats:
    * - `edmx` (OData v2/v4 CSDL XML): targets the EntityType element declared in the schema.
-   *   Use the unqualified name (e.g. `Customer`) if unique in the document,
-   *   or the namespace-qualified name (e.g. `OData.Demo.Customer`) to be explicit.
+   *   MUST use the namespace-qualified name (e.g. `OData.Demo.Customer`).
    *   Note: EntitySet-level patching (e.g. Capabilities annotations) is not covered;
    *   use `jsonPath` as a fallback for those cases.
    * - `csdl-json` (OData v4 CSDL JSON): same name resolution as `edmx`.
@@ -444,12 +442,12 @@ export interface OverlaySelectorByPropertyType {
   propertyType: string;
   /**
    * Optional entity type context for the selected property.
-   * Provide this when `propertyType` alone is ambiguous (same property name on multiple types).
-   * - For OData: identifies the containing EntityType or ComplexType. Use the unqualified
-   *   name (e.g. `Customer`) or namespace-qualified name (e.g. `OData.Demo.Customer`).
+   * Property names are always unqualified (e.g. `BirthDate`, `AirlineID`).
+   * Qualification is achieved by pairing with `entityType`, which SHOULD always be provided
+   * to avoid ambiguity when the same property name exists on multiple types.
+   * - For OData: the namespace-qualified EntityType or ComplexType name (e.g. `OData.Demo.Customer`).
    * - For CSN Interop: the fully qualified `definitions` key of the containing entity
-   *   (e.g. `AirlineService.Airline`). RECOMMENDED whenever `propertyType` is ambiguous,
-   *   which is common since element names like `Name` appear in many entities.
+   *   (e.g. `AirlineService.Airline`).
    */
-  entityType?: string;
+  entityType: string;
 }

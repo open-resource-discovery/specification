@@ -18,7 +18,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'entityType'
       type: 'string'
-      description: "Concept-level entity type identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets the EntityType element declared in the schema.\n  Use the unqualified name (e.g. `Customer`) if unique in the document,\n  or the namespace-qualified name (e.g. `OData.Demo.Customer`) to be explicit.\n  Note: EntitySet-level patching (e.g. Capabilities annotations) is not covered;\n  use `jsonPath` as a fallback for those cases.\n- `csdl-json` (OData v4 CSDL JSON): same name resolution as `edmx`.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets a `definitions` entry by its\n  fully qualified key (e.g. `AirlineService.Airline`). In CSN Interop the key is always\n  fully qualified, so the fully qualified form MUST be used."
+      description: "Concept-level entity type identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets the EntityType element declared in the schema.\n  MUST use the namespace-qualified name (e.g. `OData.Demo.Customer`).\n  Note: EntitySet-level patching (e.g. Capabilities annotations) is not covered;\n  use `jsonPath` as a fallback for those cases.\n- `csdl-json` (OData v4 CSDL JSON): same name resolution as `edmx`.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets a `definitions` entry by its\n  fully qualified key (e.g. `AirlineService.Airline`). In CSN Interop the key is always\n  fully qualified, so the fully qualified form MUST be used."
       mandatory: true
       constraints:
         minLength: 1

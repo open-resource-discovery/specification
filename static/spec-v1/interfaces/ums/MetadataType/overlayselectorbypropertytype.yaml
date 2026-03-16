@@ -24,7 +24,8 @@ spec:
         minLength: 1
     - name: 'entityType'
       type: 'string'
-      description: "Optional entity type context for the selected property.\nProvide this when `propertyType` alone is ambiguous (same property name on multiple types).\n- For OData: identifies the containing EntityType or ComplexType. Use the unqualified\n  name (e.g. `Customer`) or namespace-qualified name (e.g. `OData.Demo.Customer`).\n- For CSN Interop: the fully qualified `definitions` key of the containing entity\n  (e.g. `AirlineService.Airline`). RECOMMENDED whenever `propertyType` is ambiguous,\n  which is common since element names like `Name` appear in many entities."
+      description: "Optional entity type context for the selected property.\nProperty names are always unqualified (e.g. `BirthDate`, `AirlineID`).\nQualification is achieved by pairing with `entityType`, which SHOULD always be provided\nto avoid ambiguity when the same property name exists on multiple types.\n- For OData: the namespace-qualified EntityType or ComplexType name (e.g. `OData.Demo.Customer`).\n- For CSN Interop: the fully qualified `definitions` key of the containing entity\n  (e.g. `AirlineService.Airline`)."
+      mandatory: true
       constraints:
         minLength: 1
   customTypeDefinitions: []

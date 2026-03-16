@@ -9,14 +9,14 @@ without modifying the original source files.
 ```json
 {
   "ordOverlay": "0.1",
-  "target": { "ordId": "sap.foo:apiResource:BusinessPartner:v1", "definitionType": "openapi-v3" },
+  "target": { "ordId": "sap.foo:apiResource:astronomy:v1", "definitionType": "openapi-v3" },
   "patches": [
     {
       "action": "merge",
-      "selector": { "operation": "getBusinessPartner" },
+      "selector": { "operation": "getConstellationByAbbreviation" },
       "data": {
-        "summary": "Retrieve a Business Partner by ID",
-        "description": "Returns the full profile of a business partner including addresses, roles, and tax data.\nUsed in order-to-cash and procurement processes."
+        "summary": "Get constellation by IAU abbreviation",
+        "description": "Returns full details of a constellation by its IAU abbreviation (e.g. 'Ori' for Orion). Useful for star-chart lookups and astronomy education tools."
       }
     }
   ]
