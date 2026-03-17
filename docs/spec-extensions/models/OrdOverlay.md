@@ -131,7 +131,7 @@ Without such enforcement, consumers could be exposed to unauthorized metadata ch
 
 ## Overlay Document Metadata
 
-Note on [`perspective`](#overlay-perspective): unlike its use in ORD Documents (which scopes transport),
+Note on [`perspective`](#ord-overlay_perspective): unlike its use in ORD Documents (which scopes transport),
 `perspective` on an overlay declares *where the patch should be applied* — at system-type, system-version, or system-instance level.
 See the field description for details.
 
