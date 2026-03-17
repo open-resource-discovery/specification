@@ -849,6 +849,10 @@ It MUST be constructed as defined here:
 
 - The ORD ID MUST not exceed 255 characters in total.
 
+- The ORD ID MUST be interpreted case-insensitively when used for comparison, lookups or deduplication.
+  - Although `<resourceName>` permits mixed-case letters, two ORD IDs differing only in casing MUST be treated as the same identifier.
+  - This is required because ORD IDs appear as URL path segments (conventionally case-insensitive) and are shared across independent organizations, where case-sensitive distinctions would make global uniqueness unenforceable.
+
 An ORD ID MUST match the following [regular expression](https://en.wikipedia.org/wiki/Regular_expression):
 
 ```regex
