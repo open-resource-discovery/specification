@@ -18,13 +18,13 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'propertyType'
       type: 'string'
-      description: "Concept-level property/element identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType\n  or ComplexType. Use the unqualified property name (e.g. `BirthDate`).\n- `csdl-json` (OData v4 CSDL JSON): same resolution as `edmx`.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of\n  the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).\n\nIf the property/element name is unique across all types in the document, this field alone\nis sufficient. If it is ambiguous (same name on multiple types), provide `entityType`\nto disambiguate — which is RECOMMENDED for CSN Interop since element names like `Name`\nare commonly repeated across entities."
+      description: "Concept-level property/element identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType\n  or ComplexType. Use the unqualified property name (e.g. `BirthDate`).\n- `csdl-json` (OData v4 CSDL JSON): same resolution as `edmx`.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of\n  the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).\n\n`entityType` MUST always accompany this field to unambiguously identify the owning type.\nProperty names are unqualified and frequently reused across entity types (e.g. `Name`,\n`Description`, `CreatedAt`), so `propertyType` alone is not a reliable unique selector."
       mandatory: true
       constraints:
         minLength: 1
     - name: 'entityType'
       type: 'string'
-      description: "Optional entity type context for the selected property.\nProperty names are always unqualified (e.g. `BirthDate`, `AirlineID`).\nQualification is achieved by pairing with `entityType`, which SHOULD always be provided\nto avoid ambiguity when the same property name exists on multiple types.\n- For OData: the namespace-qualified EntityType or ComplexType name (e.g. `OData.Demo.Customer`).\n- For CSN Interop: the fully qualified `definitions` key of the containing entity\n  (e.g. `AirlineService.Airline`)."
+      description: "Required entity type context for the selected property.\nBecause property names are unqualified and commonly repeated across entity types\n(e.g. `Name`, `Description`, `CreatedAt`), `entityType` is mandatory to ensure\nthe selector is unambiguous and stable across schema evolution.\n- For OData: the namespace-qualified EntityType or ComplexType name (e.g. `OData.Demo.Customer`).\n- For CSN Interop: the fully qualified `definitions` key of the containing entity\n  (e.g. `AirlineService.Airline`)."
       mandatory: true
       constraints:
         minLength: 1

@@ -149,16 +149,18 @@ function applyPatch(
 	}
 
 	if (patch.action === "remove") {
-		if (patch.data === undefined) {
+		const data = patch.data as unknown as JSONValue | undefined;
+		const isRemoveAll =
+			data === undefined ||
+			(isJSONObject(data) && Object.keys(data).length === 0);
+
+		if (isRemoveAll) {
 			removeMatchedNodes(matches);
 			return;
 		}
 
 		matches.forEach((match) => {
-			const updated = removeFieldsMarkedAsNull(
-				match.value,
-				patch.data as unknown as JSONValue,
-			);
+			const updated = removeFieldsMarkedAsNull(match.value, data);
 			if (updated === REMOVE_SENTINEL) {
 				removeNode(match);
 				return;

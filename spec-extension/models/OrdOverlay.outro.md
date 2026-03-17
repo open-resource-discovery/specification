@@ -81,38 +81,13 @@ Rule of thumb:
 
 **Aggregator behavior and compatibility:**
 
-- Clarify expectations towards ORD Aggregators regarding overlay patching behavior.
 - Decide how to indicate use-case-specific overlays when multiple overlays exist for the same target.
-
-**Overlay `ordId`:**
-
-- Decide whether the overlay document itself needs a stable `ordId`.
-- If overlays are published only via the configuration endpoint, define what that stable ID should represent.
-- Decide whether `ordId` stays optional or becomes mandatory.
-
-**Target resolution and matching:**
-
-- Decide what should be optional vs mandatory on `target`.
-- Decide whether transparency-oriented fields such as `url` and `correlationIds` stay in the model.
-- Align the spec-level target identifiers with reference merge behavior, especially when `requireTargetMatch` is enabled.
-
-**Extension model naming:**
-
-- Decide how model extensions should avoid interface-name collisions with ORD core models.
-- Confirm whether extension-local definitions should always use an explicit prefix such as `Overlay...`.
-
-**Patch semantics:**
-
-- Clarify whether `data` MUST be present for `update`, `merge`, and `append` actions (currently the field is optional on `OverlayPatch` with no per-action validation).
-- Clarify `patches` ordering semantics: if two patches in the same file target the same element, the later patch wins — but this is not stated explicitly.
 
 **Patch value model:**
 
 - Decide whether `PatchValue` should remain an explicit JSON-type union or become a truly unconstrained value (`unknown` / `any`) once the toolkit supports that shape cleanly.
-- Decide whether `null` should be supported as an explicit standalone patch value outside `remove` masks.
 
 **OData selectors:**
 
-- `operation` selector: maps to schema-level `Action`/`Function` names. MUST use the namespace-qualified form (e.g. `OData.Demo.Approval`). For bound operations with the same name on multiple entity types (overloads), use `jsonPath` as a fallback to target the specific overload.
-- Define the implementation roadmap for `entityType` and `propertyType` selector support in the reference merge library.- Decide whether `entityType` should be required (not just RECOMMENDED) on the `propertyType` selector, given that property names are frequently ambiguous across entity types (also tracked as inline `TODO` in the schema).
+- Define the implementation roadmap for `entityType` and `propertyType` selector support in the reference merge library.
 Reference: [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).

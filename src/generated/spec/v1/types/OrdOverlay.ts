@@ -98,9 +98,9 @@ export type OverlaySelector =
  *   - arrays are appended to existing arrays
  * - with `action: update`, it replaces the selected element entirely
  * - with `action: remove`:
- *   - if omitted, the selected element is removed entirely
- *   - if provided, fields set to `null` are deleted (recursively, including nested fields;
- *     JSON Merge Patch-style delete semantics)
+ *   - `{}` (empty object): the selected element is removed entirely
+ *   - object with null-valued properties: only those fields are deleted (recursively,
+ *     including nested fields; JSON Merge Patch-style delete semantics)
  *
  * To fully replace an existing array, use two ordered patches:
  * 1. remove the array
@@ -119,6 +119,9 @@ export type OverlaySelector =
  * See: https://sap.github.io/csn-interop-specification/
  *
  * This is a free-form value whose structure depends on the target being patched.
+ *
+ * `null` as a standalone patch value is not supported outside `remove` masks.
+ * To delete an element, use `action: remove` with `data: {}`.
  */
 export type OverlayPatchValue =
   | {
@@ -212,7 +215,9 @@ export interface ORDOverlay {
   target?: OverlayTarget;
   /**
    * Ordered sequence of patches to apply to the targeted resource(s).
-   * Patches are applied in the order listed.
+   * Patches are applied strictly in the order they are listed.
+   * If two patches target the same document element, both are applied in sequence —
+   * the later patch supersedes the earlier one.
    *
    * @minItems 1
    */
@@ -298,6 +303,9 @@ export interface OverlaySystemInstance {
  * Optional target context for this overlay.
  * The target can reference an ORD resource or a referenced resource definition file.
  *
+ * When `target` is present, at least one identifier (`ordId`, `url`, or `correlationIds`)
+ * MUST be provided so that consumers and tooling can determine what is being patched.
+ *
  * `ordId` selects the ORD resource metadata itself.
  * If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous
  * when the resource exposes multiple definitions.
@@ -306,12 +314,9 @@ export interface OverlaySystemInstance {
  * Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.
  * Use `definitionType` and/or an explicit `url` to identify which one is patched.
  *
- * For overlays that only patch ORD-level metadata via patch selectors (`selector.ordId`),
- * a `target.ordId` is often not needed. In that case, `target` may be omitted entirely,
- * or provided as an empty object for informational purposes.
+ * Exception: if all patches exclusively use `selector.ordId`, the patch selectors themselves
+ * are sufficient to identify the target resources and `target` may be omitted entirely.
  * Multiple resources can still be patched by defining multiple patches with different selector `ordId` values.
- *
- * If the ORD document URL is known, it can be provided via `target.url` as additional context.
  */
 export interface OverlayTarget {
   /**
@@ -348,13 +353,14 @@ export interface OverlayPatch {
    *   - only valid when the selected element is a text/string field.
    *   - useful to extend existing descriptions without replacing them.
    * - `remove`:
-   *   - without `data`: remove the selected element from the document entirely.
-   *   - with `data`: remove fields that are set to `null`.
-   *     This applies recursively, so nested `null` values remove nested fields as well
+   *   - `data: {}` (empty object): remove the selected element from the document entirely.
+   *   - `data` with null-valued properties: remove only those fields (recursively).
+   *     Nested `null` values remove nested fields as well
    *     (JSON Merge Patch-style delete semantics).
    *
-   * Example for nested removal:
-   * `data: { "foo": { "bar": null } }` removes `foo.bar` inside the selected element.
+   * Example for partial removal:
+   * `data: { "foo": { "bar": null } }` removes only `foo.bar` inside the selected element.
+   * To remove the entire selected element, use `data: {}`.
    * - `merge`:
    *   - objects are deep-merged recursively.
    *   - scalar values are overwritten by the value from `data`.
@@ -367,7 +373,7 @@ export interface OverlayPatch {
    */
   action: "update" | "append" | "remove" | "merge";
   selector: OverlaySelector;
-  data?: OverlayPatchValue;
+  data: OverlayPatchValue;
   [k: string]: unknown | undefined;
 }
 export interface OverlaySelectorByJsonPath {
@@ -434,17 +440,16 @@ export interface OverlaySelectorByPropertyType {
    * - `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of
    *   the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).
    *
-   * If the property/element name is unique across all types in the document, this field alone
-   * is sufficient. If it is ambiguous (same name on multiple types), provide `entityType`
-   * to disambiguate — which is RECOMMENDED for CSN Interop since element names like `Name`
-   * are commonly repeated across entities.
+   * `entityType` MUST always accompany this field to unambiguously identify the owning type.
+   * Property names are unqualified and frequently reused across entity types (e.g. `Name`,
+   * `Description`, `CreatedAt`), so `propertyType` alone is not a reliable unique selector.
    */
   propertyType: string;
   /**
-   * Optional entity type context for the selected property.
-   * Property names are always unqualified (e.g. `BirthDate`, `AirlineID`).
-   * Qualification is achieved by pairing with `entityType`, which SHOULD always be provided
-   * to avoid ambiguity when the same property name exists on multiple types.
+   * Required entity type context for the selected property.
+   * Because property names are unqualified and commonly repeated across entity types
+   * (e.g. `Name`, `Description`, `CreatedAt`), `entityType` is mandatory to ensure
+   * the selector is unambiguous and stable across schema evolution.
    * - For OData: the namespace-qualified EntityType or ComplexType name (e.g. `OData.Demo.Customer`).
    * - For CSN Interop: the fully qualified `definitions` key of the containing entity
    *   (e.g. `AirlineService.Airline`).

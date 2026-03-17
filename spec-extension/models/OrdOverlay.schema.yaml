@@ -199,6 +199,9 @@ properties:
       Optional target context for this overlay.
       The target can reference an ORD resource or a referenced resource definition file.
 
+      When `target` is present, at least one identifier (`ordId`, `url`, or `correlationIds`)
+      MUST be provided so that consumers and tooling can determine what is being patched.
+
       `ordId` selects the ORD resource metadata itself.
       If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous
       when the resource exposes multiple definitions.
@@ -207,12 +210,9 @@ properties:
       Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.
       Use `definitionType` and/or an explicit `url` to identify which one is patched.
 
-      For overlays that only patch ORD-level metadata via patch selectors (`selector.ordId`),
-      a `target.ordId` is often not needed. In that case, `target` may be omitted entirely,
-      or provided as an empty object for informational purposes.
+      Exception: if all patches exclusively use `selector.ordId`, the patch selectors themselves
+      are sufficient to identify the target resources and `target` may be omitted entirely.
       Multiple resources can still be patched by defining multiple patches with different selector `ordId` values.
-
-      If the ORD document URL is known, it can be provided via `target.url` as additional context.
     $ref: "#/definitions/OverlayTarget"
 
   patches:
@@ -220,7 +220,9 @@ properties:
     minItems: 1
     description: |-
       Ordered sequence of patches to apply to the targeted resource(s).
-      Patches are applied in the order listed.
+      Patches are applied strictly in the order they are listed.
+      If two patches target the same document element, both are applied in sequence —
+      the later patch supersedes the earlier one.
     items:
       $ref: "#/definitions/OverlayPatch"
 
@@ -237,6 +239,10 @@ definitions:
       Optional context about the target being patched.
       The target can refer to an ORD resource or to a referenced resource definition file.
 
+      When this object is present, at least one of `ordId`, `url`, or `correlationIds`
+      MUST be provided so that consumers can identify what is being patched.
+      Exception: if all patches exclusively use `selector.ordId` selectors, `target` may be omitted entirely.
+
       `ordId` targets the ORD resource metadata itself.
       For patching a specific resource definition file of that resource, use `url` and/or `definitionType`
       to disambiguate.
@@ -244,8 +250,6 @@ definitions:
       Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
       In such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.
 
-      For ORD-level-only overlays, this object can be omitted (or left empty) and
-      selectors can directly identify resources via `selector.ordId`.
       Multiple identifiers, if provided, are treated as all pointing to the same resource.
     additionalProperties: false
     properties:
@@ -336,6 +340,7 @@ definitions:
     required:
       - action
       - selector
+      - data
     properties:
       action:
         type: string
@@ -348,13 +353,14 @@ definitions:
             - only valid when the selected element is a text/string field.
             - useful to extend existing descriptions without replacing them.
           - `remove`:
-            - without `data`: remove the selected element from the document entirely.
-            - with `data`: remove fields that are set to `null`.
-              This applies recursively, so nested `null` values remove nested fields as well
+            - `data: {}` (empty object): remove the selected element from the document entirely.
+            - `data` with null-valued properties: remove only those fields (recursively).
+              Nested `null` values remove nested fields as well
               (JSON Merge Patch-style delete semantics).
 
-          Example for nested removal:
-          `data: { "foo": { "bar": null } }` removes `foo.bar` inside the selected element.
+          Example for partial removal:
+          `data: { "foo": { "bar": null } }` removes only `foo.bar` inside the selected element.
+          To remove the entire selected element, use `data: {}`.
           - `merge`:
             - objects are deep-merged recursively.
             - scalar values are overwritten by the value from `data`.
@@ -519,7 +525,7 @@ definitions:
     x-ums-type: "embedded"
     additionalProperties: false
     required:
-      - entityType # TODO: Is entityType always required? It looks like for the formats we have, we always state entity type then property type last
+      - entityType
       - propertyType
     properties:
       propertyType:
@@ -534,10 +540,9 @@ definitions:
           - `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of
             the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).
 
-          If the property/element name is unique across all types in the document, this field alone
-          is sufficient. If it is ambiguous (same name on multiple types), provide `entityType`
-          to disambiguate — which is RECOMMENDED for CSN Interop since element names like `Name`
-          are commonly repeated across entities.
+          `entityType` MUST always accompany this field to unambiguously identify the owning type.
+          Property names are unqualified and frequently reused across entity types (e.g. `Name`,
+          `Description`, `CreatedAt`), so `propertyType` alone is not a reliable unique selector.
         examples:
           - "BirthDate"
           - "CountryName"
@@ -548,10 +553,10 @@ definitions:
         type: string
         minLength: 1
         description: |-
-          Optional entity type context for the selected property.
-          Property names are always unqualified (e.g. `BirthDate`, `AirlineID`).
-          Qualification is achieved by pairing with `entityType`, which SHOULD always be provided
-          to avoid ambiguity when the same property name exists on multiple types.
+          Required entity type context for the selected property.
+          Because property names are unqualified and commonly repeated across entity types
+          (e.g. `Name`, `Description`, `CreatedAt`), `entityType` is mandatory to ensure
+          the selector is unambiguous and stable across schema evolution.
           - For OData: the namespace-qualified EntityType or ComplexType name (e.g. `OData.Demo.Customer`).
           - For CSN Interop: the fully qualified `definitions` key of the containing entity
             (e.g. `AirlineService.Airline`).
@@ -593,9 +598,9 @@ definitions:
         - arrays are appended to existing arrays
       - with `action: update`, it replaces the selected element entirely
       - with `action: remove`:
-        - if omitted, the selected element is removed entirely
-        - if provided, fields set to `null` are deleted (recursively, including nested fields;
-          JSON Merge Patch-style delete semantics)
+        - `{}` (empty object): the selected element is removed entirely
+        - object with null-valued properties: only those fields are deleted (recursively,
+          including nested fields; JSON Merge Patch-style delete semantics)
 
       To fully replace an existing array, use two ordered patches:
       1. remove the array
@@ -614,6 +619,9 @@ definitions:
       See: https://sap.github.io/csn-interop-specification/
 
       This is a free-form value whose structure depends on the target being patched.
+
+      `null` as a standalone patch value is not supported outside `remove` masks.
+      To delete an element, use `action: remove` with `data: {}`.
  # Copy from ORD Document definition "SystemInstance"; ORD Document schema is leading and this copy MUST be kept in sync for the shared fields.
   OverlaySystemInstance:
     type: object
