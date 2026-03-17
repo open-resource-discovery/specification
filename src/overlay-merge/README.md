@@ -1,99 +1,120 @@
 # Overlay Merge Library (`src/overlay-merge`)
 
-TypeScript implementation for applying ORD overlays to JSON-based metadata files.
+TypeScript implementation for applying ORD overlays to metadata files.
 
 Current scope:
-- Supports selector types: `jsonPath`, `ordId`, `operation`
-- Supports actions: `merge`, `update`, `remove`, `append`
-- Uses `jsonpath` for JSONPath evaluation
+- Supports all selector types: `jsonPath`, `ordId`, `operation`, `entityType`, `propertyType`
+- Supports all patch actions: `merge`, `update`, `remove`, `append`
+- JSON-based targets (`csdl-json`, `sap-csn-interop-effective-v1`, OpenAPI, A2A, MCP, ORD Document, …) via `applyOverlayToDocument`
+- EDMX XML targets (`edmx`) via `applyOverlayToEdmxDocument` (uses `fast-xml-parser`)
 - Validates overlay input against the generated `OrdOverlay` JSON Schema
-- Emits semantic validation errors for documented `MUST` constraints and warnings for documented `SHOULD` guidance where the merge script can evaluate them
+- Emits semantic validation errors for documented `MUST` constraints and warnings for documented `SHOULD` guidance
 
 Validation assumption:
 - The input target document is assumed to already be valid for its native metadata format.
 - This merge tool does not fully validate target metadata formats.
-- Validate the merged output again with the target format-specific validator/tooling.
+- Validate the merged output again with the target format-specific tooling.
 
 Current CLI limitation:
-- The merge library operates on parsed JSON values.
 - The CLI currently accepts JSON files only.
 - YAML overlays and YAML target files are valid per spec, but the CLI does not yet parse YAML or preserve YAML output formatting.
+- The CLI uses `applyOverlayToDocument` and therefore does not support EDMX XML targets. Use the library API (`applyOverlayToEdmxDocument`) directly for EDMX files.
 
 ## What It Does
 
 The library applies `patches` from an `ORDOverlay` document in order.
 
-Selector support implemented now:
-- `jsonPath`: generic JSONPath selector for JSON files
-- `ordId`: selector for ORD Document resources (top-level resource arrays)
-- `operation`: concept-level operation selector
-  - OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): matches `operationId` in `paths.{path}.{method}`
-  - MCP: matches `tools[].name`
-  - A2A Agent Card (`a2a-agent-card`): matches `skills[].id`
-  - Without `definitionType`: tries OpenAPI → MCP → A2A in order
+### Selector support
 
-Selectors currently not implemented in this script:
-- `entityType`, `propertyType`
+| Selector | Supported formats | Notes |
+|---|---|---|
+| `jsonPath` | Any JSON/YAML document | Generic fallback; not supported for EDMX targets |
+| `ordId` | ORD Document | Scans top-level resource collections |
+| `operation` | OpenAPI, MCP, A2A Agent Card, CSDL JSON, EDMX | See format details below |
+| `entityType` | CSDL JSON, EDMX, CSN Interop | Qualified or unqualified names |
+| `propertyType` | CSDL JSON, EDMX, CSN Interop | Pair with `entityType` to avoid ambiguity |
+
+**`operation` selector by format:**
+- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): matches `operationId` in `paths.{path}.{method}`
+- MCP (Specification ID, e.g. `sap.foo:my-server:v1`): matches `tools[].name`
+- A2A Agent Card (`a2a-agent-card`): matches `skills[].id`
+- CSDL JSON (`csdl-json`): matches Action or Function overload arrays by local or namespace-qualified name
+- EDMX (`edmx`): same name resolution via `applyOverlayToEdmxDocument`
+- Without `definitionType`: auto-detection tries OpenAPI → MCP → A2A in order
+
+**`entityType` selector by format:**
+- `csdl-json`: resolves the `EntityType` or `ComplexType` entry inside the namespace object (e.g. `root["OData.Demo"]["Customer"]`). Supports both qualified (`OData.Demo.Customer`) and unqualified (`Customer`) names.
+- `edmx`: resolves `EntityType` or `ComplexType` XML elements by `@_Name`, supporting qualified or unqualified names. Use via `applyOverlayToEdmxDocument`.
+- `sap-csn-interop-effective-v1`: resolves a `definitions` entry by its fully qualified key (e.g. `AirlineService.Airline`).
+
+**`propertyType` selector by format:**
+- `csdl-json`: resolves a non-`$`-prefixed key on the matched entity type object.
+- `edmx`: resolves a `Property` or `NavigationProperty` child element by `@_Name`. Use via `applyOverlayToEdmxDocument`.
+- `sap-csn-interop-effective-v1`: resolves an entry in the `elements` map of the matched definition.
+- Always pair with `entityType` to avoid ambiguity when the same property name exists on multiple types.
+
+## EDMX Patch Data Format
+
+For EDMX targets the patch `data` MUST be expressed in **CSDL JSON annotation format** regardless of whether the actual file is EDMX XML. The `applyOverlayToEdmxDocument` function converts these to `<Annotation>` XML child elements on the matched element.
+
+Annotation key convention: `@TermName` (e.g. `@Core.Description`, `@Core.Revisions`).
+
+Value mapping to XML:
+| CSDL JSON value | XML output |
+|---|---|
+| `string` | `<String>…</String>` |
+| `true` / `false` | `Bool="true"` / `Bool="false"` attribute |
+| integer | `Int="…"` attribute |
+| decimal | `Decimal="…"` attribute |
+| `[{ … }]` array of objects | `<Collection><Record><PropertyValue …/></Record></Collection>` |
+| `{ "@EnumMember": "…" }` | `<EnumMember>…</EnumMember>` |
+| plain object | `<Record><PropertyValue …/></Record>` |
+
+See: https://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html
+
+## CSN Interop Patch Data Format
+
+For CSN Interop targets (`sap-csn-interop-effective-v1`), the patch `data` is plain CSN JSON merged directly into the matched definition or element object. Use the `doc` field for human-readable descriptions and `@AnnotationName` keys for vocabulary annotations (e.g. `@EndUserText.label`, `@Semantics.text`).
 
 ## TODO / Open Decisions
 
-- `target.url` is currently treated as informational context and is not used for strict target matching.
-- Concept-level selectors `entityType` and `propertyType` (OData) are not implemented yet.
+- `target.url` is currently informational and not used for strict target matching.
 - Decide whether strict URL matching should be defaulted, optional, or profile-specific.
-- Extend `definitionType` validation coverage for additional metadata formats beyond the currently checked OpenAPI, A2A, AsyncAPI, CSDL JSON, MCP-style Specification IDs, and ORD Overlay shapes.
-- Add YAML input/output support so the CLI can read `.yaml` / `.yml` overlays and target files, preserve the original serialization format on write, and detect JSON vs YAML automatically.
-- Decide whether `deepMerge` type mismatches (e.g. merging an object into an array)
-  should emit a warning or throw, rather than silently replacing the base value.
+- Add YAML input/output support so the CLI can read `.yaml`/`.yml` overlays and target files.
 - Consider adding a `--dry-run` or `--validate-only` mode to the CLI.
-- Evaluate whether the `jsonpath` npm package (CommonJS-only) should be replaced
-  with a native ESM alternative once a stable option is available.
+- Decide whether `deepMerge` type mismatches (e.g. merging an object into an array) should emit a warning or throw, rather than silently replacing the base value.
+- Evaluate whether the `jsonpath` npm package (CommonJS-only) should be replaced with a native ESM alternative.
+- For EDMX: EntitySet-level patching (e.g. Capabilities annotations on the container) is not covered by the `entityType` selector; use `jsonPath` or a dedicated selector extension for those cases.
+- For CSDL JSON `entityType` selector: ambiguous unqualified names (same local name in multiple namespaces) will match all of them; prefer qualified names for precision.
 - TODO: move overlay validation into a separate project once the overlay merge tooling is split out of this repository.
 
 ## Merge Semantics
 
-Implemented patch semantics:
 - `update`: replaces the selected element with `data`
-- `append`:
-  - `data` must be a string
-  - selected target value must be a string
-  - appends `data` to the existing text value
+- `append`: appends string `data` to the selected string value
 - `merge`:
-  - objects: deep-merged recursively
-  - scalars: overwritten
-  - arrays: appended (existing + incoming)
+  - objects: deep-merged recursively; existing keys not in `data` are preserved
+  - scalars: overwritten by `data`
+  - arrays: incoming items appended after existing items
 - `remove`:
-  - without `data`: removes the selected element
-  - with `data`: removes fields marked as `null` recursively
+  - without `data`: removes the selected element entirely
+  - with `data`: removes fields set to `null` recursively (JSON Merge Patch–style)
 
-Example (`remove` with nested deletion):
-
-```json
-{
-  "action": "remove",
-  "selector": { "jsonPath": "$.info" },
-  "data": { "foo": { "bar": null } }
-}
-```
-
-This removes `info.foo.bar`.
+To fully replace an existing array, use two ordered patches: first `remove` the array, then `merge` the new content.
 
 ## JSONPath Support
 
 JSONPath evaluation is delegated to the `jsonpath` npm package (`jsonpath@1.2.1`).
-Supported syntax is therefore whatever that library supports.
 
 ## ORD ID Selector Behavior
 
-`ordId` selector resolves against top-level ORD Document collections (for example `apiResources`, `eventResources`, `entityTypes`, `dataProducts`, `capabilities`, ...).
+`ordId` resolves against top-level ORD Document collections (e.g. `apiResources`, `eventResources`, `dataProducts`, …). It does not patch nested reference objects (e.g. `{ "ordId": "…" }` entries inside `partOfConsumptionBundles`).
 
-It intentionally does not patch nested reference objects by default (for example `{ "ordId": "..." }` entries inside `partOfConsumptionBundles`), because those are not full resource metadata objects.
-
-Resolution behavior:
-- The implementation discovers root-level arrays of objects that contain an `ordId` field, and only scans those collections
-- The implementation derives the ORD resource type from the `ordId` itself and uses simple collection-name fallbacks such as `s` and `y -> ies`
-- There is no hardcoded ORD resource type map in the resolver
+Resolution: the implementation discovers root-level arrays whose entries contain an `ordId` field, derives the resource type from the ordId itself, and uses simple collection-name fallbacks (`s` suffix, `y → ies`).
 
 ## Library Usage
+
+### JSON-based targets
 
 ```ts
 import { applyOverlayToDocument } from "@open-resource-discovery/specification";
@@ -108,20 +129,31 @@ const merged = applyOverlayToDocument(targetDocument, overlay, {
 });
 ```
 
-Options:
-- `noMatchBehavior` (default `"error"`):
-  - `"error"` throw when a selector matches nothing
-  - `"warn"` continue and log warning
-  - `"ignore"` continue silently
-- `requireTargetMatch` (default `false`): validate overlay target against `context`
-- `validateDefinitionType` (default `true`): validates basic target structure for known `definitionType` values
-- `validateOverlaySemantics` (default `true`): validates selector/action support and documented overlay semantics before applying patches
-- `context`: expected `ordId`, `url`, `definitionType` of the file being patched
-  - `url` is currently informational and not used for strict target equality checks
+### EDMX XML targets
+
+```ts
+import { applyOverlayToEdmxDocument } from "@open-resource-discovery/specification/overlay-merge/edmx";
+
+const patchedXml = applyOverlayToEdmxDocument(xmlString, overlay, {
+  noMatchBehavior: "error",
+});
+```
+
+The function accepts the raw XML string and returns a formatted XML string with annotations injected.
+
+### Options (both APIs)
+
+| Option | Default | Description |
+|---|---|---|
+| `noMatchBehavior` | `"error"` | `"error"` throws, `"warn"` logs, `"ignore"` silently skips unmatched patches |
+| `requireTargetMatch` | `false` | Validates overlay `target` metadata against `context` |
+| `validateDefinitionType` | `true` | Validates basic target document structure for known `definitionType` values |
+| `validateOverlaySemantics` | `true` | Validates selector/action support before applying |
+| `context` | — | Expected `ordId`, `url`, `definitionType` of the file being patched |
 
 ## CLI Script
 
-A CLI is provided at `src/overlay-merge/cli.ts`.
+A CLI is provided at `src/overlay-merge/cli.ts` for JSON targets.
 
 After build:
 
@@ -135,19 +167,20 @@ node dist/overlay-merge/cli.js \
 ```
 
 Flags:
-- `--overlay <path>` required
-- `--input <path>` required
-- `--output <path>` optional (otherwise writes to stdout)
-- `--target-ord-id <ordId>` optional
-- `--target-url <url>` optional (currently informational context)
-- `--target-definition-type <type>` optional
-- `--allow-no-match` optional
-- `--warn-on-no-match` optional
-- CLI note: only JSON file inputs/outputs are currently supported
+| Flag | Required | Description |
+|---|---|---|
+| `--overlay <path>` | yes | Path to the ORD Overlay JSON file |
+| `--input <path>` | yes | Path to the target JSON file to patch |
+| `--output <path>` | no | Output path (defaults to stdout) |
+| `--target-ord-id <ordId>` | no | ORD ID context for target matching |
+| `--target-url <url>` | no | URL context (currently informational) |
+| `--target-definition-type <type>` | no | Explicit definition type for the target |
+| `--allow-no-match` | no | Continue silently when a selector has no match |
+| `--warn-on-no-match` | no | Warn (stderr) when a selector has no match |
 
 ## Tests
 
-Tests use Node.js built-in test runner (`node:test`) and real files from `examples/`.
+Tests use Node.js built-in test runner (`node:test`) and real files from `examples/` and `src/overlay-merge/tests/fixtures/`.
 
 Run:
 
@@ -158,21 +191,10 @@ npm run test:overlay-merge
 Coverage includes:
 - JSONPath patching on OpenAPI example JSON
 - `ordId` selector patching on ORD Document example JSON
-- no-match failure behavior
+- `operation` selector on OpenAPI, MCP, and A2A Agent Card examples
+- `entityType` + `propertyType` selectors on CSN Interop (`airline.csn-interop.json`)
+- `entityType` + `propertyType` + `operation` selectors on CSDL JSON (`ExampleService.csdl.json`)
+- `entityType` + `propertyType` + `operation` selectors on EDMX XML (`ExampleService.edmx.xml`) via `applyOverlayToEdmxDocument`
+- no-match failure and warning behavior
 - overlay schema validation
 - semantic MUST/SHOULD validation and definition-type compatibility checks
-
-Integration-style tests also apply overlay files from `examples/overlay` to existing metadata files in `examples/`.
-
-## TODOs
-- Decide mandatory vs optional target resolution fields (`target`, `target.ordId`, etc.) — see `spec-extension/models/OrdOverlay.outro.md`.
-- Decide whether overlay document `ordId` should be mandatory — see `spec-extension/models/OrdOverlay.outro.md`.
-- Confirm OData `operation` selector mapping with OData domain experts — see `spec-extension/models/OrdOverlay.outro.md`.
-- Align `PatchValue` schema/types with the documented merge/update semantics so arrays and scalar JSON values are schema-valid.
-- Implement concept-level selectors (`entityType`, `propertyType`) — see TODO comments in `selectors.ts`.
-- Decide whether `requireTargetMatch` should also evaluate `target.correlationIds`, and whether `target.url` should remain informational or become enforceable.
-- Decide whether/when strict `target.url` matching should be enabled — see TODO comment in `types.ts` (`requireTargetMatch`).
-- Extend `definitionType` structure validation beyond `openapi-v3` — see TODO comment in `types.ts` (`validateTargetDocumentForDefinitionType`).
-- Add YAML input/output support for the CLI and preserve the source serialization format on write.
-- Clarify `deepMerge` behavior on type mismatches (object vs array, etc.) — see TODO comment in `merge.ts`.
-- Move the overlay validator into a separate project once overlay tooling is extracted from this repository.

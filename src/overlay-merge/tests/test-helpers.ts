@@ -43,6 +43,10 @@ export async function loadJsonFixture<T = unknown>(
 	return JSON.parse(content) as T;
 }
 
+export async function loadTextFixture(relativePath: string): Promise<string> {
+	return readFile(resolve(repositoryRoot, relativePath), "utf8");
+}
+
 export function createOrdOverlay(
 	overrides: DeepPartial<ORDOverlay> = {},
 ): ORDOverlay {

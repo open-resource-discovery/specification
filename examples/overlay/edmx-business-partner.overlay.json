@@ -2,7 +2,7 @@
   "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:business-partner-odata:v1",
-  "description": "Enriches OData Business Partner API metadata with extended descriptions and deprecation annotations using concept-level selectors.\n\nNote: the 'entityType' and 'propertyType' selectors are defined in the ORD Overlay spec but are NOT YET IMPLEMENTED in the reference overlay-merge script.",
+  "description": "Enriches OData Business Partner API metadata with extended descriptions and deprecation annotations using concept-level selectors.",
   "describedSystemType": {
     "systemNamespace": "sap.foo"
   },
@@ -18,8 +18,8 @@
         "entityType": "A_BusinessPartnerType"
       },
       "data": {
-        "Core.Description": "Represents a natural or legal person involved in business transactions such as customers, vendors, or internal business units.",
-        "Core.LongDescription": "A Business Partner is the central master data object for customer and vendor management. It consolidates all party information and supports both individual persons and organizations."
+        "@Core.Description": "Represents a natural or legal person involved in business transactions such as customers, vendors, or internal business units.",
+        "@Core.LongDescription": "A Business Partner is the central master data object for customer and vendor management. It consolidates all party information and supports both individual persons and organizations."
       }
     },
     {
@@ -29,7 +29,7 @@
         "entityType": "A_BusinessPartnerType"
       },
       "data": {
-        "Core.Revisions": [
+        "@Core.Revisions": [
           {
             "Version": "2.0.0",
             "Kind": "Deprecated",
@@ -45,9 +45,9 @@
         "entityType": "A_BusinessPartnerType"
       },
       "data": {
-        "Core.Description": "Numeric credit score for the business partner. Range: 100 (excellent) to 600 (poor).",
-        "Common.FieldControl": { "@EnumMember": "Common.FieldControlType/ReadOnly" },
-        "PersonalData.IsPotentiallyPersonalData": true
+        "@Core.Description": "Numeric credit score for the business partner. Range: 100 (excellent) to 600 (poor).",
+        "@Common.FieldControl": { "@EnumMember": "Common.FieldControlType/ReadOnly" },
+        "@PersonalData.IsPotentiallyPersonalData": true
       }
     }
   ]

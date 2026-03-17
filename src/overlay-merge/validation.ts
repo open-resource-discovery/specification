@@ -424,7 +424,7 @@ function validateSelectorSemantics(
 				createIssue(
 					"error",
 					selectorPath,
-					`The "operation" selector is not supported for definitionType "${definitionType}". Supported values are openapi-v2, openapi-v3, openapi-v3.1+, a2a-agent-card, and Specification IDs used for MCP-style targets.`,
+					`The "operation" selector is not supported for definitionType "${definitionType}". Supported values are openapi-v2, openapi-v3, openapi-v3.1+, a2a-agent-card, csdl-json, edmx, and Specification IDs used for MCP-style targets.`,
 				),
 			);
 		}
@@ -445,31 +445,18 @@ function validateSelectorSemantics(
 
 		if (
 			definitionType !== undefined &&
-			definitionType !== "edmx" &&
-			definitionType !== "csdl-json"
+			!supportsEntityTypeSelector(definitionType)
 		) {
 			errors.push(
 				createIssue(
 					"error",
 					selectorPath,
-					`The "${selectorKind}" selector is only defined for OData metadata (edmx, csdl-json), not for definitionType "${definitionType}".`,
+					`The "${selectorKind}" selector is only supported for OData metadata (edmx, csdl-json) and CSN Interop (sap-csn-interop-effective-v1) targets, not for definitionType "${definitionType}".`,
 				),
 			);
-			return;
 		}
 
-		const detail =
-			definitionType === "edmx"
-				? 'The current merge script does not support OData XML ("edmx") selector resolution.'
-				: "The current merge script does not implement OData selector resolution yet.";
-
-		errors.push(
-			createIssue(
-				"error",
-				selectorPath,
-				`The "${selectorKind}" selector is not supported yet. ${detail}`,
-			),
-		);
+		return;
 	}
 }
 
@@ -567,7 +554,17 @@ function supportsOperationSelector(definitionType: string): boolean {
 	return (
 		isOpenApiDefinitionType(definitionType) ||
 		definitionType === "a2a-agent-card" ||
+		definitionType === "csdl-json" ||
+		definitionType === "edmx" ||
 		isSpecificationId(definitionType)
+	);
+}
+
+function supportsEntityTypeSelector(definitionType: string): boolean {
+	return (
+		definitionType === "edmx" ||
+		definitionType === "csdl-json" ||
+		definitionType === "sap-csn-interop-effective-v1"
 	);
 }
 

@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ORDOverlay } from "../../generated/spec/v1/types";
+import { applyOverlayToEdmxDocument } from "../edmx";
 import { applyOverlayToDocument } from "../merge";
 import type { JSONValue } from "../types";
-import { loadJsonFixture } from "./test-helpers";
+import { loadJsonFixture, loadTextFixture } from "./test-helpers";
 
 test("applies JSONPath overlay example to OpenAPI metadata example", async () => {
 	const overlay = await loadJsonFixture<ORDOverlay>(
@@ -155,5 +156,724 @@ test("applies operation selector (A2A) overlay example to A2A Agent Card example
 		legacySkill,
 		undefined,
 		"legacy-dispute-lookup skill should have been removed",
+	);
+});
+
+// ─── CSN Interop selector tests ─────────────────────────────────────────────
+
+test("applies entityType + propertyType selectors (CSN Interop) overlay example to airline CSN document", async () => {
+	const overlay = await loadJsonFixture<ORDOverlay>(
+		"examples/overlay/csn-interop-airline.overlay.json",
+	);
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/airline.csn-interop.json",
+	);
+
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: true,
+		context: {
+			ordId: "sap.foo:apiResource:AirlineService:v1",
+			definitionType: "sap-csn-interop-effective-v1",
+		},
+	}) as Record<string, unknown>;
+
+	const definitions = merged.definitions as Record<
+		string,
+		Record<string, unknown>
+	>;
+
+	// entityType patch: AirlineService.Airline doc should be updated
+	const airline = definitions["AirlineService.Airline"];
+	assert.ok(airline, "AirlineService.Airline should exist");
+	assert.ok(
+		typeof airline.doc === "string" &&
+			airline.doc.includes("IATA airline code"),
+		`AirlineService.Airline.doc should describe IATA, got: ${airline.doc}`,
+	);
+	assert.equal(airline["@EndUserText.label"], "Airline");
+
+	// propertyType patch: AirlineID.doc should be updated
+	const elements = airline.elements as Record<string, Record<string, unknown>>;
+	assert.ok(
+		typeof elements.AirlineID.doc === "string" &&
+			elements.AirlineID.doc.includes("IATA airline code"),
+		"AirlineID.doc should describe IATA code",
+	);
+
+	// propertyType patch: Name.doc should be updated
+	assert.ok(
+		typeof elements.Name.doc === "string" && elements.Name.doc.includes("IATA"),
+		"Name.doc should reference IATA registration",
+	);
+
+	// entityType patch: AirlineService.Airport.doc should be updated
+	const airport = definitions["AirlineService.Airport"];
+	assert.ok(airport, "AirlineService.Airport should exist");
+	assert.ok(
+		typeof airport.doc === "string" &&
+			airport.doc.includes("IATA airport code"),
+		"AirlineService.Airport.doc should describe IATA airport code",
+	);
+});
+
+// ─── CSDL JSON selector tests ────────────────────────────────────────────────
+
+test("applies entityType + propertyType + operation selectors (CSDL JSON) to OData CSDL JSON document", async () => {
+	const overlay = await loadJsonFixture<ORDOverlay>(
+		"examples/overlay/edmx-example-service.overlay.json",
+	);
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
+	);
+
+	// The overlay targets "edmx" but the same patches apply to the CSDL JSON representation.
+	// We override definitionType via context and skip the target-match check.
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: false,
+		context: {
+			definitionType: "csdl-json",
+		},
+	}) as Record<string, unknown>;
+
+	const demoNs = merged["OData.Demo"] as Record<
+		string,
+		Record<string, unknown>
+	>;
+
+	// entityType patch: Customer should have @Core.Description
+	const customer = demoNs.Customer;
+	assert.ok(customer, "Customer entity type should exist");
+	assert.ok(
+		typeof customer["@Core.Description"] === "string" &&
+			customer["@Core.Description"].includes("person"),
+		`Customer should have @Core.Description, got: ${customer["@Core.Description"]}`,
+	);
+
+	// propertyType patch: Customer.CountryName should have updated @Core.Description
+	const countryName = customer.CountryName as Record<string, unknown>;
+	assert.ok(
+		typeof countryName["@Core.Description"] === "string" &&
+			countryName["@Core.Description"].includes("Country"),
+		"CountryName should have @Core.Description",
+	);
+
+	// propertyType patch: Customer.Fax should have @Core.Revisions
+	const fax = customer.Fax as Record<string, unknown>;
+	assert.ok(
+		Array.isArray(fax["@Core.Revisions"]),
+		"Fax should have @Core.Revisions array",
+	);
+	const firstRevision = (
+		fax["@Core.Revisions"] as Record<string, unknown>[]
+	)[0];
+	assert.equal(firstRevision.Kind, "Deprecated");
+
+	// entityType patch: Product should have @Core.Description
+	const product = demoNs.Product;
+	assert.ok(
+		typeof product["@Core.Description"] === "string" &&
+			product["@Core.Description"].includes("sellable"),
+		"Product should have @Core.Description",
+	);
+
+	// entityType patch: LeaveRequest should have @Core.Description
+	const leaveRequest = demoNs.LeaveRequest;
+	assert.ok(
+		typeof leaveRequest["@Core.Description"] === "string",
+		"LeaveRequest should have @Core.Description",
+	);
+
+	// operation patch: Approval action overload should have @Core.Description
+	const approvalOverloads = demoNs.Approval as unknown as Array<
+		Record<string, unknown>
+	>;
+	assert.ok(Array.isArray(approvalOverloads), "Approval should be an array");
+	assert.ok(
+		typeof approvalOverloads[0]["@Core.Description"] === "string" &&
+			approvalOverloads[0]["@Core.Description"].includes("leave request"),
+		"Approval should have @Core.Description",
+	);
+
+	// operation patch: Rejection action should have @Core.Description
+	const rejectionOverloads = demoNs.Rejection as unknown as Array<
+		Record<string, unknown>
+	>;
+	assert.ok(
+		typeof rejectionOverloads[0]["@Core.Description"] === "string" &&
+			rejectionOverloads[0]["@Core.Description"].includes("rejection reason"),
+		"Rejection should have @Core.Description",
+	);
+});
+
+// ─── EDMX XML selector tests ─────────────────────────────────────────────────
+
+test("applies entityType + propertyType + operation selectors (EDMX) to OData EDMX XML document", async () => {
+	const overlay = await loadJsonFixture<ORDOverlay>(
+		"examples/overlay/edmx-example-service.overlay.json",
+	);
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/ExampleService.edmx.xml",
+	);
+
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, {
+		noMatchBehavior: "error",
+	});
+
+	// Re-parse output to verify annotations were added
+	const { XMLParser } = await import("fast-xml-parser");
+	const parser = new XMLParser({
+		ignoreAttributes: false,
+		attributeNamePrefix: "@_",
+		parseAttributeValue: false,
+		isArray: (tagName) =>
+			[
+				"Schema",
+				"EntityType",
+				"ComplexType",
+				"Action",
+				"Function",
+				"Property",
+				"NavigationProperty",
+				"Annotation",
+				"PropertyValue",
+				"Record",
+				"Parameter",
+			].includes(tagName),
+	});
+
+	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
+	const edmx = tree["edmx:Edmx"] as Record<string, unknown>;
+	const ds = edmx["edmx:DataServices"] as Record<string, unknown>;
+	const schema = (ds.Schema as unknown[])[0] as Record<string, unknown>;
+
+	// entityType patch: Customer should have Annotation for Core.Description
+	const entityTypes = schema.EntityType as Array<Record<string, unknown>>;
+	const customer = entityTypes.find((e) => e["@_Name"] === "Customer");
+	assert.ok(customer, "Customer EntityType should exist");
+	const customerAnnotations = customer.Annotation as Array<
+		Record<string, unknown>
+	>;
+	assert.ok(
+		Array.isArray(customerAnnotations),
+		"Customer should have Annotation array",
+	);
+	const coreDescAnnotation = customerAnnotations.find(
+		(a) => a["@_Term"] === "Core.Description",
+	);
+	assert.ok(
+		coreDescAnnotation,
+		"Customer should have Core.Description annotation",
+	);
+	assert.ok(
+		typeof coreDescAnnotation["String"] === "string" &&
+			(coreDescAnnotation["String"] as string).includes("person"),
+		"Customer Core.Description should mention person",
+	);
+
+	// propertyType patch: Customer.Fax should have Core.Revisions annotation
+	const faxProp = (customer.Property as Array<Record<string, unknown>>).find(
+		(p) => p["@_Name"] === "Fax",
+	);
+	assert.ok(faxProp, "Fax property should exist on Customer");
+	const faxAnnotations = faxProp.Annotation as Array<Record<string, unknown>>;
+	assert.ok(
+		Array.isArray(faxAnnotations),
+		"Fax property should have Annotation array",
+	);
+	const revisionsAnnotation = faxAnnotations.find(
+		(a) => a["@_Term"] === "Core.Revisions",
+	);
+	assert.ok(revisionsAnnotation, "Fax should have Core.Revisions annotation");
+
+	// operation patch: Approval Action should have Core.Description annotation
+	const actions = schema.Action as Array<Record<string, unknown>>;
+	const approval = actions.find((a) => a["@_Name"] === "Approval");
+	assert.ok(approval, "Approval Action should exist");
+	const approvalAnnotations = approval.Annotation as Array<
+		Record<string, unknown>
+	>;
+	assert.ok(
+		Array.isArray(approvalAnnotations),
+		"Approval Action should have Annotation array",
+	);
+	const approvalDesc = approvalAnnotations.find(
+		(a) => a["@_Term"] === "Core.Description",
+	);
+	assert.ok(approvalDesc, "Approval should have Core.Description annotation");
+});
+
+// ─── BusinessPartner EDMX overlay tests ──────────────────────────────────────
+
+test("applies business-partner EDMX overlay: entityType and propertyType patches with various annotation shapes", async () => {
+	const overlay = await loadJsonFixture<ORDOverlay>(
+		"examples/overlay/edmx-business-partner.overlay.json",
+	);
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/BusinessPartner.edmx.xml",
+	);
+
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, {
+		noMatchBehavior: "error",
+	});
+
+	const { XMLParser } = await import("fast-xml-parser");
+	const parser = new XMLParser({
+		ignoreAttributes: false,
+		attributeNamePrefix: "@_",
+		parseAttributeValue: false,
+		isArray: (tagName) =>
+			[
+				"Schema",
+				"EntityType",
+				"ComplexType",
+				"Action",
+				"Function",
+				"Property",
+				"NavigationProperty",
+				"Annotation",
+				"PropertyValue",
+				"Record",
+				"Collection",
+			].includes(tagName),
+	});
+
+	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
+	assert.ok(tree["edmx:Edmx"], "output should be well-formed EDMX");
+
+	const schema = (
+		(tree["edmx:Edmx"] as Record<string, unknown>)[
+			"edmx:DataServices"
+		] as Record<string, unknown>
+	).Schema as Array<Record<string, unknown>>;
+	const entityTypes = schema[0].EntityType as Array<Record<string, unknown>>;
+	const findET = (name: string) =>
+		entityTypes.find((e) => e["@_Name"] === name);
+	const findProp = (et: Record<string, unknown>, name: string) =>
+		(et.Property as Array<Record<string, unknown>>).find(
+			(p) => p["@_Name"] === name,
+		);
+	const getAnns = (el: Record<string, unknown>) =>
+		(el.Annotation as Array<Record<string, unknown>>) ?? [];
+
+	// patch 1: entityType A_BusinessPartnerType gets Core.Description and Core.LongDescription
+	const bpET = findET("A_BusinessPartnerType");
+	assert.ok(bpET, "A_BusinessPartnerType should exist");
+	const bpAnns = getAnns(bpET);
+	assert.ok(
+		bpAnns.some((a) => a["@_Term"] === "Core.Description"),
+		"A_BusinessPartnerType should have Core.Description",
+	);
+	assert.ok(
+		bpAnns.some((a) => a["@_Term"] === "Core.LongDescription"),
+		"A_BusinessPartnerType should have Core.LongDescription",
+	);
+	const coreDescAnn = bpAnns.find((a) => a["@_Term"] === "Core.Description");
+	assert.ok(
+		typeof (coreDescAnn as Record<string, unknown>)?.String === "string" &&
+			((coreDescAnn as Record<string, unknown>).String as string) !== "",
+		"Core.Description should have a non-empty <String> child",
+	);
+
+	// patch 2: LegacySearchTerm1 gets Core.Revisions as Collection/Record/PropertyValue
+	const legacyProp = findProp(bpET, "LegacySearchTerm1");
+	assert.ok(legacyProp, "LegacySearchTerm1 should exist");
+	const legacyAnns = getAnns(legacyProp);
+	const revisionsAnn = legacyAnns.find((a) => a["@_Term"] === "Core.Revisions");
+	assert.ok(revisionsAnn, "LegacySearchTerm1 should have Core.Revisions");
+	const collection = (revisionsAnn as Record<string, unknown>)
+		.Collection as Array<Record<string, unknown>>;
+	assert.ok(
+		Array.isArray(collection) && collection.length > 0,
+		"Core.Revisions should have a Collection",
+	);
+	const records = collection[0].Record as Array<Record<string, unknown>>;
+	assert.ok(
+		Array.isArray(records) && records.length > 0,
+		"Collection should contain Records",
+	);
+	const pvs = records[0].PropertyValue as Array<Record<string, unknown>>;
+	const versionPV = pvs.find((pv) => pv["@_Property"] === "Version");
+	assert.ok(versionPV, "Record should have Version PropertyValue");
+	assert.equal(
+		(versionPV as Record<string, unknown>).String,
+		"2.0.0",
+		"Version should be 2.0.0",
+	);
+	const kindPV = pvs.find((pv) => pv["@_Property"] === "Kind");
+	assert.equal(
+		(kindPV as Record<string, unknown>).String,
+		"Deprecated",
+		"Kind should be Deprecated",
+	);
+
+	// patch 3: CreditScore gets Core.Description (String), Common.FieldControl (EnumMember), PersonalData.IsPotentiallyPersonalData (Bool)
+	const creditProp = findProp(bpET, "CreditScore");
+	assert.ok(creditProp, "CreditScore should exist");
+	const creditAnns = getAnns(creditProp);
+	assert.ok(
+		creditAnns.some((a) => a["@_Term"] === "Core.Description"),
+		"CreditScore should have Core.Description",
+	);
+
+	const fieldControlAnn = creditAnns.find(
+		(a) => a["@_Term"] === "Common.FieldControl",
+	);
+	assert.ok(fieldControlAnn, "CreditScore should have Common.FieldControl");
+	assert.equal(
+		(fieldControlAnn as Record<string, unknown>).EnumMember,
+		"Common.FieldControlType/ReadOnly",
+		"Common.FieldControl should use EnumMember",
+	);
+
+	const personalDataAnn = creditAnns.find(
+		(a) => a["@_Term"] === "PersonalData.IsPotentiallyPersonalData",
+	);
+	assert.ok(
+		personalDataAnn,
+		"CreditScore should have PersonalData.IsPotentiallyPersonalData",
+	);
+	assert.equal(
+		(personalDataAnn as Record<string, unknown>)["@_Bool"],
+		"true",
+		"PersonalData.IsPotentiallyPersonalData Bool should be 'true' (regression: must not collapse to bare attribute)",
+	);
+
+	// negative: SearchTerm1 and A_BusinessPartnerAddressType should not be patched
+	const searchProp = findProp(bpET, "SearchTerm1");
+	assert.ok(searchProp, "SearchTerm1 should exist");
+	assert.equal(
+		getAnns(searchProp).length,
+		0,
+		"SearchTerm1 should have no annotations",
+	);
+
+	const addrET = findET("A_BusinessPartnerAddressType");
+	assert.ok(addrET, "A_BusinessPartnerAddressType should exist");
+	assert.equal(
+		getAnns(addrET).length,
+		0,
+		"A_BusinessPartnerAddressType should have no annotations",
+	);
+});
+
+// ─── DEFECT_0001 EDMX overlay tests ──────────────────────────────────────────
+
+test("applies DEFECT EDMX overlay to real SAP EDMX: entity and property annotations injected, pre-existing annotations preserved", async () => {
+	const overlay: ORDOverlay = {
+		ordOverlay: "0.1",
+		ordId: "sap.foo:overlay:defect-odata:v1",
+		target: {
+			ordId: "sap.foo:apiResource:DefectODataV4:v1",
+			definitionType: "edmx",
+		},
+		patches: [
+			{
+				action: "merge",
+				selector: { entityType: "Defect_Type" },
+				data: {
+					"@Core.Description":
+						"Represents a production defect recorded during inspection or manufacturing. A defect is linked to an inspection lot and may initiate a quality issue resolution workflow.",
+					"@Core.LongDescription":
+						"Defects are the central entity for quality management. Each defect records the defect code, category, quantity, and lifecycle status. Defects may be associated with manufacturing orders, work centers, and inspection characteristics.",
+				} as never,
+			},
+			{
+				action: "merge",
+				selector: { propertyType: "DefectText", entityType: "Defect_Type" },
+				data: {
+					"@Core.Description":
+						"Short human-readable description of the defect. Used for display in defect lists and notifications.",
+				} as never,
+			},
+			{
+				action: "merge",
+				selector: {
+					propertyType: "DefectLifecycleStatus",
+					entityType: "Defect_Type",
+				},
+				data: {
+					"@Core.Description":
+						"Current lifecycle state of the defect. Allowed transitions are controlled by the bound actions SetDefectLifecycleStatusToCompleted, SetDefectLifecycleStatusToInProcess, and SetDefectLifecycleStatusToNotRelevant.",
+				} as never,
+			},
+			{
+				action: "merge",
+				selector: {
+					propertyType: "QualityIssueReference",
+					entityType: "Defect_Type",
+				},
+				data: {
+					"@Core.Description":
+						"Optional external reference number linking this defect to a quality issue in an external system (e.g. a ticket or quality notification ID).",
+				} as never,
+			},
+			{
+				action: "merge",
+				selector: { entityType: "DefectDetailedDescription_Type" },
+				data: {
+					"@Core.Description":
+						"Long-text description attached to a defect, supporting multiple languages. Each entry is keyed by the defect ID, a counter, and a language key.",
+				} as never,
+			},
+			{
+				action: "merge",
+				selector: {
+					propertyType: "DefectLongText",
+					entityType: "DefectDetailedDescription_Type",
+				},
+				data: {
+					"@Core.Description":
+						"Full rich-text long description of the defect in the language specified by the Language key. Stored as plain text, not HTML.",
+				} as never,
+			},
+		],
+	};
+	// Minimal but representative EDMX covering the two entity types targeted by the overlay.
+	// Includes a schema-level Annotation and outer <Annotations> blocks to verify they are preserved.
+	const xmlInput = `<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm"><edmx:DataServices><Schema Namespace="com.sap.gateway.srvd_a2x.api_defect.v0001" Alias="SAP__self"><Annotation Term="SAP__core.SchemaVersion" String="1.3.0"/><EntityType Name="Defect_Type"><Key><PropertyRef Name="DefectInternalID"/></Key><Property Name="DefectInternalID" Type="Edm.String" Nullable="false" MaxLength="12"/><Property Name="DefectText" Type="Edm.String" Nullable="false" MaxLength="40"/><Property Name="DefectLifecycleStatus" Type="Edm.String" Nullable="false" MaxLength="2"/><Property Name="QualityIssueReference" Type="Edm.String" Nullable="false" MaxLength="40"/></EntityType><EntityType Name="DefectDetailedDescription_Type"><Key><PropertyRef Name="DefectInternalID"/><PropertyRef Name="LongTextInternalNumber"/><PropertyRef Name="Language"/></Key><Property Name="DefectInternalID" Type="Edm.String" Nullable="false" MaxLength="12"/><Property Name="LongTextInternalNumber" Type="Edm.Int16" Nullable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2"/><Property Name="DefectLongText" Type="Edm.String" Nullable="false"/></EntityType><Annotations Target="SAP__self.Defect_Type/DefectInternalID"><Annotation Term="SAP__common.Label" String="Internal Defect ID"/></Annotations></Schema></edmx:DataServices></edmx:Edmx>`;
+
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, {
+		noMatchBehavior: "error",
+	});
+
+	const { XMLParser } = await import("fast-xml-parser");
+	const ALWAYS = new Set([
+		"Schema",
+		"EntityType",
+		"ComplexType",
+		"Action",
+		"Function",
+		"Property",
+		"NavigationProperty",
+		"Annotation",
+		"PropertyValue",
+		"Record",
+		"Annotations",
+	]);
+	const parser = new XMLParser({
+		ignoreAttributes: false,
+		attributeNamePrefix: "@_",
+		parseAttributeValue: false,
+		isArray: (tagName) => ALWAYS.has(tagName),
+	});
+
+	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
+	assert.ok(tree["edmx:Edmx"], "output should be well-formed EDMX");
+
+	const schema = (
+		(tree["edmx:Edmx"] as Record<string, unknown>)[
+			"edmx:DataServices"
+		] as Record<string, unknown>
+	).Schema as Array<Record<string, unknown>>;
+	const entityTypes = schema[0].EntityType as Array<Record<string, unknown>>;
+	const findET = (name: string) =>
+		entityTypes.find((e) => e["@_Name"] === name);
+	const findProp = (et: Record<string, unknown>, name: string) =>
+		(et.Property as Array<Record<string, unknown>>).find(
+			(p) => p["@_Name"] === name,
+		);
+	const getAnns = (el: Record<string, unknown>) =>
+		(el.Annotation as Array<Record<string, unknown>>) ?? [];
+	const findAnn = (el: Record<string, unknown>, term: string) =>
+		getAnns(el).find((a) => a["@_Term"] === term);
+
+	// patch 1: Defect_Type gets Core.Description and Core.LongDescription
+	const defectET = findET("Defect_Type");
+	assert.ok(defectET, "Defect_Type should exist");
+	const coreDescAnn = findAnn(defectET, "Core.Description");
+	assert.ok(coreDescAnn, "Defect_Type should have Core.Description");
+	assert.ok(
+		typeof (coreDescAnn as Record<string, unknown>).String === "string" &&
+			((coreDescAnn as Record<string, unknown>).String as string).includes(
+				"defect",
+			),
+		"Core.Description should mention 'defect'",
+	);
+	assert.ok(
+		findAnn(defectET, "Core.LongDescription"),
+		"Defect_Type should have Core.LongDescription",
+	);
+
+	// patch 2: Defect_Type.DefectText gets Core.Description
+	const defectTextProp = findProp(defectET, "DefectText");
+	assert.ok(defectTextProp, "DefectText property should exist");
+	assert.ok(
+		findAnn(defectTextProp, "Core.Description"),
+		"DefectText should have Core.Description",
+	);
+
+	// patch 3: Defect_Type.DefectLifecycleStatus gets Core.Description
+	const statusProp = findProp(defectET, "DefectLifecycleStatus");
+	assert.ok(statusProp, "DefectLifecycleStatus should exist");
+	assert.ok(
+		findAnn(statusProp, "Core.Description"),
+		"DefectLifecycleStatus should have Core.Description",
+	);
+
+	// patch 4: Defect_Type.QualityIssueReference gets Core.Description
+	const qualityProp = findProp(defectET, "QualityIssueReference");
+	assert.ok(qualityProp, "QualityIssueReference should exist");
+	assert.ok(
+		findAnn(qualityProp, "Core.Description"),
+		"QualityIssueReference should have Core.Description",
+	);
+
+	// patch 5: DefectDetailedDescription_Type gets Core.Description
+	const ddET = findET("DefectDetailedDescription_Type");
+	assert.ok(ddET, "DefectDetailedDescription_Type should exist");
+	assert.ok(
+		findAnn(ddET, "Core.Description"),
+		"DefectDetailedDescription_Type should have Core.Description",
+	);
+
+	// patch 6: DefectDetailedDescription_Type.DefectLongText gets Core.Description
+	const longTextProp = findProp(ddET, "DefectLongText");
+	assert.ok(longTextProp, "DefectLongText should exist");
+	assert.ok(
+		findAnn(longTextProp, "Core.Description"),
+		"DefectLongText should have Core.Description",
+	);
+
+	// negative: properties without patches should have no inline annotations
+	const defectInternalProp = findProp(defectET, "DefectInternalID");
+	assert.ok(defectInternalProp, "DefectInternalID should exist");
+	assert.equal(
+		getAnns(defectInternalProp).length,
+		0,
+		"DefectInternalID must not acquire spurious annotations (pre-existing labels are in <Annotations> blocks, not inline)",
+	);
+
+	// pre-existing <Annotations> blocks (outer, not inline) should still be present in output
+	const outerAnnotations = schema[0].Annotations as Array<
+		Record<string, unknown>
+	>;
+	assert.ok(
+		Array.isArray(outerAnnotations) && outerAnnotations.length > 0,
+		"outer <Annotations> blocks should be preserved in output",
+	);
+	const schemaVersionAnn = schema[0].Annotation as Array<
+		Record<string, unknown>
+	>;
+	assert.ok(
+		Array.isArray(schemaVersionAnn) &&
+			schemaVersionAnn.some((a) => a["@_Term"] === "SAP__core.SchemaVersion"),
+		"schema-level SAP__core.SchemaVersion annotation should be preserved",
+	);
+});
+
+// ─── EDMX-specific unit tests ─────────────────────────────────────────────────
+
+test("EDMX: unmatched selector throws with noMatchBehavior error (default)", async () => {
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/BusinessPartner.edmx.xml",
+	);
+	const overlay = await loadJsonFixture<ORDOverlay>(
+		"examples/overlay/edmx-business-partner.overlay.json",
+	);
+
+	// Replace entity type name with one that doesn't exist to force no-match
+	const brokenOverlay: ORDOverlay = {
+		...overlay,
+		patches: [
+			{
+				action: "merge",
+				selector: { entityType: "NonExistent_Type" },
+				data: { "@Core.Description": "should not apply" } as never,
+			},
+		],
+	};
+
+	assert.throws(
+		() =>
+			applyOverlayToEdmxDocument(xmlInput, brokenOverlay, {
+				noMatchBehavior: "error",
+			}),
+		/did not match any target element/i,
+		"should throw when entityType selector finds no match",
+	);
+});
+
+test("EDMX: noMatchBehavior warn continues without throwing", async () => {
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/BusinessPartner.edmx.xml",
+	);
+	const overlay: ORDOverlay = {
+		ordOverlay: "0.1",
+		patches: [
+			{
+				action: "merge",
+				selector: { entityType: "NoSuchType" },
+				data: { "@Core.Description": "ignored" } as never,
+			},
+		],
+	};
+
+	// Should not throw
+	const result = applyOverlayToEdmxDocument(xmlInput, overlay, {
+		noMatchBehavior: "warn",
+	});
+	assert.ok(
+		typeof result === "string" && result.length > 0,
+		"output should be non-empty XML string",
+	);
+});
+
+test("EDMX: merging annotation that already exists replaces it, not duplicates", async () => {
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/ExampleService.edmx.xml",
+	);
+
+	// CountryName already has Core.Description inline in the fixture
+	const overlay: ORDOverlay = {
+		ordOverlay: "0.1",
+		patches: [
+			{
+				action: "merge",
+				selector: { propertyType: "CountryName", entityType: "Customer" },
+				data: { "@Core.Description": "Replaced description text" } as never,
+			},
+		],
+	};
+
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, {
+		noMatchBehavior: "error",
+	});
+
+	const { XMLParser } = await import("fast-xml-parser");
+	const parser = new XMLParser({
+		ignoreAttributes: false,
+		attributeNamePrefix: "@_",
+		parseAttributeValue: false,
+		isArray: (t) =>
+			["Schema", "EntityType", "Property", "Annotation"].includes(t),
+	});
+
+	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
+	const schema = (
+		(tree["edmx:Edmx"] as Record<string, unknown>)[
+			"edmx:DataServices"
+		] as Record<string, unknown>
+	).Schema as Array<Record<string, unknown>>;
+	const customerET = (
+		schema[0].EntityType as Array<Record<string, unknown>>
+	).find((e) => e["@_Name"] === "Customer");
+	const countryNameProp = (
+		customerET!.Property as Array<Record<string, unknown>>
+	).find((p) => p["@_Name"] === "CountryName");
+	const annotations =
+		(countryNameProp!.Annotation as Array<Record<string, unknown>>) ?? [];
+
+	const coreDescAnns = annotations.filter(
+		(a) => a["@_Term"] === "Core.Description",
+	);
+	assert.equal(
+		coreDescAnns.length,
+		1,
+		"Core.Description should appear exactly once (not duplicated)",
+	);
+	assert.equal(
+		(coreDescAnns[0] as Record<string, unknown>).String,
+		"Replaced description text",
+		"Core.Description should have the replacement value",
 	);
 });

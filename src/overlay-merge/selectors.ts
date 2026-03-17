@@ -45,24 +45,29 @@ export function resolveSelector(
 		return resolveOperationSelector(root, selector.operation, definitionType);
 	}
 
-	// TODO: implement entityType and propertyType selectors for OData CSDL.
-	// For edmx: find Property[@Name=propertyType] globally when unique, or scope lookup via
-	// EntityType[@Name=entityType] when entityType is provided.
-	// For csdl-json: find matching properties globally when unique, or under Schema.*.EntityType[entityType].
-	if (isJSONObject(selector) && "propertyType" in selector) {
-		throw new OverlayMergeError(
-			"Unsupported selector: propertyType. This merge script currently supports only jsonPath, ordId, and operation.",
+	if (isJSONObject(selector) && typeof selector.propertyType === "string") {
+		const entityTypeName =
+			typeof (selector as Record<string, unknown>).entityType === "string"
+				? (selector as { entityType: string }).entityType
+				: undefined;
+		return resolvePropertyTypeSelector(
+			root,
+			selector.propertyType,
+			entityTypeName,
+			definitionType,
 		);
 	}
 
-	if (isJSONObject(selector) && "entityType" in selector) {
-		throw new OverlayMergeError(
-			"Unsupported selector: entityType. This merge script currently supports only jsonPath, ordId, and operation.",
-		);
+	if (
+		isJSONObject(selector) &&
+		typeof selector.entityType === "string" &&
+		!("propertyType" in selector)
+	) {
+		return resolveEntityTypeSelector(root, selector.entityType, definitionType);
 	}
 
 	throw new OverlayMergeError(
-		"Unsupported selector. This merge script currently supports only jsonPath, ordId, and operation.",
+		"Unsupported selector. This merge script currently supports jsonPath, ordId, operation, entityType, and propertyType.",
 	);
 }
 
@@ -99,13 +104,17 @@ function resolveOperationSelector(
 		return resolveA2ASkill(root, operationName);
 	}
 
+	if (definitionType === "csdl-json") {
+		return resolveCsdlJsonOperation(root, operationName);
+	}
+
 	if (definitionType !== undefined) {
 		// Only Specification IDs (e.g. MCP) support the `operation` selector.
-		// Named constants for other formats (edmx, csdl-json, asyncapi-v2, etc.) do not.
+		// Named constants for other formats (asyncapi-v2, etc.) do not.
 		if (!isSpecificationId(definitionType)) {
 			throw new OverlayMergeError(
 				`The 'operation' selector is not supported for definitionType "${definitionType}". ` +
-					`Supported types are: openapi-v2, openapi-v3, openapi-v3.1+, a2a-agent-card, ` +
+					`Supported types are: openapi-v2, openapi-v3, openapi-v3.1+, a2a-agent-card, csdl-json, edmx (via EDMX API), ` +
 					`or any MCP Specification ID (e.g. "sap.foo:my-mcp-server:v1").`,
 			);
 		}
@@ -398,6 +407,326 @@ function resolvePath(
 	}
 
 	return current;
+}
+
+// ─── CSN Interop selectors ──────────────────────────────────────────────────
+
+/**
+ * Detects whether a JSON document is a CSN Interop document.
+ */
+function isCsnInteropDocument(root: Record<string, JSONValue>): boolean {
+	return typeof root.csnInteropEffective === "string";
+}
+
+/**
+ * Detects whether a JSON document is a CSDL JSON document.
+ */
+function isCsdlJsonDocument(root: Record<string, JSONValue>): boolean {
+	return typeof root.$Version === "string";
+}
+
+/**
+ * Dispatches an `entityType` selector to the correct format-specific resolver.
+ */
+function resolveEntityTypeSelector(
+	root: JSONValue,
+	entityTypeName: string,
+	definitionType: string | undefined,
+): NodeReference[] {
+	if (!isJSONObject(root)) {
+		throw new OverlayMergeError(
+			"entityType selector requires a JSON object as target document.",
+		);
+	}
+
+	const isCsn =
+		definitionType === "sap-csn-interop-effective-v1" ||
+		(definitionType === undefined && isCsnInteropDocument(root));
+	if (isCsn) {
+		return resolveCsnEntityType(root, entityTypeName);
+	}
+
+	const isCsdl =
+		definitionType === "csdl-json" ||
+		(definitionType === undefined && isCsdlJsonDocument(root));
+	if (isCsdl) {
+		return resolveCsdlJsonEntityType(root, entityTypeName);
+	}
+
+	if (definitionType === "edmx") {
+		throw new OverlayMergeError(
+			"EDMX (edmx) targets must be processed with applyOverlayToEdmxDocument, not applyOverlayToDocument.",
+		);
+	}
+
+	throw new OverlayMergeError(
+		`The 'entityType' selector is not supported for definitionType "${definitionType ?? "unknown"}". ` +
+			`Supported JSON-based formats are: csdl-json, sap-csn-interop-effective-v1.`,
+	);
+}
+
+/**
+ * Dispatches a `propertyType` selector to the correct format-specific resolver.
+ */
+function resolvePropertyTypeSelector(
+	root: JSONValue,
+	propertyName: string,
+	entityTypeName: string | undefined,
+	definitionType: string | undefined,
+): NodeReference[] {
+	if (!isJSONObject(root)) {
+		throw new OverlayMergeError(
+			"propertyType selector requires a JSON object as target document.",
+		);
+	}
+
+	const isCsn =
+		definitionType === "sap-csn-interop-effective-v1" ||
+		(definitionType === undefined && isCsnInteropDocument(root));
+	if (isCsn) {
+		return resolveCsnPropertyType(root, propertyName, entityTypeName);
+	}
+
+	const isCsdl =
+		definitionType === "csdl-json" ||
+		(definitionType === undefined && isCsdlJsonDocument(root));
+	if (isCsdl) {
+		return resolveCsdlJsonPropertyType(root, propertyName, entityTypeName);
+	}
+
+	if (definitionType === "edmx") {
+		throw new OverlayMergeError(
+			"EDMX (edmx) targets must be processed with applyOverlayToEdmxDocument, not applyOverlayToDocument.",
+		);
+	}
+
+	throw new OverlayMergeError(
+		`The 'propertyType' selector is not supported for definitionType "${definitionType ?? "unknown"}". ` +
+			`Supported JSON-based formats are: csdl-json, sap-csn-interop-effective-v1.`,
+	);
+}
+
+// ─── CSN Interop resolver implementations ────────────────────────────────────
+
+function resolveCsnEntityType(
+	root: Record<string, JSONValue>,
+	entityTypeName: string,
+): NodeReference[] {
+	const definitions = root.definitions;
+	if (!isJSONObject(definitions)) {
+		return [];
+	}
+
+	const target = definitions[entityTypeName];
+	if (target === undefined) {
+		return [];
+	}
+
+	return [
+		{
+			parent: definitions,
+			key: entityTypeName,
+			value: target,
+			path: `$.definitions['${entityTypeName}']`,
+		},
+	];
+}
+
+function resolveCsnPropertyType(
+	root: Record<string, JSONValue>,
+	propertyName: string,
+	entityTypeName: string | undefined,
+): NodeReference[] {
+	const definitions = root.definitions;
+	if (!isJSONObject(definitions)) {
+		return [];
+	}
+
+	if (entityTypeName !== undefined) {
+		const entity = definitions[entityTypeName];
+		if (!isJSONObject(entity)) {
+			return [];
+		}
+
+		const elements = entity.elements;
+		if (!isJSONObject(elements) || !(propertyName in elements)) {
+			return [];
+		}
+
+		return [
+			{
+				parent: elements,
+				key: propertyName,
+				value: elements[propertyName],
+				path: `$.definitions['${entityTypeName}'].elements['${propertyName}']`,
+			},
+		];
+	}
+
+	// Global scan across all definitions for a unique match
+	const matches: NodeReference[] = [];
+	for (const [defKey, defVal] of Object.entries(definitions)) {
+		if (!isJSONObject(defVal)) continue;
+		const elements = defVal.elements;
+		if (!isJSONObject(elements) || !(propertyName in elements)) continue;
+		matches.push({
+			parent: elements,
+			key: propertyName,
+			value: elements[propertyName],
+			path: `$.definitions['${defKey}'].elements['${propertyName}']`,
+		});
+	}
+
+	return matches;
+}
+
+// ─── CSDL JSON (OData) resolver implementations ──────────────────────────────
+
+/**
+ * Returns all namespace-level entries in a CSDL JSON document.
+ * These are non-`$`-prefixed keys whose values are objects (namespace schemas).
+ */
+function getCsdlJsonNamespaceEntries(
+	root: Record<string, JSONValue>,
+): Array<{ namespace: string; nsObj: Record<string, JSONValue> }> {
+	const result: Array<{ namespace: string; nsObj: Record<string, JSONValue> }> =
+		[];
+	for (const [key, value] of Object.entries(root)) {
+		if (!key.startsWith("$") && isJSONObject(value)) {
+			result.push({ namespace: key, nsObj: value });
+		}
+	}
+
+	return result;
+}
+
+function resolveCsdlJsonEntityType(
+	root: Record<string, JSONValue>,
+	entityTypeName: string,
+): NodeReference[] {
+	const namespaces = getCsdlJsonNamespaceEntries(root);
+	const matches: NodeReference[] = [];
+
+	for (const { namespace, nsObj } of namespaces) {
+		let localName: string;
+		if (entityTypeName.startsWith(`${namespace}.`)) {
+			// Qualified name: strip namespace prefix
+			localName = entityTypeName.substring(namespace.length + 1);
+		} else if (!entityTypeName.includes(".")) {
+			// Unqualified: try direct match
+			localName = entityTypeName;
+		} else {
+			// Qualified with a different namespace
+			continue;
+		}
+
+		const candidate = nsObj[localName];
+		if (!isJSONObject(candidate)) continue;
+
+		const kind = candidate["$Kind"];
+		if (kind === "EntityType" || kind === "ComplexType") {
+			matches.push({
+				parent: nsObj,
+				key: localName,
+				value: candidate,
+				path: `$['${namespace}']['${localName}']`,
+			});
+		}
+	}
+
+	return matches;
+}
+
+function resolveCsdlJsonPropertyType(
+	root: Record<string, JSONValue>,
+	propertyName: string,
+	entityTypeName: string | undefined,
+): NodeReference[] {
+	let entityRefs: NodeReference[];
+
+	if (entityTypeName !== undefined) {
+		entityRefs = resolveCsdlJsonEntityType(root, entityTypeName);
+	} else {
+		// Scan all EntityType and ComplexType definitions across all namespaces
+		const namespaces = getCsdlJsonNamespaceEntries(root);
+		entityRefs = [];
+		for (const { namespace, nsObj } of namespaces) {
+			for (const [key, value] of Object.entries(nsObj)) {
+				if (
+					isJSONObject(value) &&
+					(value["$Kind"] === "EntityType" || value["$Kind"] === "ComplexType")
+				) {
+					entityRefs.push({
+						parent: nsObj,
+						key,
+						value,
+						path: `$['${namespace}']['${key}']`,
+					});
+				}
+			}
+		}
+	}
+
+	const matches: NodeReference[] = [];
+	for (const entityRef of entityRefs) {
+		const entityObj = entityRef.value as Record<string, JSONValue>;
+		// Properties are non-`$` keys in the entity type object
+		if (propertyName in entityObj && !propertyName.startsWith("$")) {
+			matches.push({
+				parent: entityObj,
+				key: propertyName,
+				value: entityObj[propertyName],
+				path: `${entityRef.path}['${propertyName}']`,
+			});
+		}
+	}
+
+	return matches;
+}
+
+/**
+ * Resolves an `operation` selector against a CSDL JSON document.
+ * Matches Action and Function overload entries by namespace-qualified or unqualified name.
+ *
+ * In CSDL JSON, Action/Function overloads are stored as arrays:
+ * `{ "OData.Demo": { "Approval": [{ "$Kind": "Action", ... }] } }`
+ * Returns references to matching overload objects (first or all).
+ */
+function resolveCsdlJsonOperation(
+	root: Record<string, JSONValue>,
+	operationName: string,
+): NodeReference[] {
+	const namespaces = getCsdlJsonNamespaceEntries(root);
+	const matches: NodeReference[] = [];
+
+	for (const { namespace, nsObj } of namespaces) {
+		let localName: string;
+		if (operationName.startsWith(`${namespace}.`)) {
+			localName = operationName.substring(namespace.length + 1);
+		} else if (!operationName.includes(".")) {
+			localName = operationName;
+		} else {
+			continue;
+		}
+
+		const candidate = nsObj[localName];
+		if (!Array.isArray(candidate)) continue;
+
+		candidate.forEach((overload, index) => {
+			if (!isJSONObject(overload)) return;
+			const kind = overload["$Kind"];
+			if (kind === "Action" || kind === "Function") {
+				matches.push({
+					parent: candidate,
+					key: index,
+					value: overload,
+					path: `$['${namespace}']['${localName}'][${index}]`,
+				});
+			}
+		});
+	}
+
+	return matches;
 }
 
 export type { NodeReference };

@@ -168,7 +168,7 @@ test("validateOverlaySemantics validates deprecated definitionType values and JS
 	);
 });
 
-test("validateOverlaySemantics warns about ambiguous propertyType selectors and errors because OData support is not implemented", () => {
+test("validateOverlaySemantics warns about ambiguous propertyType selectors without entityType context", () => {
 	const overlay = createOrdOverlay({
 		target: {
 			definitionType: "csdl-json",
@@ -177,6 +177,7 @@ test("validateOverlaySemantics warns about ambiguous propertyType selectors and 
 			createOverlayPatch({
 				selector: {
 					propertyType: "BusinessPartnerFullName",
+					entityType: "BusinessPartner",
 				},
 				data: {
 					title: "patched",
@@ -187,19 +188,62 @@ test("validateOverlaySemantics warns about ambiguous propertyType selectors and 
 
 	const result = validateOverlaySemantics(overlay);
 
+	// No errors: propertyType is supported for csdl-json
+	assert.equal(
+		result.errors.filter((issue) => issue.message.includes("not supported"))
+			.length,
+		0,
+		"propertyType selector should not produce errors for csdl-json",
+	);
+
+	// Warn when propertyType is used without entityType for disambiguation
+	const overlayNoEntityType = createOrdOverlay({
+		target: {
+			definitionType: "csdl-json",
+		},
+		patches: [
+			createOverlayPatch({
+				selector: {
+					propertyType: "BusinessPartnerFullName",
+				},
+				data: { title: "patched" },
+			}),
+		],
+	});
+
+	const resultNoEntityType = validateOverlaySemantics(overlayNoEntityType);
 	assert.ok(
-		result.warnings.some((issue) =>
+		resultNoEntityType.warnings.some((issue) =>
 			issue.message.includes(
 				"propertyType selectors may need selector.entityType",
 			),
 		),
 	);
+});
+
+test("validateOverlaySemantics errors for entityType/propertyType selector on unsupported definitionType", () => {
+	const overlay = createOrdOverlay({
+		target: {
+			definitionType: "asyncapi-v2",
+		},
+		patches: [
+			createOverlayPatch({
+				selector: {
+					entityType: "Customer",
+				},
+				data: { title: "patched" },
+			}),
+		],
+	});
+
+	const result = validateOverlaySemantics(overlay);
 	assert.ok(
-		result.errors.some((issue) =>
-			issue.message.includes(
-				'The "propertyType" selector is not supported yet.',
-			),
+		result.errors.some(
+			(issue) =>
+				issue.message.includes("entityType") &&
+				issue.message.includes("asyncapi-v2"),
 		),
+		"entityType selector should error for asyncapi-v2",
 	);
 });
 

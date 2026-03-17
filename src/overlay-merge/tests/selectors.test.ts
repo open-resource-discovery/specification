@@ -32,17 +32,51 @@ test("resolveSelector requires ORD documents for ordId selectors", () => {
 	);
 });
 
-test("resolveSelector rejects unsupported OData selectors directly", () => {
+test("resolveSelector throws for entityType selector on unsupported target format", () => {
+	// An empty object with no $Version or csnInteropEffective — format unknown
 	assert.throws(
 		() => resolveSelector({} as JSONValue, { entityType: "BusinessPartner" }),
-		/Unsupported selector: entityType/,
+		/entityType.*not supported/i,
+	);
+
+	// Explicit unsupported definitionType
+	assert.throws(
+		() =>
+			resolveSelector(
+				{} as JSONValue,
+				{ entityType: "BusinessPartner" },
+				"openapi-v3",
+			),
+		/entityType.*not supported/i,
+	);
+});
+
+test("resolveSelector throws for propertyType selector on unsupported target format", () => {
+	// Explicit unsupported definitionType
+	assert.throws(
+		() =>
+			resolveSelector(
+				{} as JSONValue,
+				{ propertyType: "Name", entityType: "Customer" },
+				"openapi-v3",
+			),
+		/propertyType.*not supported/i,
+	);
+});
+
+test("resolveSelector throws for entityType/propertyType on edmx (must use EDMX-specific API)", () => {
+	assert.throws(
+		() => resolveSelector({} as JSONValue, { entityType: "Customer" }, "edmx"),
+		/applyOverlayToEdmxDocument/,
 	);
 
 	assert.throws(
 		() =>
-			resolveSelector({} as JSONValue, {
-				propertyType: "BusinessPartnerFullName",
-			}),
-		/Unsupported selector: propertyType/,
+			resolveSelector(
+				{} as JSONValue,
+				{ propertyType: "Name", entityType: "Customer" },
+				"edmx",
+			),
+		/applyOverlayToEdmxDocument/,
 	);
 });
