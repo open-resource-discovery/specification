@@ -877,3 +877,281 @@ test("EDMX: merging annotation that already exists replaces it, not duplicates",
 		"Core.Description should have the replacement value",
 	);
 });
+
+// ─── New concept-level selector tests ────────────────────────────────────────
+
+test("entitySet selector patches EntitySet in CSDL JSON", async () => {
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
+	);
+	const overlay: ORDOverlay = {
+		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description: "Test entitySet selector on CSDL JSON",
+		patches: [
+			{
+				action: "merge",
+				selector: { entitySet: "Customers" },
+				data: { "@Capabilities.InsertRestrictions": { "@Capabilities.Insertable": false } },
+			},
+		],
+	};
+
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: false,
+		context: { definitionType: "csdl-json" },
+	}) as Record<string, Record<string, Record<string, unknown>>>;
+
+	const container = merged["OData.Demo"].Container;
+	const customers = container.Customers as Record<string, unknown>;
+	assert.ok(customers, "Customers EntitySet should exist");
+	assert.ok(
+		customers["@Capabilities.InsertRestrictions"] !== undefined,
+		"Customers should have @Capabilities.InsertRestrictions after patch",
+	);
+});
+
+test("entitySet selector patches EntitySet in EDMX XML", async () => {
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/ExampleService.edmx.xml",
+	);
+	const overlay: ORDOverlay = {
+		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description: "Test entitySet selector on EDMX",
+		patches: [
+			{
+				action: "merge",
+				selector: { entitySet: "Customers" },
+				data: { "@Core.Description": "All customers" },
+			},
+		],
+	};
+
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, { noMatchBehavior: "error" });
+
+	const { XMLParser } = await import("fast-xml-parser");
+	const parser = new XMLParser({
+		ignoreAttributes: false,
+		attributeNamePrefix: "@_",
+		parseAttributeValue: false,
+		isArray: (tagName) => ["Schema", "EntitySet", "Annotation"].includes(tagName),
+	});
+	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
+	const schema = ((tree["edmx:Edmx"] as Record<string, unknown>)["edmx:DataServices"] as Record<string, unknown>).Schema as Array<Record<string, unknown>>;
+	const container = schema[0].EntityContainer as Record<string, unknown>;
+	const entitySets = container.EntitySet as Array<Record<string, unknown>>;
+	const customers = entitySets.find((es) => es["@_Name"] === "Customers");
+	assert.ok(customers, "Customers EntitySet should exist");
+	const annotations = customers!.Annotation as Array<Record<string, unknown>>;
+	assert.ok(Array.isArray(annotations), "Customers should have Annotation array");
+	assert.ok(
+		annotations.some((a) => a["@_Term"] === "Core.Description"),
+		"Customers should have Core.Description annotation",
+	);
+});
+
+test("namespace selector patches Schema namespace object in CSDL JSON", async () => {
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
+	);
+	const overlay: ORDOverlay = {
+		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description: "Test namespace selector on CSDL JSON",
+		patches: [
+			{
+				action: "merge",
+				selector: { namespace: "OData.Demo" },
+				data: { "@Core.Description": "OData Demo service" },
+			},
+		],
+	};
+
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: false,
+		context: { definitionType: "csdl-json" },
+	}) as Record<string, Record<string, unknown>>;
+
+	const ns = merged["OData.Demo"];
+	assert.ok(ns, "OData.Demo namespace should exist");
+	assert.equal(
+		ns["@Core.Description"],
+		"OData Demo service",
+		"Namespace should have @Core.Description after patch",
+	);
+});
+
+test("namespace selector patches Schema element in EDMX XML", async () => {
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/ExampleService.edmx.xml",
+	);
+	const overlay: ORDOverlay = {
+		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description: "Test namespace selector on EDMX",
+		patches: [
+			{
+				action: "merge",
+				selector: { namespace: "OData.Demo" },
+				data: { "@Core.Description": "OData Demo service" },
+			},
+		],
+	};
+
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, { noMatchBehavior: "error" });
+
+	const { XMLParser } = await import("fast-xml-parser");
+	const parser = new XMLParser({
+		ignoreAttributes: false,
+		attributeNamePrefix: "@_",
+		parseAttributeValue: false,
+		isArray: (tagName) => ["Schema", "Annotation"].includes(tagName),
+	});
+	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
+	const schema = ((tree["edmx:Edmx"] as Record<string, unknown>)["edmx:DataServices"] as Record<string, unknown>).Schema as Array<Record<string, unknown>>;
+	const annotations = schema[0].Annotation as Array<Record<string, unknown>>;
+	assert.ok(Array.isArray(annotations), "Schema should have Annotation array");
+	assert.ok(
+		annotations.some((a) => a["@_Term"] === "Core.Description"),
+		"Schema should have Core.Description annotation",
+	);
+});
+
+test("entityType selector resolves EnumType in CSDL JSON", async () => {
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
+	);
+	const overlay: ORDOverlay = {
+		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description: "Test EnumType via entityType selector",
+		patches: [
+			{
+				action: "merge",
+				selector: { entityType: "OData.Demo.Pattern" },
+				data: { "@Core.Description": "Visual pattern enum" },
+			},
+		],
+	};
+
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: false,
+		context: { definitionType: "csdl-json" },
+	}) as Record<string, Record<string, unknown>>;
+
+	const pattern = merged["OData.Demo"].Pattern as Record<string, unknown>;
+	assert.ok(pattern, "Pattern EnumType should exist");
+	assert.equal(
+		pattern["@Core.Description"],
+		"Visual pattern enum",
+		"Pattern EnumType should have @Core.Description",
+	);
+});
+
+test("propertyType + entityType selectors target EnumType member in CSDL JSON", async () => {
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
+	);
+	const overlay: ORDOverlay = {
+		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description: "Test EnumType member via propertyType selector",
+		patches: [
+			{
+				action: "merge",
+				selector: { propertyType: "Yellow", entityType: "OData.Demo.Pattern" },
+				data: { "@Core.Description": "A yellow colour pattern member" },
+			},
+		],
+	};
+
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: false,
+		context: { definitionType: "csdl-json" },
+	}) as Record<string, Record<string, unknown>>;
+
+	const pattern = merged["OData.Demo"].Pattern as Record<string, unknown>;
+	const yellow = pattern.Yellow as Record<string, unknown>;
+	assert.ok(yellow, "Yellow enum member should exist");
+	assert.equal(
+		yellow["@Core.Description"],
+		"A yellow colour pattern member",
+		"Yellow member should have @Core.Description",
+	);
+});
+
+test("parameter selector targets Action parameter in CSDL JSON", async () => {
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
+	);
+	const overlay: ORDOverlay = {
+		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description: "Test parameter selector on CSDL JSON",
+		patches: [
+			{
+				action: "merge",
+				selector: { parameter: "Reason", operation: "OData.Demo.Rejection" },
+				data: { "@Core.Description": "Human-readable rejection reason" },
+			},
+		],
+	};
+
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: false,
+		context: { definitionType: "csdl-json" },
+	}) as Record<string, Record<string, unknown>>;
+
+	const rejection = (merged["OData.Demo"].Rejection as Array<Record<string, unknown>>)[0];
+	const params = rejection["$Parameter"] as Array<Record<string, unknown>>;
+	const reason = params.find((p) => p["$Name"] === "Reason");
+	assert.ok(reason, "Reason parameter should exist");
+	assert.equal(
+		reason["@Core.Description"],
+		"Human-readable rejection reason",
+		"Reason parameter should have @Core.Description",
+	);
+});
+
+test("parameter selector targets Action Parameter in EDMX XML", async () => {
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/ExampleService.edmx.xml",
+	);
+	const overlay: ORDOverlay = {
+		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description: "Test parameter selector on EDMX",
+		patches: [
+			{
+				action: "merge",
+				selector: { parameter: "Reason", operation: "OData.Demo.Rejection" },
+				data: { "@Core.Description": "Human-readable rejection reason" },
+			},
+		],
+	};
+
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, { noMatchBehavior: "error" });
+
+	const { XMLParser } = await import("fast-xml-parser");
+	const parser = new XMLParser({
+		ignoreAttributes: false,
+		attributeNamePrefix: "@_",
+		parseAttributeValue: false,
+		isArray: (tagName) => ["Schema", "Action", "Parameter", "Annotation"].includes(tagName),
+	});
+	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
+	const schema = ((tree["edmx:Edmx"] as Record<string, unknown>)["edmx:DataServices"] as Record<string, unknown>).Schema as Array<Record<string, unknown>>;
+	const actions = schema[0].Action as Array<Record<string, unknown>>;
+	const rejection = actions.find((a) => a["@_Name"] === "Rejection");
+	assert.ok(rejection, "Rejection action should exist");
+	const params = rejection!.Parameter as Array<Record<string, unknown>>;
+	const reason = params.find((p) => p["@_Name"] === "Reason");
+	assert.ok(reason, "Reason parameter should exist on Rejection");
+	const annotations = reason!.Annotation as Array<Record<string, unknown>>;
+	assert.ok(Array.isArray(annotations), "Reason should have Annotation array");
+	assert.ok(
+		annotations.some((a) => a["@_Term"] === "Core.Description"),
+		"Reason should have Core.Description annotation",
+	);
+});

@@ -458,6 +458,48 @@ function validateSelectorSemantics(
 
 		return;
 	}
+
+	if (selectorKind === "entitySet") {
+		if (definitionType !== undefined && !supportsEntitySetSelector(definitionType)) {
+			errors.push(
+				createIssue(
+					"error",
+					selectorPath,
+					`The "entitySet" selector is only supported for OData metadata (edmx, csdl-json) targets, not for definitionType "${definitionType}".`,
+				),
+			);
+		}
+
+		return;
+	}
+
+	if (selectorKind === "namespace") {
+		if (definitionType !== undefined && !supportsNamespaceSelector(definitionType)) {
+			errors.push(
+				createIssue(
+					"error",
+					selectorPath,
+					`The "namespace" selector is only supported for OData metadata (edmx, csdl-json) targets, not for definitionType "${definitionType}".`,
+				),
+			);
+		}
+
+		return;
+	}
+
+	if (selectorKind === "parameter" || selectorKind === "returnType") {
+		if (definitionType !== undefined && !supportsParameterSelector(definitionType)) {
+			errors.push(
+				createIssue(
+					"error",
+					selectorPath,
+					`The "${selectorKind}" selector is only supported for OpenAPI and OData metadata (edmx, csdl-json) targets, not for definitionType "${definitionType}".`,
+				),
+			);
+		}
+
+		return;
+	}
 }
 
 function validateJsonPathExpression(
@@ -568,6 +610,22 @@ function supportsEntityTypeSelector(definitionType: string): boolean {
 	);
 }
 
+function supportsEntitySetSelector(definitionType: string): boolean {
+	return definitionType === "edmx" || definitionType === "csdl-json";
+}
+
+function supportsNamespaceSelector(definitionType: string): boolean {
+	return definitionType === "edmx" || definitionType === "csdl-json";
+}
+
+function supportsParameterSelector(definitionType: string): boolean {
+	return (
+		isOpenApiDefinitionType(definitionType) ||
+		definitionType === "edmx" ||
+		definitionType === "csdl-json"
+	);
+}
+
 function isOpenApiDefinitionType(definitionType: string): boolean {
 	return (
 		definitionType === "openapi-v2" ||
@@ -588,6 +646,10 @@ type SelectorKind =
 	| "operation"
 	| "entityType"
 	| "propertyType"
+	| "entitySet"
+	| "namespace"
+	| "parameter"
+	| "returnType"
 	| "unknown";
 
 function getSelectorKind(
@@ -601,8 +663,29 @@ function getSelectorKind(
 		return "ordId";
 	}
 
-	if (isJSONObject(selector) && typeof selector.operation === "string") {
+	if (
+		isJSONObject(selector) &&
+		typeof selector.operation === "string" &&
+		!("parameter" in selector) &&
+		!("returnType" in selector)
+	) {
 		return "operation";
+	}
+
+	if (
+		isJSONObject(selector) &&
+		typeof selector.operation === "string" &&
+		typeof (selector as Record<string, unknown>).parameter === "string"
+	) {
+		return "parameter";
+	}
+
+	if (
+		isJSONObject(selector) &&
+		typeof selector.operation === "string" &&
+		(selector as Record<string, unknown>).returnType === true
+	) {
+		return "returnType";
 	}
 
 	if (
@@ -615,6 +698,14 @@ function getSelectorKind(
 
 	if (isJSONObject(selector) && typeof selector.propertyType === "string") {
 		return "propertyType";
+	}
+
+	if (isJSONObject(selector) && typeof selector.entitySet === "string") {
+		return "entitySet";
+	}
+
+	if (isJSONObject(selector) && typeof selector.namespace === "string") {
+		return "namespace";
 	}
 
 	return "unknown";

@@ -1,5 +1,5 @@
 {
-  "description": "⚠️ ALPHA: This specification is in alpha and subject to change.\n\nThe ORD Overlay is an optional ORD model extension.\n\nIt allows patching both ORD resources and referenced resource definition files (e.g. OpenAPI,\nAsyncAPI, OData CSDL, MCP Agent Cards) without modifying the original source files.\n\nOverlay files can be provided through the ORD configuration endpoint\n(https://open-resource-discovery.org/spec-v1/index#ord-configuration-endpoint),\nor attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`.\n\nPatches use concept-level selectors that are independent of the internal structure of the target format,\nmaking overlays resilient to format changes (e.g. OpenAPI 3.0 → 3.1, OData CSDL JSON → XML).\nA JSON Path selector is available as a generic fallback for any JSON/YAML-based target format.\n\nConceptual selector levels (from high to low):\n  - Resource level: ORD ID (resolved via the ORD registry)\n  - Operation level: operation (OpenAPI `operationId`, MCP tool `name`, OData Action/Function name)\n  - Entity type level: entityType (OData EntityType or CSN Interop entity definition — targets the type definition, not an EntitySet)\n  - Property type level: propertyType (OData Property/NavigationProperty on an EntityType or ComplexType, or CSN Interop element)\n  - Generic fallback: jsonPath (any JSON/YAML document, structure-bound)\n\nSelector support by metadata format:\n  - `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`), MCP (identified via a Specification ID in `definitionType`), and OData (`edmx`, `csdl-json`) for Action and Function names.\n  - `entityType` and `propertyType`: OData (`edmx` for v2/v4, `csdl-json` for v4) and CSN Interop (`sap-csn-interop-effective-v1`). For OData, `entityType` targets the EntityType definition — not the EntitySet in the container.\n  - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).\n  - `ordId`: ORD resource metadata level (patching ORD resources themselves).\n\nPatch data format for OData:\n  When patching OData metadata (`edmx` or `csdl-json` targets), the `data` value in each patch\n  MUST be expressed in CSDL JSON annotation format, regardless of whether the actual target file\n  is EDMX XML or CSDL JSON.\n  See: https://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html\n  Annotation keys follow the `@TermName` convention (e.g. `@Core.Description`).\n  For available standard vocabulary terms, see:\n  https://docs.oasis-open.org/odata/odata-vocabularies/v4.0/odata-vocabularies-v4.0.html\n  When the target file is EDMX XML (`edmx`), the overlay merge implementation converts\n  the CSDL JSON patch data to equivalent `<Annotation>` XML elements in the output.\n\nIntended use and compatibility:\n  - Overlays MUST NOT introduce breaking / incompatible changes to the original API or metadata.\n  - Typical use-cases are non-breaking enrichments: adding extensions, annotations, or updating\n    non-critical properties such as descriptions, summaries, or display names.\n  - An exception is intentionally restricting exposure: an overlay MAY remove or hide elements\n    (e.g. operations, fields) that should not be visible in a given context or to a given audience.\n\nValidation assumption:\n  - overlays and overlay application assume the selected target document is already valid\n    for its native metadata format.\n  - the merge process does not fully validate all target metadata formats.\n  - the merged output should be validated again with the corresponding format-specific tooling.",
+  "description": "⚠️ ALPHA: This specification is in alpha and subject to change.\n\nThe ORD Overlay is an optional ORD model extension.\n\nIt allows patching both ORD resources and referenced resource definition files (e.g. OpenAPI,\nAsyncAPI, OData CSDL, MCP Agent Cards) without modifying the original source files.\n\nOverlay files can be provided through the ORD configuration endpoint\n(https://open-resource-discovery.org/spec-v1/index#ord-configuration-endpoint),\nor attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`.\n\nPatches use concept-level selectors that are independent of the internal structure of the target format,\nmaking overlays resilient to format changes (e.g. OpenAPI 3.0 → 3.1, OData CSDL JSON → XML).\nA JSON Path selector is available as a generic fallback for any JSON/YAML-based target format.\n\nConceptual selector levels (from high to low):\n  - Resource level: ORD ID (resolved via the ORD registry)\n  - Namespace level: namespace (OData Schema by namespace — targets Schema-level annotations)\n  - Operation level: operation (OpenAPI `operationId`, MCP tool `name`, OData Action/Function/FunctionImport name)\n  - Entity type level: entityType (OData EntityType, ComplexType, or EnumType; CSN Interop entity definition)\n  - Entity set level: entitySet (OData EntitySet in EntityContainer)\n  - Property/member type level: propertyType (OData Property/NavigationProperty on an EntityType or ComplexType; OData EnumType member; CSN Interop element)\n  - Parameter level: parameter (parameter of an OData Action/Function/FunctionImport, or OpenAPI operation parameter, requires `operation` context)\n  - Return type level: returnType (return type of an OData Action/Function, requires `operation` context)\n  - Generic fallback: jsonPath (any JSON/YAML document, structure-bound)\n\nSelector support by metadata format:\n  - `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`), MCP (identified via a Specification ID in `definitionType`), A2A Agent Card, and OData (`edmx`, `csdl-json`) for Action, Function, and FunctionImport names.\n  - `entityType` and `propertyType`: OData (`edmx` for v2/v4, `csdl-json` for v4) and CSN Interop (`sap-csn-interop-effective-v1`). For OData, `entityType` targets EntityType, ComplexType, and EnumType definitions. `propertyType` targets properties on EntityType/ComplexType and members on EnumType.\n  - `entitySet`: OData (`edmx`, `csdl-json`) — targets EntitySet elements in EntityContainer.\n  - `namespace`: OData (`edmx`, `csdl-json`) — targets the Schema element by its namespace for Schema-level annotations (e.g. service description).\n  - `parameter`: OData (`edmx`, `csdl-json`) and OpenAPI — targets a named parameter on an Action/Function/FunctionImport or OpenAPI operation. Requires `operation` context.\n  - `returnType`: OData (`edmx`, `csdl-json`) — targets the ReturnType sub-element of an Action/Function. Requires `operation` context.\n  - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).\n  - `ordId`: ORD resource metadata level (patching ORD resources themselves).\n\nPatch data format for OData:\n  When patching OData metadata (`edmx` or `csdl-json` targets), the `data` value in each patch\n  MUST be expressed in CSDL JSON annotation format, regardless of whether the actual target file\n  is EDMX XML or CSDL JSON.\n  See: https://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html\n  Annotation keys follow the `@TermName` convention (e.g. `@Core.Description`).\n  For available standard vocabulary terms, see:\n  https://docs.oasis-open.org/odata/odata-vocabularies/v4.0/odata-vocabularies-v4.0.html\n  When the target file is EDMX XML (`edmx`), the overlay merge implementation converts\n  the CSDL JSON patch data to equivalent `<Annotation>` XML elements in the output.\n\nIntended use and compatibility:\n  - Overlays MUST NOT introduce breaking / incompatible changes to the original API or metadata.\n  - Typical use-cases are non-breaking enrichments: adding extensions, annotations, or updating\n    non-critical properties such as descriptions, summaries, or display names.\n  - An exception is intentionally restricting exposure: an overlay MAY remove or hide elements\n    (e.g. operations, fields) that should not be visible in a given context or to a given audience.\n\nValidation assumption:\n  - overlays and overlay application assume the selected target document is already valid\n    for its native metadata format.\n  - the merge process does not fully validate all target metadata formats.\n  - the merged output should be validated again with the corresponding format-specific tooling.",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
   "title": "ORD Overlay",
@@ -313,6 +313,18 @@
         },
         {
           "$ref": "#/definitions/OverlaySelectorByPropertyType"
+        },
+        {
+          "$ref": "#/definitions/OverlaySelectorByEntitySet"
+        },
+        {
+          "$ref": "#/definitions/OverlaySelectorByNamespace"
+        },
+        {
+          "$ref": "#/definitions/OverlaySelectorByParameter"
+        },
+        {
+          "$ref": "#/definitions/OverlaySelectorByReturnType"
         }
       ]
     },
@@ -329,7 +341,7 @@
           "type": "string",
           "minLength": 1,
           "pattern": "^\\$",
-          "description": "JSONPath expression targeting any location in a JSON/YAML-based target document.\nMUST start with `$`.\nThis is the generic fallback selector and is supported for all JSON/YAML-based metadata formats,\nincluding OpenAPI and MCP metadata files.",
+          "description": "JSONPath expression targeting any location in a JSON/YAML-based target document.\nMUST start with `$`.\nThis is the generic structural fallback selector, supported for all JSON/YAML-based formats:\n- `openapi-v2`, `openapi-v3`, `openapi-v3.1+`: targets any node in the OpenAPI document.\n- `a2a-agent-card`: targets any node in the A2A Agent Card JSON document.\n- `csdl-json`: targets any node in the OData CSDL JSON document.\n- MCP (any Specification ID): targets any node in the MCP-compatible JSON/YAML tool metadata.\n\nUse concept-level selectors (`operation`, `entityType`, etc.) when available, as they are\nresilient to structural differences between format versions. Reserve `jsonPath` for cases\nwhere no concept-level selector covers the target location.",
           "examples": [
             "$.info.description",
             "$.paths['/constellations'].get"
@@ -348,7 +360,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "ORD ID targeting an ORD resource (API, Event, Data Product, ...).\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).\nUse this selector when patching ORD resource metadata itself.\nThe ORD resource type is derived from the ORD ID itself.",
+          "description": "ORD ID targeting an ORD resource (API, Event, Data Product, ...) in an ORD document.\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).\nSupported metadata formats:\n- ORD document (no specific `definitionType`): locates the ORD resource object whose\n  `ordId` field matches this value. The resource type (apiResource, eventResource,\n  dataProduct, etc.) is derived from the ORD ID namespace and is not required in the selector.\n\nUse this selector when patching ORD resource metadata itself (e.g. title, description,\nvisibility, tags). For patching the technical API definition file that the resource\nreferences, apply the overlay to that definition file directly using its own selectors.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "examples": [
             "sap.s4:apiResource:OP_API_BUSINESS_PARTNER_SRV:v1"
@@ -368,12 +380,13 @@
         "operation": {
           "type": "string",
           "minLength": 1,
-          "description": "Concept-level operation identifier.\nSupported mappings by format:\n- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to the `operationId` field on\n  an HTTP operation inside `paths.{path}.{method}`.\n- MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.\n  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name\n- A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.\n  See: https://google.github.io/A2A/specification/#agentskill-object\n- OData (`edmx`, `csdl-json`): maps to the Action or Function name.\n  MUST use the namespace-qualified name (e.g. `OData.Demo.Approval`) to be unambiguous.\n  For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback\n  to target the specific overload.\n\nWhen `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.\nWhen `definitionType` is absent, the implementation SHOULD infer the format from the target\ndocument's content (e.g. the `openapi` field, `$schema`, or `$kind` markers).",
+          "description": "Concept-level operation identifier.\nSupported mappings by format:\n- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): maps to the `operationId` field on\n  an HTTP operation inside `paths.{path}.{method}`.\n- MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.\n  See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name\n- A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.\n  See: https://google.github.io/A2A/specification/#agentskill-object\n- OData (`edmx`, `csdl-json`): maps to the Action or Function name at Schema level.\n  MUST use the namespace-qualified name (e.g. `OData.Demo.Approval`) to be unambiguous.\n  For OData v2 `edmx` targets: also searches FunctionImport elements in EntityContainer\n  when no Schema-level Action/Function matches the name.\n  For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback\n  to target the specific overload.\n\nWhen `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.\nWhen `definitionType` is absent, the implementation SHOULD infer the format from the target\ndocument's content (e.g. the `openapi` field, `$schema`, or `$kind` markers).",
           "examples": [
             "getConstellationByAbbreviation",
             "dispute-case-resolution",
             "OData.Demo.Approval",
-            "OData.Demo.Rejection"
+            "OData.Demo.Rejection",
+            "getCompensationHistory"
           ]
         }
       }
@@ -390,10 +403,11 @@
         "entityType": {
           "type": "string",
           "minLength": 1,
-          "description": "Concept-level entity type identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets the EntityType element declared in the schema.\n  MUST use the namespace-qualified name (e.g. `OData.Demo.Customer`).\n  Note: EntitySet-level patching (e.g. Capabilities annotations) is not covered;\n  use `jsonPath` as a fallback for those cases.\n- `csdl-json` (OData v4 CSDL JSON): same name resolution as `edmx`.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets a `definitions` entry by its\n  fully qualified key (e.g. `AirlineService.Airline`). In CSN Interop the key is always\n  fully qualified, so the fully qualified form MUST be used.",
+          "description": "Concept-level entity or enum type identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets EntityType, ComplexType, or EnumType elements\n  declared in the Schema. MUST use the namespace-qualified name (e.g. `OData.Demo.Customer`).\n  For EntitySet-level patching (Capabilities annotations), use the `entitySet` selector instead.\n- `csdl-json` (OData v4 CSDL JSON): same name resolution as `edmx`. Resolves elements\n  with `$Kind` equal to `EntityType`, `ComplexType`, or `EnumType`.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets a `definitions` entry by its\n  fully qualified key (e.g. `AirlineService.Airline`). In CSN Interop the key is always\n  fully qualified, so the fully qualified form MUST be used.\n\nWhen targeting an EnumType to patch its members individually,\nuse this selector as the `entityType` context within a `propertyType` selector.",
           "examples": [
             "OData.Demo.Customer",
             "OData.Demo.LeaveRequest",
+            "OData.Demo.OrderStatus",
             "AirlineService.Airline"
           ]
         }
@@ -412,23 +426,124 @@
         "propertyType": {
           "type": "string",
           "minLength": 1,
-          "description": "Concept-level property/element identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType\n  or ComplexType. Use the unqualified property name (e.g. `BirthDate`).\n- `csdl-json` (OData v4 CSDL JSON): same resolution as `edmx`.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of\n  the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).\n\n`entityType` MUST always accompany this field to unambiguously identify the owning type.\nProperty names are unqualified and frequently reused across entity types (e.g. `Name`,\n`Description`, `CreatedAt`), so `propertyType` alone is not a reliable unique selector.",
+          "description": "Concept-level property, navigation property, or enum member identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType\n  or ComplexType; or a Member on an EnumType. Use the unqualified name (e.g. `BirthDate`).\n- `csdl-json` (OData v4 CSDL JSON): same resolution as `edmx`. Targets non-`$`-prefixed keys\n  on the matched EntityType, ComplexType, or EnumType object.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of\n  the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).\n\n`entityType` MUST always accompany this field to unambiguously identify the owning type.\nProperty names are unqualified and frequently reused across entity types (e.g. `Name`,\n`Description`, `CreatedAt`), so `propertyType` alone is not a reliable unique selector.\n\nTo patch an enum member, set `entityType` to the qualified EnumType name and\n`propertyType` to the unqualified member name.",
           "examples": [
             "BirthDate",
             "CountryName",
             "Fax",
             "AirlineID",
-            "Name"
+            "Name",
+            "Active"
           ]
         },
         "entityType": {
           "type": "string",
           "minLength": 1,
-          "description": "Required entity type context for the selected property.\nBecause property names are unqualified and commonly repeated across entity types\n(e.g. `Name`, `Description`, `CreatedAt`), `entityType` is mandatory to ensure\nthe selector is unambiguous and stable across schema evolution.\n- For OData: the namespace-qualified EntityType or ComplexType name (e.g. `OData.Demo.Customer`).\n- For CSN Interop: the fully qualified `definitions` key of the containing entity\n  (e.g. `AirlineService.Airline`).",
+          "description": "Required entity type, complex type, or enum type context for the selected property or member.\nBecause property and member names are unqualified and commonly repeated across types\n(e.g. `Name`, `Description`, `CreatedAt`), `entityType` is mandatory to ensure\nthe selector is unambiguous and stable across schema evolution.\n- For OData EntityType/ComplexType: the namespace-qualified name (e.g. `OData.Demo.Customer`).\n- For OData EnumType: the namespace-qualified EnumType name (e.g. `OData.Demo.OrderStatus`).\n- For CSN Interop: the fully qualified `definitions` key of the containing entity\n  (e.g. `AirlineService.Airline`).",
           "examples": [
             "OData.Demo.Customer",
             "OData.Demo.LeaveRequest",
+            "OData.Demo.OrderStatus",
             "AirlineService.Airline"
+          ]
+        }
+      }
+    },
+    "OverlaySelectorByEntitySet": {
+      "type": "object",
+      "title": "Overlay Selector By Entity Set",
+      "x-ums-type": "embedded",
+      "additionalProperties": false,
+      "required": [
+        "entitySet"
+      ],
+      "properties": {
+        "entitySet": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Concept-level entity set identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets an EntitySet element inside EntityContainer.\n  May use the unqualified name (e.g. `Customers`) or namespace-prefixed name.\n- `csdl-json` (OData v4 CSDL JSON): targets a key with `$Collection: true` inside the\n  EntityContainer object in the namespace.\n\nUse `entitySet` when you need to patch EntityContainer-bound metadata such as\nCapabilities annotations (InsertRestrictions, UpdateRestrictions, etc.).\nFor patching the EntityType structure (Properties, NavigationProperties), use `entityType`.",
+          "examples": [
+            "Customers",
+            "SalesOrders",
+            "EmployeeSet"
+          ]
+        }
+      }
+    },
+    "OverlaySelectorByNamespace": {
+      "type": "object",
+      "title": "Overlay Selector By Namespace",
+      "x-ums-type": "embedded",
+      "additionalProperties": false,
+      "required": [
+        "namespace"
+      ],
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Concept-level OData schema/namespace selector.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets the `<Schema Namespace=\"...\">` element.\n  Use the namespace value exactly as declared (e.g. `com.example.OrderService`).\n- `csdl-json` (OData v4 CSDL JSON): targets the namespace-level object (the non-`$`-prefixed\n  key in the CSDL JSON document that matches the namespace value).\n\nUse this selector for service/schema-level annotations such as `@Core.Description` and\n`@Core.LongDescription` on the OData service as a whole.",
+          "examples": [
+            "com.example.OrderService",
+            "SFSF.EC.Compensation",
+            "API_BUSINESS_PARTNER"
+          ]
+        }
+      }
+    },
+    "OverlaySelectorByParameter": {
+      "type": "object",
+      "title": "Overlay Selector By Parameter",
+      "x-ums-type": "embedded",
+      "additionalProperties": false,
+      "required": [
+        "parameter",
+        "operation"
+      ],
+      "properties": {
+        "parameter": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Concept-level parameter name.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets a `<Parameter Name=\"...\">` child element on\n  an Action, Function, or FunctionImport. Use the unqualified parameter name.\n- `csdl-json` (OData v4 CSDL JSON): targets an entry in the `$Parameter` array of an\n  Action/Function overload whose `$Name` matches.\n- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): targets an entry in the\n  `parameters` array of the operation identified by `operation` (operationId), matching\n  by the parameter `name` field.\n\n`operation` MUST always accompany this field to unambiguously identify the owning operation.",
+          "examples": [
+            "employeeId",
+            "Count",
+            "filter"
+          ]
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Required operation context for the selected parameter.\n- For OData: the namespace-qualified Action, Function, or FunctionImport name.\n- For OpenAPI: the `operationId` of the HTTP operation.",
+          "examples": [
+            "com.example.Svc.TerminateEmployee",
+            "getConstellationByAbbreviation"
+          ]
+        }
+      }
+    },
+    "OverlaySelectorByReturnType": {
+      "type": "object",
+      "title": "Overlay Selector By Return Type",
+      "x-ums-type": "embedded",
+      "additionalProperties": false,
+      "required": [
+        "returnType",
+        "operation"
+      ],
+      "properties": {
+        "returnType": {
+          "type": "boolean",
+          "const": true,
+          "description": "Flag indicating that the return type of the specified operation is the target.\nMUST be `true`. Use `operation` to identify the owning operation.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets the `<ReturnType>` child element of the\n  matched Action or Function element.\n- `csdl-json` (OData v4 CSDL JSON): targets the `$ReturnType` object inside the matched\n  Action/Function overload array entry."
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Namespace-qualified Action or Function name whose ReturnType is targeted.\n- For `edmx`: the namespace-qualified name of the Action or Function (e.g. `com.example.Svc.TerminateEmployee`).\n- For `csdl-json`: the namespace-qualified name looked up in the Namespace object.",
+          "examples": [
+            "com.example.Svc.TerminateEmployee",
+            "com.example.Svc.GetDirectReports"
           ]
         }
       }

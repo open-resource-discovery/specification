@@ -41,7 +41,12 @@ export function resolveSelector(
 		return resolveOrdIdSelector(root, selector.ordId);
 	}
 
-	if (isJSONObject(selector) && typeof selector.operation === "string") {
+	if (
+		isJSONObject(selector) &&
+		typeof selector.operation === "string" &&
+		!("parameter" in selector) &&
+		!("returnType" in selector)
+	) {
 		return resolveOperationSelector(root, selector.operation, definitionType);
 	}
 
@@ -66,8 +71,41 @@ export function resolveSelector(
 		return resolveEntityTypeSelector(root, selector.entityType, definitionType);
 	}
 
+	if (isJSONObject(selector) && typeof selector.entitySet === "string") {
+		return resolveEntitySetSelector(root, selector.entitySet, definitionType);
+	}
+
+	if (isJSONObject(selector) && typeof selector.namespace === "string") {
+		return resolveNamespaceSelector(root, selector.namespace, definitionType);
+	}
+
+	if (
+		isJSONObject(selector) &&
+		typeof selector.parameter === "string" &&
+		typeof (selector as Record<string, unknown>).operation === "string"
+	) {
+		return resolveParameterSelector(
+			root,
+			selector.parameter,
+			(selector as { operation: string }).operation,
+			definitionType,
+		);
+	}
+
+	if (
+		isJSONObject(selector) &&
+		(selector as Record<string, unknown>).returnType === true &&
+		typeof (selector as Record<string, unknown>).operation === "string"
+	) {
+		return resolveReturnTypeSelector(
+			root,
+			(selector as { operation: string }).operation,
+			definitionType,
+		);
+	}
+
 	throw new OverlayMergeError(
-		"Unsupported selector. This merge script currently supports jsonPath, ordId, operation, entityType, and propertyType.",
+		"Unsupported selector. Supported selectors: jsonPath, ordId, operation, entityType, propertyType, entitySet, namespace, parameter, returnType.",
 	);
 }
 
@@ -624,7 +662,7 @@ function resolveCsdlJsonEntityType(
 		if (!isJSONObject(candidate)) continue;
 
 		const kind = candidate["$Kind"];
-		if (kind === "EntityType" || kind === "ComplexType") {
+		if (kind === "EntityType" || kind === "ComplexType" || kind === "EnumType") {
 			matches.push({
 				parent: nsObj,
 				key: localName,
@@ -647,14 +685,16 @@ function resolveCsdlJsonPropertyType(
 	if (entityTypeName !== undefined) {
 		entityRefs = resolveCsdlJsonEntityType(root, entityTypeName);
 	} else {
-		// Scan all EntityType and ComplexType definitions across all namespaces
+		// Scan all EntityType, ComplexType, and EnumType definitions across all namespaces
 		const namespaces = getCsdlJsonNamespaceEntries(root);
 		entityRefs = [];
 		for (const { namespace, nsObj } of namespaces) {
 			for (const [key, value] of Object.entries(nsObj)) {
 				if (
 					isJSONObject(value) &&
-					(value["$Kind"] === "EntityType" || value["$Kind"] === "ComplexType")
+					(value["$Kind"] === "EntityType" ||
+						value["$Kind"] === "ComplexType" ||
+						value["$Kind"] === "EnumType")
 				) {
 					entityRefs.push({
 						parent: nsObj,
@@ -670,7 +710,7 @@ function resolveCsdlJsonPropertyType(
 	const matches: NodeReference[] = [];
 	for (const entityRef of entityRefs) {
 		const entityObj = entityRef.value as Record<string, JSONValue>;
-		// Properties are non-`$` keys in the entity type object
+		// Properties/members are non-`$` keys in the entity type object
 		if (propertyName in entityObj && !propertyName.startsWith("$")) {
 			matches.push({
 				parent: entityObj,
@@ -730,3 +770,293 @@ function resolveCsdlJsonOperation(
 }
 
 export type { NodeReference };
+
+// ─── New concept-level selectors ────────────────────────────────────────────
+
+/**
+ * Resolves an `entitySet` selector against a JSON/CSDL JSON target document.
+ * Targets an EntitySet entry in an OData EntityContainer.
+ */
+function resolveEntitySetSelector(
+	root: JSONValue,
+	entitySetName: string,
+	definitionType: string | undefined,
+): NodeReference[] {
+	if (!isJSONObject(root)) {
+		throw new OverlayMergeError(
+			"entitySet selector requires a JSON object as target document.",
+		);
+	}
+
+	const isCsdl =
+		definitionType === "csdl-json" ||
+		(definitionType === undefined && isCsdlJsonDocument(root));
+	if (isCsdl) {
+		return resolveCsdlJsonEntitySet(root, entitySetName);
+	}
+
+	if (definitionType === "edmx") {
+		throw new OverlayMergeError(
+			"EDMX (edmx) targets must be processed with applyOverlayToEdmxDocument, not applyOverlayToDocument.",
+		);
+	}
+
+	throw new OverlayMergeError(
+		`The 'entitySet' selector is only supported for OData metadata (edmx, csdl-json) targets, not for definitionType "${definitionType ?? "unknown"}".`,
+	);
+}
+
+/**
+ * Resolves a `namespace` selector against a JSON/CSDL JSON target document.
+ * Targets the namespace-level schema object for Schema-level annotations.
+ */
+function resolveNamespaceSelector(
+	root: JSONValue,
+	namespaceName: string,
+	definitionType: string | undefined,
+): NodeReference[] {
+	if (!isJSONObject(root)) {
+		throw new OverlayMergeError(
+			"namespace selector requires a JSON object as target document.",
+		);
+	}
+
+	const isCsdl =
+		definitionType === "csdl-json" ||
+		(definitionType === undefined && isCsdlJsonDocument(root));
+	if (isCsdl) {
+		return resolveCsdlJsonNamespace(root, namespaceName);
+	}
+
+	if (definitionType === "edmx") {
+		throw new OverlayMergeError(
+			"EDMX (edmx) targets must be processed with applyOverlayToEdmxDocument, not applyOverlayToDocument.",
+		);
+	}
+
+	throw new OverlayMergeError(
+		`The 'namespace' selector is only supported for OData metadata (edmx, csdl-json) targets, not for definitionType "${definitionType ?? "unknown"}".`,
+	);
+}
+
+/**
+ * Resolves a `parameter` selector against a JSON target document.
+ * For CSDL JSON: finds the named parameter in the $Parameter array of the matched Action/Function.
+ * For OpenAPI: finds the parameter by name in the operation's parameters array.
+ */
+function resolveParameterSelector(
+	root: JSONValue,
+	parameterName: string,
+	operationName: string,
+	definitionType: string | undefined,
+): NodeReference[] {
+	if (!isJSONObject(root)) {
+		throw new OverlayMergeError(
+			"parameter selector requires a JSON object as target document.",
+		);
+	}
+
+	if (isOpenApiDefinitionType(definitionType)) {
+		return resolveOpenApiParameter(root, parameterName, operationName);
+	}
+
+	const isCsdl =
+		definitionType === "csdl-json" ||
+		(definitionType === undefined && isCsdlJsonDocument(root));
+	if (isCsdl) {
+		return resolveCsdlJsonParameter(root, parameterName, operationName);
+	}
+
+	if (definitionType === "edmx") {
+		throw new OverlayMergeError(
+			"EDMX (edmx) targets must be processed with applyOverlayToEdmxDocument, not applyOverlayToDocument.",
+		);
+	}
+
+	// Auto-detect: try OpenAPI first, then CSDL JSON
+	if (definitionType === undefined) {
+		if (isJSONObject(root) && root.paths !== undefined) {
+			return resolveOpenApiParameter(root, parameterName, operationName);
+		}
+		if (isCsdlJsonDocument(root)) {
+			return resolveCsdlJsonParameter(root, parameterName, operationName);
+		}
+	}
+
+	throw new OverlayMergeError(
+		`The 'parameter' selector is supported for openapi-v2/v3, csdl-json, and edmx, not for definitionType "${definitionType ?? "unknown"}".`,
+	);
+}
+
+/**
+ * Resolves a `returnType` selector against a CSDL JSON target document.
+ * Targets the `$ReturnType` object within an Action/Function overload.
+ */
+function resolveReturnTypeSelector(
+	root: JSONValue,
+	operationName: string,
+	definitionType: string | undefined,
+): NodeReference[] {
+	if (!isJSONObject(root)) {
+		throw new OverlayMergeError(
+			"returnType selector requires a JSON object as target document.",
+		);
+	}
+
+	const isCsdl =
+		definitionType === "csdl-json" ||
+		(definitionType === undefined && isCsdlJsonDocument(root));
+	if (isCsdl) {
+		return resolveCsdlJsonReturnType(root, operationName);
+	}
+
+	if (definitionType === "edmx") {
+		throw new OverlayMergeError(
+			"EDMX (edmx) targets must be processed with applyOverlayToEdmxDocument, not applyOverlayToDocument.",
+		);
+	}
+
+	throw new OverlayMergeError(
+		`The 'returnType' selector is only supported for OData metadata (edmx, csdl-json) targets, not for definitionType "${definitionType ?? "unknown"}".`,
+	);
+}
+
+// ─── CSDL JSON entity set, namespace, parameter, return type resolvers ───────
+
+function resolveCsdlJsonEntitySet(
+	root: Record<string, JSONValue>,
+	entitySetName: string,
+): NodeReference[] {
+	const namespaces = getCsdlJsonNamespaceEntries(root);
+	const matches: NodeReference[] = [];
+
+	for (const { namespace, nsObj } of namespaces) {
+		// Find the EntityContainer in this namespace
+		for (const [key, value] of Object.entries(nsObj)) {
+			if (!isJSONObject(value) || value["$Kind"] !== "EntityContainer") {
+				continue;
+			}
+
+			const container = value;
+			// EntitySet entries are object values with $Collection: true or $Type referencing an entity type
+			for (const [esKey, esVal] of Object.entries(container)) {
+				if (esKey.startsWith("$")) continue;
+				if (!isJSONObject(esVal)) continue;
+
+				// Match by unqualified name or exact key
+				if (esKey === entitySetName) {
+					matches.push({
+						parent: container,
+						key: esKey,
+						value: esVal,
+						path: `$['${namespace}']['${key}']['${esKey}']`,
+					});
+				}
+			}
+		}
+	}
+
+	return matches;
+}
+
+function resolveCsdlJsonNamespace(
+	root: Record<string, JSONValue>,
+	namespaceName: string,
+): NodeReference[] {
+	const candidate = root[namespaceName];
+	if (!isJSONObject(candidate)) {
+		return [];
+	}
+
+	return [
+		{
+			parent: root,
+			key: namespaceName,
+			value: candidate,
+			path: `$['${namespaceName}']`,
+		},
+	];
+}
+
+function resolveCsdlJsonParameter(
+	root: Record<string, JSONValue>,
+	parameterName: string,
+	operationName: string,
+): NodeReference[] {
+	const operationRefs = resolveCsdlJsonOperation(root, operationName);
+	const matches: NodeReference[] = [];
+
+	for (const opRef of operationRefs) {
+		const opObj = opRef.value as Record<string, JSONValue>;
+		const params = opObj["$Parameter"];
+		if (!Array.isArray(params)) continue;
+
+		params.forEach((param, index) => {
+			if (isJSONObject(param) && param["$Name"] === parameterName) {
+				matches.push({
+					parent: params,
+					key: index,
+					value: param,
+					path: `${opRef.path}['$Parameter'][${index}]`,
+				});
+			}
+		});
+	}
+
+	return matches;
+}
+
+function resolveCsdlJsonReturnType(
+	root: Record<string, JSONValue>,
+	operationName: string,
+): NodeReference[] {
+	const operationRefs = resolveCsdlJsonOperation(root, operationName);
+	const matches: NodeReference[] = [];
+
+	for (const opRef of operationRefs) {
+		const opObj = opRef.value as Record<string, JSONValue>;
+		const returnType = opObj["$ReturnType"];
+		if (isJSONObject(returnType)) {
+			matches.push({
+				parent: opObj,
+				key: "$ReturnType",
+				value: returnType,
+				path: `${opRef.path}['$ReturnType']`,
+			});
+		}
+	}
+
+	return matches;
+}
+
+/**
+ * Resolves a `parameter` selector on an OpenAPI operation.
+ * Finds the parameter by `name` in the `parameters` array of the operation with the given `operationId`.
+ */
+function resolveOpenApiParameter(
+	root: Record<string, JSONValue>,
+	parameterName: string,
+	operationId: string,
+): NodeReference[] {
+	const operationRefs = resolveOpenApiOperation(root, operationId);
+	const matches: NodeReference[] = [];
+
+	for (const opRef of operationRefs) {
+		const opObj = opRef.value as Record<string, JSONValue>;
+		const params = opObj.parameters;
+		if (!Array.isArray(params)) continue;
+
+		params.forEach((param, index) => {
+			if (isJSONObject(param) && param.name === parameterName) {
+				matches.push({
+					parent: params,
+					key: index,
+					value: param,
+					path: `${opRef.path}.parameters[${index}]`,
+				});
+			}
+		});
+	}
+
+	return matches;
+}

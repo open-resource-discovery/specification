@@ -18,7 +18,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'jsonPath'
       type: 'string'
-      description: "JSONPath expression targeting any location in a JSON/YAML-based target document.\nMUST start with `$`.\nThis is the generic fallback selector and is supported for all JSON/YAML-based metadata formats,\nincluding OpenAPI and MCP metadata files."
+      description: "JSONPath expression targeting any location in a JSON/YAML-based target document.\nMUST start with `$`.\nThis is the generic structural fallback selector, supported for all JSON/YAML-based formats:\n- `openapi-v2`, `openapi-v3`, `openapi-v3.1+`: targets any node in the OpenAPI document.\n- `a2a-agent-card`: targets any node in the A2A Agent Card JSON document.\n- `csdl-json`: targets any node in the OData CSDL JSON document.\n- MCP (any Specification ID): targets any node in the MCP-compatible JSON/YAML tool metadata.\n\nUse concept-level selectors (`operation`, `entityType`, etc.) when available, as they are\nresilient to structural differences between format versions. Reserve `jsonPath` for cases\nwhere no concept-level selector covers the target location."
       mandatory: true
       constraints:
         minLength: 1

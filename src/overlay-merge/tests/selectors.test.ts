@@ -80,3 +80,53 @@ test("resolveSelector throws for entityType/propertyType on edmx (must use EDMX-
 		/applyOverlayToEdmxDocument/,
 	);
 });
+
+test("resolveSelector throws for entitySet selector on unsupported target format", () => {
+	assert.throws(
+		() => resolveSelector({} as JSONValue, { entitySet: "Customers" }, "openapi-v3"),
+		/'entitySet' selector is only supported/,
+	);
+});
+
+test("resolveSelector throws for namespace selector on unsupported target format", () => {
+	assert.throws(
+		() => resolveSelector({} as JSONValue, { namespace: "com.example.Svc" }, "openapi-v3"),
+		/'namespace' selector is only supported/,
+	);
+});
+
+test("resolveSelector throws for entitySet/namespace on edmx (must use EDMX-specific API)", () => {
+	assert.throws(
+		() => resolveSelector({} as JSONValue, { entitySet: "Customers" }, "edmx"),
+		/applyOverlayToEdmxDocument/,
+	);
+
+	assert.throws(
+		() => resolveSelector({} as JSONValue, { namespace: "com.example.Svc" }, "edmx"),
+		/applyOverlayToEdmxDocument/,
+	);
+});
+
+test("resolveSelector throws for parameter selector on unsupported target format", () => {
+	assert.throws(
+		() =>
+			resolveSelector(
+				{} as JSONValue,
+				{ parameter: "employeeId", operation: "listEmployees" },
+				"a2a-agent-card",
+			),
+		/'parameter' selector is supported for/,
+	);
+});
+
+test("resolveSelector throws for returnType selector on unsupported target format", () => {
+	assert.throws(
+		() =>
+			resolveSelector(
+				{} as JSONValue,
+				{ returnType: true, operation: "com.example.Svc.GetReports" },
+				"a2a-agent-card",
+			),
+		/'returnType' selector is only supported/,
+	);
+});

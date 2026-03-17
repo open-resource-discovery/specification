@@ -24,7 +24,7 @@ const { overlay, warnings } = convertOpenApiOverlayToOrd(sourceOverlay, {
   ordId: "sap.foo:overlay:my-api:v1",
 });
 
-// Inspect warnings for lost/unsupported information
+// Inspect warnings for lost or unsupported information
 for (const w of warnings) {
   console.warn(`[${w.type}] ${w.message}`);
 }
@@ -48,10 +48,10 @@ for (const w of warnings) {
 | `actions[].target` (JSONPath) | `patches[].selector.jsonPath` | 1:1 mapping |
 | `actions[].update` | `patches[].action = "merge"` + `patches[].data` | 1:1 semantics |
 | `actions[].remove = true` | `patches[].action = "remove"` + `patches[].data = {}` | |
-| `actions[].remove = false` | (skipped) | No-op in both specs |
+| `actions[].remove = false` | *(skipped)* | No-op in both specs |
 | `info.title` / `info.version` | `overlay.description` | Embedded as text prefix |
 | `extends` | `target.url` | Only when no explicit `target` option is provided |
-| `actions[].description` | *(lost)* | ORD overlay patches have no description field |
+| `actions[].description` | *(lost)* | ORD overlay patches have no per-patch description field |
 
 When `update` and `remove` are both present on a single action, two patches are generated in order (merge first, remove second), matching the OpenAPI Overlay spec's semantics.
 
@@ -65,186 +65,70 @@ Patch data is expressed in **CSDL JSON annotation format** as required by the OR
 | `entityTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `complexTypes[].{summary, description}` | `entityType: "[ns.]TypeName"` | `@Core.Description`, `@Core.LongDescription` |
 | `complexTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
+| `entitySets[].{summary, description}` | `entitySet: "[ns.]EntitySetName"` | `@Core.Description`, `@Core.LongDescription` |
 | `functionImports[].{summary, description}` | `operation: "[ns.]FunctionImportName"` | `@Core.Description`, `@Core.LongDescription` |
-| `entitySets[]` | *(unsupported — skipped)* | See Issue 1 |
-| `*.tags` | *(lost — skipped)* | See Issue 4 |
-| `functionImports[].parameters[]` | *(unsupported — skipped)* | See Issue 3 |
+| `functionImports[].parameters[].{summary, description}` | `parameter: "ParamName"` + `operation` | `@Core.Description`, `@Core.LongDescription` |
+| `*.tags` | *(lost)* | No standard OData vocabulary term — see [Issue 1](#issue-1--no-vocabulary-term-for-tags-lossy-mapping) |
+
+**Namespace handling:**
+OData v2 enrichment files do not embed a namespace. Pass `odataNamespace` to generate namespace-qualified selectors (e.g. `SFSF.EC.Customer`). Without it, unqualified names are used and resolved by scanning all Schema elements.
+
+**EDMX `FunctionImport` resolution:**
+For `edmx` targets, the `operation` selector first searches Schema-level `Action`/`Function` elements. If no match is found, it falls back to searching `EntityContainer` for `FunctionImport` elements. OData v2 `functionImports` are therefore fully supported for EDMX targets.
 
 ### OData v4 Enrichment → ORD Overlay
 
 | Source field | ORD selector | ORD annotation data |
 |---|---|---|
+| Root `{summary, description}` (service level) | `namespace: "namespace"` | `@Core.Description`, `@Core.LongDescription` |
 | `entityTypes[].{summary, description}` | `entityType: "ns.TypeName"` | `@Core.Description`, `@Core.LongDescription` |
 | `entityTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `complexTypes[].{summary, description}` | `entityType: "ns.TypeName"` | `@Core.Description`, `@Core.LongDescription` |
 | `complexTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
+| `entitySets[].{summary, description}` | `entitySet: "EntitySetName"` | `@Core.Description`, `@Core.LongDescription` |
+| `enumTypes[].{summary, description}` | `entityType: "ns.EnumTypeName"` | `@Core.Description`, `@Core.LongDescription` |
+| `enumTypes[].members[].{summary, description}` | `propertyType: "MemberName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `actions[].{summary, description}` | `operation: "ns.ActionName"` | `@Core.Description`, `@Core.LongDescription` |
+| `actions[].parameters[].{summary, description}` | `parameter: "ParamName"` + `operation` | `@Core.Description`, `@Core.LongDescription` |
+| `actions[].returnType.{summary, description}` | `returnType: true` + `operation` | `@Core.Description`, `@Core.LongDescription` |
 | `functions[].{summary, description}` | `operation: "ns.FunctionName"` | `@Core.Description`, `@Core.LongDescription` |
-| `root.{summary, description}` (service level) | *(unsupported — skipped)* | See Issue 5 |
-| `entitySets[]` | *(unsupported — skipped)* | See Issue 1 |
-| `enumTypes[]` | *(unsupported — skipped)* | See Issue 6 |
-| `actionImports[]` | *(unsupported — skipped)* | See Issue 2 |
-| `functionImports[]` | *(unsupported — skipped)* | See Issue 2 |
-| `*.tags` | *(lost — skipped)* | See Issue 4 |
-| `actions[].parameters[]` / `functions[].parameters[]` | *(unsupported — skipped)* | See Issue 3 |
-| `actions[].returnType` / `functions[].returnType` | *(unsupported — skipped)* | See Issue 7 |
+| `functions[].parameters[].{summary, description}` | `parameter: "ParamName"` + `operation` | `@Core.Description`, `@Core.LongDescription` |
+| `functions[].returnType.{summary, description}` | `returnType: true` + `operation` | `@Core.Description`, `@Core.LongDescription` |
+| `actionImports[]` | *(skipped — use `actions[]`)* | See [Issue 2](#issue-2--actionimportsfunctionimports-are-entitycontainer-aliases) |
+| `functionImports[]` | *(skipped — use `functions[]`)* | See [Issue 2](#issue-2--actionimportsfunctionimports-are-entitycontainer-aliases) |
+| `*.tags` | *(lost)* | No standard OData vocabulary term — see [Issue 1](#issue-1--no-vocabulary-term-for-tags-lossy-mapping) |
 
 ---
 
-## Model Mismatches and Issues
+## Remaining Model Mismatches
 
-The following issues were identified when converting from the KG enrichment formats to the ORD overlay model. Each issue represents either a **gap in the ORD Overlay spec** (spec extension needed) or a **lossy mapping** (information cannot be represented).
-
----
-
-### Issue 1 — No `entitySet` selector (spec gap)
-
-**Affects:** OData v2 enrichment `entitySets[]`, OData v4 enrichment `entitySets[]`
-
-**Problem:**
-The ORD overlay specification does not provide a concept-level selector for `EntitySet` elements. The `entityType` selector explicitly targets the *type definition* (EntityType, not EntitySet), as stated in the spec:
-
-> "For OData, `entityType` targets the EntityType definition — not the EntitySet in the container."
-
-`EntitySet` elements live inside the `EntityContainer` in EDMX. The existing concept-level selectors (`entityType`, `propertyType`, `operation`) only address elements in the schema-level type system.
-
-A `jsonPath` fallback would work for CSDL JSON targets, but not for EDMX XML targets (since `jsonPath` is not supported by `applyOverlayToEdmxDocument`).
-
-**Impact:**
-Entity set enrichment (summary, description, tags) cannot be converted without losing information. This is the most impactful gap for the KG integration, as entity sets are a primary entry point for client developers.
-
-**Suggested fix:**
-Add an `entitySet` selector type to the ORD Overlay spec:
-```json
-{
-  "action": "merge",
-  "selector": { "entitySet": "EmployeeSet" },
-  "data": {
-    "@Core.Description": "Collection of employees",
-    "@Core.LongDescription": "..."
-  }
-}
-```
-The EDMX implementation would need to resolve `EntitySet` elements inside `EntityContainer`.
+The following issues remain after the current implementation. Each represents either a **lossy mapping** or a **structural limitation** of the source format.
 
 ---
 
-### Issue 2 — Import elements in EntityContainer not selectable (spec gap)
-
-**Affects:** OData v2 enrichment `functionImports[]`, OData v4 enrichment `actionImports[]` and `functionImports[]`
-
-**Problem:**
-In OData v2, `FunctionImport` is defined inside `EntityContainer` in the Schema. In OData v4, `ActionImport` and `FunctionImport` are also in `EntityContainer`, while the actual `Action` and `Function` definitions live at the Schema level.
-
-The ORD overlay `operation` selector for EDMX targets only resolves Schema-level `Action` and `Function` elements (see `findEdmxOperation` in `src/overlay-merge/edmx.ts`). It does not search `EntityContainer` for `FunctionImport`.
-
-**For OData v2:** The enrichment format only has `functionImports` (there are no Schema-level Actions/Functions in OData v2). All function enrichment would be in `functionImports`.
-This converter **generates `operation` selector patches** for OData v2 `functionImports`, but **emits a `needs-spec-extension` warning** because the existing EDMX implementation will not resolve them.
-
-**For OData v4:** The same function/action can be described via either `functions[]`/`actions[]` (Schema-level, directly convertible) or `functionImports[]`/`actionImports[]` (EntityContainer aliases, not convertible). The converter skips imports and warns to use the corresponding Schema-level entry instead.
-
-**Suggested fix for OData v2:**
-Extend `findEdmxOperation` in `src/overlay-merge/edmx.ts` to also search `EntityContainer` for `FunctionImport` elements when the Schema-level search yields no results.
-
----
-
-### Issue 3 — No parameter-level selector (spec gap)
-
-**Affects:** OData v2 `functionImports[].parameters[]`, OData v4 `actions[].parameters[]` and `functions[].parameters[]`
-
-**Problem:**
-The ORD overlay specification has no parameter-level selector. Parameters are sub-elements of operations (Actions, Functions, FunctionImports) and require a dedicated selector to be addressable independently.
-
-The `operation` selector targets the entire operation object. While it is *possible* to include parameter-level annotations inside an `operation` patch (since the patch data is merged into the matched element), the EDMX merge implementation would need to navigate into `<Parameter>` child elements — which is not currently supported.
-
-**Impact:**
-Parameter enrichment (summary, description) is lost during conversion.
-
-**Suggested fix:**
-Add a `parameter` selector type to the ORD Overlay spec:
-```json
-{
-  "action": "merge",
-  "selector": {
-    "operation": "com.example.Svc.TerminateEmployee",
-    "parameter": "EmployeeId"
-  },
-  "data": {
-    "@Core.Description": "Target employee identifier"
-  }
-}
-```
-
----
-
-### Issue 4 — No vocabulary term for tags (lossy mapping)
+### Issue 1 — No vocabulary term for tags (lossy mapping)
 
 **Affects:** All `tags` arrays in OData v2 and v4 enrichment formats
 
 **Problem:**
-Both KG enrichment formats include a `tags` array on most elements (EntityType, EntitySet, FunctionImport, Action, Function, ComplexType). There is no standard OData vocabulary term (in `Core`, `Capabilities`, `Common`, `UI`, etc.) that directly maps to an array of free-form string tags.
+Both KG enrichment formats include a `tags` array on most elements (EntityType, EntitySet, FunctionImport, Action, Function, ComplexType). There is no standard OData vocabulary term (in `Core`, `Capabilities`, `Common`, `UI`, etc.) that maps to an array of free-form string tags.
 
-**Impact:**
-Tags cannot be losslessly represented in CSDL JSON annotation format. The conversion discards them with a `lost-information` warning.
+**Impact:** Tags are discarded with a `lost-information` warning.
 
-**Suggested options:**
-1. Define a custom vocabulary term (e.g. `@sap.core:Tags`) and use it as the annotation key in patch data.
-2. Map tags to `@UI.QuickInfo` (single string, lossy) or `@Core.AlternativeAlias` (wrong semantics).
-3. Store tags as ORD resource-level labels in the ORD overlay by patching the ORD resource metadata using an `ordId` selector — but this would require the tags to be visible at the ORD metadata level rather than in the format-specific file.
+**Options:**
+1. Define a custom vocabulary term (e.g. `@sap.core:Tags`) and accept it as an annotation key in patch data.
+2. Map tags to ORD resource labels using an `ordId` selector on the wrapping ORD resource.
 
 ---
 
-### Issue 5 — No Schema-level selector (spec gap)
+### Issue 2 — ActionImports/FunctionImports are EntityContainer aliases
 
-**Affects:** OData v4 enrichment root `summary` and `description` fields (service-level metadata)
-
-**Problem:**
-The OData v4 enrichment format describes the *service* itself at the root level with `summary`, `description`, and `namespace`. In OData CSDL, these would be annotations on the `Schema` element (targeted by namespace). There is no ORD overlay concept-level selector for a Schema element.
-
-A `jsonPath` workaround is possible for CSDL JSON targets:
-```json
-{
-  "selector": { "jsonPath": "$['com.sap.HRService']" },
-  "data": {
-    "@Core.Description": "SAP HR Service",
-    "@Core.LongDescription": "..."
-  }
-}
-```
-But this JSONPath is format-specific and fragile between CSDL JSON and EDMX XML.
-
-**Suggested fix:**
-Add a `namespace` or `schema` concept-level selector to the ORD Overlay spec, allowing Schema-level patching without JSONPath dependency.
-
----
-
-### Issue 6 — No `enumType` selector (spec gap)
-
-**Affects:** OData v4 enrichment `enumTypes[]` and `enumTypes[].members[]`
+**Affects:** OData v4 enrichment `actionImports[]` and `functionImports[]`
 
 **Problem:**
-The ORD overlay `entityType` selector resolves `EntityType` and `ComplexType` elements only. `EnumType` is a distinct element type in EDMX/CSDL JSON and is not included in the current selector resolution.
+In OData v4, `ActionImport` and `FunctionImport` are convenience aliases in `EntityContainer` for the underlying Schema-level `Action`/`Function`. They do not carry their own type definition — they simply expose a named binding. Enriching an import is therefore equivalent to enriching the underlying operation.
 
-**Impact:**
-Enum type and enum member enrichment (summary, description) cannot be converted.
-
-**Suggested fix:**
-Extend the `entityType` selector to also resolve `EnumType` elements, or add a dedicated `enumType` selector with an optional `member` sub-selector.
-
----
-
-### Issue 7 — No return-type selector (spec gap)
-
-**Affects:** OData v4 enrichment `actions[].returnType` and `functions[].returnType`
-
-**Problem:**
-In OData CSDL, a `ReturnType` is a child element of an `Action` or `Function`. There is no concept-level selector that can target the return type element independently of its parent operation.
-
-**Impact:**
-Return type enrichment (summary, description) is lost during conversion.
-
-**Suggested fix:**
-Extend the `operation` selector patch semantics to optionally include return type annotation data, or add a sub-concept like `returnType: true` alongside `operation`.
+**Recommendation:** Enrich `actions[]`/`functions[]` directly instead of `actionImports[]`/`functionImports[]`.
 
 ---
 
@@ -252,6 +136,25 @@ Extend the `operation` selector patch semantics to optionally include return typ
 
 | Warning type | Meaning |
 |---|---|
-| `unsupported-concept` | The source concept cannot be represented as a valid ORD overlay patch without extending the spec. The element is skipped. |
-| `lost-information` | Information is structurally dropped and cannot be round-tripped (e.g. tags, per-action descriptions). |
-| `needs-spec-extension` | A partial conversion is generated but its correctness depends on a future ORD overlay spec or implementation enhancement (e.g. OData v2 FunctionImport `operation` patches). |
+| `unsupported-concept` | The source concept has no equivalent ORD overlay representation; the element is skipped. |
+| `lost-information` | Information is structurally dropped and cannot be round-tripped (e.g. free-form tags). |
+| `needs-spec-extension` | A partial conversion is generated but its correctness depends on a future spec or implementation change. |
+
+---
+
+## Selector Reference
+
+The ORD overlay concept-level selectors used by the converters:
+
+| Selector | Supported formats | What it targets |
+|---|---|---|
+| `jsonPath` | All JSON/YAML formats | Any node via JSONPath expression |
+| `ordId` | ORD documents | An ORD resource (API, Event, Data Product, ...) by its ORD ID |
+| `operation` | OpenAPI, MCP, A2A, OData CSDL | An HTTP operation (by `operationId`), MCP tool (by `name`), A2A skill (by `id`), or OData Action/Function (by namespace-qualified name). For EDMX: also searches EntityContainer FunctionImport when no Schema-level match is found. |
+| `entityType` | OData CSDL, CSN Interop | An EntityType, ComplexType, or **EnumType** (by namespace-qualified name for OData; by fully-qualified definitions key for CSN) |
+| `propertyType` | OData CSDL, CSN Interop | A Property, NavigationProperty, or **EnumType Member** (unqualified name; requires `entityType` context) |
+| `entitySet` | OData CSDL (`edmx`, `csdl-json`) | An EntitySet inside EntityContainer (by name) |
+| `namespace` | OData CSDL (`edmx`, `csdl-json`) | The Schema/namespace element itself (for service-level annotations) |
+| `parameter` | OpenAPI, OData CSDL (`edmx`, `csdl-json`) | An operation parameter by name; requires `operation` context |
+| `returnType` | OData CSDL (`edmx`, `csdl-json`) | The ReturnType element of an Action or Function; requires `operation` context and `returnType: true` |
+

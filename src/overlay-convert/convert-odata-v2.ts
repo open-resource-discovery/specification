@@ -8,24 +8,15 @@
  *   entityTypes[].properties[].{name, summary, description} → propertyType + entityType selectors
  *   complexTypes[].{name, summary, description}           → entityType selector (ORD overlay supports ComplexType via entityType)
  *   complexTypes[].properties[].{name, summary, description} → propertyType + entityType selectors
+ *   entitySets[].{name, summary, description}             → entitySet selector + @Core.Description / @Core.LongDescription
+ *   functionImports[].{name, summary, description}        → operation selector (namespace-qualified)
+ *                                                            For EDMX targets, the operation selector also searches
+ *                                                            EntityContainer FunctionImport elements as a fallback.
+ *   functionImports[].parameters[].{name, summary, description} → parameter + operation selectors
  *
  * Known model mismatches (see README.md for details):
  *
- * 1. entitySets — NO concept-level selector in ORD overlay for EntitySet (which lives in
- *    EntityContainer, not in the Schema). Converted entries are SKIPPED with a warning.
- *    Suggested spec extension: add an `entitySet` selector type.
- *
- * 2. functionImports — In OData v2, FunctionImport elements are defined inside EntityContainer.
- *    The ORD overlay `operation` selector for EDMX targets only resolves Action/Function elements
- *    at the Schema level, not FunctionImport elements in EntityContainer.
- *    Converted entries are generated using `operation` selector but will NOT resolve against
- *    EDMX targets until the EDMX operation selector is extended to also search EntityContainer.
- *    A `needs-spec-extension` warning is emitted for each FunctionImport.
- *
- * 3. functionImports[].parameters — No parameter-level selector in ORD overlay.
- *    Parameter enrichment is SKIPPED with a warning.
- *
- * 4. tags — No standard OData vocabulary term for string tags.
+ * 1. tags — No standard OData vocabulary term for string tags.
  *    Tags are SKIPPED with a warning.
  *
  * Patch data convention:
@@ -113,35 +104,30 @@ export function convertODataV2EnrichmentToOrd(
 		}
 	}
 
-	// entitySets — no concept-level selector available; skip with warning
+	// entitySets — use the entitySet concept-level selector
 	for (const es of source.entitySets ?? []) {
-		warnings.push({
-			type: "unsupported-concept",
-			field: `entitySets[name="${es.name}"]`,
-			message:
-				`EntitySet "${es.name}" cannot be converted to an ORD overlay patch: ` +
-				"the ORD overlay specification does not provide a concept-level selector for EntitySet elements " +
-				"(which reside in EntityContainer, not in the Schema). " +
-				"Suggested fix: add an `entitySet` selector type to the ORD overlay spec.",
+		const selector = qualifiedName(es.name, ns);
+
+		patches.push({
+			action: "merge",
+			selector: { entitySet: selector },
+			data: descriptionAnnotations(es.summary, es.description),
 		});
+
+		if ((es.tags ?? []).length > 0) {
+			warnings.push({
+				type: "lost-information",
+				field: `entitySets[name="${es.name}"].tags`,
+				message: `Tags for entitySet "${es.name}" were discarded — no standard OData vocabulary term for string tags. Consider a custom annotation.`,
+			});
+		}
 	}
 
-	// functionImports — FunctionImport lives in EntityContainer, not the Schema.
-	// The `operation` selector for EDMX only resolves Schema-level Action/Function elements.
-	// We generate patches optimistically, but warn that EDMX resolution will fail until extended.
+	// functionImports — use the operation selector.
+	// For EDMX targets, the operation selector also searches EntityContainer FunctionImport
+	// elements as a fallback when no Schema-level Action/Function matches the name.
 	for (const fi of source.functionImports ?? []) {
 		const selector = qualifiedName(fi.name, ns);
-
-		warnings.push({
-			type: "needs-spec-extension",
-			field: `functionImports[name="${fi.name}"]`,
-			message:
-				`FunctionImport "${fi.name}" was converted using the \`operation\` selector, ` +
-				"but OData v2 FunctionImport elements reside in EntityContainer — not in the Schema. " +
-				"The current EDMX `operation` selector only resolves Schema-level Action/Function elements. " +
-				"This patch will not resolve against EDMX targets until the selector is extended to also " +
-				"search EntityContainer for FunctionImport.",
-		});
 
 		patches.push({
 			action: "merge",
@@ -157,13 +143,11 @@ export function convertODataV2EnrichmentToOrd(
 			});
 		}
 
-		if ((fi.parameters ?? []).length > 0) {
-			warnings.push({
-				type: "unsupported-concept",
-				field: `functionImports[name="${fi.name}"].parameters`,
-				message:
-					`Parameter enrichment for FunctionImport "${fi.name}" was discarded — ` +
-					"the ORD overlay specification does not provide a parameter-level selector.",
+		for (const param of fi.parameters ?? []) {
+			patches.push({
+				action: "merge",
+				selector: { parameter: param.name, operation: selector },
+				data: descriptionAnnotations(param.summary, param.description),
 			});
 		}
 	}

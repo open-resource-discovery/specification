@@ -4,42 +4,29 @@
  * Source format: tmp/cto-api-docs/integration/kg/odatav4/schemas/enrichment.json
  *
  * Mapping:
- *   root.{summary, description}                           → entityType-level patch on the Schema namespace
- *                                                             (no Schema-level selector exists; see warning below)
+ *   root.{summary, description}                           → namespace selector + @Core.Description / @Core.LongDescription
  *   entityTypes[].{name, summary, description}            → entityType selector + @Core.Description / @Core.LongDescription
  *   entityTypes[].properties[].{name, summary, description} → propertyType + entityType selectors
  *   complexTypes[].{name, summary, description}           → entityType selector (ORD overlay supports ComplexType via entityType)
  *   complexTypes[].properties[].{name, summary, description} → propertyType + entityType selectors
+ *   entitySets[].{name, summary, description}             → entitySet selector + @Core.Description / @Core.LongDescription
+ *   enumTypes[].{name, summary, description}              → entityType selector (ORD overlay entityType also resolves EnumType)
+ *   enumTypes[].members[].{name, summary, description}    → propertyType + entityType selectors
  *   actions[].{name, summary, description}                → operation selector (namespace-qualified)
+ *   actions[].parameters[].{name, summary, description}   → parameter + operation selectors
+ *   actions[].returnType.{summary, description}           → returnType selector
  *   functions[].{name, summary, description}              → operation selector (namespace-qualified)
+ *   functions[].parameters[].{name, summary, description} → parameter + operation selectors
+ *   functions[].returnType.{summary, description}         → returnType selector
  *
  * Known model mismatches (see README.md for details):
  *
- * 1. Service-level metadata (root summary/description) — No ORD overlay selector targets a
- *    Schema element by namespace. The Schema-level description is SKIPPED with a warning.
- *    Suggested fix: add a `namespace` or `schema` concept-level selector.
+ * 1. actionImports / functionImports — these are aliases in EntityContainer for the
+ *    underlying Action/Function. The ORD overlay `operation` selector targets
+ *    Schema-level Action/Function, not EntityContainer imports.
+ *    These entries are SKIPPED. Enrich the corresponding `actions[]` / `functions[]` entry instead.
  *
- * 2. entitySets — NO concept-level selector for EntitySet (which lives in EntityContainer).
- *    Converted entries are SKIPPED with a warning.
- *    Suggested fix: add an `entitySet` selector type to the ORD overlay spec.
- *
- * 3. actionImports / functionImports — these are aliases in EntityContainer for the
- *    underlying Action/Function. The enrichment format treats them separately, but the
- *    ORD overlay `operation` selector targets Schema-level Action/Function, not EntityContainer imports.
- *    These entries are SKIPPED with a warning. Enrich the corresponding `actions[]` / `functions[]`
- *    entry instead.
- *
- * 4. enumTypes — No concept-level selector for EnumType. The ORD overlay `entityType` selector
- *    only resolves EntityType and ComplexType elements. EnumType enrichment is SKIPPED with a warning.
- *    Suggested fix: extend the `entityType` selector to also resolve EnumType, or add an `enumType` selector.
- *
- * 5. actions[].parameters / functions[].parameters — No parameter-level selector in ORD overlay.
- *    Parameter enrichment is SKIPPED with a warning.
- *
- * 6. actions[].returnType / functions[].returnType — OData v4 return types are sub-elements
- *    of Action/Function. No return-type selector exists. ReturnType enrichment is SKIPPED with a warning.
- *
- * 7. tags — No standard OData vocabulary term for string tags. Tags are SKIPPED with a warning.
+ * 2. tags — No standard OData vocabulary term for string tags. Tags are SKIPPED with a warning.
  *
  * Patch data convention:
  *   OData targets require CSDL JSON annotation format in patch data.
@@ -78,35 +65,6 @@ function warnTags(
 	});
 }
 
-function warnParameters(
-	entityKind: string,
-	entityName: string,
-	warnings: ConversionWarning[],
-): void {
-	warnings.push({
-		type: "unsupported-concept",
-		field: `${entityKind}[name="${entityName}"].parameters`,
-		message:
-			`Parameter enrichment for ${entityKind} "${entityName}" was discarded — ` +
-			"the ORD overlay specification does not provide a parameter-level selector.",
-	});
-}
-
-function warnReturnType(
-	entityKind: string,
-	entityName: string,
-	warnings: ConversionWarning[],
-): void {
-	warnings.push({
-		type: "unsupported-concept",
-		field: `${entityKind}[name="${entityName}"].returnType`,
-		message:
-			`ReturnType enrichment for ${entityKind} "${entityName}" was discarded — ` +
-			"the ORD overlay specification does not provide a return-type selector. " +
-			"The return type is a sub-element of the Action/Function and cannot be targeted separately.",
-	});
-}
-
 export function convertODataV4EnrichmentToOrd(
 	source: ODataV4Enrichment,
 	options: ConvertOptions = {},
@@ -115,17 +73,14 @@ export function convertODataV4EnrichmentToOrd(
 	const patches: OverlayPatch[] = [];
 	const ns = options.odataNamespace ?? source.namespace;
 
-	// Service-level summary/description: targets the Schema element, but no ORD overlay
-	// selector can address a Schema by namespace. Skip with warning.
-	warnings.push({
-		type: "needs-spec-extension",
-		field: "root.summary / root.description",
-		message:
-			`Service-level summary and description for namespace "${source.namespace}" were discarded — ` +
-			"the ORD overlay specification does not provide a concept-level selector for the Schema element. " +
-			"Suggested fix: add a `namespace` or `schema` selector type to the ORD overlay spec. " +
-			"As a workaround, use a jsonPath selector targeting the Schema in CSDL JSON format.",
-	});
+	// Service-level summary/description — use the namespace selector
+	if (source.summary || source.description) {
+		patches.push({
+			action: "merge",
+			selector: { namespace: source.namespace },
+			data: descriptionAnnotations(source.summary, source.description),
+		});
+	}
 
 	// entityTypes
 	for (const et of source.entityTypes ?? []) {
@@ -137,30 +92,37 @@ export function convertODataV4EnrichmentToOrd(
 		addEntityTypePatches(ct, ns, patches, warnings, "complexTypes");
 	}
 
-	// entitySets — no concept-level selector; skip
+	// entitySets — use the entitySet concept-level selector
 	for (const es of source.entitySets ?? []) {
-		warnings.push({
-			type: "unsupported-concept",
-			field: `entitySets[name="${es.name}"]`,
-			message:
-				`EntitySet "${es.name}" cannot be converted to an ORD overlay patch: ` +
-				"the ORD overlay specification does not provide a concept-level selector for EntitySet elements " +
-				"(which reside in EntityContainer, not in the Schema). " +
-				"Suggested fix: add an `entitySet` selector type to the ORD overlay spec.",
+		patches.push({
+			action: "merge",
+			selector: { entitySet: es.name },
+			data: descriptionAnnotations(es.summary, es.description),
 		});
+
+		if ((es.tags ?? []).length > 0) {
+			warnTags("entitySets", es.name, warnings);
+		}
 	}
 
-	// enumTypes — no concept-level selector; skip
+	// enumTypes — the entityType selector also resolves EnumType elements.
+	// Enum members are targeted with propertyType + entityType selectors.
 	for (const en of source.enumTypes ?? []) {
-		warnings.push({
-			type: "unsupported-concept",
-			field: `enumTypes[name="${en.name}"]`,
-			message:
-				`EnumType "${en.name}" cannot be converted to an ORD overlay patch: ` +
-				"the ORD overlay `entityType` selector only resolves EntityType and ComplexType elements. " +
-				"Suggested fix: extend the `entityType` selector to also resolve EnumType, " +
-				"or add a dedicated `enumType` selector type.",
+		const qualifiedSelector = `${ns}.${en.name}`;
+
+		patches.push({
+			action: "merge",
+			selector: { entityType: qualifiedSelector },
+			data: descriptionAnnotations(en.summary, en.description),
 		});
+
+		for (const member of en.members ?? []) {
+			patches.push({
+				action: "merge",
+				selector: { propertyType: member.name, entityType: qualifiedSelector },
+				data: descriptionAnnotations(member.summary, member.description),
+			});
+		}
 	}
 
 	// actions — Schema-level, namespace-qualified name, use `operation` selector
@@ -173,26 +135,26 @@ export function convertODataV4EnrichmentToOrd(
 		addOperationPatches(fn, ns, patches, warnings, "functions");
 	}
 
-	// actionImports — EntityContainer level; no concept-level selector
+	// actionImports — EntityContainer-level aliases for Schema-level Actions.
+	// Patch the corresponding `actions` entry instead.
 	for (const ai of source.actionImports ?? []) {
 		warnings.push({
 			type: "unsupported-concept",
 			field: `actionImports[name="${ai.name}"]`,
 			message:
-				`ActionImport "${ai.name}" cannot be converted: ActionImports reside in EntityContainer. ` +
-				"The ORD overlay `operation` selector targets Schema-level Action/Function elements. " +
+				`ActionImport "${ai.name}" was skipped: ActionImports are EntityContainer aliases. ` +
 				"Enrich the corresponding `actions` entry instead.",
 		});
 	}
 
-	// functionImports — EntityContainer level; no concept-level selector
+	// functionImports — EntityContainer-level aliases for Schema-level Functions.
+	// Patch the corresponding `functions` entry instead.
 	for (const fi of source.functionImports ?? []) {
 		warnings.push({
 			type: "unsupported-concept",
 			field: `functionImports[name="${fi.name}"]`,
 			message:
-				`FunctionImport "${fi.name}" cannot be converted: FunctionImports reside in EntityContainer. ` +
-				"The ORD overlay `operation` selector targets Schema-level Action/Function elements. " +
+				`FunctionImport "${fi.name}" was skipped: FunctionImports are EntityContainer aliases. ` +
 				"Enrich the corresponding `functions` entry instead.",
 		});
 	}
@@ -263,12 +225,20 @@ function addOperationPatches(
 		warnTags(entityKind, op.name, warnings);
 	}
 
-	if ((op.parameters ?? []).length > 0) {
-		warnParameters(entityKind, op.name, warnings);
+	for (const param of op.parameters ?? []) {
+		patches.push({
+			action: "merge",
+			selector: { parameter: param.name, operation: qualifiedSelector },
+			data: descriptionAnnotations(param.summary, param.description),
+		});
 	}
 
 	if (op.returnType !== undefined) {
-		warnReturnType(entityKind, op.name, warnings);
+		patches.push({
+			action: "merge",
+			selector: { returnType: true, operation: qualifiedSelector },
+			data: descriptionAnnotations(op.returnType.summary, op.returnType.description),
+		});
 	}
 }
 

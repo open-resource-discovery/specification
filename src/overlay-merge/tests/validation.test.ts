@@ -337,3 +337,87 @@ test("applyOverlayToDocument fails early for non JSON/YAML definition types", ()
 		/The "jsonPath" selector is only defined for JSON\/YAML-based target formats/,
 	);
 });
+
+test("validateOverlaySemantics errors for entitySet/namespace selector on unsupported definitionType", () => {
+	const entitySetOverlay = createOrdOverlay({
+		target: { definitionType: "openapi-v3" },
+		patches: [
+			createOverlayPatch({
+				selector: { entitySet: "Customers" },
+				data: { "@Core.Description": "all customers" },
+			}),
+		],
+	});
+
+	const nsOverlay = createOrdOverlay({
+		target: { definitionType: "openapi-v3" },
+		patches: [
+			createOverlayPatch({
+				selector: { namespace: "com.example.Svc" },
+				data: { "@Core.Description": "the service" },
+			}),
+		],
+	});
+
+	const esResult = validateOverlaySemantics(entitySetOverlay);
+	assert.ok(
+		esResult.errors.some(
+			(issue) =>
+				issue.message.includes("entitySet") &&
+				issue.message.includes("openapi-v3"),
+		),
+		"entitySet selector should error for openapi-v3",
+	);
+
+	const nsResult = validateOverlaySemantics(nsOverlay);
+	assert.ok(
+		nsResult.errors.some(
+			(issue) =>
+				issue.message.includes("namespace") &&
+				issue.message.includes("openapi-v3"),
+		),
+		"namespace selector should error for openapi-v3",
+	);
+});
+
+test("validateOverlaySemantics errors for parameter/returnType selector on unsupported definitionType", () => {
+	const paramOverlay = createOrdOverlay({
+		target: { definitionType: "a2a-agent-card" },
+		patches: [
+			createOverlayPatch({
+				selector: { parameter: "myParam", operation: "myOp" },
+				data: { "@Core.Description": "desc" },
+			}),
+		],
+	});
+
+	const rtOverlay = createOrdOverlay({
+		target: { definitionType: "a2a-agent-card" },
+		patches: [
+			createOverlayPatch({
+				selector: { returnType: true, operation: "myOp" },
+				data: { "@Core.Description": "desc" },
+			}),
+		],
+	});
+
+	const paramResult = validateOverlaySemantics(paramOverlay);
+	assert.ok(
+		paramResult.errors.some(
+			(issue) =>
+				issue.message.includes("parameter") &&
+				issue.message.includes("a2a-agent-card"),
+		),
+		"parameter selector should error for a2a-agent-card",
+	);
+
+	const rtResult = validateOverlaySemantics(rtOverlay);
+	assert.ok(
+		rtResult.errors.some(
+			(issue) =>
+				issue.message.includes("returnType") &&
+				issue.message.includes("a2a-agent-card"),
+		),
+		"returnType selector should error for a2a-agent-card",
+	);
+});

@@ -18,7 +18,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId'
       type: 'string'
-      description: "ORD ID targeting an ORD resource (API, Event, Data Product, ...).\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).\nUse this selector when patching ORD resource metadata itself.\nThe ORD resource type is derived from the ORD ID itself."
+      description: "ORD ID targeting an ORD resource (API, Event, Data Product, ...) in an ORD document.\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).\nSupported metadata formats:\n- ORD document (no specific `definitionType`): locates the ORD resource object whose\n  `ordId` field matches this value. The resource type (apiResource, eventResource,\n  dataProduct, etc.) is derived from the ORD ID namespace and is not required in the selector.\n\nUse this selector when patching ORD resource metadata itself (e.g. title, description,\nvisibility, tags). For patching the technical API definition file that the resource\nreferences, apply the overlay to that definition file directly using its own selectors."
       mandatory: true
       constraints:
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'

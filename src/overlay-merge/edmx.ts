@@ -43,6 +43,7 @@ const ALWAYS_ARRAY_TAGS = new Set([
 	"Property",
 	"NavigationProperty",
 	"Parameter",
+	"ReturnType",
 	"Annotation",
 	"PropertyValue",
 	"Record",
@@ -111,6 +112,7 @@ function getEdmxSchemas(tree: Record<string, JSONValue>): JSONObject[] {
 /**
  * Finds an EntityType or ComplexType by name across all schemas.
  * Supports qualified names (e.g. `OData.Demo.Customer`) and unqualified names (e.g. `Customer`).
+ * Also resolves EnumType elements by the same naming convention.
  */
 function findEdmxEntityType(
 	schemas: JSONObject[],
@@ -129,7 +131,7 @@ function findEdmxEntityType(
 			continue;
 		}
 
-		for (const typeArrayKey of ["EntityType", "ComplexType"]) {
+		for (const typeArrayKey of ["EntityType", "ComplexType", "EnumType"]) {
 			const typeArray = schema[typeArrayKey];
 			if (!Array.isArray(typeArray)) continue;
 			for (let i = 0; i < typeArray.length; i++) {
@@ -149,13 +151,13 @@ function findEdmxEntityType(
 }
 
 /**
- * Finds a Property or NavigationProperty by name on an EntityType/ComplexType JSON object.
+ * Finds a Property, NavigationProperty, or Member by name on an EntityType/ComplexType/EnumType JSON object.
  */
 function findEdmxProperty(
 	entityType: JSONObject,
 	propertyName: string,
 ): { prop: JSONObject; parent: JSONObject[]; index: number } | undefined {
-	for (const propArrayKey of ["Property", "NavigationProperty"]) {
+	for (const propArrayKey of ["Property", "NavigationProperty", "Member"]) {
 		const props = entityType[propArrayKey];
 		if (!Array.isArray(props)) continue;
 		for (let i = 0; i < props.length; i++) {
@@ -172,11 +174,14 @@ function findEdmxProperty(
 /**
  * Finds an Action or Function by name across all schemas.
  * Supports namespace-qualified names (e.g. `OData.Demo.Approval`) and unqualified names.
+ * For OData v2: also searches FunctionImport elements inside EntityContainer when no
+ * Schema-level Action/Function match is found.
  */
 function findEdmxOperation(
 	schemas: JSONObject[],
 	operationName: string,
 ): { operation: JSONObject; array: JSONObject[]; index: number } | undefined {
+	// First: search Schema-level Action/Function
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
 		if (typeof ns !== "string") continue;
@@ -202,10 +207,147 @@ function findEdmxOperation(
 		}
 	}
 
+	// Fallback: search FunctionImport inside EntityContainer (OData v2)
+	return findEdmxFunctionImport(schemas, operationName);
+}
+
+/**
+ * Finds a FunctionImport element inside EntityContainer by name across all schemas.
+ */
+function findEdmxFunctionImport(
+	schemas: JSONObject[],
+	operationName: string,
+): { operation: JSONObject; array: JSONObject[]; index: number } | undefined {
+	for (const schema of schemas) {
+		const ns = schema["@_Namespace"];
+		if (typeof ns !== "string") continue;
+
+		let localName: string;
+		if (operationName.startsWith(`${ns}.`)) {
+			localName = operationName.substring(ns.length + 1);
+		} else if (!operationName.includes(".")) {
+			localName = operationName;
+		} else {
+			continue;
+		}
+
+		const container = getEdmxEntityContainer(schema);
+		if (!container) continue;
+
+		const fiArray = container.FunctionImport;
+		if (!Array.isArray(fiArray)) continue;
+		for (let i = 0; i < fiArray.length; i++) {
+			const fi = fiArray[i];
+			if (isJSONObject(fi) && fi["@_Name"] === localName) {
+				return { operation: fi, array: fiArray as JSONObject[], index: i };
+			}
+		}
+	}
+
 	return undefined;
 }
 
-// ─── CSDL JSON annotation → XML Annotation element conversion ──────────────
+// ─── EntityContainer navigation helpers ─────────────────────────────────────
+
+/**
+ * Returns the EntityContainer object from a single Schema, or undefined.
+ * EntityContainer is treated as a direct object property (not an array) per OData spec.
+ */
+function getEdmxEntityContainer(schema: JSONObject): JSONObject | undefined {
+	const container = schema.EntityContainer;
+	if (isJSONObject(container)) {
+		return container;
+	}
+
+	// Defensive: handle unlikely case where EntityContainer is an array
+	if (Array.isArray(container) && container.length > 0 && isJSONObject(container[0])) {
+		return container[0] as JSONObject;
+	}
+
+	return undefined;
+}
+
+/**
+ * Finds an EntitySet by name across all schemas' EntityContainers.
+ */
+function findEdmxEntitySet(
+	schemas: JSONObject[],
+	entitySetName: string,
+): { entitySet: JSONObject; array: JSONObject[]; index: number } | undefined {
+	for (const schema of schemas) {
+		const ns = schema["@_Namespace"];
+		if (typeof ns !== "string") continue;
+
+		let localName: string;
+		if (entitySetName.startsWith(`${ns}.`)) {
+			localName = entitySetName.substring(ns.length + 1);
+		} else if (!entitySetName.includes(".")) {
+			localName = entitySetName;
+		} else {
+			continue;
+		}
+
+		const container = getEdmxEntityContainer(schema);
+		if (!container) continue;
+
+		const esArray = container.EntitySet;
+		if (!Array.isArray(esArray)) continue;
+		for (let i = 0; i < esArray.length; i++) {
+			const es = esArray[i];
+			if (isJSONObject(es) && es["@_Name"] === localName) {
+				return { entitySet: es, array: esArray as JSONObject[], index: i };
+			}
+		}
+	}
+
+	return undefined;
+}
+
+/**
+ * Finds a Schema element by its Namespace attribute.
+ */
+function findEdmxSchema(
+	schemas: JSONObject[],
+	namespaceName: string,
+): JSONObject | undefined {
+	return schemas.find((s) => s["@_Namespace"] === namespaceName);
+}
+
+/**
+ * Finds a Parameter by name on an Action/Function/FunctionImport element.
+ */
+function findEdmxParameter(
+	operation: JSONObject,
+	parameterName: string,
+): { param: JSONObject; parent: JSONObject[]; index: number } | undefined {
+	const params = operation.Parameter;
+	if (!Array.isArray(params)) return undefined;
+	for (let i = 0; i < params.length; i++) {
+		const p = params[i];
+		if (isJSONObject(p) && p["@_Name"] === parameterName) {
+			return { param: p, parent: params as JSONObject[], index: i };
+		}
+	}
+
+	return undefined;
+}
+
+/**
+ * Finds the ReturnType child element of an Action or Function.
+ * ReturnType is always an array (added to ALWAYS_ARRAY_TAGS), so take index 0.
+ */
+function findEdmxReturnType(
+	operation: JSONObject,
+): { returnType: JSONObject; parent: JSONObject[]; index: number } | undefined {
+	const rtArray = operation.ReturnType;
+	if (Array.isArray(rtArray) && rtArray.length > 0 && isJSONObject(rtArray[0])) {
+		return { returnType: rtArray[0] as JSONObject, parent: rtArray as JSONObject[], index: 0 };
+	}
+
+	return undefined;
+}
+
+
 
 /**
  * Converts a CSDL JSON annotation value to an XML Annotation element object
@@ -477,15 +619,61 @@ function applyEdmxPatch(schemas: JSONObject[], patch: OverlayPatch): boolean {
 		return matched;
 	}
 
-	if (isJSONObject(selector) && typeof selector.operation === "string") {
+	if (
+		isJSONObject(selector) &&
+		typeof selector.operation === "string" &&
+		!("parameter" in selector) &&
+		!("returnType" in selector)
+	) {
 		const result = findEdmxOperation(schemas, selector.operation);
 		if (!result) return false;
 		applyEdmxAnnotationPatch(result.operation, patch);
 		return true;
 	}
 
+	if (
+		isJSONObject(selector) &&
+		typeof selector.operation === "string" &&
+		typeof (selector as Record<string, unknown>).parameter === "string"
+	) {
+		const paramName = (selector as unknown as { parameter: string }).parameter;
+		const operationResult = findEdmxOperation(schemas, selector.operation);
+		if (!operationResult) return false;
+		const paramResult = findEdmxParameter(operationResult.operation, paramName);
+		if (!paramResult) return false;
+		applyEdmxAnnotationPatch(paramResult.param, patch);
+		return true;
+	}
+
+	if (
+		isJSONObject(selector) &&
+		typeof selector.operation === "string" &&
+		(selector as Record<string, unknown>).returnType === true
+	) {
+		const operationResult = findEdmxOperation(schemas, selector.operation);
+		if (!operationResult) return false;
+		const rtResult = findEdmxReturnType(operationResult.operation);
+		if (!rtResult) return false;
+		applyEdmxAnnotationPatch(rtResult.returnType, patch);
+		return true;
+	}
+
+	if (isJSONObject(selector) && typeof selector.entitySet === "string") {
+		const result = findEdmxEntitySet(schemas, selector.entitySet);
+		if (!result) return false;
+		applyEdmxAnnotationPatch(result.entitySet, patch);
+		return true;
+	}
+
+	if (isJSONObject(selector) && typeof selector.namespace === "string") {
+		const result = findEdmxSchema(schemas, selector.namespace);
+		if (!result) return false;
+		applyEdmxAnnotationPatch(result, patch);
+		return true;
+	}
+
 	throw new OverlayMergeError(
-		"Unsupported selector for EDMX target. Supported selectors are: entityType, propertyType, operation.",
+		"Unsupported selector for EDMX target. Supported selectors are: entityType, propertyType, operation, entitySet, namespace, parameter, returnType.",
 	);
 }
 

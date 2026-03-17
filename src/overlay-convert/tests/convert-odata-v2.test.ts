@@ -4,7 +4,7 @@ import { convertODataV2EnrichmentToOrd } from "../convert-odata-v2";
 import type { ODataV2Enrichment } from "../types";
 import { loadLocalFixture } from "./test-helpers";
 
-test("converts OData v2 entityTypes and properties to ORD overlay patches", async () => {
+test("converts OData v2 entityTypes, entitySets and functionImports to ORD overlay patches", async () => {
 	const source =
 		await loadLocalFixture<ODataV2Enrichment>("odata-v2-enrichment.json");
 
@@ -18,10 +18,10 @@ test("converts OData v2 entityTypes and properties to ORD overlay patches", asyn
 	// Should produce patches for:
 	// - 1 entityType (compensationInfo) + 2 properties = 3 patches
 	// - 1 complexType (compensationPayComponents) + 1 property = 2 patches
-	// - 1 entitySet = 0 patches (skipped)
-	// - 1 functionImport = 1 patch (operation selector, with warning)
-	// Total: 6 patches, 0 params patches (skipped)
-	assert.equal(overlay.patches.length, 6);
+	// - 1 entitySet (compensationInfo) = 1 patch
+	// - 1 functionImport (getCompensationHistory) + 1 parameter = 2 patches
+	// Total: 8 patches
+	assert.equal(overlay.patches.length, 8);
 
 	// entityType patch
 	const etPatch = overlay.patches[0];
@@ -51,8 +51,13 @@ test("converts OData v2 entityTypes and properties to ORD overlay patches", asyn
 	});
 	assert.equal(ctPatch.action, "merge");
 
-	// functionImport patch
-	const fiPatch = overlay.patches[5];
+	// entitySet patch
+	const esPatch = overlay.patches[5];
+	assert.deepEqual(esPatch.selector, { entitySet: "compensationInfo" });
+	assert.equal(esPatch.action, "merge");
+
+	// functionImport operation patch
+	const fiPatch = overlay.patches[6];
 	assert.deepEqual(fiPatch.selector, { operation: "getCompensationHistory" });
 	assert.equal(fiPatch.action, "merge");
 	assert.deepEqual(
@@ -60,26 +65,32 @@ test("converts OData v2 entityTypes and properties to ORD overlay patches", asyn
 		"Retrieve compensation history for an employee",
 	);
 
-	// Warnings: entitySet skip, functionImport needs-spec-extension, 2x tags, 1x parameters
-	const entitySetWarnings = warnings.filter((w) =>
-		w.field?.startsWith("entitySets"),
-	);
-	assert.equal(entitySetWarnings.length, 1);
-	assert.equal(entitySetWarnings[0].type, "unsupported-concept");
+	// functionImport parameter patch
+	const paramPatch = overlay.patches[7];
+	assert.deepEqual(paramPatch.selector, {
+		parameter: "employeeId",
+		operation: "getCompensationHistory",
+	});
 
-	const fiWarnings = warnings.filter(
+	// Warnings: no more entitySet skip, no more needs-spec-extension, no param skip
+	// Only tag warnings remain (e.g. tags on entitySets produce lost-information warnings)
+	const entitySetWarnings = warnings.filter((w) =>
+		w.type === "unsupported-concept" && w.field?.startsWith("entitySets"),
+	);
+	assert.equal(entitySetWarnings.length, 0, "entitySet no longer produces unsupported-concept warnings");
+
+	const fiSpecWarnings = warnings.filter(
 		(w) => w.type === "needs-spec-extension",
 	);
-	assert.equal(fiWarnings.length, 1);
-
-	const tagsWarnings = warnings.filter((w) => w.type === "lost-information");
-	assert.ok(tagsWarnings.length >= 2, "expected at least 2 tag warnings");
+	assert.equal(fiSpecWarnings.length, 0, "functionImport no longer needs spec extension");
 
 	const paramWarnings = warnings.filter((w) =>
-		w.field?.includes("parameters"),
+		w.type === "unsupported-concept" && w.field?.includes("parameter"),
 	);
-	assert.equal(paramWarnings.length, 1);
-	assert.equal(paramWarnings[0].type, "unsupported-concept");
+	assert.equal(paramWarnings.length, 0, "parameters no longer produce warnings");
+
+	const tagsWarnings = warnings.filter((w) => w.type === "lost-information");
+	assert.ok(tagsWarnings.length >= 1, "expected at least 1 tag warning");
 });
 
 test("uses namespace-qualified selectors when odataNamespace is provided", () => {
@@ -120,7 +131,7 @@ test("uses unqualified names when no namespace is provided", () => {
 	assert.deepEqual(overlay.patches[0].selector, { entityType: "Employee" });
 });
 
-test("emits unsupported-concept warning for each entitySet", () => {
+test("entitySets produce entitySet selector patches", () => {
 	const source: ODataV2Enrichment = {
 		protocol: "odatav2",
 		entityTypes: [
@@ -138,13 +149,16 @@ test("emits unsupported-concept warning for each entitySet", () => {
 
 	const { overlay, warnings } = convertODataV2EnrichmentToOrd(source);
 
+	// No unsupported-concept warnings for entitySets anymore
 	const entitySetWarnings = warnings.filter((w) =>
 		w.type === "unsupported-concept" && w.field?.startsWith("entitySets"),
 	);
-	assert.equal(entitySetWarnings.length, 2);
+	assert.equal(entitySetWarnings.length, 0);
 
-	// The 1 entityType should still produce a patch
-	assert.equal(overlay.patches.length, 1);
+	// 1 entityType + 2 entitySet patches = 3
+	assert.equal(overlay.patches.length, 3);
+	assert.deepEqual(overlay.patches[1].selector, { entitySet: "FooSet" });
+	assert.deepEqual(overlay.patches[2].selector, { entitySet: "BarSet" });
 });
 
 test("converts complexType properties using entityType selector with complex type name", () => {
