@@ -15,7 +15,7 @@
     {
       "action": "merge",
       "selector": {
-        "entityType": "A_BusinessPartnerType"
+        "entityType": "API_BUSINESS_PARTNER.A_BusinessPartnerType"
       },
       "data": {
         "@Core.Description": "Represents a natural or legal person involved in business transactions such as customers, vendors, or internal business units.",
@@ -26,7 +26,7 @@
       "action": "merge",
       "selector": {
         "propertyType": "LegacySearchTerm1",
-        "entityType": "A_BusinessPartnerType"
+        "entityType": "API_BUSINESS_PARTNER.A_BusinessPartnerType"
       },
       "data": {
         "@Core.Revisions": [
@@ -42,7 +42,7 @@
       "action": "merge",
       "selector": {
         "propertyType": "CreditScore",
-        "entityType": "A_BusinessPartnerType"
+        "entityType": "API_BUSINESS_PARTNER.A_BusinessPartnerType"
       },
       "data": {
         "@Core.Description": "Numeric credit score for the business partner. Range: 100 (excellent) to 600 (poor).",

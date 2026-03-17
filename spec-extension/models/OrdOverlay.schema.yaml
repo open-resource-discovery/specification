@@ -573,10 +573,9 @@ definitions:
   # Example use: patching a reusable `Address` or `Error` schema shared across many operations.
 
   # Intended shape: unconstrained value (`unknown` / `any`) because patch data depends on the selected target.
-  # Current fallback: explicit JSON-type union because spec-toolkit currently rejects a typeless schema object here.
-  # TODO: Consider extending spec-toolkit to support unconstrained value definitions and generate `unknown` cleanly.
-  # TODO: Clarify how to best handle an unconstrained patch value in UMS.
-  # TODO: Decide whether this has to remain its own definition with x-ums-type "embedded".
+  # Current approach: explicit JSON-type union covering all JSON value types (object, array, string, number,
+  # boolean, null). This is functionally equivalent to `any` and avoids a dependency on spec-toolkit
+  # support for unconstrained value definitions.
   OverlayPatchValue:
     type:
       - object
@@ -586,7 +585,6 @@ definitions:
       - boolean
       - "null"
     title: Overlay Patch Value
-    # TODO: This might not be correct UMS type, actually it should be an inline "any"
     x-ums-type: "embedded"
     description: |-
       The value to be used together with patch actions:

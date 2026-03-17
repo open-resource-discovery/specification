@@ -10,7 +10,7 @@
   "patches": [
     {
       "action": "merge",
-      "selector": { "entityType": "Customer" },
+      "selector": { "entityType": "OData.Demo.Customer" },
       "data": {
         "@Core.Description": "Represents a person or organisation that purchases goods or services.",
         "@Core.LongDescription": "A Customer is the central entity for managing purchasing relationships. It holds personal contact details, address information, and links to orders and sales records."
@@ -18,21 +18,21 @@
     },
     {
       "action": "merge",
-      "selector": { "propertyType": "CountryName", "entityType": "Customer" },
+      "selector": { "propertyType": "CountryName", "entityType": "OData.Demo.Customer" },
       "data": {
         "@Core.Description": "Name of the customer's country. Consider navigating to the related Country entity for structured ISO code access instead of relying on this denormalized field."
       }
     },
     {
       "action": "merge",
-      "selector": { "propertyType": "BirthDate", "entityType": "Customer" },
+      "selector": { "propertyType": "BirthDate", "entityType": "OData.Demo.Customer" },
       "data": {
         "@Core.Description": "Date of birth of the customer contact person. This field contains personal data and must be handled in accordance with applicable data privacy regulations."
       }
     },
     {
       "action": "merge",
-      "selector": { "propertyType": "Fax", "entityType": "Customer" },
+      "selector": { "propertyType": "Fax", "entityType": "OData.Demo.Customer" },
       "data": {
         "@Core.Revisions": [
           {
@@ -45,14 +45,14 @@
     },
     {
       "action": "merge",
-      "selector": { "entityType": "Product" },
+      "selector": { "entityType": "OData.Demo.Product" },
       "data": {
         "@Core.Description": "A sellable item offered by the company. Products are organised by category and supplied by one vendor."
       }
     },
     {
       "action": "merge",
-      "selector": { "propertyType": "Thumbnail", "entityType": "Product" },
+      "selector": { "propertyType": "Thumbnail", "entityType": "OData.Demo.Product" },
       "data": {
         "@Core.Description": "URL of a product thumbnail image. Rendered by UI components to visually represent the product in listings and detail views.",
         "@Core.IsURL": true
@@ -60,7 +60,7 @@
     },
     {
       "action": "merge",
-      "selector": { "entityType": "LeaveRequest" },
+      "selector": { "entityType": "OData.Demo.LeaveRequest" },
       "data": {
         "@Core.Description": "A formal request by an employee for approved time off, subject to manager approval or rejection."
       }
