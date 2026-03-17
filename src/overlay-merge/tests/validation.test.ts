@@ -114,9 +114,7 @@ test("validateOverlaySemantics reports unsupported selector and patch data error
 				selector: {
 					operation: "publishAstronomyUpdate",
 				},
-				data: {
-					invalid: true,
-				},
+				data: 12345, // invalid: must be string or object
 			}),
 		],
 	});
@@ -125,7 +123,7 @@ test("validateOverlaySemantics reports unsupported selector and patch data error
 
 	assert.ok(
 		result.errors.some((issue) =>
-			issue.message.includes('Patch action "append" requires string data.'),
+			issue.message.includes('Patch action "append" requires string or object data.'),
 		),
 	);
 	assert.ok(

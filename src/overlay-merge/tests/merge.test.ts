@@ -226,7 +226,7 @@ test("appends text to selected string fields", async () => {
 	);
 });
 
-test("fails append when selected value is not a string", async () => {
+test("fails append with string data when selected value is not a string", async () => {
 	const openApiSource = await loadJsonFixture<JSONValue>(
 		"examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
 	);
@@ -252,31 +252,98 @@ test("fails append when selected value is not a string", async () => {
 	);
 });
 
-test("fails append when data is not a string", async () => {
-	const openApiSource = await loadJsonFixture<JSONValue>(
-		"examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
-	);
+test("appends object data to object target with string field appends", () => {
+	const source = {
+		openapi: "3.0.0",
+		info: {
+			title: "My API",
+			description: "A sample API",
+			version: "1.0.0",
+		},
+	} as JSONValue;
 
 	const overlay = createOrdOverlay({
-		target: {
-			definitionType: "openapi-v3",
-		},
+		target: { definitionType: "openapi-v3" },
 		patches: [
 			createOverlayPatch({
 				action: "append",
-				selector: {
-					jsonPath: "$.info.description",
-				},
+				selector: { jsonPath: "$.info" },
 				data: {
-					text: " invalid",
+					title: " (Beta)",
+					description: " with additional features.",
+				},
+			}),
+		],
+	});
+
+	const merged = applyOverlayToDocument(source, overlay) as Record<
+		string,
+		unknown
+	>;
+	const info = merged.info as Record<string, unknown>;
+	assert.equal(info.title, "My API (Beta)");
+	assert.equal(info.description, "A sample API with additional features.");
+	assert.equal(info.version, "1.0.0"); // unchanged
+});
+
+test("appends object data with nested objects", () => {
+	const source = {
+		outer: {
+			inner: {
+				text: "Hello",
+			},
+			label: "Original",
+		},
+	} as JSONValue;
+
+	const overlay = createOrdOverlay({
+		patches: [
+			createOverlayPatch({
+				action: "append",
+				selector: { jsonPath: "$.outer" },
+				data: {
+					inner: {
+						text: " World",
+					},
+					label: " Label",
+				},
+			}),
+		],
+	});
+
+	const merged = applyOverlayToDocument(source, overlay) as Record<
+		string,
+		unknown
+	>;
+	const outer = merged.outer as Record<string, unknown>;
+	const inner = outer.inner as Record<string, unknown>;
+	assert.equal(inner.text, "Hello World");
+	assert.equal(outer.label, "Original Label");
+});
+
+test("fails append with object data when string targets non-string field", () => {
+	const source = {
+		info: {
+			title: "My API",
+			servers: [{ url: "http://localhost" }], // array, not string
+		},
+	} as JSONValue;
+
+	const overlay = createOrdOverlay({
+		patches: [
+			createOverlayPatch({
+				action: "append",
+				selector: { jsonPath: "$.info" },
+				data: {
+					servers: " invalid", // trying to append string to array
 				},
 			}),
 		],
 	});
 
 	assert.throws(
-		() => applyOverlayToDocument(openApiSource, overlay),
-		OverlayMergeError,
+		() => applyOverlayToDocument(source, overlay),
+		/cannot append string to non-string field/,
 	);
 });
 

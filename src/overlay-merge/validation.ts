@@ -5,8 +5,7 @@
  * - selector validation against known definitionType support
  * - basic target-document shape validation for supported JSON-based formats
  *
- * Current gaps:
- * - entityType and propertyType selectors are not implemented yet
+ * Current gaps / known limitations:
  * - target-format validation is heuristic and not a full spec validator for OpenAPI, AsyncAPI, etc.
  * - YAML parsing/serialization is handled outside this module and is not supported by the current CLI flow
  * - no remote resolution, dereferencing, or validation of target.url contents
@@ -366,12 +365,16 @@ function validatePatchData(
 		);
 	}
 
-	if (patch.action === "append" && typeof patch.data !== "string") {
+	if (
+		patch.action === "append" &&
+		typeof patch.data !== "string" &&
+		!isJSONObject(patch.data)
+	) {
 		errors.push(
 			createIssue(
 				"error",
 				`${patchPath}.data`,
-				'Patch action "append" requires string data.',
+				'Patch action "append" requires string or object data.',
 			),
 		);
 	}

@@ -45,7 +45,8 @@
       "action": "remove",
       "selector": {
         "operation": "legacy-dispute-lookup"
-      }
+      },
+      "data": {}
     }
   ]
 }

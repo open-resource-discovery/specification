@@ -361,9 +361,14 @@ export interface OverlayPatch {
    *
    * - `update`: Replace the selected element entirely with `data`.
    * - `append`:
-   *   - append string `data` to the selected string value.
-   *   - only valid when the selected element is a text/string field.
-   *   - useful to extend existing descriptions without replacing them.
+   *   - When `data` is a string: append it to the selected string value.
+   *     Only valid when the selected element is a text/string field.
+   *   - When `data` is an object: recursively append each string property in `data`
+   *     to the corresponding string field in the selected object.
+   *     Nested objects are traversed; arrays in `data` are appended to matching arrays.
+   *     Throws an error if a string in `data` targets a non-string field in the target.
+   *   - Useful to extend existing descriptions, summaries, or other text fields
+   *     without replacing them entirely.
    * - `remove`:
    *   - `data: {}` (empty object): remove the selected element from the document entirely.
    *   - `data` with null-valued properties: remove only those fields (recursively).
