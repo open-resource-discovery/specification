@@ -1053,15 +1053,18 @@ test("propertyType + entityType selectors target EnumType member in CSDL JSON", 
 	const target = await loadJsonFixture<JSONValue>(
 		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
 	);
+	// For EnumType members in CSDL JSON, the member value is a number.
+	// To add annotations, use "update" action to replace with an annotated object,
+	// since "merge" cannot merge an object into a number.
 	const overlay: ORDOverlay = {
 		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test EnumType member via propertyType selector",
 		patches: [
 			{
-				action: "merge",
+				action: "update",
 				selector: { propertyType: "Yellow", entityType: "OData.Demo.Pattern" },
-				data: { "@Core.Description": "A yellow colour pattern member" },
+				data: { "@odata.value": 1, "@Core.Description": "A yellow colour pattern member" },
 			},
 		],
 	};

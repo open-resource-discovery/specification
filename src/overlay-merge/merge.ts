@@ -281,10 +281,23 @@ function deepMerge(base: JSONValue, incoming: JSONValue): JSONValue {
 		return result;
 	}
 
+	// Scalar merge: incoming value overwrites base value
+	// This is the expected behavior for primitive types (string, number, boolean, null)
+	if (
+		!isJSONObject(base) &&
+		!Array.isArray(base) &&
+		!isJSONObject(incoming) &&
+		!Array.isArray(incoming)
+	) {
+		return cloneJSONValue(incoming);
+	}
+
 	// When types are incompatible (e.g. merging a string into an object, or an object
-	// into an array), the incoming value silently replaces the base value.
-	// TODO: decide whether a type mismatch should emit a warning or throw an error.
-	return cloneJSONValue(incoming);
+	// into an array), throw an error to alert the user of the mismatch.
+	throw new OverlayMergeError(
+		`Type mismatch in merge: cannot merge ${Array.isArray(incoming) ? "array" : typeof incoming} into ${Array.isArray(base) ? "array" : typeof base}. ` +
+			`Use 'update' action to replace the value entirely.`,
+	);
 }
 
 /**

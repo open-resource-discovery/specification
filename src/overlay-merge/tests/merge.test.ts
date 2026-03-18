@@ -799,7 +799,7 @@ test("remove masks can delete array entries and nested fields in one patch", () 
 	assert.deepEqual(merged.items, [{ id: 2, label: "two" }]);
 });
 
-test("merge replaces the target value when the incoming type is incompatible", () => {
+test("merge throws error when incoming type is incompatible with base type", () => {
 	const overlay = createOrdOverlay({
 		patches: [
 			createOverlayPatch({
@@ -813,14 +813,14 @@ test("merge replaces the target value when the incoming type is incompatible", (
 		],
 	});
 
-	const merged = applyOverlayToDocument(
-		{
-			info: "plain text",
-		},
-		overlay,
-	) as Record<string, unknown>;
-
-	assert.deepEqual(merged.info as Record<string, unknown>, {
-		structured: true,
-	});
+	assert.throws(
+		() =>
+			applyOverlayToDocument(
+				{
+					info: "plain text",
+				},
+				overlay,
+			),
+		/Type mismatch in merge/,
+	);
 });

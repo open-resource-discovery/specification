@@ -10,45 +10,57 @@ import { createOrdOverlay, createOverlayPatch } from "./test-helpers";
 const execFileAsync = promisify(execFile);
 const cliPath = resolve(__dirname, "../cli.js");
 
-test("cli --help prints usage and the JSON-only note", async () => {
+test("cli --help prints usage and format detection note", async () => {
 	const { stderr } = await execFileAsync(process.execPath, [cliPath, "--help"]);
 
 	assert.match(stderr, /Usage:/);
-	assert.match(stderr, /JSON files only/);
+	assert.match(stderr, /Format detection:/);
+	assert.match(stderr, /auto-detected from file extension/);
+	assert.match(stderr, /--dry-run/);
 });
 
-test("cli rejects YAML overlay files with a clear error", async () => {
+test("cli applies YAML overlay to YAML input and outputs YAML", async () => {
 	const tempDir = await mkdtemp(resolve(tmpdir(), "overlay-merge-cli-"));
 	const overlayPath = resolve(tempDir, "overlay.yaml");
-	const inputPath = resolve(tempDir, "input.json");
+	const inputPath = resolve(tempDir, "input.yaml");
 
-	await writeFile(overlayPath, "ordOverlay: 0.1\n", "utf8");
 	await writeFile(
-		inputPath,
-		JSON.stringify({
-			openapi: "3.0.0",
-			info: {
-				title: "Astronomy",
-			},
-		}),
+		overlayPath,
+		`$schema: https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#
+ordOverlay: "0.1"
+description: Test overlay
+patches:
+  - action: merge
+    selector:
+      jsonPath: $.info
+    data:
+      x-yaml-test: true
+`,
 		"utf8",
 	);
 
-	await assert.rejects(
-		() =>
-			execFileAsync(process.execPath, [
-				cliPath,
-				"--overlay",
-				overlayPath,
-				"--input",
-				inputPath,
-			]),
-		(error: Error & { stderr?: string }) => {
-			assert.match(error.stderr ?? "", /is YAML/);
-			assert.match(error.stderr ?? "", /supports JSON only/);
-			return true;
-		},
+	await writeFile(
+		inputPath,
+		`openapi: "3.0.0"
+info:
+  title: Astronomy
+`,
+		"utf8",
 	);
+
+	const { stdout } = await execFileAsync(process.execPath, [
+		cliPath,
+		"--overlay",
+		overlayPath,
+		"--input",
+		inputPath,
+		"--target-definition-type",
+		"openapi-v3",
+	]);
+
+	// Output should be YAML (not start with '{')
+	assert.ok(!stdout.trim().startsWith("{"), "Output should be YAML not JSON");
+	assert.match(stdout, /x-yaml-test: true/);
 });
 
 test("cli applies an overlay and writes JSON output to stdout", async () => {
@@ -169,4 +181,67 @@ test("cli writes output files when --output is provided", async () => {
 	const rendered = await readFile(outputPath, "utf8");
 	const merged = JSON.parse(rendered) as { info: Record<string, unknown> };
 	assert.equal(merged.info.title, "Patched Title");
+});
+
+test("cli --dry-run validates without applying changes", async () => {
+	const tempDir = await mkdtemp(resolve(tmpdir(), "overlay-merge-cli-"));
+	const overlayPath = resolve(tempDir, "overlay.json");
+	const inputPath = resolve(tempDir, "input.json");
+
+	await writeFile(
+		overlayPath,
+		JSON.stringify(
+			createOrdOverlay({
+				target: {
+					definitionType: "openapi-v3",
+				},
+				patches: [
+					createOverlayPatch({
+						selector: {
+							jsonPath: "$.info",
+						},
+						data: {
+							"x-dry-run-test": true,
+						},
+					}),
+				],
+			}),
+			null,
+			2,
+		),
+		"utf8",
+	);
+
+	await writeFile(
+		inputPath,
+		JSON.stringify(
+			{
+				openapi: "3.0.0",
+				info: {
+					title: "Astronomy",
+				},
+			},
+			null,
+			2,
+		),
+		"utf8",
+	);
+
+	const { stdout, stderr } = await execFileAsync(process.execPath, [
+		cliPath,
+		"--overlay",
+		overlayPath,
+		"--input",
+		inputPath,
+		"--target-definition-type",
+		"openapi-v3",
+		"--dry-run",
+	]);
+
+	// Dry run should not output merged content to stdout
+	assert.equal(stdout, "");
+	// Dry run should emit validation messages to stderr
+	assert.match(stderr, /\[dry-run\]/);
+	assert.match(stderr, /Would apply 1 patch/);
+	assert.match(stderr, /Input format: json/);
 });

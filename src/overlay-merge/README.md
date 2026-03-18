@@ -1,9 +1,11 @@
 # Overlay Merge Library (`src/overlay-merge`)
 
+> **⚠️ Alpha Status:** This module has been "vibe-coded" with AI assistance and has not yet undergone extensive manual review or QA. It is intended to validate the ORD Overlay specification and approach under realistic conditions. The plan is to move this tooling to a separate project once the specification stabilizes. Use with appropriate caution in production environments.
+
 TypeScript implementation for applying ORD overlays to metadata files.
 
 Current scope:
-- Supports all selector types: `jsonPath`, `ordId`, `operation`, `entityType`, `propertyType`
+- Supports all selector types: `jsonPath`, `ordId`, `operation`, `entityType`, `propertyType`, `entitySet`, `namespace`, `parameter`, `returnType`
 - Supports all patch actions: `merge`, `update`, `remove`, `append`
 - JSON-based targets (`csdl-json`, `sap-csn-interop-effective-v1`, OpenAPI, A2A, MCP, ORD Document, …) via `applyOverlayToDocument`
 - EDMX XML targets (`edmx`) via `applyOverlayToEdmxDocument` (uses `fast-xml-parser`)
@@ -16,8 +18,6 @@ Validation assumption:
 - Validate the merged output again with the target format-specific tooling.
 
 Current CLI limitation:
-- The CLI currently accepts JSON files only.
-- YAML overlays and YAML target files are valid per spec, but the CLI does not yet parse YAML or preserve YAML output formatting.
 - The CLI uses `applyOverlayToDocument` and therefore does not support EDMX XML targets. Use the library API (`applyOverlayToEdmxDocument`) directly for EDMX files.
 
 ## What It Does
@@ -33,6 +33,10 @@ The library applies `patches` from an `ORDOverlay` document in order.
 | `operation` | OpenAPI, MCP, A2A Agent Card, CSDL JSON, EDMX | See format details below |
 | `entityType` | CSDL JSON, EDMX, CSN Interop | Qualified or unqualified names |
 | `propertyType` | CSDL JSON, EDMX, CSN Interop | Pair with `entityType` to avoid ambiguity |
+| `entitySet` | CSDL JSON, EDMX | Targets EntitySet in EntityContainer |
+| `namespace` | CSDL JSON, EDMX | Targets Schema namespace for service-level annotations |
+| `parameter` | OpenAPI, CSDL JSON, EDMX | Requires `operation` context |
+| `returnType` | CSDL JSON, EDMX | Requires `operation` context |
 
 **`operation` selector by format:**
 - OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): matches `operationId` in `paths.{path}.{method}`
@@ -80,9 +84,6 @@ For CSN Interop targets (`sap-csn-interop-effective-v1`), the patch `data` is pl
 
 - `target.url` is currently informational and not used for strict target matching.
 - Decide whether strict URL matching should be defaulted, optional, or profile-specific.
-- Add YAML input/output support so the CLI can read `.yaml`/`.yml` overlays and target files.
-- Consider adding a `--dry-run` or `--validate-only` mode to the CLI.
-- Decide whether `deepMerge` type mismatches (e.g. merging an object into an array) should emit a warning or throw, rather than silently replacing the base value.
 - Evaluate whether the `jsonpath` npm package (CommonJS-only) should be replaced with a native ESM alternative.
 - For EDMX: EntitySet-level patching (e.g. Capabilities annotations on the container) is not covered by the `entityType` selector; use `jsonPath` or a dedicated selector extension for those cases.
 - For CSDL JSON `entityType` selector: ambiguous unqualified names (same local name in multiple namespaces) will match all of them; prefer qualified names for precision.
@@ -91,7 +92,9 @@ For CSN Interop targets (`sap-csn-interop-effective-v1`), the patch `data` is pl
 ## Merge Semantics
 
 - `update`: replaces the selected element with `data`
-- `append`: appends string `data` to the selected string value
+- `append`:
+  - string `data`: appends to the selected string value
+  - object `data`: recursively appends each string property to corresponding fields in the target object; arrays are appended; throws if string targets non-string field
 - `merge`:
   - objects: deep-merged recursively; existing keys not in `data` are preserved
   - scalars: overwritten by `data`
@@ -153,7 +156,7 @@ The function accepts the raw XML string and returns a formatted XML string with 
 
 ## CLI Script
 
-A CLI is provided at `src/overlay-merge/cli.ts` for JSON targets.
+A CLI is provided at `src/overlay-merge/cli.ts` for JSON and YAML targets.
 
 After build:
 
@@ -169,14 +172,17 @@ node dist/overlay-merge/cli.js \
 Flags:
 | Flag | Required | Description |
 |---|---|---|
-| `--overlay <path>` | yes | Path to the ORD Overlay JSON file |
-| `--input <path>` | yes | Path to the target JSON file to patch |
+| `--overlay <path>` | yes | Path to the ORD Overlay file (JSON or YAML) |
+| `--input <path>` | yes | Path to the target file to patch (JSON or YAML) |
 | `--output <path>` | no | Output path (defaults to stdout) |
 | `--target-ord-id <ordId>` | no | ORD ID context for target matching |
 | `--target-url <url>` | no | URL context (currently informational) |
 | `--target-definition-type <type>` | no | Explicit definition type for the target |
 | `--allow-no-match` | no | Continue silently when a selector has no match |
 | `--warn-on-no-match` | no | Warn (stderr) when a selector has no match |
+| `--dry-run` | no | Validate overlay and input without applying changes |
+
+**Format detection:** Input format (JSON/YAML) is auto-detected from file extension (`.json`, `.yaml`, `.yml`). Output format matches the input file format by default.
 
 ## Tests
 

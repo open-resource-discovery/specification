@@ -1,5 +1,7 @@
 # Overlay Converter (`src/overlay-convert`)
 
+> **⚠️ Alpha Status:** This module has been "vibe-coded" with AI assistance and has not yet undergone extensive manual review or QA. It is intended to validate the ORD Overlay specification and approach under realistic conditions. The plan is to move this tooling to a separate project once the specification stabilizes. Use with appropriate caution in production environments.
+
 TypeScript module for converting existing overlay/enrichment formats into the **ORD Overlay** format.
 
 Three source formats are supported:
