@@ -89,3 +89,7 @@ Rule of thumb:
 - Decide whether OData overlays should be restricted to annotation-only patches (i.e. `data` keys MUST follow the `@TermName` convention). In practice, all meaningful OData enrichments are vocabulary annotations, and allowing arbitrary structural changes could produce invalid CSDL output. Restricting to annotations would also make the patch intent more explicit and aid validation.
 - Decide whether the `entityType` selector should target only the EntityType/ComplexType definition, or also the EntitySet in the EntityContainer (or both). Currently only the EntityType definition is targeted. EntitySet-level annotations (e.g. `Capabilities`) sit on the EntitySet, not the EntityType, and are not reachable via the current selector — `jsonPath` is the current fallback for those cases.
 Reference: [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
+
+**Selectors in General**:
+
+Use [@EntityRelationship](https://sap.github.io/csn-interop-specification/spec-v1/extensions/entity-relationship) annotations if available as selector for EntityType or PropertyType?
