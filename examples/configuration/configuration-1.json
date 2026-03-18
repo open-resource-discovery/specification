@@ -35,6 +35,16 @@
         ]
       }
     ],
+    "overlays": [
+      {
+        "url": "/open-resource-discovery/v1/overlays/astronomy-api-openapi.overlay.json",
+        "accessStrategies": [
+          {
+            "type": "open"
+          }
+        ]
+      }
+    ],
     "capabilities": {
       "selector": true
     }

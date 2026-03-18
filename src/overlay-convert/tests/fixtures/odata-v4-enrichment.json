@@ -1,0 +1,124 @@
+{
+  "protocol": "odatav4",
+  "namespace": "com.sap.HRService",
+  "summary": "SAP HR Service",
+  "description": "Manages employee master data, organizational structures, and HR processes including hiring, transfers, and terminations.",
+  "uri": "/sap/opu/odata4/sap/api_employee/default/sap/HRService/0001",
+  "entityTypes": [
+    {
+      "name": "Employee",
+      "summary": "Employee master record",
+      "description": "Represents a single employee in the HR system. Contains identification, personal data, job assignment, and employment status.",
+      "tags": ["Employee Management"],
+      "properties": [
+        {
+          "name": "EmployeeId",
+          "summary": "Unique employee identifier",
+          "description": "The globally unique identifier assigned to the employee by the HR system. Immutable after creation."
+        },
+        {
+          "name": "DisplayName",
+          "summary": "Full display name",
+          "description": "The formatted full name of the employee used in UI surfaces and reports."
+        }
+      ]
+    }
+  ],
+  "complexTypes": [
+    {
+      "name": "AddressInfo",
+      "summary": "Structured address of an employee",
+      "description": "Contains street, city, postal code, and country components for an employee address.",
+      "properties": [
+        {
+          "name": "Country",
+          "summary": "ISO country code",
+          "description": "Two-letter ISO 3166-1 alpha-2 country code for the address."
+        }
+      ]
+    }
+  ],
+  "entitySets": [
+    {
+      "name": "Employees",
+      "summary": "Collection of all employees",
+      "description": "Read and manage employee master records. Supports filtering by status, department, and location.",
+      "tags": ["Employee Management"]
+    }
+  ],
+  "enumTypes": [
+    {
+      "name": "EmploymentStatus",
+      "summary": "Current employment status of an employee",
+      "description": "Indicates whether the employee is active, on leave, or has been terminated.",
+      "members": [
+        {
+          "name": "Active",
+          "summary": "Currently employed",
+          "description": "The employee is actively working and receiving regular compensation."
+        },
+        {
+          "name": "Terminated",
+          "summary": "Employment has ended",
+          "description": "The employee's contract has been terminated. Historical records are retained."
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "TerminateEmployee",
+      "summary": "Terminate an employee's employment",
+      "description": "Initiates the termination workflow for the specified employee, setting the termination date and reason.",
+      "tags": ["HR Processes"],
+      "parameters": [
+        {
+          "name": "EmployeeId",
+          "summary": "Target employee identifier",
+          "description": "The unique identifier of the employee to terminate."
+        },
+        {
+          "name": "TerminationDate",
+          "summary": "Effective termination date",
+          "description": "The date on which the employment ends."
+        }
+      ],
+      "returnType": {
+        "summary": "Termination confirmation",
+        "description": "Returns the updated employee record with the termination date and final status."
+      }
+    }
+  ],
+  "functions": [
+    {
+      "name": "GetDirectReports",
+      "summary": "List direct reports of a manager",
+      "description": "Returns all employees who directly report to the specified manager, including their basic profile information.",
+      "parameters": [
+        {
+          "name": "ManagerId",
+          "summary": "Manager employee identifier",
+          "description": "The unique identifier of the manager whose direct reports are requested."
+        }
+      ],
+      "returnType": {
+        "summary": "Collection of direct reports",
+        "description": "A collection of Employee records representing the direct reports."
+      }
+    }
+  ],
+  "actionImports": [
+    {
+      "name": "TerminateEmployeeImport",
+      "summary": "EntityContainer alias for TerminateEmployee action",
+      "description": "Exposes the TerminateEmployee action via the entity container for client binding."
+    }
+  ],
+  "functionImports": [
+    {
+      "name": "GetDirectReportsImport",
+      "summary": "EntityContainer alias for GetDirectReports function",
+      "description": "Exposes the GetDirectReports function via the entity container."
+    }
+  ]
+}

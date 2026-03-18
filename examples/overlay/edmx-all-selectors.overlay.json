@@ -1,0 +1,104 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:all-odata-selectors:v1",
+  "description": "Demonstrates all OData-specific selectors in a single overlay.\n\nThis example shows:\n- namespace: Schema-level annotations\n- entityType: EntityType/ComplexType/EnumType definitions\n- propertyType: Properties and navigation properties\n- entitySet: EntitySets in EntityContainer\n- operation: Actions and Functions\n- parameter: Action/Function parameters\n- returnType: Action/Function return types",
+  "target": {
+    "ordId": "sap.foo:apiResource:HRService:v1",
+    "definitionType": "edmx"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": { "namespace": "com.sap.HRService" },
+      "data": {
+        "@Core.Description": "Human Resources Service",
+        "@Core.LongDescription": "Provides comprehensive HR management capabilities including employee records, leave management, and organizational structure."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "entitySet": "Employees" },
+      "data": {
+        "@Core.Description": "Collection of employee records",
+        "@Capabilities.InsertRestrictions": {
+          "Insertable": false,
+          "Description": "New employees must be created through the onboarding workflow."
+        }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "entityType": "com.sap.HRService.Employee" },
+      "data": {
+        "@Core.Description": "Employee master record containing personal and employment information.",
+        "@Core.LongDescription": "The Employee entity is the central data object for HR management. It contains identification data, personal information, employment details, and relationships to organizational units."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "propertyType": "DateOfBirth", "entityType": "com.sap.HRService.Employee" },
+      "data": {
+        "@Core.Description": "Employee's date of birth. Personal data - handle according to privacy regulations.",
+        "@PersonalData.IsPotentiallyPersonal": true
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "entityType": "com.sap.HRService.EmploymentStatus" },
+      "data": {
+        "@Core.Description": "Enumeration of possible employment states."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "propertyType": "Terminated", "entityType": "com.sap.HRService.EmploymentStatus" },
+      "data": {
+        "@Core.Description": "Employment relationship has ended. Employee records are retained for legal compliance."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "operation": "com.sap.HRService.TerminateEmployee" },
+      "data": {
+        "@Core.Description": "Terminates an employee's contract effective from the specified date.",
+        "@Core.LongDescription": "This action initiates the offboarding process. It requires HR Manager authorization and triggers downstream processes including payroll adjustments and access revocation."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "parameter": "EffectiveDate", "operation": "com.sap.HRService.TerminateEmployee" },
+      "data": {
+        "@Core.Description": "The date when the termination becomes effective. Must be in the future."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "returnType": true, "operation": "com.sap.HRService.TerminateEmployee" },
+      "data": {
+        "@Core.Description": "Returns the updated employee record with termination details."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "operation": "com.sap.HRService.GetDirectReports" },
+      "data": {
+        "@Core.Description": "Retrieves all employees who directly report to the specified manager."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "parameter": "ManagerId", "operation": "com.sap.HRService.GetDirectReports" },
+      "data": {
+        "@Core.Description": "The employee ID of the manager whose direct reports should be returned."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "returnType": true, "operation": "com.sap.HRService.GetDirectReports" },
+      "data": {
+        "@Core.Description": "Collection of Employee entities representing the manager's direct reports."
+      }
+    }
+  ]
+}

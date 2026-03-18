@@ -30,6 +30,7 @@
 		"format": "biome format --write .",
 		"lint": "biome lint .",
 		"test": "npm run build-ts && node --test dist/**/*.test.js",
+		"test:overlay-merge": "npm run build-ts && node --test dist/overlay-merge/**/*.test.js",
 		"serve": "docusaurus serve",
 		"start": "docusaurus start",
 		"deploy": "npm run build && gh-pages -d ./build",
@@ -50,11 +51,15 @@
 		"ajv": "8.18.0",
 		"ajv-formats": "3.0.1",
 		"clsx": "2.1.1",
+		"fast-xml-parser": "5.5.6",
 		"fs-extra": "11.3.4",
+		"jsonpath": "1.2.1",
 		"lefthook": "2.1.4",
 		"prism-react-renderer": "2.4.1",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",
-		"ts-node": "10.9.2"
+		"ts-node": "10.9.2",
+		"tslog": "4.10.2",
+		"yaml": "2.8.2"
 	}
 }
