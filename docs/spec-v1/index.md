@@ -846,6 +846,10 @@ It MUST be constructed as defined here:
 
 - The ORD ID MUST not exceed 255 characters in total.
 
+- The ORD ID MUST be interpreted case-insensitively when used for comparison, lookups or deduplication.
+  - Although `<resourceName>` permits mixed-case letters, two ORD IDs differing only in casing MUST be treated as the same identifier.
+  - This is required because ORD IDs appear as URL path segments (conventionally case-insensitive) and are shared across independent organizations, where case-sensitive distinctions would make global uniqueness unenforceable.
+
 An ORD ID MUST match the following [regular expression](https://en.wikipedia.org/wiki/Regular_expression):
 
 ```regex
@@ -985,6 +989,8 @@ A Specification ID MUST match the following [regular expression](https://en.wiki
 
 ## Version and Lifecycle
 
+### Versioning
+
 The `version` expresses the complete/full resource version number of an [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy).
 
 It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and therefore express minor and patch changes that don't lead to incompatible changes.
@@ -998,9 +1004,17 @@ If the resource definition also contains a version number, it SHOULD be in sync 
 When a breaking change is introduced, the rules on constructing [ORD IDs](#ord-id) will ensure that the old version of the resource is not replaced.
 The new version will lead to the creation of a separate and new successor resource (see `successor` property).
 
-Once a newer resource succeeds an older resource, the old resource SHOULD be deprecated via `releaseStatus` set to `deprecated`.
+### Lifecycle
 
-However, a deprecation does not automatically imply a planned sunset of the resource, which is done separately via setting a `sunsetDate`.
+Once a newer resource succeeds an older resource, the old resource SHOULD be deprecated via [`releaseStatus`](./interfaces/Document.md#api-resource_releasestatus) set to `deprecated`.
+This is not mandatory, because deprecating a resource is a separate decision to creating a successor.
+The `releaseStatus` property defines the maturity level and stability commitment for a resource's API contract, potentially progressing through the lifecycle: `beta` (unstable, not for production) → `active` (stable, production-ready) → `deprecated` (scheduled for removal) → `sunset` (decommissioned).
+
+A deprecation does not automatically imply a planned sunset of the resource, which is done separately via setting a `sunsetDate`.
+When a resource is deprecated, a `deprecationDate` SHOULD be provided and `successors` MUST be referenced if they exist.
+
+Note that [`visibility`](./interfaces/Document.md#api-resource_visibility) and `releaseStatus` are independent concerns: visibility controls _who_ can see the resource (`public`, `internal`, or `private`), while release status controls the _stability_ of the API contract.
+For example, a `public` resource can have `releaseStatus` of `beta`, meaning it's visible to external consumers but without stability guarantees.
 
 When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 

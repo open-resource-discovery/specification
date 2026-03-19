@@ -189,6 +189,10 @@ const config = {
                 label: "Global Group Types",
                 to: "spec-extensions/group-types/",
               },
+              {
+                label: "Model Extensions",
+                to: "spec-extensions/models/",
+              },
             ],
           },
           {
@@ -220,7 +224,17 @@ const config = {
                 label: "FAQ",
                 to: "help/faq/",
               },
+              {
+                label: "Ask AI (NotebookLM)",
+                href: "https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382",
+              },
             ],
+          },
+          {
+            href: "https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382",
+            label: "Ask AI",
+            position: "right",
+            className: "header-notebooklm-pill",
           },
           {
             href: "https://github.com/open-resource-discovery/specification",

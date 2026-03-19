@@ -739,25 +739,44 @@ definitions:
       visibility: &visibility
         type: "string"
         description: |-
-          The visibility states who is allowed to "see" the described resource or capability.
+          Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+
+          This controls who can see that the resource exists and retrieve its metadata level information.
+          It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+
+          Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
         oneOf:
           - const: public
             description: |-
-              Publicly visible to customers and 3rd parties.
-              Usually this includes an contract on the API stability, e.g. the [SAP API Deprecation Policy](https://help.sap.com/viewer/84b35b9c39b247e3ba2a31f02beee46d/Cloud/en-US/5cbfda5a9efe4e97a3e24ddaf7ec5c16.html).
+              Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.
+
+              Public resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.
+              and follow formal API lifecycle management and deprecation policies.
+
+              Example: A REST API that customers use to integrate with your SaaS product.
+
           - const: internal
             description: |-
-              Visible to other applications within the same [vendor](#vendor).
-              However, they are not officially exposed and communicated to customers and 3rd parties.
-              They might not come with the same guarantees on API stability.
+              Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).
+              MUST NOT be made available to external parties or vendor customers.
 
-              Internal resources MUST NOT be made available to consumers without checking the necessary access permissions, e.g., a public API Catalog.
-              Internal resources MAY be published through an internal API Catalog if the access permissions are ensured by it.
+              Internal resources are intended for integration between a vendors own applications and services.
+              API stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.
+
+              Internal resources MUST NOT be made available without checking the necessary access permissions.
+              Internal resources MAY be published through an internal API Catalog if access permissions are ensured by it.
+
           - const: private
             description: |-
-              Visible only to the provider application or service, usually within the same system namespace / system type.
+              Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).
+              Used for metadata completeness when describing implementation details or dependencies.
 
-              Private resources MUST NOT be made available to public consumers or consumers outside of the "private" scope of the described application.
+              Private resources usually have no stability guarantees and can change or be removed at any time.
+              These are typically implementation details not meant for consumption by other services.
+
+              Example: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.
+
+              Private resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope.
 
       credentialExchangeStrategies:
         type: array
@@ -1010,28 +1029,44 @@ definitions:
       releaseStatus: &releaseStatus
         type: string
         description: |-
-          The `releaseStatus` specifies the stability of the resource and its external contract.
+          Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+
+          This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+          of depending on the resource and whether it's suitable for production use.
+
+          Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+
+          See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
         oneOf:
           - const: beta
             description: |-
-              The contract for the resource is beta and may not be meant for productive use.
-              Resources of `beta` status MAY be changed or deleted at the providers discretion.
+              The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.
+
+              Not recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,
+              and feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion.
+
           - const: active
             description: |-
-              Resource is meant for productive use and provides a stable API contract.
+              The API contract is stable and recommended for production use.
+
+              Breaking changes will only be introduced through proper deprecation cycles or new major versions,
+              following versioning and compatibility policies. Consumers can rely on active resources with confidence.
+
           - const: deprecated
             description: |-
-              Resource has been deprecated.
+              The resource is still functional but scheduled for removal. No new development should depend on it.
 
               If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
 
               If successor resources exist, they MUST be referenced through `successors`.
 
-              A deprecated resource MAY be sunset (aka. decommissioned / removed) in the future, through setting a `Tombstone`.
+              A deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.
               Once the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`.
+
           - const: sunset
             description: |-
-              Resource has been sunset, but is still described.
+              The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.
+
               If the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided.
         examples:
           - active
@@ -1178,40 +1213,40 @@ definitions:
             description: |-
               [OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.
               An API Resource definition of type `edmx` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: odata-v4
             description: |-
               [OData Version 4](https://www.odata.org/documentation/) API.
               An OData V4 API MUST be described via a Common Schema Definition Language (CSDL).
               An API Resource definition of type `edmx` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: rest
             description: |-
               Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.
               Please not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.
               An API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: graphql
             description: |-
               [GraphQL](https://graphql.org/) API.
               An API Resource definition of type `graphql-sdl` SHOULD be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `graphql-sdl`, `sap-csn-interop-effective-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `graphql-sdl`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: delta-sharing
             x-introduced-in-version: "1.8.0"
             description: |-
               [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) Protocol, where one API Resource corresponds to a share.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1` or to `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
               For delta-sharing APIs the resource definition MAY be omitted, as the protocol itself allows for metadata discovery at runtime.
           - const: soap-inbound
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.
               An API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: soap-outbound
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides/describes outbound interfaces for async communication.
               An API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: mcp
             description: |-
               [MCP](https://modelcontextprotocol.io) is an open protocol that standardizes how applications provide context to LLMs, based on JSON-RPC message format.
@@ -1222,7 +1257,7 @@ definitions:
             description: |-
               Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.
               Since WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.
-              The API Resource definitions `type` MUST ONLY be set to `custom`.
+              The API Resource definitions `type` MUST ONLY be set to `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: a2a
             x-introduced-in-version: "1.12.2"
             description: |-
@@ -1230,16 +1265,18 @@ definitions:
 
               As API Resource definition the `a2a-agent-card` MUST be provided, usually put under `/.well-known/agent.json`.
           - const: sap-rfc
+            x-introduced-in-version: "1.5.0"
             description: |-
               [SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html) (Remote Function Call)  is the standard SAP interface for communication between SAP systems.
               RFC calls a function to be executed in a remote system.
               An API Resource definition of type `sap-rfc-metadata-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1` or `custom`.
+              For each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: sap-sql-api-v1
+            x-introduced-in-version: "1.9.2"
             description: |-
               SAP SQL API that follows the [SQL interface specification for SAP ecosystem](https://github.com/SAP/sql-interface-specification).
-              An API Resource definition of type `sap-sql-api-definition-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-sql-api-definition-v1`, `sap-csn-interop-effective-v1` or `custom`.
+              An API Resource definition of type `sap-sql-api-definition-v1` SHOULD be provided.
+              For each API Resource definition: `type` MUST ONLY be set to `sap-sql-api-definition-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
           - const: sap-ina-api-v1
             x-introduced-in-version: "1.8.0"
             description: |-
@@ -2548,18 +2585,11 @@ definitions:
           If no Media Type is registered for the referenced file,
           `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
         type: string
-        oneOf:
-          - const: application/json
-          - const: application/xml
-          - const: text/yaml
-          - const: text/plain
-            description: |-
-              For a plain-text format where no other serialization Media Type fits
-          - const: application/octet-stream
-            description: |-
-              For a binary format where no other serialization Media Type fits
+        pattern: ^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$
         examples:
           - application/json
+          - text/plain
+          - application/xml
 
       url: &resourceDefinitionUrl
         type: string

@@ -8,9 +8,9 @@ interface PrimaryMenuWrapperProps {
 export default function PrimaryMenuWrapper(props: PrimaryMenuWrapperProps) {
   return (
     <>
-      <div className="navbar-sidebar__search" role="search" aria-label="Site search">
+      <search className="navbar-sidebar__search" aria-label="Site search">
         <SearchBar />
-      </div>
+      </search>
       <OriginalPrimaryMenu {...props} />
     </>
   );
