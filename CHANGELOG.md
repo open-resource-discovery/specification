@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added new `releaseStatus` value `development` for resources that are under active development and not yet released for consumption.
+
 ## [1.14.1]
 
 ### Changed

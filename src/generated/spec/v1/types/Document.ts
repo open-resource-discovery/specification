@@ -474,7 +474,7 @@ export interface ApiResource {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -831,7 +831,7 @@ export interface ChangelogEntry {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Date of change, without time or timezone information.
    *
@@ -1350,7 +1350,7 @@ export interface EventResource {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1815,7 +1815,7 @@ export interface EntityType {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
@@ -2070,7 +2070,7 @@ export interface Capability {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -2315,7 +2315,7 @@ export interface DataProduct {
    * In the context of data products, it it covers only properties on the data product level.
    * APIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -2740,7 +2740,7 @@ export interface Agent {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -3074,7 +3074,7 @@ export interface IntegrationDependency {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
    *
