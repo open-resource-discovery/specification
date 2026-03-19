@@ -2585,7 +2585,7 @@ definitions:
           If no Media Type is registered for the referenced file,
           `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
         type: string
-        pattern: ^(application|text)\/[a-zA-Z0-9.+\-]+$
+        pattern: ^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$
         examples:
           - application/json
           - text/plain
