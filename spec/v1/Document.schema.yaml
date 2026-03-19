@@ -2585,18 +2585,11 @@ definitions:
           If no Media Type is registered for the referenced file,
           `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
         type: string
-        oneOf:
-          - const: application/json
-          - const: application/xml
-          - const: text/yaml
-          - const: text/plain
-            description: |-
-              For a plain-text format where no other serialization Media Type fits
-          - const: application/octet-stream
-            description: |-
-              For a binary format where no other serialization Media Type fits
+        pattern: ^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$
         examples:
           - application/json
+          - text/plain
+          - application/xml
 
       url: &resourceDefinitionUrl
         type: string
