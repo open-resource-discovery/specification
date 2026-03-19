@@ -1158,3 +1158,35 @@ test("parameter selector targets Action Parameter in EDMX XML", async () => {
 		"Reason should have Core.Description annotation",
 	);
 });
+
+test("applyOverlayToEdmxDocument throws on ambiguous unqualified entityType across multiple EDMX schemas", () => {
+	const xmlInput = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="com.example.NS1" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityType Name="Customer"><Key><PropertyRef Name="Id"/></Key><Property Name="Id" Type="Edm.String"/></EntityType>
+    </Schema>
+    <Schema Namespace="com.example.NS2" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityType Name="Customer"><Key><PropertyRef Name="Id"/></Key><Property Name="Id" Type="Edm.String"/></EntityType>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>`;
+
+	const overlay = {
+		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1" as const,
+		description: "Test",
+		patches: [
+			{
+				action: "merge" as const,
+				selector: { entityType: "Customer" },
+				data: { "@Core.Description": "A customer" },
+			},
+		] as [{ action: "merge"; selector: { entityType: string }; data: Record<string, string> }],
+	};
+
+	assert.throws(
+		() => applyOverlayToEdmxDocument(xmlInput, overlay),
+		/Ambiguous entityType selector "Customer"/,
+	);
+});

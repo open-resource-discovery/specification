@@ -130,3 +130,66 @@ test("resolveSelector throws for returnType selector on unsupported target forma
 		/'returnType' selector is only supported/,
 	);
 });
+
+// ─── Ambiguity detection tests ───────────────────────────────────────────────
+
+const csdlTwoNamespaces = {
+	$Version: "4.0",
+	"com.example.NS1": {
+		Customer: { $Kind: "EntityType" },
+		Approve: [{ $Kind: "Action" }],
+		Container1: {
+			$Kind: "EntityContainer",
+			Customers: { $Type: "com.example.NS1.Customer", $Collection: true },
+		},
+	},
+	"com.example.NS2": {
+		Customer: { $Kind: "EntityType" },
+		Approve: [{ $Kind: "Action" }],
+		Container2: {
+			$Kind: "EntityContainer",
+			Customers: { $Type: "com.example.NS2.Customer", $Collection: true },
+		},
+	},
+} as JSONValue;
+
+test("resolveSelector throws on ambiguous unqualified entityType across CSDL namespaces", () => {
+	assert.throws(
+		() => resolveSelector(csdlTwoNamespaces, { entityType: "Customer" }, "csdl-json"),
+		/Ambiguous entityType selector "Customer"/,
+	);
+});
+
+test("resolveSelector resolves qualified entityType unambiguously in CSDL", () => {
+	const result = resolveSelector(
+		csdlTwoNamespaces,
+		{ entityType: "com.example.NS1.Customer" },
+		"csdl-json",
+	);
+	assert.equal(result.length, 1);
+	assert.equal(result[0].path, "$['com.example.NS1']['Customer']");
+});
+
+test("resolveSelector throws on ambiguous unqualified operation across CSDL namespaces", () => {
+	assert.throws(
+		() => resolveSelector(csdlTwoNamespaces, { operation: "Approve" }, "csdl-json"),
+		/Ambiguous operation selector "Approve"/,
+	);
+});
+
+test("resolveSelector resolves qualified operation unambiguously in CSDL", () => {
+	const result = resolveSelector(
+		csdlTwoNamespaces,
+		{ operation: "com.example.NS2.Approve" },
+		"csdl-json",
+	);
+	assert.equal(result.length, 1);
+	assert.equal(result[0].path, "$['com.example.NS2']['Approve'][0]");
+});
+
+test("resolveSelector throws on ambiguous entitySet name across CSDL EntityContainers", () => {
+	assert.throws(
+		() => resolveSelector(csdlTwoNamespaces, { entitySet: "Customers" }, "csdl-json"),
+		/Ambiguous entitySet selector "Customers"/,
+	);
+});

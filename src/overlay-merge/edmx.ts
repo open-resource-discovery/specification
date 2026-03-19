@@ -113,11 +113,14 @@ function getEdmxSchemas(tree: Record<string, JSONValue>): JSONObject[] {
  * Finds an EntityType or ComplexType by name across all schemas.
  * Supports qualified names (e.g. `OData.Demo.Customer`) and unqualified names (e.g. `Customer`).
  * Also resolves EnumType elements by the same naming convention.
+ * Throws if an unqualified name matches in more than one schema — use a qualified name to disambiguate.
  */
 function findEdmxEntityType(
 	schemas: JSONObject[],
 	entityTypeName: string,
 ): { entityType: JSONObject; array: JSONObject[]; index: number } | undefined {
+	const found: Array<{ entityType: JSONObject; array: JSONObject[]; index: number; ns: string }> = [];
+
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
 		if (typeof ns !== "string") continue;
@@ -137,17 +140,21 @@ function findEdmxEntityType(
 			for (let i = 0; i < typeArray.length; i++) {
 				const et = typeArray[i];
 				if (isJSONObject(et) && et["@_Name"] === localName) {
-					return {
-						entityType: et,
-						array: typeArray as JSONObject[],
-						index: i,
-					};
+					found.push({ entityType: et, array: typeArray as JSONObject[], index: i, ns });
 				}
 			}
 		}
 	}
 
-	return undefined;
+	if (found.length > 1 && !entityTypeName.includes(".")) {
+		throw new OverlayMergeError(
+			`Ambiguous entityType selector "${entityTypeName}": found ${found.length} matches across schemas [${found.map((f) => f.ns).join(", ")}]. ` +
+			`Use a fully qualified name to disambiguate (e.g. "${found[0].ns}.${entityTypeName}").`,
+		);
+	}
+
+	if (found.length === 0) return undefined;
+	return { entityType: found[0].entityType, array: found[0].array, index: found[0].index };
 }
 
 /**
@@ -174,6 +181,7 @@ function findEdmxProperty(
 /**
  * Finds an Action or Function by name across all schemas.
  * Supports namespace-qualified names (e.g. `OData.Demo.Approval`) and unqualified names.
+ * Throws if an unqualified name matches in more than one schema — use a qualified name to disambiguate.
  * For OData v2: also searches FunctionImport elements inside EntityContainer when no
  * Schema-level Action/Function match is found.
  */
@@ -182,6 +190,8 @@ function findEdmxOperation(
 	operationName: string,
 ): { operation: JSONObject; array: JSONObject[]; index: number } | undefined {
 	// First: search Schema-level Action/Function
+	const found: Array<{ operation: JSONObject; array: JSONObject[]; index: number; ns: string }> = [];
+
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
 		if (typeof ns !== "string") continue;
@@ -201,10 +211,21 @@ function findEdmxOperation(
 			for (let i = 0; i < ops.length; i++) {
 				const op = ops[i];
 				if (isJSONObject(op) && op["@_Name"] === localName) {
-					return { operation: op, array: ops as JSONObject[], index: i };
+					found.push({ operation: op, array: ops as JSONObject[], index: i, ns });
 				}
 			}
 		}
+	}
+
+	if (found.length > 1 && !operationName.includes(".")) {
+		throw new OverlayMergeError(
+			`Ambiguous operation selector "${operationName}": found ${found.length} matches across schemas [${found.map((f) => f.ns).join(", ")}]. ` +
+			`Use a fully qualified name to disambiguate (e.g. "${found[0].ns}.${operationName}").`,
+		);
+	}
+
+	if (found.length > 0) {
+		return { operation: found[0].operation, array: found[0].array, index: found[0].index };
 	}
 
 	// Fallback: search FunctionImport inside EntityContainer (OData v2)
@@ -213,11 +234,14 @@ function findEdmxOperation(
 
 /**
  * Finds a FunctionImport element inside EntityContainer by name across all schemas.
+ * Throws if an unqualified name matches in more than one EntityContainer.
  */
 function findEdmxFunctionImport(
 	schemas: JSONObject[],
 	operationName: string,
 ): { operation: JSONObject; array: JSONObject[]; index: number } | undefined {
+	const found: Array<{ operation: JSONObject; array: JSONObject[]; index: number; ns: string }> = [];
+
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
 		if (typeof ns !== "string") continue;
@@ -239,12 +263,20 @@ function findEdmxFunctionImport(
 		for (let i = 0; i < fiArray.length; i++) {
 			const fi = fiArray[i];
 			if (isJSONObject(fi) && fi["@_Name"] === localName) {
-				return { operation: fi, array: fiArray as JSONObject[], index: i };
+				found.push({ operation: fi, array: fiArray as JSONObject[], index: i, ns });
 			}
 		}
 	}
 
-	return undefined;
+	if (found.length > 1 && !operationName.includes(".")) {
+		throw new OverlayMergeError(
+			`Ambiguous operation selector "${operationName}": found ${found.length} FunctionImport matches across schemas [${found.map((f) => f.ns).join(", ")}]. ` +
+			`Use a fully qualified name to disambiguate (e.g. "${found[0].ns}.${operationName}").`,
+		);
+	}
+
+	if (found.length === 0) return undefined;
+	return { operation: found[0].operation, array: found[0].array, index: found[0].index };
 }
 
 // ─── EntityContainer navigation helpers ─────────────────────────────────────
@@ -269,11 +301,14 @@ function getEdmxEntityContainer(schema: JSONObject): JSONObject | undefined {
 
 /**
  * Finds an EntitySet by name across all schemas' EntityContainers.
+ * Throws if an unqualified name matches in more than one EntityContainer.
  */
 function findEdmxEntitySet(
 	schemas: JSONObject[],
 	entitySetName: string,
 ): { entitySet: JSONObject; array: JSONObject[]; index: number } | undefined {
+	const found: Array<{ entitySet: JSONObject; array: JSONObject[]; index: number; ns: string }> = [];
+
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
 		if (typeof ns !== "string") continue;
@@ -295,12 +330,20 @@ function findEdmxEntitySet(
 		for (let i = 0; i < esArray.length; i++) {
 			const es = esArray[i];
 			if (isJSONObject(es) && es["@_Name"] === localName) {
-				return { entitySet: es, array: esArray as JSONObject[], index: i };
+				found.push({ entitySet: es, array: esArray as JSONObject[], index: i, ns });
 			}
 		}
 	}
 
-	return undefined;
+	if (found.length > 1 && !entitySetName.includes(".")) {
+		throw new OverlayMergeError(
+			`Ambiguous entitySet selector "${entitySetName}": found ${found.length} matches across EntityContainers [${found.map((f) => f.ns).join(", ")}]. ` +
+			"Ensure the target document has a unique EntitySet name, or use a jsonPath selector to target a specific container.",
+		);
+	}
+
+	if (found.length === 0) return undefined;
+	return { entitySet: found[0].entitySet, array: found[0].array, index: found[0].index };
 }
 
 /**

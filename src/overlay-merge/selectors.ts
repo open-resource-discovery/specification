@@ -672,6 +672,18 @@ function resolveCsdlJsonEntityType(
 		}
 	}
 
+	if (matches.length > 1 && !entityTypeName.includes(".")) {
+		const qualifiedNames = matches.map((m) => {
+			// Reconstruct the namespace-qualified name for each match
+			const nsEntry = namespaces.find((n) => n.nsObj === m.parent);
+			return nsEntry ? `${nsEntry.namespace}.${String(m.key)}` : String(m.key);
+		});
+		throw new OverlayMergeError(
+			`Ambiguous entityType selector "${entityTypeName}": found ${matches.length} matches in namespaces. ` +
+			`Use a fully qualified name to disambiguate (e.g. "${qualifiedNames[0]}").`,
+		);
+	}
+
 	return matches;
 }
 
@@ -764,6 +776,22 @@ function resolveCsdlJsonOperation(
 				});
 			}
 		});
+	}
+
+	// An unqualified name that hits multiple distinct operations (same local name in different
+	// namespaces) is ambiguous. Multiple overloads of the SAME qualified operation are fine.
+	if (!operationName.includes(".")) {
+		// Path format: $['<namespace>']['<localName>'][<index>]  — extract namespace group.
+		const distinctNamespaces = new Set(
+			matches.map((m) => m.path.match(/^\$\['(.+?)'\]/)?.[1] ?? ""),
+		);
+		if (distinctNamespaces.size > 1) {
+			const qualifiedNames = [...distinctNamespaces].map((ns) => `${ns}.${operationName}`);
+			throw new OverlayMergeError(
+				`Ambiguous operation selector "${operationName}": found matches in multiple namespaces. ` +
+				`Use a fully qualified name to disambiguate (e.g. "${qualifiedNames[0]}").`,
+			);
+		}
 	}
 
 	return matches;
@@ -954,6 +982,13 @@ function resolveCsdlJsonEntitySet(
 				}
 			}
 		}
+	}
+
+	if (matches.length > 1) {
+		throw new OverlayMergeError(
+			`Ambiguous entitySet selector "${entitySetName}": found ${matches.length} matches across EntityContainers. ` +
+			"Ensure the target document has a unique EntitySet name, or use a jsonPath selector to target a specific container.",
+		);
 	}
 
 	return matches;
