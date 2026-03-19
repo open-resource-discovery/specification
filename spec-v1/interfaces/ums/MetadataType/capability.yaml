@@ -143,6 +143,8 @@ spec:
           type: 'string'
           description: "The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.\nA consuming application can use this information to know which file format parser it needs to use.\nFor example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.\n\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.\n"
           mandatory: true
+          constraints:
+            pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
         - name: 'url'
           type: 'string'
           description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL (to base URL)."
