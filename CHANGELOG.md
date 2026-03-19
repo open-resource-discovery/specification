@@ -10,10 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.14.1]
+
 ### Changed
 
 - Clarification: ORD IDs MUST be interpreted case-insensitively when used for comparison, lookups or deduplication. This was previously left open and is now explicitly required.
 - Clarification: The `type` field on `ApiResourceDefinition` and `EventResourceDefinition` accepts not only the predefined enum values and `custom`, but also any valid [Specification ID](./docs/spec-v1/index.md#specification-id) as an extension point. All `apiProtocol` descriptions that listed allowed `type` values now consistently mention this option alongside `custom`.
+- Allow all media types under under `application/*` and `text/*` for resource definitions
 
 ## [1.14.0]
 
