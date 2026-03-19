@@ -1038,6 +1038,11 @@ definitions:
 
           See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
         oneOf:
+          - const: development
+            description: |-
+              The resource is under active development and has not yet been released. The API contract is unstable and subject to
+              breaking changes at any time. Not intended for consumption outside of the development team.
+
           - const: beta
             description: |-
               The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.
