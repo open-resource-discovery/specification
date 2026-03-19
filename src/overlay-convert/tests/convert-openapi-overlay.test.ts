@@ -42,6 +42,8 @@ test("converts a standard OpenAPI overlay to ORD overlay format", async () => {
 		"x-purpose":
 			"Provides constellation and star data for astronomy applications.",
 	});
+	// description from the source action should be preserved on the patch
+	assert.equal(patch0.description, "Add AI-usage note to info block");
 
 	// Second patch: update on deprecated endpoint
 	const patch1 = overlay.patches[1];
@@ -49,15 +51,17 @@ test("converts a standard OpenAPI overlay to ORD overlay format", async () => {
 		jsonPath: "$.paths./constellations/{abbreviation}.get",
 	});
 	assert.equal(patch1.action, "merge");
+	assert.equal(patch1.description, "Deprecate the old abbreviation-based endpoint");
 
-	// Third patch: update on schema property
+	// Third patch: update on schema property (no action description in fixture)
 	const patch2 = overlay.patches[2];
 	assert.deepEqual(patch2.selector, {
 		jsonPath: "$.components.schemas.Star.properties.magnitude",
 	});
 	assert.equal(patch2.action, "merge");
+	assert.equal(patch2.description, undefined);
 
-	// Fourth patch: remove action
+	// Fourth patch: remove action (no action description in fixture)
 	const patch3 = overlay.patches[3];
 	assert.deepEqual(patch3.selector, {
 		jsonPath: "$.components.schemas.ObsoleteSchema",
@@ -65,12 +69,8 @@ test("converts a standard OpenAPI overlay to ORD overlay format", async () => {
 	assert.equal(patch3.action, "remove");
 	assert.deepEqual(patch3.data, {});
 
-	// Warnings: 2 action descriptions were discarded (actions 1 and 2 in the fixture have `description`)
-	const descriptionWarnings = warnings.filter(
-		(w) => w.field === "actions[].description",
-	);
-	assert.equal(descriptionWarnings.length, 2);
-	assert.ok(descriptionWarnings.every((w) => w.type === "lost-information"));
+	// No warnings — action descriptions are now preserved on patches, not discarded
+	assert.equal(warnings.length, 0);
 });
 
 test("remove: false action is silently skipped", () => {
@@ -98,6 +98,7 @@ test("action with both update and remove produces two ordered patches", () => {
 		actions: [
 			{
 				target: "$.info",
+				description: "Update and then remove",
 				update: { "x-updated": true },
 				remove: true,
 			},
@@ -109,8 +110,11 @@ test("action with both update and remove produces two ordered patches", () => {
 	assert.equal(overlay.patches.length, 2);
 	assert.equal(overlay.patches[0].action, "merge");
 	assert.deepEqual(overlay.patches[0].data, { "x-updated": true });
+	// description goes on the first (merge) patch only
+	assert.equal(overlay.patches[0].description, "Update and then remove");
 	assert.equal(overlay.patches[1].action, "remove");
 	assert.deepEqual(overlay.patches[1].data, {});
+	assert.equal(overlay.patches[1].description, undefined);
 });
 
 test("explicit options override derived values", () => {

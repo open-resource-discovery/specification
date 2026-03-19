@@ -1,0 +1,28 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlaypatchmeta'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlayPatchMeta'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Optional structured metadata associated with the patched element for use by overlay\nconsumers, tooling, and registries.\nThe contents of this block are **never applied to the target document** — they are\nstrictly out-of-band and ignored by the patch merge process.\n\nUse this to carry information that enrichment sources associate with a specific element\nbut that has no standard representation in the target metadata format.\n\nConversion note: the `tags` field maps from the `tags` array in OData v4/v2\nenrichment files, where no standard CSDL vocabulary term exists for arbitrary string tags."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'tags'
+      type: 'string'
+      array: true
+      description: "String labels associated with the patched element.\nUseful for classification, domain tagging, and filtering in registries or tooling.\n\nThese are purely informational and have no effect on patch application or on the\ntarget document."
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'labels'
+      relatedTypeName: 'OverlayPatchLabels'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

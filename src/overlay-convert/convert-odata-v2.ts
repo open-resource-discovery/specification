@@ -17,7 +17,7 @@
  * Known model mismatches (see README.md for details):
  *
  * 1. tags — No standard OData vocabulary term for string tags.
- *    Tags are SKIPPED with a warning.
+ *    Tags are preserved in `patch.meta.tags` so consumers can use them for filtering/categorization.
  *
  * Patch data convention:
  *   OData targets require CSDL JSON annotation format in patch data.
@@ -50,6 +50,10 @@ function descriptionAnnotations(summary: string, description: string) {
 	};
 }
 
+function metaTags(tags: string[]): { meta: { tags: [string, ...string[]] } } {
+  return { meta: { tags: tags as [string, ...string[]] } };
+}
+
 export function convertODataV2EnrichmentToOrd(
 	source: ODataV2Enrichment,
 	options: ConvertOptions = {},
@@ -66,15 +70,8 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { entityType: selector },
 			data: descriptionAnnotations(et.summary, et.description),
+			...((et.tags ?? []).length > 0 ? metaTags(et.tags!) : {}),
 		});
-
-		if ((et.tags ?? []).length > 0) {
-			warnings.push({
-				type: "lost-information",
-				field: `entityTypes[name="${et.name}"].tags`,
-				message: `Tags for entityType "${et.name}" were discarded — no standard OData vocabulary term for string tags. Consider a custom annotation.`,
-			});
-		}
 
 		for (const prop of et.properties ?? []) {
 			patches.push(makePropertyPatch(prop, selector));
@@ -89,15 +86,8 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { entityType: selector },
 			data: descriptionAnnotations(ct.summary, ct.description),
+			...((ct.tags ?? []).length > 0 ? metaTags(ct.tags!) : {}),
 		});
-
-		if ((ct.tags ?? []).length > 0) {
-			warnings.push({
-				type: "lost-information",
-				field: `complexTypes[name="${ct.name}"].tags`,
-				message: `Tags for complexType "${ct.name}" were discarded — no standard OData vocabulary term for string tags. Consider a custom annotation.`,
-			});
-		}
 
 		for (const prop of ct.properties ?? []) {
 			patches.push(makePropertyPatch(prop, selector));
@@ -112,15 +102,8 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { entitySet: selector },
 			data: descriptionAnnotations(es.summary, es.description),
+			...((es.tags ?? []).length > 0 ? metaTags(es.tags!) : {}),
 		});
-
-		if ((es.tags ?? []).length > 0) {
-			warnings.push({
-				type: "lost-information",
-				field: `entitySets[name="${es.name}"].tags`,
-				message: `Tags for entitySet "${es.name}" were discarded — no standard OData vocabulary term for string tags. Consider a custom annotation.`,
-			});
-		}
 	}
 
 	// functionImports — use the operation selector.
@@ -133,15 +116,8 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { operation: selector },
 			data: descriptionAnnotations(fi.summary, fi.description),
+			...((fi.tags ?? []).length > 0 ? metaTags(fi.tags!) : {}),
 		});
-
-		if ((fi.tags ?? []).length > 0) {
-			warnings.push({
-				type: "lost-information",
-				field: `functionImports[name="${fi.name}"].tags`,
-				message: `Tags for functionImport "${fi.name}" were discarded — no standard OData vocabulary term for string tags.`,
-			});
-		}
 
 		for (const param of fi.parameters ?? []) {
 			patches.push({

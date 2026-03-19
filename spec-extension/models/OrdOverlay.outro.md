@@ -86,9 +86,11 @@ Rule of thumb:
 **OData selectors:**
 
 - Define the implementation roadmap for `entityType` and `propertyType` selector support in the reference merge library.
-- Decide whether OData overlays should be restricted to annotation-only patches (i.e. `data` keys MUST follow the `@TermName` convention). In practice, all meaningful OData enrichments are vocabulary annotations, and allowing arbitrary structural changes could produce invalid CSDL output. Restricting to annotations would also make the patch intent more explicit and aid validation.
+- Decide whether OData overlays should be restricted to annotation-only patches (i.e. `data` keys MUST follow the `@TermName` convention). In practice, all meaningful OData enrichments are vocabulary annotations, and allowing arbitrary structural changes could produce invalid CSDL output. Restricting to annotations would also make the patch intent more explicit and aid validation. Note: OData patching/merging almost certainly operates at the annotation level — but it is not entirely clear whether `remove` or structural changes to non-annotation elements should also be supported (e.g. deprecating or removing an operation from a CSDL description).
 - Decide whether the `entityType` selector should target only the EntityType/ComplexType definition, or also the EntitySet in the EntityContainer (or both). Currently only the EntityType definition is targeted. EntitySet-level annotations (e.g. `Capabilities`) sit on the EntitySet, not the EntityType, and are not reachable via the current selector — `jsonPath` is the current fallback for those cases.
+- Consider aligning OData selectors with the standard [OData CSDL Annotation Target](https://oasis-tcs.github.io/odata-specs/odata-csdl-xml/odata-csdl-xml.html#Target) syntax. OData defines a well-specified path grammar for identifying any CSDL element as an annotation target (e.g. `MyService.MyEntityType/MyProperty`, `MyService.MyEntityContainer/MyEntitySet`). Using this as the native OData selector format would piggyback on an existing standard and avoid inventing a parallel addressing scheme. The trade-off is that consumers and implementors need deeper OData knowledge to construct and interpret selectors correctly, compared to the current named-key approach.
 Reference: [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
+- Not sure if we need fully qualified selectors, maybe we can support both and only require fully qualified selectors in cases where it's ambiguous.
 
 **Selectors in General**:
 

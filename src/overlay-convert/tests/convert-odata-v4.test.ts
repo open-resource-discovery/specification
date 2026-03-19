@@ -23,10 +23,10 @@ test("converts OData v4 enrichment to ORD overlay patches using all new selector
 	// - 1 enumType (EmploymentStatus) + 2 members = 3
 	// - 1 action (TerminateEmployee) + 2 params + 1 returnType = 4
 	// - 1 function (GetDirectReports) + 1 param + 1 returnType = 3
-	// - 1 actionImport = 0 (skipped)
-	// - 1 functionImport = 0 (skipped)
-	// Total = 17 patches
-	assert.equal(overlay.patches.length, 17);
+	// - 1 actionImport (TerminateEmployeeImport — no matching actions[] entry) = 1 patch + warning
+	// - 1 functionImport (GetDirectReportsImport — no matching functions[] entry) = 1 patch + warning
+	// Total = 19 patches
+	assert.equal(overlay.patches.length, 19);
 
 	// patch[0]: namespace selector for service-level description
 	const nsPatch = overlay.patches[0];
@@ -117,15 +117,28 @@ test("converts OData v4 enrichment to ORD overlay patches using all new selector
 	);
 	assert.equal(returnTypeWarnings.length, 0, "returnType should emit patches, not warnings");
 
+	// patch[17]: actionImport fallback patch (no matching actions[] entry)
+	assert.deepEqual(overlay.patches[17].selector, {
+		operation: "com.sap.HRService.TerminateEmployeeImport",
+	});
+
+	// patch[18]: functionImport fallback patch (no matching functions[] entry)
+	assert.deepEqual(overlay.patches[18].selector, {
+		operation: "com.sap.HRService.GetDirectReportsImport",
+	});
+
+	// Warnings: actionImport and functionImport both produce needs-spec-extension (no matching op)
 	const actionImportWarnings = warnings.filter((w) =>
 		w.field?.startsWith("actionImports"),
 	);
 	assert.equal(actionImportWarnings.length, 1);
+	assert.equal(actionImportWarnings[0].type, "needs-spec-extension");
 
 	const functionImportWarnings = warnings.filter((w) =>
 		w.field?.startsWith("functionImports"),
 	);
 	assert.equal(functionImportWarnings.length, 1);
+	assert.equal(functionImportWarnings[0].type, "needs-spec-extension");
 });
 
 test("uses namespace from enrichment document for qualified selectors", () => {
@@ -277,4 +290,58 @@ test("actions and functions are converted with namespace-qualified operation sel
 	assert.deepEqual(overlay.patches[2].selector, {
 		operation: "com.example.Svc.GetSummary",
 	});
+});
+
+test("actionImport with matching actions[] entry and same description produces no extra patch and no warning", () => {
+	const source: ODataV4Enrichment = {
+		protocol: "odatav4",
+		namespace: "com.example.Svc",
+		summary: "Svc",
+		description: "A service.",
+		actions: [
+			{ name: "Approve", summary: "Approve record", description: "Approves the record." },
+		],
+		actionImports: [
+			{ name: "Approve", summary: "Approve record", description: "Approves the record." },
+		],
+	};
+
+	const { overlay, warnings } = convertODataV4EnrichmentToOrd(source);
+
+	// patch[0] = namespace, patch[1] = Approve — no extra import patch
+	assert.equal(overlay.patches.length, 2);
+	assert.deepEqual(overlay.patches[1].selector, { operation: "com.example.Svc.Approve" });
+	assert.equal(warnings.filter((w) => w.field?.startsWith("actionImports")).length, 0);
+});
+
+test("actionImport with matching actions[] entry but different description emits lost-information warning, op description wins", () => {
+	const source: ODataV4Enrichment = {
+		protocol: "odatav4",
+		namespace: "com.example.Svc",
+		summary: "Svc",
+		description: "A service.",
+		actions: [
+			{ name: "Approve", summary: "Approve record", description: "Approves the record." },
+		],
+		actionImports: [
+			{ name: "Approve", summary: "Action import for Approve.", description: "Exposes Approve via container." },
+		],
+	};
+
+	const { overlay, warnings } = convertODataV4EnrichmentToOrd(source);
+
+	// No extra patch — import is merged onto the existing op patch
+	assert.equal(overlay.patches.length, 2);
+
+	// Op description is preserved unchanged — import description loses
+	const opPatch = overlay.patches[1];
+	assert.deepEqual(opPatch.data, {
+		"@Core.Description": "Approve record",
+		"@Core.LongDescription": "Approves the record.",
+	});
+
+	// A lost-information warning is emitted
+	const importWarnings = warnings.filter((w) => w.field?.startsWith("actionImports"));
+	assert.equal(importWarnings.length, 1);
+	assert.equal(importWarnings[0].type, "lost-information");
 });

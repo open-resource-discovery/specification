@@ -53,9 +53,9 @@ for (const w of warnings) {
 | `actions[].remove = false` | *(skipped)* | No-op in both specs |
 | `info.title` / `info.version` | `overlay.description` | Embedded as text prefix |
 | `extends` | `target.url` | Only when no explicit `target` option is provided |
-| `actions[].description` | *(lost)* | ORD overlay patches have no per-patch description field |
+| `actions[].description` | `patches[].description` | 1:1 mapping — purely informational, no effect on patch application |
 
-When `update` and `remove` are both present on a single action, two patches are generated in order (merge first, remove second), matching the OpenAPI Overlay spec's semantics.
+When `update` and `remove` are both present on a single action, two patches are generated in order (merge first, remove second). The `description` is attached to the first patch (the `merge`).
 
 ### OData v2 Enrichment → ORD Overlay
 
@@ -64,13 +64,16 @@ Patch data is expressed in **CSDL JSON annotation format** as required by the OR
 | Source field | ORD selector | ORD annotation data |
 |---|---|---|
 | `entityTypes[].{summary, description}` | `entityType: "[ns.]TypeName"` | `@Core.Description`, `@Core.LongDescription` |
+| `entityTypes[].tags` | — | `patch.meta.tags` (out-of-band) |
 | `entityTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `complexTypes[].{summary, description}` | `entityType: "[ns.]TypeName"` | `@Core.Description`, `@Core.LongDescription` |
+| `complexTypes[].tags` | — | `patch.meta.tags` (out-of-band) |
 | `complexTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `entitySets[].{summary, description}` | `entitySet: "[ns.]EntitySetName"` | `@Core.Description`, `@Core.LongDescription` |
+| `entitySets[].tags` | — | `patch.meta.tags` (out-of-band) |
 | `functionImports[].{summary, description}` | `operation: "[ns.]FunctionImportName"` | `@Core.Description`, `@Core.LongDescription` |
+| `functionImports[].tags` | — | `patch.meta.tags` (out-of-band) |
 | `functionImports[].parameters[].{summary, description}` | `parameter: "ParamName"` + `operation` | `@Core.Description`, `@Core.LongDescription` |
-| `*.tags` | *(lost)* | No standard OData vocabulary term — see [Issue 1](#issue-1--no-vocabulary-term-for-tags-lossy-mapping) |
 
 **Namespace handling:**
 OData v2 enrichment files do not embed a namespace. Pass `odataNamespace` to generate namespace-qualified selectors (e.g. `SFSF.EC.Customer`). Without it, unqualified names are used and resolved by scanning all Schema elements.
@@ -84,21 +87,25 @@ For `edmx` targets, the `operation` selector first searches Schema-level `Action
 |---|---|---|
 | Root `{summary, description}` (service level) | `namespace: "namespace"` | `@Core.Description`, `@Core.LongDescription` |
 | `entityTypes[].{summary, description}` | `entityType: "ns.TypeName"` | `@Core.Description`, `@Core.LongDescription` |
+| `entityTypes[].tags` | — | `patch.meta.tags` (out-of-band) |
 | `entityTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `complexTypes[].{summary, description}` | `entityType: "ns.TypeName"` | `@Core.Description`, `@Core.LongDescription` |
+| `complexTypes[].tags` | — | `patch.meta.tags` (out-of-band) |
 | `complexTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `entitySets[].{summary, description}` | `entitySet: "EntitySetName"` | `@Core.Description`, `@Core.LongDescription` |
+| `entitySets[].tags` | — | `patch.meta.tags` (out-of-band) |
 | `enumTypes[].{summary, description}` | `entityType: "ns.EnumTypeName"` | `@Core.Description`, `@Core.LongDescription` |
 | `enumTypes[].members[].{summary, description}` | `propertyType: "MemberName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `actions[].{summary, description}` | `operation: "ns.ActionName"` | `@Core.Description`, `@Core.LongDescription` |
+| `actions[].tags` | — | `patch.meta.tags` (out-of-band) |
 | `actions[].parameters[].{summary, description}` | `parameter: "ParamName"` + `operation` | `@Core.Description`, `@Core.LongDescription` |
 | `actions[].returnType.{summary, description}` | `returnType: true` + `operation` | `@Core.Description`, `@Core.LongDescription` |
 | `functions[].{summary, description}` | `operation: "ns.FunctionName"` | `@Core.Description`, `@Core.LongDescription` |
+| `functions[].tags` | — | `patch.meta.tags` (out-of-band) |
 | `functions[].parameters[].{summary, description}` | `parameter: "ParamName"` + `operation` | `@Core.Description`, `@Core.LongDescription` |
 | `functions[].returnType.{summary, description}` | `returnType: true` + `operation` | `@Core.Description`, `@Core.LongDescription` |
-| `actionImports[]` | *(skipped — use `actions[]`)* | See [Issue 2](#issue-2--actionimportsfunctionimports-are-entitycontainer-aliases) |
-| `functionImports[]` | *(skipped — use `functions[]`)* | See [Issue 2](#issue-2--actionimportsfunctionimports-are-entitycontainer-aliases) |
-| `*.tags` | *(lost)* | No standard OData vocabulary term — see [Issue 1](#issue-1--no-vocabulary-term-for-tags-lossy-mapping) |
+| `actionImports[]` | merged onto `actions[]` patch | See [ActionImport/FunctionImport merging](#actionimportfunctionimport-merging) |
+| `functionImports[]` | merged onto `functions[]` patch | See [ActionImport/FunctionImport merging](#actionimportfunctionimport-merging) |
 
 ---
 
@@ -108,29 +115,25 @@ The following issues remain after the current implementation. Each represents ei
 
 ---
 
-### Issue 1 — No vocabulary term for tags (lossy mapping)
-
-**Affects:** All `tags` arrays in OData v2 and v4 enrichment formats
-
-**Problem:**
-Both KG enrichment formats include a `tags` array on most elements (EntityType, EntitySet, FunctionImport, Action, Function, ComplexType). There is no standard OData vocabulary term (in `Core`, `Capabilities`, `Common`, `UI`, etc.) that maps to an array of free-form string tags.
-
-**Impact:** Tags are discarded with a `lost-information` warning.
-
-**Options:**
-1. Define a custom vocabulary term (e.g. `@sap.core:Tags`) and accept it as an annotation key in patch data.
-2. Map tags to ORD resource labels using an `ordId` selector on the wrapping ORD resource.
-
----
-
-### Issue 2 — ActionImports/FunctionImports are EntityContainer aliases
+### ActionImport/FunctionImport merging
 
 **Affects:** OData v4 enrichment `actionImports[]` and `functionImports[]`
 
-**Problem:**
-In OData v4, `ActionImport` and `FunctionImport` are convenience aliases in `EntityContainer` for the underlying Schema-level `Action`/`Function`. They do not carry their own type definition — they simply expose a named binding. Enriching an import is therefore equivalent to enriching the underlying operation.
+**Background:**
+In OData v4, `ActionImport` and `FunctionImport` are convenience aliases in `EntityContainer` for an underlying Schema-level `Action`/`Function`. They carry no separate type definition and should not be annotated independently — the OData spec recommends annotating the Schema-level operation directly.
 
-**Recommendation:** Enrich `actions[]`/`functions[]` directly instead of `actionImports[]`/`functionImports[]`.
+In practice, an enrichment file may have descriptions on both `actions[]` and `actionImports[]` for the same operation, or only on the import (when the LLM annotated the container-level alias rather than the schema element).
+
+**Merge policy (applied per import):**
+
+| Situation | Converter behaviour | Warning emitted |
+|---|---|---|
+| Matching `actions[]`/`functions[]` patch exists, descriptions are identical | No change to existing patch | None |
+| Matching `actions[]`/`functions[]` patch exists, descriptions differ | Existing op patch is kept unchanged (op is authoritative); import description is discarded | `lost-information` — includes both description texts so the difference is visible |
+| Matching `actions[]`/`functions[]` patch exists, import has tags the op does not | Tags are merged onto the existing patch `meta.tags` | None |
+| No matching `actions[]`/`functions[]` entry (import is the only source) | A new operation patch is generated from the import description using the `operation` selector | `needs-spec-extension` — recommends moving the enrichment to `actions[]`/`functions[]` |
+
+**Recommendation:** Enrich `actions[]`/`functions[]` directly. Use `actionImports[]`/`functionImports[]` only if no Schema-level entry exists.
 
 ---
 
