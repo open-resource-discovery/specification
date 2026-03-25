@@ -30,7 +30,7 @@
  *    from the import itself and a `needs-spec-extension` warning is emitted.
  *
  * 2. tags — No standard OData vocabulary term for string tags.
- *    Tags are preserved in `patch.meta.tags` so consumers can use them for filtering/categorization.
+ *    Tags are preserved in `patch.tags` so consumers can use them for filtering/categorization.
  *
  * Patch data convention:
  *   OData targets require CSDL JSON annotation format in patch data.
@@ -59,8 +59,8 @@ function descriptionAnnotations(summary: string, description: string) {
 	};
 }
 
-function metaTags(tags: string[]): { meta: { tags: [string, ...string[]] } } {
-  return { meta: { tags: tags as [string, ...string[]] } };
+function patchTags(tags: string[]): { tags: [string, ...string[]] } {
+  return { tags: tags as [string, ...string[]] };
 }
 
 export function convertODataV4EnrichmentToOrd(
@@ -96,7 +96,7 @@ export function convertODataV4EnrichmentToOrd(
 			action: "merge",
 			selector: { entitySet: es.name },
 			data: descriptionAnnotations(es.summary, es.description),
-			...((es.tags ?? []).length > 0 ? metaTags(es.tags!) : {}),
+			...((es.tags ?? []).length > 0 ? patchTags(es.tags!) : {}),
 		});
 	}
 
@@ -187,7 +187,7 @@ function addEntityTypePatches(
 		action: "merge",
 		selector: { entityType: qualifiedSelector },
 		data: descriptionAnnotations(et.summary, et.description),
-		...((et.tags ?? []).length > 0 ? metaTags(et.tags!) : {}),
+		...((et.tags ?? []).length > 0 ? patchTags(et.tags!) : {}),
 	});
 
 	for (const prop of et.properties ?? []) {
@@ -208,7 +208,7 @@ function addOperationPatches(
 		action: "merge",
 		selector: { operation: qualifiedSelector },
 		data: descriptionAnnotations(op.summary, op.description),
-		...((op.tags ?? []).length > 0 ? metaTags(op.tags!) : {}),
+		...((op.tags ?? []).length > 0 ? patchTags(op.tags!) : {}),
 	});
 
 	for (const param of op.parameters ?? []) {
@@ -290,9 +290,9 @@ function mergeImportOntoOperation(
 		}
 		// Merge import tags onto the existing patch if present and not already there
 		if ((imp.tags ?? []).length > 0) {
-			const existingTags: string[] = (existing.meta as { tags?: string[] } | undefined)?.tags ?? [];
+			const existingTags: string[] = (existing.tags as string[] | undefined) ?? [];
 			const merged = [...new Set([...existingTags, ...imp.tags!])];
-			(existing as Record<string, unknown>).meta = { ...(existing.meta as object | undefined ?? {}), tags: merged };
+			(existing as Record<string, unknown>).tags = merged;
 		}
 	} else {
 		// No matching op — generate a patch from the import itself.
@@ -300,7 +300,7 @@ function mergeImportOntoOperation(
 			action: "merge",
 			selector: { operation: qualifiedName },
 			data: descriptionAnnotations(imp.summary, imp.description),
-			...((imp.tags ?? []).length > 0 ? metaTags(imp.tags!) : {}),
+			...((imp.tags ?? []).length > 0 ? patchTags(imp.tags!) : {}),
 		};
 		patches.push(patch);
 		opPatchIndex.set(qualifiedName, patch);

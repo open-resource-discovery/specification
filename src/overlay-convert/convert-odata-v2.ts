@@ -17,7 +17,7 @@
  * Known model mismatches (see README.md for details):
  *
  * 1. tags — No standard OData vocabulary term for string tags.
- *    Tags are preserved in `patch.meta.tags` so consumers can use them for filtering/categorization.
+ *    Tags are preserved in `patch.tags` so consumers can use them for filtering/categorization.
  *
  * Patch data convention:
  *   OData targets require CSDL JSON annotation format in patch data.
@@ -50,8 +50,8 @@ function descriptionAnnotations(summary: string, description: string) {
 	};
 }
 
-function metaTags(tags: string[]): { meta: { tags: [string, ...string[]] } } {
-  return { meta: { tags: tags as [string, ...string[]] } };
+function patchTags(tags: string[]): { tags: [string, ...string[]] } {
+  return { tags: tags as [string, ...string[]] };
 }
 
 export function convertODataV2EnrichmentToOrd(
@@ -70,7 +70,7 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { entityType: selector },
 			data: descriptionAnnotations(et.summary, et.description),
-			...((et.tags ?? []).length > 0 ? metaTags(et.tags!) : {}),
+			...((et.tags ?? []).length > 0 ? patchTags(et.tags!) : {}),
 		});
 
 		for (const prop of et.properties ?? []) {
@@ -86,7 +86,7 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { entityType: selector },
 			data: descriptionAnnotations(ct.summary, ct.description),
-			...((ct.tags ?? []).length > 0 ? metaTags(ct.tags!) : {}),
+			...((ct.tags ?? []).length > 0 ? patchTags(ct.tags!) : {}),
 		});
 
 		for (const prop of ct.properties ?? []) {
@@ -102,7 +102,7 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { entitySet: selector },
 			data: descriptionAnnotations(es.summary, es.description),
-			...((es.tags ?? []).length > 0 ? metaTags(es.tags!) : {}),
+			...((es.tags ?? []).length > 0 ? patchTags(es.tags!) : {}),
 		});
 	}
 
@@ -116,7 +116,7 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { operation: selector },
 			data: descriptionAnnotations(fi.summary, fi.description),
-			...((fi.tags ?? []).length > 0 ? metaTags(fi.tags!) : {}),
+			...((fi.tags ?? []).length > 0 ? patchTags(fi.tags!) : {}),
 		});
 
 		for (const param of fi.parameters ?? []) {

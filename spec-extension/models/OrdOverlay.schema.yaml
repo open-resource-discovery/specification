@@ -413,26 +413,6 @@ definitions:
       data:
         $ref: "#/definitions/OverlayPatchValue"
 
-      meta:
-        $ref: "#/definitions/OverlayPatchMeta"
-
-  OverlayPatchMeta:
-    type: object
-    title: Overlay Patch Meta
-    x-ums-type: "embedded"
-    description: |-
-      Optional structured metadata associated with the patched element for use by overlay
-      consumers, tooling, and registries.
-      The contents of this block are **never applied to the target document** — they are
-      strictly out-of-band and ignored by the patch merge process.
-
-      Use this to carry information that enrichment sources associate with a specific element
-      but that has no standard representation in the target metadata format.
-
-      Conversion note: the `tags` field maps from the `tags` array in OData v4/v2
-      enrichment files, where no standard CSDL vocabulary term exists for arbitrary string tags.
-    additionalProperties: true
-    properties:
       tags:
         type: array
         minItems: 1
@@ -448,28 +428,25 @@ definitions:
         examples:
           - ["HR", "Employee", "Core"]
           - ["deprecated", "migration-v3"]
-      labels:
-        $ref: "#/definitions/OverlayPatchLabels"
 
-  OverlayPatchLabels:
-    title: Overlay Patch Labels
+      meta:
+        $ref: "#/definitions/OverlayPatchMeta"
+
+  OverlayPatchMeta:
     type: object
+    title: Overlay Patch Meta
     x-ums-type: "embedded"
     description: |-
-      Key/value labels following the ORD labels convention.
-      Each key maps to an array of string values.
+      Optional arbitrary metadata associated with the patched element for use by overlay
+      consumers, tooling, and registries.
+      The contents of this block are **never applied to the target document** — they are
+      strictly out-of-band and ignored by the patch merge process.
 
-      Labels can be used to attach structured categorization information to a patch
-      that cannot be expressed natively in the target metadata formats.
-    patternProperties:
-      "^[a-zA-Z0-9-_.]*$":
-        type: array
-        items:
-          type: string
-          minLength: 1
-    examples:
-      - domain: ["HR", "EmployeeCentral"]
-      - purpose: ["enrichment", "ai-optimization"]
+      Use this to carry information that enrichment sources associate with a specific element
+      but that has no standard representation in the target metadata format.
+
+      This is an open/extensible object — any properties are allowed.
+    additionalProperties: true
 
   OverlaySelector:
     type: object

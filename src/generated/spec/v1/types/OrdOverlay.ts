@@ -405,6 +405,16 @@ export interface OverlayPatch {
   action: "update" | "append" | "remove" | "merge";
   selector: OverlaySelector;
   data: OverlayPatchValue;
+  /**
+   * String labels associated with the patched element.
+   * Useful for classification, domain tagging, and filtering in registries or tooling.
+   *
+   * These are purely informational and have no effect on patch application or on the
+   * target document.
+   *
+   * @minItems 1
+   */
+  tags?: [string, ...string[]];
   meta?: OverlayPatchMeta;
   [k: string]: unknown | undefined;
 }
@@ -581,7 +591,7 @@ export interface OverlaySelectorByReturnType {
   operation: string;
 }
 /**
- * Optional structured metadata associated with the patched element for use by overlay
+ * Optional arbitrary metadata associated with the patched element for use by overlay
  * consumers, tooling, and registries.
  * The contents of this block are **never applied to the target document** — they are
  * strictly out-of-band and ignored by the patch merge process.
@@ -589,34 +599,8 @@ export interface OverlaySelectorByReturnType {
  * Use this to carry information that enrichment sources associate with a specific element
  * but that has no standard representation in the target metadata format.
  *
- * Conversion note: the `tags` field maps from the `tags` array in OData v4/v2
- * enrichment files, where no standard CSDL vocabulary term exists for arbitrary string tags.
+ * This is an open/extensible object — any properties are allowed.
  */
 export interface OverlayPatchMeta {
-  /**
-   * String labels associated with the patched element.
-   * Useful for classification, domain tagging, and filtering in registries or tooling.
-   *
-   * These are purely informational and have no effect on patch application or on the
-   * target document.
-   *
-   * @minItems 1
-   */
-  tags?: [string, ...string[]];
-  labels?: OverlayPatchLabels;
   [k: string]: unknown | undefined;
-}
-/**
- * Key/value labels following the ORD labels convention.
- * Each key maps to an array of string values.
- *
- * Labels can be used to attach structured categorization information to a patch
- * that cannot be expressed natively in the target metadata formats.
- */
-export interface OverlayPatchLabels {
-  /**
-   * This interface was referenced by `OverlayPatchLabels`'s JSON-Schema definition
-   * via the `patternProperty` "^[a-zA-Z0-9-_.]*$".
-   */
-  [k: string]: string[];
 }

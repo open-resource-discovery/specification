@@ -89,12 +89,12 @@ test("converts OData v2 entityTypes, entitySets and functionImports to ORD overl
 	);
 	assert.equal(paramWarnings.length, 0, "parameters no longer produce warnings");
 
-	// Tags are now preserved in patch.meta.tags instead of being discarded
+	// Tags are now preserved in patch.tags instead of being discarded
 	const tagsWarnings = warnings.filter((w) => w.type === "lost-information");
-	assert.equal(tagsWarnings.length, 0, "no lost-information warnings — tags go to meta.tags");
+	assert.equal(tagsWarnings.length, 0, "no lost-information warnings — tags go to patch.tags");
 
-	// entityType patch should carry its tags in meta.tags
-	assert.deepEqual(etPatch.meta?.tags, ["Employee Central (EC)", "Compensation"]);
+	// entityType patch should carry its tags in tags
+	assert.deepEqual(etPatch.tags, ["Employee Central (EC)", "Compensation"]);
 });
 
 test("uses namespace-qualified selectors when odataNamespace is provided", () => {

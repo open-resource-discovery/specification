@@ -64,15 +64,15 @@ Patch data is expressed in **CSDL JSON annotation format** as required by the OR
 | Source field | ORD selector | ORD annotation data |
 |---|---|---|
 | `entityTypes[].{summary, description}` | `entityType: "[ns.]TypeName"` | `@Core.Description`, `@Core.LongDescription` |
-| `entityTypes[].tags` | — | `patch.meta.tags` (out-of-band) |
+| `entityTypes[].tags` | — | `patch.tags` (out-of-band) |
 | `entityTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `complexTypes[].{summary, description}` | `entityType: "[ns.]TypeName"` | `@Core.Description`, `@Core.LongDescription` |
-| `complexTypes[].tags` | — | `patch.meta.tags` (out-of-band) |
+| `complexTypes[].tags` | — | `patch.tags` (out-of-band) |
 | `complexTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `entitySets[].{summary, description}` | `entitySet: "[ns.]EntitySetName"` | `@Core.Description`, `@Core.LongDescription` |
-| `entitySets[].tags` | — | `patch.meta.tags` (out-of-band) |
+| `entitySets[].tags` | — | `patch.tags` (out-of-band) |
 | `functionImports[].{summary, description}` | `operation: "[ns.]FunctionImportName"` | `@Core.Description`, `@Core.LongDescription` |
-| `functionImports[].tags` | — | `patch.meta.tags` (out-of-band) |
+| `functionImports[].tags` | — | `patch.tags` (out-of-band) |
 | `functionImports[].parameters[].{summary, description}` | `parameter: "ParamName"` + `operation` | `@Core.Description`, `@Core.LongDescription` |
 
 **Namespace handling:**
@@ -87,21 +87,21 @@ For `edmx` targets, the `operation` selector first searches Schema-level `Action
 |---|---|---|
 | Root `{summary, description}` (service level) | `namespace: "namespace"` | `@Core.Description`, `@Core.LongDescription` |
 | `entityTypes[].{summary, description}` | `entityType: "ns.TypeName"` | `@Core.Description`, `@Core.LongDescription` |
-| `entityTypes[].tags` | — | `patch.meta.tags` (out-of-band) |
+| `entityTypes[].tags` | — | `patch.tags` (out-of-band) |
 | `entityTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `complexTypes[].{summary, description}` | `entityType: "ns.TypeName"` | `@Core.Description`, `@Core.LongDescription` |
-| `complexTypes[].tags` | — | `patch.meta.tags` (out-of-band) |
+| `complexTypes[].tags` | — | `patch.tags` (out-of-band) |
 | `complexTypes[].properties[].{summary, description}` | `propertyType: "PropName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `entitySets[].{summary, description}` | `entitySet: "EntitySetName"` | `@Core.Description`, `@Core.LongDescription` |
-| `entitySets[].tags` | — | `patch.meta.tags` (out-of-band) |
+| `entitySets[].tags` | — | `patch.tags` (out-of-band) |
 | `enumTypes[].{summary, description}` | `entityType: "ns.EnumTypeName"` | `@Core.Description`, `@Core.LongDescription` |
 | `enumTypes[].members[].{summary, description}` | `propertyType: "MemberName"` + `entityType` | `@Core.Description`, `@Core.LongDescription` |
 | `actions[].{summary, description}` | `operation: "ns.ActionName"` | `@Core.Description`, `@Core.LongDescription` |
-| `actions[].tags` | — | `patch.meta.tags` (out-of-band) |
+| `actions[].tags` | — | `patch.tags` (out-of-band) |
 | `actions[].parameters[].{summary, description}` | `parameter: "ParamName"` + `operation` | `@Core.Description`, `@Core.LongDescription` |
 | `actions[].returnType.{summary, description}` | `returnType: true` + `operation` | `@Core.Description`, `@Core.LongDescription` |
 | `functions[].{summary, description}` | `operation: "ns.FunctionName"` | `@Core.Description`, `@Core.LongDescription` |
-| `functions[].tags` | — | `patch.meta.tags` (out-of-band) |
+| `functions[].tags` | — | `patch.tags` (out-of-band) |
 | `functions[].parameters[].{summary, description}` | `parameter: "ParamName"` + `operation` | `@Core.Description`, `@Core.LongDescription` |
 | `functions[].returnType.{summary, description}` | `returnType: true` + `operation` | `@Core.Description`, `@Core.LongDescription` |
 | `actionImports[]` | merged onto `actions[]` patch | See [ActionImport/FunctionImport merging](#actionimportfunctionimport-merging) |
@@ -130,7 +130,7 @@ In practice, an enrichment file may have descriptions on both `actions[]` and `a
 |---|---|---|
 | Matching `actions[]`/`functions[]` patch exists, descriptions are identical | No change to existing patch | None |
 | Matching `actions[]`/`functions[]` patch exists, descriptions differ | Existing op patch is kept unchanged (op is authoritative); import description is discarded | `lost-information` — includes both description texts so the difference is visible |
-| Matching `actions[]`/`functions[]` patch exists, import has tags the op does not | Tags are merged onto the existing patch `meta.tags` | None |
+| Matching `actions[]`/`functions[]` patch exists, import has tags the op does not | Tags are merged onto the existing patch `tags` | None |
 | No matching `actions[]`/`functions[]` entry (import is the only source) | A new operation patch is generated from the import description using the `operation` selector | `needs-spec-extension` — recommends moving the enrichment to `actions[]`/`functions[]` |
 
 **Recommendation:** Enrich `actions[]`/`functions[]` directly. Use `actionImports[]`/`functionImports[]` only if no Schema-level entry exists.
