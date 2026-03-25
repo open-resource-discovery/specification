@@ -19,10 +19,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Optional `target` object narrows a patch to a specific definition file or format (e.g. `definitionType: openapi-v3`).
   - Optional top-level fields (`describedSystemType`, `describedSystemVersion`, `describedSystemInstance`, `visibility`) scope the overlay to a particular system context.
 
+## [1.14.1]
+
 ### Changed
 
 - Clarification: ORD IDs MUST be interpreted case-insensitively when used for comparison, lookups or deduplication. This was previously left open and is now explicitly required.
 - Clarification: The `type` field on `ApiResourceDefinition` and `EventResourceDefinition` accepts not only the predefined enum values and `custom`, but also any valid [Specification ID](./docs/spec-v1/index.md#specification-id) as an extension point. All `apiProtocol` descriptions that listed allowed `type` values now consistently mention this option alongside `custom`.
+- Allow all media types under under `application/*` and `text/*` for resource definitions
 
 ## [1.14.0]
 

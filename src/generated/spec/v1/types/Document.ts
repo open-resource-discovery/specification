@@ -897,7 +897,7 @@ export interface ApiResourceDefinition {
    * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
    *
    */
-  mediaType: "application/json" | "application/xml" | "text/yaml" | "text/plain" | "application/octet-stream";
+  mediaType: string;
   /**
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
@@ -1630,7 +1630,7 @@ export interface EventResourceDefinition {
    * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
    *
    */
-  mediaType: "application/json" | "application/xml" | "text/yaml" | "text/plain" | "application/octet-stream";
+  mediaType: string;
   /**
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
@@ -2162,7 +2162,7 @@ export interface CapabilityDefinition {
    * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
    *
    */
-  mediaType: "application/json" | "application/xml" | "text/yaml" | "text/plain" | "application/octet-stream";
+  mediaType: string;
   /**
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
