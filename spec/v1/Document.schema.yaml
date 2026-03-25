@@ -3396,7 +3396,12 @@ definitions:
         items:
           $ref: "#/definitions/EventResourceIntegrationAspect"
 
-      # NOTE: A reference to Capabilities could also make sense.
+      capabilities:
+        type: array
+        description: |-
+          List of Capability Dependencies.
+        items:
+          $ref: "#/definitions/CapabilityIntegrationAspect"
 
     additionalProperties: false
     required:
@@ -3521,6 +3526,8 @@ definitions:
     required:
       - eventType
 
+  ############################################################################################################
+
   ApiResourceIntegrationAspectSubset:
     type: object
     title: API Resource Integration Aspect Subset
@@ -3546,6 +3553,31 @@ definitions:
     additionalProperties: false
     required:
       - operationId
+
+  ############################################################################################################
+
+  CapabilityIntegrationAspect:
+    type: object
+    title: Capability Integration Aspect
+    x-introduced-in-version: "1.15.0"
+    x-ums-type: "custom"
+    description: |-
+      Capability related integration aspect
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.foo.bar:capability:fieldExtensibility:v1"
+
+      minVersion:
+        <<: *minVersion
+
+    additionalProperties: false
+    required:
+      - ordId
+
+  ############################################################################################################
 
   Vendor:
     type: object

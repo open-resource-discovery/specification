@@ -10,6 +10,16 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `CapabilityIntegrationAspect` definition to support capability dependencies in integration aspects
+  - Capabilities can now be referenced as integration dependencies alongside API and Event Resources
+  - Includes `ordId` and `minVersion` properties for capability integration aspects
+
+### Fixed
+
+- Fixed typo in `IntegrationAspect` schema: renamed `capabilitites` to `capabilities`
+
 ## [1.14.1]
 
 ### Changed
