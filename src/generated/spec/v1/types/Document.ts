@@ -3467,6 +3467,10 @@ export interface Package {
    */
   links?: Link[];
   /**
+   * Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST not be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
+   */
+  files?: File[];
+  /**
    * Standardized identifier for the license.
    * It MUST conform to the [SPDX License List](https://spdx.org/licenses).
    */
@@ -3627,6 +3631,39 @@ export interface PackageLink {
    * The link target MUST be absolute and SHOULD be openly accessible.
    */
   url: string;
+  [k: string]: unknown | undefined;
+}
+/**
+ * File that can be attached to packages or Open Resource Discovery resources.
+ *
+ */
+export interface File {
+  /**
+   * Human readable title of the file.
+   *
+   * MUST be unique within the collection of files provided.
+   */
+  title: string;
+  /**
+   * [URL](https://tools.ietf.org/html/rfc3986) of the link.
+   *
+   * The file target MAY be relative or absolute.
+   * If a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+   * If an absolute URL is given, then it MUST be openly accessible.
+   */
+  url: string;
+  /**
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)
+   */
+  description?: string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   *
+   * If no Media Type is registered for the referenced file, `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
   [k: string]: unknown | undefined;
 }
 /**

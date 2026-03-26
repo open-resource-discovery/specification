@@ -449,6 +449,13 @@ definitions:
         items:
           $ref: "#/definitions/Link"
 
+      files:
+        type: array
+        description: |-
+          Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
+        items:
+          $ref: "#/definitions/File"
+
       licenseType:
         type: string
         minLength: 1
@@ -3706,6 +3713,63 @@ definitions:
       - url: https://blogs.sap.com/2018/04/11/testing-of-s4hana-inventory-management-odata-apis-via-sap-api-hub/
         title: APIs for SAP S/4HANA
         description: This gives you an overview on where to find which kind of APIs in SAP S/4HANA.
+
+  ############################################################################################################
+
+  File:
+    type: object
+    title: File
+    description: |
+      File that can be attached to packages or Open Resource Discovery resources.
+    x-ums-type: "custom"
+    properties:
+      title:
+        type: string
+        minLength: 1
+        description: |-
+          Human readable title of the file.
+
+          MUST be unique within the collection of files provided.
+        examples:
+          - Developer Guide for SAP Ariba Portal
+
+      url:
+        type: string
+        format: uri-reference
+        description: |-
+          [URL](https://tools.ietf.org/html/rfc3986) of the link.
+
+          The file target MAY be relative or absolute.
+          If a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+          If an absolute URL is given, then it MUST be openly accessible.
+        examples:
+          - "/ord/v1/Ariba/Files/DeveloperPortal/SAP-Ariba-developer-portal.pdf"
+
+      description:
+        <<: *description
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)
+        examples:
+          - |
+            Includes administrator, quick start, and authentication guides.
+
+      mediaType:
+        <<: *mediaType
+        description: |
+          The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+          A consuming application can use this information to know which file format parser it needs to use.
+
+          If no Media Type is registered for the referenced file, `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+
+    required:
+      - title
+      - url
+      - mediaType
+    examples:
+      - url: /ord/v1/Ariba/Files/DeveloperPortal/SAP-Ariba-developer-portal.pdf
+        title: Developer Guide for SAP Ariba Portal
+        description: Includes administrator, quick start, and authentication guides.
+        mediaType: application/pdf
 
   ############################################################################################################
 

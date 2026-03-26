@@ -10,6 +10,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+- Added a `files` property to Packages to allow linking of arbitrary files associated with packages, such as additional documentation in PDF format.
+
 ## [1.14.1]
 
 ### Changed
