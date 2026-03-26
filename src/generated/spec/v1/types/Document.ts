@@ -3189,6 +3189,8 @@ export interface ApiResourceIntegrationAspect {
  *
  * For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
  * This information helps to narrow down what is really necessary and can help optimize the integration.
+ *
+ * The subset can be defined by `operationId`, `entityTypes`, or both. When both are provided, they form an AND condition that further narrows down the scope.
  */
 export interface APIResourceIntegrationAspectSubset {
   /**
@@ -3197,7 +3199,13 @@ export interface APIResourceIntegrationAspectSubset {
    * This MUST be an ID that is understood by the used protocol and resource definition format.
    * E.g. for OpenAPI this is the `operationId`, for MCP this is the tool `name`.
    */
-  operationId: string;
+  operationId?: string;
+  /**
+   * List of entity type ORD IDs that narrow down the scope of the integration dependency.
+   *
+   * When provided together with `operationId`, both conditions must be satisfied (AND condition).
+   */
+  entityTypes?: string[];
 }
 /**
  * Event resource related integration aspect
@@ -3233,6 +3241,8 @@ export interface EventResourceIntegrationAspect {
  *
  * For events, this could be a list of the events that need to be subscribed in order to make the integration work.
  * This information helps to narrow down what is really necessary and can help optimize the integration, e.g. by only publishing the events that are really needed.
+ *
+ * The subset can be defined by `eventType`, `entityTypes`, or both. When both are provided, they form an AND condition that further narrows down the scope.
  */
 export interface EventResourceIntegrationAspectSubset {
   /**
@@ -3241,7 +3251,13 @@ export interface EventResourceIntegrationAspectSubset {
    * This MUST be an ID that is understood by the used protocol and resource definition format.
    * E.g. for CloudEvents, the [type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#type) can be used.
    */
-  eventType: string;
+  eventType?: string;
+  /**
+   * List of entity type ORD IDs that narrow down the scope of the integration dependency.
+   *
+   * When provided together with `eventType`, both conditions must be satisfied (AND condition).
+   */
+  entityTypes?: string[];
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.

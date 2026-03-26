@@ -10,6 +10,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `entityTypes` property to `ApiResourceIntegrationAspectSubset` and `EventResourceIntegrationAspectSubset`
+  - This allows narrowing down integration dependencies by a list of entity type ORD IDs
+  - Can be used alone or in combination with `operationId` (for APIs) or `eventType` (for Events)
+  - When both are provided, they form an AND condition that further narrows the scope
+  - Made `operationId` and `eventType` optional, as `entityTypes` can now be used independently
+
 ## [1.14.1]
 
 ### Changed

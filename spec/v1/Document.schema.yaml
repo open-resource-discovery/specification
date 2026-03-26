@@ -3506,6 +3506,8 @@ definitions:
 
       For events, this could be a list of the events that need to be subscribed in order to make the integration work.
       This information helps to narrow down what is really necessary and can help optimize the integration, e.g. by only publishing the events that are really needed.
+
+      The subset can be defined by `eventType`, `entityTypes`, or both. When both are provided, they form an AND condition that further narrows down the scope.
     properties:
       eventType:
         type: string
@@ -3517,9 +3519,22 @@ definitions:
         examples:
           - "sap.cic.Order.OrderTransferred.v1"
 
+      entityTypes:
+        type: array
+        description: |-
+          List of entity type ORD IDs that narrow down the scope of the integration dependency.
+
+          When provided together with `eventType`, both conditions must be satisfied (AND condition).
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          maxLength: 255
+          x-association-target:
+            - "#/definitions/EntityType/ordId"
+        examples:
+          - ["sap.odm:entityType:BusinessPartner:v1", "sap.odm:entityType:Order:v1"]
+
     additionalProperties: false
-    required:
-      - eventType
 
   ApiResourceIntegrationAspectSubset:
     type: object
@@ -3531,6 +3546,8 @@ definitions:
 
       For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
       This information helps to narrow down what is really necessary and can help optimize the integration.
+
+      The subset can be defined by `operationId`, `entityTypes`, or both. When both are provided, they form an AND condition that further narrows down the scope.
     properties:
       operationId:
         type: string
@@ -3543,9 +3560,22 @@ definitions:
           - "getOrderById"
           - "createCustomer"
 
+      entityTypes:
+        type: array
+        description: |-
+          List of entity type ORD IDs that narrow down the scope of the integration dependency.
+
+          When provided together with `operationId`, both conditions must be satisfied (AND condition).
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          maxLength: 255
+          x-association-target:
+            - "#/definitions/EntityType/ordId"
+        examples:
+          - ["sap.odm:entityType:BusinessPartner:v1", "sap.odm:entityType:Order:v1"]
+
     additionalProperties: false
-    required:
-      - operationId
 
   Vendor:
     type: object
