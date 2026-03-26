@@ -172,7 +172,10 @@ spec:
         - name: 'operationId'
           type: 'string'
           description: "The ID of the individual API operation or tool.\n\nThis MUST be an ID that is understood by the used protocol and resource definition format.\nE.g. for OpenAPI this is the `operationId`, for MCP this is the tool `name`."
-          mandatory: true
+        - name: 'entityTypes'
+          type: 'string'
+          array: true
+          description: "List of entity type ORD IDs that narrow down the scope of the integration dependency.\n\nWhen provided together with `operationId`, both conditions must be satisfied (AND condition)."
     - name: 'EventResourceIntegrationAspect'
       metadataProperties:
         - name: 'ordId'
@@ -201,7 +204,10 @@ spec:
         - name: 'eventType'
           type: 'string'
           description: "The type ID of the individual event or message.\n\nThis MUST be an ID that is understood by the used protocol and resource definition format.\nE.g. for CloudEvents, the [type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#type) can be used."
-          mandatory: true
+        - name: 'entityTypes'
+          type: 'string'
+          array: true
+          description: "List of entity type ORD IDs that narrow down the scope of the integration dependency.\n\nWhen provided together with `eventType`, both conditions must be satisfied (AND condition)."
     - name: 'Link'
       metadataProperties:
         - name: 'title'
