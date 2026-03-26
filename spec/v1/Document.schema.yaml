@@ -3090,7 +3090,7 @@ definitions:
 
       relatedApiResources:
         type: array
-        x-introduced-in-version: "1.15.0"
+        x-introduced-in-version: "1.14.3"
         description: |-
           Optional list of related API Resources.
 
@@ -3102,7 +3102,7 @@ definitions:
 
       relatedEventResources:
         type: array
-        x-introduced-in-version: "1.15.0"
+        x-introduced-in-version: "1.14.3"
         description: |-
           Optional list of related Event Resources.
 
@@ -3114,7 +3114,7 @@ definitions:
 
       relatedCapabilities:
         type: array
-        x-introduced-in-version: "1.15.0"
+        x-introduced-in-version: "1.14.3"
         description: |-
           Optional list of related Capabilities.
 
@@ -4819,7 +4819,7 @@ definitions:
 
   RelatedApiResource:
     title: Related API Resource
-    x-introduced-in-version: "1.15.0"
+    x-introduced-in-version: "1.14.3"
     x-ums-type: "embedded"
     type: object
     description: |-
@@ -4861,7 +4861,7 @@ definitions:
 
   RelatedEventResource:
     title: Related Event Resource
-    x-introduced-in-version: "1.15.0"
+    x-introduced-in-version: "1.14.3"
     x-ums-type: "embedded"
     type: object
     description: |-
@@ -4903,7 +4903,7 @@ definitions:
 
   RelatedCapability:
     title: Related Capability
-    x-introduced-in-version: "1.15.0"
+    x-introduced-in-version: "1.14.3"
     x-ums-type: "embedded"
     type: object
     description: |-
