@@ -16,9 +16,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - `relatedApiResources`: Array of `RelatedApiResource` objects to link capabilities to API resources
   - `relatedEventResources`: Array of `RelatedEventResource` objects to link capabilities to event resources
   - `relatedCapabilities`: Array of `RelatedCapability` objects to link capabilities to other capabilities
-- Added new definition objects `RelatedApiResource`, `RelatedEventResource`, and `RelatedCapability` with:
-  - `ordId`: Required reference to the target resource
-  - `relationType`: Optional [Concept ID](./docs/spec-v1/index.md#concept-id) to specify the semantic meaning of the relationship
+  - Each relationship object includes the ORD ID of the related resource and an extensible `relationType`
+- Existing `relatedEntityTypes` property on `EntityType` has been extended to include `relationType` as well, for consistency and extensibility.
 
 ### Changed
 
