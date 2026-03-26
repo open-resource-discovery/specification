@@ -3720,7 +3720,7 @@ definitions:
     type: object
     title: File
     description: |
-      File that can be attached to packages or Open Resource Discovery resources.
+      File that can be attached on ORD package level.
     x-ums-type: "custom"
     properties:
       title:
