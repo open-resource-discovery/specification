@@ -1931,8 +1931,10 @@ export interface RelatedEntityType {
    * Optional type of the relationship, which defines a stricter semantic what the relationship implies.
    *
    * If not provided, the relationship type has no semantics, it's "related somehow".
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
    */
-  relationType?: "part-of" | "can-share-identity";
+  relationType?: (string | "part-of" | "can-share-identity") & string;
 }
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
@@ -2097,6 +2099,24 @@ export interface Capability {
    */
   relatedEntityTypes?: string[];
   /**
+   * Optional list of related API Resources.
+   *
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of related Event Resources.
+   *
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
+   */
+  relatedEventResources?: RelatedEventResource[];
+  /**
+   * Optional list of related Capabilities.
+   *
+   * Use this to indicate dependencies, extensions, or other relationships between capabilities.
+   */
+  relatedCapabilities?: RelatedCapability[];
+  /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
@@ -2135,6 +2155,60 @@ export interface Capability {
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
+}
+/**
+ * Defines a relation to an API Resource (via its ORD ID).
+ */
+export interface RelatedAPIResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
+}
+/**
+ * Defines a relation to an Event Resource (via its ORD ID).
+ */
+export interface RelatedEventResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
+}
+/**
+ * Defines a relation to another Capability (via its ORD ID).
+ */
+export interface RelatedCapability {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
 }
 /**
  * Link and categorization of a machine-readable capability definition.

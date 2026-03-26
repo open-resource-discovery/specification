@@ -10,6 +10,20 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added relationship properties to `Capability` for expressing relations to other ORD resources:
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link capabilities to API resources
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link capabilities to event resources
+  - `relatedCapabilities`: Array of `RelatedCapability` objects to link capabilities to other capabilities
+- Added new definition objects `RelatedApiResource`, `RelatedEventResource`, and `RelatedCapability` with:
+  - `ordId`: Required reference to the target resource
+  - `relationType`: Optional [Concept ID](./docs/spec-v1/index.md#concept-id) to specify the semantic meaning of the relationship
+
+### Changed
+
+- Made `RelatedEntityType.relationType` an extensible enum that now also accepts any valid [Concept ID](./docs/spec-v1/index.md#concept-id) in addition to the existing values (`part-of`, `can-share-identity`)
+
 ## [1.14.1]
 
 ### Changed
