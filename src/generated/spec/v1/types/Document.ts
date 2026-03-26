@@ -3634,7 +3634,7 @@ export interface PackageLink {
   [k: string]: unknown | undefined;
 }
 /**
- * File that can be attached to packages or Open Resource Discovery resources.
+ * File that can be attached on ORD package level.
  *
  */
 export interface File {
