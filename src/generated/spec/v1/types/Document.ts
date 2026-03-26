@@ -3467,7 +3467,7 @@ export interface Package {
    */
   links?: Link[];
   /**
-   * Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST not be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
+   * Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
    */
   files?: File[];
   /**
