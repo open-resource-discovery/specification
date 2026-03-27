@@ -424,3 +424,8 @@ spec:
       relatedTypeName: 'Extensible'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Describes extensibility (by customers or partners) of this resource.\nExtensibility usually happens at run-time by the end-users.\nExtensions can be field or entity extensions that come on top of the baseline contract.\n\nChanges in extensions do not lead to an increase in the `version`, but MUST lead to an updated `lastUpdate` date.\n\nSince the extensions are managed by the customer or a partner, whether those changes are compatible or not is not guaranteed by the base contract of the resource."
+    - propertyName: 'capabilities'
+      relatedTypeName: 'RelatedApiResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Capabilities related to this API Resource.'
+      mandatory: false

@@ -4658,6 +4658,54 @@
             ]
           ]
         },
+        "relatedApiResources": {
+          "type": "array",
+          "x-introduced-in-version": "1.14.3",
+          "description": "Optional list of related API Resources.\n\nUse this to indicate which APIs implement, expose, or are otherwise related to this capability.",
+          "items": {
+            "$ref": "#/definitions/RelatedApiResource"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
+          ]
+        },
+        "relatedEventResources": {
+          "type": "array",
+          "x-introduced-in-version": "1.14.3",
+          "description": "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this capability.",
+          "items": {
+            "$ref": "#/definitions/RelatedEventResource"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
+          ]
+        },
+        "relatedCapabilities": {
+          "type": "array",
+          "x-introduced-in-version": "1.14.3",
+          "description": "Optional list of related Capabilities.\n\nUse this to indicate dependencies, extensions, or other relationships between capabilities.",
+          "items": {
+            "$ref": "#/definitions/RelatedCapability"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.foo:capability:baseExtensibility:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
+          ]
+        },
         "definitions": {
           "type": "array",
           "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\nThe exception is when the same definition type is provided more than once, but with a different `visibility`.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
@@ -6561,10 +6609,15 @@
         },
         "relationType": {
           "type": "string",
-          "description": "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\".",
+          "description": "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\".\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
           "x-introduced-in-version": "1.12.0",
           "x-feature-status": "beta",
-          "oneOf": [
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+              "description": "Any valid [Concept ID](../index.md#concept-id)."
+            },
             {
               "const": "part-of",
               "description": "The described entity type is a composite part of the referenced entity type.\nE.g. a `SalesOrderItem` is part of a `SalesOrder`."
@@ -6575,7 +6628,125 @@
             }
           ],
           "examples": [
-            "can-share-identity"
+            "can-share-identity",
+            "foo.bar:relationName"
+          ]
+        }
+      },
+      "required": [
+        "ordId"
+      ],
+      "additionalProperties": false
+    },
+    "RelatedApiResource": {
+      "title": "Related API Resource",
+      "x-introduced-in-version": "1.14.3",
+      "x-ums-type": "embedded",
+      "type": "object",
+      "description": "Defines a relation to an API Resource (via its ORD ID).",
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "maxLength": 255,
+          "examples": [
+            "sap.s4:apiResource:API_BUSINESS_PARTNER:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/ApiResource/ordId"
+          ]
+        },
+        "relationType": {
+          "type": "string",
+          "description": "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+              "description": "Any valid [Concept ID](../index.md#concept-id)."
+            }
+          ],
+          "examples": [
+            "foo.bar:relationName"
+          ]
+        }
+      },
+      "required": [
+        "ordId"
+      ],
+      "additionalProperties": false
+    },
+    "RelatedEventResource": {
+      "title": "Related Event Resource",
+      "x-introduced-in-version": "1.14.3",
+      "x-ums-type": "embedded",
+      "type": "object",
+      "description": "Defines a relation to an Event Resource (via its ORD ID).",
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "maxLength": 255,
+          "examples": [
+            "sap.s4:eventResource:BusinessPartnerEvents:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/EventResource/ordId"
+          ]
+        },
+        "relationType": {
+          "type": "string",
+          "description": "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+              "description": "Any valid [Concept ID](../index.md#concept-id)."
+            }
+          ],
+          "examples": [
+            "foo.bar:relationName"
+          ]
+        }
+      },
+      "required": [
+        "ordId"
+      ],
+      "additionalProperties": false
+    },
+    "RelatedCapability": {
+      "title": "Related Capability",
+      "x-introduced-in-version": "1.14.3",
+      "x-ums-type": "embedded",
+      "type": "object",
+      "description": "Defines a relation to another Capability (via its ORD ID).",
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "maxLength": 255,
+          "examples": [
+            "sap.foo:capability:fieldExtensibility:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/Capability/ordId"
+          ]
+        },
+        "relationType": {
+          "type": "string",
+          "description": "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+              "description": "Any valid [Concept ID](../index.md#concept-id)."
+            }
+          ],
+          "examples": [
+            "foo.bar:relationName"
           ]
         }
       },
