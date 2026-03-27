@@ -1041,6 +1041,10 @@
           "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
+              "const": "development",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
+            {
               "const": "beta",
               "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
@@ -1881,6 +1885,10 @@
           "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
+              "const": "development",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
+            {
               "const": "beta",
               "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
@@ -2551,6 +2559,10 @@
           "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
+              "const": "development",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
+            {
               "const": "beta",
               "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
@@ -2909,6 +2921,10 @@
           "type": "string",
           "description": "The `releaseStatus` specifies the stability towards incompatible changes in the future.\nIn the context of data products, it it covers only properties on the data product level.\nAPIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.",
           "oneOf": [
+            {
+              "const": "development",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
             {
               "const": "beta",
               "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
@@ -3910,6 +3926,10 @@
           "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
+              "const": "development",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
+            {
               "const": "beta",
               "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
@@ -4583,6 +4603,10 @@
           "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
+              "const": "development",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
+            {
               "const": "beta",
               "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
@@ -4917,6 +4941,10 @@
           "type": "string",
           "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
+            {
+              "const": "development",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
             {
               "const": "beta",
               "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
@@ -5300,6 +5328,10 @@
           "type": "string",
           "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
+            {
+              "const": "development",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
             {
               "const": "beta",
               "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
@@ -6730,6 +6762,10 @@
           "type": "string",
           "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
+            {
+              "const": "development",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
             {
               "const": "beta",
               "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
