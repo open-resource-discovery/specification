@@ -78,6 +78,11 @@ spec:
       customTypeName: 'Link'
       array: true
       description: "Generic links with arbitrary meaning and content.\n\n`packageLinks` MUST be preferred if applicable."
+    - name: 'files'
+      type: 'custom'
+      customTypeName: 'File'
+      array: true
+      description: 'Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.'
     - name: 'licenseType'
       type: 'string'
       description: "Standardized identifier for the license.\nIt MUST conform to the [SPDX License List](https://spdx.org/licenses)."
@@ -158,9 +163,32 @@ spec:
           mandatory: true
         - name: 'description'
           type: 'string'
-          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)'
+          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).'
           constraints:
             minLength: 1
+    - name: 'File'
+      metadataProperties:
+        - name: 'title'
+          type: 'string'
+          description: "Human readable title of the file.\n\nMUST be unique within the collection of files provided."
+          mandatory: true
+          constraints:
+            minLength: 1
+        - name: 'url'
+          type: 'string'
+          description: "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe file target MAY be relative or absolute.\nIf a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).\nIf an absolute URL is given, then it MUST be openly accessible."
+          mandatory: true
+        - name: 'description'
+          type: 'string'
+          description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
+          constraints:
+            minLength: 1
+        - name: 'mediaType'
+          type: 'string'
+          description: "The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.\nA consuming application can use this information to know which file format parser it needs to use.\n\nIf no Media Type is registered for the referenced file, `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.\n"
+          mandatory: true
+          constraints:
+            pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
     - name: 'Labels'
       metadataProperties:
         - name: 'key'

@@ -15,6 +15,9 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added `CapabilityIntegrationAspect` definition to support capability dependencies in integration aspects
   - Capabilities can now be referenced as integration dependencies alongside API and Event Resources
   - Includes `ordId` and `minVersion` properties for capability integration aspects
+- Added new `releaseStatus` value `development` for resources that are under active development and not yet released for consumption.
+- Added `x-deprecated-in-version` and `x-deprecation-text` information to the exported JSON Schema
+- Added a `files` property to Packages to allow linking of arbitrary files associated with packages, such as additional documentation in PDF format.
 
 ## [1.14.1]
 
