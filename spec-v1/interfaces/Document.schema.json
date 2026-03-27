@@ -5100,6 +5100,13 @@
           "items": {
             "$ref": "#/definitions/EventResourceIntegrationAspect"
           }
+        },
+        "capabilities": {
+          "type": "array",
+          "description": "List of Capability Dependencies.",
+          "items": {
+            "$ref": "#/definitions/CapabilityIntegrationAspect"
+          }
         }
       },
       "additionalProperties": false,
@@ -5238,6 +5245,37 @@
       "additionalProperties": false,
       "required": [
         "operationId"
+      ]
+    },
+    "CapabilityIntegrationAspect": {
+      "type": "object",
+      "title": "Capability Integration Aspect",
+      "x-introduced-in-version": "1.15.0",
+      "x-ums-type": "custom",
+      "description": "Capability related integration aspect",
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "maxLength": 255,
+          "examples": [
+            "sap.foo.bar:capability:fieldExtensibility:v1"
+          ]
+        },
+        "minVersion": {
+          "type": "string",
+          "description": "Minimum version of the references resource that the integration requires.\n",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+          "examples": [
+            "1.2.3",
+            "1.0.0-alpha.1"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "ordId"
       ]
     },
     "Vendor": {
