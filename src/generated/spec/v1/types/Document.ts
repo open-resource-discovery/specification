@@ -474,7 +474,7 @@ export interface ApiResource {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -831,7 +831,7 @@ export interface ChangelogEntry {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Date of change, without time or timezone information.
    *
@@ -1155,7 +1155,7 @@ export interface Link {
    */
   url: string;
   /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    */
   description?: string;
   [k: string]: unknown | undefined;
@@ -1350,7 +1350,7 @@ export interface EventResource {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1815,7 +1815,7 @@ export interface EntityType {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
@@ -2072,7 +2072,7 @@ export interface Capability {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -2389,7 +2389,7 @@ export interface DataProduct {
    * In the context of data products, it it covers only properties on the data product level.
    * APIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -2814,7 +2814,7 @@ export interface Agent {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -3148,7 +3148,7 @@ export interface IntegrationDependency {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
    *
@@ -3237,6 +3237,10 @@ export interface Aspect {
    * List of Event Resource Dependencies.
    */
   eventResources?: EventResourceIntegrationAspect[];
+  /**
+   * List of Capability Dependencies.
+   */
+  capabilities?: CapabilityIntegrationAspect[];
 }
 /**
  * API resource related integration aspect
@@ -3316,6 +3320,22 @@ export interface EventResourceIntegrationAspectSubset {
    * E.g. for CloudEvents, the [type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#type) can be used.
    */
   eventType: string;
+}
+/**
+ * Capability related integration aspect
+ */
+export interface CapabilityIntegrationAspect {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Minimum version of the references resource that the integration requires.
+   *
+   */
+  minVersion?: string;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.
@@ -3541,6 +3561,10 @@ export interface Package {
    */
   links?: Link[];
   /**
+   * Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
+   */
+  files?: File[];
+  /**
    * Standardized identifier for the license.
    * It MUST conform to the [SPDX License List](https://spdx.org/licenses).
    */
@@ -3701,6 +3725,42 @@ export interface PackageLink {
    * The link target MUST be absolute and SHOULD be openly accessible.
    */
   url: string;
+  [k: string]: unknown | undefined;
+}
+/**
+ * File that can be attached on ORD package level.
+ *
+ */
+export interface File {
+  /**
+   * Human readable title of the file.
+   *
+   * MUST be unique within the collection of files provided.
+   */
+  title: string;
+  /**
+   * [URL](https://tools.ietf.org/html/rfc3986) of the link.
+   *
+   * The file target MAY be relative or absolute.
+   * If a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+   * If an absolute URL is given, then it MUST be openly accessible.
+   */
+  url: string;
+  /**
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
+   * Detailed documentation SHOULD be attached as (typed) links.
+   */
+  description?: string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   *
+   * If no Media Type is registered for the referenced file, `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
   [k: string]: unknown | undefined;
 }
 /**
