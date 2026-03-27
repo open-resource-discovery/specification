@@ -49,6 +49,7 @@ spec:
         maxLength: 255
     - name: 'description'
       type: 'string'
+      description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
       mandatory: true
       constraints:
         minLength: 1
@@ -231,6 +232,7 @@ spec:
           mandatory: true
         - name: 'description'
           type: 'string'
+          description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
           constraints:
             minLength: 1
         - name: 'url'

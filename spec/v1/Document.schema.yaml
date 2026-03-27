@@ -711,6 +711,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
         examples:
           - |
             This Consumption Bundle includes all SAP LoB System 3 Cloud APIs and Events
@@ -911,6 +916,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
         examples:
           - |
             This service enables you to create Request for Quotation (RFQ)
@@ -1617,6 +1627,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
         examples:
           - |
             This event is raised by the SAP S/4HANA Cloud system when an invoice document is cancelled.
@@ -1897,6 +1912,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
         examples:
           - |
             A business partner is a person, an organization, or a group of persons or organizations in which a company has a business interest.
@@ -2098,6 +2118,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
         examples:
           - The data product Customer Order offers access to all online and offline orders submitted by customers. It provides a customer view on the orders. For fulfillment-specific aspects please refer to the data product Fulfillment Order.
 
@@ -2746,6 +2771,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
 
       partOfPackage:
         <<: *partOfPackage
@@ -2940,6 +2970,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
         examples: []
 
       vendor:
@@ -3039,6 +3074,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
 
       partOfPackage:
         <<: *partOfPackage
@@ -3262,6 +3302,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
 
       partOfPackage:
         <<: *partOfPackage
@@ -3380,6 +3425,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
 
       mandatory:
         type: boolean
@@ -3656,6 +3706,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
         examples:
           - "## Changelog\n..."
 
@@ -4250,6 +4305,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
 
       labels:
         <<: *labels
@@ -4335,6 +4395,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
 
       labels:
         <<: *labels
@@ -5021,6 +5086,11 @@ definitions:
       description:
         type: string
         minLength: 1
+        description: |-
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          The description SHOULD not be excessive in length and is not meant to provide full documentation.
+          Detailed documentation SHOULD be attached as (typed) links.
         examples: []
 
       partOfPackage:
