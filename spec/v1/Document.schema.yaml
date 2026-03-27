@@ -3116,31 +3116,41 @@ definitions:
         examples:
           - ["sap.odm:entityType:WorkforcePerson:v1"]
 
-      # TODO: Clarify if we want to have relations to APIs and events like this
-      # Or if we should go with the generic relation concept
-      # relatedApiResources:
-      #   type: array
-      #   description: |-
-      #     Optional list of related API Resources.
+      relatedApiResources:
+        type: array
+        x-introduced-in-version: "1.14.3"
+        description: |-
+          Optional list of related API Resources.
 
-      #     MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
-      #   items:
-      #     type: string
-      #     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):()$
-      #   examples:
-      #     - ['sap.s4:apiResource:API_RFQ_PROCESS_SRV:v2']
+          Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+        items:
+          $ref: "#/definitions/RelatedApiResource"
+        examples:
+          - [{ "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1", "relationType": "foo.bar:relationName" }]
 
-      # relatedEventResources:
-      #   type: array
-      #   description: |-
-      #     Optional list of related Event Resources.
+      relatedEventResources:
+        type: array
+        x-introduced-in-version: "1.14.3"
+        description: |-
+          Optional list of related Event Resources.
 
-      #     MUST be a valid reference to an [Event Resource](#event-resource) ORD ID.
-      #   items:
-      #     type: string
-      #     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):()$
-      #   examples:
-      #     - ['sap.s4:eventResource:BillofMaterialEvents:v1']
+          Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
+        items:
+          $ref: "#/definitions/RelatedEventResource"
+        examples:
+          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "foo.bar:relationName" }]
+
+      relatedCapabilities:
+        type: array
+        x-introduced-in-version: "1.14.3"
+        description: |-
+          Optional list of related Capabilities.
+
+          Use this to indicate dependencies, extensions, or other relationships between capabilities.
+        items:
+          $ref: "#/definitions/RelatedCapability"
+        examples:
+          - [{ "ordId": "sap.foo:capability:baseExtensibility:v1", "relationType": "foo.bar:relationName" }]
 
       definitions:
         <<: *resourceDefinitions
@@ -4910,9 +4920,15 @@ definitions:
           Optional type of the relationship, which defines a stricter semantic what the relationship implies.
 
           If not provided, the relationship type has no semantics, it's "related somehow".
+
+          MUST be a valid [Concept ID](../index.md#concept-id).
         x-introduced-in-version: "1.12.0"
         x-feature-status: beta
-        oneOf:
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
           - const: part-of
             description: |-
               The described entity type is a composite part of the referenced entity type.
@@ -4924,6 +4940,130 @@ definitions:
               E.g. a `BusinessPartner` can share the same identity as a `NaturalPerson`.
         examples:
           - "can-share-identity"
+          - "foo.bar:relationName"
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
+  RelatedApiResource:
+    title: Related API Resource
+    x-introduced-in-version: "1.14.3"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines a relation to an API Resource (via its ORD ID).
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/ApiResource/ordId"
+        x-ums-reverse-relationship:
+          propertyName: capabilities
+          description: |-
+            Capabilities related to this API Resource.
+          min: 0
+          max: "*"
+        examples:
+          - "sap.s4:apiResource:API_BUSINESS_PARTNER:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+
+          Defines the semantic meaning of the relationship.
+          If not provided, the relationship has no specific semantics ("related somehow").
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+        examples:
+          - "foo.bar:relationName"
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
+  RelatedEventResource:
+    title: Related Event Resource
+    x-introduced-in-version: "1.14.3"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines a relation to an Event Resource (via its ORD ID).
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/EventResource/ordId"
+        x-ums-reverse-relationship:
+          propertyName: capabilities
+          description: |-
+            Capabilities related to this Event Resource.
+          min: 0
+          max: "*"
+        examples:
+          - "sap.s4:eventResource:BusinessPartnerEvents:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+
+          Defines the semantic meaning of the relationship.
+          If not provided, the relationship has no specific semantics ("related somehow").
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+        examples:
+          - "foo.bar:relationName"
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
+  RelatedCapability:
+    title: Related Capability
+    x-introduced-in-version: "1.14.3"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines a relation to another Capability (via its ORD ID).
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/Capability/ordId"
+        x-ums-reverse-relationship:
+          propertyName: inverseRelatedCapabilities
+          description: |-
+            Capabilities that declared a relationship to this capability.
+          min: 0
+          max: "*"
+        examples:
+          - "sap.foo:capability:fieldExtensibility:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+
+          Defines the semantic meaning of the relationship.
+          If not provided, the relationship has no specific semantics ("related somehow").
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+        examples:
+          - "foo.bar:relationName"
     required:
       - ordId
     additionalProperties: false
