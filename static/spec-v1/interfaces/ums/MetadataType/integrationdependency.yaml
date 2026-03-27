@@ -216,7 +216,7 @@ spec:
           mandatory: true
         - name: 'description'
           type: 'string'
-          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)'
+          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).'
           constraints:
             minLength: 1
     - name: 'Labels'

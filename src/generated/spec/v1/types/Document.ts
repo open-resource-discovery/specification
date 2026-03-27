@@ -1155,7 +1155,7 @@ export interface Link {
    */
   url: string;
   /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    */
   description?: string;
   [k: string]: unknown | undefined;
@@ -3653,7 +3653,10 @@ export interface File {
    */
   url: string;
   /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
+   * Detailed documentation SHOULD be attached as (typed) links.
    */
   description?: string;
   /**

@@ -38,14 +38,14 @@
 		"postgenerate": "ts-node ./src/helper/copyGeneratedToDestination.ts"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.6",
+		"@biomejs/biome": "2.4.9",
 		"@docusaurus/core": "3.9.2",
 		"@docusaurus/plugin-client-redirects": "3.9.2",
 		"@docusaurus/preset-classic": "3.9.2",
 		"@docusaurus/theme-mermaid": "3.9.2",
 		"@easyops-cn/docusaurus-search-local": "0.55.1",
 		"@mdx-js/react": "3.1.1",
-		"@open-resource-discovery/spec-toolkit": "0.7.1",
+		"@open-resource-discovery/spec-toolkit": "0.8.0",
 		"@types/fs-extra": "11.0.4",
 		"ajv": "8.18.0",
 		"ajv-formats": "3.0.1",
