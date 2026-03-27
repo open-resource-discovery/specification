@@ -131,17 +131,6 @@
             },
           ],
         },
-        {
-          "title": "Field Extensibility Support",
-          "description": "Requires field extensibility capability for custom field integration",
-          "mandatory": true,
-          "capabilities": [
-            {
-              "ordId": "sap.s4:capability:fieldExtensibility:v1",
-              "minVersion": "2.0.0"
-            }
-          ]
-        },
       ],
     },
   ],
