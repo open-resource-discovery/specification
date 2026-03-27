@@ -4851,8 +4851,7 @@ definitions:
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
         examples:
-          - "sap.ord:implements"
-          - "sap.ord:consumes"
+          - "foo.bar:relationName"
     required:
       - ordId
     additionalProperties: false
