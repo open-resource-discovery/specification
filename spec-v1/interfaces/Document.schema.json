@@ -387,6 +387,7 @@
         },
         "files": {
           "type": "array",
+          "x-introduced-in-version": "1.14.2",
           "description": "Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.",
           "items": {
             "$ref": "#/definitions/File"
@@ -1042,11 +1043,12 @@
           "oneOf": [
             {
               "const": "development",
+              "x-introduced-in-version": "1.14.2",
               "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
             },
             {
               "const": "beta",
-              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
@@ -1886,11 +1888,12 @@
           "oneOf": [
             {
               "const": "development",
+              "x-introduced-in-version": "1.14.2",
               "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
             },
             {
               "const": "beta",
-              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
@@ -2560,11 +2563,12 @@
           "oneOf": [
             {
               "const": "development",
+              "x-introduced-in-version": "1.14.2",
               "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
             },
             {
               "const": "beta",
-              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
@@ -2923,11 +2927,12 @@
           "oneOf": [
             {
               "const": "development",
+              "x-introduced-in-version": "1.14.2",
               "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
             },
             {
               "const": "beta",
-              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
@@ -3927,11 +3932,12 @@
           "oneOf": [
             {
               "const": "development",
+              "x-introduced-in-version": "1.14.2",
               "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
             },
             {
               "const": "beta",
-              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
@@ -4604,11 +4610,12 @@
           "oneOf": [
             {
               "const": "development",
+              "x-introduced-in-version": "1.14.2",
               "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
             },
             {
               "const": "beta",
-              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
@@ -4660,7 +4667,7 @@
         },
         "relatedApiResources": {
           "type": "array",
-          "x-introduced-in-version": "1.14.3",
+          "x-introduced-in-version": "1.14.2",
           "description": "Optional list of related API Resources.\n\nUse this to indicate which APIs implement, expose, or are otherwise related to this capability.",
           "items": {
             "$ref": "#/definitions/RelatedApiResource"
@@ -4676,7 +4683,7 @@
         },
         "relatedEventResources": {
           "type": "array",
-          "x-introduced-in-version": "1.14.3",
+          "x-introduced-in-version": "1.14.2",
           "description": "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this capability.",
           "items": {
             "$ref": "#/definitions/RelatedEventResource"
@@ -4692,7 +4699,7 @@
         },
         "relatedCapabilities": {
           "type": "array",
-          "x-introduced-in-version": "1.14.3",
+          "x-introduced-in-version": "1.14.2",
           "description": "Optional list of related Capabilities.\n\nUse this to indicate dependencies, extensions, or other relationships between capabilities.",
           "items": {
             "$ref": "#/definitions/RelatedCapability"
@@ -4991,11 +4998,12 @@
           "oneOf": [
             {
               "const": "development",
+              "x-introduced-in-version": "1.14.2",
               "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
             },
             {
               "const": "beta",
-              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
@@ -5298,7 +5306,7 @@
     "CapabilityIntegrationAspect": {
       "type": "object",
       "title": "Capability Integration Aspect",
-      "x-introduced-in-version": "1.15.0",
+      "x-introduced-in-version": "1.14.2",
       "x-ums-type": "custom",
       "description": "Capability related integration aspect",
       "properties": {
@@ -5416,11 +5424,12 @@
           "oneOf": [
             {
               "const": "development",
+              "x-introduced-in-version": "1.14.2",
               "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
             },
             {
               "const": "beta",
-              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
@@ -5514,6 +5523,7 @@
     "File": {
       "type": "object",
       "title": "File",
+      "x-introduced-in-version": "1.14.2",
       "description": "File that can be attached on ORD package level.\n",
       "x-ums-type": "custom",
       "properties": {
@@ -6640,7 +6650,7 @@
     },
     "RelatedApiResource": {
       "title": "Related API Resource",
-      "x-introduced-in-version": "1.14.3",
+      "x-introduced-in-version": "1.14.2",
       "x-ums-type": "embedded",
       "type": "object",
       "description": "Defines a relation to an API Resource (via its ORD ID).",
@@ -6679,7 +6689,7 @@
     },
     "RelatedEventResource": {
       "title": "Related Event Resource",
-      "x-introduced-in-version": "1.14.3",
+      "x-introduced-in-version": "1.14.2",
       "x-ums-type": "embedded",
       "type": "object",
       "description": "Defines a relation to an Event Resource (via its ORD ID).",
@@ -6718,7 +6728,7 @@
     },
     "RelatedCapability": {
       "title": "Related Capability",
-      "x-introduced-in-version": "1.14.3",
+      "x-introduced-in-version": "1.14.2",
       "x-ums-type": "embedded",
       "type": "object",
       "description": "Defines a relation to another Capability (via its ORD ID).",
@@ -6973,11 +6983,12 @@
           "oneOf": [
             {
               "const": "development",
+              "x-introduced-in-version": "1.14.2",
               "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
             },
             {
               "const": "beta",
-              "description": "The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion."
             },
             {
               "const": "active",
