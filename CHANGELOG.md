@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `x-deprecated-in-version` and `x-deprecation-text` information to the exported JSON Schema
+
 ## [1.14.1]
 
 ### Changed
