@@ -385,10 +385,10 @@ definitions:
         examples:
           - "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for in-memory computing."
 
-      description: &description
+      description:
         type: string
         minLength: 1
-        description: |-
+        description: &descriptionText |-
           Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
 
           The description SHOULD not be excessive in length and is not meant to provide full documentation.
@@ -709,7 +709,9 @@ definitions:
           - "SAP LoB System 3 Cloud, cloud ERP suite designed for in-memory computing"
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
         examples:
           - |
             This Consumption Bundle includes all SAP LoB System 3 Cloud APIs and Events
@@ -908,7 +910,9 @@ definitions:
           - "This service enables you to create Request for Quotation (RFQ) through an API call."
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
         examples:
           - |
             This service enables you to create Request for Quotation (RFQ)
@@ -1613,7 +1617,9 @@ definitions:
           - "All events related to the Business Object SalesOrder"
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
         examples:
           - |
             This event is raised by the SAP S/4HANA Cloud system when an invoice document is cancelled.
@@ -1892,7 +1898,9 @@ definitions:
           - "A workforce person is a natural person with a work agreement or relationship in form of a work assignment; it can be an employee or a contingent worker."
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
         examples:
           - |
             A business partner is a person, an organization, or a group of persons or organizations in which a company has a business interest.
@@ -2092,7 +2100,9 @@ definitions:
           - Offering access to all online and offline orders submitted by customers
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
         examples:
           - The data product Customer Order offers access to all online and offline orders submitted by customers. It provides a customer view on the orders. For fulfillment-specific aspects please refer to the data product Fulfillment Order.
 
@@ -2739,7 +2749,9 @@ definitions:
         <<: *shortDescription
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
 
       partOfPackage:
         <<: *partOfPackage
@@ -2932,7 +2944,9 @@ definitions:
           - "The next generation digital core designed to help you run simple in a digital economy."
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
         examples: []
 
       vendor:
@@ -3030,7 +3044,9 @@ definitions:
         <<: *shortDescription
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
 
       partOfPackage:
         <<: *partOfPackage
@@ -3252,7 +3268,9 @@ definitions:
         <<: *shortDescription
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
 
       partOfPackage:
         <<: *partOfPackage
@@ -3369,7 +3387,9 @@ definitions:
           - Integration Aspect to get Customer Order data
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
 
       mandatory:
         type: boolean
@@ -3644,7 +3664,9 @@ definitions:
           - "2020-04-29"
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
         examples:
           - "## Changelog\n..."
 
@@ -3692,9 +3714,10 @@ definitions:
           - "https://blogs.sap.com/2018/04/11/testing-of-s4hana-inventory-management-odata-apis-via-sap-api-hub/"
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
         description: |-
-          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)
+          Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
         examples:
           - |
             This gives you an overview on where to find which kind of APIs in SAP S/4HANA.
@@ -4236,7 +4259,9 @@ definitions:
           Human readable title of the group type.
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
 
       labels:
         <<: *labels
@@ -4320,7 +4345,9 @@ definitions:
           Human readable title of the group assignment (for UI).
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
 
       labels:
         <<: *labels
@@ -4402,7 +4429,8 @@ definitions:
           **Automatically extensible** means that after defining a custom field in the local domain model, the resource (i.e. API or event) is automatically extended as part of the default extension field definition.
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
         description: |-
           A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
 
@@ -4875,7 +4903,8 @@ definitions:
         examples:
           - "2020-12-02T14:12:59Z"
       description:
-        <<: *description
+        type: string
+        minLength: 1
         description: |-
           Optional description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
 
@@ -5003,7 +5032,9 @@ definitions:
         examples: []
 
       description:
-        <<: *description
+        type: string
+        minLength: 1
+        description: *descriptionText
         examples: []
 
       partOfPackage:
