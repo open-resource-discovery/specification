@@ -22,6 +22,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Changed
 
 - Made `RelatedEntityType.relationType` an extensible enum that now also accepts any valid [Concept ID](./docs/spec-v1/index.md#concept-id) in addition to the existing values (`part-of`, `can-share-identity`)
+- Added `x-deprecated-in-version` and `x-deprecation-text` information to the exported JSON Schema
 
 ## [1.14.1]
 
