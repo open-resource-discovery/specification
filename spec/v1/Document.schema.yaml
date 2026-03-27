@@ -1044,7 +1044,7 @@ definitions:
         oneOf:
           - const: development
             description: |-
-              The resource is under active development and has not yet been released. The API contract is unstable and subject to
+              The resource is unreleased and under active development. The API contract is unstable and subject to
               breaking changes at any time. Not intended for consumption outside of the development team.
 
           - const: beta
