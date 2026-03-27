@@ -4892,8 +4892,7 @@ definitions:
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
         examples:
-          - "sap.ord:emits"
-          - "sap.ord:subscribes"
+          - "foo.bar:relationName"
     required:
       - ordId
     additionalProperties: false
