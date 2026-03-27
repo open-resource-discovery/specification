@@ -18,11 +18,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - `relatedCapabilities`: Array of `RelatedCapability` objects to link capabilities to other capabilities
   - Each relationship object includes the ORD ID of the related resource and an extensible `relationType`
 - Existing `relatedEntityTypes` property on `EntityType` has been extended to include `relationType` as well, for consistency and extensibility.
+- Added `x-deprecated-in-version` and `x-deprecation-text` information to the exported JSON Schema
 
 ### Changed
 
 - Made `RelatedEntityType.relationType` an extensible enum that now also accepts any valid [Concept ID](./docs/spec-v1/index.md#concept-id) in addition to the existing values (`part-of`, `can-share-identity`)
-- Added `x-deprecated-in-version` and `x-deprecation-text` information to the exported JSON Schema
 
 ## [1.14.1]
 
