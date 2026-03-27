@@ -3837,10 +3837,7 @@
         "description": {
           "type": "string",
           "minLength": 1,
-          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links.",
-          "examples": [
-            "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
-          ]
+          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
         },
         "partOfPackage": {
           "type": "string",
@@ -4513,10 +4510,7 @@
         "description": {
           "type": "string",
           "minLength": 1,
-          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links.",
-          "examples": [
-            "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
-          ]
+          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
         },
         "partOfPackage": {
           "type": "string",
@@ -4851,10 +4845,7 @@
         "description": {
           "type": "string",
           "minLength": 1,
-          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links.",
-          "examples": [
-            "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
-          ]
+          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
         },
         "partOfPackage": {
           "type": "string",
@@ -5051,10 +5042,7 @@
         "description": {
           "type": "string",
           "minLength": 1,
-          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links.",
-          "examples": [
-            "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
-          ]
+          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
         },
         "mandatory": {
           "type": "boolean",
@@ -5380,7 +5368,7 @@
         "description": {
           "type": "string",
           "minLength": 1,
-          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)",
+          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).",
           "examples": [
             "This gives you an overview on where to find which kind of APIs in SAP S/4HANA.\n"
           ]
@@ -5975,10 +5963,7 @@
         "description": {
           "type": "string",
           "minLength": 1,
-          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links.",
-          "examples": [
-            "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
-          ]
+          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
         },
         "labels": {
           "$ref": "#/definitions/Labels"
@@ -6060,10 +6045,7 @@
         "description": {
           "type": "string",
           "minLength": 1,
-          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links.",
-          "examples": [
-            "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
-          ]
+          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
         },
         "labels": {
           "$ref": "#/definitions/Labels"
@@ -6557,10 +6539,7 @@
         "description": {
           "type": "string",
           "minLength": 1,
-          "description": "Optional description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description of a Tombstone MAY be added to the changelog of the removed resource by an ORD aggregator.",
-          "examples": [
-            "SAP S/4HANA Cloud, our next generation cloud ERP suite designed for\nin-memory computing, acts as a digital core, connecting your\nenterprise with people, business networks, the Internet of Things,\nBig Data, and more.\n"
-          ]
+          "description": "Optional description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description of a Tombstone MAY be added to the changelog of the removed resource by an ORD aggregator."
         }
       },
       "required": [
