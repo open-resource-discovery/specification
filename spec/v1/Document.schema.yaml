@@ -451,6 +451,7 @@ definitions:
 
       files:
         type: array
+        x-introduced-in-version: "1.14.2"
         description: |-
           Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
         items:
@@ -1050,13 +1051,15 @@ definitions:
           See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
         oneOf:
           - const: development
+            x-introduced-in-version: "1.14.2"
             description: |-
               The resource is unreleased and under active development. The API contract is unstable and subject to
               breaking changes at any time. Not intended for consumption outside of the development team.
 
           - const: beta
             description: |-
-              The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.
+              The API contract is released / available to consumers, but has no final stability guarantees.
+              Breaking changes may occur at any time without notice or deprecation period.
 
               Not recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,
               and feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion.
@@ -3118,7 +3121,7 @@ definitions:
 
       relatedApiResources:
         type: array
-        x-introduced-in-version: "1.14.3"
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional list of related API Resources.
 
@@ -3130,7 +3133,7 @@ definitions:
 
       relatedEventResources:
         type: array
-        x-introduced-in-version: "1.14.3"
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional list of related Event Resources.
 
@@ -3142,7 +3145,7 @@ definitions:
 
       relatedCapabilities:
         type: array
-        x-introduced-in-version: "1.14.3"
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional list of related Capabilities.
 
@@ -3601,7 +3604,7 @@ definitions:
   CapabilityIntegrationAspect:
     type: object
     title: Capability Integration Aspect
-    x-introduced-in-version: "1.15.0"
+    x-introduced-in-version: "1.14.2"
     x-ums-type: "custom"
     description: |-
       Capability related integration aspect
@@ -3789,6 +3792,7 @@ definitions:
   File:
     type: object
     title: File
+    x-introduced-in-version: "1.14.2"
     description: |
       File that can be attached on ORD package level.
     x-ums-type: "custom"
@@ -4949,7 +4953,7 @@ definitions:
 
   RelatedApiResource:
     title: Related API Resource
-    x-introduced-in-version: "1.14.3"
+    x-introduced-in-version: "1.14.2"
     x-ums-type: "embedded"
     type: object
     description: |-
@@ -4990,7 +4994,7 @@ definitions:
 
   RelatedEventResource:
     title: Related Event Resource
-    x-introduced-in-version: "1.14.3"
+    x-introduced-in-version: "1.14.2"
     x-ums-type: "embedded"
     type: object
     description: |-
@@ -5031,7 +5035,7 @@ definitions:
 
   RelatedCapability:
     title: Related Capability
-    x-introduced-in-version: "1.14.3"
+    x-introduced-in-version: "1.14.2"
     x-ums-type: "embedded"
     type: object
     description: |-
