@@ -148,6 +148,11 @@ spec:
           customTypeName: 'EventResourceIntegrationAspect'
           array: true
           description: 'List of Event Resource Dependencies.'
+        - name: 'capabilities'
+          type: 'custom'
+          customTypeName: 'CapabilityIntegrationAspect'
+          array: true
+          description: 'List of Capability Dependencies.'
     - name: 'ApiResourceIntegrationAspect'
       metadataProperties:
         - name: 'ordId'
@@ -202,6 +207,20 @@ spec:
           type: 'string'
           description: "The type ID of the individual event or message.\n\nThis MUST be an ID that is understood by the used protocol and resource definition format.\nE.g. for CloudEvents, the [type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#type) can be used."
           mandatory: true
+    - name: 'CapabilityIntegrationAspect'
+      metadataProperties:
+        - name: 'ordId'
+          type: 'string'
+          description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+          mandatory: true
+          constraints:
+            maxLength: 255
+            pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+        - name: 'minVersion'
+          type: 'string'
+          description: "Minimum version of the references resource that the integration requires.\n"
+          constraints:
+            pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
     - name: 'Link'
       metadataProperties:
         - name: 'title'

@@ -3163,6 +3163,10 @@ export interface Aspect {
    * List of Event Resource Dependencies.
    */
   eventResources?: EventResourceIntegrationAspect[];
+  /**
+   * List of Capability Dependencies.
+   */
+  capabilities?: CapabilityIntegrationAspect[];
 }
 /**
  * API resource related integration aspect
@@ -3242,6 +3246,22 @@ export interface EventResourceIntegrationAspectSubset {
    * E.g. for CloudEvents, the [type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#type) can be used.
    */
   eventType: string;
+}
+/**
+ * Capability related integration aspect
+ */
+export interface CapabilityIntegrationAspect {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Minimum version of the references resource that the integration requires.
+   *
+   */
+  minVersion?: string;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.
