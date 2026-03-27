@@ -13,6 +13,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Added
 
 - Added new `releaseStatus` value `development` for resources that are under active development and not yet released for consumption.
+- Added `x-deprecated-in-version` and `x-deprecation-text` information to the exported JSON Schema
 
 ## [1.14.1]
 
