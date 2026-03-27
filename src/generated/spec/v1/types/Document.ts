@@ -1155,7 +1155,7 @@ export interface Link {
    */
   url: string;
   /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    */
   description?: string;
   [k: string]: unknown | undefined;
