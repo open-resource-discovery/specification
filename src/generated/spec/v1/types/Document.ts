@@ -353,12 +353,6 @@ export interface ApiResource {
    * MUST NOT contain line breaks.
    */
   shortDescription: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description: string;
   /**
    * Defines which Package the resource is part of.
@@ -838,12 +832,6 @@ export interface ChangelogEntry {
    * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
    */
   date: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   /**
    * Optional [URL](https://tools.ietf.org/html/rfc3986) that links to a more detailed changelog entry.
@@ -1229,12 +1217,6 @@ export interface EventResource {
    * MUST NOT contain line breaks.
    */
   shortDescription: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description: string;
   /**
    * Defines which Package the resource is part of.
@@ -1727,12 +1709,6 @@ export interface EntityType {
    * MUST NOT contain line breaks.
    */
   shortDescription?: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   /**
    * Defines which Package the resource is part of.
@@ -1992,12 +1968,6 @@ export interface Capability {
    * MUST NOT contain line breaks.
    */
   shortDescription?: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   /**
    * Defines which Package the resource is part of.
@@ -2237,12 +2207,6 @@ export interface DataProduct {
    * MUST NOT contain line breaks.
    */
   shortDescription: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description: string;
   /**
    * Defines which Package the resource is part of.
@@ -2662,12 +2626,6 @@ export interface Agent {
    * MUST NOT contain line breaks.
    */
   shortDescription?: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   /**
    * Defines which Package the resource is part of.
@@ -2996,12 +2954,6 @@ export interface IntegrationDependency {
    * MUST NOT contain line breaks.
    */
   shortDescription?: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   /**
    * Defines which Package the resource is part of.
@@ -3139,12 +3091,6 @@ export interface Aspect {
    * MUST NOT contain line breaks.
    */
   title: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   /**
    * If true, the aspect is mandatory to realize the Integration Dependency it contains.
@@ -3331,12 +3277,6 @@ export interface Product {
    * MUST NOT contain line breaks.
    */
   shortDescription: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   /**
    * Vendor / organization that is responsible for the Product.
@@ -3682,12 +3622,6 @@ export interface ConsumptionBundle {
    * MUST NOT contain line breaks.
    */
   shortDescription?: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   /**
    * The complete [SemVer](https://semver.org/) version string.
@@ -3822,12 +3756,6 @@ export interface Group {
    * Human readable title of the group assignment (for UI).
    */
   title: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   labels?: Labels;
   /**
@@ -3866,12 +3794,6 @@ export interface GroupType {
    * Human readable title of the group type.
    */
   title: string;
-  /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   *
-   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
-   * Detailed documentation SHOULD be attached as (typed) links.
-   */
   description?: string;
   labels?: Labels;
   /**
