@@ -10,6 +10,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.14.2]
+
 ### Added
 
 - Added relationship properties to `Capability` for expressing relations to other ORD resources:
