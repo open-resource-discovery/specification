@@ -114,6 +114,8 @@
       ],
       "default": "none",
       "x-introduced-in-version": "1.3.0",
+      "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+      "x-deprecated-in-version": "1.9.9",
       "examples": [
         "sap:core:v1"
       ]
@@ -124,6 +126,8 @@
       "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
       "maxLength": 255,
       "x-introduced-in-version": "1.3.0",
+      "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+      "x-deprecated-in-version": "1.9.9",
       "examples": [
         "sap.xref:customPolicy:v1"
       ]
@@ -336,6 +340,8 @@
           ],
           "default": "none",
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap:core:v1"
           ]
@@ -346,6 +352,8 @@
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -1335,6 +1343,8 @@
         "entityTypeMappings": {
           "type": "array",
           "x-introduced-in-version": "1.6.0",
+          "x-deprecated-in-version": "1.11.0",
+          "x-deprecation-text": "Use the simplified `exposedEntityTypes` instead.",
           "description": "Describes mappings between the API Models of the described resource to the underlying, conceptual entity types.",
           "items": {
             "$ref": "#/definitions/EntityTypeMapping"
@@ -1628,6 +1638,8 @@
           ],
           "default": "none",
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap:core:v1"
           ]
@@ -1638,6 +1650,8 @@
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -1659,6 +1673,8 @@
           "type": "boolean",
           "description": "Defines whether this ORD resource is **system-instance-aware**.\nThis is the case when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.\n\nThis concept is now **deprecated** in favor of the more explicit `perspective` attribute.\nAll resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.\n\nFor more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).",
           "default": false,
+          "x-deprecated-in-version": "1.12.0",
+          "x-deprecation-text": "Use `perspectives` instead (see [perspectives](../concepts/perspectives) article).",
           "examples": [
             true
           ]
@@ -2012,6 +2028,8 @@
         "entityTypeMappings": {
           "type": "array",
           "x-introduced-in-version": "1.6.0",
+          "x-deprecated-in-version": "1.11.0",
+          "x-deprecation-text": "Use the simplified `exposedEntityTypes` instead.",
           "description": "Describes mappings between the API Models of the described resource to the underlying, conceptual entity types.",
           "items": {
             "$ref": "#/definitions/EntityTypeMapping"
@@ -2306,6 +2324,8 @@
           ],
           "default": "none",
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap:core:v1"
           ]
@@ -2316,6 +2336,8 @@
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -2337,6 +2359,8 @@
           "type": "boolean",
           "description": "Defines whether this ORD resource is **system-instance-aware**.\nThis is the case when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.\n\nThis concept is now **deprecated** in favor of the more explicit `perspective` attribute.\nAll resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.\n\nFor more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).",
           "default": false,
+          "x-deprecated-in-version": "1.12.0",
+          "x-deprecation-text": "Use `perspectives` instead (see [perspectives](../concepts/perspectives) article).",
           "examples": [
             true
           ]
@@ -2673,6 +2697,8 @@
           ],
           "default": "none",
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap:core:v1"
           ]
@@ -2683,6 +2709,8 @@
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -2704,6 +2732,8 @@
           "type": "boolean",
           "description": "Defines whether this ORD resource is **system-instance-aware**.\nThis is the case when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.\n\nThis concept is now **deprecated** in favor of the more explicit `perspective` attribute.\nAll resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.\n\nFor more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).",
           "default": false,
+          "x-deprecated-in-version": "1.12.0",
+          "x-deprecation-text": "Use `perspectives` instead (see [perspectives](../concepts/perspectives) article).",
           "examples": [
             true
           ]
@@ -3384,6 +3414,8 @@
           ],
           "default": "none",
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap:core:v1"
           ]
@@ -3395,6 +3427,8 @@
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
+          "x-deprecation-text": "ORD now support multiple policy levels. Use `policyLevels` (plural) instead.",
+          "x-deprecated-in-version": "1.9.9",
           "examples": [
             "sap.xref:customPolicy:v1"
           ]
@@ -3417,6 +3451,8 @@
           "type": "boolean",
           "description": "Defines whether this ORD resource is **system-instance-aware**.\nThis is the case when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.\n\nThis concept is now **deprecated** in favor of the more explicit `perspective` attribute.\nAll resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.\n\nFor more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).",
           "default": false,
+          "x-deprecated-in-version": "1.12.0",
+          "x-deprecation-text": "Use `perspectives` instead (see [perspectives](../concepts/perspectives) article).",
           "examples": [
             true
           ]
@@ -4636,6 +4672,8 @@
           "type": "boolean",
           "description": "Defines whether this ORD resource is **system-instance-aware**.\nThis is the case when the referenced resource definitions are potentially different between **system instances**.\n\nIf this behavior applies, `systemInstanceAware` MUST be set to true.\nAn ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.\n\nThis concept is now **deprecated** in favor of the more explicit `perspective` attribute.\nAll resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.\n\nFor more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).",
           "default": false,
+          "x-deprecated-in-version": "1.12.0",
+          "x-deprecation-text": "Use `perspectives` instead (see [perspectives](../concepts/perspectives) article).",
           "examples": [
             true
           ]
@@ -6133,6 +6171,8 @@
       "title": "Entity Type Mapping",
       "type": "object",
       "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecation-text": "Use the simplified `relatedEntityTypes` instead.",
       "x-ums-type": "custom",
       "description": "An API or Event resource may optionally define its `entityTypeMappings`.\nThis is used to map and correlate the API models to the underlying, conceptual **entity types**.\n\nIf the mapping from API resource to entity types is not defined,\ncertain use-cases that rely on this explicit connection will not be possible.\n\nThis mapping is meant to be rather fine granular.\nTherefore, the mapping needs to be done on basis of one of the referenced resource definitions,\nas only there we know the details and the actual contents of the API Model of the API resource.\n\nFor the various resource definition formats the selection of API models may need to be expressed differently.\nAs a consequence, there are different types of selectors that are specialized toward certain resource definition formats.\n\nThe target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)\nor to an [ORD ID](../index.md#ord-id) of an entity type.\nIt is assumed that the entity types are described in more detail or on a different abstraction level via metadata.\nWhen the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.\nThis can be determined either by the namespace of the correlation ID,\nor through a defined and known `implementationStandard` that can resolve the `localId` fragment of the correlation ID .\n\nAt SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.\nTo indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).\n\nODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the\ncorresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.",
       "properties": {
@@ -6238,6 +6278,8 @@
     "ApiModelSelectorOData": {
       "title": "Api Model Selector (Odata)",
       "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecation-text": "Use the simplified `relatedEntityTypes` instead.\n\nFor creating a mapping from API model to Entity Types, consider using the [Entity Relationship](https://sap.github.io/csn-interop-specification/annotations/entity-relationship) annotations.",
       "x-ums-type": "custom",
       "type": "object",
       "description": "API Model Selector for OData, using entity set names for the selection.\n\nMUST only be used if the API Resource provides an API Resource Definition of type `edmx`.",
@@ -6273,6 +6315,8 @@
     "ApiModelSelectorJsonPointer": {
       "title": "Api Model Selector (Json Pointer)",
       "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecation-text": "Use the simplified `relatedEntityTypes` instead.\n\nFor creating a mapping from API model to Entity Types, consider using the [Entity Relationship](https://sap.github.io/csn-interop-specification/annotations/entity-relationship) annotations.",
       "x-ums-type": "custom",
       "type": "object",
       "description": "Generic API Model Selector for JSON / YAML based resource definitions.\nIt uses a [JSON Pointer](https://datatracker.ietf.org/doc/html/rfc6901) that points to the\nentity type description within the resource definition.\n\nThe JSON Pointer always to refer to the structure of the document as originally provided, before further post-processing like resolving $ref properties.\n\nMUST only be used if the API Resource provides an API Resource Definition of media type `application/json` or `text/yaml`.",
@@ -6335,6 +6379,8 @@
     "EntityTypeOrdIdTarget": {
       "title": "Entity Type Target (ORD ID)",
       "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecation-text": "Use the simplified `relatedEntityTypes` instead.",
       "x-ums-type": "custom",
       "type": "object",
       "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.",
@@ -6362,6 +6408,8 @@
       "type": "object",
       "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [Correlation ID](../index.md#correlation-id).",
       "x-introduced-in-version": "1.6.0",
+      "x-deprecated-in-version": "1.11.0",
+      "x-deprecation-text": "Use the simplified `relatedEntityTypes` instead.",
       "x-ums-type": "custom",
       "properties": {
         "correlationId": {
