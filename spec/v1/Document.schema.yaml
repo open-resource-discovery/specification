@@ -3098,7 +3098,7 @@ definitions:
         items:
           $ref: "#/definitions/RelatedApiResource"
         examples:
-          - [{ "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1", "relationType": "sap.ord:implements" }]
+          - [{ "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1", "relationType": "foo.bar:relationName" }]
 
       relatedEventResources:
         type: array
@@ -3110,7 +3110,7 @@ definitions:
         items:
           $ref: "#/definitions/RelatedEventResource"
         examples:
-          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "sap.ord:emits" }]
+          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "foo.bar:relationName" }]
 
       relatedCapabilities:
         type: array
@@ -3122,7 +3122,7 @@ definitions:
         items:
           $ref: "#/definitions/RelatedCapability"
         examples:
-          - [{ "ordId": "sap.foo:capability:baseExtensibility:v1", "relationType": "sap.ord:extends" }]
+          - [{ "ordId": "sap.foo:capability:baseExtensibility:v1", "relationType": "foo.bar:relationName" }]
 
       definitions:
         <<: *resourceDefinitions
@@ -4811,6 +4811,7 @@ definitions:
               E.g. a `BusinessPartner` can share the same identity as a `NaturalPerson`.
         examples:
           - "can-share-identity"
+          - "foo.bar:relationName"
     required:
       - ordId
     additionalProperties: false
@@ -4933,8 +4934,7 @@ definitions:
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
         examples:
-          - "sap.ord:extends"
-          - "sap.ord:requires"
+          - "foo.bar:relationName"
     required:
       - ordId
     additionalProperties: false
