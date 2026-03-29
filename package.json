@@ -35,7 +35,7 @@
 		"deploy": "npm run build && gh-pages -d ./build",
 		"pregenerate": "npm run clean",
 		"generate": "npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json",
-		"postgenerate": "ts-node ./src/helper/copyGeneratedToDestination.ts"
+		"postgenerate": "ts-node ./src/helper/rewriteGeneratedSchemaLinks.ts && ts-node ./src/helper/copyGeneratedToDestination.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.9",

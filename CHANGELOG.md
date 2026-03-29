@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- The generated JSON Schema files (`Document.schema.json`, `Configuration.schema.json`) now contain absolute URLs instead of relative Markdown links in their `description` fields. This ensures descriptions are correct when the schemas are consumed independently of the documentation website.
+
 ## [1.14.2]
 
 ### Added
