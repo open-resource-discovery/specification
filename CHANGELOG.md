@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Improved the [Grouping and Bundling](./docs/spec-v1/concepts/grouping-and-bundling.md) documentation page:
+  - Added missing **Product** section explaining the concept and its role in portfolio structuring.
+  - Added a "Choosing the Right Concept" comparison table to help decide which grouping mechanism to use.
+  - Improved descriptions for all grouping concepts (Package, Consumption Bundle, Entity Type, Tags, Labels, Groups).
+
 ## [1.14.2]
 
 ### Added
