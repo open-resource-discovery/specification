@@ -2,7 +2,49 @@ import fs from "fs-extra";
 import path from "node:path";
 import { log } from "./log";
 
-const SITE_BASE_URL = "https://open-resource-discovery.org";
+interface SpecToolkitConfig {
+	outputPath: string;
+}
+
+function readSpecToolkitConfig(): SpecToolkitConfig {
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	return require("../../spec-toolkit.config.json") as SpecToolkitConfig;
+}
+
+function readSiteBaseUrl(): string {
+	// Extract the `url` field from docusaurus.config.js via a targeted regex,
+	// avoiding a full JS eval of the config module.
+	const configPath = path.resolve(__dirname, "../../docusaurus.config.js");
+	const content = fs.readFileSync(configPath, "utf-8");
+	const match = content.match(/\burl:\s*["']([^"']+)["']/);
+	if (!match) {
+		throw new Error(`Could not extract 'url' from ${configPath}`);
+	}
+	return match[1];
+}
+
+/**
+ * Derives the docs page path for a schema file from its own $id field.
+ * e.g. $id "https://example.org/spec-v1/interfaces/Document.schema.json#"
+ *      + siteBaseUrl "https://example.org"
+ *   → docsPagePath "/spec-v1/interfaces/Document"
+ */
+function docsPagePathFromSchemaId(
+	schemaContent: string,
+	siteBaseUrl: string,
+): string | null {
+	let parsed: Record<string, unknown>;
+	try {
+		parsed = JSON.parse(schemaContent) as Record<string, unknown>;
+	} catch {
+		return null;
+	}
+	const id = parsed["$id"];
+	if (typeof id !== "string") return null;
+	const normalized = id.replace(/#$/, "").replace(/\.schema\.json$/, "");
+	if (!normalized.startsWith(siteBaseUrl)) return null;
+	return normalized.slice(siteBaseUrl.length);
+}
 
 /**
  * Rewrites relative Markdown links in a JSON Schema string to absolute URLs.
@@ -19,6 +61,7 @@ const SITE_BASE_URL = "https://open-resource-discovery.org";
  */
 export function rewriteSchemaRelativeLinks(
 	content: string,
+	siteBaseUrl: string,
 	docsPagePath: string,
 ): string {
 	// For relative path resolution, use the directory containing the docs page.
@@ -45,22 +88,23 @@ export function rewriteSchemaRelativeLinks(
 
 		// Pure fragment link (e.g. #package) – resolves to the schema's own docs page
 		if (urlPath === "") {
-			return `[${text}](${SITE_BASE_URL}${docsPagePath}${fragment})`;
+			return `[${text}](${siteBaseUrl}${docsPagePath}${fragment})`;
 		}
 
 		// Resolve the relative path from the parent directory
 		const resolvedPath = path.posix.resolve(docsParentPath, urlPath);
 
 		// Strip .md extension (Docusaurus renders without it)
-		const cleanPath = resolvedPath.replace(/\.md$/, "");
+		// Strip trailing /index (Docusaurus serves index.md at the directory URL)
+		const cleanPath = resolvedPath.replace(/\.md$/, "").replace(/\/index$/, "");
 
-		return `[${text}](${SITE_BASE_URL}${cleanPath}${fragment})`;
+		return `[${text}](${siteBaseUrl}${cleanPath}${fragment})`;
 	});
 }
 
 async function rewriteSchemaDir(
 	dirPath: string,
-	docsBasePath: string,
+	siteBaseUrl: string,
 ): Promise<void> {
 	if (!(await fs.pathExists(dirPath))) {
 		return;
@@ -68,14 +112,22 @@ async function rewriteSchemaDir(
 	const files = await fs.readdir(dirPath);
 	const schemaFiles = files.filter((f) => f.endsWith(".schema.json"));
 	for (const file of schemaFiles) {
-		// Each schema file has its own docs page, e.g.:
-		// "Document.schema.json" → "/spec-v1/interfaces/Document"
-		const schemaBaseName = file.replace(".schema.json", "");
-		const docsPagePath = `${docsBasePath}/${schemaBaseName}`;
-
 		const filePath = path.join(dirPath, file);
 		const content = await fs.readFile(filePath, "utf-8");
-		const rewritten = rewriteSchemaRelativeLinks(content, docsPagePath);
+
+		// Derive the docs page path from the schema's own $id — it is the
+		// canonical source of where this schema is served.
+		const docsPagePath = docsPagePathFromSchemaId(content, siteBaseUrl);
+		if (!docsPagePath) {
+			log.info(`Skipping ${file}: could not derive docs page path from $id`);
+			continue;
+		}
+
+		const rewritten = rewriteSchemaRelativeLinks(
+			content,
+			siteBaseUrl,
+			docsPagePath,
+		);
 		if (rewritten !== content) {
 			await fs.writeFile(filePath, rewritten, "utf-8");
 			log.info(`Rewrote relative links to absolute URLs in: ${file}`);
@@ -87,10 +139,11 @@ async function main(): Promise<void> {
 	try {
 		log.info("Rewriting relative links in generated schemas...");
 
-		await rewriteSchemaDir(
-			"./src/generated/spec/v1/schemas",
-			"/spec-v1/interfaces",
-		);
+		const toolkitConfig = readSpecToolkitConfig();
+		const siteBaseUrl = readSiteBaseUrl();
+		const schemasDir = path.join(toolkitConfig.outputPath, "schemas");
+
+		await rewriteSchemaDir(schemasDir, siteBaseUrl);
 
 		log.info("Done rewriting relative links.");
 	} catch (error) {
