@@ -451,6 +451,7 @@ definitions:
 
       files:
         type: array
+        x-introduced-in-version: "1.14.2"
         description: |-
           Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
         items:
@@ -666,10 +667,10 @@ definitions:
     title: Consumption Bundle
     x-ums-type: root
     description: |-
-      A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
-      Ideally it also includes instructions and details how to request access and credentials for resources.
+      A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the same credentials and auth mechanism.
+      Ideally it also includes instructions and details on how to request access and credentials for resources.
 
-      For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).
+      For more documentation and guidance on how to use this correctly, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).
 
       A Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.
       A Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned
@@ -1050,13 +1051,15 @@ definitions:
           See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
         oneOf:
           - const: development
+            x-introduced-in-version: "1.14.2"
             description: |-
               The resource is unreleased and under active development. The API contract is unstable and subject to
               breaking changes at any time. Not intended for consumption outside of the development team.
 
           - const: beta
             description: |-
-              The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.
+              The API contract is released / available to consumers, but has no final stability guarantees.
+              Breaking changes may occur at any time without notice or deprecation period.
 
               Not recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,
               and feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion.
@@ -1863,8 +1866,8 @@ definitions:
     title: Entity Type
     x-ums-type: root
     description: |-
-      An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
-      The same entity type can be exposed through one or multiple API and events resources.
+      An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model (e.g. a business object / domain model).
+      Entity Types can be related to API & Event resources, Data Products and other Entity Types, connecting exposed resources to business semantics.
 
       To learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).
     x-introduced-in-version: "1.8.0"
@@ -2924,15 +2927,17 @@ definitions:
     title: Product
     x-ums-type: root
     description: |-
-      A **product** in ORD is understood as a commercial product or service.
+      A [**Product**](../concepts/grouping-and-bundling#product) in ORD is understood as a software product or service offering (whether commercial or free).
 
-      It is a high-level entity for structuring the software portfolio from a sales / software logistics perspective.
-      While **system type** is a technical concept, **product** covers the commercial and marketing view.
+      It is a high-level entity for structuring the software portfolio from a portfolio / software logistics perspective.
+      While **system type** is a technical concept, **product** covers the portfolio and marketing view.
 
       Please note that the ORD concept of a product is very simple on purpose.
       There is no distinction between products and services and concepts like product versions, variants, etc.
 
       ORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.
+
+      To learn more about the concept, see [Product](../concepts/grouping-and-bundling#product).
     properties:
       ordId:
         <<: *ordId
@@ -3118,7 +3123,7 @@ definitions:
 
       relatedApiResources:
         type: array
-        x-introduced-in-version: "1.14.3"
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional list of related API Resources.
 
@@ -3130,7 +3135,7 @@ definitions:
 
       relatedEventResources:
         type: array
-        x-introduced-in-version: "1.14.3"
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional list of related Event Resources.
 
@@ -3142,7 +3147,7 @@ definitions:
 
       relatedCapabilities:
         type: array
-        x-introduced-in-version: "1.14.3"
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional list of related Capabilities.
 
@@ -3601,7 +3606,7 @@ definitions:
   CapabilityIntegrationAspect:
     type: object
     title: Capability Integration Aspect
-    x-introduced-in-version: "1.15.0"
+    x-introduced-in-version: "1.14.2"
     x-ums-type: "custom"
     description: |-
       Capability related integration aspect
@@ -3789,6 +3794,7 @@ definitions:
   File:
     type: object
     title: File
+    x-introduced-in-version: "1.14.2"
     description: |
       File that can be attached on ORD package level.
     x-ums-type: "custom"
@@ -4317,12 +4323,14 @@ definitions:
     title: Labels
     type: object
     description: |-
-      Generic labels that can be applied to most ORD information.
+      Generic key-value labels that can be applied to most ORD information.
       They are defined as an object that may have arbitrary keys.
       The value of a key is an array of strings.
 
       Labels can be used to attach technical information that cannot be expressed natively in ORD.
       An ORD aggregator should allow to categorize and query information based on the labels provided.
+
+      To learn more about the concept, see [Labels](../concepts/grouping-and-bundling#labels).
 
       If multiple parties rely on the existence of certain label information,
       standardization through ORD SHOULD be preferred.
@@ -4949,7 +4957,7 @@ definitions:
 
   RelatedApiResource:
     title: Related API Resource
-    x-introduced-in-version: "1.14.3"
+    x-introduced-in-version: "1.14.2"
     x-ums-type: "embedded"
     type: object
     description: |-
@@ -4990,7 +4998,7 @@ definitions:
 
   RelatedEventResource:
     title: Related Event Resource
-    x-introduced-in-version: "1.14.3"
+    x-introduced-in-version: "1.14.2"
     x-ums-type: "embedded"
     type: object
     description: |-
@@ -5031,7 +5039,7 @@ definitions:
 
   RelatedCapability:
     title: Related Capability
-    x-introduced-in-version: "1.14.3"
+    x-introduced-in-version: "1.14.2"
     x-ums-type: "embedded"
     type: object
     description: |-
