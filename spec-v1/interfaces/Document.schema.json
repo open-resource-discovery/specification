@@ -689,7 +689,7 @@
       "type": "object",
       "title": "Consumption Bundle",
       "x-ums-type": "root",
-      "description": "A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.\nIdeally it also includes instructions and details how to request access and credentials for resources.\n\nFor more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).\n\nA Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.\nA Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned\nby the system instance that defines the Consumption Bundle.\n\nPlease note that some ORD consumer use cases MAY depend on Consumption Bundle assignments to work with the resources.\n\nTo learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).",
+      "description": "A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the same credentials and auth mechanism.\nIdeally it also includes instructions and details on how to request access and credentials for resources.\n\nFor more documentation and guidance on how to use this correctly, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).\n\nA Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.\nA Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned\nby the system instance that defines the Consumption Bundle.\n\nPlease note that some ORD consumer use cases MAY depend on Consumption Bundle assignments to work with the resources.\n\nTo learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).",
       "properties": {
         "ordId": {
           "type": "string",
@@ -2403,7 +2403,7 @@
       "type": "object",
       "title": "Entity Type",
       "x-ums-type": "root",
-      "description": "An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.\nThe same entity type can be exposed through one or multiple API and events resources.\n\nTo learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).",
+      "description": "An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model (e.g. a business object / domain model).\nEntity Types can be related to API & Event resources, Data Products and other Entity Types, connecting exposed resources to business semantics.\n\nTo learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).",
       "x-introduced-in-version": "1.8.0",
       "properties": {
         "ordId": {
@@ -4347,7 +4347,7 @@
       "type": "object",
       "title": "Product",
       "x-ums-type": "root",
-      "description": "A **product** in ORD is understood as a commercial product or service.\n\nIt is a high-level entity for structuring the software portfolio from a sales / software logistics perspective.\nWhile **system type** is a technical concept, **product** covers the commercial and marketing view.\n\nPlease note that the ORD concept of a product is very simple on purpose.\nThere is no distinction between products and services and concepts like product versions, variants, etc.\n\nORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.",
+      "description": "A [**Product**](../concepts/grouping-and-bundling#product) in ORD is understood as a software product or service offering (whether commercial or free).\n\nIt is a high-level entity for structuring the software portfolio from a portfolio / software logistics perspective.\nWhile **system type** is a technical concept, **product** covers the portfolio and marketing view.\n\nPlease note that the ORD concept of a product is very simple on purpose.\nThere is no distinction between products and services and concepts like product versions, variants, etc.\n\nORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.\n\nTo learn more about the concept, see [Product](../concepts/grouping-and-bundling#product).",
       "properties": {
         "ordId": {
           "type": "string",
@@ -6105,7 +6105,7 @@
     "Labels": {
       "title": "Labels",
       "type": "object",
-      "description": "Generic labels that can be applied to most ORD information.\nThey are defined as an object that may have arbitrary keys.\nThe value of a key is an array of strings.\n\nLabels can be used to attach technical information that cannot be expressed natively in ORD.\nAn ORD aggregator should allow to categorize and query information based on the labels provided.\n\nIf multiple parties rely on the existence of certain label information,\nstandardization through ORD SHOULD be preferred.\n\nAll labels attached to a `Package` will be inherited to the resources they contain.\nDuplicate labels will be merged by the ORD aggregator according to the following rules:\n* Values of the same label key will be merged.\n* Duplicate values of the same label key will be removed.",
+      "description": "Generic key-value labels that can be applied to most ORD information.\nThey are defined as an object that may have arbitrary keys.\nThe value of a key is an array of strings.\n\nLabels can be used to attach technical information that cannot be expressed natively in ORD.\nAn ORD aggregator should allow to categorize and query information based on the labels provided.\n\nTo learn more about the concept, see [Labels](../concepts/grouping-and-bundling#labels).\n\nIf multiple parties rely on the existence of certain label information,\nstandardization through ORD SHOULD be preferred.\n\nAll labels attached to a `Package` will be inherited to the resources they contain.\nDuplicate labels will be merged by the ORD aggregator according to the following rules:\n* Values of the same label key will be merged.\n* Duplicate values of the same label key will be removed.",
       "x-ums-type": "custom",
       "patternProperties": {
         "^[a-zA-Z0-9-_.]*$": {
