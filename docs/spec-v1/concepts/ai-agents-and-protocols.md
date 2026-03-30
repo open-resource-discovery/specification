@@ -231,8 +231,64 @@ Given the rapidly evolving AI ecosystem, ORD takes a conservative approach to ad
     This allows for experimentation without committing to a stable schema.
 -   **Tags:** Free-form tags for folksonomy-style categorization (e.g., `["finance", "billing", "ai-agent"]`).
 
-### Examples
+### Agent Skills as Capabilities
 
-Example implementations are available in the ORD specification repository:
-- `examples/documents/document-agents.json` — Complete ORD document with agent definitions
-- `examples/definitions/DisputeResolutionAgentcard.json` — A2A Agent Card example
+[Agent skills](https://agentskills.io/home) are discrete, reusable capabilities that agents can perform—packaged as folders of instructions, scripts, and resources.
+In ORD, these are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "ord:agent-skill:v1"`.
+
+This enables:
+- **Discovery:** Agents can discover and load skills on-demand through the catalog
+- **Reusability:** Skills can be shared across multiple agents and systems
+- **Dependency Management:** Agents can declare dependencies on external skills
+
+**Example agent skill:**
+
+```json
+{
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:disputeSummarization:v1",
+      "title": "Dispute Summarization Skill",
+      "shortDescription": "Summarizes dispute cases and their resolution history",
+      "version": "1.0.0",
+      "type": "ord:agent-skill:v1",
+      "definitions": [
+        {
+          "type": "ord:agent-skill-zip:v1",
+          "mediaType": "application/zip",
+          "url": "/capabilities/disputeSummarization/skill.zip",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Consuming agent skills:**
+
+Agents can depend on external skills through Integration Dependency aspects:
+
+```json
+{
+  "integrationDependencies": [
+    {
+      "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
+      "aspects": [
+        {
+          "title": "Document Processing Skill Access",
+          "description": "Uses an external agent skill for processing documents",
+          "mandatory": false,
+          "capabilities": [
+            { "ordId": "sap.bar:capability:documentProcessing:v1" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Example
+
+A complete example with agent and capability definitions is available at [document-agents.json](../examples/document-agents).
