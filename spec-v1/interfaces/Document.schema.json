@@ -4501,6 +4501,11 @@
               "description": "Any valid [Specification ID](../index.md#specification-id)."
             },
             {
+              "const": "ord:agent-skill:v1",
+              "x-introduced-in-version": "1.14.3",
+              "description": "An agent skill is a discrete, reusable capability that an agent can perform.\nAgent skills can be invoked by orchestrator agents or other systems and represent\na well-defined task or function that the agent is capable of executing.\n\nFor the capability definitions: `type` SHOULD be set to `ord:agent-skill-zip:v1`."
+            },
+            {
               "const": "sap.mdo:mdi-capability:v1",
               "description": "Capability for SAP Master Data Integration (MDI).\n\nFor the capability definitions: `type` MUST ONLY be set to `sap.mdo:mdi-capability-definition:v1`."
             },
@@ -4510,7 +4515,7 @@
             }
           ],
           "examples": [
-            "custom"
+            "ord:agent-skill:v1"
           ]
         },
         "customType": {
@@ -4788,6 +4793,11 @@
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
+            {
+              "const": "ord:agent-skill-zip:v1",
+              "x-introduced-in-version": "1.14.3",
+              "description": "A ZIP archive containing the definition of an agent skill, including all relevant\nassets such as configuration and schema files.\n\nThe `mediaType` MUST be set to `application/zip`.\nThe capability `type` SHOULD be set to `ord:agent-skill:v1`."
             },
             {
               "const": "sap.mdo:mdi-capability-definition:v1",
