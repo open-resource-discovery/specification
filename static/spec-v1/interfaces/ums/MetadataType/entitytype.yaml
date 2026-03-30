@@ -101,8 +101,13 @@ spec:
       description: 'Contains changelog entries that summarize changes with special regards to version and releaseStatus'
     - name: 'level'
       type: 'string'
-      description: "Defining the abstraction level of the entity type using the DDD terminology.\n\nIn Domain-Driven Design, there is a concept of entities and aggregates.\nThere are root entities which may contain further sub entities by composition.\nThe complete \"package\" is then called an aggregate, which gets its name and identity from the root entity.\nAn aggregate is a cluster of domain objects that can be treated as a single unit.\nThe root is the entity that is referenced from outside the aggregate. There must be only one root per aggregate.\nThe root ensures the integrity of the aggregate. A sub entity is any other non-root entity in the aggregate.\n\nSource, see [Martin Fowler on DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html)"
+      description: "Defining the abstraction level of the entity type using the DDD terminology.\n\nIn Domain-Driven Design, there is a concept of domain entities and aggregates.\nThere are root entities which may contain further sub entities by composition.\nThe complete \"package\" is then called an aggregate, which gets its name and identity from the root entity.\nAn aggregate is a cluster of domain objects that can be treated as a single unit.\nThe root is the entity that is referenced from outside the aggregate. There must be only one root per aggregate.\nThe root ensures the integrity of the aggregate. A sub entity is any other non-root entity in the aggregate.\n\nSource, see [Martin Fowler on DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html)"
       mandatory: true
+    - name: 'definitions'
+      type: 'custom'
+      customTypeName: 'EntityTypeDefinition'
+      array: true
+      description: "List of available machine-readable definitions, which describe the entity type's conceptual domain model in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is an alternative description format for the same entity type.\nThe same definition type MUST NOT be provided more than once, except with different `visibility`.\n\nIt is RECOMMENDED to provide definitions to enable machine-readable use cases.\nIf definitions are added or changed, the `version` MUST be incremented.\n\n**Privacy Note**: Entity Type definitions SHOULD usually be marked as `private` visibility since they represent conceptual models that cannot be accessed directly. See `EntityTypeDefinition` for detailed guidance."
     - name: 'links'
       type: 'custom'
       customTypeName: 'Link'
@@ -161,6 +166,50 @@ spec:
         - name: 'url'
           type: 'string'
           description: "Optional [URL](https://tools.ietf.org/html/rfc3986) that links to a more detailed changelog entry.\n\nThe link target MUST be absolute and SHOULD be openly accessible."
+    - name: 'EntityTypeDefinition'
+      metadataProperties:
+        - name: 'type'
+          type: 'string'
+          description: "Type of the entity type resource definition.\n\nAny valid [Specification ID](../index.md#specification-id)."
+          mandatory: true
+          constraints:
+            pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+        - name: 'mediaType'
+          type: 'string'
+          description: "[Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) that describes the format of the definition.\n\nMedia Types under `application/*` and `text/*` are allowed.\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data."
+          mandatory: true
+          constraints:
+            pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
+        - name: 'url'
+          type: 'string'
+          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL (to base URL)."
+          mandatory: true
+        - name: 'accessStrategies'
+          type: 'custom'
+          customTypeName: 'AccessStrategy'
+          array: true
+          description: "List of supported access strategies for retrieving metadata from the ORD provider.\nAn ORD Consumer/ORD Aggregator MAY choose any of the strategies.\n\nThe access strategies only apply to the metadata access and not the actual API access.\nThe actual access to the APIs for clients is described via Consumption Bundles.\n\nIf this property is not provided, the definition URL will be available through the same access strategy as this ORD document.\nIt is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process."
+        - name: 'visibility'
+          type: 'string'
+          description: "Who is allowed to access the entity type definition. Defaults to `private`.\n\nEntity Type definitions typically contain internal modeling details and SHOULD remain `private`.\nConsumers interact with the data through related API Resources, not the conceptual model directly.\n\nThe visibility MUST be equal to or more restrictive than the Entity Type resource's visibility.\n\nOnly use `public` visibility when the conceptual model itself needs open access for standardization or documentation purposes."
+          mandatory: true
+    - name: 'AccessStrategy'
+      metadataProperties:
+        - name: 'type'
+          type: 'string'
+          description: 'Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.'
+          mandatory: true
+        - name: 'customType'
+          type: 'string'
+          description: "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`."
+          constraints:
+            maxLength: 255
+            pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+        - name: 'customDescription'
+          type: 'string'
+          description: "Human-readable description about how the access is set up, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nMUST only be provided if `type` is set to `custom`."
+          constraints:
+            minLength: 1
     - name: 'Link'
       metadataProperties:
         - name: 'title'

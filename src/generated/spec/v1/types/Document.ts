@@ -1848,7 +1848,7 @@ export interface EntityType {
   /**
    * Defining the abstraction level of the entity type using the DDD terminology.
    *
-   * In Domain-Driven Design, there is a concept of entities and aggregates.
+   * In Domain-Driven Design, there is a concept of domain entities and aggregates.
    * There are root entities which may contain further sub entities by composition.
    * The complete "package" is then called an aggregate, which gets its name and identity from the root entity.
    * An aggregate is a cluster of domain objects that can be treated as a single unit.
@@ -1864,6 +1864,19 @@ export interface EntityType {
    * Usually this happens if there are similar conceptual entity types across different namespaces.
    */
   relatedEntityTypes?: RelatedEntityType[];
+  /**
+   * List of available machine-readable definitions, which describe the entity type's conceptual domain model in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
+   *
+   * Each definition is an alternative description format for the same entity type.
+   * The same definition type MUST NOT be provided more than once, except with different `visibility`.
+   *
+   * It is RECOMMENDED to provide definitions to enable machine-readable use cases.
+   * If definitions are added or changed, the `version` MUST be incremented.
+   *
+   * **Privacy Note**: Entity Type definitions SHOULD usually be marked as `private` visibility since they represent conceptual models that cannot be accessed directly. See `EntityTypeDefinition` for detailed guidance.
+   */
+  definitions?: EntityTypeDefinition[];
   /**
    * Generic Links with arbitrary meaning and content.
    */
@@ -1935,6 +1948,71 @@ export interface RelatedEntityType {
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
   relationType?: (string | "part-of" | "can-share-identity") & string;
+}
+/**
+ * Machine-readable definition that describes the entity type's conceptual domain model structure.
+ *
+ * **Why Entity Types are usually private**: Entity Types represent conceptual domain models - abstract descriptions of business concepts and data structures.
+ * Unlike API Resources, they cannot be accessed or interacted with directly.
+ * They describe *what* the data is, not *how* to access it.
+ *
+ * Interaction with the actual data happens through API Resources or Event Resources that expose these entity types.
+ * Since entity type definitions contain internal modeling details, they SHOULD be marked as `private` visibility.
+ *
+ * **Finding related APIs**: To discover which APIs expose a particular Entity Type, check the API Resource's `relatedEntityTypes` property.
+ *
+ * **When to use public visibility**: Only mark definitions as `public` for:
+ * - Public standards or specifications that need open access
+ * - Conceptual models explicitly intended for documentation or standardization
+ * - Specific business requirements to expose the internal data model
+ *
+ * In most cases, consumers should interact through the public APIs that expose the entity types, not through direct access to the conceptual model definitions.
+ */
+export interface EntityTypeDefinition {
+  /**
+   * Type of the entity type resource definition.
+   *
+   * Any valid [Specification ID](../index.md#specification-id).
+   */
+  type: string;
+  /**
+   * [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) that describes the format of the definition.
+   *
+   * Media Types under `application/*` and `text/*` are allowed.
+   * If no Media Type is registered for the referenced file,
+   * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   */
+  mediaType: string;
+  /**
+   * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
+   *
+   * It is RECOMMENDED to provide a relative URL (to base URL).
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving metadata from the ORD provider.
+   * An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
+   *
+   * The access strategies only apply to the metadata access and not the actual API access.
+   * The actual access to the APIs for clients is described via Consumption Bundles.
+   *
+   * If this property is not provided, the definition URL will be available through the same access strategy as this ORD document.
+   * It is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.
+   *
+   * @minItems 1
+   */
+  accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * Who is allowed to access the entity type definition. Defaults to `private`.
+   *
+   * Entity Type definitions typically contain internal modeling details and SHOULD remain `private`.
+   * Consumers interact with the data through related API Resources, not the conceptual model directly.
+   *
+   * The visibility MUST be equal to or more restrictive than the Entity Type resource's visibility.
+   *
+   * Only use `public` visibility when the conceptual model itself needs open access for standardization or documentation purposes.
+   */
+  visibility: "public" | "internal" | "private";
 }
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
