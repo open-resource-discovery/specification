@@ -27,11 +27,10 @@ pre-push:
     prevent_main_push:
       run: |
         protected_branch='main'
-        while read local_ref local_sha remote_ref remote_sha; do
-          if [[ "$remote_ref" == "refs/heads/$protected_branch" ]]; then
-            echo "❌ ERROR: Direct push to '$protected_branch' is blocked!"
-            echo "   Please push to a feature branch and create a pull request instead."
-            exit 1
-          fi
-        done
+        current_branch=$(git rev-parse --abbrev-ref HEAD)
+        if [[ "$current_branch" == "$protected_branch" ]]; then
+          echo "❌ ERROR: Direct push to '$protected_branch' is blocked!"
+          echo "   Please push to a feature branch and create a pull request instead."
+          exit 1
+        fi
         exit 0
