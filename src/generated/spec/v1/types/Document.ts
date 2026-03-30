@@ -2984,6 +2984,19 @@ export interface Agent {
    */
   integrationDependencies?: string[];
   /**
+   * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
+   *
+   * Each definition is to be understood as an alternative description format, describing the same resource / capability.
+   * As a consequence the same definition type MUST NOT be provided more than once.
+   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   *
+   * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
+   * If the definitions are added or changed, the `version` MUST be incremented.
+   * An ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.
+   */
+  definitions?: AgentDefinition[];
+  /**
    * Generic Links with arbitrary meaning and content.
    */
   links?: Link[];
@@ -3009,6 +3022,55 @@ export interface ExposedAPIResource {
    * MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
    */
   ordId: string;
+}
+/**
+ * Link and categorization of a machine-readable agent definition.
+ */
+export interface AgentDefinition {
+  /**
+   * Type of the agent resource definition
+   */
+  type: string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   * For example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.
+   *
+   * If no Media Type is registered for the referenced file,
+   * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
+  /**
+   * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
+   *
+   * It is RECOMMENDED to provide a relative URL (to base URL).
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving metadata from the ORD provider.
+   * An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
+   *
+   * The access strategies only apply to the metadata access and not the actual API access.
+   * The actual access to the APIs for clients is described via Consumption Bundles.
+   *
+   * If this property is not provided, the definition URL will be available through the same access strategy as this ORD document.
+   * It is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.
+   *
+   * @minItems 1
+   */
+  accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+   *
+   * If not given, the resource definition has the same visibility as the resource it describes.
+   * The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+   * E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+   *
+   * This makes it also possible to provide both a public and an internal metadata description of the resource,
+   * in case that some metadata must only be made accessible to internal consumers.
+   */
+  visibility?: "public" | "internal" | "private";
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

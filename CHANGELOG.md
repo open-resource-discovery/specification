@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `definitions` property to `Agent` resources to allow linking machine-readable agent definitions
+  - Includes new `AgentDefinition` object with `type`, `mediaType`, `url`, `accessStrategies`, and `visibility` properties
+  - The `type` field accepts any valid [Specification ID](./docs/spec-v1/index.md#specification-id) as an extensible enum
+  - Similar to how API Resources, Event Resources, and Capabilities support definitions
+
 ## [1.14.2]
 
 ### Added
