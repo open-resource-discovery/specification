@@ -10,6 +10,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added capability type `ord:agent-skill:v1` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
+- Added capability definition type `ord:agent-skill-zip:v1` for ZIP archive definitions of agent skills with media type `application/zip`.
+
 ### Changed
 
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
