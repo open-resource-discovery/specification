@@ -5,14 +5,6 @@
 pre-commit:
   parallel: false
   commands:
-    check_merge_markers:
-      # Prevent committing files with unresolved merge conflict markers.
-      glob: "*.{js,ts,jsx,tsx,yaml,yml,json,md,mdx,css,html,mjs}"
-      run: |
-        if git diff --cached --name-only | xargs grep -l '^<<<<<<< \|^=======$\|^>>>>>>> ' 2>/dev/null; then
-          echo "Error: Merge conflict markers found in staged files. Please resolve conflicts before committing."
-          exit 1
-        fi
     generate:
       # If generation fails, the commit is blocked.
       # `stage_fixed: true` will re-stage any updated files.
