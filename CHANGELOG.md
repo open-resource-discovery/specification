@@ -10,6 +10,15 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added capability type `ord:agent-skill:v1` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
+- Added capability definition type `ord:agent-skill-zip:v1` for ZIP archive definitions of agent skills (mediaType `application/zip`).
+
+### Changed
+
+- Clarified that `ord` is a reserved vendor namespace owned by the ORD specification itself, used to register well-known, cross-vendor [Specification IDs](docs/spec-v1/index.md#specification-id).
+
 ## [1.14.2]
 
 ### Added

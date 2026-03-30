@@ -3034,6 +3034,14 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
+          - const: "ord:agent-skill:v1"
+            x-introduced-in-version: "1.14.3"
+            description: |-
+              An [agent skill](https://agentskills.io/home) is a discrete, reusable capability that an agent can perform.
+              Agent skills can be invoked by orchestrator agents or other systems and represent
+              a well-defined task or function that the agent is capable of executing.
+
+              For the capability definitions: `type` SHOULD be set to `ord:agent-skill-zip:v1`.
           - const: "sap.mdo:mdi-capability:v1"
             description: |-
               Capability for SAP Master Data Integration (MDI).
@@ -3044,7 +3052,7 @@ definitions:
               If chosen, `customType` MUST be provided.
             # Deprecate this in future?
         examples:
-          - custom
+          - "ord:agent-skill:v1"
 
       customType:
         <<: *customType
@@ -3207,6 +3215,14 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
+          - const: "ord:agent-skill-zip:v1"
+            x-introduced-in-version: "1.14.3"
+            description: |-
+              A ZIP archive containing the definition of an agent skill, including all relevant
+              assets such as configuration and schema files.
+
+              The `mediaType` MUST be set to `application/zip`.
+              The capability `type` SHOULD be set to `ord:agent-skill:v1`.
           - const: "sap.mdo:mdi-capability-definition:v1"
             description: |-
               Specification for describing master data integration capabilities for Master Data Orchestration (MDO).
