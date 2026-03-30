@@ -178,6 +178,11 @@ The following constraints apply in addition to the constraints defined in the [O
       - Consequently, the producing application cannot describe how they are eventually consumed.
 - SAP Event Catalogs SHOULD be validated via the SAP API Metadata Validator, using `sap:core:v1` compliance level.
 
+### Entity Type
+
+- For [Entity Types](../../spec-v1/interfaces/Document.md#entity-type):
+  - Entity Type definitions MUST have `visibility` set to either `private` or `internal`.
+
 ### Extensible
 
 - If the mandatory [Extensible](../../spec-v1/interfaces/Document.md#extensible) object has a [description](../../spec-v1/interfaces/Document.md#extensible_description), it MUST follow the guidance and rules of the SAP Technology Guideline TG12.R2.
