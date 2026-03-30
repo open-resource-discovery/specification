@@ -8,6 +8,10 @@ Open Resource Discovery (ORD) is a protocol specification that enables applicati
 - **Generated files**: Never edit `src/generated/`, `dist/`, `build/`, or `static/spec-v1/interfaces/` - always edit sources in `spec/v1/*.schema.yaml` or `docs/`
 - **Pre-commit**: Hook automatically runs `npm run generate` and stages generated files
 
+## Architecture Note
+
+YAML schemas in `spec/v1/*.schema.yaml` → `npm run generate` → outputs to `src/generated/`, `dist/`, `static/spec-v1/interfaces/`
+
 ## Verify Loop (before committing)
 
 ```bash
