@@ -33,6 +33,25 @@ npm run generate
 
 ## Development Workflow
 
+### Branch and PR Rules
+
+> **CRITICAL**: The following rules MUST be followed without exception.
+
+- **NEVER push directly to `main`**. The `main` branch is protected and only receives changes via merged PRs.
+- **NEVER merge a branch into `main` using git** (no `git merge`, no `git rebase` onto main). Merging into `main` happens exclusively through the GitHub UI as part of the release process (see the `/release` skill).
+- **All work MUST happen on a dedicated branch** (e.g. `feat/my-change`, `fix/my-fix`). Create a branch before making any commits.
+- **Changes reach `main` only via Pull Requests**, reviewed and merged through GitHub.
+
+Typical branch workflow:
+```bash
+git checkout -b feat/my-change
+# ... make changes, run generate, run tests ...
+git add -A
+git commit -m "feat: describe what changed"
+git push origin feat/my-change
+# Then open a PR on GitHub — do NOT merge locally
+```
+
 ### Essential npm Scripts
 
 ```bash
