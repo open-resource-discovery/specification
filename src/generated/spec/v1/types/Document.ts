@@ -474,7 +474,7 @@ export interface ApiResource {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -831,7 +831,7 @@ export interface ChangelogEntry {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Date of change, without time or timezone information.
    *
@@ -1350,7 +1350,7 @@ export interface EventResource {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1815,7 +1815,7 @@ export interface EntityType {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
@@ -1931,8 +1931,10 @@ export interface RelatedEntityType {
    * Optional type of the relationship, which defines a stricter semantic what the relationship implies.
    *
    * If not provided, the relationship type has no semantics, it's "related somehow".
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
    */
-  relationType?: "part-of" | "can-share-identity";
+  relationType?: (string | "part-of" | "can-share-identity") & string;
 }
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
@@ -2070,7 +2072,7 @@ export interface Capability {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -2096,6 +2098,24 @@ export interface Capability {
    * MUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.
    */
   relatedEntityTypes?: string[];
+  /**
+   * Optional list of related API Resources.
+   *
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of related Event Resources.
+   *
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
+   */
+  relatedEventResources?: RelatedEventResource[];
+  /**
+   * Optional list of related Capabilities.
+   *
+   * Use this to indicate dependencies, extensions, or other relationships between capabilities.
+   */
+  relatedCapabilities?: RelatedCapability[];
   /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
@@ -2135,6 +2155,60 @@ export interface Capability {
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
+}
+/**
+ * Defines a relation to an API Resource (via its ORD ID).
+ */
+export interface RelatedAPIResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
+}
+/**
+ * Defines a relation to an Event Resource (via its ORD ID).
+ */
+export interface RelatedEventResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
+}
+/**
+ * Defines a relation to another Capability (via its ORD ID).
+ */
+export interface RelatedCapability {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
 }
 /**
  * Link and categorization of a machine-readable capability definition.
@@ -2315,7 +2389,7 @@ export interface DataProduct {
    * In the context of data products, it it covers only properties on the data product level.
    * APIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -2740,7 +2814,7 @@ export interface Agent {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -3074,7 +3148,7 @@ export interface IntegrationDependency {
    *
    * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
    *
@@ -3163,6 +3237,10 @@ export interface Aspect {
    * List of Event Resource Dependencies.
    */
   eventResources?: EventResourceIntegrationAspect[];
+  /**
+   * List of Capability Dependencies.
+   */
+  capabilities?: CapabilityIntegrationAspect[];
 }
 /**
  * API resource related integration aspect
@@ -3242,6 +3320,22 @@ export interface EventResourceIntegrationAspectSubset {
    * E.g. for CloudEvents, the [type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#type) can be used.
    */
   eventType: string;
+}
+/**
+ * Capability related integration aspect
+ */
+export interface CapabilityIntegrationAspect {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Minimum version of the references resource that the integration requires.
+   *
+   */
+  minVersion?: string;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.
@@ -3467,6 +3561,10 @@ export interface Package {
    */
   links?: Link[];
   /**
+   * Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
+   */
+  files?: File[];
+  /**
    * Standardized identifier for the license.
    * It MUST conform to the [SPDX License List](https://spdx.org/licenses).
    */
@@ -3627,6 +3725,42 @@ export interface PackageLink {
    * The link target MUST be absolute and SHOULD be openly accessible.
    */
   url: string;
+  [k: string]: unknown | undefined;
+}
+/**
+ * File that can be attached on ORD package level.
+ *
+ */
+export interface File {
+  /**
+   * Human readable title of the file.
+   *
+   * MUST be unique within the collection of files provided.
+   */
+  title: string;
+  /**
+   * [URL](https://tools.ietf.org/html/rfc3986) of the link.
+   *
+   * The file target MAY be relative or absolute.
+   * If a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+   * If an absolute URL is given, then it MUST be openly accessible.
+   */
+  url: string;
+  /**
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
+   * Detailed documentation SHOULD be attached as (typed) links.
+   */
+  description?: string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   *
+   * If no Media Type is registered for the referenced file, `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
   [k: string]: unknown | undefined;
 }
 /**

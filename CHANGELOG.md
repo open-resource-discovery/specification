@@ -10,9 +10,26 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.14.2]
+
 ### Added
 
+- Added relationship properties to `Capability` for expressing relations to other ORD resources:
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link capabilities to API resources
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link capabilities to event resources
+  - `relatedCapabilities`: Array of `RelatedCapability` objects to link capabilities to other capabilities
+  - Each relationship object includes the ORD ID of the related resource and an extensible `relationType`
+- Existing `relatedEntityTypes` property on `EntityType` has been extended to include `relationType` as well, for consistency and extensibility.
+- Added `CapabilityIntegrationAspect` definition to support capability dependencies in integration aspects
+  - Capabilities can now be referenced as integration dependencies alongside API and Event Resources
+  - Includes `ordId` and `minVersion` properties for capability integration aspects
+- Added new `releaseStatus` value `development` for resources that are under active development and not yet released for consumption.
 - Added `x-deprecated-in-version` and `x-deprecation-text` information to the exported JSON Schema
+- Added a `files` property to Packages to allow linking of arbitrary files associated with packages, such as additional documentation in PDF format.
+
+### Changed
+
+- Made `RelatedEntityType.relationType` an extensible enum that now also accepts any valid [Concept ID](./docs/spec-v1/index.md#concept-id) in addition to the existing values (`part-of`, `can-share-identity`)
 
 ## [1.14.1]
 

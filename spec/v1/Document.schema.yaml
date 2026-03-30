@@ -449,6 +449,14 @@ definitions:
         items:
           $ref: "#/definitions/Link"
 
+      files:
+        type: array
+        x-introduced-in-version: "1.14.2"
+        description: |-
+          Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
+        items:
+          $ref: "#/definitions/File"
+
       licenseType:
         type: string
         minLength: 1
@@ -1042,9 +1050,16 @@ definitions:
 
           See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
         oneOf:
+          - const: development
+            x-introduced-in-version: "1.14.2"
+            description: |-
+              The resource is unreleased and under active development. The API contract is unstable and subject to
+              breaking changes at any time. Not intended for consumption outside of the development team.
+
           - const: beta
             description: |-
-              The API contract has no stability guarantees. Breaking changes may occur at any time without notice or deprecation period.
+              The API contract is released / available to consumers, but has no final stability guarantees.
+              Breaking changes may occur at any time without notice or deprecation period.
 
               Not recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,
               and feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion.
@@ -3104,31 +3119,41 @@ definitions:
         examples:
           - ["sap.odm:entityType:WorkforcePerson:v1"]
 
-      # TODO: Clarify if we want to have relations to APIs and events like this
-      # Or if we should go with the generic relation concept
-      # relatedApiResources:
-      #   type: array
-      #   description: |-
-      #     Optional list of related API Resources.
+      relatedApiResources:
+        type: array
+        x-introduced-in-version: "1.14.2"
+        description: |-
+          Optional list of related API Resources.
 
-      #     MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
-      #   items:
-      #     type: string
-      #     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):()$
-      #   examples:
-      #     - ['sap.s4:apiResource:API_RFQ_PROCESS_SRV:v2']
+          Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+        items:
+          $ref: "#/definitions/RelatedApiResource"
+        examples:
+          - [{ "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1", "relationType": "foo.bar:relationName" }]
 
-      # relatedEventResources:
-      #   type: array
-      #   description: |-
-      #     Optional list of related Event Resources.
+      relatedEventResources:
+        type: array
+        x-introduced-in-version: "1.14.2"
+        description: |-
+          Optional list of related Event Resources.
 
-      #     MUST be a valid reference to an [Event Resource](#event-resource) ORD ID.
-      #   items:
-      #     type: string
-      #     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):()$
-      #   examples:
-      #     - ['sap.s4:eventResource:BillofMaterialEvents:v1']
+          Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
+        items:
+          $ref: "#/definitions/RelatedEventResource"
+        examples:
+          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "foo.bar:relationName" }]
+
+      relatedCapabilities:
+        type: array
+        x-introduced-in-version: "1.14.2"
+        description: |-
+          Optional list of related Capabilities.
+
+          Use this to indicate dependencies, extensions, or other relationships between capabilities.
+        items:
+          $ref: "#/definitions/RelatedCapability"
+        examples:
+          - [{ "ordId": "sap.foo:capability:baseExtensibility:v1", "relationType": "foo.bar:relationName" }]
 
       definitions:
         <<: *resourceDefinitions
@@ -3416,7 +3441,12 @@ definitions:
         items:
           $ref: "#/definitions/EventResourceIntegrationAspect"
 
-      # NOTE: A reference to Capabilities could also make sense.
+      capabilities:
+        type: array
+        description: |-
+          List of Capability Dependencies.
+        items:
+          $ref: "#/definitions/CapabilityIntegrationAspect"
 
     additionalProperties: false
     required:
@@ -3541,6 +3571,8 @@ definitions:
     required:
       - eventType
 
+  ############################################################################################################
+
   ApiResourceIntegrationAspectSubset:
     type: object
     title: API Resource Integration Aspect Subset
@@ -3566,6 +3598,31 @@ definitions:
     additionalProperties: false
     required:
       - operationId
+
+  ############################################################################################################
+
+  CapabilityIntegrationAspect:
+    type: object
+    title: Capability Integration Aspect
+    x-introduced-in-version: "1.14.2"
+    x-ums-type: "custom"
+    description: |-
+      Capability related integration aspect
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.foo.bar:capability:fieldExtensibility:v1"
+
+      minVersion:
+        <<: *minVersion
+
+    additionalProperties: false
+    required:
+      - ordId
+
+  ############################################################################################################
 
   Vendor:
     type: object
@@ -3729,6 +3786,64 @@ definitions:
       - url: https://blogs.sap.com/2018/04/11/testing-of-s4hana-inventory-management-odata-apis-via-sap-api-hub/
         title: APIs for SAP S/4HANA
         description: This gives you an overview on where to find which kind of APIs in SAP S/4HANA.
+
+  ############################################################################################################
+
+  File:
+    type: object
+    title: File
+    x-introduced-in-version: "1.14.2"
+    description: |
+      File that can be attached on ORD package level.
+    x-ums-type: "custom"
+    properties:
+      title:
+        type: string
+        minLength: 1
+        description: |-
+          Human readable title of the file.
+
+          MUST be unique within the collection of files provided.
+        examples:
+          - Developer Guide for SAP Ariba Portal
+
+      url:
+        type: string
+        format: uri-reference
+        description: |-
+          [URL](https://tools.ietf.org/html/rfc3986) of the link.
+
+          The file target MAY be relative or absolute.
+          If a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+          If an absolute URL is given, then it MUST be openly accessible.
+        examples:
+          - "/ord/v1/Ariba/Files/DeveloperPortal/SAP-Ariba-developer-portal.pdf"
+
+      description:
+        type: string
+        minLength: 1
+        description: *descriptionText
+        examples:
+          - |
+            Includes administrator, quick start, and authentication guides.
+
+      mediaType:
+        <<: *mediaType
+        description: |
+          The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+          A consuming application can use this information to know which file format parser it needs to use.
+
+          If no Media Type is registered for the referenced file, `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+
+    required:
+      - title
+      - url
+      - mediaType
+    examples:
+      - url: /ord/v1/Ariba/Files/DeveloperPortal/SAP-Ariba-developer-portal.pdf
+        title: Developer Guide for SAP Ariba Portal
+        description: Includes administrator, quick start, and authentication guides.
+        mediaType: application/pdf
 
   ############################################################################################################
 
@@ -4809,9 +4924,15 @@ definitions:
           Optional type of the relationship, which defines a stricter semantic what the relationship implies.
 
           If not provided, the relationship type has no semantics, it's "related somehow".
+
+          MUST be a valid [Concept ID](../index.md#concept-id).
         x-introduced-in-version: "1.12.0"
         x-feature-status: beta
-        oneOf:
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
           - const: part-of
             description: |-
               The described entity type is a composite part of the referenced entity type.
@@ -4823,6 +4944,130 @@ definitions:
               E.g. a `BusinessPartner` can share the same identity as a `NaturalPerson`.
         examples:
           - "can-share-identity"
+          - "foo.bar:relationName"
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
+  RelatedApiResource:
+    title: Related API Resource
+    x-introduced-in-version: "1.14.2"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines a relation to an API Resource (via its ORD ID).
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/ApiResource/ordId"
+        x-ums-reverse-relationship:
+          propertyName: capabilities
+          description: |-
+            Capabilities related to this API Resource.
+          min: 0
+          max: "*"
+        examples:
+          - "sap.s4:apiResource:API_BUSINESS_PARTNER:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+
+          Defines the semantic meaning of the relationship.
+          If not provided, the relationship has no specific semantics ("related somehow").
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+        examples:
+          - "foo.bar:relationName"
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
+  RelatedEventResource:
+    title: Related Event Resource
+    x-introduced-in-version: "1.14.2"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines a relation to an Event Resource (via its ORD ID).
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/EventResource/ordId"
+        x-ums-reverse-relationship:
+          propertyName: capabilities
+          description: |-
+            Capabilities related to this Event Resource.
+          min: 0
+          max: "*"
+        examples:
+          - "sap.s4:eventResource:BusinessPartnerEvents:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+
+          Defines the semantic meaning of the relationship.
+          If not provided, the relationship has no specific semantics ("related somehow").
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+        examples:
+          - "foo.bar:relationName"
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
+  RelatedCapability:
+    title: Related Capability
+    x-introduced-in-version: "1.14.2"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines a relation to another Capability (via its ORD ID).
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/Capability/ordId"
+        x-ums-reverse-relationship:
+          propertyName: inverseRelatedCapabilities
+          description: |-
+            Capabilities that declared a relationship to this capability.
+          min: 0
+          max: "*"
+        examples:
+          - "sap.foo:capability:fieldExtensibility:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+
+          Defines the semantic meaning of the relationship.
+          If not provided, the relationship has no specific semantics ("related somehow").
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+        examples:
+          - "foo.bar:relationName"
     required:
       - ordId
     additionalProperties: false

@@ -1,16 +1,16 @@
 apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
 type: 'MetadataType'
 metadata:
-  name: 'relatedentitytype'
+  name: 'relatedapiresource'
   path: '/sap/core/ucl/metadata/ord/v1'
   labels: {}
 spec:
-  typeName: 'RelatedEntityType'
+  typeName: 'RelatedApiResource'
   key:
     - 'id'
   visibility: 'public'
   embedded: true
-  description: 'Defines the relation between Entity Types (via its ORD ID).'
+  description: 'Defines a relation to an API Resource (via its ORD ID).'
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -23,18 +23,18 @@ spec:
       mandatory: true
       constraints:
         maxLength: 255
-        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
     - name: 'relationType'
       type: 'string'
-      description: "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\".\n\nMUST be a valid [Concept ID](../index.md#concept-id)."
+      description: "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\")."
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'ordId'
-      relatedTypeName: 'EntityType'
+      relatedTypeName: 'ApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: true
       managedByProperty: 'ordId_ID'
       description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
       mandatory: true
       reverseRelation:
-        relationPropertyName: 'inverseRelatedEntityTypes'
+        relationPropertyName: 'capabilities'
