@@ -106,6 +106,28 @@
       ]
     }
   ],
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:disputeSummarization:v1",
+      "title": "Dispute Summarization Skill",
+      "shortDescription": "Summarizes dispute cases and their resolution history",
+      "description": "An agent skill that generates concise summaries of financial dispute cases, including key facts, involved parties, and resolution status.",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "type": "ord:agent-skill:v1",
+      "definitions": [
+        {
+          "type": "ord:agent-skill-zip:v1",
+          "mediaType": "application/zip",
+          "url": "/capabilities/disputeSummarization/skill.zip",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    }
+  ],
   "integrationDependencies": [
     {
       "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
@@ -125,6 +147,16 @@
           "apiResources": [
             {
               "ordId": "sap.bar:apiResource:DisputeResolutionAPI:v1"
+            }
+          ]
+        },
+        {
+          "title": "Document Processing Skill Access",
+          "description": "Optionally uses an external agent skill for processing and extracting information from supporting documents (e.g. contracts, invoices).",
+          "mandatory": false,
+          "capabilities": [
+            {
+              "ordId": "sap.bar:capability:documentProcessing:v1"
             }
           ]
         }
