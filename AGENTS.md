@@ -1,124 +1,27 @@
-# Agent Documentation
+# Agent Context for ORD Specification
 
-This file documents the ORD specification project structure and available agent skills for automation.
+Open Resource Discovery (ORD) is a protocol specification that enables applications and services to self-describe their exposed resources and capabilities. This repository contains the JSON Schema specification, TypeScript types, and documentation website (Docusaurus) published at https://open-resource-discovery.org.
 
-## Project Overview
+## Critical Rules
 
-**Open Resource Discovery (ORD)** is a protocol that enables applications and services to self-describe their exposed resources and capabilities. This repository contains:
+- **Git**: Never push to `main` or merge locally into `main` - use PRs only (pre-push hook enforced)
+- **Generated files**: Never edit `src/generated/`, `dist/`, `build/`, or `static/spec-v1/interfaces/` - always edit sources in `spec/v1/*.schema.yaml` or `docs/`
+- **Pre-commit**: Hook automatically runs `npm run generate` and stages generated files
 
-- **ORD specification** (JSON Schema) - defines the structure of ORD documents
-- **Documentation website** (Docusaurus) - human-readable specification at https://open-resource-discovery.org
-- **TypeScript types** - generated from JSON Schema for use in TypeScript projects
-- **NPM package** - `@open-resource-discovery/specification`
-
-## Important: Generated Files
-
-**Key concept**: Many files in this repository are auto-generated from source files. Always edit the source, not the generated output.
-
-### Source Files (edit these)
-- `spec/v1/Document.schema.yaml` - ORD Document JSON Schema (source of truth)
-- `spec/v1/Configuration.schema.yaml` - ORD Configuration JSON Schema
-- Markdown files in `docs/` - documentation content
-
-### Generated Files (do not edit directly)
-- `src/generated/` - TypeScript types, markdown docs, diagrams
-- `dist/` - compiled JavaScript and TypeScript declarations
-- `build/` - static website build
-- `static/spec-v1/interfaces/` - published JSON Schemas
-
-**To regenerate after editing source files:**
-```bash
-npm run generate
-```
-
-## Development Workflow
-
-### Essential npm Scripts
+## Verify Loop (before committing)
 
 ```bash
-# Generate all artifacts from source schemas
-npm run generate
-
-# Build everything (generate + TypeScript + website)
-npm run build
-
-# Run tests
-npm run test
-
-# Start local dev server (hot reload)
-npm start
-
-# Format code
-npm run format
-
-# Lint code
-npm run lint
+npm run build     # Build TS + Docusaurus + validate
+npm run lint      # Linting
+npm run test      # Tests
 ```
 
-### Verify Loop (before committing)
+Note: `npm run generate` runs automatically via pre-commit hook.
 
-1. **Edit source files** (YAML schemas, docs)
-2. **Regenerate**: `npm run generate`
-3. **Build**: `npm run build`
-   - Compiles TypeScript
-   - Builds Docusaurus website
-   - Validates schemas
-   - Checks for broken links
-4. **Test**: `npm run test`
-5. **Review changes**: Check both source and generated files
-6. **Commit**: Include both source and generated files
+**Common build failures:**
+- Broken links (Docusaurus validates all internal links)
+- TypeScript errors (generated types mismatch)
 
-**Common build errors:**
-- **Broken links** - Docusaurus validates all internal links
-- **TypeScript errors** - Check generated types match schema
-- **Missing files** - Run `npm run generate` first
+## Skills
 
-## Available Skills
-
-### `/release` - Release Process
-
-Comprehensive checklist for releasing a new ORD specification version.
-
-**When to use:** Preparing to release from a `release/vX.Y.Z` branch.
-
-**What it verifies:**
-- Version consistency (package.json, CHANGELOG.md, branch name)
-- All PRs documented in CHANGELOG.md
-- `x-introduced-in-version` markers on new schema properties
-- Build and tests pass
-- No uncommitted changes
-
-**What it does:**
-- Fixes incorrect version markers
-- Creates PR to main
-- Guides through GitHub Actions automated release
-
-**Usage:**
-```
-/release
-```
-
-See [.claude/skills/release.md](.claude/skills/release.md) for detailed documentation.
-
-## Project Structure
-
-```
-.
-├── spec/v1/                    # Source JSON Schemas (YAML)
-│   ├── Document.schema.yaml    # Main ORD Document schema
-│   └── Configuration.schema.yaml
-├── docs/                       # Documentation source (markdown)
-├── src/                        # TypeScript source + helpers
-│   ├── generated/              # Generated TypeScript types
-│   └── helper/                 # Build scripts
-├── static/                     # Static assets for website
-├── build/                      # Built website (generated)
-└── dist/                       # Built npm package (generated)
-```
-
-## Links
-
-- **Website**: https://open-resource-discovery.org
-- **NPM**: https://www.npmjs.com/package/@open-resource-discovery/specification
-- **Issues**: https://github.com/open-resource-discovery/specification/issues
-
+- `/release` - Release automation from `release/vX.Y.Z` branches
