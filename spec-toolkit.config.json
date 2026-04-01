@@ -1,7 +1,8 @@
 {
 	"$schema": "https://open-resource-discovery.github.io/spec-toolkit/spec-v1/spec-toolkit-config.schema.json#",
 	"generalConfig": {
-		"tsTypeExportExcludeJsFileExtension": true
+		"tsTypeExportExcludeJsFileExtension": true,
+		"preservedCoreSpecificXProperties": ["x-introduced-in-version", "x-feature-status", "x-recommended", "x-association-target", "x-deprecated-in-version", "x-deprecation-text"]
 	},
 	"outputPath": "src/generated/spec/v1",
 	"docsConfig": [

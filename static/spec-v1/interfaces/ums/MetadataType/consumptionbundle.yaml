@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.\nIdeally it also includes instructions and details how to request access and credentials for resources.\n\nFor more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).\n\nA Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.\nA Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned\nby the system instance that defines the Consumption Bundle.\n\nPlease note that some ORD consumer use cases MAY depend on Consumption Bundle assignments to work with the resources.\n\nTo learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle)."
+  description: "A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the same credentials and auth mechanism.\nIdeally it also includes instructions and details on how to request access and credentials for resources.\n\nFor more documentation and guidance on how to use this correctly, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).\n\nA Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.\nA Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned\nby the system instance that defines the Consumption Bundle.\n\nPlease note that some ORD consumer use cases MAY depend on Consumption Bundle assignments to work with the resources.\n\nTo learn more about the concept, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle)."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -119,7 +119,7 @@ spec:
           mandatory: true
         - name: 'description'
           type: 'string'
-          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)'
+          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).'
           constraints:
             minLength: 1
     - name: 'Labels'

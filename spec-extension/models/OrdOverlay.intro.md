@@ -50,10 +50,13 @@ This keeps the overlay co-located with the resource it patches.
 
 ```json
 {
-  "resourceDefinitions": [
-    { "type": "openapi-v3", "url": "/ord/metadata/my-api.oas3.json", "accessStrategies": [{ "type": "open" }] },
-    { "type": "ord:overlay:v1", "url": "/ord/overlays/my-api.overlay.json", "accessStrategies": [{ "type": "open" }] }
-  ]
+  "apiResources": [{
+    "ordId": "sap.foo:apiResource:astronomy:v1",
+    "resourceDefinitions": [
+      { "type": "openapi-v3", "url": "/ord/metadata/my-api.oas3.json", "visibility": "public" },
+      { "type": "ord:overlay:v1", "url": "/ord/overlays/my-api.overlay.json", "visibility": "internal" }
+    ]
+  }]
 }
 ```
 
