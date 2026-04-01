@@ -39,7 +39,7 @@ jobs:
           npm run generate
           npm run lint
           npm test
-          npm run build-docusaurus
+          npm run build:docusaurus
 
       - name: PR preview
         uses: open-resource-discovery/pr-preview-action@main

@@ -49,7 +49,7 @@ jobs:
         run: npm test
 
       - name: Build
-        run: npm run build-docusaurus
+        run: npm run build:docusaurus
 
       - name: Publish to NPM
         run: npm publish
