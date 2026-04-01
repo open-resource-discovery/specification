@@ -1,0 +1,30 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlayselectorbyreturntype'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlaySelectorByReturnType'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'returnType'
+      type: 'boolean'
+      description: "Flag indicating that the return type of the specified operation is the target.\nMUST be `true`. Use `operation` to identify the owning operation.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets the `<ReturnType>` child element of the\n  matched Action or Function element.\n- `csdl-json` (OData v4 CSDL JSON): targets the `$ReturnType` object inside the matched\n  Action/Function overload array entry."
+      mandatory: true
+    - name: 'operation'
+      type: 'string'
+      description: "Namespace-qualified Action or Function name whose ReturnType is targeted.\n- For `edmx`: the namespace-qualified name of the Action or Function (e.g. `com.example.Svc.TerminateEmployee`).\n- For `csdl-json`: the namespace-qualified name looked up in the Namespace object."
+      mandatory: true
+      constraints:
+        minLength: 1
+  customTypeDefinitions: []
+  metadataRelations: []

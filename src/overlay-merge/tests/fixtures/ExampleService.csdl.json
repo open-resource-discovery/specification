@@ -1,0 +1,556 @@
+{
+	"$Version": "4.0",
+	"$Reference": {
+		"http://tinyurl.com/Org-OData-Core": {
+			"$Include": [
+				{
+					"$Namespace": "Org.OData.Core.V1",
+					"$Alias": "Core"
+				}
+			]
+		}
+	},
+	"OData.Demo": {
+		"$Alias": "Model",
+		"Container": {
+			"$Kind": "EntityContainer",
+			"Customers": {
+				"$Collection": true,
+				"$Type": "Model.Customer",
+				"$NavigationPropertyBinding": {
+					"Orders": "Orders",
+					"Sales": "Sales",
+					"Address/Country": "Countries"
+				}
+			},
+			"Suppliers": {
+				"$Collection": true,
+				"$Type": "Model.Supplier",
+				"$NavigationPropertyBinding": {
+					"Products": "Products",
+					"Model.PreferredSupplier/AccountRepresentative": "Employees"
+				}
+			},
+			"Products": {
+				"$Collection": true,
+				"$Type": "Model.Product",
+				"$NavigationPropertyBinding": {
+					"Category": "Categories",
+					"Supplier": "Suppliers",
+					"OrderItems": "OrderItems",
+					"Sales": "Sales"
+				}
+			},
+			"Orders": {
+				"$Collection": true,
+				"$Type": "Model.Order",
+				"$NavigationPropertyBinding": {
+					"Items": "OrderItems",
+					"Customer": "Customers"
+				}
+			},
+			"Categories": {
+				"$Collection": true,
+				"$Type": "Model.Category",
+				"$NavigationPropertyBinding": {
+					"Products": "Products"
+				}
+			},
+			"OrderItems": {
+				"$Collection": true,
+				"$Type": "Model.OrderItem",
+				"$NavigationPropertyBinding": {
+					"Order": "Orders",
+					"Product": "Products",
+					"Currency": "Currencies"
+				}
+			},
+			"Sales": {
+				"$Collection": true,
+				"$Type": "Model.Sales",
+				"$NavigationPropertyBinding": {
+					"Time": "Time",
+					"Currency": "Currencies",
+					"Customer": "Customers",
+					"SalesOrganization": "SalesOrganizations",
+					"Product": "Products"
+				}
+			},
+			"Employees": {
+				"$Collection": true,
+				"$Type": "Model.Employee",
+				"$NavigationPropertyBinding": {
+					"Model.Manager/Employees": "Employees",
+					"Manager": "Employees",
+					"Model.Manager/Inbox": "LeaveRequests",
+					"LeaveRequests": "LeaveRequests"
+				}
+			},
+			"LeaveRequests": {
+				"$Collection": true,
+				"$Type": "Model.LeaveRequest",
+				"$NavigationPropertyBinding": {
+					"Manager": "Employees",
+					"Employee": "Employees"
+				}
+			},
+			"Countries": {
+				"$Collection": true,
+				"$Type": "Model.Country"
+			},
+			"Time": {
+				"$Collection": true,
+				"$Type": "Model.Time",
+				"$NavigationPropertyBinding": {
+					"Sales": "Sales"
+				}
+			},
+			"SalesOrganizations": {
+				"$Collection": true,
+				"$Type": "Model.SalesOrganization",
+				"$NavigationPropertyBinding": {
+					"Sales": "Sales",
+					"Superordinate": "SalesOrganizations"
+				}
+			},
+			"Currencies": {
+				"$Collection": true,
+				"$Type": "Model.Currency",
+				"$NavigationPropertyBinding": {
+					"Sales": "Sales"
+				}
+			},
+			"Cities": {
+				"$Collection": true,
+				"$Type": "Model.City"
+			}
+		},
+		"Customer": {
+			"$Kind": "EntityType",
+			"$Key": ["ID"],
+			"ID": {},
+			"Orders": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.Order",
+				"$Partner": "Customer"
+			},
+			"Name": {},
+			"CompanyName": {
+				"$Nullable": true
+			},
+			"BirthDate": {},
+			"CountryName": {
+				"@Core.Description": "This is weird, given that we have a Country entity type"
+			},
+			"Sales": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.Sales",
+				"$Partner": "Customer"
+			},
+			"ContactName": {},
+			"ContactTitle": {},
+			"Fax": {},
+			"Address": {
+				"$Type": "Model.Address"
+			},
+			"EmailAddresses": {
+				"$Collection": true
+			},
+			"Phone": {
+				"$Type": "Model.PhoneNumber"
+			}
+		},
+		"Supplier": {
+			"$Kind": "EntityType",
+			"$Key": ["ID"],
+			"ID": {},
+			"Products": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.Product",
+				"$Partner": "Supplier"
+			},
+			"Name": {},
+			"EmailAddresses": {
+				"$Collection": true
+			},
+			"Addresses": {
+				"$Collection": true,
+				"$Type": "Model.Address"
+			}
+		},
+		"Product": {
+			"$Kind": "EntityType",
+			"$Key": ["ID"],
+			"ID": {
+				"$Type": "Edm.Int32"
+			},
+			"Category": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Category",
+				"$Partner": "Products"
+			},
+			"Name": {},
+			"Supplier": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Supplier",
+				"$Partner": "Products"
+			},
+			"Description": {},
+			"Thumbnail": {},
+			"Sizes": {
+				"$Collection": true
+			},
+			"Rating": {
+				"$Type": "Edm.Int32"
+			},
+			"OrderItems": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.OrderItem",
+				"$Partner": "Product"
+			},
+			"ReleaseDate": {
+				"$Type": "Edm.Date"
+			},
+			"DiscontinuedDate": {
+				"$Type": "Edm.Date",
+				"$Nullable": true
+			},
+			"LifeTime": {},
+			"Color": {},
+			"TaxRate": {
+				"$Type": "Edm.Decimal",
+				"$Nullable": true,
+				"$Precision": 10,
+				"$Scale": 6
+			},
+			"Sales": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.Sales",
+				"$Partner": "Product"
+			}
+		},
+		"Order": {
+			"$Kind": "EntityType",
+			"$Key": ["ID"],
+			"ID": {
+				"$Type": "Edm.Int32"
+			},
+			"Items": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.OrderItem",
+				"$Partner": "Order"
+			},
+			"Completed": {
+				"$Type": "Edm.Boolean"
+			},
+			"Customer": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Customer",
+				"$Partner": "Orders"
+			},
+			"ShippingAddress": {
+				"$Type": "Model.Address"
+			}
+		},
+		"VipCustomer": {
+			"$Kind": "EntityType",
+			"$BaseType": "Model.Customer"
+		},
+		"Category": {
+			"$Kind": "EntityType",
+			"$Key": ["ID"],
+			"ID": {
+				"$Type": "Edm.Int32"
+			},
+			"Amount": {
+				"$Type": "Edm.Decimal",
+				"$Scale": 0
+			},
+			"Products": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.Product",
+				"$Partner": "Category"
+			},
+			"Name": {},
+			"Thumbnail": {}
+		},
+		"OrderItem": {
+			"$Kind": "EntityType",
+			"$Key": ["OrderID", "ItemID"],
+			"OrderID": {
+				"$Type": "Edm.Int32"
+			},
+			"ItemID": {},
+			"Order": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Order",
+				"$Partner": "Items",
+				"$OnDelete": "Cascade",
+				"$ReferentialConstraint": {
+					"OrderID": "ID"
+				}
+			},
+			"Size": {},
+			"Price": {
+				"$Type": "Edm.Decimal",
+				"$Scale": 0
+			},
+			"Product": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Product",
+				"$Partner": "OrderItems"
+			},
+			"Currency": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Currency"
+			}
+		},
+		"Sales": {
+			"$Kind": "EntityType",
+			"$Key": ["ID"],
+			"ID": {
+				"$Type": "Edm.Int32"
+			},
+			"Amount": {
+				"$Type": "Edm.Decimal",
+				"$Scale": 0
+			},
+			"Time": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Time",
+				"$Partner": "Sales"
+			},
+			"Currency": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Currency",
+				"$Partner": "Sales"
+			},
+			"Customer": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Customer",
+				"$Partner": "Sales"
+			},
+			"SalesOrganization": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.SalesOrganization",
+				"$Partner": "Sales"
+			},
+			"Product": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Product",
+				"$Partner": "Sales"
+			}
+		},
+		"Employee": {
+			"$Kind": "EntityType",
+			"$HasStream": true,
+			"$Key": ["ID"],
+			"ID": {},
+			"FirstName": {},
+			"LastName": {},
+			"Title": {},
+			"Manager": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Manager",
+				"$Nullable": true,
+				"$Partner": "Employees"
+			},
+			"LeaveRequests": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.LeaveRequest",
+				"$Partner": "Employee"
+			}
+		},
+		"LeaveRequest": {
+			"$Kind": "EntityType",
+			"$Key": ["ID"],
+			"ID": {
+				"$Type": "Edm.Int32"
+			},
+			"Manager": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Manager",
+				"$Partner": "Inbox"
+			},
+			"Employee": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Employee",
+				"$Partner": "LeaveRequests"
+			}
+		},
+		"Approval": [
+			{
+				"$Kind": "Action",
+				"$IsBound": true,
+				"$Parameter": [
+					{
+						"$Name": "LeaveRequest",
+						"$Type": "Model.LeaveRequest",
+						"$Nullable": true
+					}
+				]
+			}
+		],
+		"Rejection": [
+			{
+				"$Kind": "Action",
+				"$IsBound": true,
+				"$Parameter": [
+					{
+						"$Name": "LeaveRequest",
+						"$Type": "Model.LeaveRequest",
+						"$Nullable": true
+					},
+					{
+						"$Name": "Reason",
+						"$Nullable": true
+					}
+				]
+			}
+		],
+		"Address": {
+			"$Kind": "ComplexType",
+			"Street": {},
+			"Country": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Country"
+			},
+			"City": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.City"
+			},
+			"Region": {},
+			"PostalCode": {}
+		},
+		"AddressWithLocation": {
+			"$Kind": "ComplexType",
+			"Location": {
+				"$Type": "Edm.GeographyPoint"
+			}
+		},
+		"Country": {
+			"$Kind": "EntityType",
+			"$Key": ["Code"],
+			"Code": {
+				"$MaxLength": 2
+			},
+			"Name": {},
+			"Continent": {}
+		},
+		"PreferredSupplier": {
+			"$Kind": "EntityType",
+			"$BaseType": "Model.Supplier",
+			"AccountRepresentative": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.Employee",
+				"$Nullable": true,
+				"$ReferentialConstraint": {
+					"EmployeeID": "ID",
+					"EmployeeID@Core.Description": "The key account manager"
+				}
+			},
+			"EmployeeID": {}
+		},
+		"Pattern": {
+			"$Kind": "EnumType",
+			"$IsFlags": true,
+			"Yellow": 1,
+			"Solid": 2
+		},
+		"Manager": {
+			"$Kind": "EntityType",
+			"$BaseType": "Model.Employee",
+			"Employees": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.Employee",
+				"$Partner": "Manager"
+			},
+			"Inbox": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.LeaveRequest",
+				"$Partner": "Manager"
+			}
+		},
+		"Time": {
+			"$Kind": "EntityType",
+			"$Key": ["Date"],
+			"Date": {
+				"$Type": "Edm.Date"
+			},
+			"Year": {
+				"$MaxLength": 4
+			},
+			"Quarter": {},
+			"Month": {},
+			"Sales": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.Sales",
+				"$Partner": "Time"
+			}
+		},
+		"SalesOrganization": {
+			"$Kind": "EntityType",
+			"$Key": ["ID"],
+			"ID": {},
+			"Name": {},
+			"Sales": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.Sales",
+				"$Partner": "SalesOrganization"
+			},
+			"Superordinate": {
+				"$Kind": "NavigationProperty",
+				"$Type": "Model.SalesOrganization",
+				"$Nullable": true
+			}
+		},
+		"Currency": {
+			"$Kind": "EntityType",
+			"$Key": ["Code"],
+			"Code": {
+				"$MaxLength": 3
+			},
+			"Name": {},
+			"Sales": {
+				"$Kind": "NavigationProperty",
+				"$Collection": true,
+				"$Type": "Model.Sales",
+				"$Partner": "Currency"
+			},
+			"Symbol": {},
+			"FractionalDigits": {
+				"$Type": "Edm.Byte"
+			}
+		},
+		"City": {
+			"$Kind": "EntityType",
+			"$Key": ["ID"],
+			"ID": {
+				"$Type": "Edm.Guid"
+			},
+			"Name": {}
+		},
+		"PhoneNumber": {
+			"$Kind": "ComplexType",
+			"Number": {},
+			"Type": {}
+		},
+		"CellPhoneNumber": {
+			"$Kind": "ComplexType",
+			"Carrier": {}
+		}
+	},
+	"$EntityContainer": "OData.Demo.Container"
+}

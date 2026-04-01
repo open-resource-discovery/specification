@@ -1,0 +1,37 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlaytarget'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlayTarget'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Optional context about the target being patched.\nThe target can refer to an ORD resource or to a referenced resource definition file.\n\nWhen this object is present, at least one of `ordId`, `url`, or `correlationIds`\nMUST be provided so that consumers can identify what is being patched.\nException: if all patches exclusively use `selector.ordId` selectors, `target` may be omitted entirely.\n\n`ordId` targets the ORD resource metadata itself.\nFor patching a specific resource definition file of that resource, use `url` and/or `definitionType`\nto disambiguate.\n\nExample: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.\nIn such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.\n\nMultiple identifiers, if provided, are treated as all pointing to the same resource."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId'
+      type: 'string'
+      description: "ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id)."
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'url'
+      type: 'string'
+      description: "URL or URI pointing directly to the file being patched.\nThis is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),\nbut can also point to any JSON/YAML-based target document."
+    - name: 'correlationIds'
+      type: 'string'
+      array: true
+      description: "Correlation IDs referencing the target resource in external registries or systems of record.\nReuses the ORD correlation ID format: `namespace:type:localId`.\nAll listed IDs are treated as pointing to the same resource."
+    - name: 'definitionType'
+      type: 'string'
+      description: "Optional, but RECOMMENDED type of the target definition being patched.\nIf provided, this SHOULD match the `type` of the referenced metadata definition\n(as used in API/Event/Capability resource definitions).\nThis is especially useful when `ordId` resolves to a resource with multiple attached definitions.\n\nThis can be used to disambiguate how selectors are interpreted for the target.\n\nMUST be either:\n- any valid [Specification ID](../../spec-v1/index.md#specification-id), or\n- one of the pre-defined values reused from:\n  - API Resource Definition `type`\n  - Event Resource Definition `type`\n  - Capability Definition `type`\n\nThe literal value `custom` is deprecated for `definitionType` and MUST NOT be used.\nIn such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead."
+  customTypeDefinitions: []
+  metadataRelations: []

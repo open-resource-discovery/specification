@@ -1,0 +1,26 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlayselectorbyentityset'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlaySelectorByEntitySet'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'entitySet'
+      type: 'string'
+      description: "Concept-level entity set identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets an EntitySet element inside EntityContainer.\n  May use the unqualified name (e.g. `Customers`) or namespace-prefixed name.\n- `csdl-json` (OData v4 CSDL JSON): targets a key with `$Collection: true` inside the\n  EntityContainer object in the namespace.\n\nUse `entitySet` when you need to patch EntityContainer-bound metadata such as\nCapabilities annotations (InsertRestrictions, UpdateRestrictions, etc.).\nFor patching the EntityType structure (Properties, NavigationProperties), use `entityType`."
+      mandatory: true
+      constraints:
+        minLength: 1
+  customTypeDefinitions: []
+  metadataRelations: []

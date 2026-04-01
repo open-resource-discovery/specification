@@ -1,0 +1,21 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlaypatchmeta'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlayPatchMeta'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Optional arbitrary metadata associated with the patched element for use by overlay\nconsumers, tooling, and registries.\nThe contents of this block are **never applied to the target document** — they are\nstrictly out-of-band and ignored by the patch merge process.\n\nUse this to carry information that enrichment sources associate with a specific element\nbut that has no standard representation in the target metadata format.\n\nThis is an open/extensible object — any properties are allowed."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+  customTypeDefinitions: []
+  metadataRelations: []
