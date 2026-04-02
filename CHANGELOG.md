@@ -16,9 +16,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added relationship property to `ApiResource` for expressing relations to other ORD resources:
   - `relatedApiResources`: Array of `RelatedApiResource` objects to link API resources to API resources
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link API resources to event resources
 
 - Added relationship property to `EventResource` for expressing relations to other ORD resources:
   - `relatedEventResources`: Array of `RelatedEventResource` objects to link event resources to event resources
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link event resources to API resources
 
 ### Changed
 
