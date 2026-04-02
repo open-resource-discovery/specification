@@ -498,6 +498,12 @@ export interface ApiResource {
    */
   minSystemVersion?: string;
   /**
+   * Optional list of related API Resources.
+   *
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
    *
@@ -810,6 +816,24 @@ export interface ConsumptionBundleReference {
    * MUST be in the list of `entryPoints` of the affected resource.
    */
   defaultEntryPoint?: string;
+}
+/**
+ * Defines a relation to an API Resource (via its ORD ID).
+ */
+export interface RelatedAPIResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
 }
 /**
  * A changelog entry can be used to indicate changes.
@@ -1374,6 +1398,12 @@ export interface EventResource {
    */
   minSystemVersion?: string;
   /**
+   * Optional list of related Event Resources.
+   *
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
+   */
+  relatedEventResources?: RelatedEventResource[];
+  /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
    *
@@ -1604,6 +1634,24 @@ export interface EventResource {
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
+}
+/**
+ * Defines a relation to an Event Resource (via its ORD ID).
+ */
+export interface RelatedEventResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
 }
 /**
  * Link and categorization of a machine-readable API definition.
@@ -2157,42 +2205,6 @@ export interface Capability {
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
-}
-/**
- * Defines a relation to an API Resource (via its ORD ID).
- */
-export interface RelatedAPIResource {
-  /**
-   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
-   *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
-   */
-  ordId: string;
-  /**
-   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
-   *
-   * Defines the semantic meaning of the relationship.
-   * If not provided, the relationship has no specific semantics ("related somehow").
-   */
-  relationType?: string;
-}
-/**
- * Defines a relation to an Event Resource (via its ORD ID).
- */
-export interface RelatedEventResource {
-  /**
-   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
-   *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
-   */
-  ordId: string;
-  /**
-   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
-   *
-   * Defines the semantic meaning of the relationship.
-   * If not provided, the relationship has no specific semantics ("related somehow").
-   */
-  relationType?: string;
 }
 /**
  * Defines a relation to another Capability (via its ORD ID).

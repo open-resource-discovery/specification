@@ -388,6 +388,10 @@ spec:
       propertyBased: true
       managedByProperty: 'partOfProducts_ID'
       description: "List of products the resources of the Package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+    - propertyName: 'relatedEventResources'
+      relatedTypeName: 'RelatedEventResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this capability."
     - propertyName: 'successors'
       relatedTypeName: 'EventResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

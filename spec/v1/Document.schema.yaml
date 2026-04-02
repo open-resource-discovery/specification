@@ -1117,6 +1117,18 @@ definitions:
           - "1.2.3"
           - "2024.8.0"
 
+      relatedApiResources: &relatedApiResources
+        type: array
+        x-introduced-in-version: "1.14.3"
+        description: |-
+          Optional list of related API Resources.
+
+          Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+        items:
+          $ref: "#/definitions/RelatedApiResource"
+        examples:
+          - [{ "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1", "relationType": "foo.bar:relationName" }]
+
       deprecationDate: &deprecationDate
         type: string
         format: date-time
@@ -1692,6 +1704,18 @@ definitions:
 
       minSystemVersion:
         <<: *minSystemVersion
+
+      relatedEventResources: &relatedEventResources
+        type: array
+        x-introduced-in-version: "1.14.3"
+        description: |-
+          Optional list of related Event Resources.
+
+          Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
+        items:
+          $ref: "#/definitions/RelatedEventResource"
+        examples:
+          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "foo.bar:relationName" }]
 
       deprecationDate:
         <<: *deprecationDate
@@ -3122,28 +3146,12 @@ definitions:
           - ["sap.odm:entityType:WorkforcePerson:v1"]
 
       relatedApiResources:
-        type: array
+        <<: *relatedApiResources
         x-introduced-in-version: "1.14.2"
-        description: |-
-          Optional list of related API Resources.
-
-          Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
-        items:
-          $ref: "#/definitions/RelatedApiResource"
-        examples:
-          - [{ "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1", "relationType": "foo.bar:relationName" }]
 
       relatedEventResources:
-        type: array
+        <<: *relatedEventResources
         x-introduced-in-version: "1.14.2"
-        description: |-
-          Optional list of related Event Resources.
-
-          Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
-        items:
-          $ref: "#/definitions/RelatedEventResource"
-        examples:
-          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "foo.bar:relationName" }]
 
       relatedCapabilities:
         type: array

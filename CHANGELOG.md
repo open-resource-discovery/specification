@@ -10,6 +10,16 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.14.3]
+
+### Added
+
+- Added relationship property to `ApiResource` for expressing relations to other ORD resources:
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link API resources to API resources
+
+- Added relationship property to `EventResource` for expressing relations to other ORD resources:
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link event resources to event resources
+
 ### Changed
 
 - Improved the [Grouping and Bundling](./docs/spec-v1/concepts/grouping-and-bundling.md) documentation page:
