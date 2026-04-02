@@ -1082,6 +1082,38 @@
             "2024.8.0"
           ]
         },
+        "relatedApiResources": {
+          "type": "array",
+          "x-introduced-in-version": "1.14.3",
+          "description": "Optional list of related API Resources.\n\nUse this to indicate which APIs implement, expose, or are otherwise related to this entity.",
+          "items": {
+            "$ref": "#/definitions/RelatedApiResource"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
+          ]
+        },
+        "relatedEventResources": {
+          "type": "array",
+          "x-introduced-in-version": "1.14.3",
+          "description": "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this entity.",
+          "items": {
+            "$ref": "#/definitions/RelatedEventResource"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
+          ]
+        },
         "deprecationDate": {
           "type": "string",
           "format": "date-time",
@@ -1925,6 +1957,38 @@
           "examples": [
             "1.2.3",
             "2024.8.0"
+          ]
+        },
+        "relatedApiResources": {
+          "type": "array",
+          "x-introduced-in-version": "1.14.3",
+          "description": "Optional list of related API Resources.\n\nUse this to indicate which APIs implement, expose, or are otherwise related to this entity.",
+          "items": {
+            "$ref": "#/definitions/RelatedApiResource"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
+          ]
+        },
+        "relatedEventResources": {
+          "type": "array",
+          "x-introduced-in-version": "1.14.3",
+          "description": "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this entity.",
+          "items": {
+            "$ref": "#/definitions/RelatedEventResource"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
           ]
         },
         "deprecationDate": {
@@ -4668,7 +4732,7 @@
         "relatedApiResources": {
           "type": "array",
           "x-introduced-in-version": "1.14.2",
-          "description": "Optional list of related API Resources.\n\nUse this to indicate which APIs implement, expose, or are otherwise related to this capability.",
+          "description": "Optional list of related API Resources.\n\nUse this to indicate which APIs implement, expose, or are otherwise related to this entity.",
           "items": {
             "$ref": "#/definitions/RelatedApiResource"
           },
@@ -4684,7 +4748,7 @@
         "relatedEventResources": {
           "type": "array",
           "x-introduced-in-version": "1.14.2",
-          "description": "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this capability.",
+          "description": "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this entity.",
           "items": {
             "$ref": "#/definitions/RelatedEventResource"
           },
