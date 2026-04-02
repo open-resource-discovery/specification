@@ -1123,11 +1123,23 @@ definitions:
         description: |-
           Optional list of related API Resources.
 
-          Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+          Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
         items:
           $ref: "#/definitions/RelatedApiResource"
         examples:
           - [{ "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1", "relationType": "foo.bar:relationName" }]
+
+      relatedEventResources: &relatedEventResources
+        type: array
+        x-introduced-in-version: "1.14.3"
+        description: |-
+          Optional list of related Event Resources.
+
+          Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
+        items:
+          $ref: "#/definitions/RelatedEventResource"
+        examples:
+          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "foo.bar:relationName" }]
 
       deprecationDate: &deprecationDate
         type: string
@@ -1705,17 +1717,13 @@ definitions:
       minSystemVersion:
         <<: *minSystemVersion
 
-      relatedEventResources: &relatedEventResources
-        type: array
+      relatedApiResources:
+        <<: *relatedApiResources
         x-introduced-in-version: "1.14.3"
-        description: |-
-          Optional list of related Event Resources.
 
-          Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
-        items:
-          $ref: "#/definitions/RelatedEventResource"
-        examples:
-          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "foo.bar:relationName" }]
+      relatedEventResources:
+        <<: *relatedEventResources
+        x-introduced-in-version: "1.14.3"
 
       deprecationDate:
         <<: *deprecationDate

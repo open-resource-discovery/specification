@@ -500,9 +500,15 @@ export interface ApiResource {
   /**
    * Optional list of related API Resources.
    *
-   * Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
    */
   relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of related Event Resources.
+   *
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
+   */
+  relatedEventResources?: RelatedEventResource[];
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
@@ -821,6 +827,24 @@ export interface ConsumptionBundleReference {
  * Defines a relation to an API Resource (via its ORD ID).
  */
 export interface RelatedAPIResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
+}
+/**
+ * Defines a relation to an Event Resource (via its ORD ID).
+ */
+export interface RelatedEventResource {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
@@ -1398,9 +1422,15 @@ export interface EventResource {
    */
   minSystemVersion?: string;
   /**
+   * Optional list of related API Resources.
+   *
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
    * Optional list of related Event Resources.
    *
-   * Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
    */
   relatedEventResources?: RelatedEventResource[];
   /**
@@ -1634,24 +1664,6 @@ export interface EventResource {
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
-}
-/**
- * Defines a relation to an Event Resource (via its ORD ID).
- */
-export interface RelatedEventResource {
-  /**
-   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
-   *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
-   */
-  ordId: string;
-  /**
-   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
-   *
-   * Defines the semantic meaning of the relationship.
-   * If not provided, the relationship has no specific semantics ("related somehow").
-   */
-  relationType?: string;
 }
 /**
  * Link and categorization of a machine-readable API definition.
@@ -2151,13 +2163,13 @@ export interface Capability {
   /**
    * Optional list of related API Resources.
    *
-   * Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
    */
   relatedApiResources?: RelatedAPIResource[];
   /**
    * Optional list of related Event Resources.
    *
-   * Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
    */
   relatedEventResources?: RelatedEventResource[];
   /**
