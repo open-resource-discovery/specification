@@ -316,6 +316,8 @@ const config = {
             }
           : {}),
     }),
+
+  clientModules: [require.resolve("./src/anchorHashNavigation.js")]
 };
 
 module.exports = config;
