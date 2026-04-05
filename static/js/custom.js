@@ -1,22 +1,69 @@
 /* globals window, document */
 // Little script to highlight the links and definitions that were navigated to
-window.addEventListener("load", locationHashChanged, false);
-window.addEventListener("hashchange", locationHashChanged, false);
-function locationHashChanged() {
-  document.querySelectorAll(".highlight").forEach((dfn) => {
-    dfn.classList.remove("highlight");
+var isInitialLoad = true;
+
+window.addEventListener("load", function() {
+  // Wait for images and banner adjustment to complete before highlighting
+  waitForImagesToLoad(function() {
+    locationHashChanged(true); // Pass true for initial load
+    isInitialLoad = false;
   });
-  const highlightedElementId = window.location.hash.split("#")[1];
-  console.debug("highlighting", highlightedElementId);
-  const highlightedElement = document.getElementById(highlightedElementId);
-  if (highlightedElement) {
-    highlightedElement.classList.add("highlight");
-    if (highlightedElement.getElementsByTagName("a")[0]) {
-      addAnchorTitle(highlightedElement.getElementsByTagName("a")[0].title);
-    } else {
-      addAnchorTitle(highlightedElement.textContent);
+}, false);
+
+window.addEventListener("hashchange", function() {
+  locationHashChanged(false); // Pass false for hash changes
+}, false);
+
+function waitForImagesToLoad(callback) {
+  var images = document.querySelectorAll('img');
+  var imagesToLoad = 0;
+  var imagesLoaded = 0;
+
+  // Check which images haven't loaded yet
+  images.forEach(function(img) {
+    if (!img.complete) {
+      imagesToLoad++;
+      var onComplete = function() {
+        imagesLoaded++;
+        if (imagesLoaded === imagesToLoad) {
+          callback();
+        }
+      };
+      img.addEventListener('load', onComplete, { once: true });
+      img.addEventListener('error', onComplete, { once: true });
     }
+  });
+
+  // If all images are already loaded, call callback immediately
+  if (imagesToLoad === 0) {
+    callback();
   }
+}
+
+function locationHashChanged(shouldScrollIntoView) {
+  // Wait for Docusaurus to finish scrolling to the anchor
+  setTimeout(function() {
+    document.querySelectorAll(".highlight").forEach((dfn) => {
+      dfn.classList.remove("highlight");
+    });
+    const highlightedElementId = window.location.hash.substring(1); // Remove leading #
+    console.debug("highlighting", highlightedElementId);
+    const highlightedElement = document.getElementById(highlightedElementId);
+    if (highlightedElement) {
+      highlightedElement.classList.add("highlight");
+
+      // Only force scroll on initial page load, not on hash changes
+      if (shouldScrollIntoView) {
+        highlightedElement.scrollIntoView();
+      }
+
+      if (highlightedElement.getElementsByTagName("a")[0]) {
+        addAnchorTitle(highlightedElement.getElementsByTagName("a")[0].title);
+      } else {
+        addAnchorTitle(highlightedElement.textContent);
+      }
+    }
+  }, 100);
 }
 
 function addAnchorTitle(anchorTitle) {
@@ -201,6 +248,11 @@ function adjustLayoutForBanner() {
   var bannerHeight = banner.offsetHeight;
   var isDesktop = window.innerWidth > 996;
 
+  // Update CSS variable for scroll offset to account for banner
+  var baseOffset = isDesktop ? 72 : 84;
+  var extraBannerHeight = bannerHeight > 30 ? (bannerHeight - 30) : 0;
+  document.documentElement.style.setProperty('--doc-header-offset', (baseOffset + extraBannerHeight) + 'px');
+
   if (isDesktop) {
     // Desktop: reset mobile styles
     navbar.style.top = "";
@@ -213,20 +265,28 @@ function adjustLayoutForBanner() {
     } else if (docRoot) {
       docRoot.style.paddingTop = "";
     }
-    return;
-  }
-
-  // Mobile/tablet: adjust navbar and main-wrapper
-  if (bannerHeight > 0) {
-    navbar.style.top = bannerHeight + "px";
-    if (mainWrapper) {
-      var navbarHeight = navbar.offsetHeight || 60;
-      mainWrapper.style.paddingTop = bannerHeight + navbarHeight + "px";
+  } else {
+    // Mobile/tablet: adjust navbar and main-wrapper
+    if (bannerHeight > 0) {
+      navbar.style.top = bannerHeight + "px";
+      if (mainWrapper) {
+        var navbarHeight = navbar.offsetHeight || 60;
+        mainWrapper.style.paddingTop = bannerHeight + navbarHeight + "px";
+      }
+    }
+    // Reset docRoot padding on mobile
+    if (docRoot) {
+      docRoot.style.paddingTop = "";
     }
   }
-  // Reset docRoot padding on mobile
-  if (docRoot) {
-    docRoot.style.paddingTop = "";
+
+  // Re-scroll to anchor if present after layout adjustment
+  if (window.location.hash) {
+    var elementId = window.location.hash.substring(1);
+    var element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView();
+    }
   }
 }
 
