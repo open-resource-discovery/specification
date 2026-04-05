@@ -325,3 +325,15 @@ html {
   color: var(--c-accent) !important;
   text-decoration-color: var(--c-accent);
 }
+
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .docusaurus-mermaid-container,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .docusaurus-mermaid-container > svg,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .docusaurus-mermaid-container svg[id^="mermaid-svg-"] {
+  background: #fff !important;
+  border-radius: 8px;
+}
+
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown img {
+  background: #fff !important;
+  border-radius: 8px;
+}
