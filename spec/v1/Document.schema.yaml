@@ -2927,6 +2927,11 @@ definitions:
         examples:
           - ["sap.foo.bar:integrationDependency:DisputeCaseManagement:v1"]
 
+      definitions:
+        <<: *resourceDefinitions
+        items:
+          $ref: "#/definitions/AgentDefinition"
+
       links:
         <<: *links
         description: |-
@@ -2951,6 +2956,48 @@ definitions:
       - partOfPackage
     x-recommended:
       - lastUpdate
+
+  ############################################################################################################
+
+  AgentDefinition:
+    type: object
+    title: Agent Definition
+    x-introduced-in-version: "1.15.0"
+    x-feature-status: beta
+    x-ums-type: "custom"
+    description: |-
+      Link and categorization of a machine-readable agent definition.
+    properties:
+      type:
+        description: Type of the agent resource definition
+        type: string
+        anyOf:
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            description: |-
+              Any valid [Specification ID](../index.md#specification-id).
+        examples:
+          - "sap.example:agentcard-definition:v1"
+
+      mediaType:
+        <<: *mediaType
+
+      url:
+        <<: *resourceDefinitionUrl
+        examples:
+          - /agents/someAgent/someDocument.json
+
+      accessStrategies:
+        <<: *accessStrategies
+
+      visibility:
+        <<: *definitionVisibility
+
+    additionalProperties: false
+    required:
+      - type
+      - mediaType
+      - url
 
   ############################################################################################################
 

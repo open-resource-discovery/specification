@@ -136,6 +136,11 @@ spec:
       type: 'guid'
       array: true
       description: "Optional list of integration dependencies that the agent relies on.\n\nMUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID."
+    - name: 'definitions'
+      type: 'custom'
+      customTypeName: 'AgentDefinition'
+      array: true
+      description: "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\nThe exception is when the same definition type is provided more than once, but with a different `visibility`.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented."
     - name: 'links'
       type: 'custom'
       customTypeName: 'Link'
@@ -178,6 +183,47 @@ spec:
         - name: 'url'
           type: 'string'
           description: "Optional [URL](https://tools.ietf.org/html/rfc3986) that links to a more detailed changelog entry.\n\nThe link target MUST be absolute and SHOULD be openly accessible."
+    - name: 'AgentDefinition'
+      metadataProperties:
+        - name: 'type'
+          type: 'string'
+          description: 'Type of the agent resource definition'
+          mandatory: true
+        - name: 'mediaType'
+          type: 'string'
+          description: "The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.\nA consuming application can use this information to know which file format parser it needs to use.\nFor example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.\n\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.\n"
+          mandatory: true
+          constraints:
+            pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
+        - name: 'url'
+          type: 'string'
+          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL (to base URL)."
+          mandatory: true
+        - name: 'accessStrategies'
+          type: 'custom'
+          customTypeName: 'AccessStrategy'
+          array: true
+          description: "List of supported access strategies for retrieving metadata from the ORD provider.\nAn ORD Consumer/ORD Aggregator MAY choose any of the strategies.\n\nThe access strategies only apply to the metadata access and not the actual API access.\nThe actual access to the APIs for clients is described via Consumption Bundles.\n\nIf this property is not provided, the definition URL will be available through the same access strategy as this ORD document.\nIt is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process."
+        - name: 'visibility'
+          type: 'string'
+          description: "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.\nE.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.\n\nThis makes it also possible to provide both a public and an internal metadata description of the resource,\nin case that some metadata must only be made accessible to internal consumers."
+    - name: 'AccessStrategy'
+      metadataProperties:
+        - name: 'type'
+          type: 'string'
+          description: 'Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.'
+          mandatory: true
+        - name: 'customType'
+          type: 'string'
+          description: "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`."
+          constraints:
+            maxLength: 255
+            pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+        - name: 'customDescription'
+          type: 'string'
+          description: "Human-readable description about how the access is set up, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nMUST only be provided if `type` is set to `custom`."
+          constraints:
+            minLength: 1
     - name: 'Link'
       metadataProperties:
         - name: 'title'
