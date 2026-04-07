@@ -85,24 +85,18 @@ Each [patch](#overlay-patch) identifies the element to patch using exactly one [
 Concept-level selectors are preferred over `jsonPath` because they are resilient to structural format changes
 (e.g. OpenAPI 3.0 → 3.1, OData CSDL XML → JSON).
 
-| Selector | Level | Supported formats |
-|---|---|---|
-| [`ordId`](#overlay-selector-by-ord-id) | Resource | ORD resource metadata |
-| [`operation`](#overlay-selector-by-operation) | Operation | OpenAPI (`openapi-v2/v3/v3.1+`), MCP (MCP Server Card), A2A Agent Card (`a2a-agent-card`), OData (`edmx`, `csdl-json`) |
-| [`entityType`](#overlay-selector-by-entity-type) | Entity type | OData (`edmx`, `csdl-json`), CSN Interop (`sap-csn-interop-effective-v1`) |
-| [`propertyType`](#overlay-selector-by-property-type) | Property | OData (`edmx`, `csdl-json`), CSN Interop (`sap-csn-interop-effective-v1`) |
-| [`jsonPath`](#overlay-selector-by-jsonpath) | Any location | Any JSON/YAML metadata file (generic fallback) |
+Available selectors:
+- [`ordId`](#overlay-selector-by-ord-id) — ORD resource metadata
+- [`operation`](#overlay-selector-by-operation) — OpenAPI, MCP, A2A, OData Actions/Functions
+- [`entityType`](#overlay-selector-by-entity-type) — OData types, CSN Interop entities
+- [`entitySet`](#overlay-selector-by-entity-set) — OData EntitySets
+- [`namespace`](#overlay-selector-by-namespace) — OData Schema namespace
+- [`propertyType`](#overlay-selector-by-property-type) — OData/CSN properties (requires `entityType`)
+- [`parameter`](#overlay-selector-by-parameter) — OData/OpenAPI parameters (requires `operation`)
+- [`returnType`](#overlay-selector-by-return-type) — OData return types (requires `operation`)
+- [`jsonPath`](#overlay-selector-by-jsonpath) — generic fallback for any JSON/YAML location
 
-The [`operation`](#overlay-selector-by-operation) selector maps to different identifiers depending on the format:
-
-- **OpenAPI** → `operationId` of an HTTP operation in `paths.{path}.{method}`
-- **MCP** (any [Specification ID](../../spec-v1/index.md#specification-id)) → `tools[].name`
-- **A2A Agent Card** → `skills[].id`
-- **OData** (`edmx`, `csdl-json`) → Action or Function name, namespace-qualified (e.g. `OData.Demo.Approval`)
-
-When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.
-When `definitionType` is absent, the implementation SHOULD infer the format from the target document's content (e.g. the `openapi` field, `$schema`, or `$kind` markers).
-Using the `operation` selector with a named format constant that has no operation support (e.g. `asyncapi-v2`) raises an error.
+See each selector's definition for detailed format mappings and usage.
 
 ## Patch Actions
 

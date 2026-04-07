@@ -87,22 +87,8 @@ export type OverlaySelector =
   | OverlaySelectorByParameter
   | OverlaySelectorByReturnType;
 /**
- * The value to be used together with patch actions:
- * - with `action: append`:
- *   - string value appended to selected text field
- * - with `action: merge`:
- *   - objects are deep-merged recursively
- *   - scalar values overwrite existing values
- *   - arrays are appended to existing arrays
- * - with `action: update`, it replaces the selected element entirely
- * - with `action: remove`:
- *   - `{}` (empty object): the selected element is removed entirely
- *   - object with null-valued properties: only those fields are deleted (recursively,
- *     including nested fields; JSON Merge Patch-style delete semantics)
- *
- * To fully replace an existing array, use two ordered patches:
- * 1. remove the array
- * 2. merge the new array value
+ * The value used by the patch [`action`](#overlay-patch).
+ * Structure depends on the target being patched and the action type.
  *
  * For OData targets (`edmx`, `csdl-json`), the value MUST be expressed in CSDL JSON
  * annotation format. Annotation keys use the `@TermName` convention:
@@ -115,11 +101,6 @@ export type OverlaySelector =
  * Use the CSN `doc` field for human-readable descriptions, and `@AnnotationName` keys
  * for vocabulary annotations (e.g. `@EndUserText.label`, `@Semantics.text`).
  * See: https://sap.github.io/csn-interop-specification/
- *
- * This is a free-form value whose structure depends on the target being patched.
- *
- * `null` as a standalone patch value is not supported outside `remove` masks.
- * To delete an element, use `action: remove` with `data: {}`.
  */
 export type OverlayPatchValue =
   | {
@@ -259,23 +240,8 @@ export interface OverlaySystemInstance {
   correlationIds?: [OverlayCorrelationID2, ...OverlayCorrelationID2[]];
 }
 /**
- * Optional target context for this overlay.
- * The target can reference an ORD resource or a referenced resource definition file.
- *
- * When `target` is present, at least one identifier (`ordId`, `url`, or `correlationIds`)
- * MUST be provided so that consumers and tooling can determine what is being patched.
- *
- * `ordId` selects the ORD resource metadata itself.
- * If patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous
- * when the resource exposes multiple definitions.
- * In that case, use `url` and/or `definitionType` to clarify the intended file.
- *
- * Example: an OData API resource may provide both `edmx` and `openapi-v3` definitions.
- * Use `definitionType` and/or an explicit `url` to identify which one is patched.
- *
- * Exception: if all patches exclusively use `selector.ordId`, the patch selectors themselves
- * are sufficient to identify the target resources and `target` may be omitted entirely.
- * Multiple resources can still be patched by defining multiple patches with different selector `ordId` values.
+ * Optional target context identifying the resource or definition file being patched.
+ * See [Overlay Target](#overlay-target) for details on identifier requirements and disambiguation.
  */
 export interface OverlayTarget {
   /**

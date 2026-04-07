@@ -58,7 +58,7 @@ spec:
     - propertyName: 'target'
       relatedTypeName: 'OverlayTarget'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Optional target context for this overlay.\nThe target can reference an ORD resource or a referenced resource definition file.\n\nWhen `target` is present, at least one identifier (`ordId`, `url`, or `correlationIds`)\nMUST be provided so that consumers and tooling can determine what is being patched.\n\n`ordId` selects the ORD resource metadata itself.\nIf patches are intended for a specific attached metadata definition file, `ordId` alone can be ambiguous\nwhen the resource exposes multiple definitions.\nIn that case, use `url` and/or `definitionType` to clarify the intended file.\n\nExample: an OData API resource may provide both `edmx` and `openapi-v3` definitions.\nUse `definitionType` and/or an explicit `url` to identify which one is patched.\n\nException: if all patches exclusively use `selector.ordId`, the patch selectors themselves\nare sufficient to identify the target resources and `target` may be omitted entirely.\nMultiple resources can still be patched by defining multiple patches with different selector `ordId` values."
+      description: "Optional target context identifying the resource or definition file being patched.\nSee [Overlay Target](#overlay-target) for details on identifier requirements and disambiguation."
     - propertyName: 'patches'
       relatedTypeName: 'OverlayPatch'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
