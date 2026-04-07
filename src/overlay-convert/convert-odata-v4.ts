@@ -60,7 +60,7 @@ function descriptionAnnotations(summary: string, description: string) {
 }
 
 function patchTags(tags: string[]): { tags: [string, ...string[]] } {
-  return { tags: tags as [string, ...string[]] };
+	return { tags: tags as [string, ...string[]] };
 }
 
 export function convertODataV4EnrichmentToOrd(
@@ -142,13 +142,27 @@ export function convertODataV4EnrichmentToOrd(
 	// actionImports — EntityContainer-level aliases for Schema-level Actions.
 	// Merge onto the existing actions[] patch when one exists; generate a new patch otherwise.
 	for (const ai of source.actionImports ?? []) {
-		mergeImportOntoOperation(ai, ns, "actionImport", opPatchIndex, patches, warnings);
+		mergeImportOntoOperation(
+			ai,
+			ns,
+			"actionImport",
+			opPatchIndex,
+			patches,
+			warnings,
+		);
 	}
 
 	// functionImports — EntityContainer-level aliases for Schema-level Functions.
 	// Merge onto the existing functions[] patch when one exists; generate a new patch otherwise.
 	for (const fi of source.functionImports ?? []) {
-		mergeImportOntoOperation(fi, ns, "functionImport", opPatchIndex, patches, warnings);
+		mergeImportOntoOperation(
+			fi,
+			ns,
+			"functionImport",
+			opPatchIndex,
+			patches,
+			warnings,
+		);
 	}
 
 	if (patches.length === 0) {
@@ -223,7 +237,10 @@ function addOperationPatches(
 		patches.push({
 			action: "merge",
 			selector: { returnType: true, operation: qualifiedSelector },
-			data: descriptionAnnotations(op.returnType.summary, op.returnType.description),
+			data: descriptionAnnotations(
+				op.returnType.summary,
+				op.returnType.description,
+			),
 		});
 	}
 }
@@ -290,7 +307,8 @@ function mergeImportOntoOperation(
 		}
 		// Merge import tags onto the existing patch if present and not already there
 		if ((imp.tags ?? []).length > 0) {
-			const existingTags: string[] = (existing.tags as string[] | undefined) ?? [];
+			const existingTags: string[] =
+				(existing.tags as string[] | undefined) ?? [];
 			const merged = [...new Set([...existingTags, ...imp.tags!])];
 			(existing as Record<string, unknown>).tags = merged;
 		}

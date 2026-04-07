@@ -5,8 +5,9 @@ import type { ODataV2Enrichment } from "../types";
 import { loadLocalFixture } from "./test-helpers";
 
 test("converts OData v2 entityTypes, entitySets and functionImports to ORD overlay patches", async () => {
-	const source =
-		await loadLocalFixture<ODataV2Enrichment>("odata-v2-enrichment.json");
+	const source = await loadLocalFixture<ODataV2Enrichment>(
+		"odata-v2-enrichment.json",
+	);
 
 	const { overlay, warnings } = convertODataV2EnrichmentToOrd(source, {
 		target: { definitionType: "edmx" },
@@ -40,7 +41,8 @@ test("converts OData v2 entityTypes, entitySets and functionImports to ORD overl
 		entityType: "compensationInfo",
 	});
 	assert.equal(prop1Patch.action, "merge");
-	assert.deepEqual((prop1Patch.data as Record<string, unknown>)["@Core.Description"],
+	assert.deepEqual(
+		(prop1Patch.data as Record<string, unknown>)["@Core.Description"],
 		"Unique identifier for the employee assignment",
 	);
 
@@ -74,24 +76,41 @@ test("converts OData v2 entityTypes, entitySets and functionImports to ORD overl
 
 	// Warnings: no more entitySet skip, no more needs-spec-extension, no param skip
 	// Only tag warnings remain (e.g. tags on entitySets produce lost-information warnings)
-	const entitySetWarnings = warnings.filter((w) =>
-		w.type === "unsupported-concept" && w.field?.startsWith("entitySets"),
+	const entitySetWarnings = warnings.filter(
+		(w) =>
+			w.type === "unsupported-concept" && w.field?.startsWith("entitySets"),
 	);
-	assert.equal(entitySetWarnings.length, 0, "entitySet no longer produces unsupported-concept warnings");
+	assert.equal(
+		entitySetWarnings.length,
+		0,
+		"entitySet no longer produces unsupported-concept warnings",
+	);
 
 	const fiSpecWarnings = warnings.filter(
 		(w) => w.type === "needs-spec-extension",
 	);
-	assert.equal(fiSpecWarnings.length, 0, "functionImport no longer needs spec extension");
-
-	const paramWarnings = warnings.filter((w) =>
-		w.type === "unsupported-concept" && w.field?.includes("parameter"),
+	assert.equal(
+		fiSpecWarnings.length,
+		0,
+		"functionImport no longer needs spec extension",
 	);
-	assert.equal(paramWarnings.length, 0, "parameters no longer produce warnings");
+
+	const paramWarnings = warnings.filter(
+		(w) => w.type === "unsupported-concept" && w.field?.includes("parameter"),
+	);
+	assert.equal(
+		paramWarnings.length,
+		0,
+		"parameters no longer produce warnings",
+	);
 
 	// Tags are now preserved in patch.tags instead of being discarded
 	const tagsWarnings = warnings.filter((w) => w.type === "lost-information");
-	assert.equal(tagsWarnings.length, 0, "no lost-information warnings — tags go to patch.tags");
+	assert.equal(
+		tagsWarnings.length,
+		0,
+		"no lost-information warnings — tags go to patch.tags",
+	);
 
 	// entityType patch should carry its tags in tags
 	assert.deepEqual(etPatch.tags, ["Employee Central (EC)", "Compensation"]);
@@ -154,8 +173,9 @@ test("entitySets produce entitySet selector patches", () => {
 	const { overlay, warnings } = convertODataV2EnrichmentToOrd(source);
 
 	// No unsupported-concept warnings for entitySets anymore
-	const entitySetWarnings = warnings.filter((w) =>
-		w.type === "unsupported-concept" && w.field?.startsWith("entitySets"),
+	const entitySetWarnings = warnings.filter(
+		(w) =>
+			w.type === "unsupported-concept" && w.field?.startsWith("entitySets"),
 	);
 	assert.equal(entitySetWarnings.length, 0);
 

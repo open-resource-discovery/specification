@@ -1,60 +1,60 @@
 {
-  "protocol": "odatav2",
-  "entityTypes": [
-    {
-      "name": "compensationInfo",
-      "summary": "Compensation information for employee assignments",
-      "description": "Comprehensive compensation information for employee assignments including salary details, pay components, benefits, and related financial data with effective dating and historical tracking capabilities.",
-      "tags": ["Employee Central (EC)", "Compensation"],
-      "properties": [
-        {
-          "name": "id",
-          "summary": "Unique identifier for the employee assignment",
-          "description": "System-generated unique identifier for the employee assignment, used to track compensation records across time periods."
-        },
-        {
-          "name": "startDate",
-          "summary": "Effective start date of the compensation record",
-          "description": "The date from which this compensation record is effective. Used for historical tracking and point-in-time queries."
-        }
-      ]
-    }
-  ],
-  "complexTypes": [
-    {
-      "name": "compensationPayComponents",
-      "summary": "Pay component details within a compensation record",
-      "description": "Represents a single pay component entry within a compensation record, including the component type, amount, currency, and payment frequency.",
-      "properties": [
-        {
-          "name": "payComponentType",
-          "summary": "Type of pay component",
-          "description": "Identifies the category of this pay component (e.g. base salary, bonus, allowance)."
-        }
-      ]
-    }
-  ],
-  "entitySets": [
-    {
-      "name": "compensationInfo",
-      "summary": "Retrieve compensation data for a specific employee assignment",
-      "description": "Fetch comprehensive compensation information for a particular employee including base salary, recurring pay components, target pay components, pay group details, and related compensation structure information.",
-      "tags": ["Employee Central (EC)"]
-    }
-  ],
-  "functionImports": [
-    {
-      "name": "getCompensationHistory",
-      "summary": "Retrieve compensation history for an employee",
-      "description": "Returns a paginated list of historical compensation records for the specified employee, ordered by effective date descending.",
-      "tags": ["Employee Central (EC)"],
-      "parameters": [
-        {
-          "name": "employeeId",
-          "summary": "Employee identifier",
-          "description": "The unique identifier of the employee whose compensation history is requested."
-        }
-      ]
-    }
-  ]
+	"protocol": "odatav2",
+	"entityTypes": [
+		{
+			"name": "compensationInfo",
+			"summary": "Compensation information for employee assignments",
+			"description": "Comprehensive compensation information for employee assignments including salary details, pay components, benefits, and related financial data with effective dating and historical tracking capabilities.",
+			"tags": ["Employee Central (EC)", "Compensation"],
+			"properties": [
+				{
+					"name": "id",
+					"summary": "Unique identifier for the employee assignment",
+					"description": "System-generated unique identifier for the employee assignment, used to track compensation records across time periods."
+				},
+				{
+					"name": "startDate",
+					"summary": "Effective start date of the compensation record",
+					"description": "The date from which this compensation record is effective. Used for historical tracking and point-in-time queries."
+				}
+			]
+		}
+	],
+	"complexTypes": [
+		{
+			"name": "compensationPayComponents",
+			"summary": "Pay component details within a compensation record",
+			"description": "Represents a single pay component entry within a compensation record, including the component type, amount, currency, and payment frequency.",
+			"properties": [
+				{
+					"name": "payComponentType",
+					"summary": "Type of pay component",
+					"description": "Identifies the category of this pay component (e.g. base salary, bonus, allowance)."
+				}
+			]
+		}
+	],
+	"entitySets": [
+		{
+			"name": "compensationInfo",
+			"summary": "Retrieve compensation data for a specific employee assignment",
+			"description": "Fetch comprehensive compensation information for a particular employee including base salary, recurring pay components, target pay components, pay group details, and related compensation structure information.",
+			"tags": ["Employee Central (EC)"]
+		}
+	],
+	"functionImports": [
+		{
+			"name": "getCompensationHistory",
+			"summary": "Retrieve compensation history for an employee",
+			"description": "Returns a paginated list of historical compensation records for the specified employee, ordered by effective date descending.",
+			"tags": ["Employee Central (EC)"],
+			"parameters": [
+				{
+					"name": "employeeId",
+					"summary": "Employee identifier",
+					"description": "The unique identifier of the employee whose compensation history is requested."
+				}
+			]
+		}
+	]
 }

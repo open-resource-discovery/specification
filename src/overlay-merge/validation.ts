@@ -463,7 +463,10 @@ function validateSelectorSemantics(
 	}
 
 	if (selectorKind === "entitySet") {
-		if (definitionType !== undefined && !supportsEntitySetSelector(definitionType)) {
+		if (
+			definitionType !== undefined &&
+			!supportsEntitySetSelector(definitionType)
+		) {
 			errors.push(
 				createIssue(
 					"error",
@@ -477,7 +480,10 @@ function validateSelectorSemantics(
 	}
 
 	if (selectorKind === "namespace") {
-		if (definitionType !== undefined && !supportsNamespaceSelector(definitionType)) {
+		if (
+			definitionType !== undefined &&
+			!supportsNamespaceSelector(definitionType)
+		) {
 			errors.push(
 				createIssue(
 					"error",
@@ -491,7 +497,10 @@ function validateSelectorSemantics(
 	}
 
 	if (selectorKind === "parameter" || selectorKind === "returnType") {
-		if (definitionType !== undefined && !supportsParameterSelector(definitionType)) {
+		if (
+			definitionType !== undefined &&
+			!supportsParameterSelector(definitionType)
+		) {
 			errors.push(
 				createIssue(
 					"error",

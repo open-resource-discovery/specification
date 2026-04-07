@@ -123,7 +123,9 @@ test("validateOverlaySemantics reports unsupported selector and patch data error
 
 	assert.ok(
 		result.errors.some((issue) =>
-			issue.message.includes('Patch action "append" requires string or object data.'),
+			issue.message.includes(
+				'Patch action "append" requires string or object data.',
+			),
 		),
 	);
 	assert.ok(

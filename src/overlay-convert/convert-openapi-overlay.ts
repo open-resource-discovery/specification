@@ -41,7 +41,9 @@ export function convertOpenApiOverlayToOrd(
 
 		if (hasUpdate) {
 			patches.push({
-				...(action.description !== undefined ? { description: action.description } : {}),
+				...(action.description !== undefined
+					? { description: action.description }
+					: {}),
 				action: "merge",
 				selector: { jsonPath: action.target },
 				data: action.update as OverlayPatch["data"],
@@ -51,7 +53,9 @@ export function convertOpenApiOverlayToOrd(
 		if (hasRemove) {
 			patches.push({
 				// description is only attached to the first patch when both update and remove are present
-				...(action.description !== undefined && !hasUpdate ? { description: action.description } : {}),
+				...(action.description !== undefined && !hasUpdate
+					? { description: action.description }
+					: {}),
 				action: "remove",
 				selector: { jsonPath: action.target },
 				data: {},

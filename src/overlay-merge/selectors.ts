@@ -662,7 +662,11 @@ function resolveCsdlJsonEntityType(
 		if (!isJSONObject(candidate)) continue;
 
 		const kind = candidate["$Kind"];
-		if (kind === "EntityType" || kind === "ComplexType" || kind === "EnumType") {
+		if (
+			kind === "EntityType" ||
+			kind === "ComplexType" ||
+			kind === "EnumType"
+		) {
 			matches.push({
 				parent: nsObj,
 				key: localName,
@@ -680,7 +684,7 @@ function resolveCsdlJsonEntityType(
 		});
 		throw new OverlayMergeError(
 			`Ambiguous entityType selector "${entityTypeName}": found ${matches.length} matches in namespaces. ` +
-			`Use a fully qualified name to disambiguate (e.g. "${qualifiedNames[0]}").`,
+				`Use a fully qualified name to disambiguate (e.g. "${qualifiedNames[0]}").`,
 		);
 	}
 
@@ -786,10 +790,12 @@ function resolveCsdlJsonOperation(
 			matches.map((m) => m.path.match(/^\$\['(.+?)'\]/)?.[1] ?? ""),
 		);
 		if (distinctNamespaces.size > 1) {
-			const qualifiedNames = [...distinctNamespaces].map((ns) => `${ns}.${operationName}`);
+			const qualifiedNames = [...distinctNamespaces].map(
+				(ns) => `${ns}.${operationName}`,
+			);
 			throw new OverlayMergeError(
 				`Ambiguous operation selector "${operationName}": found matches in multiple namespaces. ` +
-				`Use a fully qualified name to disambiguate (e.g. "${qualifiedNames[0]}").`,
+					`Use a fully qualified name to disambiguate (e.g. "${qualifiedNames[0]}").`,
 			);
 		}
 	}
@@ -987,7 +993,7 @@ function resolveCsdlJsonEntitySet(
 	if (matches.length > 1) {
 		throw new OverlayMergeError(
 			`Ambiguous entitySet selector "${entitySetName}": found ${matches.length} matches across EntityContainers. ` +
-			"Ensure the target document has a unique EntitySet name, or use a jsonPath selector to target a specific container.",
+				"Ensure the target document has a unique EntitySet name, or use a jsonPath selector to target a specific container.",
 		);
 	}
 

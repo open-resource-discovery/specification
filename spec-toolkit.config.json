@@ -2,7 +2,14 @@
 	"$schema": "https://open-resource-discovery.github.io/spec-toolkit/spec-v1/spec-toolkit-config.schema.json#",
 	"generalConfig": {
 		"tsTypeExportExcludeJsFileExtension": true,
-		"preservedCoreSpecificXProperties": ["x-introduced-in-version", "x-feature-status", "x-recommended", "x-association-target", "x-deprecated-in-version", "x-deprecation-text"]
+		"preservedCoreSpecificXProperties": [
+			"x-introduced-in-version",
+			"x-feature-status",
+			"x-recommended",
+			"x-association-target",
+			"x-deprecated-in-version",
+			"x-deprecation-text"
+		]
 	},
 	"outputPath": "src/generated/spec/v1",
 	"docsConfig": [
@@ -30,13 +37,24 @@
 		},
 		{
 			"type": "spec",
+			"id": "AgentGovernance",
+			"sourceFilePath": "./spec-extension/models/AgentGovernance.schema.yaml",
+			"sourceIntroFilePath": "./spec-extension/models/AgentGovernance.intro.md",
+			"mdFrontmatter": {
+				"title": "Agent Governance",
+				"sidebar_position": "2",
+				"description": "Model extension for AI agent governance metadata."
+			}
+		},
+		{
+			"type": "spec",
 			"id": "OrdOverlay",
 			"sourceFilePath": "./spec-extension/models/OrdOverlay.schema.yaml",
 			"sourceIntroFilePath": "./spec-extension/models/OrdOverlay.intro.md",
 			"sourceOutroFilePath": "./spec-extension/models/OrdOverlay.outro.md",
 			"mdFrontmatter": {
 				"title": "ORD Overlay",
-				"sidebar_position": "2",
+				"sidebar_position": "3",
 				"description": "Describes the technical interface / schema for the ORD Overlay (alpha), used to patch ORD resources and their resource definitions."
 			}
 		}

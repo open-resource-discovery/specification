@@ -1,7 +1,7 @@
 {
 	"$schema": "http://json.schemastore.org/package",
 	"name": "@open-resource-discovery/specification",
-	"version": "1.14.2",
+	"version": "1.14.3",
 	"description": "Open Resource Discovery (ORD) Specification",
 	"author": "SAP SE",
 	"license": "Apache-2.0",
@@ -30,7 +30,7 @@
 		"format": "biome format --write .",
 		"lint": "biome lint .",
 		"test": "npm run build:ts && node --test dist/**/*.test.js",
-    "test:overlay-merge": "npm run build-ts && node --test dist/overlay-merge/**/*.test.js",
+		"test:overlay-merge": "npm run build-ts && node --test dist/overlay-merge/**/*.test.js",
 		"serve": "docusaurus serve",
 		"start": "docusaurus start",
 		"deploy": "npm run build && gh-pages -d ./build",

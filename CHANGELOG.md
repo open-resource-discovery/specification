@@ -19,6 +19,18 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Optional `target` object narrows a patch to a specific definition file or format (e.g. `definitionType: openapi-v3`).
   - Optional top-level fields (`describedSystemType`, `describedSystemVersion`, `describedSystemInstance`, `visibility`) scope the overlay to a particular system context.
 
+## [1.14.3]
+
+### Added
+
+- Added relationship property to `ApiResource` for expressing relations to other ORD resources:
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link API resources to API resources
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link API resources to event resources
+
+- Added relationship property to `EventResource` for expressing relations to other ORD resources:
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link event resources to event resources
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link event resources to API resources
+
 ### Changed
 
 - Improved the [Grouping and Bundling](./docs/spec-v1/concepts/grouping-and-bundling.md) documentation page:

@@ -885,14 +885,19 @@ test("entitySet selector patches EntitySet in CSDL JSON", async () => {
 		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
 	);
 	const overlay: ORDOverlay = {
-		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test entitySet selector on CSDL JSON",
 		patches: [
 			{
 				action: "merge",
 				selector: { entitySet: "Customers" },
-				data: { "@Capabilities.InsertRestrictions": { "@Capabilities.Insertable": false } },
+				data: {
+					"@Capabilities.InsertRestrictions": {
+						"@Capabilities.Insertable": false,
+					},
+				},
 			},
 		],
 	};
@@ -916,7 +921,8 @@ test("entitySet selector patches EntitySet in EDMX XML", async () => {
 		"src/overlay-merge/tests/fixtures/ExampleService.edmx.xml",
 	);
 	const overlay: ORDOverlay = {
-		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test entitySet selector on EDMX",
 		patches: [
@@ -928,23 +934,33 @@ test("entitySet selector patches EntitySet in EDMX XML", async () => {
 		],
 	};
 
-	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, { noMatchBehavior: "error" });
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, {
+		noMatchBehavior: "error",
+	});
 
 	const { XMLParser } = await import("fast-xml-parser");
 	const parser = new XMLParser({
 		ignoreAttributes: false,
 		attributeNamePrefix: "@_",
 		parseAttributeValue: false,
-		isArray: (tagName) => ["Schema", "EntitySet", "Annotation"].includes(tagName),
+		isArray: (tagName) =>
+			["Schema", "EntitySet", "Annotation"].includes(tagName),
 	});
 	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
-	const schema = ((tree["edmx:Edmx"] as Record<string, unknown>)["edmx:DataServices"] as Record<string, unknown>).Schema as Array<Record<string, unknown>>;
+	const schema = (
+		(tree["edmx:Edmx"] as Record<string, unknown>)[
+			"edmx:DataServices"
+		] as Record<string, unknown>
+	).Schema as Array<Record<string, unknown>>;
 	const container = schema[0].EntityContainer as Record<string, unknown>;
 	const entitySets = container.EntitySet as Array<Record<string, unknown>>;
 	const customers = entitySets.find((es) => es["@_Name"] === "Customers");
 	assert.ok(customers, "Customers EntitySet should exist");
 	const annotations = customers!.Annotation as Array<Record<string, unknown>>;
-	assert.ok(Array.isArray(annotations), "Customers should have Annotation array");
+	assert.ok(
+		Array.isArray(annotations),
+		"Customers should have Annotation array",
+	);
 	assert.ok(
 		annotations.some((a) => a["@_Term"] === "Core.Description"),
 		"Customers should have Core.Description annotation",
@@ -956,7 +972,8 @@ test("namespace selector patches Schema namespace object in CSDL JSON", async ()
 		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
 	);
 	const overlay: ORDOverlay = {
-		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test namespace selector on CSDL JSON",
 		patches: [
@@ -987,7 +1004,8 @@ test("namespace selector patches Schema element in EDMX XML", async () => {
 		"src/overlay-merge/tests/fixtures/ExampleService.edmx.xml",
 	);
 	const overlay: ORDOverlay = {
-		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test namespace selector on EDMX",
 		patches: [
@@ -999,7 +1017,9 @@ test("namespace selector patches Schema element in EDMX XML", async () => {
 		],
 	};
 
-	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, { noMatchBehavior: "error" });
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, {
+		noMatchBehavior: "error",
+	});
 
 	const { XMLParser } = await import("fast-xml-parser");
 	const parser = new XMLParser({
@@ -1009,7 +1029,11 @@ test("namespace selector patches Schema element in EDMX XML", async () => {
 		isArray: (tagName) => ["Schema", "Annotation"].includes(tagName),
 	});
 	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
-	const schema = ((tree["edmx:Edmx"] as Record<string, unknown>)["edmx:DataServices"] as Record<string, unknown>).Schema as Array<Record<string, unknown>>;
+	const schema = (
+		(tree["edmx:Edmx"] as Record<string, unknown>)[
+			"edmx:DataServices"
+		] as Record<string, unknown>
+	).Schema as Array<Record<string, unknown>>;
 	const annotations = schema[0].Annotation as Array<Record<string, unknown>>;
 	assert.ok(Array.isArray(annotations), "Schema should have Annotation array");
 	assert.ok(
@@ -1023,7 +1047,8 @@ test("entityType selector resolves EnumType in CSDL JSON", async () => {
 		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
 	);
 	const overlay: ORDOverlay = {
-		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test EnumType via entityType selector",
 		patches: [
@@ -1057,14 +1082,18 @@ test("propertyType + entityType selectors target EnumType member in CSDL JSON", 
 	// To add annotations, use "update" action to replace with an annotated object,
 	// since "merge" cannot merge an object into a number.
 	const overlay: ORDOverlay = {
-		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test EnumType member via propertyType selector",
 		patches: [
 			{
 				action: "update",
 				selector: { propertyType: "Yellow", entityType: "OData.Demo.Pattern" },
-				data: { "@odata.value": 1, "@Core.Description": "A yellow colour pattern member" },
+				data: {
+					"@odata.value": 1,
+					"@Core.Description": "A yellow colour pattern member",
+				},
 			},
 		],
 	};
@@ -1089,7 +1118,8 @@ test("parameter selector targets Action parameter in CSDL JSON", async () => {
 		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
 	);
 	const overlay: ORDOverlay = {
-		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test parameter selector on CSDL JSON",
 		patches: [
@@ -1106,7 +1136,9 @@ test("parameter selector targets Action parameter in CSDL JSON", async () => {
 		context: { definitionType: "csdl-json" },
 	}) as Record<string, Record<string, unknown>>;
 
-	const rejection = (merged["OData.Demo"].Rejection as Array<Record<string, unknown>>)[0];
+	const rejection = (
+		merged["OData.Demo"].Rejection as Array<Record<string, unknown>>
+	)[0];
 	const params = rejection["$Parameter"] as Array<Record<string, unknown>>;
 	const reason = params.find((p) => p["$Name"] === "Reason");
 	assert.ok(reason, "Reason parameter should exist");
@@ -1122,7 +1154,8 @@ test("parameter selector targets Action Parameter in EDMX XML", async () => {
 		"src/overlay-merge/tests/fixtures/ExampleService.edmx.xml",
 	);
 	const overlay: ORDOverlay = {
-		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test parameter selector on EDMX",
 		patches: [
@@ -1134,17 +1167,24 @@ test("parameter selector targets Action Parameter in EDMX XML", async () => {
 		],
 	};
 
-	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, { noMatchBehavior: "error" });
+	const xmlOutput = applyOverlayToEdmxDocument(xmlInput, overlay, {
+		noMatchBehavior: "error",
+	});
 
 	const { XMLParser } = await import("fast-xml-parser");
 	const parser = new XMLParser({
 		ignoreAttributes: false,
 		attributeNamePrefix: "@_",
 		parseAttributeValue: false,
-		isArray: (tagName) => ["Schema", "Action", "Parameter", "Annotation"].includes(tagName),
+		isArray: (tagName) =>
+			["Schema", "Action", "Parameter", "Annotation"].includes(tagName),
 	});
 	const tree = parser.parse(xmlOutput) as Record<string, unknown>;
-	const schema = ((tree["edmx:Edmx"] as Record<string, unknown>)["edmx:DataServices"] as Record<string, unknown>).Schema as Array<Record<string, unknown>>;
+	const schema = (
+		(tree["edmx:Edmx"] as Record<string, unknown>)[
+			"edmx:DataServices"
+		] as Record<string, unknown>
+	).Schema as Array<Record<string, unknown>>;
 	const actions = schema[0].Action as Array<Record<string, unknown>>;
 	const rejection = actions.find((a) => a["@_Name"] === "Rejection");
 	assert.ok(rejection, "Rejection action should exist");
@@ -1173,7 +1213,8 @@ test("applyOverlayToEdmxDocument throws on ambiguous unqualified entityType acro
 </edmx:Edmx>`;
 
 	const overlay = {
-		$schema: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1" as const,
 		description: "Test",
 		patches: [
@@ -1182,7 +1223,13 @@ test("applyOverlayToEdmxDocument throws on ambiguous unqualified entityType acro
 				selector: { entityType: "Customer" },
 				data: { "@Core.Description": "A customer" },
 			},
-		] as [{ action: "merge"; selector: { entityType: string }; data: Record<string, string> }],
+		] as [
+			{
+				action: "merge";
+				selector: { entityType: string };
+				data: Record<string, string>;
+			},
+		],
 	};
 
 	assert.throws(

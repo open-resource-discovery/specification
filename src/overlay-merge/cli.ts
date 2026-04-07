@@ -109,14 +109,18 @@ async function readStructuredFile(path: string): Promise<FileReadResult> {
 			parsed = YAML.parse(content);
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
-			throw new OverlayMergeError(`Failed to parse YAML file ${path}: ${message}`);
+			throw new OverlayMergeError(
+				`Failed to parse YAML file ${path}: ${message}`,
+			);
 		}
 	} else {
 		try {
 			parsed = JSON.parse(content);
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
-			throw new OverlayMergeError(`Failed to parse JSON file ${path}: ${message}`);
+			throw new OverlayMergeError(
+				`Failed to parse JSON file ${path}: ${message}`,
+			);
 		}
 	}
 
@@ -275,7 +279,9 @@ function printHelp(): void {
 	process.stderr.write(
 		`  --dry-run                        Validate overlay and input without applying changes\n`,
 	);
-	process.stderr.write(`  --help                           Print this help\n\n`);
+	process.stderr.write(
+		`  --help                           Print this help\n\n`,
+	);
 	process.stderr.write(`Format detection:\n`);
 	process.stderr.write(
 		`  Input format (JSON/YAML) is auto-detected from file extension (.json, .yaml, .yml).\n`,

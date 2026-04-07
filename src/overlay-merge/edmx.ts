@@ -119,7 +119,12 @@ function findEdmxEntityType(
 	schemas: JSONObject[],
 	entityTypeName: string,
 ): { entityType: JSONObject; array: JSONObject[]; index: number } | undefined {
-	const found: Array<{ entityType: JSONObject; array: JSONObject[]; index: number; ns: string }> = [];
+	const found: Array<{
+		entityType: JSONObject;
+		array: JSONObject[];
+		index: number;
+		ns: string;
+	}> = [];
 
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
@@ -140,7 +145,12 @@ function findEdmxEntityType(
 			for (let i = 0; i < typeArray.length; i++) {
 				const et = typeArray[i];
 				if (isJSONObject(et) && et["@_Name"] === localName) {
-					found.push({ entityType: et, array: typeArray as JSONObject[], index: i, ns });
+					found.push({
+						entityType: et,
+						array: typeArray as JSONObject[],
+						index: i,
+						ns,
+					});
 				}
 			}
 		}
@@ -149,12 +159,16 @@ function findEdmxEntityType(
 	if (found.length > 1 && !entityTypeName.includes(".")) {
 		throw new OverlayMergeError(
 			`Ambiguous entityType selector "${entityTypeName}": found ${found.length} matches across schemas [${found.map((f) => f.ns).join(", ")}]. ` +
-			`Use a fully qualified name to disambiguate (e.g. "${found[0].ns}.${entityTypeName}").`,
+				`Use a fully qualified name to disambiguate (e.g. "${found[0].ns}.${entityTypeName}").`,
 		);
 	}
 
 	if (found.length === 0) return undefined;
-	return { entityType: found[0].entityType, array: found[0].array, index: found[0].index };
+	return {
+		entityType: found[0].entityType,
+		array: found[0].array,
+		index: found[0].index,
+	};
 }
 
 /**
@@ -190,7 +204,12 @@ function findEdmxOperation(
 	operationName: string,
 ): { operation: JSONObject; array: JSONObject[]; index: number } | undefined {
 	// First: search Schema-level Action/Function
-	const found: Array<{ operation: JSONObject; array: JSONObject[]; index: number; ns: string }> = [];
+	const found: Array<{
+		operation: JSONObject;
+		array: JSONObject[];
+		index: number;
+		ns: string;
+	}> = [];
 
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
@@ -211,7 +230,12 @@ function findEdmxOperation(
 			for (let i = 0; i < ops.length; i++) {
 				const op = ops[i];
 				if (isJSONObject(op) && op["@_Name"] === localName) {
-					found.push({ operation: op, array: ops as JSONObject[], index: i, ns });
+					found.push({
+						operation: op,
+						array: ops as JSONObject[],
+						index: i,
+						ns,
+					});
 				}
 			}
 		}
@@ -220,12 +244,16 @@ function findEdmxOperation(
 	if (found.length > 1 && !operationName.includes(".")) {
 		throw new OverlayMergeError(
 			`Ambiguous operation selector "${operationName}": found ${found.length} matches across schemas [${found.map((f) => f.ns).join(", ")}]. ` +
-			`Use a fully qualified name to disambiguate (e.g. "${found[0].ns}.${operationName}").`,
+				`Use a fully qualified name to disambiguate (e.g. "${found[0].ns}.${operationName}").`,
 		);
 	}
 
 	if (found.length > 0) {
-		return { operation: found[0].operation, array: found[0].array, index: found[0].index };
+		return {
+			operation: found[0].operation,
+			array: found[0].array,
+			index: found[0].index,
+		};
 	}
 
 	// Fallback: search FunctionImport inside EntityContainer (OData v2)
@@ -240,7 +268,12 @@ function findEdmxFunctionImport(
 	schemas: JSONObject[],
 	operationName: string,
 ): { operation: JSONObject; array: JSONObject[]; index: number } | undefined {
-	const found: Array<{ operation: JSONObject; array: JSONObject[]; index: number; ns: string }> = [];
+	const found: Array<{
+		operation: JSONObject;
+		array: JSONObject[];
+		index: number;
+		ns: string;
+	}> = [];
 
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
@@ -263,7 +296,12 @@ function findEdmxFunctionImport(
 		for (let i = 0; i < fiArray.length; i++) {
 			const fi = fiArray[i];
 			if (isJSONObject(fi) && fi["@_Name"] === localName) {
-				found.push({ operation: fi, array: fiArray as JSONObject[], index: i, ns });
+				found.push({
+					operation: fi,
+					array: fiArray as JSONObject[],
+					index: i,
+					ns,
+				});
 			}
 		}
 	}
@@ -271,12 +309,16 @@ function findEdmxFunctionImport(
 	if (found.length > 1 && !operationName.includes(".")) {
 		throw new OverlayMergeError(
 			`Ambiguous operation selector "${operationName}": found ${found.length} FunctionImport matches across schemas [${found.map((f) => f.ns).join(", ")}]. ` +
-			`Use a fully qualified name to disambiguate (e.g. "${found[0].ns}.${operationName}").`,
+				`Use a fully qualified name to disambiguate (e.g. "${found[0].ns}.${operationName}").`,
 		);
 	}
 
 	if (found.length === 0) return undefined;
-	return { operation: found[0].operation, array: found[0].array, index: found[0].index };
+	return {
+		operation: found[0].operation,
+		array: found[0].array,
+		index: found[0].index,
+	};
 }
 
 // ─── EntityContainer navigation helpers ─────────────────────────────────────
@@ -292,7 +334,11 @@ function getEdmxEntityContainer(schema: JSONObject): JSONObject | undefined {
 	}
 
 	// Defensive: handle unlikely case where EntityContainer is an array
-	if (Array.isArray(container) && container.length > 0 && isJSONObject(container[0])) {
+	if (
+		Array.isArray(container) &&
+		container.length > 0 &&
+		isJSONObject(container[0])
+	) {
 		return container[0] as JSONObject;
 	}
 
@@ -307,7 +353,12 @@ function findEdmxEntitySet(
 	schemas: JSONObject[],
 	entitySetName: string,
 ): { entitySet: JSONObject; array: JSONObject[]; index: number } | undefined {
-	const found: Array<{ entitySet: JSONObject; array: JSONObject[]; index: number; ns: string }> = [];
+	const found: Array<{
+		entitySet: JSONObject;
+		array: JSONObject[];
+		index: number;
+		ns: string;
+	}> = [];
 
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
@@ -330,7 +381,12 @@ function findEdmxEntitySet(
 		for (let i = 0; i < esArray.length; i++) {
 			const es = esArray[i];
 			if (isJSONObject(es) && es["@_Name"] === localName) {
-				found.push({ entitySet: es, array: esArray as JSONObject[], index: i, ns });
+				found.push({
+					entitySet: es,
+					array: esArray as JSONObject[],
+					index: i,
+					ns,
+				});
 			}
 		}
 	}
@@ -338,12 +394,16 @@ function findEdmxEntitySet(
 	if (found.length > 1 && !entitySetName.includes(".")) {
 		throw new OverlayMergeError(
 			`Ambiguous entitySet selector "${entitySetName}": found ${found.length} matches across EntityContainers [${found.map((f) => f.ns).join(", ")}]. ` +
-			"Ensure the target document has a unique EntitySet name, or use a jsonPath selector to target a specific container.",
+				"Ensure the target document has a unique EntitySet name, or use a jsonPath selector to target a specific container.",
 		);
 	}
 
 	if (found.length === 0) return undefined;
-	return { entitySet: found[0].entitySet, array: found[0].array, index: found[0].index };
+	return {
+		entitySet: found[0].entitySet,
+		array: found[0].array,
+		index: found[0].index,
+	};
 }
 
 /**
@@ -383,14 +443,20 @@ function findEdmxReturnType(
 	operation: JSONObject,
 ): { returnType: JSONObject; parent: JSONObject[]; index: number } | undefined {
 	const rtArray = operation.ReturnType;
-	if (Array.isArray(rtArray) && rtArray.length > 0 && isJSONObject(rtArray[0])) {
-		return { returnType: rtArray[0] as JSONObject, parent: rtArray as JSONObject[], index: 0 };
+	if (
+		Array.isArray(rtArray) &&
+		rtArray.length > 0 &&
+		isJSONObject(rtArray[0])
+	) {
+		return {
+			returnType: rtArray[0] as JSONObject,
+			parent: rtArray as JSONObject[],
+			index: 0,
+		};
 	}
 
 	return undefined;
 }
-
-
 
 /**
  * Converts a CSDL JSON annotation value to an XML Annotation element object

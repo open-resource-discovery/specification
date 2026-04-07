@@ -83,14 +83,24 @@ test("resolveSelector throws for entityType/propertyType on edmx (must use EDMX-
 
 test("resolveSelector throws for entitySet selector on unsupported target format", () => {
 	assert.throws(
-		() => resolveSelector({} as JSONValue, { entitySet: "Customers" }, "openapi-v3"),
+		() =>
+			resolveSelector(
+				{} as JSONValue,
+				{ entitySet: "Customers" },
+				"openapi-v3",
+			),
 		/'entitySet' selector is only supported/,
 	);
 });
 
 test("resolveSelector throws for namespace selector on unsupported target format", () => {
 	assert.throws(
-		() => resolveSelector({} as JSONValue, { namespace: "com.example.Svc" }, "openapi-v3"),
+		() =>
+			resolveSelector(
+				{} as JSONValue,
+				{ namespace: "com.example.Svc" },
+				"openapi-v3",
+			),
 		/'namespace' selector is only supported/,
 	);
 });
@@ -102,7 +112,12 @@ test("resolveSelector throws for entitySet/namespace on edmx (must use EDMX-spec
 	);
 
 	assert.throws(
-		() => resolveSelector({} as JSONValue, { namespace: "com.example.Svc" }, "edmx"),
+		() =>
+			resolveSelector(
+				{} as JSONValue,
+				{ namespace: "com.example.Svc" },
+				"edmx",
+			),
 		/applyOverlayToEdmxDocument/,
 	);
 });
@@ -155,7 +170,12 @@ const csdlTwoNamespaces = {
 
 test("resolveSelector throws on ambiguous unqualified entityType across CSDL namespaces", () => {
 	assert.throws(
-		() => resolveSelector(csdlTwoNamespaces, { entityType: "Customer" }, "csdl-json"),
+		() =>
+			resolveSelector(
+				csdlTwoNamespaces,
+				{ entityType: "Customer" },
+				"csdl-json",
+			),
 		/Ambiguous entityType selector "Customer"/,
 	);
 });
@@ -172,7 +192,8 @@ test("resolveSelector resolves qualified entityType unambiguously in CSDL", () =
 
 test("resolveSelector throws on ambiguous unqualified operation across CSDL namespaces", () => {
 	assert.throws(
-		() => resolveSelector(csdlTwoNamespaces, { operation: "Approve" }, "csdl-json"),
+		() =>
+			resolveSelector(csdlTwoNamespaces, { operation: "Approve" }, "csdl-json"),
 		/Ambiguous operation selector "Approve"/,
 	);
 });
@@ -189,7 +210,12 @@ test("resolveSelector resolves qualified operation unambiguously in CSDL", () =>
 
 test("resolveSelector throws on ambiguous entitySet name across CSDL EntityContainers", () => {
 	assert.throws(
-		() => resolveSelector(csdlTwoNamespaces, { entitySet: "Customers" }, "csdl-json"),
+		() =>
+			resolveSelector(
+				csdlTwoNamespaces,
+				{ entitySet: "Customers" },
+				"csdl-json",
+			),
 		/Ambiguous entitySet selector "Customers"/,
 	);
 });

@@ -51,7 +51,7 @@ function descriptionAnnotations(summary: string, description: string) {
 }
 
 function patchTags(tags: string[]): { tags: [string, ...string[]] } {
-  return { tags: tags as [string, ...string[]] };
+	return { tags: tags as [string, ...string[]] };
 }
 
 export function convertODataV2EnrichmentToOrd(

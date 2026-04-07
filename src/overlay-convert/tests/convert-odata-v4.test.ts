@@ -5,8 +5,9 @@ import type { ODataV4Enrichment } from "../types";
 import { loadLocalFixture } from "./test-helpers";
 
 test("converts OData v4 enrichment to ORD overlay patches using all new selectors", async () => {
-	const source =
-		await loadLocalFixture<ODataV4Enrichment>("odata-v4-enrichment.json");
+	const source = await loadLocalFixture<ODataV4Enrichment>(
+		"odata-v4-enrichment.json",
+	);
 
 	const { overlay, warnings } = convertODataV4EnrichmentToOrd(source, {
 		target: { definitionType: "edmx" },
@@ -66,8 +67,16 @@ test("converts OData v4 enrichment to ORD overlay patches using all new selector
 	});
 
 	// patch[8]: first enum member
-	assert.deepEqual((overlay.patches[8].selector as unknown as Record<string, unknown>).propertyType, "Active");
-	assert.deepEqual((overlay.patches[8].selector as unknown as Record<string, unknown>).entityType, "com.sap.HRService.EmploymentStatus");
+	assert.deepEqual(
+		(overlay.patches[8].selector as unknown as Record<string, unknown>)
+			.propertyType,
+		"Active",
+	);
+	assert.deepEqual(
+		(overlay.patches[8].selector as unknown as Record<string, unknown>)
+			.entityType,
+		"com.sap.HRService.EmploymentStatus",
+	);
 
 	// patch[10]: action operation patch
 	assert.deepEqual(overlay.patches[10].selector, {
@@ -95,27 +104,48 @@ test("converts OData v4 enrichment to ORD overlay patches using all new selector
 	const serviceWarnings = warnings.filter((w) =>
 		w.field?.includes("root.summary"),
 	);
-	assert.equal(serviceWarnings.length, 0, "service-level should emit a patch, not a warning");
-
-	const entitySetWarnings = warnings.filter((w) =>
-		w.type === "unsupported-concept" && w.field?.startsWith("entitySets"),
+	assert.equal(
+		serviceWarnings.length,
+		0,
+		"service-level should emit a patch, not a warning",
 	);
-	assert.equal(entitySetWarnings.length, 0, "entitySet should emit a patch, not an unsupported-concept warning");
+
+	const entitySetWarnings = warnings.filter(
+		(w) =>
+			w.type === "unsupported-concept" && w.field?.startsWith("entitySets"),
+	);
+	assert.equal(
+		entitySetWarnings.length,
+		0,
+		"entitySet should emit a patch, not an unsupported-concept warning",
+	);
 
 	const enumTypeWarnings = warnings.filter((w) =>
 		w.field?.startsWith("enumTypes"),
 	);
-	assert.equal(enumTypeWarnings.length, 0, "enumType should emit patches, not warnings");
-
-	const paramWarnings = warnings.filter((w) =>
-		w.type === "unsupported-concept" && w.field?.includes("parameter"),
+	assert.equal(
+		enumTypeWarnings.length,
+		0,
+		"enumType should emit patches, not warnings",
 	);
-	assert.equal(paramWarnings.length, 0, "parameters should emit patches, not warnings");
 
-	const returnTypeWarnings = warnings.filter((w) =>
-		w.type === "unsupported-concept" && w.field?.includes("returnType"),
+	const paramWarnings = warnings.filter(
+		(w) => w.type === "unsupported-concept" && w.field?.includes("parameter"),
 	);
-	assert.equal(returnTypeWarnings.length, 0, "returnType should emit patches, not warnings");
+	assert.equal(
+		paramWarnings.length,
+		0,
+		"parameters should emit patches, not warnings",
+	);
+
+	const returnTypeWarnings = warnings.filter(
+		(w) => w.type === "unsupported-concept" && w.field?.includes("returnType"),
+	);
+	assert.equal(
+		returnTypeWarnings.length,
+		0,
+		"returnType should emit patches, not warnings",
+	);
 
 	// patch[17]: actionImport fallback patch (no matching actions[] entry)
 	assert.deepEqual(overlay.patches[17].selector, {
@@ -214,25 +244,30 @@ test("service-level summary/description produce a namespace selector patch", () 
 		namespace: "com.example.Svc",
 		summary: "Svc",
 		description: "A service.",
-		entityTypes: [
-			{ name: "Item", summary: "Item", description: "An item." },
-		],
+		entityTypes: [{ name: "Item", summary: "Item", description: "An item." }],
 	};
 
 	const { overlay, warnings } = convertODataV4EnrichmentToOrd(source);
 
 	// First patch should be namespace selector
-	assert.deepEqual(overlay.patches[0].selector, { namespace: "com.example.Svc" });
+	assert.deepEqual(overlay.patches[0].selector, {
+		namespace: "com.example.Svc",
+	});
 	assert.deepEqual(overlay.patches[0].data, {
 		"@Core.Description": "Svc",
 		"@Core.LongDescription": "A service.",
 	});
 
 	// No needs-spec-extension warning for root.summary anymore
-	const schemaWarning = warnings.find((w) =>
-		w.type === "needs-spec-extension" && w.field?.includes("root.summary"),
+	const schemaWarning = warnings.find(
+		(w) =>
+			w.type === "needs-spec-extension" && w.field?.includes("root.summary"),
 	);
-	assert.equal(schemaWarning, undefined, "service-level should no longer emit a warning");
+	assert.equal(
+		schemaWarning,
+		undefined,
+		"service-level should no longer emit a warning",
+	);
 });
 
 test("complexType properties use qualified entityType name as context", () => {
@@ -273,10 +308,18 @@ test("actions and functions are converted with namespace-qualified operation sel
 		summary: "Svc",
 		description: "A service.",
 		actions: [
-			{ name: "Approve", summary: "Approve record", description: "Approves the record." },
+			{
+				name: "Approve",
+				summary: "Approve record",
+				description: "Approves the record.",
+			},
 		],
 		functions: [
-			{ name: "GetSummary", summary: "Get summary", description: "Reads a summary." },
+			{
+				name: "GetSummary",
+				summary: "Get summary",
+				description: "Reads a summary.",
+			},
 		],
 	};
 
@@ -299,10 +342,18 @@ test("actionImport with matching actions[] entry and same description produces n
 		summary: "Svc",
 		description: "A service.",
 		actions: [
-			{ name: "Approve", summary: "Approve record", description: "Approves the record." },
+			{
+				name: "Approve",
+				summary: "Approve record",
+				description: "Approves the record.",
+			},
 		],
 		actionImports: [
-			{ name: "Approve", summary: "Approve record", description: "Approves the record." },
+			{
+				name: "Approve",
+				summary: "Approve record",
+				description: "Approves the record.",
+			},
 		],
 	};
 
@@ -310,8 +361,13 @@ test("actionImport with matching actions[] entry and same description produces n
 
 	// patch[0] = namespace, patch[1] = Approve — no extra import patch
 	assert.equal(overlay.patches.length, 2);
-	assert.deepEqual(overlay.patches[1].selector, { operation: "com.example.Svc.Approve" });
-	assert.equal(warnings.filter((w) => w.field?.startsWith("actionImports")).length, 0);
+	assert.deepEqual(overlay.patches[1].selector, {
+		operation: "com.example.Svc.Approve",
+	});
+	assert.equal(
+		warnings.filter((w) => w.field?.startsWith("actionImports")).length,
+		0,
+	);
 });
 
 test("actionImport with matching actions[] entry but different description emits lost-information warning, op description wins", () => {
@@ -321,10 +377,18 @@ test("actionImport with matching actions[] entry but different description emits
 		summary: "Svc",
 		description: "A service.",
 		actions: [
-			{ name: "Approve", summary: "Approve record", description: "Approves the record." },
+			{
+				name: "Approve",
+				summary: "Approve record",
+				description: "Approves the record.",
+			},
 		],
 		actionImports: [
-			{ name: "Approve", summary: "Action import for Approve.", description: "Exposes Approve via container." },
+			{
+				name: "Approve",
+				summary: "Action import for Approve.",
+				description: "Exposes Approve via container.",
+			},
 		],
 	};
 
@@ -341,7 +405,9 @@ test("actionImport with matching actions[] entry but different description emits
 	});
 
 	// A lost-information warning is emitted
-	const importWarnings = warnings.filter((w) => w.field?.startsWith("actionImports"));
+	const importWarnings = warnings.filter((w) =>
+		w.field?.startsWith("actionImports"),
+	);
 	assert.equal(importWarnings.length, 1);
 	assert.equal(importWarnings[0].type, "lost-information");
 });

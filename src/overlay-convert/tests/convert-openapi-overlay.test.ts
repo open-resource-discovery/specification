@@ -51,7 +51,10 @@ test("converts a standard OpenAPI overlay to ORD overlay format", async () => {
 		jsonPath: "$.paths./constellations/{abbreviation}.get",
 	});
 	assert.equal(patch1.action, "merge");
-	assert.equal(patch1.description, "Deprecate the old abbreviation-based endpoint");
+	assert.equal(
+		patch1.description,
+		"Deprecate the old abbreviation-based endpoint",
+	);
 
 	// Third patch: update on schema property (no action description in fixture)
 	const patch2 = overlay.patches[2];
@@ -166,7 +169,8 @@ test("converts the real compensationInfo OData v2 example as OpenAPI overlay sou
 				},
 			},
 			{
-				target: "$.components.schemas.A_BusinessPartnerType.properties.LegacyField",
+				target:
+					"$.components.schemas.A_BusinessPartnerType.properties.LegacyField",
 				remove: true,
 			},
 		],
