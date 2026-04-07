@@ -188,12 +188,14 @@ export interface SystemInstance {
   tags?: string[];
 }
 /**
- * Generic labels that can be applied to most ORD information.
+ * Generic key-value labels that can be applied to most ORD information.
  * They are defined as an object that may have arbitrary keys.
  * The value of a key is an array of strings.
  *
  * Labels can be used to attach technical information that cannot be expressed natively in ORD.
  * An ORD aggregator should allow to categorize and query information based on the labels provided.
+ *
+ * To learn more about the concept, see [Labels](../concepts/grouping-and-bundling#labels).
  *
  * If multiple parties rely on the existence of certain label information,
  * standardization through ORD SHOULD be preferred.
@@ -495,6 +497,18 @@ export interface ApiResource {
    * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    */
   minSystemVersion?: string;
+  /**
+   * Optional list of related API Resources.
+   *
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of related Event Resources.
+   *
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
+   */
+  relatedEventResources?: RelatedEventResource[];
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
@@ -808,6 +822,42 @@ export interface ConsumptionBundleReference {
    * MUST be in the list of `entryPoints` of the affected resource.
    */
   defaultEntryPoint?: string;
+}
+/**
+ * Defines a relation to an API Resource (via its ORD ID).
+ */
+export interface RelatedAPIResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
+}
+/**
+ * Defines a relation to an Event Resource (via its ORD ID).
+ */
+export interface RelatedEventResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
 }
 /**
  * A changelog entry can be used to indicate changes.
@@ -1372,6 +1422,18 @@ export interface EventResource {
    */
   minSystemVersion?: string;
   /**
+   * Optional list of related API Resources.
+   *
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of related Event Resources.
+   *
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
+   */
+  relatedEventResources?: RelatedEventResource[];
+  /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
    *
@@ -1683,8 +1745,8 @@ export interface EventCompatibility {
   maxVersion: string;
 }
 /**
- * An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
- * The same entity type can be exposed through one or multiple API and events resources.
+ * An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model (e.g. a business object / domain model).
+ * Entity Types can be related to API & Event resources, Data Products and other Entity Types, connecting exposed resources to business semantics.
  *
  * To learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).
  */
@@ -2179,13 +2241,13 @@ export interface Capability {
   /**
    * Optional list of related API Resources.
    *
-   * Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
    */
   relatedApiResources?: RelatedAPIResource[];
   /**
    * Optional list of related Event Resources.
    *
-   * Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
    */
   relatedEventResources?: RelatedEventResource[];
   /**
@@ -2233,42 +2295,6 @@ export interface Capability {
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
-}
-/**
- * Defines a relation to an API Resource (via its ORD ID).
- */
-export interface RelatedAPIResource {
-  /**
-   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
-   *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
-   */
-  ordId: string;
-  /**
-   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
-   *
-   * Defines the semantic meaning of the relationship.
-   * If not provided, the relationship has no specific semantics ("related somehow").
-   */
-  relationType?: string;
-}
-/**
- * Defines a relation to an Event Resource (via its ORD ID).
- */
-export interface RelatedEventResource {
-  /**
-   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
-   *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
-   */
-  ordId: string;
-  /**
-   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
-   *
-   * Defines the semantic meaning of the relationship.
-   * If not provided, the relationship has no specific semantics ("related somehow").
-   */
-  relationType?: string;
 }
 /**
  * Defines a relation to another Capability (via its ORD ID).
@@ -3462,15 +3488,17 @@ export interface Vendor {
   documentationLabels?: DocumentationLabels;
 }
 /**
- * A **product** in ORD is understood as a commercial product or service.
+ * A [**Product**](../concepts/grouping-and-bundling#product) in ORD is understood as a software product or service offering (whether commercial or free).
  *
- * It is a high-level entity for structuring the software portfolio from a sales / software logistics perspective.
- * While **system type** is a technical concept, **product** covers the commercial and marketing view.
+ * It is a high-level entity for structuring the software portfolio from a portfolio / software logistics perspective.
+ * While **system type** is a technical concept, **product** covers the portfolio and marketing view.
  *
  * Please note that the ORD concept of a product is very simple on purpose.
  * There is no distinction between products and services and concepts like product versions, variants, etc.
  *
  * ORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.
+ *
+ * To learn more about the concept, see [Product](../concepts/grouping-and-bundling#product).
  */
 export interface Product {
   /**
@@ -3842,10 +3870,10 @@ export interface File {
   [k: string]: unknown | undefined;
 }
 /**
- * A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
- * Ideally it also includes instructions and details how to request access and credentials for resources.
+ * A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the same credentials and auth mechanism.
+ * Ideally it also includes instructions and details on how to request access and credentials for resources.
  *
- * For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).
+ * For more documentation and guidance on how to use this correctly, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).
  *
  * A Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.
  * A Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned

@@ -9,10 +9,14 @@ title: Grouping and Bundling
 ## Quick Summary
 
 ORD offers multiple ways how resources are grouped or bundled together.
-Some of them have a specific indented usage, while others offer the application providers complete freedom.
+Some of them have a specific intended usage, while others offer the application providers complete freedom.
 
 ### Predefined Grouping Concepts
 
+- The [**Product**](#product) is an optional high-level grouping concept for software portfolio structure.
+  - Packages and individual resources can be assigned to 0..n Products via `partOfProducts`.
+  - Products represent the portfolio and marketing view of a software offering — independent of technical concerns.
+  - Products can be arranged hierarchically (a Product can reference a `parent` Product).
 - The [**Package**](#package) is the only mandatory bundling concept.
   - Every ORD Resource MUST be assigned to exactly one Package.
   - The concerns of a Package are:
@@ -43,20 +47,57 @@ Sub-context namespaces should only be used if they are expected to be stable and
 ORD Documents are only used to transport ORD information to the aggregator and have no impact on grouping and bundling.
 However, there are still some [Considerations on the granularity of ORD Documents](../index.md#considerations-on-the-granularity-of-ord-documents).
 
+## Choosing the Right Concept
+
+The following table summarizes all grouping options and helps decide which one to use:
+
+| Concept | Level | Assignment | Key Question |
+|---|---|---|---|
+| [Product](#product) | Portfolio | Package / resource → 0..n Products | What named software product or service offering does this belong to? |
+| [Package](#package) | Publishing | **Every resource MUST have exactly one** | What is published together and shown in a catalog? |
+| [Consumption Bundle](#consumption-bundle) | Technical access | API / Event → 0..n Bundles | What can be consumed with the same auth mechanism and credentials? |
+| [Entity Type](#entity-type) | Semantic | API / Event / Data Product → 0..n Entity Types | What business object or domain concept does this relate to? |
+| [Group](#groups) | Custom taxonomy | Any resource → 0..n Groups | Custom, governed grouping and taxonomy assignment beyond the predefined ORD concepts |
+| [Tags](#tags) | Free tagging | Any resource → 0..n tags | Flexible keyword tagging for search and navigation |
+| [Labels](#labels) | Key-value metadata | Any resource → 0..n labels | Structured metadata for programmatic querying and filtering |
+
 ## Best Practices and Recommendations
 
 - Avoid using [namespaces](#namespaces) for the purpose of grouping, if possible.
 - For end-user-facing taxonomy, use [groups](#groups) rather than tags or labels. Tags and labels lack human-readable labels and are optimized for machine processing.
 - Packages are less flexible for grouping than [groups](#groups), so the latter are recommended and can be complementary.
-  Use [packages](#package) to group ORD resources published together and making use of the information reuse.
+  Use [packages](#package) to group ORD resources published together and for information reuse.
 
 ## Detailed Explanations
+
+### Product
+
+A [**Product**](../interfaces/Document#product) in ORD represents a software product or service offering (whether commercial or free).
+It is a high-level entity for structuring a software portfolio from a portfolio and software-logistics perspective.
+While the **system type** is a technical concept, a **product** covers the portfolio and marketing view — these concerns are intentionally kept separate.
+
+The ORD concept of a Product is deliberately simple:
+there is no distinction between products and services, and concepts like product versions or variants are out of scope.
+ORD assumes that specialized systems handle those concerns; ORD only provides the means to correlate resources with them.
+
+Products are assigned via the `partOfProducts` property on a [Package](#package) or directly on individual resources.
+Product assignments on a Package are inherited by all resources inside that Package.
+Products can also be arranged hierarchically using the optional `parent` reference.
+
+Typical use cases:
+- Indicate which software product (e.g. *SAP S/4HANA Cloud*) a set of APIs belongs to.
+- Express a product hierarchy (e.g. a sub-product that is part of a broader product family).
+- Enable catalog tooling to filter, group or attribute resources by product.
+
+> ℹ Products are primarily useful for organizations with a large software portfolio where resources span multiple products. For single-product applications the concept can often be omitted.
 
 ### Package
 
 Every ORD Resource MUST be assigned to exactly one [**Package**](../interfaces/Document#package).
 The Package is primarily motivated by publishing and API catalog presentation concerns, including human-readable documentation and presentation.
 It can also express information about the resource providers, terms of use of the APIs, pricing for the usage of the packages, APIs, Events, etc.
+
+Several Package properties — such as `vendor`, `partOfProducts`, `tags`, `labels` and `policyLevel` — are **inherited** by all resources within the Package. This makes the Package a convenient place to define shared metadata once, rather than repeating it on every resource.
 
 The granularity of Packages is driven by all of the following concerns:
 
@@ -91,28 +132,30 @@ All resources that are part of the same Consumption Bundle MUST theoretically be
 In practice however, there are usually more fine-grained access control permissions like RBAC that further restrict access based on user / client identity.
 Those are currently not described in ORD and the Consumption Bundle should therefore describe the "maximum possible scope" that is theoretically possible.
 
-Within Consumption Bundle, we anticipate to provide more machine-readable information that help to understand and automate the necessary steps to get access.
-For example, how credentials can be programmatically obtained could be described by attached `credentialExchangeStrategies`.
+In the future, Consumption Bundles may provide more machine-readable information to help understand and automate the steps needed to get access.
+For example, how credentials can be programmatically obtained could be described via `credentialExchangeStrategies`.
 
 > 🚧 Please note that the Consumption Bundle concept is still in a rather basic form and may be extended in the future.
 
 ### Entity Type
 
-An [**Entity Type**](../interfaces/Document#entity-type) describes a underlying conceptual model (e.g. a business object / domain model).
+An [**Entity Type**](../interfaces/Document#entity-type) describes an underlying conceptual model (e.g. a business object / domain model).
 In special cases, the entity type could just be a term, describing the semantics but without an actual model behind it.
 
-They represent an "internal" concept and are part of the ORD taxonomy. They should not leak internal implementation details, but can be used to create relations to and between external resources and capabilities and relate them to "business semantics".
+Entity Types are part of the ORD taxonomy and represent an "internal" concept. They should not leak internal implementation details, but can be used to relate external resources and capabilities to "business semantics".
 
 Relationships to entity types can be assigned to API & Event resources, data products and other entity types:
 
 ![Entity Type Relations](/img/entity-type-relations.drawio.svg)
 
-The case of "underlying conceptual models", they relate to internal application models that usually have structure (properties, behavior).
-Ideally (see DDD), the underlying conceptual models represent the [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) and have consistent semantics within the domain / bounded context. In other contexts, they might be called conceptual or logical (data) models or just internal models.
-Such models may have a lifecycle, so the ORD ID major version may be of relevance.
+Entity Types can serve two roles:
 
-In case the entity type represents a term, they can be used to describe the domain objects like a glossary of nouns that are consistently used.
-Such entity types usually have no lifecycle, and the ORD ID will have to set `v1` as major version.
+1. **Conceptual models** — they relate to internal application models that usually have structure (properties, behavior).
+   Ideally (see DDD), they represent the [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) and have consistent semantics within the domain / bounded context. In other contexts, they might be called conceptual or logical (data) models or just internal models.
+   Such models may have a lifecycle, so the ORD ID major version may be of relevance.
+
+2. **Business terms** — they describe domain objects like a glossary of nouns that are consistently used.
+   Such entity types usually have no lifecycle, and the ORD ID will have to set `v1` as major version.
 
 The same entity type can be related to one or multiple API and events resources, data products or other entity types.
 The entity type does NOT represent a consumer contract, but describes an internal artifact / concept within the described application.
@@ -124,15 +167,19 @@ However, it's an important concept for the domain language and structure of the 
 ### Tags
 
 **Tags** (via the `tags` array property) can be used to freely tag all kinds of ORD resources in [Folksonomy](https://en.wikipedia.org/wiki/Folksonomy) style.
+Tags defined on a [Package](#package) are inherited by all resources it contains.
 
 Please be aware that there is no global governance of tags and they also do not have namespaces.
 This will inevitably lead to inconsistent usage of tags.
-Since they are usually used for enhancing search or navigation, the simplicity of tags is often still a good trade off.
+Since they are usually used for enhancing search or navigation, the simplicity of tags is often still a good trade-off.
+
+> For governed, human-readable categorization, prefer [Groups](#groups) over tags.
 
 ### Labels
 
-[**Labels**](../interfaces/Document#labels) are very similar to [tags](#tags), but allow to define key value pairs.
-They are optimized towards machine-readability and can be used to query, select and filter resources (similar to [kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)).
+[**Labels**](../interfaces/Document#labels) are similar to [Tags](#tags), but define key-value pairs instead of plain strings.
+They are optimized for machine-readability and can be used to query, select and filter resources programmatically (similar to [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)).
+Labels defined on a [Package](#package) are inherited by all resources it contains (duplicate keys are merged).
 
 ### Groups
 
@@ -143,7 +190,7 @@ They are optimized towards machine-readability and can be used to query, select 
 </div>
 
 The concept has three parts: The **Group Type** defines the semantics / meaning of a particular type of group assignments.
-An example would be to have a Group Type for a "part of an CSN Service" or "part of a Process".
+An example would be to have a Group Type for a "part of a CDS Service" or "part of a Process".
 
 Second, the **Group** itself defines the actual group things can be assigned to.
 In the examples before, this would be the "Employee Service" or the "Hire to Retire" Process.
@@ -152,9 +199,9 @@ Lastly, we need to state the **partOfGroup** assignment of a particular ORD Reso
 E.g. a particular OData API for Employee Management can be part of both the "Employee Service" group (of type CSN Service) and the "Hire to Retire" group of type "Process".
 
 The Group Type could even be defined globally. If the Group Type is shared across different applications, it should have an [authority namespace](../index.md#authority-namespace).
-The Group Instances can potentially be globally defined, too. In this case it works like a global taxonomy with a predefined list of values.It's also possible for the application itself to define and assign its own Group Types and Instances.
+The Group Instances can potentially be globally defined, too. In this case it works like a global taxonomy with a predefined list of values. It's also possible for the application itself to define and assign its own Group Types and Instances.
 
-> The Group concept is correct choice when ORD resources need to be grouped by additional concerns, beyond the predefined concepts from ORD (like Package).
+> The Group concept is the correct choice when ORD resources need to be grouped by additional concerns, beyond the predefined concepts from ORD (like Package).
 
 ### Examples
 

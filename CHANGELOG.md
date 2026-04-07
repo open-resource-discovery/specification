@@ -17,6 +17,25 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - The `type` field accepts any valid [Specification ID](./docs/spec-v1/index.md#specification-id)
   - **Important**: Entity Type definitions SHOULD usually be marked as `private` since they represent conceptual domain models that cannot be accessed directly. Consumers should interact with the data through related API Resources instead. Use the API Resource's `relatedEntityTypes` property to discover which APIs expose a particular entity type.
 
+## [1.14.3]
+
+### Added
+
+- Added relationship property to `ApiResource` for expressing relations to other ORD resources:
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link API resources to API resources
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link API resources to event resources
+
+- Added relationship property to `EventResource` for expressing relations to other ORD resources:
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link event resources to event resources
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link event resources to API resources
+
+### Changed
+
+- Improved the [Grouping and Bundling](./docs/spec-v1/concepts/grouping-and-bundling.md) documentation page:
+  - Added missing **Product** section explaining the concept and its role in portfolio structuring.
+  - Added a "Choosing the Right Concept" comparison table to help decide which grouping mechanism to use.
+  - Improved descriptions for all grouping concepts (Package, Consumption Bundle, Entity Type, Tags, Labels, Groups).
+
 ## [1.14.2]
 
 ### Added

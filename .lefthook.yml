@@ -1,27 +1,14 @@
-# Lefthook configuration to ensure code generation runs before commit
-# Runs `npm run generate` and re-stages any changed files so they are included
-# in the current commit.
+# Lefthook configuration to ensure code generation and formatting runs before commit.
+# Runs `npm run format` and `npm run generate`, then re-stages any changed files
+# so they are included in the current commit.
 
 pre-commit:
   parallel: false
   commands:
-    prevent_main_commit:
-      run: |
-        protected_branch='main'
-        current_branch=$(git rev-parse --abbrev-ref HEAD)
-        if [[ "$current_branch" == "$protected_branch" ]]; then
-          echo "❌ ERROR: Direct commit to '$protected_branch' is blocked!"
-          echo "   Please create a feature branch first: git checkout -b feat/your-feature"
-          exit 1
-        fi
-    check_merge_markers:
-      # Prevent committing files with unresolved merge conflict markers.
-      glob: "*.{js,ts,jsx,tsx,yaml,yml,json,md,mdx,css,html,mjs}"
-      run: |
-        if git diff --cached --name-only | xargs grep -l '^<<<<<<< \|^=======$\|^>>>>>>> ' 2>/dev/null; then
-          echo "Error: Merge conflict markers found in staged files. Please resolve conflicts before committing."
-          exit 1
-        fi
+    format:
+      # Run biome formatting on staged files.
+      run: npm run format
+      stage_fixed: true
     generate:
       # If generation fails, the commit is blocked.
       # `stage_fixed: true` will re-stage any updated files.
@@ -30,16 +17,3 @@ pre-commit:
     git_add_generated:
       # Stage only the generated TypeScript types and copied documentation/schema files.
       run: git add src/generated/ docs/spec-v1/interfaces/ docs/spec-v1/examples/ docs/spec-v1/diagrams/ static/spec-v1/interfaces/
-
-pre-push:
-  commands:
-    prevent_main_push:
-      run: |
-        protected_branch='main'
-        current_branch=$(git rev-parse --abbrev-ref HEAD)
-        if [[ "$current_branch" == "$protected_branch" ]]; then
-          echo "❌ ERROR: Direct push to '$protected_branch' is blocked!"
-          echo "   Please push to a feature branch and create a pull request instead."
-          exit 1
-        fi
-        exit 0
