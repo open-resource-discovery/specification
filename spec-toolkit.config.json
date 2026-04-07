@@ -27,6 +27,17 @@
         "description": "Describes the technical interface / schema for ORD Document."
       },
       "examplesFolderPath": "./examples/documents/"
+    },
+    {
+      "type": "spec",
+      "id": "AgentGovernance",
+      "sourceFilePath": "./spec-extension/models/AgentGovernance.schema.yaml",
+      "sourceIntroFilePath": "./spec-extension/models/AgentGovernance.intro.md",
+      "mdFrontmatter": {
+        "title": "Agent Governance",
+        "sidebar_position": "2",
+        "description": "Model extension for AI agent governance metadata."
+      }
     }
   ],
   "plugins": [
