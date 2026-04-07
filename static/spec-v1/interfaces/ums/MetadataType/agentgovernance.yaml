@@ -42,7 +42,7 @@ spec:
       description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
     - name: 'verified'
       type: 'boolean'
-      description: "Indicates whether this agent or MCP server has been verified and approved for use.\n\nThis flag is set by a governance system (e.g. Integration Suite or LeanIX). The exact\nownership of this flag is being aligned between the relevant teams.\n\nConsumers such as the Agent Gateway can use this flag to filter which agents are\nallowed to run in production environments."
+      description: "Indicates whether this agent or MCP server has been verified and approved for use.\n\nThis flag is set by a governance system (e.g. Integration Suite or AI Agent Hub). The exact\nownership of this flag is being aligned between the relevant teams.\n\nConsumers such as the Agent Gateway can use this flag to filter which agents are\nallowed to run in production environments."
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'target'

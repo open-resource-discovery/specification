@@ -52,7 +52,7 @@ export interface AgentGovernance {
   /**
    * Indicates whether this agent or MCP server has been verified and approved for use.
    *
-   * This flag is set by a governance system (e.g. Integration Suite or LeanIX). The exact
+   * This flag is set by a governance system (e.g. Integration Suite or AI Agent Hub). The exact
    * ownership of this flag is being aligned between the relevant teams.
    *
    * Consumers such as the Agent Gateway can use this flag to filter which agents are
