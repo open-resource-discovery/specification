@@ -1,4 +1,4 @@
 export * from "./Configuration";
 export * from "./Document";
-export * from "./AgentGovernance";
 export * from "./OrdOverlay";
+export * from "./AgentGovernance";
