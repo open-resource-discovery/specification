@@ -1,0 +1,55 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'agentgovernance'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'AgentGovernance'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: "Agent Governance is a model extension for ORD that provides governance metadata for AI agents and MCP servers.\n\nIt intentionally separates governance concerns (ownership, verification status) from the core agent/MCP\nresource description. This allows different teams and systems to manage governance data independently —\nfor example, the team that registers an MCP server in ORD is different from the team (e.g. SAP AI Agent Hub)\nthat verifies and governs it.\n\nAn `AgentGovernance` record references its target resource via `target.ordId` and can be published\nby a different system than the one that published the original agent or MCP server resource.\n\nSee also: [Agent Ownership Decision](https://github.tools.sap/OOCTO/aioai-decision-log/blob/main/40_Results/all-in-on-ai-decisions/agent-ownership.md)"
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: '$schema'
+      type: 'string'
+      description: "Optional [URL](https://tools.ietf.org/html/rfc3986) to the Agent Governance schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools."
+    - name: 'agentGovernance'
+      type: 'string'
+      description: 'Version of the Agent Governance specification used to describe this record.'
+      mandatory: true
+    - name: 'ordId'
+      type: 'string'
+      description: "Unique [ORD ID](../../spec-v1/index.md#ord-id) for this Agent Governance record.\n\nThe resource type segment MUST be `agentGovernance`."
+      mandatory: true
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(agentGovernance):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'title'
+      type: 'string'
+      description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
+      constraints:
+        minLength: 1
+        maxLength: 255
+    - name: 'lastUpdate'
+      type: 'string'
+      description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
+    - name: 'verified'
+      type: 'boolean'
+      description: "Indicates whether this agent or MCP server has been verified and approved for use.\n\nThis flag is set by a governance system (e.g. Integration Suite or LeanIX). The exact\nownership of this flag is being aligned between the relevant teams.\n\nConsumers such as the Agent Gateway can use this flag to filter which agents are\nallowed to run in production environments."
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'target'
+      relatedTypeName: 'AgentGovernanceTarget'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      mandatory: true
+    - propertyName: 'mainContact'
+      relatedTypeName: 'MainContact'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      mandatory: true

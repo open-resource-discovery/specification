@@ -1,0 +1,31 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'maincontact'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'MainContact'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "The main contact responsible for this agent or MCP server from a governance perspective.\n\nThis is a customer-side contact — the person an Enterprise Architect can reach out to\nwhen reviewing agents in the SAP AI Agent Hub. It is NOT the SAP IP owner of the agent.\n\n- For **SAP Standard agents**: set by the IT Admin during provisioning in SAP for Me.\n- For **custom agents**: defaults to the person who deployed the agent.\n\nA single contact is used for Phase 1 . A more detailed split into\n`technicalOwner` and `businessOwner` is planned for a future version.\n\nRequired for EU AI Act compliance, incident response, and cost allocation."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'name'
+      type: 'string'
+      description: 'Full name of the main contact person.'
+      mandatory: true
+      constraints:
+        minLength: 1
+    - name: 'contactEmail'
+      type: 'string'
+      description: "Email address of the main contact person.\n\nThis is the most critical field — if only one attribute can be captured, it MUST be this one."
+      mandatory: true
+  customTypeDefinitions: []
+  metadataRelations: []
