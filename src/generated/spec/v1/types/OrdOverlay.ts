@@ -71,16 +71,10 @@ export type OverlayDefinitionType = (
   string;
 /**
  * Identifies the element in the target to patch.
- * Exactly one selector type is used per patch. The selector object uses one explicit key:
+ * Exactly one selector type is used per patch.
  *
- * - `ordId`: resource level - targets an ORD resource (API, Event, Data Product, ...)
- * - `operation`: operation level - targets an operation (OpenAPI: operationId, MCP: tool name, OData: Action/Function name)
- * - `entityType`: entity type level - targets an OData EntityType or CSN entity definition by name
- * - `propertyType`: property type level - targets a property/element on an OData EntityType/ComplexType or a CSN entity element
- * - `jsonPath`: generic fallback - targets any location in a JSON/YAML-based target document by path
- *
- * Prefer concept-level selectors (operation, entityType, propertyType) over jsonPath
- * where possible, as they are resilient to structural changes in the target format.
+ * Prefer concept-level selectors over generic `jsonPath` where possible,
+ * as they are resilient to structural changes in the target format.
  */
 export type OverlaySelector =
   | OverlaySelectorByJsonPath
@@ -140,63 +134,16 @@ export type OverlayPatchValue =
 /**
  * ⚠️ ALPHA: This specification is in alpha and subject to change.
  *
- * The ORD Overlay is an optional ORD model extension.
+ * The ORD Overlay is an optional ORD model extension that allows patching both ORD resource metadata
+ * and referenced resource definition files without modifying the original source files.
  *
- * It allows patching both ORD resources and referenced resource definition files (e.g. OpenAPI,
- * AsyncAPI, OData CSDL, MCP Agent Cards) without modifying the original source files.
+ * Overlays use concept-level [selectors](#overlay-selector) that are independent of the target format's
+ * internal structure, making them resilient to format changes.
+ * A `jsonPath` selector is available as a generic fallback.
  *
- * Overlay files can be provided through the ORD configuration endpoint
- * (https://open-resource-discovery.org/spec-v1/index#ord-configuration-endpoint),
+ * Overlay files can be provided through the
+ * [ORD Configuration endpoint](../../spec-v1/index.md#ord-configuration-endpoint),
  * or attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`.
- *
- * Patches use concept-level selectors that are independent of the internal structure of the target format,
- * making overlays resilient to format changes (e.g. OpenAPI 3.0 → 3.1, OData CSDL JSON → XML).
- * A JSON Path selector is available as a generic fallback for any JSON/YAML-based target format.
- *
- * Conceptual selector levels (from high to low):
- *   - Resource level: ORD ID (resolved via the ORD registry)
- *   - Namespace level: namespace (OData Schema by namespace — targets Schema-level annotations)
- *   - Operation level: operation (OpenAPI `operationId`, MCP tool `name`, OData Action/Function/FunctionImport name)
- *   - Entity type level: entityType (OData EntityType, ComplexType, or EnumType; CSN Interop entity definition)
- *   - Entity set level: entitySet (OData EntitySet in EntityContainer)
- *   - Property/member type level: propertyType (OData Property/NavigationProperty on an EntityType or ComplexType; OData EnumType member; CSN Interop element)
- *   - Parameter level: parameter (parameter of an OData Action/Function/FunctionImport, or OpenAPI operation parameter, requires `operation` context)
- *   - Return type level: returnType (return type of an OData Action/Function, requires `operation` context)
- *   - Generic fallback: jsonPath (any JSON/YAML document, structure-bound)
- *
- * Selector support by metadata format:
- *   - `operation`: OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`), MCP (identified via a Specification ID in `definitionType`), A2A Agent Card, and OData (`edmx`, `csdl-json`) for Action, Function, and FunctionImport names.
- *   - `entityType` and `propertyType`: OData (`edmx` for v2/v4, `csdl-json` for v4) and CSN Interop (`sap-csn-interop-effective-v1`). For OData, `entityType` targets EntityType, ComplexType, and EnumType definitions. `propertyType` targets properties on EntityType/ComplexType and members on EnumType.
- *   - `entitySet`: OData (`edmx`, `csdl-json`) — targets EntitySet elements in EntityContainer.
- *   - `namespace`: OData (`edmx`, `csdl-json`) — targets the Schema element by its namespace for Schema-level annotations (e.g. service description).
- *   - `parameter`: OData (`edmx`, `csdl-json`) and OpenAPI — targets a named parameter on an Action/Function/FunctionImport or OpenAPI operation. Requires `operation` context.
- *   - `returnType`: OData (`edmx`, `csdl-json`) — targets the ReturnType sub-element of an Action/Function. Requires `operation` context.
- *   - `jsonPath`: any JSON/YAML-based metadata file (including OpenAPI and MCP files).
- *   - `ordId`: ORD resource metadata level (patching ORD resources themselves).
- *
- * Patch data format for OData:
- *   When patching OData metadata (`edmx` or `csdl-json` targets), the `data` value in each patch
- *   MUST be expressed in CSDL JSON annotation format, regardless of whether the actual target file
- *   is EDMX XML or CSDL JSON.
- *   See: https://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html
- *   Annotation keys follow the `@TermName` convention (e.g. `@Core.Description`).
- *   For available standard vocabulary terms, see:
- *   https://docs.oasis-open.org/odata/odata-vocabularies/v4.0/odata-vocabularies-v4.0.html
- *   When the target file is EDMX XML (`edmx`), the overlay merge implementation converts
- *   the CSDL JSON patch data to equivalent `<Annotation>` XML elements in the output.
- *
- * Intended use and compatibility:
- *   - Overlays MUST NOT introduce breaking / incompatible changes to the original API or metadata.
- *   - Typical use-cases are non-breaking enrichments: adding extensions, annotations, or updating
- *     non-critical properties such as descriptions, summaries, or display names.
- *   - An exception is intentionally restricting exposure: an overlay MAY remove or hide elements
- *     (e.g. operations, fields) that should not be visible in a given context or to a given audience.
- *
- * Validation assumption:
- *   - overlays and overlay application assume the selected target document is already valid
- *     for its native metadata format.
- *   - the merge process does not fully validate all target metadata formats.
- *   - the merged output should be validated again with the corresponding format-specific tooling.
  */
 export interface ORDOverlay {
   /**
