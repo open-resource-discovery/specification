@@ -17,18 +17,18 @@ const http = require("http");
 const port = 8080;
 const wellKnownUrl = "/.well-known/open-resource-discovery"; // This path MUST be identical in any implementation
 const ordConfig = {
-  openResourceDiscoveryV1: {
-    documents: [
-      {
-        url: "/ord/documents/1.json",
-        accessStrategies: [
-          {
-            type: "open",
-          },
-        ],
-      },
-    ],
-  },
+	openResourceDiscoveryV1: {
+		documents: [
+			{
+				url: "/ord/documents/1.json",
+				accessStrategies: [
+					{
+						type: "open",
+					},
+				],
+			},
+		],
+	},
 };
 
 // Here we load the metadata files at server startup (statically).
@@ -37,46 +37,59 @@ const openDiscoveryDocument1 = require("../../examples/document-1.json");
 const openApiDocument = require("../nginx-no-auth/metadata/astronomy-v1.oas3.json");
 
 const requestListener = function (req, res) {
-  res.setHeader("Content-Type", "application/json");
-  res.setHeader("Cache-Control", "private, max-age=360");
+	res.setHeader("Content-Type", "application/json");
+	res.setHeader("Cache-Control", "private, max-age=360");
 
-  if (req.method === "GET" && req.url === wellKnownUrl) {
-    jsonResponse(req, res, ordConfig);
-  } else if (req.method === "GET" && req.url.startsWith(ordConfig.openResourceDiscoveryV1.documents[0].url)) {
-    jsonResponse(req, res, openDiscoveryDocument1);
-  } else if (req.method === "GET" && req.url.startsWith("/ord/metadata/astronomy-v1.oas3.json")) {
-    jsonResponse(req, res, openApiDocument);
-  } else {
-    res.writeHead(404).end(
-      JSON.stringify({
-        error: {
-          code: "NOT_FOUND",
-          message: "Requested resource not found.",
-        },
-      }),
-    );
-  }
+	if (req.method === "GET" && req.url === wellKnownUrl) {
+		jsonResponse(req, res, ordConfig);
+	} else if (
+		req.method === "GET" &&
+		req.url.startsWith(ordConfig.openResourceDiscoveryV1.documents[0].url)
+	) {
+		jsonResponse(req, res, openDiscoveryDocument1);
+	} else if (
+		req.method === "GET" &&
+		req.url.startsWith("/ord/metadata/astronomy-v1.oas3.json")
+	) {
+		jsonResponse(req, res, openApiDocument);
+	} else {
+		res.writeHead(404).end(
+			JSON.stringify({
+				error: {
+					code: "NOT_FOUND",
+					message: "Requested resource not found.",
+				},
+			}),
+		);
+	}
 };
 
 http.createServer(requestListener).listen(port);
 
 console.info(`> ORD Configuration:   http://localhost:${port}${wellKnownUrl}`);
-console.info(`> ORD document 1:      http://localhost:${port}${ordConfig.openResourceDiscoveryV1.documents[0].url}`);
-console.info(`> OpenAPI example:     http://localhost:${port}/ord/metadata/astronomy-v1.oas3.json`);
+console.info(
+	`> ORD document 1:      http://localhost:${port}${ordConfig.openResourceDiscoveryV1.documents[0].url}`,
+);
+console.info(
+	`> OpenAPI example:     http://localhost:${port}/ord/metadata/astronomy-v1.oas3.json`,
+);
 
 //////////////////////////////////////////////////
 // HELPER FUNCTIONS                             //
 //////////////////////////////////////////////////
 
 function jsonResponse(req, res, jsonObject) {
-  // OPTIONAL: Create an hash for the JSON response and send it as an ETag
-  const jsonObjectHash = crypto.createHash("sha256").update(JSON.stringify(jsonObject)).digest("hex");
-  res.setHeader("ETag", `"${jsonObjectHash}"`); // RECOMMENDED eTag hash
+	// OPTIONAL: Create an hash for the JSON response and send it as an ETag
+	const jsonObjectHash = crypto
+		.createHash("sha256")
+		.update(JSON.stringify(jsonObject))
+		.digest("hex");
+	res.setHeader("ETag", `"${jsonObjectHash}"`); // RECOMMENDED eTag hash
 
-  if (req.headers["if-none-match"] === `"${jsonObjectHash}"`) {
-    // OPTIONAL: ETag 304 response handling. This may be done automatically by an HTTP framework / server
-    res.writeHead(304).end();
-  } else {
-    res.writeHead(200).end(JSON.stringify(jsonObject));
-  }
+	if (req.headers["if-none-match"] === `"${jsonObjectHash}"`) {
+		// OPTIONAL: ETag 304 response handling. This may be done automatically by an HTTP framework / server
+		res.writeHead(304).end();
+	} else {
+		res.writeHead(200).end(JSON.stringify(jsonObject));
+	}
 }
