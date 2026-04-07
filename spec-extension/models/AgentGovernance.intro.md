@@ -6,6 +6,4 @@ It intentionally separates governance concerns (ownership, verification status) 
 
 An `AgentGovernance` record references its target resource via `target.ordId` and can be published by a different system than the one that published the original agent or MCP server resource.
 
-See also: [Agent Ownership Decision](https://github.tools.sap/CPA/landing-page-content/blob/main/40_Results/all-in-on-ai-decisions/agent-ownership.md)
-
 > 🚧 **Note:** This extension is currently under development.

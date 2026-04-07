@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "Agent Governance is a model extension for ORD that provides governance metadata for AI agents and MCP servers.\n\nIt intentionally separates governance concerns (ownership, verification status) from the core agent/MCP\nresource description. This allows different teams and systems to manage governance data independently —\nfor example, the team that registers an MCP server in ORD is different from the team (e.g. SAP AI Agent Hub)\nthat verifies and governs it.\n\nAn `AgentGovernance` record references its target resource via `target.ordId` and can be published\nby a different system than the one that published the original agent or MCP server resource.\n\nSee also: [Agent Ownership Decision](https://github.tools.sap/OOCTO/aioai-decision-log/blob/main/40_Results/all-in-on-ai-decisions/agent-ownership.md)"
+  description: "Agent Governance is a model extension for ORD that provides governance metadata for AI agents and MCP servers.\n\nIt intentionally separates governance concerns (ownership, verification status) from the core agent/MCP\nresource description. This allows different teams and systems to manage governance data independently —\nfor example, the team that registers an MCP server in ORD is different from the team (e.g. SAP AI Agent Hub)\nthat verifies and governs it.\n\nAn `AgentGovernance` record references its target resource via `target.ordId` and can be published\nby a different system than the one that published the original agent or MCP server resource."
   metadataProperties:
     - name: 'id'
       type: 'guid'

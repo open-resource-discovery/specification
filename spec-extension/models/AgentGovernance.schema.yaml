@@ -11,8 +11,6 @@ description: |-
 
   An `AgentGovernance` record references its target resource via `target.ordId` and can be published
   by a different system than the one that published the original agent or MCP server resource.
-
-  See also: [Agent Ownership Decision](https://github.tools.sap/OOCTO/aioai-decision-log/blob/main/40_Results/all-in-on-ai-decisions/agent-ownership.md)
 x-feature-status: alpha
 x-ums-type: root
 type: object
