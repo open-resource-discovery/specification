@@ -24,39 +24,96 @@ export async function exportForNotebookLM(): Promise<void> {
 
 		// Specification core
 		{ src: "docs/spec-v1/index.md", prefix: "20_spec-v1_" },
-		{ src: "docs/spec-v1/interfaces/Configuration.md", prefix: "21_interface_" },
+		{
+			src: "docs/spec-v1/interfaces/Configuration.md",
+			prefix: "21_interface_",
+		},
 		{ src: "docs/spec-v1/interfaces/Document.md", prefix: "22_interface_" },
 
 		// Concepts
-		{ src: "docs/spec-v1/concepts/ai-agents-and-protocols.md", prefix: "30_concept_" },
+		{
+			src: "docs/spec-v1/concepts/ai-agents-and-protocols.md",
+			prefix: "30_concept_",
+		},
 		{ src: "docs/spec-v1/concepts/compatibility.md", prefix: "31_concept_" },
 		{ src: "docs/spec-v1/concepts/data-product.md", prefix: "32_concept_" },
-		{ src: "docs/spec-v1/concepts/grouping-and-bundling.md", prefix: "33_concept_" },
-		{ src: "docs/spec-v1/concepts/integration-dependency.md", prefix: "34_concept_" },
+		{
+			src: "docs/spec-v1/concepts/grouping-and-bundling.md",
+			prefix: "33_concept_",
+		},
+		{
+			src: "docs/spec-v1/concepts/integration-dependency.md",
+			prefix: "34_concept_",
+		},
 		{ src: "docs/spec-v1/concepts/perspectives.md", prefix: "35_concept_" },
-		{ src: "docs/spec-v1/concepts/system-landscape-model.md", prefix: "36_concept_" },
+		{
+			src: "docs/spec-v1/concepts/system-landscape-model.md",
+			prefix: "36_concept_",
+		},
 
 		// Examples (generated)
 		{ src: "docs/spec-v1/examples/configuration-1.md", prefix: "40_example_" },
 		{ src: "docs/spec-v1/examples/document-1.md", prefix: "41_example_" },
 		{ src: "docs/spec-v1/examples/document-agents.md", prefix: "42_example_" },
-		{ src: "docs/spec-v1/examples/document-data-product.md", prefix: "43_example_" },
-		{ src: "docs/spec-v1/examples/document-entity-types.md", prefix: "44_example_" },
-		{ src: "docs/spec-v1/examples/document-integration-dependencies.md", prefix: "45_example_" },
+		{
+			src: "docs/spec-v1/examples/document-data-product.md",
+			prefix: "43_example_",
+		},
+		{
+			src: "docs/spec-v1/examples/document-entity-types.md",
+			prefix: "44_example_",
+		},
+		{
+			src: "docs/spec-v1/examples/document-integration-dependencies.md",
+			prefix: "45_example_",
+		},
 		{ src: "docs/spec-v1/examples/document-poc.md", prefix: "46_example_" },
-		{ src: "docs/spec-v1/examples/document-special-protocols.md", prefix: "47_example_" },
+		{
+			src: "docs/spec-v1/examples/document-special-protocols.md",
+			prefix: "47_example_",
+		},
 
 		// Extensions
-		{ src: "docs/spec-extensions/index.md", prefix: "50_spec-extensions_overview_" },
-		{ src: "docs/spec-extensions/policy-levels/sap-base-v1.md", prefix: "51_policy-level_" },
-		{ src: "docs/spec-extensions/policy-levels/sap-core-v1.md", prefix: "52_policy-level_" },
-		{ src: "docs/spec-extensions/policy-levels/sap-dp-v1.md", prefix: "53_policy-level_" },
-		{ src: "docs/spec-extensions/access-strategies/open.md", prefix: "54_access-strategy_" },
-		{ src: "docs/spec-extensions/access-strategies/basic-auth.md", prefix: "55_access-strategy_" },
-		{ src: "docs/spec-extensions/access-strategies/sap-businesshub-basic-v1.md", prefix: "56_access-strategy_" },
-		{ src: "docs/spec-extensions/access-strategies/sap-cmp-mtls-v1.md", prefix: "57_access-strategy_" },
-		{ src: "docs/spec-extensions/access-strategies/sap-oauth-client-credentials-v1.md", prefix: "58_access-strategy_" },
-		{ src: "docs/spec-extensions/group-types/sap.md", prefix: "59_group-type_" },
+		{
+			src: "docs/spec-extensions/index.md",
+			prefix: "50_spec-extensions_overview_",
+		},
+		{
+			src: "docs/spec-extensions/policy-levels/sap-base-v1.md",
+			prefix: "51_policy-level_",
+		},
+		{
+			src: "docs/spec-extensions/policy-levels/sap-core-v1.md",
+			prefix: "52_policy-level_",
+		},
+		{
+			src: "docs/spec-extensions/policy-levels/sap-dp-v1.md",
+			prefix: "53_policy-level_",
+		},
+		{
+			src: "docs/spec-extensions/access-strategies/open.md",
+			prefix: "54_access-strategy_",
+		},
+		{
+			src: "docs/spec-extensions/access-strategies/basic-auth.md",
+			prefix: "55_access-strategy_",
+		},
+		{
+			src: "docs/spec-extensions/access-strategies/sap-businesshub-basic-v1.md",
+			prefix: "56_access-strategy_",
+		},
+		{
+			src: "docs/spec-extensions/access-strategies/sap-cmp-mtls-v1.md",
+			prefix: "57_access-strategy_",
+		},
+		{
+			src: "docs/spec-extensions/access-strategies/sap-oauth-client-credentials-v1.md",
+			prefix: "58_access-strategy_",
+		},
+		{
+			src: "docs/spec-extensions/group-types/sap.md",
+			prefix: "59_group-type_",
+		},
 
 		// Help & FAQ
 		{ src: "docs/help/faq/index.md", prefix: "60_faq_" },
@@ -106,7 +163,9 @@ export async function exportForNotebookLM(): Promise<void> {
 			for (const file of skippedFiles) {
 				log.warn(`  - ${file}`);
 			}
-			log.warn(`\nThese files may need to be generated first by running: npm run generate`);
+			log.warn(
+				`\nThese files may need to be generated first by running: npm run generate`,
+			);
 		}
 
 		log.info(`\nYou can now upload all files from ${outputDir} to NotebookLM.`);
