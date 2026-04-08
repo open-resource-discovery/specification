@@ -170,10 +170,8 @@ spec:
       metadataProperties:
         - name: 'type'
           type: 'string'
-          description: "Type of the entity type resource definition.\n\nAny valid [Specification ID](../index.md#specification-id)."
+          description: "Type of the entity type resource definition.\n\nMUST be either:\n- any valid [Specification ID](../index.md#specification-id), or\n- one of the pre-defined values listed below."
           mandatory: true
-          constraints:
-            pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
         - name: 'mediaType'
           type: 'string'
           description: "[Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) that describes the format of the definition.\n\nMedia Types under `application/*` and `text/*` are allowed.\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data."

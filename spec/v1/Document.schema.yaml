@@ -2121,10 +2121,21 @@ definitions:
         description: |-
           Type of the entity type resource definition.
 
-          Any valid [Specification ID](../index.md#specification-id).
+          MUST be either:
+          - any valid [Specification ID](../index.md#specification-id), or
+          - one of the pre-defined values listed below.
         type: string
-        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        anyOf:
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            description: |-
+              Any valid [Specification ID](../index.md#specification-id).
+          - const: sap-csn-interop-effective-v1
+            description: |-
+              [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.
+              The `mediaType` MUST be be set to `application/json`.
         examples:
+          - "sap-csn-interop-effective-v1"
           - "sap.example:entity-model-definition:v1"
 
       mediaType:

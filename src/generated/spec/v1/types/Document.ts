@@ -1972,9 +1972,11 @@ export interface EntityTypeDefinition {
   /**
    * Type of the entity type resource definition.
    *
-   * Any valid [Specification ID](../index.md#specification-id).
+   * MUST be either:
+   * - any valid [Specification ID](../index.md#specification-id), or
+   * - one of the pre-defined values listed below.
    */
-  type: string;
+  type: (string | "sap-csn-interop-effective-v1") & string;
   /**
    * [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) that describes the format of the definition.
    *
