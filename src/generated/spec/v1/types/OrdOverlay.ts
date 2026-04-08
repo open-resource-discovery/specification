@@ -162,6 +162,7 @@ export interface ORDOverlay {
    * @minItems 1
    */
   patches: [OverlayPatch, ...OverlayPatch[]];
+  meta?: OverlayMeta1;
   [k: string]: unknown | undefined;
 }
 /**
@@ -328,7 +329,7 @@ export interface OverlayPatch {
    * @minItems 1
    */
   tags?: [string, ...string[]];
-  meta?: OverlayPatchMeta;
+  meta?: OverlayMeta;
   [k: string]: unknown | undefined;
 }
 export interface OverlaySelectorByJsonPath {
@@ -504,16 +505,26 @@ export interface OverlaySelectorByReturnType {
   operation: string;
 }
 /**
- * Optional arbitrary metadata associated with the patched element for use by overlay
- * consumers, tooling, and registries.
- * The contents of this block are **never applied to the target document** — they are
- * strictly out-of-band and ignored by the patch merge process.
+ * Optional arbitrary metadata for use by overlay consumers, tooling, and registries.
+ * The contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.
  *
- * Use this to carry information that enrichment sources associate with a specific element
- * but that has no standard representation in the target metadata format.
+ * When used at the document level, this carries information about the overlay as a whole (e.g. provenance, approval status, processing instructions).
+ * When used at the patch level, this carries information specific to the patched element (e.g. confidence scores, source references).
  *
  * This is an open/extensible object — any properties are allowed.
  */
-export interface OverlayPatchMeta {
+export interface OverlayMeta {
+  [k: string]: unknown | undefined;
+}
+/**
+ * Optional arbitrary metadata for use by overlay consumers, tooling, and registries.
+ * The contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.
+ *
+ * When used at the document level, this carries information about the overlay as a whole (e.g. provenance, approval status, processing instructions).
+ * When used at the patch level, this carries information specific to the patched element (e.g. confidence scores, source references).
+ *
+ * This is an open/extensible object — any properties are allowed.
+ */
+export interface OverlayMeta1 {
   [k: string]: unknown | undefined;
 }

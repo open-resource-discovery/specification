@@ -172,6 +172,15 @@ properties:
     items:
       $ref: "#/definitions/OverlayPatch"
 
+  meta:
+    $ref: "#/definitions/OverlayMeta"
+    description: |-
+      Optional arbitrary metadata associated with this overlay document for use by overlay consumers, tooling, and registries.
+      The contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.
+
+      Use this to carry document-level information such as provenance, approval status, or processing instructions
+      that apply to the overlay as a whole rather than to individual patches.
+
 required:
   - ordOverlay
   - patches
@@ -368,23 +377,31 @@ definitions:
           - ["deprecated", "migration-v3"]
 
       meta:
-        $ref: "#/definitions/OverlayPatchMeta"
+        $ref: "#/definitions/OverlayMeta"
+        description: |-
+          Optional arbitrary metadata associated with this specific patch for use by overlay consumers, tooling, and registries.
+          The contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.
 
-  OverlayPatchMeta:
+          Use this to carry information that enrichment sources associate with a specific patched element
+          but that has no standard representation in the target metadata format.
+
+  OverlayMeta:
     type: object
-    title: Overlay Patch Meta
+    title: Overlay Meta
     x-ums-type: "embedded"
     description: |-
-      Optional arbitrary metadata associated with the patched element for use by overlay
-      consumers, tooling, and registries.
-      The contents of this block are **never applied to the target document** — they are
-      strictly out-of-band and ignored by the patch merge process.
+      Optional arbitrary metadata for use by overlay consumers, tooling, and registries.
+      The contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.
 
-      Use this to carry information that enrichment sources associate with a specific element
-      but that has no standard representation in the target metadata format.
+      When used at the document level, this carries information about the overlay as a whole (e.g. provenance, approval status, processing instructions).
+      When used at the patch level, this carries information specific to the patched element (e.g. confidence scores, source references).
 
       This is an open/extensible object — any properties are allowed.
     additionalProperties: true
+    examples:
+      - sourceSystem: "AI Enrichment Pipeline v2.1"
+        enrichmentDate: "2026-04-01"
+      - someMetadataKey: { "complex": "object" }
 
   OverlaySelector:
     type: object

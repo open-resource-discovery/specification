@@ -7,6 +7,11 @@
     "ordId": "sap.foo:apiResource:ODataDemoService:v1",
     "definitionType": "edmx"
   },
+  "meta": {
+    "approvalTicket": "JIRA-1234",
+    "lastReviewedBy": "technical-writer@example.com",
+    "reviewDate": "2025-03-15"
+  },
   "patches": [
     {
       "action": "merge",
@@ -14,6 +19,10 @@
       "data": {
         "@Core.Description": "Represents a person or organisation that purchases goods or services.",
         "@Core.LongDescription": "A Customer is the central entity for managing purchasing relationships. It holds personal contact details, address information, and links to orders and sales records."
+      },
+      "meta": {
+        "confidenceScore": 0.95,
+        "sourceDocumentUrl": "https://help.example.com/api-docs/customers"
       }
     },
     {

@@ -39,5 +39,6 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       mandatory: true
     - propertyName: 'meta'
-      relatedTypeName: 'OverlayPatchMeta'
+      relatedTypeName: 'OverlayMeta'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional arbitrary metadata associated with this specific patch for use by overlay consumers, tooling, and registries.\nThe contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.\n\nUse this to carry information that enrichment sources associate with a specific patched element\nbut that has no standard representation in the target metadata format."

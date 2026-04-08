@@ -12,6 +12,10 @@
     "url": "/ord/metadata/astronomy-v1.oas3.json",
     "definitionType": "openapi-v3"
   },
+  "meta": {
+    "sourceSystem": "AI Enrichment Pipeline v2.1",
+    "enrichmentDate": "2025-04-01"
+  },
   "patches": [
     {
       "action": "merge",

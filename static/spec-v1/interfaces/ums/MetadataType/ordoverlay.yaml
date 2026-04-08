@@ -64,3 +64,7 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Ordered sequence of patches to apply to the targeted resource(s).\nPatches are applied strictly in the order they are listed.\nIf two patches target the same document element, both are applied in sequence —\nthe later patch supersedes the earlier one."
       mandatory: true
+    - propertyName: 'meta'
+      relatedTypeName: 'OverlayMeta'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional arbitrary metadata associated with this overlay document for use by overlay consumers, tooling, and registries.\nThe contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.\n\nUse this to carry document-level information such as provenance, approval status, or processing instructions\nthat apply to the overlay as a whole rather than to individual patches."

@@ -17,6 +17,55 @@ import {
 
 const REMOVE_SENTINEL = Symbol("remove");
 
+/**
+ * Deep equality check for JSON values
+ */
+function areValuesEqual(a: JSONValue, b: JSONValue): boolean {
+	// Null check
+	if (a === null && b === null) {
+		return true;
+	}
+	if (a === null || b === null) {
+		return false;
+	}
+
+	// Primitive types
+	if (typeof a !== "object" || typeof b !== "object") {
+		return a === b;
+	}
+
+	// Array comparison
+	if (Array.isArray(a) && Array.isArray(b)) {
+		if (a.length !== b.length) {
+			return false;
+		}
+		return a.every((item, index) => areValuesEqual(item, b[index]));
+	}
+
+	// One is array, other is not
+	if (Array.isArray(a) || Array.isArray(b)) {
+		return false;
+	}
+
+	// Object comparison
+	const aKeys = Object.keys(a);
+	const bKeys = Object.keys(b);
+
+	if (aKeys.length !== bKeys.length) {
+		return false;
+	}
+
+	return aKeys.every((key) => {
+		if (!(key in b)) {
+			return false;
+		}
+		return areValuesEqual(
+			a[key as keyof typeof a] as JSONValue,
+			b[key as keyof typeof b] as JSONValue,
+		);
+	});
+}
+
 interface RootHolder {
 	value: JSONValue;
 }
@@ -112,6 +161,13 @@ function applyPatch(
 
 		const replacement = cloneJSONValue(patch.data as unknown as JSONValue);
 		matches.forEach((match) => {
+			// Warn if the overlay value is redundant (same as target)
+			if (areValuesEqual(match.value, replacement)) {
+				console.warn(
+					`[overlay-merge] Warning: Redundant overlay at ${match.path}. ` +
+						`The overlay value matches the target value and can be removed.`,
+				);
+			}
 			setNode(rootHolder, match, cloneJSONValue(replacement));
 		});
 		return;
@@ -164,6 +220,13 @@ function applyPatch(
 
 		matches.forEach((match) => {
 			const merged = deepMerge(match.value, patch.data as unknown as JSONValue);
+			// Warn if the merge resulted in no changes (redundant overlay)
+			if (areValuesEqual(match.value, merged)) {
+				console.warn(
+					`[overlay-merge] Warning: Redundant overlay at ${match.path}. ` +
+						`The overlay value matches the target value and can be removed.`,
+				);
+			}
 			setNode(rootHolder, match, merged);
 		});
 		return;

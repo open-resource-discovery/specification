@@ -824,3 +824,141 @@ test("merge throws error when incoming type is incompatible with base type", () 
 		/Type mismatch in merge/,
 	);
 });
+
+test("warns when overlay update action sets the same value as the target", async () => {
+	const { result, warnings } = await captureWarnings(() =>
+		applyOverlayToDocument(
+			{
+				title: "Astronomy API",
+				version: "1.0.0",
+			},
+			createOrdOverlay({
+				patches: [
+					createOverlayPatch({
+						action: "update",
+						selector: {
+							jsonPath: "$.title",
+						},
+						data: "Astronomy API", // Same value as target
+					}),
+				],
+			}),
+			{
+				validateOverlaySemantics: false, // Disable validation to only capture redundancy warnings
+			},
+		),
+	);
+
+	assert.deepEqual(result, {
+		title: "Astronomy API",
+		version: "1.0.0",
+	});
+	assert.equal(warnings.length, 1);
+	assert.match(warnings[0], /Redundant overlay at \$.title/);
+	assert.match(warnings[0], /can be removed/);
+});
+
+test("warns when overlay merge action results in no changes", async () => {
+	const { result, warnings } = await captureWarnings(() =>
+		applyOverlayToDocument(
+			{
+				info: {
+					title: "API",
+					version: "1.0.0",
+				},
+			},
+			createOrdOverlay({
+				patches: [
+					createOverlayPatch({
+						action: "merge",
+						selector: {
+							jsonPath: "$.info",
+						},
+						data: {
+							title: "API", // Same value as target
+							version: "1.0.0", // Same value as target
+						},
+					}),
+				],
+			}),
+			{
+				validateOverlaySemantics: false, // Disable validation to only capture redundancy warnings
+			},
+		),
+	);
+
+	assert.deepEqual(result, {
+		info: {
+			title: "API",
+			version: "1.0.0",
+		},
+	});
+	assert.equal(warnings.length, 1);
+	assert.match(warnings[0], /Redundant overlay at \$.info/);
+	assert.match(warnings[0], /can be removed/);
+});
+
+test("does not warn when overlay update changes the value", async () => {
+	const { result, warnings } = await captureWarnings(() =>
+		applyOverlayToDocument(
+			{
+				title: "Old Title",
+			},
+			createOrdOverlay({
+				patches: [
+					createOverlayPatch({
+						action: "update",
+						selector: {
+							jsonPath: "$.title",
+						},
+						data: "New Title",
+					}),
+				],
+			}),
+			{
+				validateOverlaySemantics: false, // Disable validation to only capture redundancy warnings
+			},
+		),
+	);
+
+	assert.deepEqual(result, {
+		title: "New Title",
+	});
+	assert.equal(warnings.length, 0);
+});
+
+test("does not warn when overlay merge adds new properties", async () => {
+	const { result, warnings } = await captureWarnings(() =>
+		applyOverlayToDocument(
+			{
+				info: {
+					title: "API",
+				},
+			},
+			createOrdOverlay({
+				patches: [
+					createOverlayPatch({
+						action: "merge",
+						selector: {
+							jsonPath: "$.info",
+						},
+						data: {
+							version: "1.0.0", // New property
+						},
+					}),
+				],
+			}),
+			{
+				validateOverlaySemantics: false, // Disable validation to only capture redundancy warnings
+			},
+		),
+	);
+
+	assert.deepEqual(result, {
+		info: {
+			title: "API",
+			version: "1.0.0",
+		},
+	});
+	assert.equal(warnings.length, 0);
+});
