@@ -335,19 +335,6 @@ definitions:
             - When `data` contains properties with `null` values: remove only those specific fields (recursively).
               This uses JSON Merge Patch-style delete semantics where `null` indicates deletion.
               Nested `null` values remove nested fields as well.
-
-          Example for partial removal:
-          `data: { "foo": { "bar": null } }` removes only `foo.bar` inside the selected element.
-          To remove the entire selected element, use `data: {}`.
-          - `merge`:
-            - objects are deep-merged recursively.
-            - scalar values are overwritten by the value from `data`.
-            - arrays are appended (new array items are added after existing items).
-            - existing object properties not mentioned in `data` are preserved.
-
-            To fully replace an array, use two ordered patches:
-            1. `remove` the array at the selected location with `data: { "arrayField": null }`.
-            2. `merge` the new array content.
         enum:
           - update
           - append
