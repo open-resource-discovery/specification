@@ -88,10 +88,12 @@ Concept-level selectors are preferred over `jsonPath` because they are resilient
 Available selectors:
 - [`ordId`](#overlay-selector-by-ord-id) — ORD resource metadata
 - [`operation`](#overlay-selector-by-operation) — OpenAPI, MCP, A2A, OData Actions/Functions
-- [`entityType`](#overlay-selector-by-entity-type) — OData types, CSN Interop entities
+- [`entityType`](#overlay-selector-by-entity-type) — OData EntityTypes, CSN Interop entities
+- [`complexType`](#overlay-selector-by-complex-type) — OData ComplexTypes
+- [`enumType`](#overlay-selector-by-enum-type) — OData EnumTypes
 - [`entitySet`](#overlay-selector-by-entity-set) — OData EntitySets
 - [`namespace`](#overlay-selector-by-namespace) — OData Schema namespace
-- [`propertyType`](#overlay-selector-by-property-type) — OData/CSN properties (requires `entityType`)
+- [`propertyType`](#overlay-selector-by-property-type) — OData/CSN properties (requires `entityType`, `complexType`, or `enumType`)
 - [`parameter`](#overlay-selector-by-parameter) — OData/OpenAPI parameters (requires `operation`)
 - [`returnType`](#overlay-selector-by-return-type) — OData return types (requires `operation`)
 - [`jsonPath`](#overlay-selector-by-jsonpath) — generic fallback for any JSON/YAML location
@@ -103,8 +105,9 @@ See each selector's definition for detailed format mappings and usage.
 Each [patch](#overlay-patch) specifies an [`action`](#overlay-patch) and a [`selector`](#overlay-selector), plus an optional [`data`](#overlay-patch-value) value.
 The full semantics of each action (`update`, `merge`, `append`, `remove`) are defined on the [`action`](#overlay-patch) field.
 
-Key point for `merge`: arrays are appended, not replaced.
-To fully replace an array, use two ordered patches — first `remove` the array, then `merge` the new value.
+Key points:
+- `merge`: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array, then `merge` the new value.
+- `append`: concatenates strings or recursively appends string properties in objects. Useful for extending descriptions without replacing them.
 
 ## Validation
 

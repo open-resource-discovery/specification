@@ -32,7 +32,9 @@ The library applies `patches` from an `ORDOverlay` document in order.
 | `ordId` | ORD Document | Scans top-level resource collections |
 | `operation` | OpenAPI, MCP, A2A Agent Card, CSDL JSON, EDMX | See format details below |
 | `entityType` | CSDL JSON, EDMX, CSN Interop | Qualified or unqualified names |
-| `propertyType` | CSDL JSON, EDMX, CSN Interop | Pair with `entityType` to avoid ambiguity |
+| `complexType` | CSDL JSON, EDMX | OData ComplexTypes by namespace-qualified name |
+| `enumType` | CSDL JSON, EDMX | OData EnumTypes by namespace-qualified name |
+| `propertyType` | CSDL JSON, EDMX, CSN Interop | Pair with `entityType`, `complexType`, or `enumType` |
 | `entitySet` | CSDL JSON, EDMX | Targets EntitySet in EntityContainer |
 | `namespace` | CSDL JSON, EDMX | Targets Schema namespace for service-level annotations |
 | `parameter` | OpenAPI, CSDL JSON, EDMX | Requires `operation` context |
@@ -47,9 +49,13 @@ The library applies `patches` from an `ORDOverlay` document in order.
 - Without `definitionType`: auto-detection tries OpenAPI → MCP → A2A in order
 
 **`entityType` selector by format:**
-- `csdl-json`: resolves the `EntityType` or `ComplexType` entry inside the namespace object (e.g. `root["OData.Demo"]["Customer"]`). Supports both qualified (`OData.Demo.Customer`) and unqualified (`Customer`) names.
-- `edmx`: resolves `EntityType` or `ComplexType` XML elements by `@_Name`, supporting qualified or unqualified names. Use via `applyOverlayToEdmxDocument`.
+- `csdl-json`: resolves the `EntityType` entry inside the namespace object (e.g. `root["OData.Demo"]["Customer"]`). Supports both qualified (`OData.Demo.Customer`) and unqualified (`Customer`) names.
+- `edmx`: resolves `EntityType` XML elements by `@_Name`, supporting qualified or unqualified names. Use via `applyOverlayToEdmxDocument`.
 - `sap-csn-interop-effective-v1`: resolves a `definitions` entry by its fully qualified key (e.g. `AirlineService.Airline`).
+
+**`complexType` and `enumType` selectors:**
+- `csdl-json`: resolves `ComplexType` or `EnumType` entries inside the namespace object by namespace-qualified name.
+- `edmx`: resolves `ComplexType` or `EnumType` XML elements by `@_Name`. Use via `applyOverlayToEdmxDocument`.
 
 **`propertyType` selector by format:**
 - `csdl-json`: resolves a non-`$`-prefixed key on the matched entity type object.

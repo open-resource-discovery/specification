@@ -156,8 +156,10 @@ The ORD overlay concept-level selectors used by the converters:
 | `jsonPath` | All JSON/YAML formats | Any node via JSONPath expression |
 | `ordId` | ORD documents | An ORD resource (API, Event, Data Product, ...) by its ORD ID |
 | `operation` | OpenAPI, MCP, A2A, OData CSDL | An HTTP operation (by `operationId`), MCP tool (by `name`), A2A skill (by `id`), or OData Action/Function (by namespace-qualified name). For EDMX: also searches EntityContainer FunctionImport when no Schema-level match is found. |
-| `entityType` | OData CSDL, CSN Interop | An EntityType, ComplexType, or **EnumType** (by namespace-qualified name for OData; by fully-qualified definitions key for CSN) |
-| `propertyType` | OData CSDL, CSN Interop | A Property, NavigationProperty, or **EnumType Member** (unqualified name; requires `entityType` context) |
+| `entityType` | OData CSDL, CSN Interop | An EntityType (by namespace-qualified name for OData; by fully-qualified definitions key for CSN) |
+| `complexType` | OData CSDL (`edmx`, `csdl-json`) | A ComplexType (by namespace-qualified name) |
+| `enumType` | OData CSDL (`edmx`, `csdl-json`) | An EnumType (by namespace-qualified name) |
+| `propertyType` | OData CSDL, CSN Interop | A Property, NavigationProperty, or EnumType Member (unqualified name; requires `entityType`, `complexType`, or `enumType` context) |
 | `entitySet` | OData CSDL (`edmx`, `csdl-json`) | An EntitySet inside EntityContainer (by name) |
 | `namespace` | OData CSDL (`edmx`, `csdl-json`) | The Schema/namespace element itself (for service-level annotations) |
 | `parameter` | OpenAPI, OData CSDL (`edmx`, `csdl-json`) | An operation parameter by name; requires `operation` context |

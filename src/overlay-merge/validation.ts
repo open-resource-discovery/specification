@@ -436,12 +436,17 @@ function validateSelectorSemantics(
 	}
 
 	if (selectorKind === "entityType" || selectorKind === "propertyType") {
-		if (selectorKind === "propertyType" && !("entityType" in selector)) {
+		if (
+			selectorKind === "propertyType" &&
+			!("entityType" in selector) &&
+			!("complexType" in selector) &&
+			!("enumType" in selector)
+		) {
 			warnings.push(
 				createIssue(
 					"warning",
 					selectorPath,
-					"propertyType selectors may need selector.entityType to disambiguate the target property.",
+					"propertyType selectors may need selector.entityType, selector.complexType, or selector.enumType to disambiguate the target property.",
 				),
 			);
 		}

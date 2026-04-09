@@ -215,7 +215,7 @@ test("validateOverlaySemantics warns about ambiguous propertyType selectors with
 	assert.ok(
 		resultNoEntityType.warnings.some((issue) =>
 			issue.message.includes(
-				"propertyType selectors may need selector.entityType",
+				"propertyType selectors may need selector.entityType, selector.complexType, or selector.enumType",
 			),
 		),
 	);

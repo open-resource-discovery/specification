@@ -1,5 +1,31 @@
 ## Appendix
 
+### Tips: Inline Property Merging for OData Targets
+
+When patching OData metadata (EDMX or CSDL JSON), properties can be annotated inline within their parent entity type, complex type, or enum type patch instead of using separate `propertyType` selector patches:
+
+```json
+{
+  "selector": { "entityType": "OData.Demo.Customer" },
+  "action": "merge",
+  "data": {
+    "@Core.Description": "Entity description",
+    "Name": {
+      "@Core.Description": "Customer name"
+    },
+    "Email": {
+      "@Core.Description": "Email address"
+    }
+  }
+}
+```
+
+This inline approach:
+- reduces the number of patches
+- keeps related annotations together
+- improves readability by showing the entity structure
+- works for `entityType`, `complexType`, and `enumType` selectors
+
 ### Deep Dive: Overlays vs. Resource Definition Visibility
 
 When additional metadata should only be visible to a narrower audience, two main approaches exist:
