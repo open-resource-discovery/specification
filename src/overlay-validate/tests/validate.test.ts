@@ -237,3 +237,94 @@ test("validateOverlayWithTarget does not flag non-redundant merge", () => {
 	assert.ok(result.patchSummary !== undefined);
 	assert.equal(result.patchSummary[0].redundant, false);
 });
+
+test("validateOverlay warns on empty string values in patch data", () => {
+	const overlay = createOrdOverlay({
+		target: {
+			definitionType: "openapi-v3",
+		},
+		patches: [
+			createOverlayPatch({
+				selector: {
+					jsonPath: "$.info",
+				},
+				data: {
+					description: "Valid description",
+					"x-empty": "",
+				},
+			}),
+		],
+	});
+
+	const result = validateOverlay(overlay);
+
+	assert.equal(result.valid, true);
+	assert.ok(
+		result.warnings.some((w) => w.message.includes("empty string value")),
+	);
+	assert.ok(result.warnings.some((w) => w.message.includes("x-empty")));
+});
+
+test("validateOverlay warns on duplicate patches targeting same element", () => {
+	const overlay = createOrdOverlay({
+		target: {
+			definitionType: "openapi-v3",
+		},
+		patches: [
+			createOverlayPatch({
+				selector: {
+					jsonPath: "$.info",
+				},
+				data: {
+					title: "First patch",
+				},
+			}),
+			createOverlayPatch({
+				selector: {
+					jsonPath: "$.info",
+				},
+				data: {
+					title: "Second patch - same selector",
+				},
+			}),
+		],
+	});
+
+	const result = validateOverlay(overlay);
+
+	assert.equal(result.valid, true);
+	assert.ok(
+		result.warnings.some((w) =>
+			w.message.includes("Patches 1, 2 target the same element"),
+		),
+	);
+});
+
+test("validateOverlay does not warn on different selectors", () => {
+	const overlay = createOrdOverlay({
+		target: {
+			definitionType: "openapi-v3",
+		},
+		patches: [
+			createOverlayPatch({
+				selector: {
+					jsonPath: "$.info.title",
+				},
+				data: "Title",
+			}),
+			createOverlayPatch({
+				selector: {
+					jsonPath: "$.info.description",
+				},
+				data: "Description",
+			}),
+		],
+	});
+
+	const result = validateOverlay(overlay);
+
+	assert.equal(result.valid, true);
+	assert.ok(
+		!result.warnings.some((w) => w.message.includes("Multiple patches")),
+	);
+});

@@ -102,11 +102,17 @@ export function validateOverlay(
 		context: options.context,
 	});
 
-	return {
+	const result: OverlayFullValidationResult = {
 		valid: validation.errors.length === 0,
 		errors: validation.errors,
 		warnings: validation.warnings,
 	};
+
+	// Additional overlay-level validations
+	checkEmptyDataValues(overlay, result);
+	checkDuplicatePatches(overlay, result);
+
+	return result;
 }
 
 /**
@@ -470,6 +476,93 @@ function captureEdmxValidationWarnings(
 	}
 
 	return warnings;
+}
+
+/**
+ * Checks for empty string values in patch data that may be unintentional.
+ */
+function checkEmptyDataValues(
+	overlay: ORDOverlay,
+	result: OverlayFullValidationResult,
+): void {
+	overlay.patches.forEach((patch, patchIndex) => {
+		if (patch.data === undefined) {
+			return;
+		}
+
+		const emptyFields = findEmptyStringFields(
+			patch.data as unknown as JSONValue,
+		);
+		if (emptyFields.length > 0) {
+			result.warnings.push({
+				level: "warning",
+				path: `$.patches[${patchIndex}].data`,
+				message: `Patch data contains empty string value(s) for: ${emptyFields.join(", ")}. This may be unintentional.`,
+			});
+		}
+	});
+}
+
+/**
+ * Finds fields with empty string values in a JSON object.
+ */
+function findEmptyStringFields(data: JSONValue, prefix = ""): string[] {
+	const emptyFields: string[] = [];
+
+	if (!isJSONObject(data)) {
+		return emptyFields;
+	}
+
+	for (const [key, value] of Object.entries(data)) {
+		const fieldPath = prefix ? `${prefix}.${key}` : key;
+
+		if (value === "") {
+			emptyFields.push(fieldPath);
+		} else if (isJSONObject(value)) {
+			emptyFields.push(...findEmptyStringFields(value, fieldPath));
+		}
+	}
+
+	return emptyFields;
+}
+
+/**
+ * Checks for duplicate patches targeting the same element.
+ */
+function checkDuplicatePatches(
+	overlay: ORDOverlay,
+	result: OverlayFullValidationResult,
+): void {
+	const selectorMap = new Map<string, number[]>();
+
+	overlay.patches.forEach((patch, patchIndex) => {
+		const selectorKey = serializeSelector(patch.selector);
+		const existing = selectorMap.get(selectorKey);
+
+		if (existing !== undefined) {
+			existing.push(patchIndex);
+		} else {
+			selectorMap.set(selectorKey, [patchIndex]);
+		}
+	});
+
+	for (const [_selectorKey, patchIndices] of selectorMap) {
+		if (patchIndices.length > 1) {
+			const patchNumbers = patchIndices.map((i) => i + 1).join(", ");
+			result.warnings.push({
+				level: "warning",
+				path: `$.patches`,
+				message: `Patches ${patchNumbers} target the same element. Consider reviewing whether this is intentional (e.g., remove then update) or indicates accidental duplication.`,
+			});
+		}
+	}
+}
+
+/**
+ * Serializes a selector to a string for comparison.
+ */
+function serializeSelector(selector: unknown): string {
+	return JSON.stringify(selector, Object.keys(selector as object).sort());
 }
 
 // Re-export types from validation module for convenience
