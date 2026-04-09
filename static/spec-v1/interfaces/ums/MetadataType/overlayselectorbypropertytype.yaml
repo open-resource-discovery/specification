@@ -18,14 +18,23 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'propertyType'
       type: 'string'
-      description: "Concept-level property, navigation property, or enum member identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType\n  or ComplexType; or a Member on an EnumType. Use the unqualified name (e.g. `BirthDate`).\n- `csdl-json` (OData v4 CSDL JSON): same resolution as `edmx`. Targets non-`$`-prefixed keys\n  on the matched EntityType, ComplexType, or EnumType object.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of\n  the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).\n\n`entityType` MUST always accompany this field to unambiguously identify the owning type.\nProperty names are unqualified and frequently reused across entity types (e.g. `Name`,\n`Description`, `CreatedAt`), so `propertyType` alone is not a reliable unique selector.\n\nTo patch an enum member, set `entityType` to the qualified EnumType name and\n`propertyType` to the unqualified member name."
+      description: "Concept-level property, navigation property, or enum member identifier.\n\nUse the unqualified property name (e.g. `BirthDate`, `Street`, `Pending`).\nProperty names are frequently reused across types, so a parent type context\nMUST be provided via exactly one of: `entityType`, `complexType`, or `enumType`.\n\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType\n  or ComplexType; or a Member on an EnumType.\n- `csdl-json` (OData v4 CSDL JSON): targets non-`$`-prefixed keys on the matched type object.\n- `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of\n  the matched entity definition. Use `entityType` for CSN Interop targets."
       mandatory: true
       constraints:
         minLength: 1
     - name: 'entityType'
       type: 'string'
-      description: "Required entity type, complex type, or enum type context for the selected property or member.\nBecause property and member names are unqualified and commonly repeated across types\n(e.g. `Name`, `Description`, `CreatedAt`), `entityType` is mandatory to ensure\nthe selector is unambiguous and stable across schema evolution.\n- For OData EntityType/ComplexType: the namespace-qualified name (e.g. `OData.Demo.Customer`).\n- For OData EnumType: the namespace-qualified EnumType name (e.g. `OData.Demo.OrderStatus`).\n- For CSN Interop: the fully qualified `definitions` key of the containing entity\n  (e.g. `AirlineService.Airline`)."
-      mandatory: true
+      description: "Parent EntityType context for the property.\nUse this when targeting a property on an EntityType.\nMUST be the namespace-qualified name (e.g. `OData.Demo.Customer`).\nFor CSN Interop: the fully qualified `definitions` key (e.g. `AirlineService.Airline`).\n\nExactly one of `entityType`, `complexType`, or `enumType` MUST be provided."
+      constraints:
+        minLength: 1
+    - name: 'complexType'
+      type: 'string'
+      description: "**OData-specific** parent ComplexType context for the property.\nUse this when targeting a property on a ComplexType.\nMUST be the namespace-qualified name (e.g. `OData.Demo.Address`).\n\nExactly one of `entityType`, `complexType`, or `enumType` MUST be provided."
+      constraints:
+        minLength: 1
+    - name: 'enumType'
+      type: 'string'
+      description: "**OData-specific** parent EnumType context for the enum member.\nUse this when targeting a member of an EnumType.\nMUST be the namespace-qualified name (e.g. `OData.Demo.OrderStatus`).\n\nExactly one of `entityType`, `complexType`, or `enumType` MUST be provided."
       constraints:
         minLength: 1
   customTypeDefinitions: []

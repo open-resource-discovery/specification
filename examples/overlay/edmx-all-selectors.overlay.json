@@ -2,7 +2,7 @@
   "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:all-odata-selectors:v1",
-  "description": "Demonstrates all OData-specific selectors in a single overlay.\n\nThis example shows:\n- namespace: Schema-level annotations\n- entityType: EntityType/ComplexType/EnumType definitions\n- propertyType: Properties and navigation properties\n- entitySet: EntitySets in EntityContainer\n- operation: Actions and Functions\n- parameter: Action/Function parameters\n- returnType: Action/Function return types",
+  "description": "Demonstrates all OData-specific selectors in a single overlay.\n\nThis example shows:\n- namespace: Schema-level annotations\n- entityType: EntityType definitions\n- complexType: ComplexType definitions (OData-specific)\n- enumType: EnumType definitions (OData-specific)\n- propertyType: Properties, navigation properties, and enum members\n- entitySet: EntitySets in EntityContainer\n- operation: Actions and Functions\n- parameter: Action/Function parameters\n- returnType: Action/Function return types",
   "target": {
     "ordId": "sap.foo:apiResource:HRService:v1",
     "definitionType": "edmx"
@@ -45,14 +45,28 @@
     },
     {
       "action": "merge",
-      "selector": { "entityType": "com.sap.HRService.EmploymentStatus" },
+      "selector": { "complexType": "com.sap.HRService.Address" },
+      "data": {
+        "@Core.Description": "Postal address structure used across employee and organizational data."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "propertyType": "Street", "complexType": "com.sap.HRService.Address" },
+      "data": {
+        "@Core.Description": "Street name and building number."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "enumType": "com.sap.HRService.EmploymentStatus" },
       "data": {
         "@Core.Description": "Enumeration of possible employment states."
       }
     },
     {
       "action": "merge",
-      "selector": { "propertyType": "Terminated", "entityType": "com.sap.HRService.EmploymentStatus" },
+      "selector": { "propertyType": "Terminated", "enumType": "com.sap.HRService.EmploymentStatus" },
       "data": {
         "@Core.Description": "Employment relationship has ended. Employee records are retained for legal compliance."
       }

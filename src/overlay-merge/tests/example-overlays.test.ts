@@ -1042,7 +1042,7 @@ test("namespace selector patches Schema element in EDMX XML", async () => {
 	);
 });
 
-test("entityType selector resolves EnumType in CSDL JSON", async () => {
+test("enumType selector resolves EnumType in CSDL JSON", async () => {
 	const target = await loadJsonFixture<JSONValue>(
 		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
 	);
@@ -1050,11 +1050,11 @@ test("entityType selector resolves EnumType in CSDL JSON", async () => {
 		$schema:
 			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
-		description: "Test EnumType via entityType selector",
+		description: "Test EnumType via enumType selector",
 		patches: [
 			{
 				action: "merge",
-				selector: { entityType: "OData.Demo.Pattern" },
+				selector: { enumType: "OData.Demo.Pattern" },
 				data: { "@Core.Description": "Visual pattern enum" },
 			},
 		],
@@ -1074,7 +1074,7 @@ test("entityType selector resolves EnumType in CSDL JSON", async () => {
 	);
 });
 
-test("propertyType + entityType selectors target EnumType member in CSDL JSON", async () => {
+test("propertyType + enumType selectors target EnumType member in CSDL JSON", async () => {
 	const target = await loadJsonFixture<JSONValue>(
 		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
 	);
@@ -1085,11 +1085,12 @@ test("propertyType + entityType selectors target EnumType member in CSDL JSON", 
 		$schema:
 			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
-		description: "Test EnumType member via propertyType selector",
+		description:
+			"Test EnumType member via propertyType selector with enumType context",
 		patches: [
 			{
 				action: "update",
-				selector: { propertyType: "Yellow", entityType: "OData.Demo.Pattern" },
+				selector: { propertyType: "Yellow", enumType: "OData.Demo.Pattern" },
 				data: {
 					"@odata.value": 1,
 					"@Core.Description": "A yellow colour pattern member",
@@ -1110,6 +1111,72 @@ test("propertyType + entityType selectors target EnumType member in CSDL JSON", 
 		yellow["@Core.Description"],
 		"A yellow colour pattern member",
 		"Yellow member should have @Core.Description",
+	);
+});
+
+test("complexType selector resolves ComplexType in CSDL JSON", async () => {
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
+	);
+	const overlay: ORDOverlay = {
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description: "Test ComplexType via complexType selector",
+		patches: [
+			{
+				action: "merge",
+				selector: { complexType: "OData.Demo.Address" },
+				data: { "@Core.Description": "Postal address structure" },
+			},
+		],
+	};
+
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: false,
+		context: { definitionType: "csdl-json" },
+	}) as Record<string, Record<string, unknown>>;
+
+	const address = merged["OData.Demo"].Address as Record<string, unknown>;
+	assert.ok(address, "Address ComplexType should exist");
+	assert.equal(
+		address["@Core.Description"],
+		"Postal address structure",
+		"Address ComplexType should have @Core.Description",
+	);
+});
+
+test("propertyType + complexType selectors target ComplexType property in CSDL JSON", async () => {
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
+	);
+	const overlay: ORDOverlay = {
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description:
+			"Test ComplexType property via propertyType selector with complexType context",
+		patches: [
+			{
+				action: "merge",
+				selector: { propertyType: "Street", complexType: "OData.Demo.Address" },
+				data: { "@Core.Description": "Street name and number" },
+			},
+		],
+	};
+
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: false,
+		context: { definitionType: "csdl-json" },
+	}) as Record<string, Record<string, unknown>>;
+
+	const address = merged["OData.Demo"].Address as Record<string, unknown>;
+	const street = address.Street as Record<string, unknown>;
+	assert.ok(street, "Street property should exist");
+	assert.equal(
+		street["@Core.Description"],
+		"Street name and number",
+		"Street property should have @Core.Description",
 	);
 });
 

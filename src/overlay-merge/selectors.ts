@@ -51,15 +51,40 @@ export function resolveSelector(
 	}
 
 	if (isJSONObject(selector) && typeof selector.propertyType === "string") {
+		// Determine parent type context: entityType, complexType, or enumType
 		const entityTypeName =
 			typeof (selector as Record<string, unknown>).entityType === "string"
 				? (selector as { entityType: string }).entityType
 				: undefined;
+		const complexTypeName =
+			typeof (selector as Record<string, unknown>).complexType === "string"
+				? (selector as { complexType: string }).complexType
+				: undefined;
+		const enumTypeName =
+			typeof (selector as Record<string, unknown>).enumType === "string"
+				? (selector as { enumType: string }).enumType
+				: undefined;
+
+		// Derive typeKind from which context field is present
+		let parentTypeName: string | undefined;
+		let typeKind: string | undefined;
+		if (entityTypeName !== undefined) {
+			parentTypeName = entityTypeName;
+			typeKind = "EntityType";
+		} else if (complexTypeName !== undefined) {
+			parentTypeName = complexTypeName;
+			typeKind = "ComplexType";
+		} else if (enumTypeName !== undefined) {
+			parentTypeName = enumTypeName;
+			typeKind = "EnumType";
+		}
+
 		return resolvePropertyTypeSelector(
 			root,
 			selector.propertyType,
-			entityTypeName,
+			parentTypeName,
 			definitionType,
+			typeKind,
 		);
 	}
 
@@ -68,7 +93,30 @@ export function resolveSelector(
 		typeof selector.entityType === "string" &&
 		!("propertyType" in selector)
 	) {
-		return resolveEntityTypeSelector(root, selector.entityType, definitionType);
+		return resolveEntityTypeSelector(
+			root,
+			selector.entityType,
+			definitionType,
+			"EntityType",
+		);
+	}
+
+	if (isJSONObject(selector) && typeof selector.complexType === "string") {
+		return resolveEntityTypeSelector(
+			root,
+			selector.complexType,
+			definitionType,
+			"ComplexType",
+		);
+	}
+
+	if (isJSONObject(selector) && typeof selector.enumType === "string") {
+		return resolveEntityTypeSelector(
+			root,
+			selector.enumType,
+			definitionType,
+			"EnumType",
+		);
 	}
 
 	if (isJSONObject(selector) && typeof selector.entitySet === "string") {
@@ -105,7 +153,7 @@ export function resolveSelector(
 	}
 
 	throw new OverlayMergeError(
-		"Unsupported selector. Supported selectors: jsonPath, ordId, operation, entityType, propertyType, entitySet, namespace, parameter, returnType.",
+		"Unsupported selector. Supported selectors: jsonPath, ordId, operation, entityType, complexType, enumType, propertyType, entitySet, namespace, parameter, returnType.",
 	);
 }
 
@@ -465,11 +513,15 @@ function isCsdlJsonDocument(root: Record<string, JSONValue>): boolean {
 
 /**
  * Dispatches an `entityType` selector to the correct format-specific resolver.
+ *
+ * @param typeKind - Optional OData type kind filter ("EntityType", "ComplexType", "EnumType").
+ *   Only meaningful for OData targets (csdl-json). Ignored for CSN Interop.
  */
 function resolveEntityTypeSelector(
 	root: JSONValue,
 	entityTypeName: string,
 	definitionType: string | undefined,
+	typeKind?: string,
 ): NodeReference[] {
 	if (!isJSONObject(root)) {
 		throw new OverlayMergeError(
@@ -481,6 +533,7 @@ function resolveEntityTypeSelector(
 		definitionType === "sap-csn-interop-effective-v1" ||
 		(definitionType === undefined && isCsnInteropDocument(root));
 	if (isCsn) {
+		// typeKind is not applicable to CSN Interop (different type system)
 		return resolveCsnEntityType(root, entityTypeName);
 	}
 
@@ -488,7 +541,7 @@ function resolveEntityTypeSelector(
 		definitionType === "csdl-json" ||
 		(definitionType === undefined && isCsdlJsonDocument(root));
 	if (isCsdl) {
-		return resolveCsdlJsonEntityType(root, entityTypeName);
+		return resolveCsdlJsonEntityType(root, entityTypeName, typeKind);
 	}
 
 	if (definitionType === "edmx") {
@@ -505,12 +558,16 @@ function resolveEntityTypeSelector(
 
 /**
  * Dispatches a `propertyType` selector to the correct format-specific resolver.
+ *
+ * @param typeKind - Optional OData type kind filter ("EntityType", "ComplexType", "EnumType").
+ *   Only meaningful for OData targets (csdl-json). Ignored for CSN Interop.
  */
 function resolvePropertyTypeSelector(
 	root: JSONValue,
 	propertyName: string,
 	entityTypeName: string | undefined,
 	definitionType: string | undefined,
+	typeKind?: string,
 ): NodeReference[] {
 	if (!isJSONObject(root)) {
 		throw new OverlayMergeError(
@@ -522,6 +579,7 @@ function resolvePropertyTypeSelector(
 		definitionType === "sap-csn-interop-effective-v1" ||
 		(definitionType === undefined && isCsnInteropDocument(root));
 	if (isCsn) {
+		// typeKind is not applicable to CSN Interop (different type system)
 		return resolveCsnPropertyType(root, propertyName, entityTypeName);
 	}
 
@@ -529,7 +587,12 @@ function resolvePropertyTypeSelector(
 		definitionType === "csdl-json" ||
 		(definitionType === undefined && isCsdlJsonDocument(root));
 	if (isCsdl) {
-		return resolveCsdlJsonPropertyType(root, propertyName, entityTypeName);
+		return resolveCsdlJsonPropertyType(
+			root,
+			propertyName,
+			entityTypeName,
+			typeKind,
+		);
 	}
 
 	if (definitionType === "edmx") {
@@ -641,9 +704,16 @@ function getCsdlJsonNamespaceEntries(
 function resolveCsdlJsonEntityType(
 	root: Record<string, JSONValue>,
 	entityTypeName: string,
+	typeKind?: string,
 ): NodeReference[] {
 	const namespaces = getCsdlJsonNamespaceEntries(root);
 	const matches: NodeReference[] = [];
+
+	// Determine which $Kind values to match based on typeKind filter
+	const allowedKinds =
+		typeKind !== undefined
+			? [typeKind]
+			: ["EntityType", "ComplexType", "EnumType"];
 
 	for (const { namespace, nsObj } of namespaces) {
 		let localName: string;
@@ -662,11 +732,7 @@ function resolveCsdlJsonEntityType(
 		if (!isJSONObject(candidate)) continue;
 
 		const kind = candidate["$Kind"];
-		if (
-			kind === "EntityType" ||
-			kind === "ComplexType" ||
-			kind === "EnumType"
-		) {
+		if (typeof kind === "string" && allowedKinds.includes(kind)) {
 			matches.push({
 				parent: nsObj,
 				key: localName,
@@ -695,22 +761,27 @@ function resolveCsdlJsonPropertyType(
 	root: Record<string, JSONValue>,
 	propertyName: string,
 	entityTypeName: string | undefined,
+	typeKind?: string,
 ): NodeReference[] {
 	let entityRefs: NodeReference[];
 
 	if (entityTypeName !== undefined) {
-		entityRefs = resolveCsdlJsonEntityType(root, entityTypeName);
+		entityRefs = resolveCsdlJsonEntityType(root, entityTypeName, typeKind);
 	} else {
 		// Scan all EntityType, ComplexType, and EnumType definitions across all namespaces
+		// Respect typeKind filter if provided
+		const allowedKinds =
+			typeKind !== undefined
+				? [typeKind]
+				: ["EntityType", "ComplexType", "EnumType"];
 		const namespaces = getCsdlJsonNamespaceEntries(root);
 		entityRefs = [];
 		for (const { namespace, nsObj } of namespaces) {
 			for (const [key, value] of Object.entries(nsObj)) {
 				if (
 					isJSONObject(value) &&
-					(value["$Kind"] === "EntityType" ||
-						value["$Kind"] === "ComplexType" ||
-						value["$Kind"] === "EnumType")
+					typeof value["$Kind"] === "string" &&
+					allowedKinds.includes(value["$Kind"])
 				) {
 					entityRefs.push({
 						parent: nsObj,

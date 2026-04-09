@@ -1,0 +1,26 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlayselectorbycomplextype'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlaySelectorByComplexType'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'complexType'
+      type: 'string'
+      description: "**OData-specific** selector targeting a ComplexType element by its namespace-qualified name.\n\nA ComplexType in OData is a structured type without a key, typically used for reusable\nembedded structures like addresses, coordinates, or measurement values. This maps to:\n- `edmx` (OData v2/v4 CSDL XML): targets `<ComplexType Name=\"...\">` elements in the Schema.\n- `csdl-json` (OData v4 CSDL JSON): targets elements with `$Kind: \"ComplexType\"`.\n\nMUST use the namespace-qualified name (e.g. `OData.Demo.Address`) for unambiguous resolution.\n\nComplexTypes are often shared across multiple EntityTypes, so patching a ComplexType\naffects all usages of that type throughout the service."
+      mandatory: true
+      constraints:
+        minLength: 1
+  customTypeDefinitions: []
+  metadataRelations: []

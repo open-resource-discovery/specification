@@ -81,6 +81,8 @@ export type OverlaySelector =
   | OverlaySelectorByORDID
   | OverlaySelectorByOperation
   | OverlaySelectorByEntityType
+  | OverlaySelectorByComplexType
+  | OverlaySelectorByEnumType
   | OverlaySelectorByPropertyType
   | OverlaySelectorByEntitySet
   | OverlaySelectorByNamespace
@@ -388,52 +390,95 @@ export interface OverlaySelectorByOperation {
 }
 export interface OverlaySelectorByEntityType {
   /**
-   * Concept-level entity or enum type identifier.
-   * Supported metadata formats:
-   * - `edmx` (OData v2/v4 CSDL XML): targets EntityType, ComplexType, or EnumType elements
-   *   declared in the Schema. MUST use the namespace-qualified name (e.g. `OData.Demo.Customer`).
-   *   For EntitySet-level patching (Capabilities annotations), use the `entitySet` selector instead.
-   * - `csdl-json` (OData v4 CSDL JSON): same name resolution as `edmx`. Resolves elements
-   *   with `$Kind` equal to `EntityType`, `ComplexType`, or `EnumType`.
-   * - `sap-csn-interop-effective-v1` (CSN Interop): targets a `definitions` entry by its
-   *   fully qualified key (e.g. `AirlineService.Airline`). In CSN Interop the key is always
-   *   fully qualified, so the fully qualified form MUST be used.
+   * **OData-specific** selector targeting an EntityType element by its namespace-qualified name.
    *
-   * When targeting an EnumType to patch its members individually,
-   * use this selector as the `entityType` context within a `propertyType` selector.
+   * An EntityType in OData is a structured type with a key that represents a business entity
+   * (e.g. `Customer`, `Order`, `Employee`). This maps to:
+   * - `edmx` (OData v2/v4 CSDL XML): targets `<EntityType Name="...">` elements in the Schema.
+   * - `csdl-json` (OData v4 CSDL JSON): targets elements with `$Kind: "EntityType"`.
+   *
+   * MUST use the namespace-qualified name (e.g. `OData.Demo.Customer`) for unambiguous resolution.
+   * For EntitySet-level patching (Capabilities annotations), use the `entitySet` selector instead.
+   *
+   * For CSN Interop targets (`sap-csn-interop-effective-v1`), this selector targets a `definitions`
+   * entry by its fully qualified key (e.g. `AirlineService.Airline`).
+   *
+   * To target ComplexType or EnumType elements, use the dedicated `complexType` or `enumType` selectors.
    */
   entityType: string;
+}
+export interface OverlaySelectorByComplexType {
+  /**
+   * **OData-specific** selector targeting a ComplexType element by its namespace-qualified name.
+   *
+   * A ComplexType in OData is a structured type without a key, typically used for reusable
+   * embedded structures like addresses, coordinates, or measurement values. This maps to:
+   * - `edmx` (OData v2/v4 CSDL XML): targets `<ComplexType Name="...">` elements in the Schema.
+   * - `csdl-json` (OData v4 CSDL JSON): targets elements with `$Kind: "ComplexType"`.
+   *
+   * MUST use the namespace-qualified name (e.g. `OData.Demo.Address`) for unambiguous resolution.
+   *
+   * ComplexTypes are often shared across multiple EntityTypes, so patching a ComplexType
+   * affects all usages of that type throughout the service.
+   */
+  complexType: string;
+}
+export interface OverlaySelectorByEnumType {
+  /**
+   * **OData-specific** selector targeting an EnumType element by its namespace-qualified name.
+   *
+   * An EnumType in OData is an enumeration type with named members representing a fixed set
+   * of values (e.g. `OrderStatus`, `Priority`, `Gender`). This maps to:
+   * - `edmx` (OData v2/v4 CSDL XML): targets `<EnumType Name="...">` elements in the Schema.
+   * - `csdl-json` (OData v4 CSDL JSON): targets elements with `$Kind: "EnumType"`.
+   *
+   * MUST use the namespace-qualified name (e.g. `OData.Demo.OrderStatus`) for unambiguous resolution.
+   *
+   * To patch individual enum members, use the `propertyType` selector with this `enumType` as context.
+   */
+  enumType: string;
 }
 export interface OverlaySelectorByPropertyType {
   /**
    * Concept-level property, navigation property, or enum member identifier.
+   *
+   * Use the unqualified property name (e.g. `BirthDate`, `Street`, `Pending`).
+   * Property names are frequently reused across types, so a parent type context
+   * MUST be provided via exactly one of: `entityType`, `complexType`, or `enumType`.
+   *
    * Supported metadata formats:
    * - `edmx` (OData v2/v4 CSDL XML): targets a Property or NavigationProperty on an EntityType
-   *   or ComplexType; or a Member on an EnumType. Use the unqualified name (e.g. `BirthDate`).
-   * - `csdl-json` (OData v4 CSDL JSON): same resolution as `edmx`. Targets non-`$`-prefixed keys
-   *   on the matched EntityType, ComplexType, or EnumType object.
+   *   or ComplexType; or a Member on an EnumType.
+   * - `csdl-json` (OData v4 CSDL JSON): targets non-`$`-prefixed keys on the matched type object.
    * - `sap-csn-interop-effective-v1` (CSN Interop): targets an entry in the `elements` map of
-   *   the matched entity definition. Use the element name as defined (e.g. `AirlineID`, `Name`).
-   *
-   * `entityType` MUST always accompany this field to unambiguously identify the owning type.
-   * Property names are unqualified and frequently reused across entity types (e.g. `Name`,
-   * `Description`, `CreatedAt`), so `propertyType` alone is not a reliable unique selector.
-   *
-   * To patch an enum member, set `entityType` to the qualified EnumType name and
-   * `propertyType` to the unqualified member name.
+   *   the matched entity definition. Use `entityType` for CSN Interop targets.
    */
   propertyType: string;
   /**
-   * Required entity type, complex type, or enum type context for the selected property or member.
-   * Because property and member names are unqualified and commonly repeated across types
-   * (e.g. `Name`, `Description`, `CreatedAt`), `entityType` is mandatory to ensure
-   * the selector is unambiguous and stable across schema evolution.
-   * - For OData EntityType/ComplexType: the namespace-qualified name (e.g. `OData.Demo.Customer`).
-   * - For OData EnumType: the namespace-qualified EnumType name (e.g. `OData.Demo.OrderStatus`).
-   * - For CSN Interop: the fully qualified `definitions` key of the containing entity
-   *   (e.g. `AirlineService.Airline`).
+   * Parent EntityType context for the property.
+   * Use this when targeting a property on an EntityType.
+   * MUST be the namespace-qualified name (e.g. `OData.Demo.Customer`).
+   * For CSN Interop: the fully qualified `definitions` key (e.g. `AirlineService.Airline`).
+   *
+   * Exactly one of `entityType`, `complexType`, or `enumType` MUST be provided.
    */
-  entityType: string;
+  entityType?: string;
+  /**
+   * **OData-specific** parent ComplexType context for the property.
+   * Use this when targeting a property on a ComplexType.
+   * MUST be the namespace-qualified name (e.g. `OData.Demo.Address`).
+   *
+   * Exactly one of `entityType`, `complexType`, or `enumType` MUST be provided.
+   */
+  complexType?: string;
+  /**
+   * **OData-specific** parent EnumType context for the enum member.
+   * Use this when targeting a member of an EnumType.
+   * MUST be the namespace-qualified name (e.g. `OData.Demo.OrderStatus`).
+   *
+   * Exactly one of `entityType`, `complexType`, or `enumType` MUST be provided.
+   */
+  enumType?: string;
 }
 export interface OverlaySelectorByEntitySet {
   /**

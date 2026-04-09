@@ -114,17 +114,28 @@ function getEdmxSchemas(tree: Record<string, JSONValue>): JSONObject[] {
  * Supports qualified names (e.g. `OData.Demo.Customer`) and unqualified names (e.g. `Customer`).
  * Also resolves EnumType elements by the same naming convention.
  * Throws if an unqualified name matches in more than one schema — use a qualified name to disambiguate.
+ *
+ * @param typeKind - Optional OData type kind filter ("EntityType", "ComplexType", "EnumType").
+ *   If provided, only types matching this kind are considered.
  */
 function findEdmxEntityType(
 	schemas: JSONObject[],
 	entityTypeName: string,
+	typeKind?: string,
 ): { entityType: JSONObject; array: JSONObject[]; index: number } | undefined {
 	const found: Array<{
 		entityType: JSONObject;
 		array: JSONObject[];
 		index: number;
 		ns: string;
+		kind: string;
 	}> = [];
+
+	// Determine which type arrays to search based on typeKind filter
+	const typeArrayKeys =
+		typeKind !== undefined
+			? [typeKind]
+			: ["EntityType", "ComplexType", "EnumType"];
 
 	for (const schema of schemas) {
 		const ns = schema["@_Namespace"];
@@ -139,7 +150,7 @@ function findEdmxEntityType(
 			continue;
 		}
 
-		for (const typeArrayKey of ["EntityType", "ComplexType", "EnumType"]) {
+		for (const typeArrayKey of typeArrayKeys) {
 			const typeArray = schema[typeArrayKey];
 			if (!Array.isArray(typeArray)) continue;
 			for (let i = 0; i < typeArray.length; i++) {
@@ -150,6 +161,7 @@ function findEdmxEntityType(
 						array: typeArray as JSONObject[],
 						index: i,
 						ns,
+						kind: typeArrayKey,
 					});
 				}
 			}
@@ -683,20 +695,73 @@ function applyEdmxPatch(schemas: JSONObject[], patch: OverlayPatch): boolean {
 		typeof selector.entityType === "string" &&
 		!("propertyType" in selector)
 	) {
-		const result = findEdmxEntityType(schemas, selector.entityType);
+		const result = findEdmxEntityType(
+			schemas,
+			selector.entityType,
+			"EntityType",
+		);
+		if (!result) return false;
+		applyEdmxAnnotationPatch(result.entityType, patch);
+		return true;
+	}
+
+	if (isJSONObject(selector) && typeof selector.complexType === "string") {
+		const result = findEdmxEntityType(
+			schemas,
+			selector.complexType,
+			"ComplexType",
+		);
+		if (!result) return false;
+		applyEdmxAnnotationPatch(result.entityType, patch);
+		return true;
+	}
+
+	if (
+		isJSONObject(selector) &&
+		typeof selector.enumType === "string" &&
+		!("propertyType" in selector)
+	) {
+		const result = findEdmxEntityType(schemas, selector.enumType, "EnumType");
 		if (!result) return false;
 		applyEdmxAnnotationPatch(result.entityType, patch);
 		return true;
 	}
 
 	if (isJSONObject(selector) && typeof selector.propertyType === "string") {
+		// Determine parent type context: entityType, complexType, or enumType
 		const entityTypeName =
 			typeof (selector as Record<string, unknown>).entityType === "string"
 				? (selector as { entityType: string }).entityType
 				: undefined;
+		const complexTypeName =
+			typeof (selector as Record<string, unknown>).complexType === "string"
+				? (selector as { complexType: string }).complexType
+				: undefined;
+		const enumTypeName =
+			typeof (selector as Record<string, unknown>).enumType === "string"
+				? (selector as { enumType: string }).enumType
+				: undefined;
 
+		// Derive typeKind from which context field is present
+		let parentTypeName: string | undefined;
+		let typeKind: string | undefined;
 		if (entityTypeName !== undefined) {
-			const entityResult = findEdmxEntityType(schemas, entityTypeName);
+			parentTypeName = entityTypeName;
+			typeKind = "EntityType";
+		} else if (complexTypeName !== undefined) {
+			parentTypeName = complexTypeName;
+			typeKind = "ComplexType";
+		} else if (enumTypeName !== undefined) {
+			parentTypeName = enumTypeName;
+			typeKind = "EnumType";
+		}
+
+		if (parentTypeName !== undefined) {
+			const entityResult = findEdmxEntityType(
+				schemas,
+				parentTypeName,
+				typeKind,
+			);
 			if (!entityResult) return false;
 			const propResult = findEdmxProperty(
 				entityResult.entityType,
@@ -708,10 +773,11 @@ function applyEdmxPatch(schemas: JSONObject[], patch: OverlayPatch): boolean {
 			return true;
 		}
 
-		// Search all entity types across all schemas
+		// Search all entity types across all schemas (no parent type context provided)
+		const typeArrayKeys = ["EntityType", "ComplexType", "EnumType"];
 		let matched = false;
 		for (const schema of schemas) {
-			for (const typeArrayKey of ["EntityType", "ComplexType"]) {
+			for (const typeArrayKey of typeArrayKeys) {
 				const types = schema[typeArrayKey];
 				if (!Array.isArray(types)) continue;
 				for (const et of types) {
@@ -782,7 +848,7 @@ function applyEdmxPatch(schemas: JSONObject[], patch: OverlayPatch): boolean {
 	}
 
 	throw new OverlayMergeError(
-		"Unsupported selector for EDMX target. Supported selectors are: entityType, propertyType, operation, entitySet, namespace, parameter, returnType.",
+		"Unsupported selector for EDMX target. Supported selectors are: entityType, complexType, enumType, propertyType, operation, entitySet, namespace, parameter, returnType.",
 	);
 }
 
