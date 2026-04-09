@@ -18,7 +18,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'enumType'
       type: 'string'
-      description: "**OData-specific** selector targeting an EnumType element by its namespace-qualified name.\n\nAn EnumType in OData is an enumeration type with named members representing a fixed set\nof values (e.g. `OrderStatus`, `Priority`, `Gender`). This maps to:\n- `edmx` (OData v2/v4 CSDL XML): targets `<EnumType Name=\"...\">` elements in the Schema.\n- `csdl-json` (OData v4 CSDL JSON): targets elements with `$Kind: \"EnumType\"`.\n\nMUST use the namespace-qualified name (e.g. `OData.Demo.OrderStatus`) for unambiguous resolution.\n\nTo patch individual enum members, use the `propertyType` selector with this `enumType` as context."
+      description: "**OData-specific** selector targeting an EnumType element by its namespace-qualified name.\n\nAn EnumType in OData is an enumeration type with named members representing a fixed set\nof values (e.g. `OrderStatus`, `Priority`, `Gender`). This maps to:\n- `edmx` (OData v2/v4 CSDL XML): targets `<EnumType Name=\"...\">` elements in the Schema.\n- `csdl-json` (OData v4 CSDL JSON): targets elements with `$Kind: \"EnumType\"`.\n\nMUST use the namespace-qualified name (e.g. `OData.Demo.OrderStatus`) for unambiguous resolution.\n\nTo patch individual enum members, use the [`propertyType`](#overlay-selector-by-property-type) selector with this `enumType` as context."
       mandatory: true
       constraints:
         minLength: 1

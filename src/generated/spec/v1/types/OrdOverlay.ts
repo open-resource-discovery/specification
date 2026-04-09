@@ -273,7 +273,7 @@ export interface OverlayTarget {
   definitionType?: OverlayDefinitionType;
 }
 /**
- * A single patch action to apply to the element identified by the selector.
+ * A single patch action to apply to the element identified by the [`selector`](#overlay-patch_selector).
  */
 export interface OverlayPatch {
   /**
@@ -351,7 +351,7 @@ export interface OverlaySelectorByOperation {
    *   MUST use the namespace-qualified name (e.g. `OData.Demo.Approval`) to be unambiguous.
    *   For OData v2 `edmx` targets: also searches FunctionImport elements in EntityContainer
    *   when no Schema-level Action/Function matches the name.
-   *   For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback
+   *   For bound operations overloaded on multiple entity types, use [`jsonPath`](#overlay-selector-by-jsonpath) as a fallback
    *   to target the specific overload.
    *
    * When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.
@@ -370,7 +370,7 @@ export interface OverlaySelectorByEntityType {
    * - `csdl-json` (OData v4 CSDL JSON): targets elements with `$Kind: "EntityType"`.
    *
    * MUST use the namespace-qualified name (e.g. `OData.Demo.Customer`) for unambiguous resolution.
-   * For EntitySet-level patching (Capabilities annotations), use the `entitySet` selector instead.
+   * For EntitySet-level patching (Capabilities annotations), use the [`entitySet`](#overlay-selector-by-entity-set) selector instead.
    *
    * For CSN Interop targets (`sap-csn-interop-effective-v1`), this selector targets a `definitions`
    * entry by its fully qualified key (e.g. `AirlineService.Airline`).
@@ -406,7 +406,7 @@ export interface OverlaySelectorByEnumType {
    *
    * MUST use the namespace-qualified name (e.g. `OData.Demo.OrderStatus`) for unambiguous resolution.
    *
-   * To patch individual enum members, use the `propertyType` selector with this `enumType` as context.
+   * To patch individual enum members, use the [`propertyType`](#overlay-selector-by-property-type) selector with this `enumType` as context.
    */
   enumType: string;
 }

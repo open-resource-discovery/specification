@@ -196,7 +196,7 @@ definitions:
 
       When this object is present, at least one of `ordId`, `url`, or `correlationIds`
       MUST be provided so that consumers can identify what is being patched.
-      Exception: if all patches exclusively use `selector.ordId` selectors, `target` may be omitted entirely.
+      Exception: if all patches exclusively use [`selector.ordId`](#overlay-selector-by-ord-id) selectors, `target` may be omitted entirely.
 
       `ordId` targets the ORD resource metadata itself.
       For patching a specific resource definition file of that resource, use `url` and/or `definitionType`
@@ -291,7 +291,7 @@ definitions:
     type: object
     title: Overlay Patch
     x-ums-type: "embedded"
-    description: A single patch action to apply to the element identified by the selector.
+    description: A single patch action to apply to the element identified by the [`selector`](#overlay-patch_selector).
     required:
       - action
       - selector
@@ -361,8 +361,7 @@ definitions:
         description: |-
           The value used by the patch action. REQUIRED for all actions.
 
-          The interpretation of this value depends on the `action` field.
-          See each action's description for details on how `data` is used.
+          The interpretation of this value depends on the [`action`](#overlay-patch_action) field.
 
       tags:
         type: array
@@ -512,7 +511,7 @@ definitions:
             MUST use the namespace-qualified name (e.g. `OData.Demo.Approval`) to be unambiguous.
             For OData v2 `edmx` targets: also searches FunctionImport elements in EntityContainer
             when no Schema-level Action/Function matches the name.
-            For bound operations overloaded on multiple entity types, use `jsonPath` as a fallback
+            For bound operations overloaded on multiple entity types, use [`jsonPath`](#overlay-selector-by-jsonpath) as a fallback
             to target the specific overload.
 
           When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.
@@ -549,7 +548,7 @@ definitions:
           - `csdl-json` (OData v4 CSDL JSON): targets elements with `$Kind: "EntityType"`.
 
           MUST use the namespace-qualified name (e.g. `OData.Demo.Customer`) for unambiguous resolution.
-          For EntitySet-level patching (Capabilities annotations), use the `entitySet` selector instead.
+          For EntitySet-level patching (Capabilities annotations), use the [`entitySet`](#overlay-selector-by-entity-set) selector instead.
 
           For CSN Interop targets (`sap-csn-interop-effective-v1`), this selector targets a `definitions`
           entry by its fully qualified key (e.g. `AirlineService.Airline`).
@@ -614,7 +613,7 @@ definitions:
 
           MUST use the namespace-qualified name (e.g. `OData.Demo.OrderStatus`) for unambiguous resolution.
 
-          To patch individual enum members, use the `propertyType` selector with this `enumType` as context.
+          To patch individual enum members, use the [`propertyType`](#overlay-selector-by-property-type) selector with this `enumType` as context.
         examples:
           - "OData.Demo.OrderStatus"
           - "OData.Demo.Priority"
