@@ -15,6 +15,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import YAML from "yaml";
 import type { ORDOverlay } from "../generated/spec/v1/types";
+import { applyOverlayToEdmxDocument } from "./edmx";
 import { applyOverlayToDocument } from "./merge";
 import {
 	isJSONObject,
@@ -28,7 +29,7 @@ import {
 	validateOverlayInput,
 } from "./validation";
 
-type FileFormat = "json" | "yaml";
+type FileFormat = "json" | "yaml" | "xml";
 
 interface ParsedArguments {
 	overlayPath: string;
@@ -73,14 +74,27 @@ async function main(): Promise<void> {
 		return;
 	}
 
-	const merged = applyOverlayToDocument(inputDocument, overlay, {
-		noMatchBehavior: args.noMatchBehavior,
-		requireTargetMatch: true,
-		context: args.context,
-		validateOverlaySemantics: false,
-	});
-
-	const rendered = renderOutput(merged, outputFormat);
+	let rendered: string;
+	if (outputFormat === "xml") {
+		// EDMX/XML input: use the EDMX-specific merge function
+		const merged = applyOverlayToEdmxDocument(
+			inputDocument as string,
+			overlay,
+			{
+				noMatchBehavior: args.noMatchBehavior,
+			},
+		);
+		rendered = merged;
+	} else {
+		// JSON/YAML input: use the standard merge function
+		const merged = applyOverlayToDocument(inputDocument as JSONValue, overlay, {
+			noMatchBehavior: args.noMatchBehavior,
+			requireTargetMatch: true,
+			context: args.context,
+			validateOverlaySemantics: false,
+		});
+		rendered = renderOutput(merged, outputFormat);
+	}
 
 	if (args.outputPath !== undefined) {
 		await writeFile(resolve(args.outputPath), rendered, "utf8");
@@ -91,7 +105,7 @@ async function main(): Promise<void> {
 }
 
 interface FileReadResult {
-	data: JSONValue;
+	data: JSONValue | string;
 	format: FileFormat;
 }
 
@@ -100,6 +114,10 @@ async function readStructuredFile(path: string): Promise<FileReadResult> {
 	const extension = extname(path).toLowerCase();
 
 	// Determine format from extension
+	if (extension === ".xml" || extension === ".edmx") {
+		return { data: content, format: "xml" };
+	}
+
 	const format: FileFormat =
 		extension === ".yaml" || extension === ".yml" ? "yaml" : "json";
 
@@ -255,7 +273,7 @@ function printHelp(): void {
 	process.stderr.write(`ORD Overlay Merge CLI\n\n`);
 	process.stderr.write(`Usage:\n`);
 	process.stderr.write(
-		`  node dist/overlay-merge/cli.js --overlay <overlay.json|yaml> --input <target.json|yaml> [options]\n\n`,
+		`  node dist/overlay-merge/cli.js --overlay <overlay.json|yaml> --input <target> [options]\n\n`,
 	);
 	process.stderr.write(`Options:\n`);
 	process.stderr.write(
@@ -281,6 +299,13 @@ function printHelp(): void {
 	);
 	process.stderr.write(
 		`  --help                           Print this help\n\n`,
+	);
+	process.stderr.write(`Supported input formats:\n`);
+	process.stderr.write(
+		`  .json, .yaml, .yml               JSON or YAML documents (OpenAPI, CSDL JSON, ORD, etc.)\n`,
+	);
+	process.stderr.write(
+		`  .xml, .edmx                      OData EDMX XML documents\n\n`,
 	);
 	process.stderr.write(`Format detection:\n`);
 	process.stderr.write(
