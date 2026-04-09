@@ -295,7 +295,6 @@ definitions:
     required:
       - action
       - selector
-      - data
     properties:
       description:
         type: string
@@ -359,6 +358,13 @@ definitions:
 
       data:
         $ref: "#/definitions/OverlayPatchValue"
+        description: |-
+          The value used by the patch action. Required for `update`, `merge`, and `append` actions.
+
+          For `remove` action:
+          - Omit `data` or use `data: {}` to remove the selected element entirely.
+          - Provide an object with `null`-valued properties to remove only those fields
+            (JSON Merge Patch-style delete semantics).
 
       tags:
         type: array

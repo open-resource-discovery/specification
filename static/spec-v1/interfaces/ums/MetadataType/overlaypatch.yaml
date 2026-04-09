@@ -37,7 +37,7 @@ spec:
     - propertyName: 'data'
       relatedTypeName: 'OverlayPatchValue'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      mandatory: true
+      description: "The value used by the patch action. Required for `update`, `merge`, and `append` actions.\n\nFor `remove` action:\n- Omit `data` or use `data: {}` to remove the selected element entirely.\n- Provide an object with `null`-valued properties to remove only those fields\n  (JSON Merge Patch-style delete semantics)."
     - propertyName: 'meta'
       relatedTypeName: 'OverlayMeta'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

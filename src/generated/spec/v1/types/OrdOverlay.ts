@@ -320,7 +320,7 @@ export interface OverlayPatch {
    */
   action: "update" | "append" | "remove" | "merge";
   selector: OverlaySelector;
-  data: OverlayPatchValue;
+  data?: OverlayPatchValue;
   /**
    * String labels associated with the patched element.
    * Useful for classification, domain tagging, and filtering in registries or tooling.

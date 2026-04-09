@@ -39,14 +39,14 @@ export function convertOpenApiOverlayToOrd(
 			continue;
 		}
 
-		if (hasUpdate) {
+		if (hasUpdate && action.update !== undefined) {
 			patches.push({
 				...(action.description !== undefined
 					? { description: action.description }
 					: {}),
 				action: "merge",
 				selector: { jsonPath: action.target },
-				data: action.update as OverlayPatch["data"],
+				data: action.update,
 			});
 		}
 

@@ -352,6 +352,7 @@ function validatePatchData(
 	patchPath: string,
 	errors: OverlayValidationIssue[],
 ): void {
+	// update and merge require data
 	if (
 		(patch.action === "update" || patch.action === "merge") &&
 		patch.data === undefined
@@ -365,19 +366,28 @@ function validatePatchData(
 		);
 	}
 
-	if (
-		patch.action === "append" &&
-		typeof patch.data !== "string" &&
-		!isJSONObject(patch.data)
-	) {
-		errors.push(
-			createIssue(
-				"error",
-				`${patchPath}.data`,
-				'Patch action "append" requires string or object data.',
-			),
-		);
+	// append requires data and it must be string or object
+	if (patch.action === "append") {
+		if (patch.data === undefined) {
+			errors.push(
+				createIssue(
+					"error",
+					`${patchPath}.data`,
+					'Patch action "append" requires data.',
+				),
+			);
+		} else if (typeof patch.data !== "string" && !isJSONObject(patch.data)) {
+			errors.push(
+				createIssue(
+					"error",
+					`${patchPath}.data`,
+					'Patch action "append" requires string or object data.',
+				),
+			);
+		}
 	}
+
+	// remove does NOT require data - omitting data or using {} removes the entire element
 }
 
 function validateSelectorSemantics(
