@@ -5,9 +5,9 @@
  *
  * Mapping:
  *   entityTypes[].{name, summary, description}            → entityType selector + @Core.Description / @Core.LongDescription
- *   entityTypes[].properties[].{name, summary, description} → propertyType + entityType selectors
- *   complexTypes[].{name, summary, description}           → entityType selector (ORD overlay supports ComplexType via entityType)
- *   complexTypes[].properties[].{name, summary, description} → propertyType + entityType selectors
+ *   entityTypes[].properties[].{name, summary, description} → nested inside entityType patch data (recursive merge)
+ *   complexTypes[].{name, summary, description}           → complexType selector + @Core.Description / @Core.LongDescription
+ *   complexTypes[].properties[].{name, summary, description} → nested inside complexType patch data (recursive merge)
  *   entitySets[].{name, summary, description}             → entitySet selector + @Core.Description / @Core.LongDescription
  *   functionImports[].{name, summary, description}        → operation selector (namespace-qualified)
  *                                                            For EDMX targets, the operation selector also searches
@@ -24,6 +24,14 @@
  *   `summary`     → @Core.Description   (single-line human-readable label)
  *   `description` → @Core.LongDescription (detailed prose)
  *
+ * Recursive merge format:
+ *   Properties are nested directly inside their parent type's patch data.
+ *   This is more compact and mirrors the CSDL JSON structure. Example:
+ *   {
+ *     "@Core.Description": "Entity description",
+ *     "PropertyName": { "@Core.Description": "Property description" }
+ *   }
+ *
  * Namespace handling:
  *   OData v2 enrichment files do not embed a namespace. The EDMX merge implementation
  *   accepts unqualified names for entityType / propertyType selectors and resolves them
@@ -36,7 +44,6 @@ import type {
 	ConversionWarning,
 	ConvertOptions,
 	ODataV2Enrichment,
-	ODataV2Property,
 } from "./types";
 
 function qualifiedName(localName: string, namespace?: string): string {
@@ -62,36 +69,50 @@ export function convertODataV2EnrichmentToOrd(
 	const patches: OverlayPatch[] = [];
 	const ns = options.odataNamespace;
 
-	// entityTypes
+	// entityTypes — use entityType selector with nested properties
 	for (const et of source.entityTypes ?? []) {
 		const selector = qualifiedName(et.name, ns);
 
+		// Build data with nested property annotations (recursive merge format)
+		const data: Record<string, unknown> = descriptionAnnotations(
+			et.summary,
+			et.description,
+		);
+
+		// Add property annotations nested directly in the type's data
+		for (const prop of et.properties ?? []) {
+			data[prop.name] = descriptionAnnotations(prop.summary, prop.description);
+		}
+
 		patches.push({
 			action: "merge",
 			selector: { entityType: selector },
-			data: descriptionAnnotations(et.summary, et.description),
+			data,
 			...((et.tags ?? []).length > 0 ? patchTags(et.tags!) : {}),
 		});
-
-		for (const prop of et.properties ?? []) {
-			patches.push(makePropertyPatch(prop, selector));
-		}
 	}
 
-	// complexTypes — ORD overlay entityType selector also resolves ComplexType elements
+	// complexTypes — use complexType selector with nested properties
 	for (const ct of source.complexTypes ?? []) {
 		const selector = qualifiedName(ct.name, ns);
 
+		// Build data with nested property annotations (recursive merge format)
+		const data: Record<string, unknown> = descriptionAnnotations(
+			ct.summary,
+			ct.description,
+		);
+
+		// Add property annotations nested directly in the type's data
+		for (const prop of ct.properties ?? []) {
+			data[prop.name] = descriptionAnnotations(prop.summary, prop.description);
+		}
+
 		patches.push({
 			action: "merge",
-			selector: { entityType: selector },
-			data: descriptionAnnotations(ct.summary, ct.description),
+			selector: { complexType: selector },
+			data,
 			...((ct.tags ?? []).length > 0 ? patchTags(ct.tags!) : {}),
 		});
-
-		for (const prop of ct.properties ?? []) {
-			patches.push(makePropertyPatch(prop, selector));
-		}
 	}
 
 	// entitySets — use the entitySet concept-level selector
@@ -148,18 +169,4 @@ export function convertODataV2EnrichmentToOrd(
 	};
 
 	return { overlay: result, warnings };
-}
-
-function makePropertyPatch(
-	prop: ODataV2Property,
-	entityTypeName: string,
-): OverlayPatch {
-	return {
-		action: "merge",
-		selector: {
-			propertyType: prop.name,
-			entityType: entityTypeName,
-		},
-		data: descriptionAnnotations(prop.summary, prop.description),
-	};
 }

@@ -568,8 +568,13 @@ function convertCsdlJsonRecordToXml(obj: JSONObject): JSONObject {
  * Merges CSDL JSON annotation data into an EDMX element (EntityType, Property, Action, etc.)
  * by adding or replacing `<Annotation>` child elements.
  *
+ * Supports recursive merging: if the data contains non-`@` keys that match child Property,
+ * NavigationProperty, or Member elements, their annotations are applied recursively.
+ * This enables a single patch to annotate an EntityType and all its properties at once.
+ *
  * @param element - The parsed XML element object to update (mutated in place).
- * @param annotationData - Object whose `@`-prefixed keys are CSDL JSON annotation keys.
+ * @param annotationData - Object whose `@`-prefixed keys are CSDL JSON annotation keys,
+ *   and non-`@` keys may reference child properties for recursive annotation.
  * @param action - The patch action ("merge", "update", "append", "remove").
  */
 function mergeAnnotationsIntoEdmxElement(
@@ -584,31 +589,53 @@ function mergeAnnotationsIntoEdmxElement(
 	const annotations = element.Annotation as JSONObject[];
 
 	for (const [key, value] of Object.entries(annotationData)) {
-		if (!key.startsWith("@")) continue;
+		// Handle @-prefixed annotation keys
+		if (key.startsWith("@")) {
+			const termName = key.substring(1);
 
-		const termName = key.substring(1);
+			if (action === "remove" || value === null) {
+				const idx = annotations.findIndex((a) => a["@_Term"] === termName);
+				if (idx >= 0) annotations.splice(idx, 1);
+				continue;
+			}
 
-		if (action === "remove" || value === null) {
-			const idx = annotations.findIndex((a) => a["@_Term"] === termName);
-			if (idx >= 0) annotations.splice(idx, 1);
+			const newAnnotation = csdlJsonValueToXmlAnnotationElement(
+				termName,
+				value,
+			);
+			const existingIdx = annotations.findIndex(
+				(a) => a["@_Term"] === termName,
+			);
+
+			if (existingIdx >= 0) {
+				if (action === "append" && typeof value === "string") {
+					const existing = annotations[existingIdx];
+					const existingStr = existing.String;
+					existing.String =
+						typeof existingStr === "string" ? existingStr + value : value;
+				} else {
+					// merge and update both replace the whole annotation term
+					annotations[existingIdx] = newAnnotation;
+				}
+			} else {
+				annotations.push(newAnnotation);
+			}
 			continue;
 		}
 
-		const newAnnotation = csdlJsonValueToXmlAnnotationElement(termName, value);
-		const existingIdx = annotations.findIndex((a) => a["@_Term"] === termName);
-
-		if (existingIdx >= 0) {
-			if (action === "append" && typeof value === "string") {
-				const existing = annotations[existingIdx];
-				const existingStr = existing.String;
-				existing.String =
-					typeof existingStr === "string" ? existingStr + value : value;
-			} else {
-				// merge and update both replace the whole annotation term
-				annotations[existingIdx] = newAnnotation;
+		// Handle non-@ keys: check if they reference a child Property/NavigationProperty/Member
+		// This enables recursive annotation of nested elements in a single patch
+		if (isJSONObject(value)) {
+			const childElement = findEdmxProperty(element, key);
+			if (childElement) {
+				// Recursively apply annotations to the child element
+				mergeAnnotationsIntoEdmxElement(
+					childElement.prop,
+					value as JSONObject,
+					action,
+				);
 			}
-		} else {
-			annotations.push(newAnnotation);
+			// If no matching child element found, skip silently (could be a typo or non-existent property)
 		}
 	}
 

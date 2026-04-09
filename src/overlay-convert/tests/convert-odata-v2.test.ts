@@ -16,50 +16,46 @@ test("converts OData v2 entityTypes, entitySets and functionImports to ORD overl
 	assert.equal(overlay.ordOverlay, "0.1");
 	assert.equal(overlay.target?.definitionType, "edmx");
 
-	// Should produce patches for:
-	// - 1 entityType (compensationInfo) + 2 properties = 3 patches
-	// - 1 complexType (compensationPayComponents) + 1 property = 2 patches
-	// - 1 entitySet (compensationInfo) = 1 patch
-	// - 1 functionImport (getCompensationHistory) + 1 parameter = 2 patches
-	// Total: 8 patches
-	assert.equal(overlay.patches.length, 8);
+	// Should produce patches for (with compact recursive format):
+	// - 1 entityType (compensationInfo with nested properties)
+	// - 1 complexType (compensationPayComponents with nested properties)
+	// - 1 entitySet (compensationInfo)
+	// - 1 functionImport (getCompensationHistory) + 1 parameter
+	// Total: 5 patches (properties are nested in their parent type's data)
+	assert.equal(overlay.patches.length, 5);
 
-	// entityType patch
+	// entityType patch with nested property annotations
 	const etPatch = overlay.patches[0];
 	assert.deepEqual(etPatch.selector, { entityType: "compensationInfo" });
 	assert.equal(etPatch.action, "merge");
-	assert.deepEqual(etPatch.data, {
-		"@Core.Description": "Compensation information for employee assignments",
-		"@Core.LongDescription":
-			"Comprehensive compensation information for employee assignments including salary details, pay components, benefits, and related financial data with effective dating and historical tracking capabilities.",
-	});
-
-	// property patch on entityType
-	const prop1Patch = overlay.patches[1];
-	assert.deepEqual(prop1Patch.selector, {
-		propertyType: "id",
-		entityType: "compensationInfo",
-	});
-	assert.equal(prop1Patch.action, "merge");
-	assert.deepEqual(
-		(prop1Patch.data as Record<string, unknown>)["@Core.Description"],
+	// Verify entity-level annotations
+	assert.equal(
+		(etPatch.data as Record<string, unknown>)["@Core.Description"],
+		"Compensation information for employee assignments",
+	);
+	// Verify nested property annotations (compact format)
+	const idAnnotation = (etPatch.data as Record<string, unknown>)[
+		"id"
+	] as Record<string, unknown>;
+	assert.equal(
+		idAnnotation?.["@Core.Description"],
 		"Unique identifier for the employee assignment",
 	);
 
-	// complexType patch
-	const ctPatch = overlay.patches[3];
+	// complexType patch with nested property annotations
+	const ctPatch = overlay.patches[1];
 	assert.deepEqual(ctPatch.selector, {
-		entityType: "compensationPayComponents",
+		complexType: "compensationPayComponents",
 	});
 	assert.equal(ctPatch.action, "merge");
 
 	// entitySet patch
-	const esPatch = overlay.patches[5];
+	const esPatch = overlay.patches[2];
 	assert.deepEqual(esPatch.selector, { entitySet: "compensationInfo" });
 	assert.equal(esPatch.action, "merge");
 
 	// functionImport operation patch
-	const fiPatch = overlay.patches[6];
+	const fiPatch = overlay.patches[3];
 	assert.deepEqual(fiPatch.selector, { operation: "getCompensationHistory" });
 	assert.equal(fiPatch.action, "merge");
 	assert.deepEqual(
@@ -68,7 +64,7 @@ test("converts OData v2 entityTypes, entitySets and functionImports to ORD overl
 	);
 
 	// functionImport parameter patch
-	const paramPatch = overlay.patches[7];
+	const paramPatch = overlay.patches[4];
 	assert.deepEqual(paramPatch.selector, {
 		parameter: "employeeId",
 		operation: "getCompensationHistory",
@@ -185,7 +181,7 @@ test("entitySets produce entitySet selector patches", () => {
 	assert.deepEqual(overlay.patches[2].selector, { entitySet: "BarSet" });
 });
 
-test("converts complexType properties using entityType selector with complex type name", () => {
+test("converts complexType using complexType selector with nested property annotations", () => {
 	const source: ODataV2Enrichment = {
 		protocol: "odatav2",
 		complexTypes: [
@@ -206,14 +202,22 @@ test("converts complexType properties using entityType selector with complex typ
 
 	const { overlay } = convertODataV2EnrichmentToOrd(source);
 
-	assert.equal(overlay.patches.length, 2);
-	// ComplexType itself
-	assert.deepEqual(overlay.patches[0].selector, { entityType: "Address" });
-	// Property on complex type uses entityType name as context
-	assert.deepEqual(overlay.patches[1].selector, {
-		propertyType: "Street",
-		entityType: "Address",
-	});
+	// Compact format: 1 patch for complexType with nested property annotations
+	assert.equal(overlay.patches.length, 1);
+	// ComplexType itself uses complexType selector
+	assert.deepEqual(overlay.patches[0].selector, { complexType: "Address" });
+	// Property is nested inside the data (compact format)
+	const streetAnnotation = (overlay.patches[0].data as Record<string, unknown>)[
+		"Street"
+	] as Record<string, unknown>;
+	assert.equal(
+		streetAnnotation?.["@Core.Description"],
+		"Street name and number",
+	);
+	assert.equal(
+		streetAnnotation?.["@Core.LongDescription"],
+		"The street portion of the address.",
+	);
 });
 
 test("converts the shipped compensationInfo.json example from the repository", async () => {

@@ -1180,6 +1180,133 @@ test("propertyType + complexType selectors target ComplexType property in CSDL J
 	);
 });
 
+test("recursive merge: entityType with nested property annotations in CSDL JSON", async () => {
+	const target = await loadJsonFixture<JSONValue>(
+		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",
+	);
+	const overlay: ORDOverlay = {
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description:
+			"Test recursive merge of EntityType with all property annotations in one patch",
+		patches: [
+			{
+				action: "merge",
+				selector: { entityType: "OData.Demo.Customer" },
+				data: {
+					"@Core.Description": "Customer master data",
+					"@Core.LongDescription":
+						"Contains customer information including contact details and address.",
+					Name: {
+						"@Core.Description": "Customer display name",
+					},
+					CompanyName: {
+						"@Core.Description": "Legal company name",
+						"@Core.LongDescription":
+							"The official registered company name for business customers.",
+					},
+					BirthDate: {
+						"@Core.Description": "Date of birth for individual customers",
+					},
+				},
+			},
+		],
+	};
+
+	const merged = applyOverlayToDocument(target, overlay, {
+		requireTargetMatch: false,
+		context: { definitionType: "csdl-json" },
+	}) as Record<string, Record<string, unknown>>;
+
+	const customer = merged["OData.Demo"].Customer as Record<string, unknown>;
+
+	// Check entity-level annotations
+	assert.equal(customer["@Core.Description"], "Customer master data");
+	assert.equal(
+		customer["@Core.LongDescription"],
+		"Contains customer information including contact details and address.",
+	);
+
+	// Check property-level annotations
+	const name = customer.Name as Record<string, unknown>;
+	assert.equal(name["@Core.Description"], "Customer display name");
+
+	const companyName = customer.CompanyName as Record<string, unknown>;
+	assert.equal(companyName["@Core.Description"], "Legal company name");
+	assert.equal(
+		companyName["@Core.LongDescription"],
+		"The official registered company name for business customers.",
+	);
+
+	const birthDate = customer.BirthDate as Record<string, unknown>;
+	assert.equal(
+		birthDate["@Core.Description"],
+		"Date of birth for individual customers",
+	);
+});
+
+test("recursive merge: entityType with nested property annotations in EDMX", async () => {
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/ExampleService.edmx.xml",
+	);
+	const overlay: ORDOverlay = {
+		$schema:
+			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		ordOverlay: "0.1",
+		description:
+			"Test recursive merge of EntityType with all property annotations in one patch (EDMX)",
+		target: { definitionType: "edmx" },
+		patches: [
+			{
+				action: "merge",
+				selector: { entityType: "OData.Demo.Customer" },
+				data: {
+					"@Core.Description": "Customer master data",
+					"@Core.LongDescription":
+						"Contains customer information including contact details.",
+					CompanyName: {
+						"@Core.Description": "Legal company name",
+					},
+					ContactName: {
+						"@Core.Description": "Primary contact person",
+						"@Core.LongDescription":
+							"The name of the primary contact for this customer.",
+					},
+				},
+			},
+		],
+	};
+
+	const merged = applyOverlayToEdmxDocument(xmlInput, overlay, {
+		validateOverlaySemantics: false,
+	});
+
+	// Verify EntityType-level annotations
+	assert.ok(
+		merged.includes('Term="Core.Description"'),
+		"EntityType should have Core.Description",
+	);
+	assert.ok(
+		merged.includes("Customer master data"),
+		"EntityType annotation value should be present",
+	);
+
+	// Verify property-level annotations
+	assert.ok(
+		merged.includes("Legal company name"),
+		"CompanyName property should have annotation",
+	);
+	assert.ok(
+		merged.includes("Primary contact person"),
+		"ContactName property should have Core.Description",
+	);
+	assert.ok(
+		merged.includes("The name of the primary contact"),
+		"ContactName property should have Core.LongDescription",
+	);
+});
+
 test("parameter selector targets Action parameter in CSDL JSON", async () => {
 	const target = await loadJsonFixture<JSONValue>(
 		"src/overlay-merge/tests/fixtures/ExampleService.csdl.json",

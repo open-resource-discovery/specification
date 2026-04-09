@@ -6,12 +6,12 @@
  * Mapping:
  *   root.{summary, description}                           → namespace selector + @Core.Description / @Core.LongDescription
  *   entityTypes[].{name, summary, description}            → entityType selector + @Core.Description / @Core.LongDescription
- *   entityTypes[].properties[].{name, summary, description} → propertyType + entityType selectors
- *   complexTypes[].{name, summary, description}           → entityType selector (ORD overlay supports ComplexType via entityType)
- *   complexTypes[].properties[].{name, summary, description} → propertyType + entityType selectors
+ *   entityTypes[].properties[].{name, summary, description} → nested inside entityType patch data (recursive merge)
+ *   complexTypes[].{name, summary, description}           → complexType selector + @Core.Description / @Core.LongDescription
+ *   complexTypes[].properties[].{name, summary, description} → nested inside complexType patch data (recursive merge)
  *   entitySets[].{name, summary, description}             → entitySet selector + @Core.Description / @Core.LongDescription
- *   enumTypes[].{name, summary, description}              → entityType selector (ORD overlay entityType also resolves EnumType)
- *   enumTypes[].members[].{name, summary, description}    → propertyType + entityType selectors
+ *   enumTypes[].{name, summary, description}              → enumType selector + @Core.Description / @Core.LongDescription
+ *   enumTypes[].members[].{name, summary, description}    → nested inside enumType patch data (recursive merge)
  *   actions[].{name, summary, description}                → operation selector (namespace-qualified)
  *   actions[].parameters[].{name, summary, description}   → parameter + operation selectors
  *   actions[].returnType.{summary, description}           → returnType selector
@@ -36,6 +36,14 @@
  *   OData targets require CSDL JSON annotation format in patch data.
  *   `summary`     → @Core.Description   (single-line human-readable label)
  *   `description` → @Core.LongDescription (detailed prose)
+ *
+ * Recursive merge format:
+ *   Properties/members are nested directly inside their parent type's patch data.
+ *   This is more compact and mirrors the CSDL JSON structure. Example:
+ *   {
+ *     "@Core.Description": "Entity description",
+ *     "PropertyName": { "@Core.Description": "Property description" }
+ *   }
  */
 import type { ORDOverlay, OverlayPatch } from "../generated/spec/v1/types";
 import type {
@@ -49,7 +57,6 @@ import type {
 	ODataV4EntityType,
 	ODataV4Function,
 	ODataV4FunctionImport,
-	ODataV4Property,
 } from "./types";
 
 function descriptionAnnotations(summary: string, description: string) {
@@ -82,12 +89,12 @@ export function convertODataV4EnrichmentToOrd(
 
 	// entityTypes
 	for (const et of source.entityTypes ?? []) {
-		addEntityTypePatches(et, ns, patches, warnings, "entityTypes");
+		addEntityTypePatches(et, ns, patches, warnings);
 	}
 
-	// complexTypes — ORD overlay entityType selector also resolves ComplexType elements
+	// complexTypes — use complexType selector
 	for (const ct of source.complexTypes ?? []) {
-		addEntityTypePatches(ct, ns, patches, warnings, "complexTypes");
+		addComplexTypePatches(ct, ns, patches, warnings);
 	}
 
 	// entitySets — use the entitySet concept-level selector
@@ -100,24 +107,29 @@ export function convertODataV4EnrichmentToOrd(
 		});
 	}
 
-	// enumTypes — the entityType selector also resolves EnumType elements.
-	// Enum members are targeted with propertyType + entityType selectors.
+	// enumTypes — use enumType selector with nested members
 	for (const en of source.enumTypes ?? []) {
 		const qualifiedSelector = `${ns}.${en.name}`;
 
+		// Build data with nested member annotations (recursive merge format)
+		const data: Record<string, unknown> = descriptionAnnotations(
+			en.summary,
+			en.description,
+		);
+
+		// Add member annotations nested directly in the type's data
+		for (const member of en.members ?? []) {
+			data[member.name] = descriptionAnnotations(
+				member.summary,
+				member.description,
+			);
+		}
+
 		patches.push({
 			action: "merge",
-			selector: { entityType: qualifiedSelector },
-			data: descriptionAnnotations(en.summary, en.description),
+			selector: { enumType: qualifiedSelector },
+			data,
 		});
-
-		for (const member of en.members ?? []) {
-			patches.push({
-				action: "merge",
-				selector: { propertyType: member.name, entityType: qualifiedSelector },
-				data: descriptionAnnotations(member.summary, member.description),
-			});
-		}
 	}
 
 	// actions — Schema-level, namespace-qualified name, use `operation` selector
@@ -189,24 +201,57 @@ export function convertODataV4EnrichmentToOrd(
 }
 
 function addEntityTypePatches(
-	et: ODataV4EntityType | ODataV4ComplexType,
+	et: ODataV4EntityType,
 	namespace: string,
 	patches: OverlayPatch[],
 	_warnings: ConversionWarning[],
-	_entityKind: string,
 ): void {
 	const qualifiedSelector = `${namespace}.${et.name}`;
+
+	// Build data with nested property annotations (recursive merge format)
+	const data: Record<string, unknown> = descriptionAnnotations(
+		et.summary,
+		et.description,
+	);
+
+	// Add property annotations nested directly in the type's data
+	for (const prop of et.properties ?? []) {
+		data[prop.name] = descriptionAnnotations(prop.summary, prop.description);
+	}
 
 	patches.push({
 		action: "merge",
 		selector: { entityType: qualifiedSelector },
-		data: descriptionAnnotations(et.summary, et.description),
+		data,
 		...((et.tags ?? []).length > 0 ? patchTags(et.tags!) : {}),
 	});
+}
 
-	for (const prop of et.properties ?? []) {
-		patches.push(makePropertyPatch(prop, qualifiedSelector));
+function addComplexTypePatches(
+	ct: ODataV4ComplexType,
+	namespace: string,
+	patches: OverlayPatch[],
+	_warnings: ConversionWarning[],
+): void {
+	const qualifiedSelector = `${namespace}.${ct.name}`;
+
+	// Build data with nested property annotations (recursive merge format)
+	const data: Record<string, unknown> = descriptionAnnotations(
+		ct.summary,
+		ct.description,
+	);
+
+	// Add property annotations nested directly in the type's data
+	for (const prop of ct.properties ?? []) {
+		data[prop.name] = descriptionAnnotations(prop.summary, prop.description);
 	}
+
+	patches.push({
+		action: "merge",
+		selector: { complexType: qualifiedSelector },
+		data,
+		...((ct.tags ?? []).length > 0 ? patchTags(ct.tags!) : {}),
+	});
 }
 
 function addOperationPatches(
@@ -243,20 +288,6 @@ function addOperationPatches(
 			),
 		});
 	}
-}
-
-function makePropertyPatch(
-	prop: ODataV4Property,
-	entityTypeName: string,
-): OverlayPatch {
-	return {
-		action: "merge",
-		selector: {
-			propertyType: prop.name,
-			entityType: entityTypeName,
-		},
-		data: descriptionAnnotations(prop.summary, prop.description),
-	};
 }
 
 /**

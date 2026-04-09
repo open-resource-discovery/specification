@@ -16,87 +16,89 @@ test("converts OData v4 enrichment to ORD overlay patches using all new selector
 	assert.equal(overlay.ordOverlay, "0.1");
 	assert.equal(overlay.target?.definitionType, "edmx");
 
-	// Expected patches:
+	// Expected patches (with compact recursive format):
 	// - 1 namespace patch (service-level summary/description)
-	// - 1 entityType (Employee) + 2 properties = 3
-	// - 1 complexType (AddressInfo) + 1 property = 2
-	// - 1 entitySet (Employees) = 1
-	// - 1 enumType (EmploymentStatus) + 2 members = 3
+	// - 1 entityType (Employee with nested properties)
+	// - 1 complexType (AddressInfo with nested properties)
+	// - 1 entitySet (Employees)
+	// - 1 enumType (EmploymentStatus with nested members)
 	// - 1 action (TerminateEmployee) + 2 params + 1 returnType = 4
 	// - 1 function (GetDirectReports) + 1 param + 1 returnType = 3
 	// - 1 actionImport (TerminateEmployeeImport — no matching actions[] entry) = 1 patch + warning
 	// - 1 functionImport (GetDirectReportsImport — no matching functions[] entry) = 1 patch + warning
-	// Total = 19 patches
-	assert.equal(overlay.patches.length, 19);
+	// Total = 14 patches (properties/members are nested in their parent type's data)
+	assert.equal(overlay.patches.length, 14);
 
 	// patch[0]: namespace selector for service-level description
 	const nsPatch = overlay.patches[0];
 	assert.deepEqual(nsPatch.selector, { namespace: "com.sap.HRService" });
 
-	// patch[1]: entityType patch uses namespace-qualified name
+	// patch[1]: entityType patch with nested property annotations
 	const etPatch = overlay.patches[1];
 	assert.deepEqual(etPatch.selector, {
 		entityType: "com.sap.HRService.Employee",
 	});
 	assert.equal(etPatch.action, "merge");
-	assert.deepEqual(etPatch.data, {
-		"@Core.Description": "Employee master record",
-		"@Core.LongDescription":
-			"Represents a single employee in the HR system. Contains identification, personal data, job assignment, and employment status.",
-	});
+	// Verify entity-level annotations
+	assert.equal(
+		(etPatch.data as Record<string, unknown>)["@Core.Description"],
+		"Employee master record",
+	);
+	// Verify nested property annotations (compact format)
+	const employeeIdAnnotation = (etPatch.data as Record<string, unknown>)[
+		"EmployeeId"
+	] as Record<string, unknown>;
+	assert.equal(
+		employeeIdAnnotation?.["@Core.Description"],
+		"Unique employee identifier",
+	);
 
-	// patch[2]: property EmployeeId on Employee
-	assert.deepEqual(overlay.patches[2].selector, {
-		propertyType: "EmployeeId",
-		entityType: "com.sap.HRService.Employee",
+	// patch[2]: complexType patch with nested property annotations
+	const ctPatch = overlay.patches[2];
+	assert.deepEqual(ctPatch.selector, {
+		complexType: "com.sap.HRService.AddressInfo",
 	});
+	// Verify nested property annotation
+	const countryAnnotation = (ctPatch.data as Record<string, unknown>)[
+		"Country"
+	] as Record<string, unknown>;
+	assert.equal(countryAnnotation?.["@Core.Description"], "ISO country code");
 
-	// patch[4]: complexType patch
-	assert.deepEqual(overlay.patches[4].selector, {
-		entityType: "com.sap.HRService.AddressInfo",
-	});
-
-	// patch[6]: entitySet patch
-	assert.deepEqual(overlay.patches[6].selector, {
+	// patch[3]: entitySet patch
+	assert.deepEqual(overlay.patches[3].selector, {
 		entitySet: "Employees",
 	});
 
-	// patch[7]: enumType patch (via entityType selector)
-	assert.deepEqual(overlay.patches[7].selector, {
-		entityType: "com.sap.HRService.EmploymentStatus",
+	// patch[4]: enumType patch with nested member annotations
+	const enumPatch = overlay.patches[4];
+	assert.deepEqual(enumPatch.selector, {
+		enumType: "com.sap.HRService.EmploymentStatus",
 	});
+	// Verify nested member annotation
+	const activeAnnotation = (enumPatch.data as Record<string, unknown>)[
+		"Active"
+	] as Record<string, unknown>;
+	assert.equal(activeAnnotation?.["@Core.Description"], "Currently employed");
 
-	// patch[8]: first enum member
-	assert.deepEqual(
-		(overlay.patches[8].selector as unknown as Record<string, unknown>)
-			.propertyType,
-		"Active",
-	);
-	assert.deepEqual(
-		(overlay.patches[8].selector as unknown as Record<string, unknown>)
-			.entityType,
-		"com.sap.HRService.EmploymentStatus",
-	);
-
-	// patch[10]: action operation patch
-	assert.deepEqual(overlay.patches[10].selector, {
+	// patch[5]: action operation patch
+	assert.deepEqual(overlay.patches[5].selector, {
 		operation: "com.sap.HRService.TerminateEmployee",
 	});
 
-	// patch[11]: first parameter of TerminateEmployee
-	assert.deepEqual(overlay.patches[11].selector, {
+	// patch[6]: first parameter of TerminateEmployee
+	assert.deepEqual(overlay.patches[6].selector, {
 		parameter: "EmployeeId",
 		operation: "com.sap.HRService.TerminateEmployee",
 	});
 
-	// patch[13]: returnType of TerminateEmployee
-	assert.deepEqual(overlay.patches[13].selector, {
+	// patch[8]: returnType of TerminateEmployee
+	assert.deepEqual(overlay.patches[8].selector, {
 		returnType: true,
 		operation: "com.sap.HRService.TerminateEmployee",
 	});
 
-	// patch[14]: function operation patch
-	assert.deepEqual(overlay.patches[14].selector, {
+	// patch[9]: function operation patch
+	assert.deepEqual(overlay.patches[9].selector, {
 		operation: "com.sap.HRService.GetDirectReports",
 	});
 
@@ -147,13 +149,13 @@ test("converts OData v4 enrichment to ORD overlay patches using all new selector
 		"returnType should emit patches, not warnings",
 	);
 
-	// patch[17]: actionImport fallback patch (no matching actions[] entry)
-	assert.deepEqual(overlay.patches[17].selector, {
+	// patch[12]: actionImport fallback patch (no matching actions[] entry)
+	assert.deepEqual(overlay.patches[12].selector, {
 		operation: "com.sap.HRService.TerminateEmployeeImport",
 	});
 
-	// patch[18]: functionImport fallback patch (no matching functions[] entry)
-	assert.deepEqual(overlay.patches[18].selector, {
+	// patch[13]: functionImport fallback patch (no matching functions[] entry)
+	assert.deepEqual(overlay.patches[13].selector, {
 		operation: "com.sap.HRService.GetDirectReportsImport",
 	});
 
@@ -270,7 +272,7 @@ test("service-level summary/description produce a namespace selector patch", () 
 	);
 });
 
-test("complexType properties use qualified entityType name as context", () => {
+test("complexType uses complexType selector with nested property annotations", () => {
 	const source: ODataV4Enrichment = {
 		protocol: "odatav4",
 		namespace: "com.example.Svc",
@@ -290,15 +292,17 @@ test("complexType properties use qualified entityType name as context", () => {
 
 	const { overlay } = convertODataV4EnrichmentToOrd(source);
 
-	// patch[0] = namespace, patch[1] = complexType, patch[2] = property
+	// patch[0] = namespace, patch[1] = complexType (with nested properties)
+	assert.equal(overlay.patches.length, 2);
 	assert.deepEqual(overlay.patches[1].selector, {
-		entityType: "com.example.Svc.Address",
+		complexType: "com.example.Svc.Address",
 	});
-	// Property uses the qualified complex type name as entityType context
-	assert.deepEqual(overlay.patches[2].selector, {
-		propertyType: "City",
-		entityType: "com.example.Svc.Address",
-	});
+	// Property is nested inside the complexType data (compact format)
+	const cityAnnotation = (overlay.patches[1].data as Record<string, unknown>)[
+		"City"
+	] as Record<string, unknown>;
+	assert.equal(cityAnnotation?.["@Core.Description"], "City name");
+	assert.equal(cityAnnotation?.["@Core.LongDescription"], "The city.");
 });
 
 test("actions and functions are converted with namespace-qualified operation selector", () => {
