@@ -35,7 +35,7 @@ export type OverlayVisibility = ("public" | "internal" | "private") & string;
  * Optional, but RECOMMENDED type of the target definition being patched.
  * If provided, this SHOULD match the `type` of the referenced metadata definition
  * (as used in API/Event/Capability resource definitions).
- * This is especially useful when `ordId` resolves to a resource with multiple attached definitions.
+ * This is especially useful when [`ordId`](#overlay-target_ordid) resolves to a resource with multiple attached definitions.
  *
  * This can be used to disambiguate how selectors are interpreted for the target.
  *
@@ -93,7 +93,7 @@ export type OverlaySelector =
   | OverlaySelectorByParameter
   | OverlaySelectorByReturnType;
 /**
- * The value used by the patch [`action`](#overlay-patch).
+ * The value used by the patch [`action`](#overlay-patch_action).
  * Structure depends on the target being patched and the action type.
  *
  * For OData targets (`edmx`, `csdl-json`), the value MUST be expressed in CSDL JSON
