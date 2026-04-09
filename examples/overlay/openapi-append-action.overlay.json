@@ -3,6 +3,7 @@
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:append-action-demo:v1",
   "description": "Demonstrates the 'append' action which concatenates text to existing string fields.\n\nThe append action supports two modes:\n1. String data with jsonPath selector targeting a string field\n2. Object data where each string property is appended to the corresponding field in the target object\n\nThis is useful for extending descriptions, adding disclaimers, or appending notes without replacing the original text.",
+  "visibility": "internal",
   "target": {
     "ordId": "sap.foo:apiResource:astronomy:v1",
     "definitionType": "openapi-v3"

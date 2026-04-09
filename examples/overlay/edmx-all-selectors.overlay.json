@@ -3,6 +3,7 @@
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:all-odata-selectors:v1",
   "description": "Demonstrates all OData-specific selectors in a single overlay.\n\nThis example shows:\n- namespace: Schema-level annotations\n- entityType: EntityType definitions\n- complexType: ComplexType definitions (OData-specific)\n- enumType: EnumType definitions (OData-specific)\n- propertyType: Properties, navigation properties, and enum members\n- entitySet: EntitySets in EntityContainer\n- operation: Actions and Functions\n- parameter: Action/Function parameters\n- returnType: Action/Function return types",
+  "visibility": "internal",
   "target": {
     "ordId": "sap.foo:apiResource:HRService:v1",
     "definitionType": "edmx"

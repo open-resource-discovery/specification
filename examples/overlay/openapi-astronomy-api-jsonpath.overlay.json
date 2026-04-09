@@ -3,6 +3,7 @@
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:astronomy-api-openapi-jsonpath:v1",
   "description": "Patches the sample Astronomy OpenAPI metadata using JSONPath selectors only.",
+  "visibility": "internal",
   "target": {
     "url": "/ord/metadata/astronomy-v1.oas3.json",
     "definitionType": "openapi-v3"
