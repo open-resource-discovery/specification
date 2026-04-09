@@ -70,6 +70,10 @@ export type OverlayDefinitionType = (
 ) &
   string;
 /**
+ * The patch operation to perform on the selected element.
+ */
+export type OverlayPatchAction = "update" | "append" | "remove" | "merge";
+/**
  * Identifies the element in the target to patch.
  * Exactly one selector type is used per patch.
  *
@@ -286,26 +290,7 @@ export interface OverlayPatch {
    * round-trip conversion between OpenAPI overlays and ORD overlays.
    */
   description?: string;
-  /**
-   * The patch operation to perform on the selected element:
-   *
-   * - `update`: Replace the selected element entirely with `data`.
-   * - `append`:
-   *   - When `data` is a string: append it to the selected string value.
-   *     Only valid when the selected element is a text/string field.
-   *   - When `data` is an object: recursively append each string property in `data`
-   *     to the corresponding string field in the selected object.
-   *     Nested objects are traversed; arrays in `data` are appended to matching arrays.
-   *     Throws an error if a string in `data` targets a non-string field in the target.
-   *   - Useful to extend existing descriptions, summaries, or other text fields
-   *     without replacing them entirely.
-   * - `remove`:
-   *   - When `data: {}` (empty object): remove the selected element from the document entirely.
-   *   - When `data` contains properties with `null` values: remove only those specific fields (recursively).
-   *     This uses JSON Merge Patch-style delete semantics where `null` indicates deletion.
-   *     Nested `null` values remove nested fields as well.
-   */
-  action: "update" | "append" | "remove" | "merge";
+  action: OverlayPatchAction;
   selector: OverlaySelector;
   data: OverlayPatchValue;
   /**
