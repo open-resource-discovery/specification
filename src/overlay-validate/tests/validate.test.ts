@@ -328,3 +328,35 @@ test("validateOverlay does not warn on different selectors", () => {
 		!result.warnings.some((w) => w.message.includes("Multiple patches")),
 	);
 });
+
+test("validateOverlay does not warn on remove+merge pattern (valid array replacement)", () => {
+	const overlay = createOrdOverlay({
+		target: {
+			definitionType: "openapi-v3",
+		},
+		patches: [
+			createOverlayPatch({
+				action: "remove",
+				selector: {
+					jsonPath: "$.info.tags",
+				},
+				data: {},
+			}),
+			createOverlayPatch({
+				action: "merge",
+				selector: {
+					jsonPath: "$.info.tags",
+				},
+				data: ["new-tag"],
+			}),
+		],
+	});
+
+	const result = validateOverlay(overlay);
+
+	assert.equal(result.valid, true);
+	assert.ok(
+		!result.warnings.some((w) => w.message.includes("target the same element")),
+		"Should not warn on remove+merge pattern",
+	);
+});

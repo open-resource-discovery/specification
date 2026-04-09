@@ -528,6 +528,8 @@ function findEmptyStringFields(data: JSONValue, prefix = ""): string[] {
 
 /**
  * Checks for duplicate patches targeting the same element.
+ * Does not warn when the pattern is a valid "remove then merge/update" sequence
+ * (used to fully replace arrays).
  */
 function checkDuplicatePatches(
 	overlay: ORDOverlay,
@@ -548,6 +550,17 @@ function checkDuplicatePatches(
 
 	for (const [_selectorKey, patchIndices] of selectorMap) {
 		if (patchIndices.length > 1) {
+			// Check if this is a valid remove+merge/update pattern
+			const actions = patchIndices.map((i) => overlay.patches[i].action);
+			const hasRemove = actions.includes("remove");
+			const hasMergeOrUpdate =
+				actions.includes("merge") || actions.includes("update");
+
+			// Don't warn if it's a remove combined with merge/update (valid pattern for replacing arrays)
+			if (hasRemove && hasMergeOrUpdate && patchIndices.length === 2) {
+				continue;
+			}
+
 			const patchNumbers = patchIndices.map((i) => i + 1).join(", ");
 			result.warnings.push({
 				level: "warning",
