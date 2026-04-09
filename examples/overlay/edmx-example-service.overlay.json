@@ -18,7 +18,22 @@
       "selector": { "entityType": "OData.Demo.Customer" },
       "data": {
         "@Core.Description": "Represents a person or organisation that purchases goods or services.",
-        "@Core.LongDescription": "A Customer is the central entity for managing purchasing relationships. It holds personal contact details, address information, and links to orders and sales records."
+        "@Core.LongDescription": "A Customer is the central entity for managing purchasing relationships. It holds personal contact details, address information, and links to orders and sales records.",
+        "CountryName": {
+          "@Core.Description": "Name of the customer's country. Consider navigating to the related Country entity for structured ISO code access instead of relying on this denormalized field."
+        },
+        "BirthDate": {
+          "@Core.Description": "Date of birth of the customer contact person. This field contains personal data and must be handled in accordance with applicable data privacy regulations."
+        },
+        "Fax": {
+          "@Core.Revisions": [
+            {
+              "Version": "2.0.0",
+              "Kind": "Deprecated",
+              "Description": "Fax communication is no longer supported. Use Phone or EmailAddresses instead."
+            }
+          ]
+        }
       },
       "meta": {
         "confidenceScore": 0.95,
@@ -27,44 +42,13 @@
     },
     {
       "action": "merge",
-      "selector": { "propertyType": "CountryName", "entityType": "OData.Demo.Customer" },
-      "data": {
-        "@Core.Description": "Name of the customer's country. Consider navigating to the related Country entity for structured ISO code access instead of relying on this denormalized field."
-      }
-    },
-    {
-      "action": "merge",
-      "selector": { "propertyType": "BirthDate", "entityType": "OData.Demo.Customer" },
-      "data": {
-        "@Core.Description": "Date of birth of the customer contact person. This field contains personal data and must be handled in accordance with applicable data privacy regulations."
-      }
-    },
-    {
-      "action": "merge",
-      "selector": { "propertyType": "Fax", "entityType": "OData.Demo.Customer" },
-      "data": {
-        "@Core.Revisions": [
-          {
-            "Version": "2.0.0",
-            "Kind": "Deprecated",
-            "Description": "Fax communication is no longer supported. Use Phone or EmailAddresses instead."
-          }
-        ]
-      }
-    },
-    {
-      "action": "merge",
       "selector": { "entityType": "OData.Demo.Product" },
       "data": {
-        "@Core.Description": "A sellable item offered by the company. Products are organised by category and supplied by one vendor."
-      }
-    },
-    {
-      "action": "merge",
-      "selector": { "propertyType": "Thumbnail", "entityType": "OData.Demo.Product" },
-      "data": {
-        "@Core.Description": "URL of a product thumbnail image. Rendered by UI components to visually represent the product in listings and detail views.",
-        "@Core.IsURL": true
+        "@Core.Description": "A sellable item offered by the company. Products are organised by category and supplied by one vendor.",
+        "Thumbnail": {
+          "@Core.Description": "URL of a product thumbnail image. Rendered by UI components to visually represent the product in listings and detail views.",
+          "@Core.IsURL": true
+        }
       }
     },
     {

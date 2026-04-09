@@ -32,43 +32,31 @@
       "selector": { "entityType": "com.sap.HRService.Employee" },
       "data": {
         "@Core.Description": "Employee master record containing personal and employment information.",
-        "@Core.LongDescription": "The Employee entity is the central data object for HR management. It contains identification data, personal information, employment details, and relationships to organizational units."
-      }
-    },
-    {
-      "action": "merge",
-      "selector": { "propertyType": "DateOfBirth", "entityType": "com.sap.HRService.Employee" },
-      "data": {
-        "@Core.Description": "Employee's date of birth. Personal data - handle according to privacy regulations.",
-        "@PersonalData.IsPotentiallyPersonal": true
+        "@Core.LongDescription": "The Employee entity is the central data object for HR management. It contains identification data, personal information, employment details, and relationships to organizational units.",
+        "DateOfBirth": {
+          "@Core.Description": "Employee's date of birth. Personal data - handle according to privacy regulations.",
+          "@PersonalData.IsPotentiallyPersonal": true
+        }
       }
     },
     {
       "action": "merge",
       "selector": { "complexType": "com.sap.HRService.Address" },
       "data": {
-        "@Core.Description": "Postal address structure used across employee and organizational data."
-      }
-    },
-    {
-      "action": "merge",
-      "selector": { "propertyType": "Street", "complexType": "com.sap.HRService.Address" },
-      "data": {
-        "@Core.Description": "Street name and building number."
+        "@Core.Description": "Postal address structure used across employee and organizational data.",
+        "Street": {
+          "@Core.Description": "Street name and building number."
+        }
       }
     },
     {
       "action": "merge",
       "selector": { "enumType": "com.sap.HRService.EmploymentStatus" },
       "data": {
-        "@Core.Description": "Enumeration of possible employment states."
-      }
-    },
-    {
-      "action": "merge",
-      "selector": { "propertyType": "Terminated", "enumType": "com.sap.HRService.EmploymentStatus" },
-      "data": {
-        "@Core.Description": "Employment relationship has ended. Employee records are retained for legal compliance."
+        "@Core.Description": "Enumeration of possible employment states.",
+        "Terminated": {
+          "@Core.Description": "Employment relationship has ended. Employee records are retained for legal compliance."
+        }
       }
     },
     {
