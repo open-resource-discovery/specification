@@ -419,23 +419,6 @@ definitions:
 
       Prefer concept-level selectors over generic `jsonPath` where possible,
       as they are resilient to structural changes in the target format.
-    examples:
-      - ordId: "sap.foo:apiResource:astronomy:v1"
-      - operation: "getConstellationByAbbreviation"
-      - operation: "OData.Demo.Approval"
-      - operation: "dispute-case-resolution"
-      - entityType: "OData.Demo.Customer"
-      - entityType: "AirlineService.Airline"
-      - complexType: "OData.Demo.Address"
-      - enumType: "OData.Demo.OrderStatus"
-      - propertyType: "BirthDate"
-        entityType: "OData.Demo.Customer"
-      - propertyType: "Street"
-        complexType: "OData.Demo.Address"
-      - propertyType: "Pending"
-        enumType: "OData.Demo.OrderStatus"
-      - jsonPath: "$.info.description"
-      - jsonPath: "$.paths['/constellations'].get"
     oneOf:
       - $ref: "#/definitions/OverlaySelectorByJsonPath"
       - $ref: "#/definitions/OverlaySelectorByOrdId"
@@ -476,6 +459,9 @@ definitions:
         examples:
           - "$.info.description"
           - "$.paths['/constellations'].get"
+    examples:
+      - jsonPath: "$.info.description"
+      - jsonPath: "$.paths['/constellations'].get"
 
   OverlaySelectorByOrdId:
     type: object
@@ -501,6 +487,8 @@ definitions:
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         examples:
           - "sap.s4:apiResource:OP_API_BUSINESS_PARTNER_SRV:v1"
+    examples:
+      - ordId: "sap.foo:apiResource:astronomy:v1"
 
   OverlaySelectorByOperation:
     type: object
@@ -538,6 +526,10 @@ definitions:
           - "OData.Demo.Approval"
           - "OData.Demo.Rejection"
           - "getCompensationHistory"
+    examples:
+      - operation: "getConstellationByAbbreviation"
+      - operation: "OData.Demo.Approval"
+      - operation: "dispute-case-resolution"
 
   OverlaySelectorByEntityType:
     type: object
@@ -569,6 +561,9 @@ definitions:
           - "OData.Demo.Customer"
           - "OData.Demo.LeaveRequest"
           - "AirlineService.Airline"
+    examples:
+      - entityType: "OData.Demo.Customer"
+      - entityType: "AirlineService.Airline"
 
   OverlaySelectorByComplexType:
     type: object
@@ -597,6 +592,8 @@ definitions:
           - "OData.Demo.Address"
           - "OData.Demo.GeoLocation"
           - "API_BUSINESS_PARTNER.A_AddressEmailAddress"
+    examples:
+      - complexType: "OData.Demo.Address"
 
   OverlaySelectorByEnumType:
     type: object
@@ -624,6 +621,8 @@ definitions:
           - "OData.Demo.OrderStatus"
           - "OData.Demo.Priority"
           - "SAP.Common.ApprovalStatus"
+    examples:
+      - enumType: "OData.Demo.OrderStatus"
 
   OverlaySelectorByPropertyType:
     type: object
@@ -691,6 +690,13 @@ definitions:
         examples:
           - "OData.Demo.OrderStatus"
           - "OData.Demo.Priority"
+    examples:
+      - propertyType: "BirthDate"
+        entityType: "OData.Demo.Customer"
+      - propertyType: "Street"
+        complexType: "OData.Demo.Address"
+      - propertyType: "Pending"
+        enumType: "OData.Demo.OrderStatus"
 
   OverlaySelectorByEntitySet:
     type: object
