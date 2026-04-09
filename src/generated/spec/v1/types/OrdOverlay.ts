@@ -300,10 +300,10 @@ export interface OverlayPatch {
    *   - Useful to extend existing descriptions, summaries, or other text fields
    *     without replacing them entirely.
    * - `remove`:
-   *   - `data: {}` (empty object): remove the selected element from the document entirely.
-   *   - `data` with null-valued properties: remove only those fields (recursively).
-   *     Nested `null` values remove nested fields as well
-   *     (JSON Merge Patch-style delete semantics).
+   *   - When `data: {}` (empty object): remove the selected element from the document entirely.
+   *   - When `data` contains properties with `null` values: remove only those specific fields (recursively).
+   *     This uses JSON Merge Patch-style delete semantics where `null` indicates deletion.
+   *     Nested `null` values remove nested fields as well.
    *
    * Example for partial removal:
    * `data: { "foo": { "bar": null } }` removes only `foo.bar` inside the selected element.
@@ -315,12 +315,12 @@ export interface OverlayPatch {
    *   - existing object properties not mentioned in `data` are preserved.
    *
    *   To fully replace an array, use two ordered patches:
-   *   1. `remove` the array at the selected location.
+   *   1. `remove` the array at the selected location with `data: { "arrayField": null }`.
    *   2. `merge` the new array content.
    */
   action: "update" | "append" | "remove" | "merge";
   selector: OverlaySelector;
-  data?: OverlayPatchValue;
+  data: OverlayPatchValue;
   /**
    * String labels associated with the patched element.
    * Useful for classification, domain tagging, and filtering in registries or tooling.

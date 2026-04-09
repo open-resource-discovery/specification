@@ -102,12 +102,16 @@ See each selector's definition for detailed format mappings and usage.
 
 ## Patch Actions
 
-Each [patch](#overlay-patch) specifies an [`action`](#overlay-patch) and a [`selector`](#overlay-selector), plus an optional [`data`](#overlay-patch-value) value.
+Each [patch](#overlay-patch) specifies an [`action`](#overlay-patch), a [`selector`](#overlay-selector), and a [`data`](#overlay-patch-value) value.
 The full semantics of each action (`update`, `merge`, `append`, `remove`) are defined on the [`action`](#overlay-patch) field.
 
 Key points:
-- `merge`: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array, then `merge` the new value.
-- `append`: concatenates strings or recursively appends string properties in objects. Useful for extending descriptions without replacing them.
+- **`data` is always required**: All patch actions require the `data` field.
+- **`remove` semantics**:
+  - `data: {}` (empty object) removes the entire selected element.
+  - `data` with `null`-valued properties uses JSON Merge Patch semantics to remove only those specific fields.
+- **`merge` behavior**: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array field with `data: { "arrayField": null }`, then `merge` the new value.
+- **`append`**: concatenates strings or recursively appends string properties in objects. Useful for extending descriptions without replacing them.
 
 ## Validation
 
