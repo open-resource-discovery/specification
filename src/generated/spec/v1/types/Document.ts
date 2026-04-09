@@ -4,6 +4,10 @@
  * Define from where the API resource can be used and accessed
  */
 export type Usage = "external" | "local";
+/**
+ * Defines whether and how the resource can be extended with custom fields.
+ */
+export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
 
 /**
  * The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
@@ -1217,14 +1221,7 @@ export interface Link {
  * If applicable, a description and further resources about extending this resource are provided.
  */
 export interface Extensible {
-  /**
-   * This property defines whether the resource is extensible.
-   *
-   * **Not extensible** means that the data model of the resource (i.e. API or event) cannot be extended with custom fields.
-   * **Manually extensible** means that in addition to defining a custom field, manual activities to include the field in the data model of the resource (i.e. API or event) are required. E.g. using a specific mapping tool or by selecting the resource in the data model extension tool.
-   * **Automatically extensible** means that after defining a custom field in the local domain model, the resource (i.e. API or event) is automatically extended as part of the default extension field definition.
-   */
-  supported: "no" | "manual" | "automatic";
+  supported: ExtensibilitySupportLevel;
   /**
    * A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
