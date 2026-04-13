@@ -1106,33 +1106,33 @@ Taxonomies span across [products](#product) and [system types](#system-type).
 #### System
 
 A **system** is sometimes used as a generic, imprecise term when no further distinctions are necessary.
-In most places, the specification uses more precise terms, though:
+In most places, the specification uses more precise terms like [system type](#system-type), [system deployment](#system-deployment), [system version](#system-version), and [system instance](#system-instance).
 
 #### System Type
 
 A **system type** is the abstract type of an application or service from an operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
 
 Since system type is an abstract concept, it is not concretely addressable.
-A [system installation](#system-installation) of a specific [system version](#system-version) and potentially a [system instance](#system-instance) needs to be created to have a concrete, addressable system.
+A [system deployment](#system-deployment) of a specific [system version](#system-version) and potentially a [system instance](#system-instance) needs to be created to have a concrete, addressable system.
 
 Please note that a system type is similar, but not necessarily identical to a [product](#product).
 System type is a technical concept, while product is a term for external communication and sales.
 
-#### System Installation
+#### System Deployment
 
-##### System Deployment
+A **system deployment** is a concrete, addressable deployment of a [system type](#system-type) running a specific [system version](#system-version).
 
-A **system installation** (also called **system deployment**) is a concrete running instance of a [system type](#system-type) of a specific [system version](#system-version). If the system type supports tenant isolation, a system installation may offer multiple [system instances](#system-instance). A system installation has at least one [base URL](#base-url).
+A single system type can have multiple deployments, for example one per region or data center. Each deployment has at least one [base URL](#base-url) and serves as a container/host for [system instances](#system-instance) (tenants). If the system type supports tenant isolation (multi-tenancy), a system deployment may host multiple system instances.
 
 #### System Version
 
-A **system version** is a particular software version of a [system installation](#system-installation), which is always of the same [system type](#system-type). It states the design-time version or release of a system and provides versioning for operational purposes. All system instances of the same system version could have the same static metadata description.
+A **system version** is a particular software version of a [system type](#system-type). It states the design-time version or release of a system and provides versioning for operational purposes. A [system deployment](#system-deployment) always runs a specific system version. All system instances of the same system version could have the same static metadata description.
 
 #### System Instance
 
-A **system instance** is a running, isolated instance of a [system type](#system-type), running in a [system installation](#system-installation) of a particular [system version](#system-version). It always refers to the _most specific_ instance from a customer, account, and data isolation perspective.
+A **system instance** is a running, isolated instance of a [system type](#system-type), running in a [system deployment](#system-deployment) of a particular [system version](#system-version). It always refers to the _most specific_ instance from a customer, account, and data isolation perspective.
 
-If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system installation](#system-installation) per tenant or system isolation does not matter. In those cases, system instance equals the system installation.
+If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system deployment](#system-deployment) per tenant or system isolation does not matter. In those cases, system instance equals the system deployment.
 
 The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if multi-tenancy is supported or system ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if not.
 
@@ -1169,7 +1169,7 @@ While [system type](#system-type) addresses the technical perspective, product i
 
 #### Base URL
 
-A **base URL** is the consistent part of a [system instance](#system-instance) URL.
+A **base URL** is the consistent part of a [system deployment](#system-deployment) or [system instance](#system-instance) URL.
 From ORD perspective this is the base URL where the discovery starts and where the [ORD config endpoint](#ord-configuration-endpoint) location is relative to.
 In most cases the base URL consists of the URL protocol, domain name and (if necessary) the port, for example `https://example.com`.
 In rare cases, a relative path (e.g. including a tenant ID) might be included, for example `https://example.com/tenantA/`.

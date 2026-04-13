@@ -62,7 +62,7 @@ Some examples when metadata can be dynamic:
 - New resources can be created by the user of the application at run-time (typical situation for frameworks, platforms and extensible applications).
 - Endpoint URLs may be dynamic
 
-At SAP, the run-time discovery of dynamic metadata (system-installation) is handled by the [Unified Customer Landscape](../../introduction.mdx#unified-customer-landscape) in BTP.
+At SAP, the run-time discovery of dynamic metadata (system-instance) is handled by the [Unified Customer Landscape](../../introduction.mdx#unified-customer-landscape) in BTP.
 
 ### System Independent Perspective
 
