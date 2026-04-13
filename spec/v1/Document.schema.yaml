@@ -1336,8 +1336,10 @@ definitions:
           See also [Resource Definitions](../index.md#resource-definitions) for more context.
 
           Each definition is to be understood as an alternative description format, describing the same resource / capability.
-          As a consequence the same definition type MUST NOT be provided more than once.
-          The exception is when the same definition type is provided more than once, but with a different `visibility`.
+          The combination of `type`, `purpose`, and `visibility` MUST be unique within the list.
+
+          A definition without a `purpose` is considered the primary/default definition for its type.
+          Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
 
           It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
           If the definitions are added or changed, the `version` MUST be incremented.
@@ -2633,6 +2635,32 @@ definitions:
         examples:
           - "sap:custom-definition-format:v1"
 
+      purpose: &resourceDefinitionPurpose
+        type: string
+        description: |-
+          Describes the intended purpose or role of this resource definition.
+
+          While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+          This allows multiple definitions of the same type to coexist when they serve different purposes.
+
+          For example, an API Resource might have multiple OpenAPI definitions:
+          one for standard API documentation and another specifically enriched for AI/agent consumption.
+
+          MUST be a valid [Concept ID](../index.md#concept-id).
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+          - const: ord:ai-enrichment
+            description: |-
+              The definition is enriched with additional metadata specifically for AI/agent consumption.
+              This may include enhanced descriptions, examples, or semantic annotations that help AI systems
+              better understand and utilize the API or event resource.
+        examples:
+          - ord:ai-enrichment
+          - sap:authorization
+
       mediaType: &mediaType
         description: |
           The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
@@ -2736,6 +2764,9 @@ definitions:
       customType:
         # TODO: Deprecate this?
         <<: *customType
+
+      purpose:
+        <<: *resourceDefinitionPurpose
 
       mediaType:
         <<: *mediaType
@@ -3241,6 +3272,9 @@ definitions:
       customType:
         # TODO: Deprecate this?
         <<: *customType
+
+      purpose:
+        <<: *resourceDefinitionPurpose
 
       mediaType:
         <<: *mediaType
