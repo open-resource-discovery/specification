@@ -20,7 +20,6 @@ spec:
     - name: 'name'
       type: 'string'
       description: 'Full name of the main contact person.'
-      mandatory: true
       constraints:
         minLength: 1
     - name: 'contactEmail'

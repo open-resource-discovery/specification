@@ -48,15 +48,13 @@ export interface AgentGovernance {
    */
   lastUpdate?: string;
   target: AgentGovernanceTarget;
-  mainContact: MainContact;
+  mainContact?: MainContact;
   /**
    * Indicates whether this agent or MCP server has been verified and approved for use.
    *
-   * This flag is set by a governance system (e.g. Integration Suite or AI Agent Hub). The exact
-   * ownership of this flag is being aligned between the relevant teams.
-   *
-   * Consumers such as the Agent Gateway can use this flag to filter which agents are
-   * allowed to run in production environments.
+   * This flag is set by the AI Agent Hub. Consumers such as Integration Suite and the
+   * Agent Gateway can use this flag to filter which agents are allowed to run in
+   * production environments.
    */
   verified?: boolean;
 }
@@ -90,7 +88,7 @@ export interface MainContact {
   /**
    * Full name of the main contact person.
    */
-  name: string;
+  name?: string;
   /**
    * Email address of the main contact person.
    *

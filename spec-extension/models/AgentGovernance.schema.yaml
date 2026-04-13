@@ -88,11 +88,9 @@ properties:
     description: |-
       Indicates whether this agent or MCP server has been verified and approved for use.
 
-      This flag is set by a governance system (e.g. Integration Suite or AI Agent Hub). The exact
-      ownership of this flag is being aligned between the relevant teams.
-
-      Consumers such as the Agent Gateway can use this flag to filter which agents are
-      allowed to run in production environments.
+      This flag is set by the AI Agent Hub. Consumers such as Integration Suite and the
+      Agent Gateway can use this flag to filter which agents are allowed to run in
+      production environments.
     examples:
       - true
       - false
@@ -101,7 +99,6 @@ required:
   - agentGovernance
   - ordId
   - target
-  - mainContact
 
 definitions:
   AgentGovernanceTarget:
@@ -162,5 +159,4 @@ definitions:
         examples:
           - "jane.doe@example.com"
     required:
-      - name
       - contactEmail

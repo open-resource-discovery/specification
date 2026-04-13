@@ -67,7 +67,7 @@
     "verified": {
       "type": "boolean",
       "default": false,
-      "description": "Indicates whether this agent or MCP server has been verified and approved for use.\n\nThis flag is set by a governance system (e.g. Integration Suite or AI Agent Hub). The exact\nownership of this flag is being aligned between the relevant teams.\n\nConsumers such as the Agent Gateway can use this flag to filter which agents are\nallowed to run in production environments.",
+      "description": "Indicates whether this agent or MCP server has been verified and approved for use.\n\nThis flag is set by the AI Agent Hub. Consumers such as Integration Suite and the\nAgent Gateway can use this flag to filter which agents are allowed to run in\nproduction environments.",
       "examples": [
         true,
         false
@@ -77,8 +77,7 @@
   "required": [
     "agentGovernance",
     "ordId",
-    "target",
-    "mainContact"
+    "target"
   ],
   "definitions": {
     "AgentGovernanceTarget": {
@@ -128,7 +127,6 @@
         }
       },
       "required": [
-        "name",
         "contactEmail"
       ]
     }
