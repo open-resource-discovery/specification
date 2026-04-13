@@ -595,8 +595,10 @@ export interface ApiResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * The combination of `type`, `purpose`, and `visibility` MUST be unique within the list.
+   *
+   * A definition without a `purpose` is considered the primary/default definition for its type.
+   * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -937,6 +939,18 @@ export interface ApiResourceDefinition {
    * MUST only be provided if `type` is set to `custom`.
    */
   customType?: string;
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
   /**
    * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
    * A consuming application can use this information to know which file format parser it needs to use.
@@ -1467,8 +1481,10 @@ export interface EventResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * The combination of `type`, `purpose`, and `visibility` MUST be unique within the list.
+   *
+   * A definition without a `purpose` is considered the primary/default definition for its type.
+   * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1682,6 +1698,18 @@ export interface EventResourceDefinition {
    * MUST only be provided if `type` is set to `custom`.
    */
   customType?: string;
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
   /**
    * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
    * A consuming application can use this information to know which file format parser it needs to use.
@@ -2183,8 +2211,10 @@ export interface Capability {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * The combination of `type`, `purpose`, and `visibility` MUST be unique within the list.
+   *
+   * A definition without a `purpose` is considered the primary/default definition for its type.
+   * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -2252,6 +2282,18 @@ export interface CapabilityDefinition {
    * MUST only be provided if `type` is set to `custom`.
    */
   customType?: string;
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
   /**
    * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
    * A consuming application can use this information to know which file format parser it needs to use.
