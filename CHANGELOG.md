@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `purpose` property to resource definitions (`ApiResourceDefinition`, `EventResourceDefinition`, `CapabilityDefinition`)
+  - Describes the intended purpose or role of the definition (e.g., `ord:ai-enrichment` for AI-optimized definitions)
+  - Allows multiple definitions of the same `type` when they serve different purposes
+  - The combination of `type`, `purpose`, and `visibility` MUST be unique within a resource's definitions list
+
 ## [1.14.3]
 
 ### Added

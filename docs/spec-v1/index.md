@@ -687,9 +687,9 @@ A vendor namespace MUST be constructed according to the following rules:
 - `<vendorId>` is a registered ID of a vendor.
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
-  - There is a special reserved vendor namespace `customer`:
-    - It can be used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources.
-    - This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+  - There are reserved vendor namespaces:
+    - `customer`: Used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources. This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+    - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
 - MUST match Regexp: `^[a-z0-9]+$`
 
 **Examples**: For SAP, we chose and registered `sap`.
