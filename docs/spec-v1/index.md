@@ -1120,7 +1120,7 @@ System type is a technical concept, while product is a term for external communi
 
 #### System Deployment
 
-A **system deployment** (also known as **system installation**) is a concrete, addressable deployment of a [system type](#system-type) running a specific [system version](#system-version).
+A **system deployment** is a concrete, addressable deployment of a [system type](#system-type) running a specific [system version](#system-version).
 
 A single system type can have multiple deployments, for example one per region or data center. Each deployment has at least one [base URL](#base-url) and serves as a container/host for [system instances](#system-instance) (tenants). If the system type supports tenant isolation (multi-tenancy), a system deployment may host multiple system instances.
 

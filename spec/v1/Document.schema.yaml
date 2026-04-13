@@ -4077,7 +4077,7 @@ definitions:
     description: |-
       A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.
       In a multi-tenant system, it corresponds to a tenant.
-      In a single-tenant system, it corresponds to the [system installation](../index.md#system-deployment) itself.
+      In a single-tenant system, it corresponds to the [system deployment](../index.md#system-deployment) itself.
     properties:
       baseUrl:
         type: string
