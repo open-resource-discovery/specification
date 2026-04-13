@@ -30,6 +30,10 @@ It's a simplified concept that usually stands for a technical tenant of a system
 The important aspect is that it's where the isolation of resources, capabilities and data is ensured.
 In the diagram, it's also marked with "dynamic", as it is a live running system that can describe its actual state at run-time.
 
+A System Instance is hosted by a [System Deployment](../index.md#system-deployment), which is a concrete, addressable deployment of a system.
+A single [System Type](../index.md#system-type) can have multiple deployments (e.g., one per region or data center), and each deployment can host multiple system instances (tenants).
+The System Deployment concept is shown with a dotted border in the diagram, indicating it's not yet a formal ORD interface but is conceptually important for understanding the system landscape hierarchy.
+
 A System Instance can be of a [System Type](../index.md#system-type), which is the technical type.
 This is not to be confused with the [Product](../index.md#product), which lives in the commercial domain and can have a more complicated relationship with the concepts from the technical system domain.
 
