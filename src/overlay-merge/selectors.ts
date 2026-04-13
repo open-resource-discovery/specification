@@ -33,6 +33,21 @@ export function resolveSelector(
 	selector: OverlaySelector,
 	definitionType?: string,
 ): NodeReference[] {
+	// Root selector: targets the entire document
+	if (
+		isJSONObject(selector) &&
+		(selector as Record<string, unknown>).root === true
+	) {
+		return [
+			{
+				parent: undefined,
+				key: undefined,
+				value: root,
+				path: "$",
+			},
+		];
+	}
+
 	if (isJSONObject(selector) && typeof selector.jsonPath === "string") {
 		return resolveJsonPath(root, selector.jsonPath);
 	}
@@ -153,7 +168,7 @@ export function resolveSelector(
 	}
 
 	throw new OverlayMergeError(
-		"Unsupported selector. Supported selectors: jsonPath, ordId, operation, entityType, complexType, enumType, propertyType, entitySet, namespace, parameter, returnType.",
+		"Unsupported selector. Supported selectors: root, jsonPath, ordId, operation, entityType, complexType, enumType, propertyType, entitySet, namespace, parameter, returnType.",
 	);
 }
 

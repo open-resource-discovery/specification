@@ -81,6 +81,7 @@ export type OverlayPatchAction = "update" | "append" | "remove" | "merge";
  * as they are resilient to structural changes in the target format.
  */
 export type OverlaySelector =
+  | OverlaySelectorByRoot
   | OverlaySelectorByJsonPath
   | OverlaySelectorByORDID
   | OverlaySelectorByOperation
@@ -305,6 +306,43 @@ export interface OverlayPatch {
   tags?: [string, ...string[]];
   meta?: OverlayMeta;
   [k: string]: unknown | undefined;
+}
+export interface OverlaySelectorByRoot {
+  /**
+   * Concept-level selector targeting the root of the document being patched.
+   * MUST be `true`.
+   *
+   * Use this selector to patch top-level properties of any JSON/YAML-based metadata format
+   * without coupling to specific structural paths. This is especially useful for:
+   *
+   * - Patching document-level metadata (title, description, version, contact info)
+   * - Adding or merging top-level sections (e.g. `components`, `tags`, `servers` in OpenAPI)
+   * - Extending the root object with new properties across format versions
+   *
+   * Supported metadata formats and typical use cases:
+   *
+   * **OpenAPI** (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`):
+   * - Patch `info.description`, `info.title`, `info.contact`
+   * - Add `components.securitySchemes` or `components.schemas`
+   * - Add `tags`, `servers`, or `externalDocs`
+   *
+   * **AsyncAPI** (`asyncapi-v2`):
+   * - Patch `info` block, `servers`, `channels` at the root
+   *
+   * **OData CSDL JSON** (`csdl-json`):
+   * - Patch root-level `$Version`, `$EntityContainer`, or add namespace objects
+   *
+   * **ORD Document** (no specific `definitionType`):
+   * - Patch root-level ORD document properties
+   *
+   * **MCP / A2A** (any Specification ID):
+   * - Patch top-level metadata or add root-level tool/skill definitions
+   *
+   * The `root` selector is equivalent to `jsonPath: "$"` but is preferred because it
+   * explicitly communicates intent and is resilient to format differences where `$`
+   * might have ambiguous semantics.
+   */
+  root: true;
 }
 export interface OverlaySelectorByJsonPath {
   /**

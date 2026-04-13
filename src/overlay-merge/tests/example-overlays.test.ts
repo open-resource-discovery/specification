@@ -86,6 +86,26 @@ test("applies operation selector (OpenAPI) overlay example to OpenAPI metadata e
 		},
 	}) as Record<string, unknown>;
 
+	// Verify root selector patch: contact info and security scheme
+	const info = merged.info as Record<string, unknown>;
+	const contact = info.contact as Record<string, unknown>;
+	assert.ok(contact, "info.contact should exist after root selector patch");
+	assert.equal(contact.name, "Astronomy API Support");
+	assert.equal(contact.email, "astronomy-api@sap.com");
+
+	const components = merged.components as Record<string, unknown>;
+	const securitySchemes = components.securitySchemes as Record<
+		string,
+		Record<string, unknown>
+	>;
+	assert.ok(
+		securitySchemes,
+		"components.securitySchemes should exist after root selector patch",
+	);
+	assert.ok(securitySchemes.OAuth2, "OAuth2 security scheme should exist");
+	assert.equal(securitySchemes.OAuth2.type, "oauth2");
+
+	// Verify operation selector patch
 	const paths = merged.paths as Record<
 		string,
 		Record<string, Record<string, unknown>>
@@ -99,7 +119,7 @@ test("applies operation selector (OpenAPI) overlay example to OpenAPI metadata e
 	assert.equal(deprecatedOp.deprecated, true);
 	assert.equal(typeof deprecatedOp["x-deprecation-notice"], "string");
 
-	const components = merged.components as Record<string, unknown>;
+	// Verify jsonPath selector patches
 	const schemas = components.schemas as Record<string, Record<string, unknown>>;
 	const magnitude = (
 		schemas.Star.properties as Record<string, Record<string, unknown>>

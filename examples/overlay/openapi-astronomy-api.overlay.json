@@ -18,6 +18,36 @@
   },
   "patches": [
     {
+      "description": "Add OAuth2 security scheme and update API contact info at the document root.",
+      "action": "merge",
+      "selector": {
+        "root": true
+      },
+      "data": {
+        "info": {
+          "contact": {
+            "name": "Astronomy API Support",
+            "email": "astronomy-api@example.com"
+          }
+        },
+        "components": {
+          "securitySchemes": {
+            "OAuth2": {
+              "type": "oauth2",
+              "flows": {
+                "clientCredentials": {
+                  "tokenUrl": "https://auth.example.com/oauth/token",
+                  "scopes": {
+                    "astronomy:read": "Read access to astronomy data"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "action": "merge",
       "selector": {
         "operation": "getConstellationByAbbreviation"

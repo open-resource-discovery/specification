@@ -3,6 +3,50 @@ import test from "node:test";
 import { resolveSelector } from "../selectors";
 import type { JSONValue } from "../types";
 
+test("resolveSelector resolves root selector to document root", () => {
+	const target = {
+		info: { title: "Test API", version: "1.0.0" },
+		paths: { "/foo": {} },
+	};
+	const result = resolveSelector(target as JSONValue, { root: true } as never);
+
+	assert.equal(result.length, 1);
+	assert.equal(result[0].path, "$");
+	assert.equal(result[0].parent, undefined);
+	assert.equal(result[0].key, undefined);
+	assert.deepEqual(result[0].value, target);
+});
+
+test("resolveSelector root selector works with any document type", () => {
+	// OpenAPI-like
+	const openapi = { openapi: "3.0.0", info: {}, paths: {} };
+	assert.equal(
+		resolveSelector(openapi as JSONValue, { root: true } as never)[0].value,
+		openapi,
+	);
+
+	// CSDL JSON-like
+	const csdl = { $Version: "4.0", "OData.Demo": {} };
+	assert.equal(
+		resolveSelector(csdl as JSONValue, { root: true } as never)[0].value,
+		csdl,
+	);
+
+	// ORD Document-like
+	const ord = { openResourceDiscovery: "1.9", apiResources: [] };
+	assert.equal(
+		resolveSelector(ord as JSONValue, { root: true } as never)[0].value,
+		ord,
+	);
+
+	// Primitive root (array)
+	const arr = [1, 2, 3];
+	assert.deepEqual(
+		resolveSelector(arr as JSONValue, { root: true } as never)[0].value,
+		arr,
+	);
+});
+
 test("resolveSelector rejects invalid JSONPath expressions", () => {
 	assert.throws(
 		() => resolveSelector({ info: {} } as JSONValue, { jsonPath: "$[" }),
