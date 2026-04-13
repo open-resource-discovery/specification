@@ -5876,7 +5876,7 @@
       "type": "object",
       "title": "System Instance",
       "x-ums-type": "ignore",
-      "description": "A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.\nIn a multi-tenant system, it corresponds to a tenant.\nIn a single-tenant system, it corresponds to the [system installation](../index.md#system-deployment) itself.",
+      "description": "A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.\nIn a multi-tenant system, it corresponds to a tenant.\nIn a single-tenant system, it corresponds to the [system deployment](../index.md#system-deployment) itself.",
       "properties": {
         "baseUrl": {
           "type": "string",
