@@ -694,6 +694,8 @@ A vendor namespace MUST be constructed according to the following rules:
 
 **Examples**: For SAP, we chose and registered `sap`.
 
+> ℹ The `ord` vendor namespace is reserved by the ORD specification itself and is used to register well-known, cross-vendor [Specification IDs](#specification-id) (such as capability types and definition formats) that are part of the core standard. Only the ORD specification project may register identifiers under it.
+
 > 🚧 There is currently no global namespace registry where we can ensure that there are no conflicts across different vendors.
 
 #### System Namespace
