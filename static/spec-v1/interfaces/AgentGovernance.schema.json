@@ -63,6 +63,15 @@
         true,
         false
       ]
+    },
+    "miningActivated": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indicates whether mining has been activated for this agent or MCP server.\n\nThis flag is set by the AI Agent Hub alongside `verified`. While `verified` indicates\napproval for use, `miningActivated` controls whether the agent's usage data is actively\ncollected and analyzed.",
+      "examples": [
+        true,
+        false
+      ]
     }
   },
   "required": [

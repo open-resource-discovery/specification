@@ -50,6 +50,14 @@ export interface AgentGovernance {
    * production environments.
    */
   verified?: boolean;
+  /**
+   * Indicates whether mining has been activated for this agent or MCP server.
+   *
+   * This flag is set by the AI Agent Hub alongside `verified`. While `verified` indicates
+   * approval for use, `miningActivated` controls whether the agent's usage data is actively
+   * collected and analyzed.
+   */
+  miningActivated?: boolean;
 }
 /**
  * The resource this governance record applies to.

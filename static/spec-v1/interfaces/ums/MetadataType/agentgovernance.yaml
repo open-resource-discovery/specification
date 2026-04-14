@@ -37,6 +37,9 @@ spec:
     - name: 'verified'
       type: 'boolean'
       description: "Indicates whether this agent or MCP server has been verified and approved for use.\n\nThis flag is set by the AI Agent Hub. Consumers such as Integration Suite and the\nAgent Gateway can use this flag to filter which agents are allowed to run in\nproduction environments."
+    - name: 'miningActivated'
+      type: 'boolean'
+      description: "Indicates whether mining has been activated for this agent or MCP server.\n\nThis flag is set by the AI Agent Hub alongside `verified`. While `verified` indicates\napproval for use, `miningActivated` controls whether the agent's usage data is actively\ncollected and analyzed."
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'target'
