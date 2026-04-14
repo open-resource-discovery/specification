@@ -2220,7 +2220,7 @@ definitions:
 
           The visibility MUST be equal to or more restrictive than the Entity Type resource's visibility.
 
-          Only use `public` visibility when the conceptual model itself needs open access for standardization or documentation purposes.
+          Only use `public` visibility when the internal model definition itself needs open access for standardization or documentation purposes.
         oneOf:
           - const: public
             description: |-
