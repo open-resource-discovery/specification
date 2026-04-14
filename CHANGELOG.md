@@ -12,7 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Added recommendation to use [Concept IDs](./docs/spec-v1/index.md#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts.
+- Added recommendation to use [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts.
 
 ## [1.14.3]
 
