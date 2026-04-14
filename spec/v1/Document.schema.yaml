@@ -2070,7 +2070,7 @@ definitions:
           It is RECOMMENDED to provide definitions to enable machine-readable use cases.
           If definitions are added or changed, the `version` MUST be incremented.
 
-          **Privacy Note**: Entity Type definitions SHOULD usually be marked as `private` visibility since they represent conceptual models that cannot be accessed directly. See `EntityTypeDefinition` for detailed guidance.
+          **Privacy Note**: Entity Type definitions SHOULD usually be marked as `private` visibility since they are an internal implementation detail that cannot be accessed directly. See `EntityTypeDefinition` for detailed guidance.
         items:
           $ref: "#/definitions/EntityTypeDefinition"
 
