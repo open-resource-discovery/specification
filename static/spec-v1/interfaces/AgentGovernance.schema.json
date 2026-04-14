@@ -41,15 +41,6 @@
         "sap.foo:agentGovernance:disputeAgent:v1"
       ]
     },
-    "title": {
-      "type": "string",
-      "description": "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks.",
-      "minLength": 1,
-      "maxLength": 255,
-      "examples": [
-        "Dispute Resolution Agent Governance"
-      ]
-    },
     "lastUpdate": {
       "type": "string",
       "format": "date-time",

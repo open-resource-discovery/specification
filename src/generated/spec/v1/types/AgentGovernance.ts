@@ -28,13 +28,6 @@ export interface AgentGovernance {
    */
   ordId: string;
   /**
-   * Human-readable title.
-   *
-   * MUST NOT exceed 255 chars.
-   * MUST NOT contain line breaks.
-   */
-  title?: string;
-  /**
    * Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.
    *
    * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).

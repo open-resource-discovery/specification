@@ -31,12 +31,6 @@ spec:
       constraints:
         maxLength: 255
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(agentGovernance):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
-    - name: 'title'
-      type: 'string'
-      description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
-      constraints:
-        minLength: 1
-        maxLength: 255
     - name: 'lastUpdate'
       type: 'string'
       description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
