@@ -595,8 +595,7 @@ export interface ApiResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * As a consequence the same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1467,8 +1466,7 @@ export interface EventResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * As a consequence the same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1910,7 +1908,7 @@ export interface EntityType {
   /**
    * Defining the abstraction level of the entity type using the DDD terminology.
    *
-   * In Domain-Driven Design, there is a concept of entities and aggregates.
+   * In Domain-Driven Design, there is a concept of domain entities and aggregates.
    * There are root entities which may contain further sub entities by composition.
    * The complete "package" is then called an aggregate, which gets its name and identity from the root entity.
    * An aggregate is a cluster of domain objects that can be treated as a single unit.
@@ -1926,6 +1924,10 @@ export interface EntityType {
    * Usually this happens if there are similar conceptual entity types across different namespaces.
    */
   relatedEntityTypes?: RelatedEntityType[];
+  /**
+   * List of available machine-readable definitions that describe the entity type's internal model in detail.
+   */
+  definitions?: EntityTypeDefinition[];
   /**
    * Generic Links with arbitrary meaning and content.
    */
@@ -1997,6 +1999,68 @@ export interface RelatedEntityType {
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
   relationType?: (string | "part-of" | "can-share-identity") & string;
+}
+/**
+ * Machine-readable definition that describes the entity type's internal model structure.
+ *
+ * Entity Type definitions represent an internal implementation detail - the underlying domain model of your application.
+ * This can be used to describe a shared internal model multiple APIs and Events are based on.
+ * However, interaction with the actual data happens through API Resources or Event Resources that expose these entity types with a defined interface and contract.
+ *
+ * Each definition is an alternative description format for the same entity type.
+ * The same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
+ *
+ * **Why Entity Types are private by default**: Since entity type definitions are internal implementation details, they SHOULD be marked as `private` visibility by default.
+ *
+ * **Finding related APIs**: To discover which APIs expose a particular Entity Type, check the API Resource's `relatedEntityTypes` property.
+ */
+export interface EntityTypeDefinition {
+  /**
+   * Type of the entity type resource definition.
+   *
+   * MUST be either:
+   * - any valid [Specification ID](../index.md#specification-id), or
+   * - one of the pre-defined values listed below.
+   */
+  type: (string | "sap-csn-interop-effective-v1") & string;
+  /**
+   * [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) that describes the format of the definition.
+   *
+   * Media Types under `application/*` and `text/*` are allowed.
+   * If no Media Type is registered for the referenced file,
+   * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   */
+  mediaType: string;
+  /**
+   * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
+   *
+   * It is RECOMMENDED to provide a relative URL (to base URL).
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving metadata from the ORD provider.
+   * An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
+   *
+   * The access strategies only apply to the metadata access and not the actual API access.
+   * The actual access to the APIs for clients is described via Consumption Bundles.
+   *
+   * If this property is not provided, the definition URL will be available through the same access strategy as this ORD document.
+   * It is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.
+   *
+   * @minItems 1
+   */
+  accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * Who is allowed to access the entity type definition. Defaults to `private`.
+   *
+   * Entity Type definitions are internal implementation details and SHOULD remain `private` by default.
+   * Consumers interact with the data through related API Resources, not the internal model directly.
+   *
+   * The visibility MUST be equal to or more restrictive than the Entity Type resource's visibility.
+   *
+   * Only use `public` visibility when the internal model definition itself needs open access for standardization or documentation purposes.
+   */
+  visibility: "public" | "internal" | "private";
 }
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
@@ -2183,8 +2247,7 @@ export interface Capability {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * As a consequence the same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.

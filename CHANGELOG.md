@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `definitions` property to `EntityType` resources to allow linking machine-readable entity type definitions
+  - Includes new `EntityTypeDefinition` object with `type`, `mediaType`, `url`, `accessStrategies`, and `visibility` properties
+  - The `type` field accepts any valid [Specification ID](./docs/spec-v1/index.md#specification-id)
+  - **Important**: Entity Type definitions SHOULD usually be marked as `private` since they represent conceptual domain models that cannot be accessed directly. Consumers should interact with the data through related API Resources instead. Use the API Resource's `relatedEntityTypes` property to discover which APIs expose a particular entity type.
+
 ## [1.14.3]
 
 ### Added
