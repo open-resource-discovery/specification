@@ -185,7 +185,7 @@
       "lineOfBusiness": ["Sales"],
       "tags": ["CustomerOrder", "Order", "Online Sales", "Offline Sales"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "sap.xref:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Scope Items": [
@@ -376,7 +376,7 @@
       "industry": ["Retail", "Consumer Products"],
       "tags": ["Commerce"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "sap.xref:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]
@@ -489,7 +489,7 @@
       "industry": ["Retail", "Consumer Products"],
       "tags": ["Commerce"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "sap.xref:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]
@@ -557,7 +557,7 @@
       "industry": ["Retail", "Consumer Products"],
       "tags": ["Commerce"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "sap.xref:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]
@@ -653,7 +653,7 @@
       "industry": ["Retail", "Consumer Products"],
       "tags": ["Commerce"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "sap.xref:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]
