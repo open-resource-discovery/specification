@@ -595,8 +595,7 @@ export interface ApiResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * As a consequence the same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1467,8 +1466,7 @@ export interface EventResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * As a consequence the same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1927,16 +1925,7 @@ export interface EntityType {
    */
   relatedEntityTypes?: RelatedEntityType[];
   /**
-   * List of available machine-readable definitions, which describe the entity type's conceptual domain model in detail.
-   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
-   *
-   * Each definition is an alternative description format for the same entity type.
-   * The same definition type MUST NOT be provided more than once, except with different `visibility`.
-   *
-   * It is RECOMMENDED to provide definitions to enable machine-readable use cases.
-   * If definitions are added or changed, the `version` MUST be incremented.
-   *
-   * **Privacy Note**: Entity Type definitions SHOULD usually be marked as `private` visibility since they represent conceptual models that cannot be accessed directly. See `EntityTypeDefinition` for detailed guidance.
+   * List of available machine-readable definitions that describe the entity type's internal model in detail.
    */
   definitions?: EntityTypeDefinition[];
   /**
@@ -2012,23 +2001,18 @@ export interface RelatedEntityType {
   relationType?: (string | "part-of" | "can-share-identity") & string;
 }
 /**
- * Machine-readable definition that describes the entity type's conceptual domain model structure.
+ * Machine-readable definition that describes the entity type's internal model structure.
  *
- * **Why Entity Types are usually private**: Entity Types represent conceptual domain models - abstract descriptions of business concepts and data structures.
- * Unlike API Resources, they cannot be accessed or interacted with directly.
- * They describe *what* the data is, not *how* to access it.
+ * Entity Type definitions represent an internal implementation detail - the underlying domain model of your application.
+ * This can be used to describe a shared internal model multiple APIs and Events are based on.
+ * However, interaction with the actual data happens through API Resources or Event Resources that expose these entity types with a defined interface and contract.
  *
- * Interaction with the actual data happens through API Resources or Event Resources that expose these entity types.
- * Since entity type definitions contain internal modeling details, they SHOULD be marked as `private` visibility.
+ * Each definition is an alternative description format for the same entity type.
+ * The same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
+ *
+ * **Why Entity Types are private by default**: Since entity type definitions are internal implementation details, they SHOULD be marked as `private` visibility by default.
  *
  * **Finding related APIs**: To discover which APIs expose a particular Entity Type, check the API Resource's `relatedEntityTypes` property.
- *
- * **When to use public visibility**: Only mark definitions as `public` for:
- * - Public standards or specifications that need open access
- * - Conceptual models explicitly intended for documentation or standardization
- * - Specific business requirements to expose the internal data model
- *
- * In most cases, consumers should interact through the public APIs that expose the entity types, not through direct access to the conceptual model definitions.
  */
 export interface EntityTypeDefinition {
   /**
@@ -2069,12 +2053,12 @@ export interface EntityTypeDefinition {
   /**
    * Who is allowed to access the entity type definition. Defaults to `private`.
    *
-   * Entity Type definitions typically contain internal modeling details and SHOULD remain `private`.
-   * Consumers interact with the data through related API Resources, not the conceptual model directly.
+   * Entity Type definitions are internal implementation details and SHOULD remain `private` by default.
+   * Consumers interact with the data through related API Resources, not the internal model directly.
    *
    * The visibility MUST be equal to or more restrictive than the Entity Type resource's visibility.
    *
-   * Only use `public` visibility when the conceptual model itself needs open access for standardization or documentation purposes.
+   * Only use `public` visibility when the internal model definition itself needs open access for standardization or documentation purposes.
    */
   visibility: "public" | "internal" | "private";
 }
@@ -2263,8 +2247,7 @@ export interface Capability {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * As a consequence the same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
