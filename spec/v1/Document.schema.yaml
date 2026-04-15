@@ -4368,7 +4368,7 @@ definitions:
           minLength: 1
     examples:
       - foo.bar:labelKeyName: ["value"]
-      - acme.billing:cost-center: ["CC-12345", "CC-67890"]
+      - foo.bar:cost-center: ["CC-12345", "CC-67890"]
 
   ############################################################################################################
 
