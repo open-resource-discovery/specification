@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: true
-  description: "Optional context about the target being patched.\nThe target can refer to an ORD resource or to a referenced resource definition file.\n\nWhen this object is present, at least one of `ordId`, `url`, or `correlationIds`\nMUST be provided so that consumers can identify what is being patched.\nException: if all patches exclusively use [`selector.ordId`](#overlay-selector-by-ord-id) selectors, `target` may be omitted entirely.\n\n`ordId` targets the ORD resource metadata itself.\nFor patching a specific resource definition file of that resource, use `url` and/or `definitionType`\nto disambiguate.\n\nExample: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.\nIn such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.\n\nMultiple identifiers, if provided, are treated as all pointing to the same resource."
+  description: "Optional context about the target being patched.\nThe target can refer to an ORD resource or to a referenced resource definition file.\n\nWhen this object is present, at least one of `ordId`, `url`, or `correlationIds`\nMUST be provided so that consumers can identify what is being patched.\nException: if all patches exclusively use [`selector.ordId`](#overlay-selector-by-ord-id) selectors, `target` may be omitted entirely.\n\n`ordId` targets the ORD resource metadata itself.\nFor patching a specific resource definition file of that resource, use `url` and/or `definitionType`\nto disambiguate.\n\nExample: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.\nIn such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.\n\nMultiple identifiers, if provided, are treated as all pointing to the same resource.\n\nUse `systemInstance` to further scope the target to a specific [system instance](../../spec-v1/index.md#system-instance) (tenant).\nThis is relevant when `perspective: system-instance` is set and the same ORD resource exists across multiple tenants."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -34,4 +34,8 @@ spec:
       type: 'string'
       description: "Optional, but RECOMMENDED type of the target definition being patched.\nIf provided, this SHOULD match the `type` of the referenced metadata definition\n(as used in API/Event/Capability resource definitions).\nThis is especially useful when [`ordId`](#overlay-target_ordid) resolves to a resource with multiple attached definitions.\n\nThis can be used to disambiguate how selectors are interpreted for the target.\n\nMUST be either:\n- any valid [Specification ID](../../spec-v1/index.md#specification-id), or\n- one of the pre-defined values reused from:\n  - API Resource Definition `type`\n  - Event Resource Definition `type`\n  - Capability Definition `type`\n\nThe literal value `custom` is deprecated for `definitionType` and MUST NOT be used.\nIn such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead."
   customTypeDefinitions: []
-  metadataRelations: []
+  metadataRelations:
+    - propertyName: 'systemInstance'
+      relatedTypeName: 'OverlaySystemInstance'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional [system instance](../../spec-v1/index.md#system-instance) (tenant) context for the target.\n\nUse this to scope the patch to a specific running instance of the system, e.g. when\n`perspective: system-instance` is set and the same ORD resource exists across multiple tenants.\n\nNote: if the entire overlay applies to one tenant, the document-level `describedSystemInstance`\nis sufficient and `target.systemInstance` can be omitted."

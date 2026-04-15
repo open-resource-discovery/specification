@@ -272,6 +272,31 @@ export interface OverlayTarget {
    */
   correlationIds?: [string, ...string[]];
   definitionType?: OverlayDefinitionType;
+  systemInstance?: OverlaySystemInstance1;
+}
+/**
+ * A [system instance](../../spec-v1/index.md#system-instance) is a concrete, running instance of a system type.
+ * This object is identical to the ORD Document [`describedSystemInstance`](../../spec-v1/interfaces/Document.md#ord-document_describedsysteminstance) object.
+ *
+ * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
+ * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
+ */
+export interface OverlaySystemInstance1 {
+  /**
+   * Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.
+   * By providing the base URL, relative URLs in the overlay are resolved relative to it.
+   */
+  baseUrl?: string;
+  /**
+   * Optional local ID for the system instance (usually tenant ID), as known by the described system.
+   */
+  localId?: string;
+  /**
+   * Correlation IDs for linking this system instance to external systems of record.
+   *
+   * @minItems 1
+   */
+  correlationIds?: [OverlayCorrelationID2, ...OverlayCorrelationID2[]];
 }
 /**
  * A single patch action to apply to the element identified by the [`selector`](#overlay-patch_selector).
