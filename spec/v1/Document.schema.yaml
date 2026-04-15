@@ -4356,6 +4356,9 @@ definitions:
       Duplicate labels will be merged by the ORD aggregator according to the following rules:
       * Values of the same label key will be merged.
       * Duplicate values of the same label key will be removed.
+
+      **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
+      The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
     x-ums-type: "custom"
     patternProperties:
       "^[a-zA-Z0-9-_.]*$":
@@ -4364,7 +4367,8 @@ definitions:
           type: string
           minLength: 1
     examples:
-      - label-key-1: ["label-value-1", "label-value-2"]
+      - foo.bar:labelKeyName: ["value"]
+      - foo.bar:cost-center: ["CC-12345", "CC-67890"]
 
   ############################################################################################################
 
