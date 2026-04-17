@@ -2216,7 +2216,7 @@ definitions:
               Can be accessed by applications and services from the same company / legal entity.
           - const: private
             description: |-
-              Can only be accessed by applications and services from the same installation / cluster.
+              Can only be accessed by applications and services from the same internal organisation / installation / cluster, identified through the system namespace.
         default: private
 
     additionalProperties: false
