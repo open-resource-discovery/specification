@@ -103,31 +103,24 @@ test("validateOverlaySemantics does not emit metadata-definition warnings for or
 	);
 });
 
-test("validateOverlaySemantics reports unsupported selector and patch data errors", () => {
+test("validateOverlaySemantics reports unsupported selector errors", () => {
 	const overlay = createOrdOverlay({
 		target: {
 			definitionType: "asyncapi-v2",
 		},
 		patches: [
 			createOverlayPatch({
-				action: "append",
+				action: "update",
 				selector: {
 					operation: "publishAstronomyUpdate",
 				},
-				data: 12345, // invalid: must be string or object
+				data: { description: "Updated" },
 			}),
 		],
 	});
 
 	const result = validateOverlaySemantics(overlay);
 
-	assert.ok(
-		result.errors.some((issue) =>
-			issue.message.includes(
-				'Patch action "append" requires string or object data.',
-			),
-		),
-	);
 	assert.ok(
 		result.errors.some((issue) =>
 			issue.message.includes(

@@ -575,7 +575,7 @@ function convertCsdlJsonRecordToXml(obj: JSONObject): JSONObject {
  * @param element - The parsed XML element object to update (mutated in place).
  * @param annotationData - Object whose `@`-prefixed keys are CSDL JSON annotation keys,
  *   and non-`@` keys may reference child properties for recursive annotation.
- * @param action - The patch action ("merge", "update", "append", "remove").
+ * @param action - The patch action ("merge", "update", "remove").
  */
 function mergeAnnotationsIntoEdmxElement(
 	element: JSONObject,
@@ -608,15 +608,7 @@ function mergeAnnotationsIntoEdmxElement(
 			);
 
 			if (existingIdx >= 0) {
-				if (action === "append" && typeof value === "string") {
-					const existing = annotations[existingIdx];
-					const existingStr = existing.String;
-					existing.String =
-						typeof existingStr === "string" ? existingStr + value : value;
-				} else {
-					// merge and update both replace the whole annotation term
-					annotations[existingIdx] = newAnnotation;
-				}
+				annotations[existingIdx] = newAnnotation;
 			} else {
 				annotations.push(newAnnotation);
 			}

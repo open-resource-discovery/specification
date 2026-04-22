@@ -347,23 +347,6 @@ function checkPatchRedundancy(
 		return { redundant: false };
 	}
 
-	// For "append" action: check if append adds empty content
-	if (patch.action === "append") {
-		if (typeof patchData === "string" && patchData === "") {
-			return {
-				redundant: true,
-				details: "Appending an empty string has no effect.",
-			};
-		}
-		if (isJSONObject(patchData) && Object.keys(patchData).length === 0) {
-			return {
-				redundant: true,
-				details: "Appending an empty object has no effect.",
-			};
-		}
-		return { redundant: false };
-	}
-
 	return { redundant: false };
 }
 

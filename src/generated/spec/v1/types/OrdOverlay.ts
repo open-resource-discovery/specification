@@ -72,7 +72,7 @@ export type OverlayDefinitionType = (
 /**
  * The patch operation to perform on the selected element.
  */
-export type OverlayPatchAction = "update" | "append" | "remove" | "merge";
+export type OverlayPatchAction = "update" | "remove" | "merge";
 /**
  * Identifies the element in the target to patch.
  * Exactly one selector type is used per patch.

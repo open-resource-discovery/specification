@@ -105,6 +105,10 @@ Rule of thumb:
 
 ## Open TODOs
 
+**Patch actions:**
+
+- Consider a mechanism for modifying existing string values (e.g. extending descriptions or summaries) rather than replacing them entirely. This should be more flexible than a simple append — for example, it could support templated string manipulation.
+
 **Aggregator behavior and compatibility:**
 
 - Decide how to indicate use-case-specific overlays when multiple overlays exist for the same target.

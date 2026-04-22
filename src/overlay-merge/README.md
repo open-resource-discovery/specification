@@ -6,7 +6,7 @@ TypeScript implementation for applying ORD overlays to metadata files.
 
 Current scope:
 - Supports all selector types: `jsonPath`, `ordId`, `operation`, `entityType`, `propertyType`, `entitySet`, `namespace`, `parameter`, `returnType`
-- Supports all patch actions: `merge`, `update`, `remove`, `append`
+- Supports all patch actions: `merge`, `update`, `remove`
 - JSON-based targets (`csdl-json`, `sap-csn-interop-effective-v1`, OpenAPI, A2A, MCP, ORD Document, …) via `applyOverlayToDocument`
 - EDMX XML targets (`edmx`) via `applyOverlayToEdmxDocument` (uses `fast-xml-parser`)
 - Validates overlay input against the generated `OrdOverlay` JSON Schema
@@ -98,9 +98,6 @@ For CSN Interop targets (`sap-csn-interop-effective-v1`), the patch `data` is pl
 ## Merge Semantics
 
 - `update`: replaces the selected element with `data`
-- `append`:
-  - string `data`: appends to the selected string value
-  - object `data`: recursively appends each string property to corresponding fields in the target object; arrays are appended; throws if string targets non-string field
 - `merge`:
   - objects: deep-merged recursively; existing keys not in `data` are preserved
   - scalars: overwritten by `data`

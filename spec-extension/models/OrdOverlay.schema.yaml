@@ -340,19 +340,6 @@ definitions:
         oneOf:
           - const: update
             description: Replace the selected element entirely with `data`.
-          - const: append
-            description: |-
-              Append content to the selected element.
-
-              - When `data` is a string: append it to the selected string value.
-                Only valid when the selected element is a text/string field.
-              - When `data` is an object: recursively append each string property in `data`
-                to the corresponding string field in the selected object.
-                Nested objects are traversed; arrays in `data` are appended to matching arrays.
-                Throws an error if a string in `data` targets a non-string field in the target.
-
-              Useful to extend existing descriptions, summaries, or other text fields
-              without replacing them entirely.
           - const: remove
             description: |-
               Remove the selected element or specific fields within it.

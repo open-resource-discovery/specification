@@ -366,27 +366,6 @@ function validatePatchData(
 		);
 	}
 
-	// append requires data and it must be string or object
-	if (patch.action === "append") {
-		if (patch.data === undefined) {
-			errors.push(
-				createIssue(
-					"error",
-					`${patchPath}.data`,
-					'Patch action "append" requires data.',
-				),
-			);
-		} else if (typeof patch.data !== "string" && !isJSONObject(patch.data)) {
-			errors.push(
-				createIssue(
-					"error",
-					`${patchPath}.data`,
-					'Patch action "append" requires string or object data.',
-				),
-			);
-		}
-	}
-
 	// remove does NOT require data - omitting data or using {} removes the entire element
 }
 

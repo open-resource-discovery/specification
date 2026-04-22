@@ -173,46 +173,6 @@ function applyPatch(
 		return;
 	}
 
-	if (patch.action === "append") {
-		if (patch.data === undefined) {
-			throw new OverlayMergeError("Patch action 'append' requires data.");
-		}
-
-		// String data: append directly to string target
-		if (typeof patch.data === "string") {
-			matches.forEach((match) => {
-				if (typeof match.value !== "string") {
-					throw new OverlayMergeError(
-						`Patch action 'append' with string data requires a string target value (at ${match.path}).`,
-					);
-				}
-				setNode(rootHolder, match, `${match.value}${patch.data}`);
-			});
-			return;
-		}
-
-		// Object data: append each string property to the corresponding field in the target
-		if (isJSONObject(patch.data)) {
-			matches.forEach((match) => {
-				if (!isJSONObject(match.value)) {
-					throw new OverlayMergeError(
-						`Patch action 'append' with object data requires an object target (at ${match.path}).`,
-					);
-				}
-				const result = deepAppend(
-					match.value as Record<string, JSONValue>,
-					patch.data as Record<string, JSONValue>,
-				);
-				setNode(rootHolder, match, result);
-			});
-			return;
-		}
-
-		throw new OverlayMergeError(
-			"Patch action 'append' requires string or object data.",
-		);
-	}
-
 	if (patch.action === "merge") {
 		if (patch.data === undefined) {
 			throw new OverlayMergeError("Patch action 'merge' requires data.");
@@ -361,75 +321,6 @@ function deepMerge(base: JSONValue, incoming: JSONValue): JSONValue {
 		`Type mismatch in merge: cannot merge ${Array.isArray(incoming) ? "array" : typeof incoming} into ${Array.isArray(base) ? "array" : typeof base}. ` +
 			`Use 'update' action to replace the value entirely.`,
 	);
-}
-
-/**
- * Recursively appends string values from `incoming` to the corresponding string fields in `base`.
- * Throws an error if a string value in `incoming` targets a non-string field in `base`.
- * If a key in `incoming` has a nested object, the function recurses into that object.
- * Arrays in `incoming` are appended to corresponding arrays in `base`.
- */
-function deepAppend(
-	base: Record<string, JSONValue>,
-	incoming: Record<string, JSONValue>,
-	path = "",
-): Record<string, JSONValue> {
-	const result: Record<string, JSONValue> = { ...base };
-
-	Object.entries(incoming).forEach(([key, incomingValue]) => {
-		const baseValue = result[key];
-		const fieldPath = path ? `${path}.${key}` : key;
-
-		// If incoming value is a string, append to base string (or set if base doesn't exist)
-		if (typeof incomingValue === "string") {
-			if (typeof baseValue === "string") {
-				result[key] = `${baseValue}${incomingValue}`;
-			} else if (baseValue === undefined) {
-				// If the field doesn't exist in base, just set it
-				result[key] = incomingValue;
-			} else {
-				// If baseValue exists but is not a string, throw an error
-				throw new OverlayMergeError(
-					`Patch action 'append' cannot append string to non-string field "${fieldPath}" (found ${typeof baseValue}).`,
-				);
-			}
-			return;
-		}
-
-		// If incoming value is an object, recurse
-		if (isJSONObject(incomingValue)) {
-			if (isJSONObject(baseValue)) {
-				result[key] = deepAppend(
-					baseValue as Record<string, JSONValue>,
-					incomingValue as Record<string, JSONValue>,
-					fieldPath,
-				);
-			} else if (baseValue === undefined) {
-				// If the field doesn't exist, create it
-				result[key] = cloneJSONValue(incomingValue);
-			} else {
-				throw new OverlayMergeError(
-					`Patch action 'append' cannot recurse into non-object field "${fieldPath}" (found ${typeof baseValue}).`,
-				);
-			}
-			return;
-		}
-
-		// Arrays in incoming: append to base array
-		if (Array.isArray(incomingValue)) {
-			if (Array.isArray(baseValue)) {
-				result[key] = [...baseValue, ...cloneJSONValue(incomingValue)];
-			} else if (baseValue === undefined) {
-				result[key] = cloneJSONValue(incomingValue);
-			} else {
-				throw new OverlayMergeError(
-					`Patch action 'append' cannot append array to non-array field "${fieldPath}" (found ${typeof baseValue}).`,
-				);
-			}
-		}
-	});
-
-	return result;
 }
 
 function removeFieldsMarkedAsNull(

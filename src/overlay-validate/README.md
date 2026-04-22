@@ -109,7 +109,6 @@ The validator detects redundant patches that would not change the target:
 |--------|----------------------|
 | `update` | Patch value is identical to existing value |
 | `merge` | Merging would result in no changes to the target |
-| `append` | Appending empty string or empty object |
 | `remove` | N/A (removing existing content is never redundant) |
 
 ## CLI Script
@@ -198,7 +197,7 @@ Coverage includes:
 - Schema error reporting for invalid overlays
 - Target validation with selector matching
 - Non-matching selector error reporting
-- Redundant patch detection (update, merge, append)
+- Redundant patch detection (update, merge)
 - JSON output format
 - YAML overlay support
 - Multiple errors and warnings reporting
