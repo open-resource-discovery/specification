@@ -1062,7 +1062,7 @@ definitions:
               Breaking changes may occur at any time without notice or deprecation period.
 
               Not recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,
-              and feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion.
+              and feedback gathering. Resources of `beta` `releaseStatus` MAY be changed or removed at the provider's discretion.
 
           - const: active
             description: |-
@@ -1076,6 +1076,7 @@ definitions:
               The resource is still functional but scheduled for removal. No new development should depend on it.
 
               If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+              If the `releaseStatus` is set to `deprecated`, and the `sunsetDate` is already known, then the `sunsetDate` SHOULD be provided.
 
               If successor resources exist, they MUST be referenced through `successors`.
 
@@ -1086,7 +1087,7 @@ definitions:
             description: |-
               The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.
 
-              If the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided.
+              If the `releaseStatus` is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided.
         examples:
           - active
 
@@ -4087,7 +4088,7 @@ definitions:
     description: |-
       A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.
       In a multi-tenant system, it corresponds to a tenant.
-      In a single-tenant system, it corresponds to the [system installation](../index.md#system-deployment) itself.
+      In a single-tenant system, it corresponds to the [system deployment](../index.md#system-deployment) itself.
     properties:
       baseUrl:
         type: string
@@ -4365,6 +4366,9 @@ definitions:
       Duplicate labels will be merged by the ORD aggregator according to the following rules:
       * Values of the same label key will be merged.
       * Duplicate values of the same label key will be removed.
+
+      **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
+      The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
     x-ums-type: "custom"
     patternProperties:
       "^[a-zA-Z0-9-_.]*$":
@@ -4373,7 +4377,8 @@ definitions:
           type: string
           minLength: 1
     examples:
-      - label-key-1: ["label-value-1", "label-value-2"]
+      - foo.bar:labelKeyName: ["value"]
+      - foo.bar:cost-center: ["CC-12345", "CC-67890"]
 
   ############################################################################################################
 

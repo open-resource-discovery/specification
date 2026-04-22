@@ -19,6 +19,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Optional `target` object narrows a patch to a specific definition file or format (e.g. `definitionType: openapi-v3`).
   - Optional top-level fields (`describedSystemType`, `describedSystemVersion`, `describedSystemInstance`, `visibility`) scope the overlay to a particular system context.
 
+### Changed
+
+- Added recommendation to use [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts.
+
 ## [1.14.3]
 
 ### Added

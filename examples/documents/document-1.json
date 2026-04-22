@@ -26,7 +26,7 @@
       "vendor": "sap:vendor:SAP:",
       "tags": ["reference application"],
       "labels": {
-        "customLabel": ["labels are more flexible than tags as you can define your own keys"]
+        "foo.bar:custom-label": ["labels are more flexible than tags as you can define your own keys"]
       },
       "documentationLabels": {
         "Some Aspect": ["Markdown Documentation [with links](#)", "With multiple values"]
