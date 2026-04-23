@@ -153,6 +153,13 @@ export function validateOverlaySemantics(
 			errors,
 			warnings,
 		);
+		validateODataPatchData(
+			patch,
+			patchPath,
+			selectorKind,
+			definitionType,
+			warnings,
+		);
 	});
 
 	return { errors, warnings };
@@ -342,6 +349,70 @@ function addPerspectiveWarnings(
 				"warning",
 				"$.describedSystemInstance",
 				'perspective "system-instance" indicates describedSystemInstance SHOULD be provided.',
+			),
+		);
+	}
+}
+
+function isODataDefinitionType(definitionType: string): boolean {
+	return definitionType === "csdl-json" || definitionType === "edmx";
+}
+
+function isODataSelector(selectorKind: SelectorKind): boolean {
+	return (
+		selectorKind === "entityType" ||
+		selectorKind === "complexType" ||
+		selectorKind === "enumType" ||
+		selectorKind === "propertyType" ||
+		selectorKind === "entitySet" ||
+		selectorKind === "namespace" ||
+		selectorKind === "parameter" ||
+		selectorKind === "returnType"
+	);
+}
+
+function validateODataPatchData(
+	patch: ORDOverlay["patches"][number],
+	patchPath: string,
+	selectorKind: SelectorKind,
+	definitionType: string | undefined,
+	warnings: OverlayValidationIssue[],
+): void {
+	if (definitionType === undefined || !isODataDefinitionType(definitionType)) {
+		return;
+	}
+
+	if (!isODataSelector(selectorKind)) {
+		return;
+	}
+
+	if (patch.data === undefined || patch.action === "remove") {
+		return;
+	}
+
+	if (!isJSONObject(patch.data)) {
+		warnings.push(
+			createIssue(
+				"warning",
+				`${patchPath}.data`,
+				`OData patch data for "${definitionType}" targets MUST be an object with @-prefixed annotation keys (CSDL JSON format).`,
+			),
+		);
+		return;
+	}
+
+	const invalidKeys = Object.entries(patch.data)
+		.filter(([key, value]) => !key.startsWith("@") && !isJSONObject(value))
+		.map(([key]) => key);
+
+	if (invalidKeys.length > 0) {
+		warnings.push(
+			createIssue(
+				"warning",
+				`${patchPath}.data`,
+				`OData patch data for "${definitionType}" targets MUST use @-prefixed annotation keys (CSDL JSON format). ` +
+					`Non-annotation keys found: ${invalidKeys.join(", ")}. ` +
+					`These keys will be ignored by the EDMX merge path.`,
 			),
 		);
 	}

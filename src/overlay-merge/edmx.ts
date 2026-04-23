@@ -620,14 +620,16 @@ function mergeAnnotationsIntoEdmxElement(
 		if (isJSONObject(value)) {
 			const childElement = findEdmxProperty(element, key);
 			if (childElement) {
-				// Recursively apply annotations to the child element
 				mergeAnnotationsIntoEdmxElement(
 					childElement.prop,
 					value as JSONObject,
 					action,
 				);
+			} else {
+				console.warn(
+					`[overlay-merge] Warning: EDMX patch key "${key}" does not match any child Property, NavigationProperty, or Member. Skipping.`,
+				);
 			}
-			// If no matching child element found, skip silently (could be a typo or non-existent property)
 		}
 	}
 

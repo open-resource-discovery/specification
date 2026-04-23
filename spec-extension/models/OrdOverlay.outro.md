@@ -109,6 +109,6 @@ Rule of thumb:
 - The specification defines patch order within one overlay file. If multiple overlay documents apply to the same target, providers and aggregators should define and document a deterministic processing order outside this specification.
 - For OData, prefer the dedicated selectors in this spec: `entityType`, `complexType`, `enumType`, `propertyType`, `entitySet`, `namespace`, `parameter`, and `returnType`.
 - In OData, `entityType` targets the type definition itself. EntityContainer-bound annotations such as `Capabilities` belong on `entitySet`; use `jsonPath` only when no dedicated selector fits.
-- OData patch values should use CSDL JSON annotation format (`@TermName` keys). After applying an overlay, validate the merged result with format-specific tooling before publication.
+- OData patch values MUST use CSDL JSON annotation format (`@TermName` keys). After applying an overlay, validate the merged result with format-specific tooling before publication.
 - Use namespace-qualified OData operation and type names whenever ambiguity is possible. ORD Overlay uses its own concept-level selector shapes; external notations such as [OData CSDL Annotation Target](https://oasis-tcs.github.io/odata-specs/odata-csdl-xml/odata-csdl-xml.html#Target) are informative background, not alternative selector syntaxes in this version.
 - Selector alternatives based on source-model annotations, such as [@EntityRelationship](https://sap.github.io/csn-interop-specification/spec-v1/extensions/entity-relationship), are outside the scope of ORD Overlay 0.1.

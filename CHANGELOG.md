@@ -18,6 +18,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Patches use concept-level selectors (`ordId`, `operation`, `entityType`, `propertyType`) or a generic `jsonPath` fallback, with actions `merge`, `update`, `append`, and `remove`.
   - Optional `target` object narrows a patch to a specific definition file or format (e.g. `definitionType: openapi-v3`).
   - Optional top-level fields (`describedSystemType`, `describedSystemVersion`, `describedSystemInstance`, `visibility`) scope the overlay to a particular system context.
+- Added OData patch data validation: overlays targeting OData formats (`csdl-json`, `edmx`) now warn when patch data does not use CSDL JSON annotation format (`@TermName` keys), ensuring consistent behavior between the EDMX and CSDL JSON merge paths.
 
 ### Changed
 

@@ -490,3 +490,89 @@ test("validateOverlaySemantics errors for parameter/returnType selector on unsup
 		"returnType selector should error for a2a-agent-card",
 	);
 });
+
+test("validateOverlaySemantics warns for OData patch data without @-prefixed annotation keys", () => {
+	const overlay = createOrdOverlay({
+		target: { definitionType: "csdl-json" },
+		patches: [
+			createOverlayPatch({
+				selector: { entityType: "Customer" },
+				data: { title: "not an annotation key", count: 42 },
+			}),
+		],
+	});
+
+	const result = validateOverlaySemantics(overlay);
+	assert.ok(
+		result.warnings.some(
+			(issue) =>
+				issue.message.includes("MUST use @-prefixed annotation keys") &&
+				issue.message.includes("title") &&
+				issue.message.includes("count"),
+		),
+		"should warn about non-@ keys in OData patch data",
+	);
+});
+
+test("validateOverlaySemantics does not warn for OData patch data with valid @-prefixed keys", () => {
+	const overlay = createOrdOverlay({
+		target: { definitionType: "csdl-json" },
+		patches: [
+			createOverlayPatch({
+				selector: { entityType: "Customer" },
+				data: { "@Core.Description": "A customer entity" },
+			}),
+		],
+	});
+
+	const result = validateOverlaySemantics(overlay);
+	assert.equal(
+		result.warnings.filter((issue) => issue.message.includes("annotation keys"))
+			.length,
+		0,
+		"should not warn for valid @-prefixed annotation keys",
+	);
+});
+
+test("validateOverlaySemantics allows non-@ keys with object values as child annotations for OData", () => {
+	const overlay = createOrdOverlay({
+		target: { definitionType: "edmx" },
+		patches: [
+			createOverlayPatch({
+				selector: { entityType: "Customer" },
+				data: {
+					"@Core.Description": "A customer",
+					Name: { "@Core.Description": "Customer name" },
+				},
+			}),
+		],
+	});
+
+	const result = validateOverlaySemantics(overlay);
+	assert.equal(
+		result.warnings.filter((issue) => issue.message.includes("annotation keys"))
+			.length,
+		0,
+		"should not warn for non-@ keys with object values (child annotations)",
+	);
+});
+
+test("validateOverlaySemantics does not warn about OData annotation format for non-OData targets", () => {
+	const overlay = createOrdOverlay({
+		target: { definitionType: "openapi-v3" },
+		patches: [
+			createOverlayPatch({
+				selector: { operation: "getCustomers" },
+				data: { description: "Updated description" },
+			}),
+		],
+	});
+
+	const result = validateOverlaySemantics(overlay);
+	assert.equal(
+		result.warnings.filter((issue) => issue.message.includes("annotation keys"))
+			.length,
+		0,
+		"should not emit OData annotation warnings for openapi-v3 targets",
+	);
+});
