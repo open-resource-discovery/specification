@@ -8,6 +8,7 @@ import { promisify } from "node:util";
 import {
 	createOrdOverlay,
 	createOverlayPatch,
+	loadTextFixture,
 } from "../../overlay-merge/tests/test-helpers";
 
 const execFileAsync = promisify(execFile);
@@ -188,6 +189,62 @@ test("validate-cli reports error when selector does not match any element", asyn
 		const err = error as { stderr: string };
 		assert.match(err.stderr, /INVALID/);
 		assert.match(err.stderr, /does not match any element/);
+	}
+});
+
+test("validate-cli reports error when EDMX selector does not match any element", async () => {
+	const tempDir = await mkdtemp(resolve(tmpdir(), "overlay-validate-"));
+	const overlayPath = resolve(tempDir, "overlay.json");
+	const targetPath = resolve(tempDir, "target.edmx");
+
+	await writeFile(
+		overlayPath,
+		JSON.stringify(
+			createOrdOverlay({
+				target: {
+					definitionType: "edmx",
+				},
+				patches: [
+					createOverlayPatch({
+						selector: {
+							entityType: "NoSuchType",
+						},
+						data: {
+							"@Core.Description": "Ignored",
+						} as never,
+					}),
+				],
+			}),
+			null,
+			2,
+		),
+		"utf8",
+	);
+
+	await writeFile(
+		targetPath,
+		await loadTextFixture(
+			"src/overlay-merge/tests/fixtures/BusinessPartner.edmx.xml",
+		),
+		"utf8",
+	);
+
+	try {
+		await execFileAsync(process.execPath, [
+			cliPath,
+			"--overlay",
+			overlayPath,
+			"--target",
+			targetPath,
+		]);
+		assert.fail("Should have failed");
+	} catch (error) {
+		const err = error as { stderr: string };
+		assert.match(err.stderr, /INVALID/);
+		assert.match(
+			err.stderr,
+			/Selector does not match any element in the target EDMX document/,
+		);
 	}
 });
 

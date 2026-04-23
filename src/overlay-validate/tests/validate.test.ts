@@ -1,9 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { validateOverlay, validateOverlayWithTarget } from "../validate";
+import {
+	validateOverlay,
+	validateOverlayWithEdmxTarget,
+	validateOverlayWithTarget,
+} from "../validate";
 import {
 	createOrdOverlay,
 	createOverlayPatch,
+	loadTextFixture,
 } from "../../overlay-merge/tests/test-helpers";
 
 test("validateOverlay returns valid result for valid overlay", () => {
@@ -132,6 +137,45 @@ test("validateOverlayWithTarget reports error for non-matching selector", () => 
 	assert.ok(
 		result.errors.some((e) => e.message.includes("does not match any element")),
 	);
+});
+
+test("validateOverlayWithEdmxTarget reports error for non-matching selector", async () => {
+	const edmxTarget = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/BusinessPartner.edmx.xml",
+	);
+	const overlay = createOrdOverlay({
+		target: {
+			definitionType: "edmx",
+		},
+		patches: [
+			createOverlayPatch({
+				selector: {
+					entityType: "NoSuchType",
+				},
+				data: {
+					"@Core.Description": "Ignored",
+				} as never,
+			}),
+		],
+	});
+
+	const result = validateOverlayWithEdmxTarget(overlay, edmxTarget);
+
+	assert.equal(result.valid, false);
+	assert.ok(
+		result.errors.some(
+			(error) =>
+				error.path === "$.patches[0].selector" &&
+				error.message.includes("target EDMX document"),
+		),
+	);
+	assert.ok(
+		!result.warnings.some((warning) =>
+			warning.message.includes("did not match any target element in EDMX"),
+		),
+	);
+	assert.ok(result.patchSummary !== undefined);
+	assert.equal(result.patchSummary[0].matchCount, -1);
 });
 
 test("validateOverlayWithTarget detects redundant update patch", () => {

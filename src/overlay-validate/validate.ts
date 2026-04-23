@@ -188,7 +188,7 @@ export function validateOverlayWithTarget(
 /**
  * Validates an ORD Overlay against an EDMX/XML target document.
  *
- * EDMX validation is performed via a dry-run merge that captures warnings.
+ * EDMX validation is performed via a dry-run merge that captures selector issues.
  *
  * @param overlay - The ORD Overlay document to validate
  * @param edmxContent - The EDMX XML content as a string
@@ -202,15 +202,13 @@ export function validateOverlayWithEdmxTarget(
 ): OverlayFullValidationResult {
 	const result = validateOverlay(overlay, options);
 
-	// For EDMX/XML targets, perform a dry-run merge to capture warnings
+	// For EDMX/XML targets, perform a dry-run merge to capture selector issues
 	try {
-		const warnings = captureEdmxValidationWarnings(edmxContent, overlay);
-		for (const warning of warnings) {
-			result.warnings.push({
-				level: "warning",
-				path: warning.path,
-				message: warning.message,
-			});
+		const edmxValidation = captureEdmxValidationIssues(edmxContent, overlay);
+		result.errors.push(...edmxValidation.errors);
+		result.warnings.push(...edmxValidation.warnings);
+		if (edmxValidation.errors.length > 0) {
+			result.valid = false;
 		}
 
 		// For XML, we can't easily provide patch-level match counts
@@ -422,43 +420,74 @@ function areValuesEqual(a: JSONValue, b: JSONValue): boolean {
 	});
 }
 
-interface EdmxWarning {
-	path: string;
-	message: string;
+interface EdmxValidationCapture {
+	errors: OverlayValidationIssue[];
+	warnings: OverlayValidationIssue[];
 }
 
 /**
- * Captures validation warnings from an EDMX merge dry-run.
+ * Captures validation issues from an EDMX merge dry-run.
  */
-function captureEdmxValidationWarnings(
+function captureEdmxValidationIssues(
 	edmxContent: string,
 	overlay: ORDOverlay,
-): EdmxWarning[] {
-	const warnings: EdmxWarning[] = [];
+): EdmxValidationCapture {
+	const errors: OverlayValidationIssue[] = [];
+	const warnings: OverlayValidationIssue[] = [];
 	const originalWarn = console.warn;
 
 	console.warn = (message?: unknown): void => {
 		const msg = String(message);
-		// Parse warning messages from the EDMX merge function
-		const match = msg.match(/\[overlay-merge\]\s*(?:Warning:?)?\s*(.*)/i);
-		if (match) {
+		const overlayWarningMatch = msg.match(
+			/\[overlay-merge\]\s*Warning at\s+([^:]+):\s*(.*)/i,
+		);
+		if (overlayWarningMatch) {
 			warnings.push({
-				path: "$",
-				message: match[1],
+				level: "warning",
+				path: overlayWarningMatch[1],
+				message: overlayWarningMatch[2],
 			});
+			return;
 		}
+
+		const match = msg.match(/\[overlay-merge\]\s*(?:Warning:?)?\s*(.*)/i);
+		if (!match) {
+			return;
+		}
+
+		const warningMessage = match[1].trim();
+		const noMatch = warningMessage.match(
+			/^Patch #(\d+) did not match any target element in EDMX\.$/,
+		);
+		if (noMatch) {
+			const patchIndex = Number(noMatch[1]) - 1;
+			errors.push({
+				level: "error",
+				path: `$.patches[${patchIndex}].selector`,
+				message:
+					"Selector does not match any element in the target EDMX document.",
+			});
+			return;
+		}
+
+		warnings.push({
+			level: "warning",
+			path: "$",
+			message: warningMessage,
+		});
 	};
 
 	try {
-		// Perform a dry-run merge to capture warnings
+		// Skip semantic validation here; validateOverlay() already handled it.
 		applyOverlayToEdmxDocument(edmxContent, overlay, {
 			noMatchBehavior: "warn",
+			validateOverlaySemantics: false,
 		});
 	} finally {
 		console.warn = originalWarn;
 	}
 
-	return warnings;
+	return { errors, warnings };
 }
 
 /**
