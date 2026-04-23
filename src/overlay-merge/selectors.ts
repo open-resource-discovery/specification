@@ -746,7 +746,7 @@ function resolveCsdlJsonEntityType(
 		const candidate = nsObj[localName];
 		if (!isJSONObject(candidate)) continue;
 
-		const kind = candidate["$Kind"];
+		const kind = candidate.$Kind;
 		if (typeof kind === "string" && allowedKinds.includes(kind)) {
 			matches.push({
 				parent: nsObj,
@@ -795,8 +795,8 @@ function resolveCsdlJsonPropertyType(
 			for (const [key, value] of Object.entries(nsObj)) {
 				if (
 					isJSONObject(value) &&
-					typeof value["$Kind"] === "string" &&
-					allowedKinds.includes(value["$Kind"])
+					typeof value.$Kind === "string" &&
+					allowedKinds.includes(value.$Kind)
 				) {
 					entityRefs.push({
 						parent: nsObj,
@@ -856,7 +856,7 @@ function resolveCsdlJsonOperation(
 
 		candidate.forEach((overload, index) => {
 			if (!isJSONObject(overload)) return;
-			const kind = overload["$Kind"];
+			const kind = overload.$Kind;
 			if (kind === "Action" || kind === "Function") {
 				matches.push({
 					parent: candidate,
@@ -1053,7 +1053,7 @@ function resolveCsdlJsonEntitySet(
 	for (const { namespace, nsObj } of namespaces) {
 		// Find the EntityContainer in this namespace
 		for (const [key, value] of Object.entries(nsObj)) {
-			if (!isJSONObject(value) || value["$Kind"] !== "EntityContainer") {
+			if (!isJSONObject(value) || value.$Kind !== "EntityContainer") {
 				continue;
 			}
 
@@ -1115,11 +1115,11 @@ function resolveCsdlJsonParameter(
 
 	for (const opRef of operationRefs) {
 		const opObj = opRef.value as Record<string, JSONValue>;
-		const params = opObj["$Parameter"];
+		const params = opObj.$Parameter;
 		if (!Array.isArray(params)) continue;
 
 		params.forEach((param, index) => {
-			if (isJSONObject(param) && param["$Name"] === parameterName) {
+			if (isJSONObject(param) && param.$Name === parameterName) {
 				matches.push({
 					parent: params,
 					key: index,
@@ -1142,7 +1142,7 @@ function resolveCsdlJsonReturnType(
 
 	for (const opRef of operationRefs) {
 		const opObj = opRef.value as Record<string, JSONValue>;
-		const returnType = opObj["$ReturnType"];
+		const returnType = opObj.$ReturnType;
 		if (isJSONObject(returnType)) {
 			matches.push({
 				parent: opObj,

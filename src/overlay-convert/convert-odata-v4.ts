@@ -70,6 +70,12 @@ function patchTags(tags: string[]): { tags: [string, ...string[]] } {
 	return { tags: tags as [string, ...string[]] };
 }
 
+function patchTagsIfPresent(
+	tags: string[] | undefined,
+): Partial<Pick<OverlayPatch, "tags">> {
+	return tags !== undefined && tags.length > 0 ? patchTags(tags) : {};
+}
+
 export function convertODataV4EnrichmentToOrd(
 	source: ODataV4Enrichment,
 	options: ConvertOptions = {},
@@ -103,7 +109,7 @@ export function convertODataV4EnrichmentToOrd(
 			action: "merge",
 			selector: { entitySet: es.name },
 			data: descriptionAnnotations(es.summary, es.description),
-			...((es.tags ?? []).length > 0 ? patchTags(es.tags!) : {}),
+			...patchTagsIfPresent(es.tags),
 		});
 	}
 
@@ -223,7 +229,7 @@ function addEntityTypePatches(
 		action: "merge",
 		selector: { entityType: qualifiedSelector },
 		data,
-		...((et.tags ?? []).length > 0 ? patchTags(et.tags!) : {}),
+		...patchTagsIfPresent(et.tags),
 	});
 }
 
@@ -250,7 +256,7 @@ function addComplexTypePatches(
 		action: "merge",
 		selector: { complexType: qualifiedSelector },
 		data,
-		...((ct.tags ?? []).length > 0 ? patchTags(ct.tags!) : {}),
+		...patchTagsIfPresent(ct.tags),
 	});
 }
 
@@ -267,7 +273,7 @@ function addOperationPatches(
 		action: "merge",
 		selector: { operation: qualifiedSelector },
 		data: descriptionAnnotations(op.summary, op.description),
-		...((op.tags ?? []).length > 0 ? patchTags(op.tags!) : {}),
+		...patchTagsIfPresent(op.tags),
 	});
 
 	for (const param of op.parameters ?? []) {
@@ -337,10 +343,11 @@ function mergeImportOntoOperation(
 			});
 		}
 		// Merge import tags onto the existing patch if present and not already there
-		if ((imp.tags ?? []).length > 0) {
+		const importTags = imp.tags ?? [];
+		if (importTags.length > 0) {
 			const existingTags: string[] =
 				(existing.tags as string[] | undefined) ?? [];
-			const merged = [...new Set([...existingTags, ...imp.tags!])];
+			const merged = [...new Set([...existingTags, ...importTags])];
 			(existing as Record<string, unknown>).tags = merged;
 		}
 	} else {
@@ -349,7 +356,7 @@ function mergeImportOntoOperation(
 			action: "merge",
 			selector: { operation: qualifiedName },
 			data: descriptionAnnotations(imp.summary, imp.description),
-			...((imp.tags ?? []).length > 0 ? patchTags(imp.tags!) : {}),
+			...patchTagsIfPresent(imp.tags),
 		};
 		patches.push(patch);
 		opPatchIndex.set(qualifiedName, patch);

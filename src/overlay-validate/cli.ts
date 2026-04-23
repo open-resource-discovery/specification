@@ -121,7 +121,7 @@ async function main(): Promise<void> {
 
 function outputReport(report: ValidationReport, format: "text" | "json"): void {
 	if (format === "json") {
-		process.stdout.write(JSON.stringify(report, null, 2) + "\n");
+		process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
 		return;
 	}
 
@@ -180,7 +180,7 @@ function outputReport(report: ValidationReport, format: "text" | "json"): void {
 		}
 	}
 
-	process.stderr.write(lines.join("\n") + "\n");
+	process.stderr.write(`${lines.join("\n")}\n`);
 }
 
 interface FileReadResult {

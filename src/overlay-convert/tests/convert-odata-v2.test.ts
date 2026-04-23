@@ -34,9 +34,10 @@ test("converts OData v2 entityTypes, entitySets and functionImports to ORD overl
 		"Compensation information for employee assignments",
 	);
 	// Verify nested property annotations (compact format)
-	const idAnnotation = (etPatch.data as Record<string, unknown>)[
-		"id"
-	] as Record<string, unknown>;
+	const idAnnotation = (etPatch.data as Record<string, unknown>).id as Record<
+		string,
+		unknown
+	>;
 	assert.equal(
 		idAnnotation?.["@Core.Description"],
 		"Unique identifier for the employee assignment",
@@ -207,9 +208,8 @@ test("converts complexType using complexType selector with nested property annot
 	// ComplexType itself uses complexType selector
 	assert.deepEqual(overlay.patches[0].selector, { complexType: "Address" });
 	// Property is nested inside the data (compact format)
-	const streetAnnotation = (overlay.patches[0].data as Record<string, unknown>)[
-		"Street"
-	] as Record<string, unknown>;
+	const streetAnnotation = (overlay.patches[0].data as Record<string, unknown>)
+		.Street as Record<string, unknown>;
 	assert.equal(
 		streetAnnotation?.["@Core.Description"],
 		"Street name and number",

@@ -91,7 +91,7 @@ test("applies operation selector (OpenAPI) overlay example to OpenAPI metadata e
 	const contact = info.contact as Record<string, unknown>;
 	assert.ok(contact, "info.contact should exist after root selector patch");
 	assert.equal(contact.name, "Astronomy API Support");
-	assert.equal(contact.email, "astronomy-api@sap.com");
+	assert.equal(contact.email, "astronomy-api@example.com");
 
 	const components = merged.components as Record<string, unknown>;
 	const securitySchemes = components.securitySchemes as Record<
@@ -385,8 +385,8 @@ test("applies entityType + propertyType + operation selectors (EDMX) to OData ED
 		"Customer should have Core.Description annotation",
 	);
 	assert.ok(
-		typeof coreDescAnnotation["String"] === "string" &&
-			(coreDescAnnotation["String"] as string).includes("person"),
+		typeof coreDescAnnotation.String === "string" &&
+			(coreDescAnnotation.String as string).includes("person"),
 		"Customer Core.Description should mention person",
 	);
 
@@ -877,11 +877,13 @@ test("EDMX: merging annotation that already exists replaces it, not duplicates",
 	const customerET = (
 		schema[0].EntityType as Array<Record<string, unknown>>
 	).find((e) => e["@_Name"] === "Customer");
+	assert.ok(customerET, "Customer EntityType should exist");
 	const countryNameProp = (
-		customerET!.Property as Array<Record<string, unknown>>
+		customerET.Property as Array<Record<string, unknown>>
 	).find((p) => p["@_Name"] === "CountryName");
+	assert.ok(countryNameProp, "CountryName property should exist");
 	const annotations =
-		(countryNameProp!.Annotation as Array<Record<string, unknown>>) ?? [];
+		(countryNameProp.Annotation as Array<Record<string, unknown>>) ?? [];
 
 	const coreDescAnns = annotations.filter(
 		(a) => a["@_Term"] === "Core.Description",
@@ -976,7 +978,7 @@ test("entitySet selector patches EntitySet in EDMX XML", async () => {
 	const entitySets = container.EntitySet as Array<Record<string, unknown>>;
 	const customers = entitySets.find((es) => es["@_Name"] === "Customers");
 	assert.ok(customers, "Customers EntitySet should exist");
-	const annotations = customers!.Annotation as Array<Record<string, unknown>>;
+	const annotations = customers.Annotation as Array<Record<string, unknown>>;
 	assert.ok(
 		Array.isArray(annotations),
 		"Customers should have Annotation array",
@@ -1353,8 +1355,8 @@ test("parameter selector targets Action parameter in CSDL JSON", async () => {
 	const rejection = (
 		merged["OData.Demo"].Rejection as Array<Record<string, unknown>>
 	)[0];
-	const params = rejection["$Parameter"] as Array<Record<string, unknown>>;
-	const reason = params.find((p) => p["$Name"] === "Reason");
+	const params = rejection.$Parameter as Array<Record<string, unknown>>;
+	const reason = params.find((p) => p.$Name === "Reason");
 	assert.ok(reason, "Reason parameter should exist");
 	assert.equal(
 		reason["@Core.Description"],
@@ -1402,10 +1404,10 @@ test("parameter selector targets Action Parameter in EDMX XML", async () => {
 	const actions = schema[0].Action as Array<Record<string, unknown>>;
 	const rejection = actions.find((a) => a["@_Name"] === "Rejection");
 	assert.ok(rejection, "Rejection action should exist");
-	const params = rejection!.Parameter as Array<Record<string, unknown>>;
+	const params = rejection.Parameter as Array<Record<string, unknown>>;
 	const reason = params.find((p) => p["@_Name"] === "Reason");
 	assert.ok(reason, "Reason parameter should exist on Rejection");
-	const annotations = reason!.Annotation as Array<Record<string, unknown>>;
+	const annotations = reason.Annotation as Array<Record<string, unknown>>;
 	assert.ok(Array.isArray(annotations), "Reason should have Annotation array");
 	assert.ok(
 		annotations.some((a) => a["@_Term"] === "Core.Description"),

@@ -45,9 +45,8 @@ test("converts OData v4 enrichment to ORD overlay patches using all new selector
 		"Employee master record",
 	);
 	// Verify nested property annotations (compact format)
-	const employeeIdAnnotation = (etPatch.data as Record<string, unknown>)[
-		"EmployeeId"
-	] as Record<string, unknown>;
+	const employeeIdAnnotation = (etPatch.data as Record<string, unknown>)
+		.EmployeeId as Record<string, unknown>;
 	assert.equal(
 		employeeIdAnnotation?.["@Core.Description"],
 		"Unique employee identifier",
@@ -59,9 +58,8 @@ test("converts OData v4 enrichment to ORD overlay patches using all new selector
 		complexType: "com.sap.HRService.AddressInfo",
 	});
 	// Verify nested property annotation
-	const countryAnnotation = (ctPatch.data as Record<string, unknown>)[
-		"Country"
-	] as Record<string, unknown>;
+	const countryAnnotation = (ctPatch.data as Record<string, unknown>)
+		.Country as Record<string, unknown>;
 	assert.equal(countryAnnotation?.["@Core.Description"], "ISO country code");
 
 	// patch[3]: entitySet patch
@@ -75,9 +73,8 @@ test("converts OData v4 enrichment to ORD overlay patches using all new selector
 		enumType: "com.sap.HRService.EmploymentStatus",
 	});
 	// Verify nested member annotation
-	const activeAnnotation = (enumPatch.data as Record<string, unknown>)[
-		"Active"
-	] as Record<string, unknown>;
+	const activeAnnotation = (enumPatch.data as Record<string, unknown>)
+		.Active as Record<string, unknown>;
 	assert.equal(activeAnnotation?.["@Core.Description"], "Currently employed");
 
 	// patch[5]: action operation patch
@@ -298,9 +295,8 @@ test("complexType uses complexType selector with nested property annotations", (
 		complexType: "com.example.Svc.Address",
 	});
 	// Property is nested inside the complexType data (compact format)
-	const cityAnnotation = (overlay.patches[1].data as Record<string, unknown>)[
-		"City"
-	] as Record<string, unknown>;
+	const cityAnnotation = (overlay.patches[1].data as Record<string, unknown>)
+		.City as Record<string, unknown>;
 	assert.equal(cityAnnotation?.["@Core.Description"], "City name");
 	assert.equal(cityAnnotation?.["@Core.LongDescription"], "The city.");
 });

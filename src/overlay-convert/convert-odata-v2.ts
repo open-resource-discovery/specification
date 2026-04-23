@@ -61,6 +61,12 @@ function patchTags(tags: string[]): { tags: [string, ...string[]] } {
 	return { tags: tags as [string, ...string[]] };
 }
 
+function patchTagsIfPresent(
+	tags: string[] | undefined,
+): Partial<Pick<OverlayPatch, "tags">> {
+	return tags !== undefined && tags.length > 0 ? patchTags(tags) : {};
+}
+
 export function convertODataV2EnrichmentToOrd(
 	source: ODataV2Enrichment,
 	options: ConvertOptions = {},
@@ -88,7 +94,7 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { entityType: selector },
 			data,
-			...((et.tags ?? []).length > 0 ? patchTags(et.tags!) : {}),
+			...patchTagsIfPresent(et.tags),
 		});
 	}
 
@@ -111,7 +117,7 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { complexType: selector },
 			data,
-			...((ct.tags ?? []).length > 0 ? patchTags(ct.tags!) : {}),
+			...patchTagsIfPresent(ct.tags),
 		});
 	}
 
@@ -123,7 +129,7 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { entitySet: selector },
 			data: descriptionAnnotations(es.summary, es.description),
-			...((es.tags ?? []).length > 0 ? patchTags(es.tags!) : {}),
+			...patchTagsIfPresent(es.tags),
 		});
 	}
 
@@ -137,7 +143,7 @@ export function convertODataV2EnrichmentToOrd(
 			action: "merge",
 			selector: { operation: selector },
 			data: descriptionAnnotations(fi.summary, fi.description),
-			...((fi.tags ?? []).length > 0 ? patchTags(fi.tags!) : {}),
+			...patchTagsIfPresent(fi.tags),
 		});
 
 		for (const param of fi.parameters ?? []) {
