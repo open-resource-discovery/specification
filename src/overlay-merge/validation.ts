@@ -96,6 +96,22 @@ export function validateOverlaySemantics(
 	const warnings: OverlayValidationIssue[] = [];
 	const definitionType = resolveDefinitionType(overlay, options.context);
 
+	if (
+		overlay.target !== undefined &&
+		overlay.target.ordId === undefined &&
+		overlay.target.url === undefined &&
+		overlay.target.correlationIds === undefined &&
+		overlay.target.definitionType === undefined
+	) {
+		errors.push(
+			createIssue(
+				"error",
+				"$.target",
+				"target MUST contain at least one of ordId, url, correlationIds, or definitionType when present.",
+			),
+		);
+	}
+
 	if (overlay.target?.definitionType === "custom") {
 		errors.push(
 			createIssue(

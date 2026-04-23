@@ -22,6 +22,7 @@ import {
 	isJSONObject,
 	type JSONObject,
 	type JSONValue,
+	matchesOverlayTarget,
 	OverlayMergeError,
 } from "./types";
 import {
@@ -663,6 +664,16 @@ export function applyOverlayToEdmxDocument(
 		});
 		throwOnOverlayValidationErrors(validation.errors);
 		emitOverlayValidationWarnings(validation.warnings);
+	}
+
+	if (
+		options.requireTargetMatch === true &&
+		options.context !== undefined &&
+		!matchesOverlayTarget(overlay, options.context)
+	) {
+		throw new OverlayMergeError(
+			"Overlay target does not match the provided document context.",
+		);
 	}
 
 	const parser = buildXmlParser();

@@ -38,11 +38,10 @@ export interface ApplyOverlayOptions {
 	validateOverlaySemantics?: boolean;
 	/**
 	 * When true, compare overlay `target` metadata against `context`.
-	 * Current comparison checks:
+	 * Comparison checks:
 	 * - `ordId` equality (if both are provided)
+	 * - `url` equality (if both are provided)
 	 * - `definitionType` equality (if both are provided)
-	 *
-	 * TODO: decide whether/when `url` should be compared strictly.
 	 */
 	requireTargetMatch?: boolean;
 	context?: OverlayMergeContext;
@@ -95,6 +94,14 @@ export function matchesOverlayTarget(
 		context.definitionType !== undefined &&
 		target.definitionType !== undefined &&
 		context.definitionType !== target.definitionType
+	) {
+		return false;
+	}
+
+	if (
+		context.url !== undefined &&
+		target.url !== undefined &&
+		context.url !== target.url
 	) {
 		return false;
 	}

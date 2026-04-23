@@ -222,7 +222,7 @@ test("throws when selector has no match by default", async () => {
 	);
 });
 
-test("does not use URL equality for target matching", async () => {
+test("rejects overlay when target URL does not match context URL", async () => {
 	const openApiSource = await loadJsonFixture<JSONValue>(
 		"examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json",
 	);
@@ -244,16 +244,17 @@ test("does not use URL equality for target matching", async () => {
 		],
 	});
 
-	const merged = applyOverlayToDocument(openApiSource, overlay, {
-		requireTargetMatch: true,
-		context: {
-			url: "/completely/different/path.json",
-			definitionType: "openapi-v3",
-		},
-	}) as Record<string, unknown>;
-
-	const info = merged.info as Record<string, unknown>;
-	assert.equal(info["x-url-check"], "disabled");
+	assert.throws(
+		() =>
+			applyOverlayToDocument(openApiSource, overlay, {
+				requireTargetMatch: true,
+				context: {
+					url: "/completely/different/path.json",
+					definitionType: "openapi-v3",
+				},
+			}),
+		OverlayMergeError,
+	);
 });
 
 test("validates openapi-v3 targets by document content", () => {
