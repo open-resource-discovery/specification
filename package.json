@@ -30,7 +30,7 @@
 		"format": "biome format --write .",
 		"lint": "biome lint .",
 		"test": "npm run build:ts && node --test dist/**/*.test.js",
-		"test:overlay-merge": "npm run build-ts && node --test dist/overlay-merge/**/*.test.js",
+		"test:overlay-merge": "npm run build:ts && node --test dist/overlay-merge/**/*.test.js",
 		"serve": "docusaurus serve",
 		"start": "docusaurus start",
 		"deploy": "npm run build && gh-pages -d ./build",
