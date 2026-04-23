@@ -35,7 +35,7 @@ export type OverlayVisibility = ("public" | "internal" | "private") & string;
  * Optional, but RECOMMENDED type of the target definition being patched.
  * If provided, this SHOULD match the `type` of the referenced metadata definition
  * (as used in API/Event/Capability resource definitions).
- * This is especially useful when [`ordId`](#overlay-target_ordid) resolves to a resource with multiple attached definitions.
+ * This is especially useful when target `ordId` resolves to a resource with multiple attached definitions.
  *
  * This can be used to disambiguate how selectors are interpreted for the target.
  *
@@ -94,7 +94,7 @@ export type OverlaySelector =
   | OverlaySelectorByParameter
   | OverlaySelectorByReturnType;
 /**
- * The value used by the patch [`action`](#overlay-patch_action).
+ * The value used by the patch `action`.
  * Structure depends on the target being patched and the action type.
  *
  * For OData targets (`edmx`, `csdl-json`), the value MUST be expressed in CSDL JSON
@@ -174,7 +174,7 @@ export interface ORDOverlay {
 }
 /**
  * Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.
- * This object is identical to the ORD Document [`describedSystemType`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemtype) object.
+ * This object is identical to the ORD Document `describedSystemType` object; see [System Type](../../spec-v1/interfaces/Document.md#system-type).
  *
  * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
  * This is the primary context object for `perspective: system-type`, and also the parent context
@@ -196,7 +196,7 @@ export interface OverlaySystemType {
 }
 /**
  * Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.
- * This object is identical to the ORD Document [`describedSystemVersion`](../../spec-v1/interfaces/Document.md#ord-document_describedsystemversion) object.
+ * This object is identical to the ORD Document `describedSystemVersion` object; see [System Version](../../spec-v1/interfaces/Document.md#system-version).
  *
  * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
  * Use this when the overlay should only patch metadata for one specific released system version.
@@ -223,7 +223,7 @@ export interface OverlaySystemVersion {
 }
 /**
  * Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.
- * This object is identical to the ORD Document [`describedSystemInstance`](../../spec-v1/interfaces/Document.md#ord-document_describedsysteminstance) object.
+ * This object is identical to the ORD Document `describedSystemInstance` object; see [System Instance](../../spec-v1/interfaces/Document.md#system-instance).
  *
  * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
  * Use this when the overlay should only patch metadata for one concrete tenant / runtime instance.
@@ -276,7 +276,7 @@ export interface OverlayTarget {
 }
 /**
  * A [system instance](../../spec-v1/index.md#system-instance) is a concrete, running instance of a system type.
- * This object is identical to the ORD Document [`describedSystemInstance`](../../spec-v1/interfaces/Document.md#ord-document_describedsysteminstance) object.
+ * This object is identical to the ORD Document `describedSystemInstance` object; see [System Instance](../../spec-v1/interfaces/Document.md#system-instance).
  *
  * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
  * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
@@ -299,7 +299,7 @@ export interface OverlaySystemInstance1 {
   correlationIds?: [OverlayCorrelationID2, ...OverlayCorrelationID2[]];
 }
 /**
- * A single patch action to apply to the element identified by the [`selector`](#overlay-patch_selector).
+ * A single patch action to apply to the element identified by the [Overlay Selector](#overlay-selector).
  */
 export interface OverlayPatch {
   /**

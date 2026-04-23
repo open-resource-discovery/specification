@@ -31,7 +31,7 @@ This inline approach:
 When additional metadata should only be visible to a narrower audience, two main approaches exist:
 
 - publish a separate overlay that patches the target metadata for that audience
-- publish multiple resource definitions of the same resource with different [`API Resource Definition.visibility`](../../spec-v1/interfaces/Document.md#api-resource-definition_visibility) settings
+- publish multiple resource definitions of the same resource with different [API Resource Definition](../../spec-v1/interfaces/Document.md#api-resource-definition) visibility settings
 
 These approaches solve different problems:
 
@@ -103,25 +103,12 @@ Rule of thumb:
 - use attached resource definitions for producer-owned, resource-local overlays
 - use ORD Configuration for externally managed, cross-resource, or ORD-level overlays
 
-## Open TODOs
+## Current Constraints
 
-**Patch actions:**
-
-- Consider a mechanism for modifying existing string values (e.g. extending descriptions or summaries) rather than replacing them entirely. This should be more flexible than a simple append — for example, it could support templated string manipulation.
-
-**Aggregator behavior and compatibility:**
-
-- Decide how to indicate use-case-specific overlays when multiple overlays exist for the same target.
-
-**OData selectors:**
-
-- Define the implementation roadmap for `entityType` and `propertyType` selector support in the reference merge library.
-- Decide whether OData overlays should be restricted to annotation-only patches (i.e. `data` keys MUST follow the `@TermName` convention). In practice, all meaningful OData enrichments are vocabulary annotations, and allowing arbitrary structural changes could produce invalid CSDL output. Restricting to annotations would also make the patch intent more explicit and aid validation. Note: OData patching/merging almost certainly operates at the annotation level — but it is not entirely clear whether `remove` or structural changes to non-annotation elements should also be supported (e.g. deprecating or removing an operation from a CSDL description).
-- Decide whether the `entityType` selector should target only the EntityType/ComplexType definition, or also the EntitySet in the EntityContainer (or both). Currently only the EntityType definition is targeted. EntitySet-level annotations (e.g. `Capabilities`) sit on the EntitySet, not the EntityType, and are not reachable via the current selector — `jsonPath` is the current fallback for those cases.
-- Consider aligning OData selectors with the standard [OData CSDL Annotation Target](https://oasis-tcs.github.io/odata-specs/odata-csdl-xml/odata-csdl-xml.html#Target) syntax. OData defines a well-specified path grammar for identifying any CSDL element as an annotation target (e.g. `MyService.MyEntityType/MyProperty`, `MyService.MyEntityContainer/MyEntitySet`). Using this as the native OData selector format would piggyback on an existing standard and avoid inventing a parallel addressing scheme. The trade-off is that consumers and implementors need deeper OData knowledge to construct and interpret selectors correctly, compared to the current named-key approach.
-Reference: [OData CSDL XML 4.01](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html).
-- Not sure if we need fully qualified selectors, maybe we can support both and only require fully qualified selectors in cases where it's ambiguous.
-
-**Selectors in General**:
-
-Use [@EntityRelationship](https://sap.github.io/csn-interop-specification/spec-v1/extensions/entity-relationship) annotations if available as selector for EntityType or PropertyType?
+- Overlays replace string values as complete values. If you need to refine a summary or description, compute the final string in the patch payload and apply it with `update` or `merge`.
+- The specification defines patch order within one overlay file. If multiple overlay documents apply to the same target, providers and aggregators should define and document a deterministic processing order outside this specification.
+- For OData, prefer the dedicated selectors in this spec: `entityType`, `complexType`, `enumType`, `propertyType`, `entitySet`, `namespace`, `parameter`, and `returnType`.
+- In OData, `entityType` targets the type definition itself. EntityContainer-bound annotations such as `Capabilities` belong on `entitySet`; use `jsonPath` only when no dedicated selector fits.
+- OData patch values should use CSDL JSON annotation format (`@TermName` keys). After applying an overlay, validate the merged result with format-specific tooling before publication.
+- Use namespace-qualified OData operation and type names whenever ambiguity is possible. ORD Overlay uses its own concept-level selector shapes; external notations such as [OData CSDL Annotation Target](https://oasis-tcs.github.io/odata-specs/odata-csdl-xml/odata-csdl-xml.html#Target) are informative background, not alternative selector syntaxes in this version.
+- Selector alternatives based on source-model annotations, such as [@EntityRelationship](https://sap.github.io/csn-interop-specification/spec-v1/extensions/entity-relationship), are outside the scope of ORD Overlay 0.1.

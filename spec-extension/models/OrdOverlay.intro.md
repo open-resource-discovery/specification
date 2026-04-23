@@ -86,6 +86,7 @@ Concept-level selectors are preferred over `jsonPath` because they are resilient
 (e.g. OpenAPI 3.0 → 3.1, OData CSDL XML → JSON).
 
 Available selectors:
+- [`root`](#overlay-selector-by-root) — document-level metadata and top-level sections
 - [`ordId`](#overlay-selector-by-ord-id) — ORD resource metadata
 - [`operation`](#overlay-selector-by-operation) — OpenAPI, MCP, A2A, OData Actions/Functions
 - [`entityType`](#overlay-selector-by-entity-type) — OData EntityTypes, CSN Interop entities
@@ -97,6 +98,8 @@ Available selectors:
 - [`parameter`](#overlay-selector-by-parameter) — OData/OpenAPI parameters (requires `operation`)
 - [`returnType`](#overlay-selector-by-return-type) — OData return types (requires `operation`)
 - [`jsonPath`](#overlay-selector-by-jsonpath) — generic fallback for any JSON/YAML location
+
+Use `root` for document-level merges such as OpenAPI `info`, `components`, or ORD top-level properties.
 
 See each selector's definition for detailed format mappings and usage.
 
@@ -128,6 +131,6 @@ Without such enforcement, consumers could be exposed to unauthorized metadata ch
 
 ## Overlay Document Metadata
 
-Note on [`perspective`](#ord-overlay_perspective): unlike its use in ORD Documents (which scopes transport),
+Note on `perspective`: unlike its use in ORD Documents (which scopes transport),
 `perspective` on an overlay declares *where the patch should be applied* — at system-type, system-version, or system-instance level.
 See the field description for details.
