@@ -15,7 +15,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added **ORD Overlay** as an alpha spec extension model (`ord:overlay:v1`)
   - Overlays allow patching ORD resource metadata and referenced definition files (OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards) without modifying the originals.
   - Overlays can be distributed via the ORD Configuration Endpoint (`openResourceDiscoveryV1.overlays`) or attached directly to an API/Event resource as a `resourceDefinitions` entry.
-  - Patches use concept-level selectors (`ordId`, `operation`, `entityType`, `propertyType`) or a generic `jsonPath` fallback, with actions `merge`, `update`, `append`, and `remove`.
+  - Patches use concept-level selectors (`ordId`, `operation`, `entityType`, `propertyType`) or a generic `jsonPath` fallback, with actions `merge`, `update`, and `remove`.
   - Optional `target` object narrows a patch to a specific definition file or format (e.g. `definitionType: openapi-v3`).
   - Optional top-level fields (`describedSystemType`, `describedSystemVersion`, `describedSystemInstance`, `visibility`) scope the overlay to a particular system context.
 - Added OData patch data validation: overlays targeting OData formats (`csdl-json`, `edmx`) now warn when patch data does not use CSDL JSON annotation format (`@TermName` keys), ensuring consistent behavior between the EDMX and CSDL JSON merge paths.
