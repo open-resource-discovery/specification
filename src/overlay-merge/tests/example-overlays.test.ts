@@ -1453,3 +1453,37 @@ test("applyOverlayToEdmxDocument throws on ambiguous unqualified entityType acro
 		/Ambiguous entityType selector "Customer"/,
 	);
 });
+
+test("EDMX: onPatchResult callback reports matched and unmatched patches", async () => {
+	const xmlInput = await loadTextFixture(
+		"src/overlay-merge/tests/fixtures/BusinessPartner.edmx.xml",
+	);
+	const overlay: ORDOverlay = {
+		ordOverlay: "0.1",
+		patches: [
+			{
+				action: "merge",
+				selector: { entityType: "A_BusinessPartnerType" },
+				data: { "@Core.Description": "exists" } as never,
+			},
+			{
+				action: "merge",
+				selector: { entityType: "NoSuchType" },
+				data: { "@Core.Description": "missing" } as never,
+			},
+		],
+	};
+
+	const results: Array<{ patchIndex: number; matched: boolean }> = [];
+
+	applyOverlayToEdmxDocument(xmlInput, overlay, {
+		noMatchBehavior: "ignore",
+		onPatchResult: (patchIndex, matched) => {
+			results.push({ patchIndex, matched });
+		},
+	});
+
+	assert.equal(results.length, 2);
+	assert.deepEqual(results[0], { patchIndex: 0, matched: true });
+	assert.deepEqual(results[1], { patchIndex: 1, matched: false });
+});

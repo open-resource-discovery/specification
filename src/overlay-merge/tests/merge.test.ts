@@ -810,3 +810,37 @@ test("does not warn when overlay merge adds new properties", async () => {
 	});
 	assert.equal(warnings.length, 0);
 });
+
+test("onPatchResult callback reports matched and unmatched patches", async () => {
+	const source = {
+		openapi: "3.0.0",
+		info: { title: "API" },
+	} as JSONValue;
+
+	const overlay = createOrdOverlay({
+		target: { definitionType: "openapi-v3" },
+		patches: [
+			createOverlayPatch({
+				selector: { jsonPath: "$.info" },
+				data: { title: "Patched" },
+			}),
+			createOverlayPatch({
+				selector: { jsonPath: "$.nonexistent" },
+				data: { foo: "bar" },
+			}),
+		],
+	});
+
+	const results: Array<{ patchIndex: number; matched: boolean }> = [];
+
+	applyOverlayToDocument(source, overlay, {
+		noMatchBehavior: "ignore",
+		onPatchResult: (patchIndex, matched) => {
+			results.push({ patchIndex, matched });
+		},
+	});
+
+	assert.equal(results.length, 2);
+	assert.deepEqual(results[0], { patchIndex: 0, matched: true });
+	assert.deepEqual(results[1], { patchIndex: 1, matched: false });
+});

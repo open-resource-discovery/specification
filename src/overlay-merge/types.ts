@@ -46,6 +46,11 @@ export interface ApplyOverlayOptions {
 	 */
 	requireTargetMatch?: boolean;
 	context?: OverlayMergeContext;
+	/**
+	 * Callback invoked after each patch is processed, reporting whether the selector matched.
+	 * Useful for structured validation without relying on console output.
+	 */
+	onPatchResult?: (patchIndex: number, matched: boolean) => void;
 }
 
 export class OverlayMergeError extends Error {

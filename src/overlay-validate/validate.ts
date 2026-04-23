@@ -434,57 +434,29 @@ function captureEdmxValidationIssues(
 ): EdmxValidationCapture {
 	const errors: OverlayValidationIssue[] = [];
 	const warnings: OverlayValidationIssue[] = [];
-	const originalWarn = console.warn;
 
-	console.warn = (message?: unknown): void => {
-		const msg = String(message);
-		const overlayWarningMatch = msg.match(
-			/\[overlay-merge\]\s*Warning at\s+([^:]+):\s*(.*)/i,
-		);
-		if (overlayWarningMatch) {
-			warnings.push({
-				level: "warning",
-				path: overlayWarningMatch[1],
-				message: overlayWarningMatch[2],
-			});
-			return;
-		}
-
-		const match = msg.match(/\[overlay-merge\]\s*(?:Warning:?)?\s*(.*)/i);
-		if (!match) {
-			return;
-		}
-
-		const warningMessage = match[1].trim();
-		const noMatch = warningMessage.match(
-			/^Patch #(\d+) did not match any target element in EDMX\.$/,
-		);
-		if (noMatch) {
-			const patchIndex = Number(noMatch[1]) - 1;
-			errors.push({
-				level: "error",
-				path: `$.patches[${patchIndex}].selector`,
-				message:
-					"Selector does not match any element in the target EDMX document.",
-			});
-			return;
-		}
-
+	try {
+		applyOverlayToEdmxDocument(edmxContent, overlay, {
+			noMatchBehavior: "ignore",
+			validateOverlaySemantics: false,
+			onPatchResult: (patchIndex, matched) => {
+				if (!matched) {
+					errors.push({
+						level: "error",
+						path: `$.patches[${patchIndex}].selector`,
+						message:
+							"Selector does not match any element in the target EDMX document.",
+					});
+				}
+			},
+		});
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
 		warnings.push({
 			level: "warning",
 			path: "$",
-			message: warningMessage,
+			message,
 		});
-	};
-
-	try {
-		// Skip semantic validation here; validateOverlay() already handled it.
-		applyOverlayToEdmxDocument(edmxContent, overlay, {
-			noMatchBehavior: "warn",
-			validateOverlaySemantics: false,
-		});
-	} finally {
-		console.warn = originalWarn;
 	}
 
 	return { errors, warnings };

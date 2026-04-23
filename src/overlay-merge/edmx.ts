@@ -677,6 +677,7 @@ export function applyOverlayToEdmxDocument(
 
 	overlay.patches.forEach((patch, patchIndex) => {
 		const matched = applyEdmxPatch(schemas, patch);
+		options.onPatchResult?.(patchIndex, matched);
 
 		if (!matched) {
 			const message = `Patch #${patchIndex + 1} did not match any target element in EDMX.`;

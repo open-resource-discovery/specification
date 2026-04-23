@@ -119,6 +119,7 @@ export function applyOverlayToDocument<T extends JSONValue>(
 			patch.selector,
 			definitionType,
 		);
+		options.onPatchResult?.(patchIndex, matches.length > 0);
 
 		if (matches.length === 0) {
 			const message = `Patch #${patchIndex + 1} did not match any target element.`;
