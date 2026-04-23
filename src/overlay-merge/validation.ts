@@ -424,20 +424,36 @@ function validateSelectorSemantics(
 		return;
 	}
 
-	if (selectorKind === "entityType" || selectorKind === "propertyType") {
-		if (
-			selectorKind === "propertyType" &&
-			!("entityType" in selector) &&
-			!("complexType" in selector) &&
-			!("enumType" in selector)
-		) {
-			warnings.push(
-				createIssue(
-					"warning",
-					selectorPath,
-					"propertyType selectors may need selector.entityType, selector.complexType, or selector.enumType to disambiguate the target property.",
-				),
-			);
+	if (
+		selectorKind === "entityType" ||
+		selectorKind === "complexType" ||
+		selectorKind === "enumType" ||
+		selectorKind === "propertyType"
+	) {
+		if (selectorKind === "propertyType") {
+			const parentCount = [
+				"entityType" in selector,
+				"complexType" in selector,
+				"enumType" in selector,
+			].filter(Boolean).length;
+
+			if (parentCount === 0) {
+				errors.push(
+					createIssue(
+						"error",
+						selectorPath,
+						'propertyType selectors MUST provide exactly one of "entityType", "complexType", or "enumType" to disambiguate the target property.',
+					),
+				);
+			} else if (parentCount > 1) {
+				errors.push(
+					createIssue(
+						"error",
+						selectorPath,
+						'propertyType selectors MUST provide exactly one of "entityType", "complexType", or "enumType", but multiple were provided.',
+					),
+				);
+			}
 		}
 
 		if (
@@ -651,6 +667,8 @@ type SelectorKind =
 	| "ordId"
 	| "operation"
 	| "entityType"
+	| "complexType"
+	| "enumType"
 	| "propertyType"
 	| "entitySet"
 	| "namespace"
@@ -700,6 +718,22 @@ function getSelectorKind(
 		!("propertyType" in selector)
 	) {
 		return "entityType";
+	}
+
+	if (
+		isJSONObject(selector) &&
+		typeof selector.complexType === "string" &&
+		!("propertyType" in selector)
+	) {
+		return "complexType";
+	}
+
+	if (
+		isJSONObject(selector) &&
+		typeof selector.enumType === "string" &&
+		!("propertyType" in selector)
+	) {
+		return "enumType";
 	}
 
 	if (isJSONObject(selector) && typeof selector.propertyType === "string") {

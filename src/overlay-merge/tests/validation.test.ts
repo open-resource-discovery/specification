@@ -161,7 +161,7 @@ test("validateOverlaySemantics validates deprecated definitionType values and JS
 	);
 });
 
-test("validateOverlaySemantics warns about ambiguous propertyType selectors without entityType context", () => {
+test("validateOverlaySemantics errors for propertyType selectors with missing or ambiguous parent type context", () => {
 	const overlay = createOrdOverlay({
 		target: {
 			definitionType: "csdl-json",
@@ -189,8 +189,8 @@ test("validateOverlaySemantics warns about ambiguous propertyType selectors with
 		"propertyType selector should not produce errors for csdl-json",
 	);
 
-	// Warn when propertyType is used without entityType for disambiguation
-	const overlayNoEntityType = createOrdOverlay({
+	// Error when propertyType is used without any parent type for disambiguation
+	const overlayNoParent = createOrdOverlay({
 		target: {
 			definitionType: "csdl-json",
 		},
@@ -204,13 +204,39 @@ test("validateOverlaySemantics warns about ambiguous propertyType selectors with
 		],
 	});
 
-	const resultNoEntityType = validateOverlaySemantics(overlayNoEntityType);
+	const resultNoParent = validateOverlaySemantics(overlayNoParent);
 	assert.ok(
-		resultNoEntityType.warnings.some((issue) =>
+		resultNoParent.errors.some((issue) =>
 			issue.message.includes(
-				"propertyType selectors may need selector.entityType, selector.complexType, or selector.enumType",
+				'MUST provide exactly one of "entityType", "complexType", or "enumType"',
 			),
 		),
+		"propertyType without parent type should produce an error",
+	);
+
+	// Error when propertyType has multiple parent types
+	const overlayMultiParent = createOrdOverlay({
+		target: {
+			definitionType: "csdl-json",
+		},
+		patches: [
+			createOverlayPatch({
+				selector: {
+					propertyType: "Street",
+					entityType: "Customer",
+					complexType: "Address",
+				} as Record<string, unknown>,
+				data: { title: "patched" },
+			}),
+		],
+	});
+
+	const resultMultiParent = validateOverlaySemantics(overlayMultiParent);
+	assert.ok(
+		resultMultiParent.errors.some((issue) =>
+			issue.message.includes("but multiple were provided"),
+		),
+		"propertyType with multiple parent types should produce an error",
 	);
 });
 
@@ -237,6 +263,56 @@ test("validateOverlaySemantics errors for entityType/propertyType selector on un
 				issue.message.includes("asyncapi-v2"),
 		),
 		"entityType selector should error for asyncapi-v2",
+	);
+
+	// complexType selector should also error for unsupported definitionType
+	const overlayComplexType = createOrdOverlay({
+		target: {
+			definitionType: "asyncapi-v2",
+		},
+		patches: [
+			createOverlayPatch({
+				selector: {
+					complexType: "Address",
+				} as Record<string, unknown>,
+				data: { title: "patched" },
+			}),
+		],
+	});
+
+	const resultComplexType = validateOverlaySemantics(overlayComplexType);
+	assert.ok(
+		resultComplexType.errors.some(
+			(issue) =>
+				issue.message.includes("complexType") &&
+				issue.message.includes("asyncapi-v2"),
+		),
+		"complexType selector should error for asyncapi-v2",
+	);
+
+	// enumType selector should also error for unsupported definitionType
+	const overlayEnumType = createOrdOverlay({
+		target: {
+			definitionType: "asyncapi-v2",
+		},
+		patches: [
+			createOverlayPatch({
+				selector: {
+					enumType: "OrderStatus",
+				} as Record<string, unknown>,
+				data: { title: "patched" },
+			}),
+		],
+	});
+
+	const resultEnumType = validateOverlaySemantics(overlayEnumType);
+	assert.ok(
+		resultEnumType.errors.some(
+			(issue) =>
+				issue.message.includes("enumType") &&
+				issue.message.includes("asyncapi-v2"),
+		),
+		"enumType selector should error for asyncapi-v2",
 	);
 });
 
