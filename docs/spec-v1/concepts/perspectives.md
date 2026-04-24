@@ -137,7 +137,7 @@ If the aggregator supports both static and dynamic perspectives:
 
 - The ORD aggregator MUST be able to aggregate and store all perspectives (`system-type`, `system-version`, and `system-instance`) at the same time.
 - In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior:
-  - When `system-instance` is requested but not available, fall back to `system-version`.
+  - When `system-instance` is requested but not available, fall back to `system-version`, when this is not available fall back to `system-type`.
   - Static perspective resolution (when `system-type` or `system-version` is requested) SHOULD follow the algorithm described [below](#static-perspective-resolution).
 
 #### Static Perspective Resolution
