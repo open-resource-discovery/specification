@@ -100,7 +100,7 @@ properties:
           If chosen, `describedSystemVersion`.`version` MUST be provided, too.
 
           This perspective describes how a system of a particular type and version generally look like.
-          The latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective.
+          If no explicit `system-type` perspective is available, the latest system-version SHOULD be interpreted as the [system-type](../index.md#system-type) perspective (see [static perspective resolution](../concepts/perspectives#static-perspective-resolution)).
       - const: "system-instance"
         description: |-
           Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.

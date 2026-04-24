@@ -83,14 +83,13 @@ This is depicted in the following diagram:
 The `system-instance` perspective is the most specific, because a consumer could ask how a particular system instance / tenant really looks like. If there is system-instance metadata for it, we can return it directly.
 If we don't have it, we need to fall back to the `system-version` layer and instead return the metadata for the version of the system instance.
 
-If we don't know the version of a system, we can introduce a "virtual" `system-type` perspective that doesn't have to be explicitly published.
-The aggregator can treat the latest `system-version` as the `system-type` perspective and return it to represent the system type overall.
+If no explicit `system-type` perspective has been published, the aggregator SHOULD derive it from the latest `system-version` perspective (see [Static Perspective Resolution](#static-perspective-resolution) below).
 
-A consumer can legitimately be interested in all three levels, but he needs to provide a different context for each:
+A consumer can legitimately be interested in all three levels, but needs to provide a different context for each:
 
-- If `system-instance` metadata is requested, the tenant / system instance ID needs to be specified
+- If `system-instance` metadata is requested, the tenant / system instance ID needs to be specified.
 - If `system-version` metadata is requested, the system type and system version must be specified.
-- If `system-type` metadata is requested, only the system type must be specified and the latest system version is returned.
+- If `system-type` metadata is requested, only the system type must be specified. The aggregator resolves what to return (see [Static Perspective Resolution](#static-perspective-resolution)).
 
 ### Relation to System-Instance-Aware
 
@@ -112,13 +111,23 @@ If the system has dynamic metadata, it should describe both perspectives complet
 
 ## ORD Aggregator Considerations
 
+#### Static Perspective Resolution
+
+When a consumer requests static metadata (i.e. `system-type` or `system-version` perspective) for a given system type, the aggregator SHOULD resolve what to return as follows:
+
+1. If a **specific system version is requested**, return the `system-version` perspective data for that version.
+2. If **no specific version is requested**, return the explicitly provided `system-type` perspective data, if available. The `system-type` perspective takes precedence because it is explicitly maintained and version-independent.
+3. If **no specific version is requested** and **no explicit `system-type` perspective is available**, the aggregator SHOULD derive the `system-type` representation from the **latest `system-version`** perspective.
+
+This resolution ensures that consumers can always retrieve a meaningful static description of a system type without having to know its versioning scheme or whether the provider chose `system-type` vs. `system-version`.
+
 #### Static Aggregators
 
 Static aggregators describe the static perspectives: `system-type` and/or `system-version`.
 
-- If both static and dynamic perspectives are described, it MUST only pick the static perspectives (`system-type` or `system-version`)
-- If only `system-instance` (or unspecified) perspective is available, we assume this is a generic system instance which is meant to describe all system instances as a subsidiary
-- When aggregating `system-type` perspective, the aggregator MAY derive it from the latest `system-version` if not explicitly provided
+- If both static and dynamic perspectives are described, they MUST only pick the static perspectives (`system-type` or `system-version`).
+- If only `system-instance` (or unspecified) perspective is available, we assume this is a generic system instance which is meant to describe all system instances as a subsidiary.
+- Static perspective resolution SHOULD follow the algorithm described [above](#static-perspective-resolution).
 
 #### Dynamic Aggregators
 
@@ -126,9 +135,8 @@ If the aggregator supports both static and dynamic perspectives:
 
 - The ORD aggregator must be able to aggregate and store all perspectives (`system-type`, `system-version`, and `system-instance`) at the same time.
 - In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior:
-  - When `system-instance` is requested but not available, fall back to `system-version`
-  - When `system-version` is requested but not available (or version is unknown), fall back to `system-type`
-  - The aggregator MAY derive `system-type` from the latest `system-version` if not explicitly provided
+  - When `system-instance` is requested but not available, fall back to `system-version`.
+  - Static perspective resolution (when `system-type` or `system-version` is requested) SHOULD follow the algorithm described [above](#static-perspective-resolution).
 
 If the `system-version` perspective is used, the described version MUST be provided via the ORD `describedSystemVersion`.`version` property.
 For the `system-type` perspective, the version property is NOT required as this perspective is version-independent.
