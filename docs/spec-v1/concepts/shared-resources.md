@@ -103,7 +103,7 @@ System type `sap.s4pce` (SAP S/4HANA Private Cloud Edition) publishes the same s
     "ordId": "sap.abap:apiResource:BillOfMaterial:v1",
     "partOfPackage": "sap.abap:package:ABAPAPIs:v1",
     "partOfConsumptionBundles": [
-      { "ordId": "sap.s4pce:consumptionBundle:cloudAuth:v1" }
+      { "ordId": "sap.s4pce:consumptionBundle:privateCloudAuth:v1" }
     ]
   }],
   "consumptionBundles": [{
