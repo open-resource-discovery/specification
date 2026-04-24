@@ -107,7 +107,7 @@ System type `sap.s4pce` (SAP S/4HANA Private Cloud Edition) publishes the same s
     ]
   }],
   "consumptionBundles": [{
-    "ordId": "sap.s4pce:consumptionBundle:cloudAuth:v1"
+    "ordId": "sap.s4pce:consumptionBundle:privateCloudAuth:v1"
   }]
 }
 ```
