@@ -195,11 +195,8 @@ function applyPatch(
 
 	if (patch.action === "remove") {
 		const data = patch.data as unknown as JSONValue | undefined;
-		const isRemoveAll =
-			data === undefined ||
-			(isJSONObject(data) && Object.keys(data).length === 0);
 
-		if (isRemoveAll) {
+		if (data === undefined) {
 			removeMatchedNodes(matches);
 			return;
 		}

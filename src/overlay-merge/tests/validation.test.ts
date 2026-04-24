@@ -78,6 +78,56 @@ test("validateOverlaySemantics emits SHOULD warnings for ambiguous operation pat
 	);
 });
 
+test("validateOverlaySemantics enforces patch data requirements by action", () => {
+	const mergeWithoutData = createOrdOverlay({
+		patches: [
+			createOverlayPatch(
+				{
+					action: "merge",
+					selector: { jsonPath: "$.info" },
+				},
+				{ omitData: true },
+			),
+		],
+	});
+
+	const removeWithoutData = createOrdOverlay({
+		patches: [
+			createOverlayPatch({
+				action: "remove",
+				selector: { jsonPath: "$.info" },
+			}),
+		],
+	});
+
+	const removeWithEmptyData = createOrdOverlay({
+		patches: [
+			createOverlayPatch({
+				action: "remove",
+				selector: { jsonPath: "$.info" },
+				data: {},
+			}),
+		],
+	});
+
+	const missingDataResult = validateOverlaySemantics(mergeWithoutData);
+	assert.ok(
+		missingDataResult.errors.some((issue) =>
+			issue.message.includes('Patch action "merge" requires data'),
+		),
+	);
+
+	const removeWithoutDataResult = validateOverlaySemantics(removeWithoutData);
+	assert.equal(removeWithoutDataResult.errors.length, 0);
+
+	const emptyRemoveDataResult = validateOverlaySemantics(removeWithEmptyData);
+	assert.ok(
+		emptyRemoveDataResult.errors.some((issue) =>
+			issue.message.includes("empty data is not allowed"),
+		),
+	);
+});
+
 test("validateOverlaySemantics does not emit metadata-definition warnings for ordId-only patches", () => {
 	const overlay = createOrdOverlay({
 		patches: [

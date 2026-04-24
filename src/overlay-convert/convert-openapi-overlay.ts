@@ -6,7 +6,7 @@
  * Mapping:
  *   actions[].target (JSONPath) → patches[].selector.jsonPath
  *   actions[].update            → patches[].action = "merge",  patches[].data = update
- *   actions[].remove = true     → patches[].action = "remove", patches[].data = {}
+ *   actions[].remove = true     → patches[].action = "remove" with data omitted
  *   actions[].remove = false    → (no-op, skipped)
  *   actions[].description       → patches[].description (1:1 mapping)
  *   info.title / info.version   → overlay.description (informational prefix)
@@ -58,7 +58,6 @@ export function convertOpenApiOverlayToOrd(
 					: {}),
 				action: "remove",
 				selector: { jsonPath: action.target },
-				data: {},
 			});
 		}
 	}

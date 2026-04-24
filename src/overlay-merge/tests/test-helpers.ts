@@ -58,8 +58,10 @@ export function createOverlayPatch(
 	options: CreateOverlayPatchOptions = {},
 ): OverlayPatch {
 	const patch = deepMerge(defaultPatchTemplate, overrides) as OverlayPatch;
+	const hasExplicitData =
+		typeof overrides === "object" && overrides !== null && "data" in overrides;
 
-	if (options.omitData) {
+	if (options.omitData || (patch.action === "remove" && !hasExplicitData)) {
 		delete (patch as { data?: unknown }).data;
 	}
 

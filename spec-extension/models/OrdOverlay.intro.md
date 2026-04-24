@@ -109,10 +109,10 @@ Each [patch](#overlay-patch) specifies an [`action`](#overlay-patch), a [`select
 The full semantics of each action (`update`, `merge`, `remove`) are defined on the [`action`](#overlay-patch) field.
 
 Key points:
-- **`data` is always required**: All patch actions require the `data` field.
+- **`data` is required for `merge` and `update`**: `remove` omits `data` when the selected element should be removed entirely.
 - **`remove` semantics**:
-  - `data: {}` (empty object) removes the entire selected element.
-  - `data` with `null`-valued properties uses JSON Merge Patch semantics to remove only those specific fields.
+  - Omit `data` to remove the entire selected element.
+  - Provide `data` with `null`-valued properties to remove only those specific fields.
 - **`merge` behavior**: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array field with `data: { "arrayField": null }`, then `merge` the new value.
 
 ## Validation

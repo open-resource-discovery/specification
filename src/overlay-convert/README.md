@@ -91,7 +91,7 @@ for (const w of warnings) {
 |---|---|---|
 | `actions[].target` (JSONPath) | `patches[].selector.jsonPath` | 1:1 mapping |
 | `actions[].update` | `patches[].action = "merge"` + `patches[].data` | 1:1 semantics |
-| `actions[].remove = true` | `patches[].action = "remove"` + `patches[].data = {}` | |
+| `actions[].remove = true` | `patches[].action = "remove"` with `data` omitted | Removes the selected element entirely |
 | `actions[].remove = false` | *(skipped)* | No-op in both specs |
 | `info.title` / `info.version` | `overlay.description` | Embedded as text prefix |
 | `extends` | `target.url` | Only when no explicit `target` option is provided |

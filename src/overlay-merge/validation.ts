@@ -453,7 +453,31 @@ function validatePatchData(
 		);
 	}
 
-	// remove does NOT require data - omitting data or using {} removes the entire element
+	if (patch.action === "remove" && patch.data !== undefined) {
+		if (patch.data === null) {
+			errors.push(
+				createIssue(
+					"error",
+					`${patchPath}.data`,
+					`Patch action "remove" omits data to remove the selected element entirely; data must be a non-empty removal mask when provided.`,
+				),
+			);
+			return;
+		}
+
+		if (
+			(Array.isArray(patch.data) && patch.data.length === 0) ||
+			(isJSONObject(patch.data) && Object.keys(patch.data).length === 0)
+		) {
+			errors.push(
+				createIssue(
+					"error",
+					`${patchPath}.data`,
+					`Patch action "remove" omits data to remove the selected element entirely; empty data is not allowed.`,
+				),
+			);
+		}
+	}
 }
 
 function validateSelectorSemantics(

@@ -314,7 +314,25 @@ definitions:
     required:
       - action
       - selector
-      - data
+    if:
+      properties:
+        action:
+          enum:
+            - update
+            - merge
+    then:
+      required:
+        - data
+    else:
+      properties:
+        data:
+          not:
+            anyOf:
+              - type: object
+                maxProperties: 0
+              - type: array
+                maxItems: 0
+              - type: "null"
     properties:
       description:
         type: string
@@ -346,8 +364,9 @@ definitions:
             description: |-
               Remove the selected element or specific fields within it.
 
-              - When `data: {}` (empty object): remove the selected element from the document entirely.
-              - When `data` contains properties with `null` values: remove only those specific fields (recursively).
+              - When `data` is omitted: remove the selected element from the document entirely.
+              - When `data` is provided: remove only the fields or array entries marked by the removal mask.
+                For object masks, properties with `null` values are removed recursively.
                 This uses JSON Merge Patch-style delete semantics where `null` indicates deletion.
                 Nested `null` values remove nested fields as well.
           - const: merge
@@ -365,7 +384,10 @@ definitions:
       data:
         $ref: "#/definitions/OverlayPatchValue"
         description: |-
-          The value used by the patch action. REQUIRED for all actions.
+          The value used by the patch action.
+
+          REQUIRED for `merge` and `update`.
+          OPTIONAL for `remove`; omit `data` to remove the selected element entirely.
 
           The interpretation of this value depends on the patch `action`.
 

@@ -39,8 +39,7 @@
     },
     {
       "action": "remove",
-      "selector": { "operation": "legacy_weather_lookup" },
-      "data": {}
+      "selector": { "operation": "legacy_weather_lookup" }
     }
   ]
 }

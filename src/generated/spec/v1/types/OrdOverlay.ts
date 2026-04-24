@@ -317,7 +317,7 @@ export interface OverlayPatch {
   description?: string;
   action: OverlayPatchAction;
   selector: OverlaySelector;
-  data: OverlayPatchValue;
+  data?: OverlayPatchValue;
   /**
    * String labels associated with the patched element.
    * Useful for classification, domain tagging, and filtering in registries or tooling.

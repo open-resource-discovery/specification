@@ -379,13 +379,15 @@ test("validateOverlay does not warn on remove+merge pattern (valid array replace
 			definitionType: "openapi-v3",
 		},
 		patches: [
-			createOverlayPatch({
-				action: "remove",
-				selector: {
-					jsonPath: "$.info.tags",
+			createOverlayPatch(
+				{
+					action: "remove",
+					selector: {
+						jsonPath: "$.info.tags",
+					},
 				},
-				data: {},
-			}),
+				{ omitData: true },
+			),
 			createOverlayPatch({
 				action: "merge",
 				selector: {

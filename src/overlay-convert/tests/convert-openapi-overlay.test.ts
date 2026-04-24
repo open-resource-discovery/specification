@@ -70,7 +70,7 @@ test("converts a standard OpenAPI overlay to ORD overlay format", async () => {
 		jsonPath: "$.components.schemas.ObsoleteSchema",
 	});
 	assert.equal(patch3.action, "remove");
-	assert.deepEqual(patch3.data, {});
+	assert.equal(patch3.data, undefined);
 
 	// No warnings — action descriptions are now preserved on patches, not discarded
 	assert.equal(warnings.length, 0);
@@ -116,7 +116,7 @@ test("action with both update and remove produces two ordered patches", () => {
 	// description goes on the first (merge) patch only
 	assert.equal(overlay.patches[0].description, "Update and then remove");
 	assert.equal(overlay.patches[1].action, "remove");
-	assert.deepEqual(overlay.patches[1].data, {});
+	assert.equal(overlay.patches[1].data, undefined);
 	assert.equal(overlay.patches[1].description, undefined);
 });
 
