@@ -124,7 +124,7 @@ To avoid conflicts and present a coherent view, aggregators need to handle this 
 
 ### Taxonomy Merging
 
-[Taxonomy](../index.md#ord-taxonomy) with authority-namespaced ORD IDs (Packages, Entity Types) follows the existing merging rules: same ORD ID = same entity, merged across all sources.
+[Taxonomy](../index.md#ord-taxonomy) with authority-namespaced ORD IDs (Packages, Entity Types) follows the existing merging rules: same ORD ID = same resource, merged across all sources.
 When the same package is published by multiple system types with different `partOfProducts`, the aggregator MUST merge the product assignments, so the resulting package is associated with all products.
 
 ### Resource Merging
