@@ -44,7 +44,7 @@
 			"mdFrontmatter": {
 				"title": "ORD Overlay",
 				"sidebar_position": "2",
-				"description": "Describes the technical interface / schema for the ORD Overlay (alpha), used to patch ORD resources and their resource definitions."
+				"description": "Describes the technical interface / schema for the ORD Overlay (beta), used to patch ORD resources and their resource definitions."
 			}
 		},
 		{

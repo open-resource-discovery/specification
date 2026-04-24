@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "⚠️ ALPHA: This specification is in alpha and subject to change.\n\nThe ORD Overlay is an optional ORD model extension that allows patching both ORD resource metadata\nand referenced resource definition files without modifying the original source files.\n\nOverlays use concept-level [selectors](#overlay-selector) that are independent of the target format's\ninternal structure, making them resilient to format changes.\nA `jsonPath` selector is available as a generic fallback.\n\nOverlay files can be provided through the\n[ORD Configuration endpoint](../../spec-v1/index.md#ord-configuration-endpoint),\nor attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`."
+  description: "⚠️ BETA: This specification is in beta and subject to change.\n\nThe ORD Overlay is an optional ORD model extension that allows patching both ORD resource metadata\nand referenced resource definition files without modifying the original source files.\n\nOverlays use concept-level [selectors](#overlay-selector) that are independent of the target format's\ninternal structure, making them resilient to format changes.\nA `jsonPath` selector is available as a generic fallback.\n\nOverlay files can be provided through the\n[ORD Configuration endpoint](../../spec-v1/index.md#ord-configuration-endpoint),\nor attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`."
   metadataProperties:
     - name: 'id'
       type: 'guid'
