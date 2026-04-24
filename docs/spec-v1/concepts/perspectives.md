@@ -102,7 +102,7 @@ The `perspectives` attribute deprecates the `systemInstanceAware` attribute.
 With `systemInstanceAware` it was already possible to define whether metadata was dynamic (different per system instance) or not.
 But the concept did not allow to describe the same resource in different perspectives and also did not define how the perspectives build upon each other.
 
-To migrate: replace `systemInstanceAware: true` with `perspective: "system-instance"` and split your ORD document so that static and dynamic metadata are in separate documents with their respective perspective set. See the [ORD Configuration interface](../../spec-v1/interfaces/Configuration.md#ord-v1-document-description_perspective) for the `perspective` property details.
+To migrate: replace `systemInstanceAware: true` with `perspective: "system-instance"` and split your ORD document so that static and dynamic metadata are in separate documents with their respective perspective set. See the [`perspective` property on the ORD Configuration](../../spec-v1/interfaces/Configuration.md) interface for details.
 
 ## ORD Provider Considerations
 
