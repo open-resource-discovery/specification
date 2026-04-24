@@ -11,6 +11,7 @@
  * For issues or feedback, please open an issue in the repository.
  */
 
+import { writeSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import YAML from "yaml";
@@ -38,19 +39,29 @@ interface ParsedArguments {
 	noMatchBehavior: "error" | "warn" | "ignore";
 	context: OverlayMergeContext;
 	dryRun: boolean;
+	help: boolean;
 }
 
 async function main(): Promise<void> {
 	const args = parseArguments(process.argv.slice(2));
+
+	if (args.help) {
+		await printHelp();
+		return;
+	}
 
 	const overlayResult = await readStructuredFile(resolve(args.overlayPath));
 	const overlay = overlayResult.data as unknown as ORDOverlay;
 
 	const validation = validateOverlayInput(overlay, { context: args.context });
 	throwOnOverlayValidationErrors(validation.errors);
+	const warningMessages: string[] = [];
 	emitOverlayValidationWarnings(validation.warnings, (message) =>
-		process.stderr.write(`${message}\n`),
+		warningMessages.push(message),
 	);
+	if (warningMessages.length > 0) {
+		await writeOutput(2, `${warningMessages.join("\n")}\n`);
+	}
 
 	const inputResult = await readStructuredFile(resolve(args.inputPath));
 	const inputDocument = inputResult.data;
@@ -59,18 +70,18 @@ async function main(): Promise<void> {
 	const outputFormat = inputResult.format;
 
 	if (args.dryRun) {
-		process.stderr.write(
-			`[dry-run] Overlay validation passed. Would apply ${overlay.patches.length} patch(es) to ${args.inputPath}.\n`,
+		const outputTarget =
+			args.outputPath !== undefined ? args.outputPath : "stdout";
+		await writeOutput(
+			2,
+			[
+				`[dry-run] Overlay validation passed. Would apply ${overlay.patches.length} patch(es) to ${args.inputPath}.`,
+				`[dry-run] Input format: ${inputResult.format}`,
+				`[dry-run] Output format: ${outputFormat}`,
+				`[dry-run] Output would be written to: ${outputTarget}`,
+				"",
+			].join("\n"),
 		);
-		process.stderr.write(`[dry-run] Input format: ${inputResult.format}\n`);
-		process.stderr.write(`[dry-run] Output format: ${outputFormat}\n`);
-		if (args.outputPath !== undefined) {
-			process.stderr.write(
-				`[dry-run] Output would be written to: ${args.outputPath}\n`,
-			);
-		} else {
-			process.stderr.write(`[dry-run] Output would be written to: stdout\n`);
-		}
 		return;
 	}
 
@@ -101,7 +112,7 @@ async function main(): Promise<void> {
 		return;
 	}
 
-	process.stdout.write(rendered);
+	await writeOutput(1, rendered);
 }
 
 interface FileReadResult {
@@ -166,6 +177,7 @@ function parseArguments(argv: string[]): ParsedArguments {
 		noMatchBehavior: "error",
 		context: {},
 		dryRun: false,
+		help: false,
 	};
 
 	for (let index = 0; index < argv.length; index += 1) {
@@ -221,15 +233,17 @@ function parseArguments(argv: string[]): ParsedArguments {
 		}
 
 		if (argument === "--help") {
-			printHelp();
-			process.exit(0);
+			parsed.help = true;
+			continue;
 		}
 
 		throw new OverlayMergeError(`Unknown argument: ${argument}`);
 	}
 
-	if (parsed.overlayPath.length === 0 || parsed.inputPath.length === 0) {
-		printHelp();
+	if (
+		!parsed.help &&
+		(parsed.overlayPath.length === 0 || parsed.inputPath.length === 0)
+	) {
 		throw new OverlayMergeError("Both --overlay and --input are required.");
 	}
 
@@ -269,55 +283,44 @@ function isJsonValue(value: unknown): value is JSONValue {
 	return false;
 }
 
-function printHelp(): void {
-	process.stderr.write(`ORD Overlay Merge CLI\n\n`);
-	process.stderr.write(`Usage:\n`);
-	process.stderr.write(
-		`  node dist/overlay-merge/cli.js --overlay <overlay.json|yaml> --input <target> [options]\n\n`,
-	);
-	process.stderr.write(`Options:\n`);
-	process.stderr.write(
-		`  --output <path>                  Write output file instead of stdout\n`,
-	);
-	process.stderr.write(
-		`  --target-ord-id <ordId>          Validate overlay.target.ordId against this value\n`,
-	);
-	process.stderr.write(
-		`  --target-url <url>               Provide target URL context (currently informational)\n`,
-	);
-	process.stderr.write(
-		`  --target-definition-type <type>  Validate overlay.target.definitionType against this value\n`,
-	);
-	process.stderr.write(
-		`  --allow-no-match                 Do not fail if a patch selector has no matches\n`,
-	);
-	process.stderr.write(
-		`  --warn-on-no-match               Warn instead of failing if a patch selector has no matches\n`,
-	);
-	process.stderr.write(
-		`  --dry-run                        Validate overlay and input without applying changes\n`,
-	);
-	process.stderr.write(
-		`  --help                           Print this help\n\n`,
-	);
-	process.stderr.write(`Supported input formats:\n`);
-	process.stderr.write(
-		`  .json, .yaml, .yml               JSON or YAML documents (OpenAPI, CSDL JSON, ORD, etc.)\n`,
-	);
-	process.stderr.write(
-		`  .xml, .edmx                      OData EDMX XML documents\n\n`,
-	);
-	process.stderr.write(`Format detection:\n`);
-	process.stderr.write(
-		`  Input format (JSON/YAML) is auto-detected from file extension (.json, .yaml, .yml).\n`,
-	);
-	process.stderr.write(
-		`  Output format matches the input file format by default.\n`,
+function printHelp(): Promise<void> {
+	return writeOutput(
+		2,
+		[
+			"ORD Overlay Merge CLI",
+			"",
+			"Usage:",
+			"  node dist/overlay-merge/cli.js --overlay <overlay.json|yaml> --input <target> [options]",
+			"",
+			"Options:",
+			"  --output <path>                  Write output file instead of stdout",
+			"  --target-ord-id <ordId>          Validate overlay.target.ordId against this value",
+			"  --target-url <url>               Provide target URL context (currently informational)",
+			"  --target-definition-type <type>  Validate overlay.target.definitionType against this value",
+			"  --allow-no-match                 Do not fail if a patch selector has no matches",
+			"  --warn-on-no-match               Warn instead of failing if a patch selector has no matches",
+			"  --dry-run                        Validate overlay and input without applying changes",
+			"  --help                           Print this help",
+			"",
+			"Supported input formats:",
+			"  .json, .yaml, .yml               JSON or YAML documents (OpenAPI, CSDL JSON, ORD, etc.)",
+			"  .xml, .edmx                      OData EDMX XML documents",
+			"",
+			"Format detection:",
+			"  Input format (JSON/YAML) is auto-detected from file extension (.json, .yaml, .yml).",
+			"  Output format matches the input file format by default.",
+			"",
+		].join("\n"),
 	);
 }
 
-main().catch((error: unknown) => {
+function writeOutput(fd: 1 | 2, content: string): Promise<void> {
+	writeSync(fd, content);
+	return Promise.resolve();
+}
+
+main().catch(async (error: unknown) => {
 	const message = error instanceof Error ? error.message : String(error);
-	process.stderr.write(`overlay-merge failed: ${message}\n`);
-	process.exit(1);
+	await writeOutput(2, `overlay-merge failed: ${message}\n`);
+	process.exitCode = 1;
 });

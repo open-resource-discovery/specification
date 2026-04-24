@@ -1,8 +1,10 @@
-# Overlay Merge Library (`src/overlay-merge`)
+# Overlay Merge Tool (`src/overlay-merge`)
 
 > **⚠️ Alpha Status:** This module has been "vibe-coded" with AI assistance and has not yet undergone extensive manual review or QA. It is intended to validate the ORD Overlay specification and approach under realistic conditions. The plan is to move this tooling to a separate project once the specification stabilizes. Use with appropriate caution in production environments.
 
-TypeScript implementation for applying ORD overlays to metadata files.
+Repository-local TypeScript implementation for applying ORD overlays to metadata files.
+
+This tool is not exported from the package entrypoint and is not part of the published npm API. Use it from this repository, or run the compiled CLI after building the project.
 
 Current scope:
 - Supports all selector types: `jsonPath`, `ordId`, `operation`, `entityType`, `propertyType`, `entitySet`, `namespace`, `parameter`, `returnType`
@@ -17,8 +19,10 @@ Validation assumption:
 - This merge tool does not fully validate target metadata formats.
 - Validate the merged output again with the target format-specific tooling.
 
-Current CLI limitation:
-- The CLI uses `applyOverlayToDocument` and therefore does not support EDMX XML targets. Use the library API (`applyOverlayToEdmxDocument`) directly for EDMX files.
+CLI scope:
+- The CLI supports JSON, YAML, and EDMX/XML input files.
+- JSON and YAML output format follows the input file extension.
+- EDMX/XML input is patched through `applyOverlayToEdmxDocument`.
 
 ## What It Does
 
@@ -118,12 +122,14 @@ JSONPath evaluation is delegated to the `jsonpath` npm package (`jsonpath@1.2.1`
 
 Resolution: the implementation discovers root-level arrays whose entries contain an `ordId` field, derives the resource type from the ordId itself, and uses simple collection-name fallbacks (`s` suffix, `y → ies`).
 
-## Library Usage
+## Internal Library Usage
+
+The merge functions can be imported by repository-local code and tests. They are intentionally not exposed through `src/index.ts`.
 
 ### JSON-based targets
 
 ```ts
-import { applyOverlayToDocument } from "@open-resource-discovery/specification";
+import { applyOverlayToDocument } from "./overlay-merge/merge";
 
 const merged = applyOverlayToDocument(targetDocument, overlay, {
   noMatchBehavior: "error",
@@ -138,7 +144,7 @@ const merged = applyOverlayToDocument(targetDocument, overlay, {
 ### EDMX XML targets
 
 ```ts
-import { applyOverlayToEdmxDocument } from "@open-resource-discovery/specification/overlay-merge/edmx";
+import { applyOverlayToEdmxDocument } from "./overlay-merge/edmx";
 
 const patchedXml = applyOverlayToEdmxDocument(xmlString, overlay, {
   noMatchBehavior: "error",
@@ -159,11 +165,12 @@ The function accepts the raw XML string and returns a formatted XML string with 
 
 ## CLI Script
 
-A CLI is provided at `src/overlay-merge/cli.ts` for JSON and YAML targets.
+A CLI is provided at `src/overlay-merge/cli.ts` for JSON, YAML, and EDMX/XML targets.
 
-After build:
+Run from the repository root:
 
 ```bash
+npm run build:ts
 node dist/overlay-merge/cli.js \
   --overlay examples/overlay/openapi-astronomy-api.overlay.json \
   --input examples/implementation/nginx-no-auth/metadata/astronomy-v1.oas3.json \
@@ -176,7 +183,7 @@ Flags:
 | Flag | Required | Description |
 |---|---|---|
 | `--overlay <path>` | yes | Path to the ORD Overlay file (JSON or YAML) |
-| `--input <path>` | yes | Path to the target file to patch (JSON or YAML) |
+| `--input <path>` | yes | Path to the target file to patch (JSON, YAML, XML, or EDMX) |
 | `--output <path>` | no | Output path (defaults to stdout) |
 | `--target-ord-id <ordId>` | no | ORD ID context for target matching |
 | `--target-url <url>` | no | URL context (currently informational) |
@@ -185,7 +192,7 @@ Flags:
 | `--warn-on-no-match` | no | Warn (stderr) when a selector has no match |
 | `--dry-run` | no | Validate overlay and input without applying changes |
 
-**Format detection:** Input format (JSON/YAML) is auto-detected from file extension (`.json`, `.yaml`, `.yml`). Output format matches the input file format by default.
+**Format detection:** Input format is auto-detected from file extension (`.json`, `.yaml`, `.yml`, `.xml`, `.edmx`). Output format matches the input file format by default.
 
 ## Tests
 

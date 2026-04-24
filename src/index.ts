@@ -3,23 +3,6 @@ import * as staticConfigurationSchema from "./generated/spec/v1/schemas/Configur
 import * as staticDocumentSchema from "./generated/spec/v1/schemas/Document.schema.json";
 
 export * from "./generated/spec/v1/types";
-export { applyOverlayToDocument } from "./overlay-merge/merge";
-export type {
-	ApplyOverlayOptions,
-	JSONValue,
-	OverlayMergeContext,
-} from "./overlay-merge/types";
-export { OverlayMergeError } from "./overlay-merge/types";
-export type {
-	OverlayValidationIssue,
-	OverlayValidationResult,
-} from "./overlay-merge/validation";
-export {
-	validateOverlayInput,
-	validateOverlaySchema,
-	validateOverlaySemantics,
-	validateTargetDocumentForDefinitionType,
-} from "./overlay-merge/validation";
 
 /**
  * The JSON Schema (draft-07) describing the ORD Document interface

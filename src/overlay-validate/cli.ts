@@ -12,6 +12,7 @@
  * For issues or feedback, please open an issue in the repository.
  */
 
+import { writeSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import YAML from "yaml";
@@ -38,6 +39,7 @@ interface ParsedArguments {
 	targetPath?: string;
 	context: OverlayMergeContext;
 	outputFormat: "text" | "json";
+	help: boolean;
 }
 
 interface ValidationReport {
@@ -51,6 +53,11 @@ interface ValidationReport {
 
 async function main(): Promise<void> {
 	const args = parseArguments(process.argv.slice(2));
+
+	if (args.help) {
+		await printHelp();
+		return;
+	}
 
 	// Load and parse overlay file
 	const overlayResult = await readStructuredFile(resolve(args.overlayPath));
@@ -68,8 +75,9 @@ async function main(): Promise<void> {
 			],
 			warnings: [],
 		};
-		outputReport(report, args.outputFormat);
-		process.exit(1);
+		await outputReport(report, args.outputFormat);
+		process.exitCode = 1;
+		return;
 	}
 
 	const overlay = overlayResult.data as unknown as ORDOverlay;
@@ -112,17 +120,19 @@ async function main(): Promise<void> {
 		patchSummary: validationResult.patchSummary,
 	};
 
-	outputReport(report, args.outputFormat);
+	await outputReport(report, args.outputFormat);
 
 	if (!report.valid) {
-		process.exit(1);
+		process.exitCode = 1;
 	}
 }
 
-function outputReport(report: ValidationReport, format: "text" | "json"): void {
+function outputReport(
+	report: ValidationReport,
+	format: "text" | "json",
+): Promise<void> {
 	if (format === "json") {
-		process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
-		return;
+		return writeOutput(1, `${JSON.stringify(report, null, 2)}\n`);
 	}
 
 	// Text format output
@@ -180,7 +190,7 @@ function outputReport(report: ValidationReport, format: "text" | "json"): void {
 		}
 	}
 
-	process.stderr.write(`${lines.join("\n")}\n`);
+	return writeOutput(2, `${lines.join("\n")}\n`);
 }
 
 interface FileReadResult {
@@ -234,6 +244,7 @@ function parseArguments(argv: string[]): ParsedArguments {
 		overlayPath: "",
 		context: {},
 		outputFormat: "text",
+		help: false,
 	};
 
 	for (let index = 0; index < argv.length; index += 1) {
@@ -274,15 +285,14 @@ function parseArguments(argv: string[]): ParsedArguments {
 		}
 
 		if (argument === "--help") {
-			printHelp();
-			process.exit(0);
+			parsed.help = true;
+			continue;
 		}
 
 		throw new OverlayMergeError(`Unknown argument: ${argument}`);
 	}
 
-	if (parsed.overlayPath.length === 0) {
-		printHelp();
+	if (!parsed.help && parsed.overlayPath.length === 0) {
 		throw new OverlayMergeError("--overlay is required.");
 	}
 
@@ -322,45 +332,42 @@ function isJsonValue(value: unknown): value is JSONValue {
 	return false;
 }
 
-function printHelp(): void {
-	process.stderr.write(`ORD Overlay Validate CLI\n\n`);
-	process.stderr.write(`Usage:\n`);
-	process.stderr.write(
-		`  node dist/overlay-validate/cli.js --overlay <overlay.json|yaml> [options]\n\n`,
+function printHelp(): Promise<void> {
+	return writeOutput(
+		2,
+		[
+			"ORD Overlay Validate CLI",
+			"",
+			"Usage:",
+			"  node dist/overlay-validate/cli.js --overlay <overlay.json|yaml> [options]",
+			"",
+			"Options:",
+			"  --target <path>                  Target document to validate selectors against",
+			"  --target-ord-id <ordId>          Validate overlay.target.ordId against this value",
+			"  --target-url <url>               Provide target URL context (currently informational)",
+			"  --target-definition-type <type>  Validate overlay.target.definitionType against this value",
+			"  --json                           Output validation report as JSON",
+			"  --help                           Print this help",
+			"",
+			"Validation Modes:",
+			"  Overlay only:    Validates overlay schema and semantics",
+			"  Overlay + target: Also validates that selectors match and detects redundant patches",
+			"",
+			"Exit Codes:",
+			"  0: Validation passed (may have warnings)",
+			"  1: Validation failed (has errors)",
+			"",
+		].join("\n"),
 	);
-	process.stderr.write(`Options:\n`);
-	process.stderr.write(
-		`  --target <path>                  Target document to validate selectors against\n`,
-	);
-	process.stderr.write(
-		`  --target-ord-id <ordId>          Validate overlay.target.ordId against this value\n`,
-	);
-	process.stderr.write(
-		`  --target-url <url>               Provide target URL context (currently informational)\n`,
-	);
-	process.stderr.write(
-		`  --target-definition-type <type>  Validate overlay.target.definitionType against this value\n`,
-	);
-	process.stderr.write(
-		`  --json                           Output validation report as JSON\n`,
-	);
-	process.stderr.write(
-		`  --help                           Print this help\n\n`,
-	);
-	process.stderr.write(`Validation Modes:\n`);
-	process.stderr.write(
-		`  Overlay only:    Validates overlay schema and semantics\n`,
-	);
-	process.stderr.write(
-		`  Overlay + target: Also validates that selectors match and detects redundant patches\n\n`,
-	);
-	process.stderr.write(`Exit Codes:\n`);
-	process.stderr.write(`  0: Validation passed (may have warnings)\n`);
-	process.stderr.write(`  1: Validation failed (has errors)\n`);
 }
 
-main().catch((error: unknown) => {
+function writeOutput(fd: 1 | 2, content: string): Promise<void> {
+	writeSync(fd, content);
+	return Promise.resolve();
+}
+
+main().catch(async (error: unknown) => {
 	const message = error instanceof Error ? error.message : String(error);
-	process.stderr.write(`overlay-validate failed: ${message}\n`);
-	process.exit(1);
+	await writeOutput(2, `overlay-validate failed: ${message}\n`);
+	process.exitCode = 1;
 });

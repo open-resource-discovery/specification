@@ -1,8 +1,10 @@
-# Overlay Validate Library (`src/overlay-validate`)
+# Overlay Validate Tool (`src/overlay-validate`)
 
 > **⚠️ Alpha Status:** This module has been "vibe-coded" with AI assistance and has not yet undergone extensive manual review or QA. It is intended to validate the ORD Overlay specification and approach under realistic conditions. The plan is to move this tooling to a separate project once the specification stabilizes. Use with appropriate caution in production environments.
 
-TypeScript implementation for validating ORD Overlay documents.
+Repository-local TypeScript implementation for validating ORD Overlay documents.
+
+This tool is not exported from the package entrypoint and is not part of the published npm API. Use it from this repository, or run the compiled CLI after building the project.
 
 Current scope:
 - JSON Schema validation against the generated `OrdOverlay.schema.json`
@@ -22,12 +24,14 @@ The library validates ORD Overlay documents at multiple levels:
    - Verifies each patch selector matches at least one element
    - Detects redundant patches (update with same value, merge with no effect, etc.)
 
-## Library Usage
+## Internal Library Usage
+
+The validation functions can be imported by repository-local code and tests. They are intentionally not exposed through `src/index.ts`.
 
 ### Validate overlay only (schema + semantics)
 
 ```ts
-import { validateOverlay } from "@open-resource-discovery/specification/overlay-validate/validate";
+import { validateOverlay } from "./overlay-validate/validate";
 
 const overlay = JSON.parse(fs.readFileSync('overlay.json', 'utf8'));
 const result = validateOverlay(overlay);
@@ -44,7 +48,7 @@ if (result.warnings.length > 0) {
 ### Validate overlay against a JSON/YAML target
 
 ```ts
-import { validateOverlayWithTarget } from "@open-resource-discovery/specification/overlay-validate/validate";
+import { validateOverlayWithTarget } from "./overlay-validate/validate";
 
 const overlay = JSON.parse(fs.readFileSync('overlay.json', 'utf8'));
 const target = JSON.parse(fs.readFileSync('openapi.json', 'utf8'));
@@ -68,7 +72,7 @@ result.patchSummary?.forEach((summary, i) => {
 ### Validate overlay against an EDMX target
 
 ```ts
-import { validateOverlayWithEdmxTarget } from "@open-resource-discovery/specification/overlay-validate/validate";
+import { validateOverlayWithEdmxTarget } from "./overlay-validate/validate";
 
 const overlay = JSON.parse(fs.readFileSync('overlay.json', 'utf8'));
 const edmxContent = fs.readFileSync('metadata.edmx', 'utf8');
@@ -115,9 +119,11 @@ The validator detects redundant patches that would not change the target:
 
 A CLI is provided at `src/overlay-validate/cli.ts` for validating overlay files.
 
-After build:
+Run from the repository root:
 
 ```bash
+npm run build:ts
+
 # Validate overlay only (schema + semantics)
 node dist/overlay-validate/cli.js \
   --overlay examples/overlay/openapi-astronomy-api.overlay.json
@@ -189,7 +195,7 @@ Tests use Node.js built-in test runner (`node:test`).
 Run:
 
 ```bash
-npm run build:ts && node --test dist/overlay-validate/**/*.test.js
+npm run test:overlay-validate
 ```
 
 Coverage includes:

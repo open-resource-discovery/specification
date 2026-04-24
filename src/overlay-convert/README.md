@@ -2,7 +2,9 @@
 
 > **⚠️ Alpha Status:** This module has been "vibe-coded" with AI assistance and has not yet undergone extensive manual review or QA. It is intended to validate the ORD Overlay specification and approach under realistic conditions. The plan is to move this tooling to a separate project once the specification stabilizes. Use with appropriate caution in production environments.
 
-TypeScript module for converting existing overlay/enrichment formats into the **ORD Overlay** format.
+Repository-local TypeScript tool for converting existing overlay/enrichment formats into the **ORD Overlay** format.
+
+This tool is not exported from the package entrypoint and is not part of the published npm API. Use it from this repository, or run the compiled CLI after building the project.
 
 Three source formats are supported:
 
@@ -12,7 +14,47 @@ Three source formats are supported:
 | OData v2 Enrichment (KG integration format) | `convertODataV2EnrichmentToOrd` | `tmp/cto-api-docs/integration/kg/odatav2/schemas/enrichment.json` |
 | OData v4 Enrichment (KG integration format) | `convertODataV4EnrichmentToOrd` | `tmp/cto-api-docs/integration/kg/odatav4/schemas/enrichment.json` |
 
-## Usage
+## CLI Usage
+
+Run from the repository root:
+
+```bash
+npm run build:ts
+node dist/overlay-convert/cli.js <input.json> [options]
+```
+
+Examples:
+
+```bash
+# Auto-detect source format and write <input>.overlay.json
+node dist/overlay-convert/cli.js enrichment.json
+
+# Convert an OData enrichment file for an EDMX target
+node dist/overlay-convert/cli.js enrichment.json \
+  --definition-type edmx \
+  --namespace SFSF.EC
+
+# Choose an explicit output path
+node dist/overlay-convert/cli.js enrichment.json \
+  --output /tmp/output.overlay.json
+```
+
+Flags:
+
+| Flag | Required | Description |
+|---|---|---|
+| `<input.json>` | yes | Source overlay/enrichment document |
+| `-o, --output <path>` | no | Output file path. Defaults to `<input>.overlay.json` |
+| `--format <format>` | no | Source format: `odatav2`, `odatav4`, or `openapi-overlay`. Defaults to auto-detection |
+| `--definition-type <type>` | no | Sets `target.definitionType`, for example `edmx`, `csdl-json`, or `openapi-v3` |
+| `--namespace <namespace>` | no | OData namespace for qualified selectors |
+| `--ord-id <ordId>` | no | Sets the overlay document `ordId` |
+| `--description <text>` | no | Sets the overlay document description |
+| `-h, --help` | no | Prints CLI help |
+
+## Internal Library Usage
+
+The converter functions can also be imported by repository-local code and tests.
 
 ```typescript
 import {
@@ -164,4 +206,3 @@ The ORD overlay concept-level selectors used by the converters:
 | `namespace` | OData CSDL (`edmx`, `csdl-json`) | The Schema/namespace element itself (for service-level annotations) |
 | `parameter` | OpenAPI, OData CSDL (`edmx`, `csdl-json`) | An operation parameter by name; requires `operation` context |
 | `returnType` | OData CSDL (`edmx`, `csdl-json`) | The ReturnType element of an Action or Function; requires `operation` context and `returnType: true` |
-
