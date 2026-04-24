@@ -71,6 +71,11 @@ They can be considered global, static content that can be shared by multiple sys
 
 Such content is of a "singleton" quality for the whole ORD aggregator and SHOULD not be republished by the individual systems.
 
+> Note: Shared resources across system types (using [authority namespaces](../index.md#authority-namespace)) are different from system-independent content.
+> Shared resources still describe a system's capabilities and are published per system type/version/instance.
+> System-independent content (Vendors, Products, global Entity Types) exists outside the system context entirely.
+> See [Shared Resources](./shared-resources.md) for the distinction.
+
 ### How Perspectives relate to each other
 
 The dynamic perspective is a more precise description of the system instance than the static perspective, as it can contain its customizations.

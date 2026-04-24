@@ -106,6 +106,9 @@ The granularity of Packages is driven by all of the following concerns:
 - The resources share certain aspects/taxonomy that is inherited down to them (e.g. `vendor`).
 - If applicable: The resources are meant to be used by only a particular target platform / software.
 
+When a package groups resources that are shared across multiple [system types](../index.md#system-type), the package itself SHOULD also use an [authority namespace](../index.md#authority-namespace).
+See [Shared Resources](./shared-resources.md).
+
 All resources that are not created by the described systems vendor MUST be put into separate packages.
 This is the case, when:
 
