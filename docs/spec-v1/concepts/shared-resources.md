@@ -129,12 +129,12 @@ When the same package is published by multiple system types with different `part
 
 ### Resource Merging
 
-Resources with authority-namespaced ORD IDs follow the existing resource merging rules with one refinement:
+Resources with authority-namespaced ORD IDs follow the existing resource merging rules with the following refinements:
 
-- The same authority-namespaced ORD ID from **different system instances** (even across system types) MUST NOT be merged into one. Each system instance's resource is stored individually, qualified by the system instance ID.
-- The same authority-namespaced ORD ID from the **same system instance** MUST be merged (higher version wins).
 - The uniqueness validation ("MUST NOT be described multiple times") applies **within the same system type scope**, not globally. An authority-namespaced ORD ID appearing in multiple system types is expected and valid.
+- The same authority-namespaced resource with the same `describedSystemVersion` MUST be identical across system types. The aggregator MAY deduplicate it and store the resource once, associating it with all products and system types it was published from. Alternatively, the aggregator MAY store it per system type if that is simpler.
 - The aggregator SHOULD validate that authority-namespaced resources with the same ORD ID and same `version` are described consistently across system types. Inconsistencies SHOULD be flagged as validation warnings.
+- When asked for a `system-type` perspective, the aggregator SHOULD return the latest version of the resource. If the aggregator keeps a version history (via `system-version` perspective), older versions remain accessible per system version.
 
 ### Static Catalogs
 
@@ -148,9 +148,10 @@ For static catalogs (using `system-type` or `system-version` perspectives):
 
 ## Rules for Consumers
 
+- When looking up an authority-namespaced ORD ID in a static catalog, consumers MUST be prepared to receive multiple results — one per system type that publishes the resource. Since the contract is identical across system types, a consumer that only needs the contract definition can pick any result.
 - A dependency on an authority-namespaced ORD ID is satisfied by **any** system type that publishes it. This simplifies [Integration Dependencies](./integration-dependency.md): a single reference covers all system types providing that contract.
 - To connect to a specific system, the consumer still needs the system-type-specific [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) and system instance context (entry points, authentication).
-- When searching or filtering by ORD ID, authority-namespaced resources can be found regardless of which system type published them. Consumers can additionally filter by system type or product if needed.
+- When searching or filtering, consumers can narrow results by system type or product if needed.
 
 ## Relation to Other Concepts
 
