@@ -347,8 +347,11 @@ function mergeImportOntoOperation(
 		if (importTags.length > 0) {
 			const existingTags: string[] =
 				(existing.tags as string[] | undefined) ?? [];
-			const merged = [...new Set([...existingTags, ...importTags])];
-			(existing as Record<string, unknown>).tags = merged;
+			const merged = [...new Set([...existingTags, ...importTags])] as [
+				string,
+				...string[],
+			];
+			existing.tags = merged;
 		}
 	} else {
 		// No matching op — generate a patch from the import itself.

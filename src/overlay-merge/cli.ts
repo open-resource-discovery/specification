@@ -44,7 +44,7 @@ async function main(): Promise<void> {
 	const args = parseArguments(process.argv.slice(2));
 
 	const overlayResult = await readStructuredFile(resolve(args.overlayPath));
-	const overlay = overlayResult.data as ORDOverlay;
+	const overlay = overlayResult.data as unknown as ORDOverlay;
 
 	const validation = validateOverlayInput(overlay, { context: args.context });
 	throwOnOverlayValidationErrors(validation.errors);

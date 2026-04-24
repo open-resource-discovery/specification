@@ -170,7 +170,6 @@ export interface ORDOverlay {
    */
   patches: [OverlayPatch, ...OverlayPatch[]];
   meta?: OverlayMeta1;
-  [k: string]: unknown | undefined;
 }
 /**
  * Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.
@@ -330,7 +329,6 @@ export interface OverlayPatch {
    */
   tags?: [string, ...string[]];
   meta?: OverlayMeta;
-  [k: string]: unknown | undefined;
 }
 export interface OverlaySelectorByRoot {
   /**

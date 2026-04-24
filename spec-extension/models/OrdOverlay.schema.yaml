@@ -17,6 +17,7 @@ description: |-
   or attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`.
 x-ums-type: root
 type: object
+additionalProperties: false
 
 properties:
   $schema:
@@ -308,6 +309,7 @@ definitions:
     type: object
     title: Overlay Patch
     x-ums-type: "embedded"
+    additionalProperties: false
     description: A single patch action to apply to the element identified by the [Overlay Selector](#overlay-selector).
     required:
       - action

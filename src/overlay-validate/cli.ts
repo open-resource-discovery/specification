@@ -72,7 +72,7 @@ async function main(): Promise<void> {
 		process.exit(1);
 	}
 
-	const overlay = overlayResult.data as ORDOverlay;
+	const overlay = overlayResult.data as unknown as ORDOverlay;
 
 	let validationResult: OverlayFullValidationResult;
 
