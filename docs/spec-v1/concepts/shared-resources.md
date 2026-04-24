@@ -20,9 +20,11 @@ A [system namespace](../index.md#system-namespace) corresponds 1:1 to a [system 
 This works well when a resource is specific to one system type.
 But software is often built from reusable components, and different system types may expose the same API or event contract because they include the same component.
 
-Without shared ORD IDs, each system type would describe the same contract under a different ORD ID (e.g. `sap.s4:apiResource:SalesOrder:v1` vs `sap.s4cloud:apiResource:SalesOrder:v1`).
-This creates a false distinction — the contract is the same, only the deployment topology differs.
-It also complicates [integration dependencies](./integration-dependency.md): a consumer that depends on the SalesOrder API would need to list every system-type-specific variant.
+Consider the example of SAP S/4HANA (`sap.s4`) and SAP S/4HANA Private Cloud Edition (`sap.s4pce`).
+Both system types are built on the same ABAP-based software components and therefore expose many of the same APIs.
+Without shared ORD IDs, each system type would describe the same contract under a different ORD ID (e.g. `sap.s4:apiResource:BillOfMaterial:v1` vs `sap.s4pce:apiResource:BillOfMaterial:v1`).
+This creates a false distinction — the contract is the same, only the deployment topology and product differ.
+It also complicates [integration dependencies](./integration-dependency.md): a consumer that depends on the Bill of Material API would need to list every system-type-specific variant.
 
 ## Solution: Authority Namespaces for Shared Resources
 
@@ -30,10 +32,10 @@ The [authority namespace](../index.md#authority-namespace) already exists in ORD
 
 The same mechanism extends to all ORD resource types: when a resource represents a shared contract across multiple system types, it SHOULD use an authority namespace.
 
-**Example**: If both `sap.s4` and `sap.s4cloud` system types expose the same Sales Order API from a shared component governed by a `sap.sales` authority, the ORD ID would be:
+**Example**: If both `sap.s4` and `sap.s4pce` system types expose the same Bill of Material API originating from a shared ABAP component governed under the `sap.abap` authority, the ORD ID would be:
 
 ```
-sap.sales:apiResource:SalesOrder:v1
+sap.abap:apiResource:BillOfMaterial:v1
 ```
 
 Both system types publish this ORD ID. The [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) — which describes system-type-specific access (authentication, endpoints) — remains under the respective system namespace.
@@ -50,27 +52,33 @@ The choice depends on the **ownership and governance** of the resource contract,
 
 ## Rules for Publishers
 
+Each system type MUST fully describe itself — including all shared resources it exposes.
+This means the same authority-namespaced resource will effectively be described multiple times, once by each publishing system type.
+Each system type provides a complete, self-contained ORD description; there is no implicit inheritance or delegation between system types.
+
 - A resource SHOULD use an authority namespace when the same contract is published by multiple system types.
 - All system types publishing the same authority-namespaced ORD ID with the same `version` MUST describe the resource identically (same resource definitions, same metadata).
   Minor differences in system-type-specific concerns (like entry points) are acceptable, as those are resolved via [Consumption Bundles](./grouping-and-bundling.md#consumption-bundle) and system instance context.
 - The authority namespace owner is responsible for ensuring contract consistency across all publishing system types.
 - [Consumption Bundles](./grouping-and-bundling.md#consumption-bundle) SHOULD remain under the [system namespace](../index.md#system-namespace), because they describe system-type-specific access mechanisms (authentication, credential exchange, endpoints).
 - [Packages](./grouping-and-bundling.md#package) that group shared resources SHOULD also use the authority namespace.
+- Each system type MUST use `partOfProducts` to associate shared resources with its own [Product](./grouping-and-bundling.md#product).
 
 ### Example: Two System Types Publishing Shared Resources
 
-System type `sap.s4` publishes:
+System type `sap.s4` (SAP S/4HANA) publishes:
 
 ```json
 {
   "describedSystemType": { "systemNamespace": "sap.s4" },
   "packages": [{
-    "ordId": "sap.sales:package:SalesAPIs:v1",
-    "vendor": "sap:vendor:SAP:"
+    "ordId": "sap.abap:package:ABAPAPIs:v1",
+    "vendor": "sap:vendor:SAP:",
+    "partOfProducts": ["sap:product:S4HANA:"]
   }],
   "apiResources": [{
-    "ordId": "sap.sales:apiResource:SalesOrder:v1",
-    "partOfPackage": "sap.sales:package:SalesAPIs:v1",
+    "ordId": "sap.abap:apiResource:BillOfMaterial:v1",
+    "partOfPackage": "sap.abap:package:ABAPAPIs:v1",
     "partOfConsumptionBundles": [
       { "ordId": "sap.s4:consumptionBundle:defaultAuth:v1" }
     ]
@@ -81,35 +89,43 @@ System type `sap.s4` publishes:
 }
 ```
 
-System type `sap.s4cloud` publishes the same API resource, but with its own Consumption Bundle:
+System type `sap.s4pce` (SAP S/4HANA Private Cloud Edition) publishes the same shared resource, but under its own product and with its own Consumption Bundle:
 
 ```json
 {
-  "describedSystemType": { "systemNamespace": "sap.s4cloud" },
+  "describedSystemType": { "systemNamespace": "sap.s4pce" },
   "packages": [{
-    "ordId": "sap.sales:package:SalesAPIs:v1",
-    "vendor": "sap:vendor:SAP:"
+    "ordId": "sap.abap:package:ABAPAPIs:v1",
+    "vendor": "sap:vendor:SAP:",
+    "partOfProducts": ["sap:product:S4HANA_PCE:"]
   }],
   "apiResources": [{
-    "ordId": "sap.sales:apiResource:SalesOrder:v1",
-    "partOfPackage": "sap.sales:package:SalesAPIs:v1",
+    "ordId": "sap.abap:apiResource:BillOfMaterial:v1",
+    "partOfPackage": "sap.abap:package:ABAPAPIs:v1",
     "partOfConsumptionBundles": [
-      { "ordId": "sap.s4cloud:consumptionBundle:oauthAccess:v1" }
+      { "ordId": "sap.s4pce:consumptionBundle:cloudAuth:v1" }
     ]
   }],
   "consumptionBundles": [{
-    "ordId": "sap.s4cloud:consumptionBundle:oauthAccess:v1"
+    "ordId": "sap.s4pce:consumptionBundle:cloudAuth:v1"
   }]
 }
 ```
 
-Note how the API resource (`sap.sales:apiResource:SalesOrder:v1`) is identical, but the Consumption Bundle differs per system type.
+Note:
+- The API resource (`sap.abap:apiResource:BillOfMaterial:v1`) and its package are described identically by both system types — each provides a complete, self-contained description.
+- The Consumption Bundle differs per system type, reflecting different access mechanisms.
+- Each system type associates the shared package with its own product via `partOfProducts`.
 
 ## Rules for Aggregators
+
+Since each system type fully describes itself, aggregators will receive the same authority-namespaced resources from multiple system types.
+To avoid conflicts and present a coherent view, aggregators need to handle this intentional duplication.
 
 ### Taxonomy Merging
 
 [Taxonomy](../index.md#ord-taxonomy) with authority-namespaced ORD IDs (Packages, Entity Types) follows the existing merging rules: same ORD ID = same entity, merged across all sources.
+When the same package is published by multiple system types with different `partOfProducts`, the aggregator MUST merge the product assignments, so the resulting package is associated with all products.
 
 ### Resource Merging
 
@@ -125,14 +141,16 @@ Resources with authority-namespaced ORD IDs follow the existing resource merging
 For static catalogs (using `system-type` or `system-version` perspectives):
 
 - Authority-namespaced resources MAY appear from multiple system types.
-- The catalog SHOULD present the resource once (as a shared contract) and associate it with all system types that publish it. This is similar to how [Products](./grouping-and-bundling.md#product) already allow multiple product assignments via `partOfProducts`.
+- The aggregator has two strategies to handle this:
+  1. **Scope per system type**: Store the resource separately per system type. This is the simplest approach and avoids any merging complexity.
+  2. **Combine intelligently**: Present the resource once (as a shared contract) and associate it with all system types and products that publish it. The resource then knows which products and system types it has been published under. This is similar to how [Products](./grouping-and-bundling.md#product) already allow multiple product assignments via `partOfProducts`.
 - If different system types publish different versions of the same authority-namespaced resource, the catalog MUST store them per system type/version, as they represent different states of the contract.
 
 ## Rules for Consumers
 
 - A dependency on an authority-namespaced ORD ID is satisfied by **any** system type that publishes it. This simplifies [Integration Dependencies](./integration-dependency.md): a single reference covers all system types providing that contract.
 - To connect to a specific system, the consumer still needs the system-type-specific [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) and system instance context (entry points, authentication).
-- When searching or filtering by ORD ID, authority-namespaced resources can be found regardless of which system type published them. Consumers can additionally filter by system type if needed.
+- When searching or filtering by ORD ID, authority-namespaced resources can be found regardless of which system type published them. Consumers can additionally filter by system type or product if needed.
 
 ## Relation to Other Concepts
 
@@ -148,7 +166,8 @@ This cleanly separates **what the contract is** (authority-namespaced resource) 
 
 [Products](./grouping-and-bundling.md#product) represent the commercial view and are already system-type-independent.
 A shared API resource can be assigned to multiple products via `partOfProducts`, either directly or through Package inheritance.
-This complements the authority namespace approach: the ORD ID identifies the technical contract, while the product assignment provides the commercial context.
+Each system type associates the shared resource with its own product.
+After aggregation, the resource is associated with all products that published it — e.g. both `sap:product:S4HANA:` and `sap:product:S4HANA_PCE:`.
 
 ### Integration Dependencies
 
@@ -157,10 +176,10 @@ When an aspect references an authority-namespaced ORD ID, the dependency is auto
 
 ```json
 {
-  "ordId": "sap.crm:integrationDependency:salesSync:v1",
+  "ordId": "sap.crm:integrationDependency:materialSync:v1",
   "aspects": [{
     "apiResources": [{
-      "ordId": "sap.sales:apiResource:SalesOrder:v1"
+      "ordId": "sap.abap:apiResource:BillOfMaterial:v1"
     }]
   }]
 }
