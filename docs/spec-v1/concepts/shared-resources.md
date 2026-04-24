@@ -28,7 +28,7 @@ It also complicates [integration dependencies](./integration-dependency.md): a c
 
 ## Solution: Authority Namespaces for Shared Resources
 
-The [authority namespace](../index.md#authority-namespace) already exists in ORD for cross-system governance, and is used for [Entity Types](./grouping-and-bundling.md#entity-type) that are aligned across applications (e.g. `sap.odm:entityType:BusinessPartner:v1`).
+The [authority namespace](../index.md#authority-namespace) concept already exists in ORD for cross-system governance, and is used for [Entity Types](./grouping-and-bundling.md#entity-type) that are aligned across applications (e.g. `sap.odm:entityType:BusinessPartner:v1`).
 
 The same mechanism extends to all ORD resource types: when a resource represents a shared contract across multiple system types, it SHOULD use an authority namespace.
 
