@@ -34,3 +34,5 @@ docs/spec-extensions/models/*.md
 
 # Code review files (local only)
 spec-extension/models/ORD_OVERLAY_CODE_REVIEW.md
+
+.codex
