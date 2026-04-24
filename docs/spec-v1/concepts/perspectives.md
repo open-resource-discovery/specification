@@ -44,6 +44,8 @@ Here are some guidelines how to choose the correct version for the `system-versi
   - However, consider that you may still have different releases rolled out over time and on different stages. If this causes a problem, use `system-version` with below conventions.
   - Alternatively, use a fixed `1.0.0` version and overwrite it with every new release.
 
+For the normative rules on choosing between `system-type` and `system-version`, see [Correct Use of Perspectives](../../spec-v1/index.md#correct-use-of-perspectives).
+
 ### Dynamic Perspective
 
 The dynamic perspective describes an application or service as it really looks like, _at run-time_.
@@ -99,6 +101,8 @@ The `perspectives` attribute deprecates the `systemInstanceAware` attribute.
 
 With `systemInstanceAware` it was already possible to define whether metadata was dynamic (different per system instance) or not.
 But the concept did not allow to describe the same resource in different perspectives and also did not define how the perspectives build upon each other.
+
+To migrate: replace `systemInstanceAware: true` with `perspective: "system-instance"` and split your ORD document so that static and dynamic metadata are in separate documents with their respective perspective set. See the [ORD Configuration interface](../../spec-v1/interfaces/Configuration.md#ord-v1-document-description_perspective) for the `perspective` property details.
 
 ## ORD Provider Considerations
 
