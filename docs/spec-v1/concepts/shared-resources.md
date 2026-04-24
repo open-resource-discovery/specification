@@ -151,7 +151,7 @@ For static catalogs (using `system-type` or `system-version` perspectives):
 - When looking up an authority-namespaced ORD ID in a static catalog, consumers MUST be prepared to receive multiple results — one per system type that publishes the resource. Since the contract is identical across system types, a consumer that only needs the contract definition can pick any result.
 - A dependency on an authority-namespaced ORD ID is satisfied by **any** system type that publishes it. This simplifies [Integration Dependencies](./integration-dependency.md): a single reference covers all system types providing that contract.
 - To connect to a specific system, the consumer still needs the system-type-specific [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) and system instance context (entry points, authentication).
-- When searching or filtering, consumers can narrow results by system type or product if needed.
+- When searching or filtering, consumers can narrow results by system type, system version or product if needed.
 
 ## Relation to Other Concepts
 
@@ -187,6 +187,17 @@ When an aspect references an authority-namespaced ORD ID, the dependency is auto
 ```
 
 Without authority namespaces, the same dependency would need to enumerate all system-type-specific variants as alternatives.
+
+### Abstract Resources and compatibleWith
+
+Shared resources and [abstract resources with `compatibleWith`](./compatibility.md) address related but distinct scenarios:
+
+- **Shared resources** (this page): Multiple system types expose the **exact same** resource — same ORD ID, same contract, same implementation, originating from the same software component. The resource is concrete and directly consumable on each system type. This is the same code running in different deployment contexts.
+- **Abstract + compatibleWith**: An abstract resource defines a **contract specification** that is not directly consumable. Different system types provide their own independent implementations that declare compatibility with that contract via `compatibleWith`. The implementations adhere to the same schema but may return different data or have different behavior.
+
+The key distinction: shared resources guarantee **identity** (the same thing deployed in multiple places), while `compatibleWith` expresses **compatibility** (different things that follow the same contract).
+
+They can also complement each other: an authority-namespaced shared resource could itself declare `compatibleWith` an abstract contract, or an abstract contract could use an authority namespace if it is governed across system types.
 
 ### System-Independent Perspective
 
