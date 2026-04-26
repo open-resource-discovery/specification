@@ -20,22 +20,22 @@ A [system namespace](../index.md#system-namespace) corresponds 1:1 to a [system 
 This works well when a resource is specific to one system type.
 But software is often built from reusable components, and different system types may expose the same resource contract because they include the same component.
 
-Consider the example of SAP S/4HANA (`sap.s4`) and SAP S/4HANA Private Cloud Edition (`sap.s4pce`).
-Both system types are built on the same ABAP-based software components and therefore expose many of the same APIs.
-Without shared ORD IDs, each system type would describe the same contract under a different ORD ID (e.g. `sap.s4:apiResource:BillOfMaterial:v1` vs `sap.s4pce:apiResource:BillOfMaterial:v1`).
+Consider the example of a storefront system (`example.storefront`) and an order management system (`example.order`).
+Both system types can be built from a shared commerce component and therefore expose the same order API.
+Without shared ORD IDs, each system type would describe the same contract under a different ORD ID (e.g. `example.storefront:apiResource:Order:v1` vs `example.order:apiResource:Order:v1`).
 This creates a false distinction — the contract is the same, only the deployment topology and product differ.
-It also complicates [integration dependencies](./integration-dependency.md): a consumer that depends on the Bill of Material API would need to list every system-type-specific variant.
+It also complicates [integration dependencies](./integration-dependency.md): a consumer that depends on the Order API would need to list every system-type-specific variant.
 
 ## Solution: Authority Namespaces for Shared Resources
 
-The [authority namespace](../index.md#authority-namespace) concept already exists in ORD for cross-system governance, and is used for [Entity Types](./grouping-and-bundling.md#entity-type) that are aligned across applications (e.g. `sap.odm:entityType:BusinessPartner:v1`).
+The [authority namespace](../index.md#authority-namespace) concept already exists in ORD for cross-system governance, and is used for [Entity Types](./grouping-and-bundling.md#entity-type) that are aligned across applications (e.g. `example.common:entityType:Customer:v1`).
 
 The same mechanism applies to shared API resources, event resources, data products, capabilities, integration dependencies, agents, consumption bundles, and to packages that group such shared resources: when the resource represents the same contract, dependency description, or access grouping across multiple system types, it SHOULD use an authority namespace.
 
-**Example**: If both `sap.s4` and `sap.s4pce` system types expose the same Bill of Material API originating from a shared ABAP component governed under the `sap.abap` authority, the ORD ID would be:
+**Example**: If both `example.storefront` and `example.order` system types expose the same Order API originating from a shared commerce component governed under the `example.commerce` authority, the ORD ID would be:
 
 ```
-sap.abap:apiResource:BillOfMaterial:v1
+example.commerce:apiResource:Order:v1
 ```
 
 Both system types publish this ORD ID. The [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) describes access context such as authentication and endpoints. It can use a system namespace when that access setup is system-type-specific, or an authority namespace when the same access grouping is shared and governed across system types.
@@ -65,54 +65,54 @@ Each system type provides a complete, self-contained ORD description; there is n
 
 ### Example: Two System Types Publishing Shared Resources
 
-System type `sap.s4` (SAP S/4HANA) publishes:
+System type `example.storefront` publishes:
 
 ```json
 {
-  "describedSystemType": { "systemNamespace": "sap.s4" },
+  "describedSystemType": { "systemNamespace": "example.storefront" },
   "packages": [{
-    "ordId": "sap.abap:package:ABAPAPIs:v1",
-    "vendor": "sap:vendor:SAP:",
-    "partOfProducts": ["sap:product:S4HANA:"]
+    "ordId": "example.commerce:package:CommerceAPIs:v1",
+    "vendor": "example:vendor:ExampleCorp:",
+    "partOfProducts": ["example:product:Storefront:"]
   }],
   "apiResources": [{
-    "ordId": "sap.abap:apiResource:BillOfMaterial:v1",
-    "partOfPackage": "sap.abap:package:ABAPAPIs:v1",
+    "ordId": "example.commerce:apiResource:Order:v1",
+    "partOfPackage": "example.commerce:package:CommerceAPIs:v1",
     "partOfConsumptionBundles": [
-      { "ordId": "sap.s4:consumptionBundle:defaultAuth:v1" }
+      { "ordId": "example.storefront:consumptionBundle:storefrontOAuth:v1" }
     ]
   }],
   "consumptionBundles": [{
-    "ordId": "sap.s4:consumptionBundle:defaultAuth:v1"
+    "ordId": "example.storefront:consumptionBundle:storefrontOAuth:v1"
   }]
 }
 ```
 
-System type `sap.s4pce` (SAP S/4HANA Private Cloud Edition) publishes the same shared resource, but under its own product and with its own Consumption Bundle:
+System type `example.order` publishes the same shared resource, but under its own product and with its own Consumption Bundle:
 
 ```json
 {
-  "describedSystemType": { "systemNamespace": "sap.s4pce" },
+  "describedSystemType": { "systemNamespace": "example.order" },
   "packages": [{
-    "ordId": "sap.abap:package:ABAPAPIs:v1",
-    "vendor": "sap:vendor:SAP:",
-    "partOfProducts": ["sap:product:S4HANA_PCE:"]
+    "ordId": "example.commerce:package:CommerceAPIs:v1",
+    "vendor": "example:vendor:ExampleCorp:",
+    "partOfProducts": ["example:product:OrderManagement:"]
   }],
   "apiResources": [{
-    "ordId": "sap.abap:apiResource:BillOfMaterial:v1",
-    "partOfPackage": "sap.abap:package:ABAPAPIs:v1",
+    "ordId": "example.commerce:apiResource:Order:v1",
+    "partOfPackage": "example.commerce:package:CommerceAPIs:v1",
     "partOfConsumptionBundles": [
-      { "ordId": "sap.s4pce:consumptionBundle:privateCloudAuth:v1" }
+      { "ordId": "example.order:consumptionBundle:orderOAuth:v1" }
     ]
   }],
   "consumptionBundles": [{
-    "ordId": "sap.s4pce:consumptionBundle:privateCloudAuth:v1"
+    "ordId": "example.order:consumptionBundle:orderOAuth:v1"
   }]
 }
 ```
 
 Note:
-- The API resource (`sap.abap:apiResource:BillOfMaterial:v1`) describes the same contract in both system types.
+- The API resource (`example.commerce:apiResource:Order:v1`) describes the same contract in both system types.
 - The Consumption Bundle differs per system type, reflecting different access mechanisms.
 - Each system type associates the shared package with its own product via `partOfProducts`.
 - Aggregators can either keep these publications scoped per system type/version, or present one combined view while preserving which system types and products published the resource.
@@ -141,9 +141,9 @@ For static catalogs (using `system-type` or `system-version` perspectives):
   2. **Combine intelligently**: Present the resource once as a shared description and associate it with all system types and products that publish it. The resource then knows which products and system types it has been published under. This is similar to how [Products](./grouping-and-bundling.md#product) already allow multiple product assignments via `partOfProducts`.
 - If different system types publish different versions of the same authority-namespaced resource, the catalog MUST store them per system type/version, as they represent different states of the shared description.
 
-Example: If `sap.s4` publishes `sap.abap:apiResource:BillOfMaterial:v1` through a package assigned to `sap:product:S4HANA:`, and `sap.s4pce` publishes the same API resource through a package assigned to `sap:product:S4HANA_PCE:`, both publications are valid.
+Example: If `example.storefront` publishes `example.commerce:apiResource:Order:v1` through a package assigned to `example:product:Storefront:`, and `example.order` publishes the same API resource through a package assigned to `example:product:OrderManagement:`, both publications are valid.
 An aggregator that stores content per system type keeps two scoped records.
-An aggregator that presents a combined catalog view may show the API resource once, but it must preserve that the resource was published by both `sap.s4` and `sap.s4pce` and is associated with both product assignments.
+An aggregator that presents a combined catalog view may show the API resource once, but it must preserve that the resource was published by both `example.storefront` and `example.order` and is associated with both product assignments.
 
 ## Rules for Consumers
 
@@ -169,7 +169,7 @@ This cleanly separates **what the contract is** (authority-namespaced resource) 
 [Products](./grouping-and-bundling.md#product) represent the commercial view and are already system-type-independent.
 A shared API resource can be assigned to multiple products via `partOfProducts`, either directly or through Package inheritance.
 Each system type associates the shared resource with its own product.
-In a combined aggregation view, the resource is associated with all products that published it — e.g. both `sap:product:S4HANA:` and `sap:product:S4HANA_PCE:`.
+In a combined aggregation view, the resource is associated with all products that published it — e.g. both `example:product:Storefront:` and `example:product:OrderManagement:`.
 
 ### Integration Dependencies
 
@@ -180,10 +180,10 @@ When an aspect references an authority-namespaced ORD ID, the dependency is auto
 
 ```json
 {
-  "ordId": "foo.bar:integrationDependency:materialSync:v1",
+  "ordId": "example.commerce:integrationDependency:orderSync:v1",
   "aspects": [{
     "apiResources": [{
-      "ordId": "sap.abap:apiResource:BillOfMaterial:v1"
+      "ordId": "example.commerce:apiResource:Order:v1"
     }]
   }]
 }
