@@ -13,6 +13,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Changed
 
 - Added recommendation to use [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts.
+- Clarification: Consolidated and clarified the [static perspective resolution](https://open-resource-discovery.org/spec-v1/concepts/perspectives#static-perspective-resolution) algorithm for aggregators. When no specific version is requested, explicit `system-type` perspective data takes precedence; if unavailable, the aggregator SHOULD derive it from the latest `system-version`. Previously this behavior was scattered and only stated as MAY.
 
 ## [1.14.3]
 
