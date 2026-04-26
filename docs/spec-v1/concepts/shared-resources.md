@@ -11,7 +11,7 @@ Different [system types](../index.md#system-type) can be built from the same sof
 When the same resource contract, dependency description, or access grouping (such as an API, event, data product, capability, integration dependency, consumption bundle, or agent) originates from a shared component, it represents the same resource — regardless of which system type exposes it.
 
 ORD supports this through [authority namespaces](../index.md#authority-namespace).
-Resources that are shared across system types use an authority namespace in their [ORD ID](../index.md#ord-id), rather than a [system namespace](../index.md#system-namespace).
+ORD information that is shared across system types uses an authority namespace in its [ORD ID](../index.md#ord-id), rather than a [system namespace](../index.md#system-namespace).
 The authority namespace represents the organizational unit that governs the shared contract, dependency description, access grouping, or taxonomy item.
 
 ## Motivation
@@ -52,11 +52,11 @@ The choice depends on the **ownership and governance** of the resource contract 
 
 ## Rules for Publishers
 
-Each system type MUST fully describe itself — including all shared resources it exposes.
-This means the same authority-namespaced resource will effectively be described multiple times, once by each publishing system type.
+Each system type MUST fully describe itself — including all shared ORD information it exposes or publishes.
+This means the same authority-namespaced ORD information will effectively be described multiple times, once by each publishing system type.
 Each system type provides a complete, self-contained ORD description; there is no implicit inheritance or delegation between system types.
 
-- A resource SHOULD use an authority namespace when the same contract, dependency description, or access grouping is published by multiple system types.
+- ORD information SHOULD use an authority namespace when the same contract, dependency description, or access grouping is published by multiple system types.
 - All system types publishing the same authority-namespaced ORD ID with the same `version` MUST describe the shared contract, dependency description, or access grouping consistently (same resource definitions and contract metadata).
   System-type-specific publication context, such as [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) assignments or product assignments through Package inheritance, MAY differ.
 - The authority namespace owner is responsible for ensuring contract consistency across all publishing system types.
@@ -119,27 +119,27 @@ Note:
 
 ## Rules for Aggregators
 
-Since each system type fully describes itself, aggregators will receive the same authority-namespaced resources from multiple system types.
-This intentional duplication is valid and needs to be handled without losing the system type, system version and product context in which the resource was published.
+Since each system type fully describes itself, aggregators will receive the same authority-namespaced ORD information from multiple system types.
+This intentional duplication is valid and needs to be handled without losing the system type, system version and product context in which the ORD information was published.
 
 ### Resource Handling
 
-Resources with authority-namespaced ORD IDs follow the existing resource handling rules with the following refinements:
+ORD information with authority-namespaced ORD IDs follows the existing resource handling rules with the following refinements:
 
 - The uniqueness validation ("MUST NOT be described multiple times") applies **within the same system type scope**, not globally. An authority-namespaced ORD ID appearing in multiple system types is expected and valid.
-- The same authority-namespaced resource with the same `version` MUST describe the same contract, dependency description, or access grouping across system types. The aggregator MAY deduplicate the shared description and associate it with all products and system types it was published from. Alternatively, the aggregator MAY store it per system type if that is simpler.
-- The aggregator SHOULD validate that authority-namespaced resources with the same ORD ID and same `version` describe the contract, dependency description, or access grouping consistently across system types. Inconsistencies SHOULD be flagged as validation warnings.
+- The same authority-namespaced ORD information with the same `version` MUST describe the same contract, dependency description, or access grouping across system types. The aggregator MAY deduplicate the shared description and associate it with all products and system types it was published from. Alternatively, the aggregator MAY store it per system type if that is simpler.
+- The aggregator SHOULD validate that authority-namespaced ORD information with the same ORD ID and same `version` describes the contract, dependency description, or access grouping consistently across system types. Inconsistencies SHOULD be flagged as validation warnings.
 - When asked for a `system-type` perspective, the aggregator SHOULD return the latest version of the resource. If the aggregator keeps a version history (via `system-version` perspective), older versions remain accessible per system version.
 
 ### Static Catalogs
 
 For static catalogs (using `system-type` or `system-version` perspectives):
 
-- Authority-namespaced resources MAY appear from multiple system types.
+- Authority-namespaced ORD information MAY appear from multiple system types.
 - The aggregator has two strategies to handle this:
   1. **Scope per system type**: Store the resource separately per system type. This is the simplest approach and avoids any merging complexity.
   2. **Combine intelligently**: Present the resource once as a shared description and associate it with all system types and products that publish it. The resource then knows which products and system types it has been published under. This is similar to how [Products](./grouping-and-bundling.md#product) already allow multiple product assignments via `partOfProducts`.
-- If different system types publish different versions of the same authority-namespaced resource, the catalog MUST store them per system type/version, as they represent different states of the shared description.
+- If different system types publish different versions of the same authority-namespaced ORD information, the catalog MUST store them per system type/version, as they represent different states of the shared description.
 
 Example: If `example.storefront` publishes `example.commerce:apiResource:Order:v1` through a package assigned to `example:product:Storefront:`, and `example.order` publishes the same API resource through a package assigned to `example:product:OrderManagement:`, both publications are valid.
 An aggregator that stores content per system type keeps two scoped records.
