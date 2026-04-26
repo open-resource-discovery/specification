@@ -3490,7 +3490,6 @@ export interface Product {
  *
  * The Package can also be used to indicate which products or vendors provided the packaged resources.
  * For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
- * In any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.
  *
  * A Package SHOULD contain at least one resource. Avoid empty Packages.
  *
