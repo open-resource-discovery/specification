@@ -5,7 +5,7 @@
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">ORD Specification | Open Resource Discovery</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://open-resource-discovery.org/spec-v1"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="ORD Specification | Open Resource Discovery"><meta data-rh="true" name="description" content="Notational Conventions"><meta data-rh="true" property="og:description" content="Notational Conventions"><link data-rh="true" rel="icon" href="/img/favicon.svg"><link data-rh="true" rel="canonical" href="https://open-resource-discovery.org/spec-v1"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1" hreflang="en"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ORD Specification","item":"https://open-resource-discovery.org/spec-v1/"}]}</script><script>window.bannerServerBaseUrl="https://banner-server.cert.cfapps.sap.hana.ondemand.com"</script>
 <script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.ca9dfb27.css">
-<script src="/assets/js/runtime~main.5dd476aa.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.d5a23876.js" defer="defer"></script>
 <script src="/assets/js/main.7c4ed2d9.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -46,6 +46,7 @@ The aggregator itself MAY represent a <a href="#static-perspective" class="">sta
 <p>An ORD aggregator MUST ensure that information that has <code>visibility</code> of <code>private</code> or <code>internal</code> is not made available to consumers that don&#x27;t have the corresponding permissions to get such information (e.g. external consumers). If ORD consumers get private or internal information, they inherit the responsibility of protecting it.</p>
 <p>There are <a href="#aggregation-rules" class="">aggregation rules</a> and <a href="#validation-rules" class="">validation rules</a> that an ORD aggregator MUST implement and <a href="#ord-consumer" class="">ORD Consumers</a> MAY hold to.</p>
 <p>It MUST support all <a href="#ord-transport-modes" class="">ORD transport modes</a> that are used by the systems it aggregates.</p>
+<p>When serving static perspective requests (<code>system-type</code> or <code>system-version</code>), the aggregator SHOULD follow the <a class="" href="/spec-v1/concepts/perspectives#static-perspective-resolution">static perspective resolution</a> algorithm.</p>
 <p>In case of an ORD aggregator that supports the <a href="#dynamic-perspective" class="">dynamic perspective</a>:</p>
 <ul>
 <li class="">the aggregator MUST support <a href="#system-instance-aware" class="">system-instance-aware</a> information and MAY support further <a href="#system-instance" class="">system instance</a> grouping concepts, such as accounts etc.</li>
@@ -53,9 +54,9 @@ The aggregator itself MAY represent a <a href="#static-perspective" class="">sta
 <li class="">In the ORD Discovery API for accessing <code>system-instance</code> perspective information, the aggregator MUST implement a fallback to the static perspective.<!-- -->
 <ul>
 <li class="">Concretely: If an ORD Provider describes an ORD resource only via perspective: <code>system-version</code> and not via <code>system-instance</code>, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Discovery consumer should not need to understand whether the information is currently static or system-instance-aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.</li>
-<li class="">See chapter on <a href="#perspectives" class="">perspectives</a>.</li>
 </ul>
 </li>
+<li class="">See chapter on <a href="#perspectives" class="">perspectives</a> and the <a class="" href="/spec-v1/concepts/perspectives">perspectives concept page</a> for details.</li>
 <li class="">It SHOULD support the proposed optimizations for the transport modes, e.g. make use of <code>perspectives</code> (replaces deprecated <code>systemInstanceAware</code>), <code>lastUpdate</code> properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.</li>
 </ul>
 <p><img decoding="async" loading="lazy" alt="ORD Aggregator Role" src="/assets/images/ord-role-aggregator-44449f97b43852cec0567191ba92bf27.svg" title="ORD Aggregator Role" width="3472" height="809" class="img_ev3q"></p>
@@ -440,6 +441,9 @@ It is explained in more detail in the <a class="" href="/spec-v1/concepts/perspe
 <li class="">If both perspectives are provided, each MUST be described completely, until we introduce a more optimized <code>system-instance-delta</code> perspective.</li>
 <li class="">Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the <code>system-independent</code> perspective.</li>
 </ul>
+<blockquote>
+<p>⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the <a class="" href="/spec-v1/concepts/perspectives#static-perspective-resolution">static perspective resolution</a> algorithm on the perspectives concept page.</p>
+</blockquote>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="id-concepts">ID Concepts<a href="#id-concepts" class="hash-link" aria-label="Direct link to ID Concepts" title="Direct link to ID Concepts" translate="no">​</a></h2>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="namespaces">Namespaces<a href="#namespaces" class="hash-link" aria-label="Direct link to Namespaces" title="Direct link to Namespaces" translate="no">​</a></h3>
 <p>ORD makes use of namespaces to ensure we don&#x27;t have ID collisions between multiple, potentially independent sources of information.</p>

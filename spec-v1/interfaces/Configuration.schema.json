@@ -86,7 +86,7 @@
             },
             {
               "const": "system-version",
-              "description": "Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.\n\nIf chosen, `describedSystemVersion`.`version` MUST be provided, too.\n\nThis perspective describes how a system of a particular type and version generally look like.\nThe latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective."
+              "description": "Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.\n\nIf chosen, `describedSystemVersion`.`version` MUST be provided, too.\n\nThis perspective describes how a system of a particular type and version generally look like.\nIf no explicit `system-type` perspective is available, the latest system-version SHOULD be interpreted as the [system-type](../index.md#system-type) perspective (see [static perspective resolution](../concepts/perspectives#static-perspective-resolution))."
             },
             {
               "const": "system-instance",
