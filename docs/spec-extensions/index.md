@@ -15,5 +15,6 @@ Most notably, you'll find:
 - [Registered **Access Strategies**](/spec-extensions/access-strategies/) that standardize how ORD information can be accessed by the ORD Aggregators.
 - [Registered **Policy Levels**](/spec-extensions/policy-levels/) that standardize (ideally verifiable) rules how ORD should be implemented by ORD Providers.
 - [Registered **Global Group Types**](/spec-extensions/group-types/) for globally aligned and pre-defined group types (and potentially also predefined group instances).
+- [**ORD Standardized Concepts**](/spec-extensions/ord-concepts/) for standardized Concept IDs defined in the reserved `ord` namespace (e.g., relation types).
 
 Specification Extensions have registered [Specification IDs](../spec-v1/index.md#specification-id).
