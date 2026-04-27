@@ -195,7 +195,7 @@ definitions:
       Optional context about the target being patched.
       The target can refer to an ORD resource or to a referenced resource definition file.
 
-      When this object is present, at least one of `ordId`, `url`, or `correlationIds`
+      When this object is present, at least one of `ordId`, `url`, `correlationIds`, or `definitionType`
       MUST be provided so that consumers can identify what is being patched.
       Exception: if all patches exclusively use [`selector.ordId`](#overlay-selector-by-ord-id) selectors, `target` may be omitted entirely.
 
