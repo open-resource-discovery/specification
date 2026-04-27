@@ -1,0 +1,45 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:weather-mcp-server:v1",
+  "description": "Enriches an MCP server's tool metadata with extended descriptions for AI agent consumption.\n\nThe 'operation' selector maps to MCP tool names (tools[].name).\nMCP targets use a Specification ID as definitionType (e.g., 'sap.foo:weather-server:v1').",
+  "visibility": "internal",
+  "target": {
+    "ordId": "sap.foo:apiResource:WeatherMCPServer:v1",
+    "definitionType": "sap.foo:weather-server:v1"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": { "operation": "get_weather" },
+      "data": {
+        "description": "Retrieves current weather conditions for a specified location. Returns temperature, humidity, wind speed, and general conditions (sunny, cloudy, rainy, etc.).\n\n**Usage**: Provide either a city name or coordinates. City names are resolved via geocoding.\n\n**Rate limits**: 100 requests per minute per API key.",
+        "annotations": {
+          "x-response-time": "typically < 500ms",
+          "x-data-freshness": "updated every 15 minutes"
+        }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "operation": "get_forecast" },
+      "data": {
+        "description": "Retrieves weather forecast for up to 7 days. Includes daily high/low temperatures, precipitation probability, and weather conditions.\n\n**Note**: Forecast accuracy decreases significantly beyond 3 days.",
+        "annotations": {
+          "x-accuracy-disclaimer": "Forecasts beyond 72 hours have reduced accuracy"
+        }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "operation": "get_alerts" },
+      "data": {
+        "description": "Retrieves active weather alerts and warnings for a region. Includes severity level, affected areas, and recommended actions.\n\n**Important**: Always check alerts before outdoor activities in unfamiliar locations."
+      }
+    },
+    {
+      "action": "remove",
+      "selector": { "operation": "legacy_weather_lookup" }
+    }
+  ]
+}

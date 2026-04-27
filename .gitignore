@@ -28,5 +28,11 @@ docs/spec-extensions/models/*.md
 
 /static/spec-v1/interfaces/Configuration.schema.json
 /static/spec-v1/interfaces/Document.schema.json
+/static/spec-v1/interfaces/OrdOverlay.schema.json
 /static/spec-v1/interfaces/AgentGovernance.schema.json
 /static/spec-extension/models/*.schema.json
+
+# Code review files (local only)
+spec-extension/models/ORD_OVERLAY_CODE_REVIEW.md
+
+.codex

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:document-1-ord:v1",
+  "description": "Patches ORD resource metadata in document-1.json using ordId selectors.",
+  "visibility": "internal",
+  "patches": [
+    {
+      "action": "merge",
+      "selector": {
+        "ordId": "sap.foo:apiResource:astronomy:v1"
+      },
+      "data": {
+        "shortDescription": "Astronomy API (overlay-enriched)",
+        "labels": {
+          "overlay": [
+            "ord-document-example"
+          ]
+        }
+      }
+    },
+    {
+      "action": "remove",
+      "selector": {
+        "ordId": "sap.foo:apiResource:astronomy:v1"
+      },
+      "data": {
+        "description": null
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "ordId": "sap.foo:eventResource:BillingDocumentEvents:v1"
+      },
+      "data": {
+        "labels": {
+          "overlay": [
+            "billing-events"
+          ]
+        }
+      }
+    }
+  ]
+}

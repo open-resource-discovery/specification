@@ -4,6 +4,10 @@
  * Define from where the API resource can be used and accessed
  */
 export type Usage = "external" | "local";
+/**
+ * Defines whether and how the resource can be extended with custom fields.
+ */
+export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
 
 /**
  * The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
@@ -57,9 +61,9 @@ export interface OrdDocument {
    * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
    */
   perspective?: ("system-type" | "system-version" | "system-instance" | "system-independent") & string;
-  describedSystemInstance?: SystemInstance;
   describedSystemType?: SystemType;
   describedSystemVersion?: SystemVersion;
+  describedSystemInstance?: SystemInstance;
   /**
    * The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.
    * Depending on the chosen policy level, additional expectations and validations rules will be applied.
@@ -146,27 +150,14 @@ export interface OrdDocument {
   tombstones?: Tombstone[];
 }
 /**
- * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
- *
- * Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
+ * Information on the [system type](../index.md#system-type) that this ORD document describes.
  */
-export interface SystemInstance {
+export interface SystemType {
   /**
-   * Optional [base URL](../index.md#base-url) of the **system instance**.
-   * By providing the base URL, relative URLs in the document are resolved relative to it.
-   *
-   * The `baseUrl` MUST not contain a leading slash.
-   *
-   * MUST be provided if the base URL is not known to the ORD aggregators.
-   * MUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.
+   * The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.
+   * It is used to reference the system type in the ORD.
    */
-  baseUrl?: string;
-  /**
-   * Optional local ID for the system instance, as known by the described system.
-   *
-   * In case of multi-tenant systems, it is equivalent to the local tenant id.
-   */
-  localId?: string;
+  systemNamespace?: string;
   /**
    * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
    *
@@ -238,14 +229,23 @@ export interface DocumentationLabels {
   [k: string]: string[];
 }
 /**
- * Information on the [system type](../index.md#system-type) that this ORD document describes.
+ * Information on the [system version](../index.md#system-version) that this ORD document describes.
  */
-export interface SystemType {
+export interface SystemVersion {
   /**
-   * The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.
-   * It is used to reference the system type in the ORD.
+   * The version of the system instance (run-time) or the version of the described system-version perspective.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   *
+   * MUST be provided if the ORD document is `perspective`: `system-version`.
+   *
+   * For continuous-delivery systems, the version MAY be fixed to the same value, e.g. `1.0.0`, but be aware that phased rollouts may benefit from a more precise versioning like adding a build number.
    */
-  systemNamespace?: string;
+  version?: string;
+  /**
+   * Human-readable title of the system version.
+   */
+  title?: string;
   /**
    * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
    *
@@ -267,23 +267,27 @@ export interface SystemType {
   tags?: string[];
 }
 /**
- * Information on the [system version](../index.md#system-version) that this ORD document describes.
+ * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
+ *
+ * Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
  */
-export interface SystemVersion {
+export interface SystemInstance {
   /**
-   * The version of the system instance (run-time) or the version of the described system-version perspective.
+   * Optional [base URL](../index.md#base-url) of the **system instance**.
+   * By providing the base URL, relative URLs in the document are resolved relative to it.
    *
-   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   * The `baseUrl` MUST not contain a leading slash.
    *
-   * MUST be provided if the ORD document is `perspective`: `system-version`.
-   *
-   * For continuous-delivery systems, the version MAY be fixed to the same value, e.g. `1.0.0`, but be aware that phased rollouts may benefit from a more precise versioning like adding a build number.
+   * MUST be provided if the base URL is not known to the ORD aggregators.
+   * MUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.
    */
-  version?: string;
+  baseUrl?: string;
   /**
-   * Human-readable title of the system version.
+   * Optional local ID for the system instance, as known by the described system.
+   *
+   * In case of multi-tenant systems, it is equivalent to the local tenant id.
    */
-  title?: string;
+  localId?: string;
   /**
    * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
    *
@@ -929,6 +933,7 @@ export interface ApiResourceDefinition {
     | "sap-rfc-metadata-v1"
     | "sap-sql-api-definition-v1"
     | "sap-csn-interop-effective-v1"
+    | "ord:overlay:v1"
     | "custom"
   ) &
     string;
@@ -1219,14 +1224,7 @@ export interface Link {
  * If applicable, a description and further resources about extending this resource are provided.
  */
 export interface Extensible {
-  /**
-   * This property defines whether the resource is extensible.
-   *
-   * **Not extensible** means that the data model of the resource (i.e. API or event) cannot be extended with custom fields.
-   * **Manually extensible** means that in addition to defining a custom field, manual activities to include the field in the data model of the resource (i.e. API or event) are required. E.g. using a specific mapping tool or by selecting the resource in the data model extension tool.
-   * **Automatically extensible** means that after defining a custom field in the local domain model, the resource (i.e. API or event) is automatically extended as part of the default extension field definition.
-   */
-  supported: "no" | "manual" | "automatic";
+  supported: ExtensibilitySupportLevel;
   /**
    * A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
@@ -1676,7 +1674,7 @@ export interface EventResourceDefinition {
   /**
    * Type of the event resource definition
    */
-  type: (string | "asyncapi-v2" | "sap-csn-interop-effective-v1" | "custom") & string;
+  type: (string | "asyncapi-v2" | "sap-csn-interop-effective-v1" | "ord:overlay:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *

@@ -1,0 +1,40 @@
+{
+	"overlay": "1.1.0",
+	"info": {
+		"title": "Astronomy API Enrichment",
+		"version": "1.0.0"
+	},
+	"extends": "https://example.com/astronomy-api/openapi.json",
+	"actions": [
+		{
+			"target": "$.info",
+			"description": "Add AI-usage note to info block",
+			"update": {
+				"x-ai-ready": true,
+				"x-purpose": "Provides constellation and star data for astronomy applications."
+			}
+		},
+		{
+			"target": "$.paths./constellations/{abbreviation}.get",
+			"description": "Deprecate the old abbreviation-based endpoint",
+			"update": {
+				"deprecated": true,
+				"x-deprecation-notice": "Use /constellations/{iauCode} instead."
+			}
+		},
+		{
+			"target": "$.components.schemas.Star.properties.magnitude",
+			"update": {
+				"description": "Apparent magnitude as observed from Earth. Lower = brighter (Sun is -26.7)."
+			}
+		},
+		{
+			"target": "$.components.schemas.ObsoleteSchema",
+			"remove": true
+		},
+		{
+			"target": "$.info.x-legacy-flag",
+			"remove": false
+		}
+	]
+}

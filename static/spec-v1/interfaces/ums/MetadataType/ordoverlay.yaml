@@ -1,0 +1,70 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'ordoverlay'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'ORDOverlay'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: "⚠️ BETA: This specification is in beta and subject to change.\n\nThe ORD Overlay is an optional ORD model extension that allows patching both ORD resource metadata\nand referenced resource definition files without modifying the original source files.\n\nOverlays use concept-level [selectors](#overlay-selector) that are independent of the target format's\ninternal structure, making them resilient to format changes.\nA `jsonPath` selector is available as a generic fallback.\n\nOverlay files can be provided through the\n[ORD Configuration endpoint](../../spec-v1/index.md#ord-configuration-endpoint),\nor attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: '$schema'
+      type: 'string'
+      description: "Optional [URL](https://tools.ietf.org/html/rfc3986) to the ORD Overlay schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools."
+    - name: 'ordOverlay'
+      type: 'string'
+      description: 'Version of the ORD Overlay specification.'
+      mandatory: true
+    - name: 'ordId'
+      type: 'string'
+      description: "Optional ORD ID of this overlay document.\nMUST be provided if the ORD Overlay is published via ORD Configuration endpoint."
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'description'
+      type: 'string'
+      description: "Optional description of the overlay document itself.\n\nNotated in [CommonMark](https://spec.commonmark.org/) (Markdown)."
+      constraints:
+        minLength: 1
+    - name: 'perspective'
+      type: 'string'
+      description: "Overlay-specific [perspective](../../spec-v1/index.md#perspectives) that scopes where this overlay should be applied.\n\nUse this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`\nto describe whether the overlay applies broadly to a system type, to one released system version,\nor only to a specific system instance."
+    - name: 'visibility'
+      type: 'string'
+      description: "Controls which consumers can discover and access this overlay document.\n\nIt does NOT control runtime access to the resources being patched — that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal overlay enrichments to inappropriate consumer audiences."
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'describedSystemType'
+      relatedTypeName: 'OverlaySystemType'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.\nThis object is identical to the ORD Document `describedSystemType` object; see [System Type](../../spec-v1/interfaces/Document.md#system-type).\n\nIts purpose is to link the overlay to the same system landscape model as ORD resources, if needed.\nThis is the primary context object for `perspective: system-type`, and also the parent context\nfor more specific `system-version` and `system-instance` overlays.\n\nUsually this is not necessary for static overlays if the patched resource is already selected via ORD ID."
+    - propertyName: 'describedSystemVersion'
+      relatedTypeName: 'OverlaySystemVersion'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.\nThis object is identical to the ORD Document `describedSystemVersion` object; see [System Version](../../spec-v1/interfaces/Document.md#system-version).\n\nIts purpose is to link the overlay to the same system landscape model as ORD resources, if needed.\nUse this when the overlay should only patch metadata for one specific released system version.\n\nUsually this is not necessary for static overlays if the patched resource is already selected via ORD ID."
+    - propertyName: 'describedSystemInstance'
+      relatedTypeName: 'OverlaySystemInstance'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.\nThis object is identical to the ORD Document `describedSystemInstance` object; see [System Instance](../../spec-v1/interfaces/Document.md#system-instance).\n\nIts purpose is to link the overlay to the same system landscape model as ORD resources, if needed.\nUse this when the overlay should only patch metadata for one concrete tenant / runtime instance.\n\nUsually this is not necessary for static overlays if the patched resource is already selected via ORD ID."
+    - propertyName: 'target'
+      relatedTypeName: 'OverlayTarget'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional target context identifying the resource or definition file being patched.\nSee [Overlay Target](#overlay-target) for details on identifier requirements and disambiguation."
+    - propertyName: 'patches'
+      relatedTypeName: 'OverlayPatch'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Ordered sequence of patches to apply to the targeted resource(s).\nPatches are applied strictly in the order they are listed.\nIf two patches target the same document element, both are applied in sequence —\nthe later patch supersedes the earlier one."
+      mandatory: true
+    - propertyName: 'meta'
+      relatedTypeName: 'OverlayMeta'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional arbitrary metadata associated with this overlay document for use by overlay consumers, tooling, and registries.\nThe contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.\n\nUse this to carry document-level information such as provenance, approval status, or processing instructions\nthat apply to the overlay as a whole rather than to individual patches."

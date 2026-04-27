@@ -10,8 +10,8 @@
 // Please note that it is usually not advisable to manually create ORD documents.
 // Instead they should be automatically created or derived from internal metadata or reflections.
 
-const crypto = require("crypto");
-const http = require("http");
+const crypto = require("node:crypto");
+const http = require("node:http");
 
 // Configuration
 const port = 8080;
@@ -36,7 +36,7 @@ const ordConfig = {
 const openDiscoveryDocument1 = require("../../examples/document-1.json");
 const openApiDocument = require("../nginx-no-auth/metadata/astronomy-v1.oas3.json");
 
-const requestListener = function (req, res) {
+const requestListener = (req, res) => {
 	res.setHeader("Content-Type", "application/json");
 	res.setHeader("Cache-Control", "private, max-age=360");
 
