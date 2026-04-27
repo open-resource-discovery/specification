@@ -7,6 +7,7 @@ Open Resource Discovery (ORD) is a protocol specification that enables applicati
 - **Git**: Never push to `main` or merge locally into `main` - use PRs only (pre-push hook enforced)
 - **Generated files**: Never edit `src/generated/`, `dist/`, `build/`, or `static/spec-v1/interfaces/` - always edit sources in `spec/v1/*.schema.yaml` or `docs/`
 - **Pre-commit**: Hook automatically runs `npm run generate` and stages generated files
+- **CHANGELOG.md**: Always use absolute public URLs (e.g. `https://open-resource-discovery.org/...`), never relative links (e.g. `./docs/...`)
 
 ## Architecture Note
 
