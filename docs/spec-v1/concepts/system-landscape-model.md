@@ -51,8 +51,7 @@ It should be pointed out that the:
 - [sub-context namespaces](../index.md#sub-context-namespace) have no corresponding ORD concept.
 
 When resources, taxonomy or contracts are shared across multiple system types, the namespace identifies the owner of the shared definition.
-This is often an [authority namespace](../index.md#authority-namespace), but can also be another system namespace when that system type owns the reused definition.
-See [Shared Taxonomy, Resources and Contracts](./shared-resources.md) for details.
+See [Namespace Ownership](./shared-resources.md#namespace-ownership) for guidance on choosing the correct namespace.
 
 ## System Resources and Capabilities
 
