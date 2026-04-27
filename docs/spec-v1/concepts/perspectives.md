@@ -143,7 +143,14 @@ If the aggregator supports both static and dynamic perspectives:
 - In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior:
   - When `system-instance` is requested but not available, fall back to `system-version`
   - When `system-version` is requested but not available (or version is unknown), fall back to `system-type`
-  - The aggregator SHOULD derive `system-type` from the latest `system-version` if not explicitly provided
+
+#### Static Perspective Resolution
+
+When a consumer requests static metadata (i.e. `system-type` or `system-version` perspective) for a given system type, the aggregator SHOULD resolve what to return as follows (see also the [perspective relation diagram](#how-perspectives-relate-to-each-other)):
+
+1. If a **specific system version is requested**, return the `system-version` perspective data for that version.
+2. If **no specific version is requested**, return the explicitly provided `system-type` perspective data, if available. The `system-type` perspective takes precedence because it is explicitly maintained and version-independent.
+3. If **no specific version is requested** and **no explicit `system-type` perspective is available**, the aggregator SHOULD derive the `system-type` representation from the **latest `system-version`** perspective.
 
 #### Tombstone Handling across Versions
 

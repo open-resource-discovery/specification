@@ -75,10 +75,10 @@ Here is an overview which ORD concepts can be dynamic (different per System Inst
 
 | ORD Concept            | Category              | Can be Dynamic | Can be Global | Always Global |
 | ---------------------- | --------------------- | -------------- | ------------- | ------------- |
-| API Resource           | Resource / Capability | ✅             | ❌            | ❌            |
-| Event Resource         | Resource / Capability | ✅             | ❌            | ❌            |
+| API Resource           | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
+| Event Resource         | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
 | Capability             | Resource / Capability | ✅             | ❌            | ❌            |
-| Data Product           | Resource / Capability | ✅             | ❌            | ❌            |
+| Data Product           | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
 | Integration Dependency | Resource / Capability | ✅             | ❌            | ❌            |
 | Entity Type            | Taxonomy              | ✅             | ✅            | ❌            |
 | Vendor                 | Taxonomy              | ❌             | ✅            | ✅            |

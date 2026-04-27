@@ -15,6 +15,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added recommendation to use [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts.
 - Clarified the use of [authority namespaces](https://open-resource-discovery.org/spec-v1#authority-namespace) for resource ORD IDs: when multiple system types share the same resource contract under a shared authority namespace, the uniqueness and aggregation rules now explicitly address this. See [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
 - Added concept page on [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
+- Simplified and clarified the [static perspective resolution](https://open-resource-discovery.org/spec-v1/concepts/perspectives#static-perspective-resolution) algorithm for aggregators.
 
 ## [1.14.3]
 
