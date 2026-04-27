@@ -94,7 +94,7 @@
             },
             {
               "const": "system-independent",
-              "description": "Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).\nThis content is always static and has independent visibility and lifecycle from the systems in a particular landscape.\nThe \"system-independent\" content MUST NOT be overridden via system-version or system-instance perspective metadata.\n\nExamples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems."
+              "description": "Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).\nThis content is always static and has independent visibility and lifecycle from the systems in a particular landscape.\nThe \"system-independent\" content MUST NOT be overridden via system-version or system-instance perspective metadata.\n\nExamples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems.\nFor the distinction between system-independent content and system-scoped shared publications, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources)."
             }
           ],
           "default": "system-instance",
