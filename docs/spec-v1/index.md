@@ -98,13 +98,15 @@ There are [aggregation rules](#aggregation-rules) and [validation rules](#valida
 
 It MUST support all [ORD transport modes](#ord-transport-modes) that are used by the systems it aggregates.
 
+When serving static perspective requests (`system-type` or `system-version`), the aggregator SHOULD follow the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm.
+
 In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-perspective):
 
 - the aggregator MUST support [system-instance-aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
 - In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
   - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Discovery consumer should not need to understand whether the information is currently static or system-instance-aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
-  - See chapter on [perspectives](#perspectives).
+- See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
@@ -618,6 +620,8 @@ There is a `perspective` attribute, which allows setting the following values:
   - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
 - If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
+
+> ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
 
 ## ID Concepts
 
