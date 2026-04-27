@@ -16,6 +16,6 @@ Most notably, you'll find:
 - [Registered **Policy Levels**](/spec-extensions/policy-levels/) that standardize (ideally verifiable) rules how ORD should be implemented by ORD Providers.
 - [Registered **Global Group Types**](/spec-extensions/group-types/) for globally aligned and pre-defined group types (and potentially also predefined group instances).
 - [**Model Extensions**](/spec-extensions/models/) that provide additional model schemas for specific use cases.
-- [**ORD Standardized Concepts**](/spec-extensions/ord-concepts/) for standardized Concept IDs defined in the reserved `ord` namespace (e.g., relation types).
+- [**ORD Namespaces / Concepts**](/spec-extensions/ord-namespaces-concepts/) for reserved ORD namespaces and the standardized Concept IDs defined within them (e.g., relation types).
 
 Specification Extensions have registered [Specification IDs](../spec-v1/index.md#specification-id).

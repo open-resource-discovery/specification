@@ -697,7 +697,7 @@ A vendor namespace MUST be constructed according to the following rules:
   - There is a special reserved vendor namespace `ord`:
     - It is used by the ORD specification itself to define standardized [Concept IDs](#concept-id), such as relation types, group types, or correlation ID concepts.
     - It MUST NOT be used by ORD providers for their own content.
-    - See [ORD Standardized Concepts](../spec-extensions/ord-concepts/) for a list of all standardized `ord:` concepts.
+    - See [ORD Namespaces / Concepts](../spec-extensions/ord-namespaces-concepts/) for a list of all standardized `ord:` concepts.
 - MUST match Regexp: `^[a-z0-9]+$`
 
 **Examples**: For SAP, we chose and registered `sap`.
