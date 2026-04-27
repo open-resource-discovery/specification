@@ -141,6 +141,7 @@ definitions:
               The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
 
               Examples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems.
+              For the distinction between system-independent content and system-scoped shared publications, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).
         default: "system-instance"
         examples:
           - "system-instance"

@@ -106,8 +106,9 @@ The granularity of Packages is driven by all of the following concerns:
 - The resources share certain aspects/taxonomy that is inherited down to them (e.g. `vendor`).
 - If applicable: The resources are meant to be used by only a particular target platform / software.
 
-When a package groups resources that are shared across multiple [system types](../index.md#system-type), the package itself SHOULD also use an [authority namespace](../index.md#authority-namespace).
-See [Shared Resources](./shared-resources.md).
+When a package groups resources that are shared across multiple [system types](../index.md#system-type), the package itself SHOULD normally use the same owning namespace as the grouped resources.
+This is often an [authority namespace](../index.md#authority-namespace), but can also be a reused system namespace when another system type owns the shared definition.
+See [Shared Taxonomy, Resources and Contracts](./shared-resources.md).
 
 All resources that are not created by the described systems vendor MUST be put into separate packages.
 This is the case, when:
@@ -201,8 +202,9 @@ In the examples before, this would be the "Employee Service" or the "Hire to Ret
 Lastly, we need to state the **partOfGroup** assignment of a particular ORD Resource.
 E.g. a particular OData API for Employee Management can be part of both the "Employee Service" group (of type CSN Service) and the "Hire to Retire" group of type "Process".
 
-The Group Type could even be defined globally. If the Group Type is shared across different applications, it should have an [authority namespace](../index.md#authority-namespace).
-The Group Instances can potentially be globally defined, too. In this case it works like a global taxonomy with a predefined list of values. It's also possible for the application itself to define and assign its own Group Types and Instances.
+The Group Type could even be defined globally. If the Group Type is shared across different applications, it should use the namespace of the owner that governs the taxonomy. This is commonly an [authority namespace](../index.md#authority-namespace), but it can also be a system namespace when one system type owns the taxonomy definition.
+The Group Instances can potentially be globally defined, too. In this case it works like a global taxonomy with a predefined list of values and can use the `system-independent` perspective. It's also possible for the application itself to define and assign its own Group Types and Instances.
+See [Shared Taxonomy, Resources and Contracts](./shared-resources.md) for choosing between system-scoped and system-independent publication.
 
 > The Group concept is the correct choice when ORD resources need to be grouped by additional concerns, beyond the predefined concepts from ORD (like Package).
 

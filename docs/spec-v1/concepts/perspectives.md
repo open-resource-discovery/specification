@@ -71,10 +71,10 @@ They can be considered global, static content that can be shared by multiple sys
 
 Such content is of a "singleton" quality for the whole ORD aggregator and SHOULD not be republished by the individual systems.
 
-> Note: Shared resources across system types (using [authority namespaces](../index.md#authority-namespace)) are different from system-independent content.
-> Shared resources still describe a system's capabilities and are published per system type/version/instance.
-> System-independent content (Vendors, Products, global Entity Types) exists outside the system context entirely.
-> See [Shared Resources](./shared-resources.md) for the distinction.
+> Note: Shared taxonomy, resources and contracts can be modeled either as system-scoped publications or as `system-independent` content.
+> Shared resources and contracts still describe a system's capabilities and are published per system type/version/instance.
+> System-independent content (Vendors, Products, global Entity Types, global Groups and Group Types) exists outside the system context entirely.
+> See [Shared Taxonomy, Resources and Contracts](./shared-resources.md) for the distinction.
 
 ### How Perspectives relate to each other
 

@@ -248,7 +248,9 @@ All resources that are described within one document MUST describe the same syst
 The described information MUST not be duplicated within or across ORD documents of the same [system type](#system-type).
 If some information like Package or Consumption Bundle is needed across multiple documents they can either be put in one of the documents or be moved to a separate document for shared information.
 This also applies across ORD Providers of the same system type, which is ensured through the correct use of namespaces and namespace ownerships.
-ORD information using an [authority namespace](#authority-namespace) MAY be published by multiple system types. See [Shared Resources](./concepts/shared-resources.md).
+Shared ORD information MAY be published by multiple system types when the ORD ID identifies the same governed definition.
+This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 The [validation rules](#validation-rules) MUST be considered.
 
@@ -569,9 +571,10 @@ The following validation rules apply specifically for ORD aggregators:
 - The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times within the same [system type](#system-type) or [system version](#system-version) scope.
   Please be aware that this could happen within an ORD Document or within the same ORD Provider on different ORD Documents.
   For migration transitions this rule MAY be violated temporarily.
-- ORD information with an [authority namespace](#authority-namespace) ORD ID MAY be published by multiple [system types](#system-type), because the authority namespace indicates a shared contract, definition or governance model.
+- Shared ORD information MAY be published by multiple [system types](#system-type) when the ORD ID identifies the same governed definition.
   In this case, all publishers MUST describe the ORD information consistently for the same `version`. The aggregator MUST validate consistency.
-  See [Shared Resources](./concepts/shared-resources.md) for details.
+  This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
+  See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
 
 ### ORD Discovery API
 
@@ -729,7 +732,7 @@ An system namespace MUST be constructed according to the following rules:
 An <dfn id="def-authority-namespace">authority namespace</dfn> is a stable and globally unique identifier namespace that corresponds to an **organizational unit** responsible for cross-alignment and governance.
 Authority namespaces are relevant when contracts, interfaces or taxonomy are owned and defined on a level that spans across individual applications or services.
 This includes shared API contracts, event definitions, data products, capabilities, integration dependencies, consumption bundles, and agents that are provided by multiple [system types](#system-type) built from the same software components.
-See [Shared Resources](./concepts/shared-resources.md) for details on using authority namespaces for resources.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details on namespace ownership and authority namespaces.
 
 An authority namespace MUST be constructed according to the following rules:
 
@@ -794,8 +797,8 @@ The same resource (with the same ORD ID) can be exposed in different variations 
 To get a globally unique ID at run-time, a composite key is required.
 This can be achieved by either combining it with a system instance ID or a full version, depending on the use cases.
 
-When ORD information uses an [authority namespace](#authority-namespace), the same ORD ID can be published by multiple [system types](#system-type).
-In this case, the ORD ID identifies the shared contract, definition or governance model, and the system type or system instance provides the additional context for uniqueness.
+When the same shared ORD information is published or reused by multiple [system types](#system-type), the ORD ID identifies the shared contract, taxonomy item, definition or governance model, and the system type or system instance provides the additional context for uniqueness.
+This commonly uses an [authority namespace](#authority-namespace), but can also use a system namespace when that system type owns the reused definition.
 
 #### ORD ID Construction
 
@@ -806,18 +809,18 @@ It MUST be constructed as defined here:
 **`<ordId>`** := `<namespace>:<conceptName>:<resourceName>:[v<majorVersion>]`
 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
-  The namespace MUST reflect either the system type providing the described ORD information or the authority governing it.
+  The namespace MUST reflect the owner governing the described ORD information.
   - For `Package`, `ConsumptionBundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`, `DataProduct` and `Agent`:
     - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace) thereof
     - A [system namespace](#system-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item is specific to a single system type.
-    - An [authority namespace](#authority-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item represents a shared contract, definition or governance model across multiple [system types](#system-type). See [Shared Resources](./concepts/shared-resources.md).
+    - An [authority namespace](#authority-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item represents a shared contract, definition or governance model across multiple [system types](#system-type). See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
   - For `Vendor` and `Product`:
     - MUST be a valid [vendor namespace](#vendor-namespace) for `Vendor` and `Product`
   - For system-namespaced ORD IDs, the provider is the system hosting the described resource.
     In advanced cases, the provider could be an embedded system / sidecar with its own system namespace.
     This can lead to multiple system namespaces within one system.
     In this case it needs to be taken care that static publishing does not create conflicts, e.g. through moving the publishing responsibility to the embedded system (and not by the parent system).
-  - For authority-namespaced ORD IDs, the namespace identifies the organizational unit governing the shared contract, definition or access grouping.
+  - For authority-namespaced ORD IDs, the namespace identifies the organizational unit governing the shared contract, definition, taxonomy item or access grouping.
 
 - **`<conceptName>`** := The ORD concept name of the described resource / taxonomy.
   - Use `product` for `Product`

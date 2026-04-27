@@ -50,9 +50,9 @@ It should be pointed out that the:
 - [system namespace](../index.md#system-namespace) corresponds to the [ORD System Type](../index.md#system-type).
 - [sub-context namespaces](../index.md#sub-context-namespace) have no corresponding ORD concept.
 
-When resources are shared across multiple system types (because they originate from the same software components), an [authority namespace](../index.md#authority-namespace) is used instead of a system namespace.
-The authority namespace represents the organizational unit governing the shared contract.
-See [Shared Resources](./shared-resources.md) for details.
+When resources, taxonomy or contracts are shared across multiple system types, the namespace identifies the owner of the shared definition.
+This is often an [authority namespace](../index.md#authority-namespace), but can also be another system namespace when that system type owns the reused definition.
+See [Shared Taxonomy, Resources and Contracts](./shared-resources.md) for details.
 
 ## System Resources and Capabilities
 
