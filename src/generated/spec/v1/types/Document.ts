@@ -211,7 +211,7 @@ export interface SystemInstance {
 export interface Labels {
   /**
    * This interface was referenced by `Labels`'s JSON-Schema definition
-   * via the `patternProperty` "^[a-zA-Z0-9-_.]*$".
+   * via the `patternProperty` "^[a-zA-Z0-9-_.:/]*$".
    */
   [k: string]: string[];
 }
