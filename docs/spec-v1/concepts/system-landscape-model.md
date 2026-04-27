@@ -50,6 +50,9 @@ It should be pointed out that the:
 - [system namespace](../index.md#system-namespace) corresponds to the [ORD System Type](../index.md#system-type).
 - [sub-context namespaces](../index.md#sub-context-namespace) have no corresponding ORD concept.
 
+When resources, taxonomy or contracts are shared across multiple system types, the namespace identifies the owner of the shared definition.
+See [Namespace Ownership](./shared-resources.md#namespace-ownership) for guidance on choosing the correct namespace.
+
 ## System Resources and Capabilities
 
 From here we can place most of the ORD concepts, e.g. like the APIs and Events.
@@ -71,10 +74,10 @@ Here is an overview which ORD concepts can be dynamic (different per System Inst
 
 | ORD Concept            | Category              | Can be Dynamic | Can be Global | Always Global |
 | ---------------------- | --------------------- | -------------- | ------------- | ------------- |
-| API Resource           | Resource / Capability | ✅             | ❌            | ❌            |
-| Event Resource         | Resource / Capability | ✅             | ❌            | ❌            |
+| API Resource           | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
+| Event Resource         | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
 | Capability             | Resource / Capability | ✅             | ❌            | ❌            |
-| Data Product           | Resource / Capability | ✅             | ❌            | ❌            |
+| Data Product           | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
 | Integration Dependency | Resource / Capability | ✅             | ❌            | ❌            |
 | Entity Type            | Taxonomy              | ✅             | ✅            | ❌            |
 | Vendor                 | Taxonomy              | ❌             | ✅            | ✅            |
