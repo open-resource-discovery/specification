@@ -788,7 +788,7 @@ A vendor namespace MUST be constructed according to the following rules:
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
   - There are reserved vendor namespaces:
     - `customer`: Used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources. This avoids that customers need to register their own namespaces (which could still be done as an alternative).
-    - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id), such as relation types, group types, or correlation ID concepts. It MUST NOT be used by ORD providers for their own content. See [ORD Namespaces / Concepts](../spec-extensions/ord-namespaces-concepts/) for the registered concepts.
+    - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
 - MUST match Regexp: `^[a-z0-9]+$`
 
 **Examples**: For SAP, we chose and registered `sap`.
