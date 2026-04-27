@@ -194,7 +194,7 @@ This duplication is valid when it represents the same governed definition, but t
 
 - The uniqueness validation ("MUST NOT be described multiple times") applies within the same system type or system version scope, not globally across all system types.
 - The same shared ORD ID with the same `version` MUST describe the same definition across publishers.
-- The aggregator SHOULD validate consistency across publishers and flag inconsistencies as validation warnings.
+- The aggregator SHOULD validate that the shared definition is consistent across publishers and flag unexpected inconsistencies as validation warnings. Differences in publication context (such as product assignments, Consumption Bundles or entry points) are expected and not inconsistencies.
 - The aggregator MAY deduplicate the shared definition and associate it with all publishing system types and products.
 - The aggregator MAY instead store scoped records per system type/version if that is simpler.
 - If different system types publish different versions of the same shared ORD information, the catalog MUST preserve the system type/version context.
