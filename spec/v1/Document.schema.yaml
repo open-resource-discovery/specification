@@ -4970,7 +4970,14 @@ definitions:
               The related entity types can potentially share the same identity in their instance data / be ID mapped.
 
               E.g. a `BusinessPartner` can share the same identity as a `NaturalPerson`.
+          - const: same-as
+            x-introduced-in-version: "1.14.3"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "same-as"
           - "can-share-identity"
           - "foo.bar:relationName"
     required:
@@ -5002,6 +5009,7 @@ definitions:
           - "sap.s4:apiResource:API_BUSINESS_PARTNER:v1"
       relationType:
         type: string
+        x-introduced-in-version: "1.14.3"
         description: |-
           Optional type of the relationship as a [Concept ID](../index.md#concept-id).
 
@@ -5012,7 +5020,14 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
+          - const: same-as
+            x-introduced-in-version: "1.14.3"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "same-as"
           - "foo.bar:relationName"
     required:
       - ordId
@@ -5043,6 +5058,7 @@ definitions:
           - "sap.s4:eventResource:BusinessPartnerEvents:v1"
       relationType:
         type: string
+        x-introduced-in-version: "1.14.3"
         description: |-
           Optional type of the relationship as a [Concept ID](../index.md#concept-id).
 
@@ -5053,7 +5069,14 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
+          - const: same-as
+            x-introduced-in-version: "1.14.3"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "same-as"
           - "foo.bar:relationName"
     required:
       - ordId
@@ -5084,6 +5107,7 @@ definitions:
           - "sap.foo:capability:fieldExtensibility:v1"
       relationType:
         type: string
+        x-introduced-in-version: "1.14.3"
         description: |-
           Optional type of the relationship as a [Concept ID](../index.md#concept-id).
 
@@ -5094,7 +5118,14 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
+          - const: same-as
+            x-introduced-in-version: "1.14.3"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "same-as"
           - "foo.bar:relationName"
     required:
       - ordId
