@@ -123,6 +123,7 @@ There is no implicit inheritance between system types.
 
 ### Example: Authority-Owned Resource
 
+Authority namespace: `example.commerce`
 System type `example.storefront` publishes:
 
 ```json
