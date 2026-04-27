@@ -456,8 +456,10 @@ export interface ApiResource {
    * Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
    *
    * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+   * Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
    *
    * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
    */
   abstract?: boolean;
   /**
@@ -1380,8 +1382,10 @@ export interface EventResource {
    * Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
    *
    * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+   * Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
    *
    * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
    */
   abstract?: boolean;
   /**
@@ -3490,7 +3494,6 @@ export interface Product {
  *
  * The Package can also be used to indicate which products or vendors provided the packaged resources.
  * For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
- * In any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.
  *
  * A Package SHOULD contain at least one resource. Avoid empty Packages.
  *
@@ -4018,9 +4021,10 @@ export interface Group {
  * A Group Type defines the semantics of [group assignments](#group).
  * What the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).
  *
- * Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
+ * Group Types can be defined centrally (ownership by an authority namespace or another shared owning namespace) or decentrally (defined by the application / service itself).
  *
  * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
+ * For the distinction between system-scoped and system-independent shared taxonomy, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).
  */
 export interface GroupType {
   /**

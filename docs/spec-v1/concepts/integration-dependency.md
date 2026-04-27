@@ -30,6 +30,10 @@ Therefore, we introduced Integration Dependency as a means to describe what a sy
 If this is setup and connected at run-time, we call this an integration.
 But at ORD level, we're only describing the "type-level" ability to integrate and what dependencies and requirements that entails.
 
+> **Tip:** When the integration target resource uses a shared ORD ID, for example with an [authority namespace](../index.md#authority-namespace), a reused system namespace or an [abstract resource](./compatibility.md#abstract-ord-resources), a single dependency reference covers all system types providing that contract.
+> This is simpler than listing multiple system-type-specific ORD IDs as alternatives in the aspect.
+> See [Shared Taxonomy, Resources and Contracts](./shared-resources.md).
+
 The following diagram shows how two systems can integrate with each other via APIs and Events:
 
 ![Integration Dependency Problem Statement](/img/integration-dependency-ps.drawio.svg "Integration Dependency Problem Statement")

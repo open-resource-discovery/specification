@@ -73,6 +73,11 @@ They can be considered global, static content that can be shared by multiple sys
 
 Such content is of a "singleton" quality for the whole ORD aggregator and SHOULD not be republished by the individual systems.
 
+> Note: Cross-system-type taxonomy, resources and contracts can be modeled either as system-scoped publications or as `system-independent` content.
+> Cross-system-type resources and contracts still describe a system's capabilities and are published per system type/version/instance.
+> System-independent content (Vendors, Products, global Entity Types, global Groups and Group Types) exists outside the system context entirely.
+> See [Shared Taxonomy, Resources and Contracts](./shared-resources.md) for the distinction.
+
 ### How Perspectives relate to each other
 
 The dynamic perspective is a more precise description of the system instance than the static perspective, as it can contain its customizations.
@@ -142,7 +147,7 @@ If the aggregator supports both static and dynamic perspectives:
 
 #### Static Perspective Resolution
 
-When a consumer requests static metadata (i.e. `system-type` or `system-version` perspective) for a given system type, the aggregator SHOULD resolve what to return as follows:
+When a consumer requests static metadata (i.e. `system-type` or `system-version` perspective) for a given system type, the aggregator SHOULD resolve what to return as follows (see also the [perspective relation diagram](#how-perspectives-relate-to-each-other)):
 
 1. If a **specific system version is requested**, return the `system-version` perspective data for that version.
 2. If **no specific version is requested**, return the explicitly provided `system-type` perspective data, if available. The `system-type` perspective takes precedence because it is explicitly maintained and version-independent.
