@@ -12,8 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added standardized `ord:sameAs` relation type for `relatedEntityTypes`, `relatedApiResources`, `relatedEventResources`, and `relatedCapabilities`, indicating that the source and target resource are the same or equivalent.
-- Added `ord` as a reserved vendor namespace for ORD specification standardized concepts, with a new [ORD Namespaces / Concepts](https://open-resource-discovery.org/spec-extensions/ord-namespaces-concepts/) documentation section.
+- Added standardized `same-as` relation type for `relatedEntityTypes`, `relatedApiResources`, `relatedEventResources`, and `relatedCapabilities`, indicating that the source and target resource are the same or equivalent.
 
 ### Changed
 
