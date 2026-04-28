@@ -135,14 +135,14 @@ flowchart LR
     TenantState["Tenant state<br/>configuration, entitlements,<br/>extensions, custom model"]
     Projection["Tenant projection"]
     Dynamic["Tenant ORD view<br/>system-instance"]
-    Definitions["Resource definitions<br/>OpenAPI, AsyncAPI, etc."]
+    Aggregator["ORD Aggregator"]
 
     Shared --> Baseline
     Baseline --> Projection
     TenantState --> Projection
     Projection --> Dynamic
-    Baseline --> Definitions
-    Dynamic --> Definitions
+    Baseline --> Aggregator
+    Dynamic --> Aggregator
 ```
 
 ### Advertise both perspectives
