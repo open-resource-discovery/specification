@@ -45,8 +45,8 @@ const ordConfig = {
   },
 };
 
-const ordDocument = require("../../documents/document-1.json");
-const openApiDocument = require("../nginx-no-auth/metadata/astronomy-v1.oas3.json");
+const ordDocument = require("./ord-document.json"); // your ORD document
+const openApiDocument = require("./astronomy-v1.oas3.json"); // a referenced resource definition
 
 http
   .createServer((req, res) => {
