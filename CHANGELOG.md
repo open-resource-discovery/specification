@@ -17,6 +17,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added concept page on [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
 - Clarification: Consolidated and clarified the [static perspective resolution](https://open-resource-discovery.org/spec-v1/concepts/perspectives#static-perspective-resolution) algorithm for aggregators. When no specific version is requested, explicit `system-type` perspective data takes precedence; if unavailable, the aggregator SHOULD derive it from the latest `system-version`. Previously this behavior was scattered and only stated as MAY.
 
+## [1.14.4]
+
+### Fixed
+
+- Fixed `labels` key validation pattern to also allow `:` and `/` characters, which are needed when using [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as label keys (as recommended).
+
 ## [1.14.3]
 
 ### Added
