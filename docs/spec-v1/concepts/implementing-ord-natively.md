@@ -301,6 +301,7 @@ For tenant-aware ORD, make sure the implementation clearly does these things:
 - map aggregator tenant IDs to local tenant IDs deliberately
 - generate a complete tenant-specific ORD document, not a delta
 - generate tenant-specific resource definitions with the same tenant context
+- update `lastUpdate` on affected resources when the tenant model changes between crawls, so aggregators re-fetch the resource definition — bumping `lastUpdate` is mandatory, bumping `version` is recommended only when the API itself changed
 
 ## Validation and Production Readiness
 

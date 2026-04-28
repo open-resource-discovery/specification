@@ -11,6 +11,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ## [unreleased]
 
 ### Added
+
 - Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/concepts/implementing-ord-natively) guide
 
 ## [1.14.4]
