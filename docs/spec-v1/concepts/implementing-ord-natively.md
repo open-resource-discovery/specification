@@ -9,6 +9,10 @@ description: Guidance for developers implementing an ORD Provider API inside an 
 This page explains how to implement ORD directly inside an application or service.
 It is written for developers who need to expose an [ORD Provider API](../index.md#ord-provider-api).
 
+Ideally, ORD support is provided at the framework level so that individual applications get it automatically.
+For example, the [CAP ORD plugin](https://github.com/cap-js/ord) adds ORD to any CAP-based application.
+When no framework plugin exists, the patterns below show how to implement ORD natively.
+
 This guide is accompanied by the [ORD Reference Application](https://github.com/open-resource-discovery/reference-application), a working Fastify/TypeScript implementation of the patterns described here.
 
 The main implementation task is to transform the metadata your application already knows into:

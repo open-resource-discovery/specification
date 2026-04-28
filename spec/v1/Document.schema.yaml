@@ -4363,7 +4363,7 @@ definitions:
       The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
     x-ums-type: "custom"
     patternProperties:
-      "^[a-zA-Z0-9-_.]*$":
+      "^[a-zA-Z0-9-_.:\/]*$":
         type: array
         items:
           type: string
