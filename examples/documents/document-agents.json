@@ -2,7 +2,7 @@
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.14",
   "description": "Example based on ORD Reference App",
-  "policyLevels": ["sap:core:v1", "sap:ai-agent:v1"],
+  "policyLevels": ["sap:core:v1", "sap:ai:v1"],
   "describedSystemVersion": {
     "version": "1.0.0"
   },
