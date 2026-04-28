@@ -82,8 +82,9 @@ Most real applications, however, need to generate at least part of the response 
 ## Static and Dynamic Perspectives
 
 An ORD provider can expose both static and dynamic metadata.
+For tenant-aware providers, the static perspective is the baseline that should always exist.
 The static document describes what a system type or system version provides in general.
-The dynamic document describes what one concrete system instance actually provides at runtime.
+The dynamic document describes what one concrete system instance actually provides at runtime, based on that baseline plus tenant-specific state.
 Providers advertise these documents separately in the ORD configuration, because aggregators can handle them differently.
 Static metadata can usually be fetched once per system type or version.
 Dynamic metadata must be fetched for the requested system instance.
@@ -98,7 +99,7 @@ GET /open-resource-discovery/v1/documents/system-version HTTP/1.1
 ```
 
 The `system-instance` document should be complete for the selected system instance.
-It is not a patch or diff on top of the static document.
+Even when it is generated from the static baseline, it is not returned as a patch or diff.
 If the CRM API is not enabled for tenant `T2`, the tenant-specific document for `T2` should not describe the CRM API.
 If tenant `T1` extends the Customer model with additional fields, the tenant-specific resource definition for `T1` should expose those fields.
 
@@ -119,24 +120,27 @@ The next section shows one way to implement this in code.
 
 The tenant-aware implementation has three essential parts:
 
-1. Advertise a static document and a tenant-aware document in the ORD configuration.
+1. Advertise a static baseline document and a tenant-aware document in the ORD configuration.
 2. Resolve the requested tenant in the `system-instance` endpoint.
-3. Generate a complete tenant-specific ORD document and tenant-specific resource definitions.
+3. Generate a complete tenant-specific ORD document and tenant-specific resource definitions from the baseline plus tenant state.
 
 The following snippets are simplified from the [ORD Reference Application](https://github.com/open-resource-discovery/reference-application).
 
 ```mermaid
 flowchart LR
-    Sources["Application metadata<br/>static files, configuration,<br/>metamodel, annotations,<br/>tenant extensions"]
-    Mapper["ORD mapping layer"]
-    Static["system-version<br/>ORD document"]
-    Dynamic["system-instance<br/>ORD document"]
+    Shared["Shared application metadata<br/>version, APIs, events,<br/>entities, packages"]
+    Baseline["Static ORD baseline<br/>system-version or system-type"]
+    TenantState["Tenant state<br/>configuration, entitlements,<br/>extensions, custom model"]
+    Projection["Tenant projection"]
+    Dynamic["Tenant ORD view<br/>system-instance"]
     Definitions["Resource definitions<br/>OpenAPI, AsyncAPI, etc."]
 
-    Sources --> Mapper
-    Mapper --> Static
-    Mapper --> Dynamic
-    Mapper --> Definitions
+    Shared --> Baseline
+    Baseline --> Projection
+    TenantState --> Projection
+    Projection --> Dynamic
+    Baseline --> Definitions
+    Dynamic --> Definitions
 ```
 
 ### Advertise both perspectives
@@ -208,9 +212,10 @@ function resolveLocalTenantId(headers) {
 }
 ```
 
-### Project the static document into a tenant document
+### Project the static baseline into a tenant document
 
-The static document can be used as a baseline if tenants only enable, disable, configure, or extend shared resources.
+The static document is the baseline for the tenant-aware view.
+The tenant projection then applies tenant configuration, entitlements, extensions, or tenant-specific model data.
 The `system-instance` response must still be a complete document for the tenant, not a delta.
 
 ```js
@@ -251,8 +256,8 @@ function getOrdDocumentForTenant(tenantId) {
 ```
 
 In this example, tenant `T1` receives the CRM API resource and tenant `T2` does not.
-Other applications may derive the tenant document from a tenant-specific metamodel instead of filtering a static baseline.
-Some applications allow the end-user to even create new resources like APIs, which would have to be added on top of the static baseline.
+Other applications may add tenant-specific resources from a tenant-specific metamodel instead of only filtering the baseline.
+Some applications allow the end-user to create new resources like APIs; those resources are added to the tenant view on top of the static baseline.
 
 ### Generate tenant-specific resource definitions
 
@@ -297,27 +302,64 @@ For tenant-aware ORD, make sure the implementation clearly does these things:
 - generate a complete tenant-specific ORD document, not a delta
 - generate tenant-specific resource definitions with the same tenant context
 
-Different applications create metadata in different ways.
-Use the architecture of your application to decide how the ORD document should be generated.
+## Translating Existing Metadata
+
+ORD does not prescribe how an application should model its APIs, events, entities, extensions, or tenant configuration.
+Most applications already have an approach for this.
+The ORD implementation needs to translate that existing approach into a static ORD baseline and, where needed, tenant-specific ORD views.
+
+The following cases are not architecture recommendations.
+They describe common starting points and what they usually mean for the ORD Provider API.
 
 ```mermaid
 flowchart TD
-    Start{"Where does the metadata come from?"}
-    StaticOnly["Static files or generated artifacts only"]
-    SharedModel["Shared application model plus tenant configuration"]
+    Start{"Where does the application<br/>already keep metadata?"}
+    Baseline["Create static ORD baseline"]
+    StaticOnly["No tenant-specific changes"]
+    TenantConfig["Tenant configuration or entitlements"]
     TenantModel["Tenant-specific metamodel"]
-    CodeModel["Code annotations, decorators, or framework reflection"]
+    CodeModel["Code annotations, decorators,<br/>or framework reflection"]
 
-    StaticProvider["Publish static ORD documents"]
-    Projection["Generate system-instance ORD<br/>from static baseline plus tenant config"]
-    FullTenant["Generate complete system-instance ORD<br/>from the tenant model"]
-    Reflection["Derive ORD from code metadata<br/>and enrich missing business metadata"]
+    StaticProvider["Publish static perspective"]
+    Projection["Generate complete system-instance ORD<br/>from baseline plus tenant state"]
+    Enrichment["Use existing metadata source<br/>to enrich the projection"]
 
-    Start --> StaticOnly --> StaticProvider
-    Start --> SharedModel --> Projection
-    Start --> TenantModel --> FullTenant
-    Start --> CodeModel --> Reflection
+    Start --> Baseline
+    Baseline --> StaticOnly --> StaticProvider
+    Baseline --> TenantConfig --> Projection
+    Baseline --> TenantModel --> Projection
+    Baseline --> CodeModel --> Enrichment --> Projection
 ```
+
+### Static metadata or generated artifacts
+
+If the application already produces ORD documents, OpenAPI files, AsyncAPI files, or similar metadata during build or release, the ORD implementation can stay close to static publishing.
+The provider can publish the generated files directly, or you can use a static ORD Provider / content publishing pipeline.
+This is enough when the metadata is the same for all system instances.
+
+### Static baseline plus tenant configuration
+
+If the application has shared resources, but tenants can enable, disable, configure, or extend them, the static metadata can be used as a baseline.
+This is the pattern used by the simplified tenant-aware example above.
+The static `system-version` document remains useful as a catalog baseline, while the application generates a complete `system-instance` document for the requested tenant.
+
+### Tenant-specific metamodel
+
+If tenants can define most of the model themselves, for example custom objects, custom APIs, custom events, or tenant-local workflows, the ORD document should be generated from the tenant's actual metamodel.
+The static baseline still describes the shared platform, standard resources, extension points, and stable contracts.
+The tenant-created resources are then added to the complete `system-instance` document for that tenant.
+
+### Code metadata and reflection
+
+If the framework already knows a lot about the application through routes, handlers, decorators, annotations, schemas, or event publishers, the ORD implementation can derive parts of the metadata from code.
+Reflection can reduce duplicated metadata, but it often needs explicit enrichment for ORD concepts that are not obvious from code, such as packages, visibility, lifecycle state, consumption bundles, and business entity mappings.
+
+### Metadata written as data
+
+If metadata is stored in database tables, configuration services, registries, or extension repositories, the ORD provider should read a consistent metadata state and map it to ORD.
+If users or administrators can change metadata at runtime, validate it before activation so the ORD endpoint does not publish an inconsistent intermediate state.
+
+Whichever metadata source the application already uses, the ORD rules stay the same: publish a static baseline, generate complete documents for the chosen perspective, keep ORD IDs stable, and make sure referenced resource definitions describe the same tenant and resource state as the ORD document.
 
 
 <!-- TODO: Complete Guide with code snippets how to implement the tenant-aware feature -->
