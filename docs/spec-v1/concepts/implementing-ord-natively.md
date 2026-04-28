@@ -70,7 +70,7 @@ function jsonResponse(res, body) {
 }
 ```
 
-This is enough when the metadata is fully known at design-time or deploy-time and does not depend on a tenant, feature toggle, customization, extension, or runtime configuration.
+This is enough when metadata does not change at runtime and does not depend on tenant state.
 For a production implementation, still consider:
 
 - validation of ORD documents and referenced resource definitions during build or startup
@@ -84,12 +84,9 @@ Most real applications, however, need to generate at least part of the response 
 ## Static and Dynamic Perspectives
 
 An ORD provider can expose both static and dynamic metadata.
-For tenant-aware providers, the static perspective is the baseline that should always exist.
-The static document describes what a system type or system version provides in general.
-The dynamic document describes what one concrete system instance actually provides at runtime, based on that baseline plus tenant-specific state.
-Providers advertise these documents separately in the ORD configuration, because aggregators can handle them differently.
-Static metadata can usually be fetched once per system type or version.
-Dynamic metadata must be fetched for the requested system instance.
+The static document describes what a system type or version provides in general — it is fetched once.
+The dynamic document describes what a concrete system instance provides at runtime, including tenant-specific state — it is fetched per system instance.
+Providers advertise these separately in the ORD configuration so that aggregators can handle them differently.
 
 The `system-version` document should be complete for that version of the application.
 It must not require tenant context and should not contain tenant-specific customizations.
@@ -111,9 +108,7 @@ Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
 Global-Tenant-Id: c6c80b52-ecc1-47f8-9303-0d55fb67fd41
 ```
 
-The static and dynamic perspectives do not have to be served by the same technical implementation.
-For example, static metadata can be published through a static ORD Provider or a content publishing pipeline, while the application only implements the tenant-aware `system-instance` endpoint.
-This is valid as long as both perspectives use the same ORD IDs for the same resources and do not diverge semantically.
+Static and dynamic perspectives can be served by different implementations — for example, a static ORD Provider for the baseline and application code for the `system-instance` endpoint — as long as both use the same ORD IDs for the same resources.
 
 See [Perspectives](./perspectives.md) and [Correct Use of Perspectives](../index.md#correct-use-of-perspectives) for the detailed semantics and aggregator fallback behavior.
 The next section shows one way to implement this in code.
@@ -257,9 +252,8 @@ function getOrdDocumentForTenant(tenantId) {
 }
 ```
 
-In this example, tenant `T1` receives the CRM API resource and tenant `T2` does not.
-Other applications may add tenant-specific resources from a tenant-specific metamodel instead of only filtering the baseline.
-Some applications allow the end-user to create new resources like APIs; those resources are added to the tenant view on top of the static baseline.
+In this example, tenant `T1` receives the CRM API and `T2` does not.
+Other applications may also add tenant-specific resources — for example from a tenant metamodel or end-user-created APIs — on top of the static baseline.
 
 ### Generate tenant-specific resource definitions
 
@@ -291,10 +285,10 @@ function getCrmOpenApiForTenant(tenantId) {
 }
 ```
 
-The important rule is simple: the ORD document and the files it links to must describe the same tenant.
-If a tenant-specific ORD document includes an API, and the OpenAPI is different for that tenant, it also must be generated for that tenant.
-If a resource does not exist for a tenant, leave it out of that tenant's ORD document.
-Use `disabled` only when the resource exists for that tenant but is currently not available for consumption.
+The ORD document and the resource definitions it links to must always describe the same tenant.
+If a tenant-specific ORD document references an API whose OpenAPI definition varies per tenant, that definition must also be generated for that tenant.
+If a resource does not exist for a tenant, omit it from that tenant's ORD document.
+Use `disabled` only when the resource exists for the tenant but is currently not available for consumption.
 
 For tenant-aware ORD, make sure the implementation clearly does these things:
 
@@ -303,29 +297,6 @@ For tenant-aware ORD, make sure the implementation clearly does these things:
 - map aggregator tenant IDs to local tenant IDs deliberately
 - generate a complete tenant-specific ORD document, not a delta
 - generate tenant-specific resource definitions with the same tenant context
-
-## Translating Existing Metadata
-
-Most applications already have metadata about their APIs, events, entities, and tenant configuration.
-The ORD implementation translates that existing metadata into ORD documents and resource definitions.
-ORD does not prescribe how metadata is stored or managed internally — only what the provider endpoints return.
-
-The approach depends on where metadata lives today and whether it differs per tenant:
-
-| Starting point | Static perspective | Dynamic perspective |
-|---|---|---|
-| **Build artifacts** (OpenAPI files, AsyncAPI files, generated schemas) | Serve them directly or through a static [ORD Provider Server](https://github.com/open-resource-discovery/provider-server). | Usually not needed unless tenant state changes the contract. |
-| **Shared resources with tenant configuration** (entitlements, feature toggles, field extensions) | Publish a `system-version` baseline. | Project the baseline into a `system-instance` document per tenant, as shown in [Implementing Tenant-Aware ORD](#implementing-tenant-aware-ord). |
-| **Tenant-defined model** (custom objects, custom APIs, tenant-local workflows) | Describe the platform, standard resources, and extension points. | Generate from the tenant's actual model. Needs stable ORD IDs for tenant-created resources, versioning rules, and [tombstones](../interfaces/Document.md#tombstone) when resources are deleted. |
-| **Code annotations and reflection** (routes, decorators, schemas) | Derive what you can from code; enrich with explicit metadata for ORD concepts that are not obvious from code (packages, visibility, consumption bundles, entity types). | Same as above, depending on whether tenant state changes the reflected model. |
-| **Metadata stored as data** (database tables, configuration services, registries) | Read from a consistent snapshot or versioned state. | Same snapshot, filtered or extended for the tenant. Validate before activation so the ORD endpoint never publishes an inconsistent intermediate state. |
-
-Whichever source the application uses, the ORD rules stay the same:
-
-- Publish a static baseline when one exists.
-- Generate complete documents for the chosen perspective — not deltas.
-- Keep ORD IDs stable across requests and across versions.
-- Make sure referenced resource definitions describe the same tenant and resource state as the ORD document.
 
 ## Validation and Production Readiness
 
