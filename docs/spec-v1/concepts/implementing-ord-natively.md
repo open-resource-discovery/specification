@@ -13,7 +13,7 @@ The main implementation task is to transform the metadata your application alrea
 
 - an [ORD configuration](../index.md#ord-configuration-endpoint), served from `/.well-known/open-resource-discovery`
 - one or more [ORD documents](../index.md#ord-document), served via `GET` endpoints
-- the resource definitions referenced by those ORD documents, for example OpenAPI or AsyncAPI files
+- the [resource definitions](../index.md#resource-definition) referenced by those ORD documents, for example OpenAPI or AsyncAPI files
 
 ## Start Simple: Static ORD
 
@@ -72,7 +72,7 @@ This is enough when the metadata is fully known at design-time or deploy-time an
 For a production implementation, still consider:
 
 - validation of ORD documents and referenced resource definitions during build or startup
-- `ETag` support, so aggregators can efficiently detect unchanged metadata
+- [`ETag` support](../index.md#ord-provider-cache-handling), so aggregators can efficiently detect unchanged metadata
 - access protection, if the metadata is not public
 - using the correct static [perspective](./perspectives.md), usually `system-version` or `system-type`
 
@@ -112,7 +112,7 @@ The static and dynamic perspectives do not have to be served by the same technic
 For example, static metadata can be published through a static ORD Provider or a content publishing pipeline, while the application only implements the tenant-aware `system-instance` endpoint.
 This is valid as long as both perspectives use the same ORD IDs for the same resources and do not diverge semantically.
 
-See [Perspectives](./perspectives.md) for the detailed semantics and aggregator fallback behavior.
+See [Perspectives](./perspectives.md) and [Correct Use of Perspectives](../index.md#correct-use-of-perspectives) for the detailed semantics and aggregator fallback behavior.
 The next section shows one way to implement this in code.
 
 ## Implementing Tenant-Aware ORD
@@ -125,9 +125,24 @@ The tenant-aware implementation has three essential parts:
 
 The following snippets are simplified from the [ORD Reference Application](https://github.com/open-resource-discovery/reference-application).
 
+```mermaid
+flowchart LR
+    Sources["Application metadata<br/>static files, configuration,<br/>metamodel, annotations,<br/>tenant extensions"]
+    Mapper["ORD mapping layer"]
+    Static["system-version<br/>ORD document"]
+    Dynamic["system-instance<br/>ORD document"]
+    Definitions["Resource definitions<br/>OpenAPI, AsyncAPI, etc."]
+
+    Sources --> Mapper
+    Mapper --> Static
+    Mapper --> Dynamic
+    Mapper --> Definitions
+```
+
 ### Advertise both perspectives
 
 The `.well-known` response tells the aggregator that static metadata can be fetched once, while dynamic metadata must be fetched per tenant.
+The dynamic endpoint uses the [basic-auth access strategy](../../spec-extensions/access-strategies/basic-auth.md), which also defines the optional tenant headers used below.
 
 ```js
 const ordConfiguration = {
@@ -182,7 +197,10 @@ fastify.get("/open-resource-discovery/v1/documents/system-instance", {
 });
 
 function resolveLocalTenantId(headers) {
-  // [...] Map from headers with either global or local tenant ID to the local tenant ID.
+  const localTenantId =
+    headers["local-tenant-id"] ??
+    globalToLocalTenantId[headers["global-tenant-id"]];
+
   if (localTenantId) {
     return localTenantId;
   }
@@ -225,7 +243,7 @@ function getOrdDocumentForTenant(tenantId) {
     localId: tenantId,
   };
 
-  // Resources that do not exist for this tenant must be set to `disabled` or not be described.
+  // Resources that do not exist for this tenant must not be described.
   removeUnavailableResources(tenantDocument, tenantConfig);
 
   return tenantDocument;
@@ -268,7 +286,8 @@ function getCrmOpenApiForTenant(tenantId) {
 
 The important rule is simple: the ORD document and the files it links to must describe the same tenant.
 If a tenant-specific ORD document includes an API, and the OpenAPI is different for that tenant, it also must be generated for that tenant.
-If a resource is not available for a tenant, leave it out of that tenant's ORD document or set it as `disabled`.
+If a resource does not exist for a tenant, leave it out of that tenant's ORD document.
+Use `disabled` only when the resource exists for that tenant but is currently not available for consumption.
 
 For tenant-aware ORD, make sure the implementation clearly does these things:
 
@@ -277,6 +296,28 @@ For tenant-aware ORD, make sure the implementation clearly does these things:
 - map aggregator tenant IDs to local tenant IDs deliberately
 - generate a complete tenant-specific ORD document, not a delta
 - generate tenant-specific resource definitions with the same tenant context
+
+Different applications create metadata in different ways.
+Use the architecture of your application to decide how the ORD document should be generated.
+
+```mermaid
+flowchart TD
+    Start{"Where does the metadata come from?"}
+    StaticOnly["Static files or generated artifacts only"]
+    SharedModel["Shared application model plus tenant configuration"]
+    TenantModel["Tenant-specific metamodel"]
+    CodeModel["Code annotations, decorators, or framework reflection"]
+
+    StaticProvider["Publish static ORD documents"]
+    Projection["Generate system-instance ORD<br/>from static baseline plus tenant config"]
+    FullTenant["Generate complete system-instance ORD<br/>from the tenant model"]
+    Reflection["Derive ORD from code metadata<br/>and enrich missing business metadata"]
+
+    Start --> StaticOnly --> StaticProvider
+    Start --> SharedModel --> Projection
+    Start --> TenantModel --> FullTenant
+    Start --> CodeModel --> Reflection
+```
 
 
 <!-- TODO: Complete Guide with code snippets how to implement the tenant-aware feature -->

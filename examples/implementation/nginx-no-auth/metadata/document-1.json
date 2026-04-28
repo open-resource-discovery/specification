@@ -4,6 +4,9 @@
   "describedSystemType": {
     "systemNamespace": "foo.bar"
   },
+  "describedSystemVersion": {
+    "version": "1.0.0"
+  },
   "apiResources": [
     {
       "ordId": "sap.foo:apiResource:astronomy:v1",
