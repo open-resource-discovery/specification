@@ -10,8 +10,8 @@
 // Please note that it is usually not advisable to manually create ORD documents.
 // Instead they should be automatically created or derived from internal metadata or reflections.
 
-const crypto = require("crypto");
-const http = require("http");
+const crypto = require("node:crypto");
+const http = require("node:http");
 
 // Configuration
 const port = 8080;
@@ -21,6 +21,7 @@ const ordConfig = {
 		documents: [
 			{
 				url: "/ord/documents/1.json",
+				perspective: "system-version",
 				accessStrategies: [
 					{
 						type: "open",
@@ -33,10 +34,10 @@ const ordConfig = {
 
 // Here we load the metadata files at server startup (statically).
 // If the metadata is calculated / changed at runtime, the retrieval / calculation of it needs to be done per request
-const openDiscoveryDocument1 = require("../../examples/document-1.json");
+const openDiscoveryDocument1 = require("../../documents/document-1.json");
 const openApiDocument = require("../nginx-no-auth/metadata/astronomy-v1.oas3.json");
 
-const requestListener = function (req, res) {
+const requestListener = (req, res) => {
 	res.setHeader("Content-Type", "application/json");
 	res.setHeader("Cache-Control", "private, max-age=360");
 
