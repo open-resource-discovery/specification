@@ -618,6 +618,8 @@ There is a `perspective` attribute, which allows setting the following values:
   - In this case the same static metadata will be used to describe all system instances of the same version (or for `system-type`, all systems regardless of version)
 - Systems, which have dynamic metadata MUST use the `system-instance` perspective.
   - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
+  - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
+    In this case, both perspectives MUST use the same ORD IDs for the same resources and MUST NOT describe those resources inconsistently.
 - If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
 

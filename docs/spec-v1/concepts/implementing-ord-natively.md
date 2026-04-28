@@ -108,6 +108,10 @@ Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
 Global-Tenant-Id: c6c80b52-ecc1-47f8-9303-0d55fb67fd41
 ```
 
+The static and dynamic perspectives do not have to be served by the same technical implementation.
+For example, static metadata can be published through a static ORD Provider or a content publishing pipeline, while the application only implements the tenant-aware `system-instance` endpoint.
+This is valid as long as both perspectives use the same ORD IDs for the same resources and do not diverge semantically.
+
 See [Perspectives](./perspectives.md) for the detailed semantics and aggregator fallback behavior.
 The next section shows one way to implement this in code.
 
@@ -130,11 +134,13 @@ const ordConfiguration = {
   openResourceDiscoveryV1: {
     documents: [
       {
+        // Static baseline metadata: can be crawled once per system version.
         url: "/open-resource-discovery/v1/documents/system-version",
         perspective: "system-version",
         accessStrategies: [{ type: "open" }],
       },
       {
+        // Runtime metadata: must be requested for a concrete tenant/system instance.
         url: "/open-resource-discovery/v1/documents/system-instance",
         perspective: "system-instance",
         accessStrategies: [{ type: "basic-auth" }],
@@ -156,10 +162,12 @@ const globalToLocalTenantId = {
 };
 
 fastify.get("/.well-known/open-resource-discovery", () => {
+  // Discovery starts here: the aggregator learns which ORD documents exist.
   return ordConfiguration;
 });
 
 fastify.get("/open-resource-discovery/v1/documents/system-version", () => {
+  // Static perspective: no tenant context is needed.
   return staticOrdDocument;
 });
 
@@ -168,12 +176,13 @@ fastify.get("/open-resource-discovery/v1/documents/system-instance", {
   // basic-auth access strategy advertised in the ORD configuration.
   preHandler: [basicAuth],
 }, (request) => {
+  // Dynamic perspective: tenant context is required before metadata is generated.
   const localTenantId = resolveLocalTenantId(request.headers);
   return getOrdDocumentForTenant(localTenantId);
 });
 
 function resolveLocalTenantId(headers) {
-  // [...] Map from headers with either global or local tenant Id to the local tenant ID
+  // [...] Map from headers with either global or local tenant ID to the local tenant ID.
   if (localTenantId) {
     return localTenantId;
   }
@@ -187,6 +196,7 @@ The static document can be used as a baseline if tenants only enable, disable, c
 The `system-instance` response must still be a complete document for the tenant, not a delta.
 
 ```js
+/** tenant-specific config and extensions */
 const tenants = {
   T1: {
     enabledApis: ["crm"],
@@ -205,19 +215,18 @@ const tenants = {
 };
 
 function getOrdDocumentForTenant(tenantId) {
+  // Start from the static baseline, then project it into the tenant context.
   const tenantDocument = structuredClone(staticOrdDocument);
   const tenantConfig = tenants[tenantId];
 
+  // The generated document is now a complete system-instance perspective document.
   tenantDocument.perspective = "system-instance";
   tenantDocument.describedSystemInstance = {
     localId: tenantId,
   };
 
-  if (!tenantConfig.enabledApis.includes("crm")) {
-    tenantDocument.apiResources = tenantDocument.apiResources.filter(
-      (api) => api.ordId !== "example:apiResource:crm:v1",
-    );
-  }
+  // Resources that do not exist for this tenant must be set to `disabled` or not be described.
+  removeUnavailableResources(tenantDocument, tenantConfig);
 
   return tenantDocument;
 }
@@ -225,40 +234,26 @@ function getOrdDocumentForTenant(tenantId) {
 
 In this example, tenant `T1` receives the CRM API resource and tenant `T2` does not.
 Other applications may derive the tenant document from a tenant-specific metamodel instead of filtering a static baseline.
+Some applications allow the end-user to even create new resources like APIs, which would have to be added on top of the static baseline.
 
 ### Generate tenant-specific resource definitions
 
 If a resource definition is tenant-specific, such as an OpenAPI document with custom fields, it needs the same tenant resolution behavior as the ORD document endpoint.
-The ORD resource definition should advertise the same access strategy.
-
-```js
-const crmApiResource = {
-  ordId: "example:apiResource:crm:v1",
-  title: "CRM API",
-  version: "1.0.0",
-  apiProtocol: "rest",
-  resourceDefinitions: [
-    {
-      type: "openapi-v3",
-      mediaType: "application/json",
-      url: "/crm/v1/openapi/oas3.json",
-      accessStrategies: [{ type: "basic-auth" }],
-    },
-  ],
-};
-```
-
+The ORD resource definition should advertise the same access strategy and tenant header convention as the tenant-aware ORD document.
 The OpenAPI endpoint then uses the tenant configuration to extend the schema.
 
 ```js
 fastify.get("/crm/v1/openapi/oas3.json", {
   preHandler: [basicAuth],
 }, (request) => {
+  // Use the same tenant resolution as the ORD document endpoint.
   const localTenantId = resolveLocalTenantId(request.headers);
   return getCrmOpenApiForTenant(localTenantId);
 });
 
 function getCrmOpenApiForTenant(tenantId) {
+  // Resource definitions must describe the same tenant-specific contract
+  // that the ORD document points to.
   const openApi = structuredClone(staticCrmOpenApi);
   const customerExtensions = tenants[tenantId].fieldExtensions?.Customer ?? {};
 
@@ -271,7 +266,18 @@ function getCrmOpenApiForTenant(tenantId) {
 }
 ```
 
-This is the important rule: when the ORD document says that a tenant-specific API resource exists, the referenced API definition must describe the same tenant-specific contract.
+The important rule is simple: the ORD document and the files it links to must describe the same tenant.
+If a tenant-specific ORD document includes an API, and the OpenAPI is different for that tenant, it also must be generated for that tenant.
+If a resource is not available for a tenant, leave it out of that tenant's ORD document or set it as `disabled`.
+
+For tenant-aware ORD, make sure the implementation clearly does these things:
+
+- advertise static and dynamic perspectives separately
+- resolve the tenant before generating `system-instance` metadata
+- map aggregator tenant IDs to local tenant IDs deliberately
+- generate a complete tenant-specific ORD document, not a delta
+- generate tenant-specific resource definitions with the same tenant context
+
 
 <!-- TODO: Complete Guide with code snippets how to implement the tenant-aware feature -->
 
