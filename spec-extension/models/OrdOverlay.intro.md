@@ -54,7 +54,8 @@ This keeps the overlay co-located with the resource it patches.
     "ordId": "sap.foo:apiResource:astronomy:v1",
     "resourceDefinitions": [
       { "type": "openapi-v3", "url": "/ord/metadata/my-api.oas3.json", "visibility": "public" },
-      { "type": "ord:overlay:v1", "url": "/ord/overlays/my-api.overlay.json", "visibility": "internal" }
+      { "type": "edmx", "url": "/ord/metadata/my-api.edmx.xml", "visibility": "public" },
+      { "type": "ord:overlay:v1", "url": "/ord/overlays/my-api.overlay.json", "visibility": "internal", "purpose": "ord:ai-enhancement" }
     ]
   }]
 }
