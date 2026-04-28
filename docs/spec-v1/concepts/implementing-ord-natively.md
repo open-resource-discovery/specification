@@ -9,6 +9,8 @@ description: Guidance for developers implementing an ORD Provider API inside an 
 This page explains how to implement ORD directly inside an application or service.
 It is written for developers who need to expose an [ORD Provider API](../index.md#ord-provider-api).
 
+This guide is accompanied by the [ORD Reference Application](https://github.com/open-resource-discovery/reference-application), a working Fastify/TypeScript implementation of the patterns described here.
+
 The main implementation task is to transform the metadata your application already knows into:
 
 - an [ORD configuration](../index.md#ord-configuration-endpoint), served from `/.well-known/open-resource-discovery`
@@ -304,254 +306,37 @@ For tenant-aware ORD, make sure the implementation clearly does these things:
 
 ## Translating Existing Metadata
 
-ORD does not prescribe how an application should model its APIs, events, entities, extensions, or tenant configuration.
-Most applications already have an approach for this.
-The ORD implementation needs to translate that existing approach into a static ORD baseline and, where needed, tenant-specific ORD views.
-
-The following cases are not architecture recommendations.
-They describe common starting points and what they usually mean for the ORD Provider API.
-
-```mermaid
-flowchart TD
-    Start{"Where does the application<br/>already keep metadata?"}
-    Baseline["Create static ORD baseline"]
-    StaticOnly["No tenant-specific changes"]
-    TenantConfig["Tenant configuration or entitlements"]
-    TenantModel["Tenant-specific metamodel"]
-    CodeModel["Code annotations, decorators,<br/>or framework reflection"]
-
-    StaticProvider["Publish static perspective"]
-    Projection["Generate complete system-instance ORD<br/>from baseline plus tenant state"]
-    Enrichment["Use existing metadata source<br/>to enrich the projection"]
-
-    Start --> Baseline
-    Baseline --> StaticOnly --> StaticProvider
-    Baseline --> TenantConfig --> Projection
-    Baseline --> TenantModel --> Projection
-    Baseline --> CodeModel --> Enrichment --> Projection
-```
-
-### Static metadata or generated artifacts
-
-If the application already produces ORD documents, OpenAPI files, AsyncAPI files, or similar metadata during build or release, the ORD implementation can stay close to static publishing.
-The provider can publish the generated files directly, or you can use a static ORD Provider / content publishing pipeline.
-This is enough when the metadata is the same for all system instances.
-
-### Static baseline plus tenant configuration
-
-If the application has shared resources, but tenants can enable, disable, configure, or extend them, the static metadata can be used as a baseline.
-This is the pattern used by the simplified tenant-aware example above.
-The static `system-version` document remains useful as a catalog baseline, while the application generates a complete `system-instance` document for the requested tenant.
-
-### Tenant-specific metamodel
-
-If tenants can define most of the model themselves, for example custom objects, custom APIs, custom events, or tenant-local workflows, the ORD document should be generated from the tenant's actual metamodel.
-The static baseline still describes the shared platform, standard resources, extension points, and stable contracts.
-The tenant-created resources are then added to the complete `system-instance` document for that tenant.
-
-### Code metadata and reflection
-
-If the framework already knows a lot about the application through routes, handlers, decorators, annotations, schemas, or event publishers, the ORD implementation can derive parts of the metadata from code.
-Reflection can reduce duplicated metadata, but it often needs explicit enrichment for ORD concepts that are not obvious from code, such as packages, visibility, lifecycle state, consumption bundles, and business entity mappings.
-
-### Metadata written as data
-
-If metadata is stored in database tables, configuration services, registries, or extension repositories, the ORD provider should read a consistent metadata state and map it to ORD.
-If users or administrators can change metadata at runtime, validate it before activation so the ORD endpoint does not publish an inconsistent intermediate state.
-
-Whichever metadata source the application already uses, the ORD rules stay the same: publish a static baseline, generate complete documents for the chosen perspective, keep ORD IDs stable, and make sure referenced resource definitions describe the same tenant and resource state as the ORD document.
-
-
-<!-- TODO: Complete Guide with code snippets how to implement the tenant-aware feature -->
-
-<!-- ## A Practical Native Provider Shape
-
-A native ORD provider typically has four layers.
-
-### 1. Endpoint Layer
-
-The endpoint layer is deliberately small.
-It exposes the well-known configuration endpoint, ORD document endpoints, and referenced resource definition endpoints.
-
-For dynamic metadata, this layer also resolves the request context:
-
-- Which tenant or system instance is requested?
-- Which external tenant identifier must be mapped to an internal tenant identifier?
-- Which user or technical client is allowed to retrieve the metadata?
-- Which access strategy from the ORD document is being used?
-
-Keep this layer thin.
-It should route requests, validate input, resolve context, and delegate metadata construction.
-
-### 2. Metadata Source Layer
-
-This layer knows where metadata comes from in your application.
-Depending on your architecture, the source may be:
-
-- static files maintained by developers
-- configuration records stored as data
-- tenant configuration, feature toggles, extension registries, or entitlement data
-- internal API, event, and domain model registries
-- code annotations, decorators, or reflection over classes and interfaces
-- generated artifacts from OpenAPI, AsyncAPI, GraphQL, or event catalog tooling
-
-There is no single correct source model.
-ORD does not require all applications to store metadata the same way.
-The important part is that the provider can produce a coherent ORD document for the requested perspective.
-
-### 3. Mapping Layer
-
-The mapping layer converts application metadata into ORD concepts:
-
-- products, packages, consumption bundles, and groups
-- API resources, event resources, data products, and agents
-- entity types and other taxonomy
-- resource definition links and access strategies
-- release status, visibility, versions, lifecycle state, and tombstones
-
-This is where most implementation decisions belong.
-For example, an internal service registry entry may become an `apiResource`, a business object model may become an `entityType`, and an entitlement may decide whether a resource appears in a tenant-specific document.
-
-### 4. Validation and Serialization Layer
-
-Before returning metadata, the provider should validate that it produces valid ORD and valid resource definitions.
-For static metadata, validation can happen in CI or at application startup.
-For dynamic metadata, validation may need to happen in tests against representative tenant configurations, with additional runtime safeguards.
-
-The provider should return stable JSON where possible.
-Stable ordering and deterministic generation make `ETag` calculation, diffing, troubleshooting, and aggregator behavior easier.
-
-## Reference Pattern: Static Baseline with Tenant-Specific Projection
-
-The ORD reference application follows a useful implementation pattern:
-
-1. Build a complete static ORD document for the application version.
-2. Advertise it with the `system-version` perspective and an open access strategy.
-3. Advertise a second endpoint for the `system-instance` perspective.
-4. Protect the dynamic endpoint with the `basic-auth` access strategy and select the tenant via `Global-Tenant-Id` or, if agreed, `Local-Tenant-Id`.
-5. Generate the tenant-specific document from the static baseline plus tenant configuration.
-
-In this pattern, the static baseline contains resources such as packages, API resources, event resources, entity types, resource definitions, and tombstones.
-The dynamic endpoint then projects that baseline into the requested tenant context.
-
-For example:
-
-- Tenant `T1` has the CRM API enabled, so the tenant-specific ORD document includes the CRM API resource.
-- Tenant `T2` does not have the CRM API enabled, so the tenant-specific ORD document omits that API resource.
-- The CRM OpenAPI definition can also be generated per tenant, so tenant-specific field extensions appear in the resource definition, not only in the ORD document.
-
-This pattern works well when the application has a mostly shared metamodel and tenants only enable, disable, configure, or extend parts of it.
-It keeps the static metadata useful for catalogs while still allowing precise runtime discovery for a concrete system instance.
-
-## Other Architecture Patterns
-
-Different applications create metadata in different ways.
-That should influence the ORD implementation design.
-
-### Static Metadata as Source
-
-Some services already maintain OpenAPI, AsyncAPI, and ORD-like metadata as files.
-In that case, the provider can load the files at startup, validate them, and serve them directly.
-This is simple and reliable, but it only works if runtime behavior does not materially differ per tenant.
-
-If small dynamic additions are needed, avoid ad hoc string editing.
-Load the metadata as structured data, apply a typed transformation, validate the result, then serialize it.
-
-### Static Baseline plus Tenant Configuration
-
-This is the reference application pattern.
-Use it when the application has common resources, but tenants influence availability or shape through entitlements, feature switches, extensions, or configuration.
-
-Typical implementation steps:
-
-1. Generate or maintain the static `system-version` document.
-2. Resolve the requested tenant.
-3. Load tenant configuration and extension metadata.
-4. Filter unavailable resources.
-5. Add or adjust tenant-specific resource definitions.
-6. Return a complete `system-instance` document.
-
-This pattern is often the best first native implementation for multi-tenant SaaS applications.
-
-### Tenant-Specific Metamodel
-
-Some platforms allow tenants to define most of the model themselves.
-For example, tenants may create custom objects, custom APIs, custom events, or tenant-local workflows.
-In this case, the `system-instance` document cannot be treated as a small variation of a static baseline.
-
-The provider should instead generate ORD from the tenant's actual metamodel.
-The static perspective may still describe the platform capabilities, standard APIs, extension mechanisms, and stable contracts.
-The dynamic perspective describes the concrete tenant-created resources.
-
-This model needs stronger lifecycle handling:
-
-- stable ORD IDs for tenant-created resources
-- clear versioning rules for generated resources
-- tombstones when tenant-created resources are deleted
-- validation for user-created metadata
-- access checks, because tenant-specific metadata is often sensitive
-
-### Internal Metamodel Derivation
-
-Some applications have a rich internal model: service definitions, domain objects, event catalogs, authorization scopes, lifecycle state, and package assignments.
-In this case, ORD should usually be generated from that model rather than maintained separately.
-
-This gives high consistency, but the mapping needs governance.
-Not every internal detail should become public ORD metadata.
-The provider should intentionally decide which internal concepts are exposed, under which visibility, and with which lifecycle status.
-
-### Code Annotations and Reflection
-
-Framework-based applications may derive metadata from classes, annotations, decorators, routes, or handlers.
-This can reduce duplication and keep metadata close to implementation code.
-
-Reflection-based approaches work best when the framework already has strong conventions for:
-
-- endpoint registration
-- request and response schemas
-- event publishing
-- domain models
-- authorization and visibility
-- versioning and deprecation
-
-If those conventions are weak, reflected metadata may be incomplete.
-In that case, combine reflection with explicit metadata annotations or external metadata files.
-
-### Metadata Written as Data
-
-Some applications already store metadata in database tables or configuration services.
-This can be a good fit for ORD, especially when the metadata changes at runtime.
-
-The main risk is publishing inconsistent intermediate states.
-The ORD provider should read metadata from a consistent snapshot or versioned configuration state.
-If administrators can change metadata interactively, consider validation before activation rather than only validating when the ORD endpoint is called.
-
-## Implementation Checklist
-
-- Decide which metadata is useful for consumers, instead of exposing every internal detail.
-- Decide which perspectives you support: `system-type`, `system-version`, `system-instance`, or `system-independent`.
-- Keep static and dynamic documents separate when both exist.
-- Make every ORD document complete for its perspective.
-- Use stable ORD IDs and stable URLs for documents and resource definitions.
-- Define how tenant or system-instance context is selected for dynamic metadata.
-- Map external tenant identifiers to internal tenant identifiers deliberately.
-- Ensure referenced resource definitions follow the same perspective as the ORD resource when they are tenant-specific.
-- Validate ORD and resource definitions before publishing them.
-- Use `ETag` or equivalent caching support.
-- Add tests for representative tenants, feature configurations, extensions, disabled resources, and deleted resources.
-
-## Possible Enhancements
-
-After a first native implementation works, consider adding:
-
-- automated generation from your framework or internal metamodel
-- CI checks that validate static metadata and common tenant projections
-- contract tests that compare ORD resources with actual registered routes and event publishers
-- deterministic snapshots for generated documents
-- a preview or diagnostics endpoint for administrators
-- metrics for aggregator calls, validation failures, tenant resolution failures, and generation latency
-- explicit lifecycle handling for resources that are deprecated or removed
-- documentation for standard or custom access strategies used to protect metadata and select tenants
-
-Native ORD implementation is less about writing many endpoints and more about deciding how your application's metadata model is exposed.
-Start with a static, valid provider; then add dynamic `system-instance` generation only where the runtime system really differs. -->
+Most applications already have metadata about their APIs, events, entities, and tenant configuration.
+The ORD implementation translates that existing metadata into ORD documents and resource definitions.
+ORD does not prescribe how metadata is stored or managed internally — only what the provider endpoints return.
+
+The approach depends on where metadata lives today and whether it differs per tenant:
+
+| Starting point | Static perspective | Dynamic perspective |
+|---|---|---|
+| **Build artifacts** (OpenAPI files, AsyncAPI files, generated schemas) | Serve them directly or through a static [ORD Provider Server](https://github.com/open-resource-discovery/provider-server). | Usually not needed unless tenant state changes the contract. |
+| **Shared resources with tenant configuration** (entitlements, feature toggles, field extensions) | Publish a `system-version` baseline. | Project the baseline into a `system-instance` document per tenant, as shown in [Implementing Tenant-Aware ORD](#implementing-tenant-aware-ord). |
+| **Tenant-defined model** (custom objects, custom APIs, tenant-local workflows) | Describe the platform, standard resources, and extension points. | Generate from the tenant's actual model. Needs stable ORD IDs for tenant-created resources, versioning rules, and [tombstones](../interfaces/Document.md#tombstone) when resources are deleted. |
+| **Code annotations and reflection** (routes, decorators, schemas) | Derive what you can from code; enrich with explicit metadata for ORD concepts that are not obvious from code (packages, visibility, consumption bundles, entity types). | Same as above, depending on whether tenant state changes the reflected model. |
+| **Metadata stored as data** (database tables, configuration services, registries) | Read from a consistent snapshot or versioned state. | Same snapshot, filtered or extended for the tenant. Validate before activation so the ORD endpoint never publishes an inconsistent intermediate state. |
+
+Whichever source the application uses, the ORD rules stay the same:
+
+- Publish a static baseline when one exists.
+- Generate complete documents for the chosen perspective — not deltas.
+- Keep ORD IDs stable across requests and across versions.
+- Make sure referenced resource definitions describe the same tenant and resource state as the ORD document.
+
+## Validation and Production Readiness
+
+Before going to production, verify that the provider returns correct ORD and correct resource definitions.
+For static metadata, validation can run in CI or at application startup.
+For dynamic metadata, test against representative tenant configurations.
+
+- Validate ORD documents against the [ORD Document JSON Schema](https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json) during build or startup.
+- Validate resource definitions (OpenAPI, AsyncAPI) with their respective tooling.
+- Test that the configuration endpoint returns all expected document entries.
+- Test that each ORD document URL resolves and returns a valid document.
+- Test that resource definition URLs referenced in ORD documents resolve.
+- For tenant-aware providers, test at least one tenant with enabled resources and one with disabled resources.
+- Produce stable, deterministic JSON output — stable ordering makes [`ETag` calculation](../index.md#ord-provider-cache-handling), diffing, and troubleshooting easier.
