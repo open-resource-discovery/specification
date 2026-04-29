@@ -103,6 +103,31 @@ Rule of thumb:
 - use attached resource definitions for producer-owned, resource-local overlays
 - use ORD Configuration for externally managed, cross-resource, or ORD-level overlays
 
+## Compatibility Expectations
+
+Overlays SHOULD NOT change the target in incompatible ways.
+The typical use case is **enrichment**: adding information that helps consumers better discover or understand the described resources.
+An overlay may also add machine-readable metadata that specific use cases require (hinted at via `purpose`).
+
+In some cases it is acceptable to **remove** parts of the metadata — for example when the intended consumer (again guided by `purpose`) should not see information that is irrelevant or confusing in their context.
+
+As a general rule, the result after applying an overlay SHOULD be a **compatible variant** of the original:
+either an enriched superset or a valid subset, but not a contradictory or structurally incompatible mutation.
+
+Examples of changes that are typically **appropriate**:
+- Adding or improving descriptions, summaries, or documentation links
+- Adding annotations or tags for classification, AI grounding, or search
+- Adding metadata required by a specific consumer scenario (e.g. capability annotations)
+- Removing fields that are irrelevant to a narrower audience
+
+Examples of changes that are typically **inappropriate**:
+- Changing identity fields (`ordId`, `version`, resource type)
+- Altering the structural contract in ways that break existing consumers (e.g. removing required properties from a schema, changing field types)
+- Contradicting the original meaning of the resource (e.g. changing a resource's title to describe something else entirely)
+
+Enforcement of these expectations is left to ORD Aggregators and overlay governance processes.
+The `purpose` field on the overlay or its resource-definition entry can help aggregators decide which changes are acceptable for a given overlay source.
+
 ## Current Constraints
 
 - Overlays replace string values as complete values. If you need to refine a summary or description, compute the final string in the patch payload and apply it with `update` or `merge`.
