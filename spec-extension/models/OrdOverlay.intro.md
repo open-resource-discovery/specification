@@ -124,8 +124,13 @@ After applying an overlay, validate the merged output with the corresponding for
 An ORD Aggregator SHOULD enforce that overlay sources are permitted to patch the target metadata.
 Without such enforcement, consumers could be exposed to unauthorized metadata changes through overlay processing.
 
-An ORD Aggregator SHOULD support merging of ORD Overlays into the resource definitions ideally centrally, so this isn't left to each consumer to implement.
-If the ORD Aggregator merges it, it will create a new resource definition entry with the merged content, taking over the `type` from the original, and the `visibility` and `purpose` from the overlay that was applied.
+An ORD Aggregator SHOULD support merging ORD Overlays into the resource definitions centrally,
+so that individual consumers do not need to implement overlay processing themselves.
+
+When an ORD Aggregator performs the merge, it SHOULD produce a new resource definition entry with the merged content.
+The new entry takes over the `type` from the original resource definition,
+the `visibility` from the overlay document,
+and the `purpose` from the overlay's resource-definition or ORD Configuration entry.
 
 ## Overlay Document Metadata
 
