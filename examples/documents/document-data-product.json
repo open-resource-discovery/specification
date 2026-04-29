@@ -1,6 +1,7 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.14",
+  "perspective": "system-instance",
   "policyLevels": ["sap:core:v1"],
   "products": [
     {
@@ -191,8 +192,7 @@
         "Scope Items": [
           "[Basic Bank Account Management (BFA)](https://rapid.sap.com/bp/#/scopeitems/BFA \\\" Link To BP \\\")"
         ]
-      },
-      "systemInstanceAware": true
+      }
     },
     {
       "ordId": "sap.xref:dataProduct:AbstractCustomer:v1",

@@ -21,6 +21,7 @@ const ordConfig = {
 		documents: [
 			{
 				url: "/ord/documents/1.json",
+				perspective: "system-version",
 				accessStrategies: [
 					{
 						type: "open",
@@ -33,7 +34,7 @@ const ordConfig = {
 
 // Here we load the metadata files at server startup (statically).
 // If the metadata is calculated / changed at runtime, the retrieval / calculation of it needs to be done per request
-const openDiscoveryDocument1 = require("../../examples/document-1.json");
+const openDiscoveryDocument1 = require("../../documents/document-1.json");
 const openApiDocument = require("../nginx-no-auth/metadata/astronomy-v1.oas3.json");
 
 const requestListener = (req, res) => {

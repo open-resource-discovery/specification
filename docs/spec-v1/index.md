@@ -98,13 +98,15 @@ There are [aggregation rules](#aggregation-rules) and [validation rules](#valida
 
 It MUST support all [ORD transport modes](#ord-transport-modes) that are used by the systems it aggregates.
 
+When serving static perspective requests (`system-type` or `system-version`), the aggregator SHOULD follow the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm.
+
 In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-perspective):
 
 - the aggregator MUST support [system-instance-aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
 - In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
   - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Discovery consumer should not need to understand whether the information is currently static or system-instance-aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
-  - See chapter on [perspectives](#perspectives).
+- See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
@@ -245,9 +247,12 @@ The ORD documents MUST describe the current state of a concrete, running [system
 
 All resources that are described within one document MUST describe the same system instance.
 
-The described information MUST not be duplicated within or across ORD documents.
+The described information MUST not be duplicated within or across ORD documents of the same [system type](#system-type).
 If some information like Package or Consumption Bundle is needed across multiple documents they can either be put in one of the documents or be moved to a separate document for shared information.
-This also applies across ORD Providers, which is ensured through the correct use of namespaces and namespace ownerships.
+This also applies across ORD Providers of the same system type, which is ensured through the correct use of namespaces and namespace ownerships.
+Shared ORD information MAY be published by multiple system types when the ORD ID identifies the same governed definition.
+This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 The [validation rules](#validation-rules) MUST be considered.
 
@@ -568,9 +573,13 @@ The following validation rules apply specifically for ORD aggregators:
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
   This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
-- The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times.
-  Please be aware that this could happen within an ORD Document, within the same ORD Provider on different ORD Documents or even across different ORD Providers.
+- The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times within the same [system type](#system-type) or [system version](#system-version) scope.
+  Please be aware that this could happen within an ORD Document or within the same ORD Provider on different ORD Documents.
   For migration transitions this rule MAY be violated temporarily.
+- Shared ORD information MAY be published by multiple [system types](#system-type) when the ORD ID identifies the same governed definition.
+  In this case, all publishers MUST describe the ORD information consistently for the same `version`. The aggregator MUST validate consistency.
+  This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
+  See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
 
 ### ORD Discovery API
 
@@ -612,8 +621,12 @@ There is a `perspective` attribute, which allows setting the following values:
   - In this case the same static metadata will be used to describe all system instances of the same version (or for `system-type`, all systems regardless of version)
 - Systems, which have dynamic metadata MUST use the `system-instance` perspective.
   - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
+  - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
+    In this case, both perspectives MUST use the same ORD IDs for the same resources and MUST NOT describe those resources inconsistently.
 - If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
+
+> ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
 
 ## ID Concepts
 
@@ -727,6 +740,8 @@ An system namespace MUST be constructed according to the following rules:
 
 An <dfn id="def-authority-namespace">authority namespace</dfn> is a stable and globally unique identifier namespace that corresponds to an **organizational unit** responsible for cross-alignment and governance.
 Authority namespaces are relevant when contracts, interfaces or taxonomy are owned and defined on a level that spans across individual applications or services.
+This includes shared API contracts, event definitions, data products, capabilities, integration dependencies, consumption bundles, and agents that are provided by multiple [system types](#system-type) built from the same software components.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details on namespace ownership and authority namespaces.
 
 An authority namespace MUST be constructed according to the following rules:
 
@@ -791,6 +806,9 @@ The same resource (with the same ORD ID) can be exposed in different variations 
 To get a globally unique ID at run-time, a composite key is required.
 This can be achieved by either combining it with a system instance ID or a full version, depending on the use cases.
 
+When the same shared ORD information is published or reused by multiple [system types](#system-type), the ORD ID identifies the shared contract, taxonomy item, definition or governance model, and the system type or system instance provides the additional context for uniqueness.
+This commonly uses an [authority namespace](#authority-namespace), but can also use a system namespace when that system type owns the reused definition.
+
 #### ORD ID Construction
 
 The ORD ID consists of four fragments, separated by `:`.
@@ -800,17 +818,18 @@ It MUST be constructed as defined here:
 **`<ordId>`** := `<namespace>:<conceptName>:<resourceName>:[v<majorVersion>]`
 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
-  The namespace MUST reflect the provider of the described resource.
-  - For `Package`, `Consumption Bundle`, `APIResource` and `EventResource`, `Capability` and `IntegrationDependency`:
-    - MUST be a valid [system namespace](#system-namespace) or an [sub-context namespace](#sub-context-namespace) thereof
-  - For `EntityType`
-    - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace)
+  The namespace MUST reflect the owner governing the described ORD information.
+  - For `Package`, `ConsumptionBundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`, `DataProduct` and `Agent`:
+    - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace) thereof
+    - A [system namespace](#system-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item is specific to a single system type.
+    - An [authority namespace](#authority-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item represents a shared contract, definition or governance model across multiple [system types](#system-type). See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
   - For `Vendor` and `Product`:
     - MUST be a valid [vendor namespace](#vendor-namespace) for `Vendor` and `Product`
-  - The provider is the system hosting the described resource.
-    - In advanced cases, the provider could be an embedded system / sidecar with its own system namespace.
-      This can lead to multiple system namespaces within one system.
-      In this case it needs to be taken care that static publishing does not create conflicts, e.g. through moving the publishing responsibility to the embedded system (and not by the parent system).
+  - For system-namespaced ORD IDs, the provider is the system hosting the described resource.
+    In advanced cases, the provider could be an embedded system / sidecar with its own system namespace.
+    This can lead to multiple system namespaces within one system.
+    In this case it needs to be taken care that static publishing does not create conflicts, e.g. through moving the publishing responsibility to the embedded system (and not by the parent system).
+  - For authority-namespaced ORD IDs, the namespace identifies the organizational unit governing the shared contract, definition, taxonomy item or access grouping.
 
 - **`<conceptName>`** := The ORD concept name of the described resource / taxonomy.
   - Use `product` for `Product`
@@ -834,7 +853,7 @@ It MUST be constructed as defined here:
     - If this cannot be followed, the relationship to the successor APIs can still be indicated via the `successors` property.
 
 - **`<majorVersion>`** := a version incrementor of the resource that increases on breaking changes.
-  - MUST be provided for `Package`, `Consumption Bundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`
+  - MUST be provided for `Package`, `ConsumptionBundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`, `DataProduct` and `Agent`
   - MUST NOT be provided for `Product` and `Vendor`
   - If provided: MUST be an integer and MUST NOT contain leading zeroes.
   - MUST be incremented if the resource introduced an incompatible API change. This correlates with a major version change in [Semantic Versioning](https://semver.org/).
