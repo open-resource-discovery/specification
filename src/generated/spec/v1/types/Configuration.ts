@@ -137,6 +137,18 @@ export interface OrdV1OverlayDescription {
    * @minItems 1
    */
   accessStrategies: [OrdV1DocumentAccessStrategy, ...OrdV1DocumentAccessStrategy[]];
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
 }
 /**
  * List of capabilities that are supported by the ORD provider.
