@@ -2619,7 +2619,7 @@ definitions:
             x-introduced-in-version: "1.9.4"
           - const: ord:overlay:v1
             description: |-
-              ORD Overlay file for patching ORD resources and/or referenced resource definition files.
+              ORD Overlay file for patching referenced resource definition files.
               For details, see [ORD Overlay](../../spec-extensions/models/OrdOverlay).
               The `mediaType` MUST be set to `application/json`.
           - const: custom
@@ -2737,7 +2737,7 @@ definitions:
               The `mediaType` MUST be be set to `application/json`.
           - const: ord:overlay:v1
             description: |-
-              ORD Overlay file for patching ORD resources and/or referenced resource definition files.
+              ORD Overlay file for patching referenced resource definition files.
               For details, see [ORD Overlay](../../spec-extensions/models/OrdOverlay).
               The `mediaType` MUST be set to `application/json`.
           - const: custom

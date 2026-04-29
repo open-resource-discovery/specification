@@ -2,9 +2,8 @@
 This specification is in **beta** and subject to change.
 :::
 
-The **ORD Overlay** is an optional ORD model extension that allows patching both ORD resource metadata
-and referenced resource definition files (e.g. OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards)
-without modifying the original source files.
+The **ORD Overlay** is an optional ORD model extension that allows patching referenced resource definition files
+(e.g. OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards) without modifying the original source files.
 
 ```json
 {
@@ -31,7 +30,7 @@ Decision guidance for choosing a distribution mode is collected in the
 ### Via the ORD Configuration Endpoint
 
 Overlays can be listed directly in the [ORD Configuration Endpoint](../../spec-v1/index.md#ord-configuration-endpoint) under `openResourceDiscoveryV1.overlays`.
-This is the preferred approach for cross-cutting overlays that are not tied to a single resource, or when patching ORD resource metadata itself.
+This is the preferred approach for cross-cutting overlays that are not tied to a single resource.
 
 ```json
 {
@@ -70,15 +69,13 @@ Key fields on `target`:
 
 | Field | Purpose |
 |---|---|
-| `ordId` | Identifies the ORD resource being patched (API, Event, Data Product, …). Selects the ORD resource metadata itself. |
+| `ordId` | Identifies the ORD resource whose attached definition file is being patched. Used together with `url` or `definitionType` to disambiguate. |
 | `url` | Direct URL to the specific metadata definition file (e.g. an OpenAPI JSON file). |
 | `definitionType` | Declares the format of the file (e.g. `openapi-v3`, `a2a-agent-card`). Disambiguates when a resource has multiple definitions attached. |
 
 Example of ambiguity: an OData API resource may expose both `edmx` and `openapi-v3` definitions.
 Provide `definitionType` and/or `url` to make the concrete patch target explicit.
 
-For overlays that only patch ORD metadata via [`selector.ordId`](#overlay-selector-by-ord-id), `target` may be omitted.
-Multiple resources can be patched in a single file using multiple patches with different selector `ordId` values.
 
 ## Selectors
 
@@ -88,7 +85,6 @@ Concept-level selectors are preferred over `jsonPath` because they are resilient
 
 Available selectors:
 - [`root`](#overlay-selector-by-root) — document-level metadata and top-level sections
-- [`ordId`](#overlay-selector-by-ord-id) — ORD resource metadata
 - [`operation`](#overlay-selector-by-operation) — OpenAPI, MCP, A2A, OData Actions/Functions
 - [`entityType`](#overlay-selector-by-entity-type) — OData EntityTypes, CSN Interop entities
 - [`complexType`](#overlay-selector-by-complex-type) — OData ComplexTypes
@@ -124,14 +120,27 @@ After applying an overlay, validate the merged output with the corresponding for
 
 ## ORD Aggregator Expectations
 
-An ORD Aggregator MUST apply overlays that patch ORD resource metadata when building its ORD Discovery API and related indexes.
-This is necessary so that ORD-level overlay changes are reflected in discovery responses, filtering, searching, and similar aggregator behavior.
-
 An ORD Aggregator SHOULD enforce that overlay sources are permitted to patch the target metadata.
 Without such enforcement, consumers could be exposed to unauthorized metadata changes through overlay processing.
+
+An ORD Aggregator SHOULD support merging of ORD Overlays into the resource definitions ideally centrally, so this isn't left to each consumer to implement.
+If the ORD Aggregator merges it, it will create a new resource definition entry with the merged content, taking over the `type` from the original, and the `visibility` and `purpose` from the overlay that was applied.
 
 ## Overlay Document Metadata
 
 Note on `perspective`: unlike its use in ORD Documents (which scopes transport),
 `perspective` on an overlay declares *where the patch should be applied* — at system-type, system-version, or system-instance level.
 See the field description for details.
+
+## Outlook: Patching ORD Resource Metadata Directly
+
+A future version of the ORD Overlay specification may introduce a dedicated `ordId` selector that allows
+patching ORD resource metadata itself (e.g. title, description, visibility, tags on an API Resource or Event Resource)
+without requiring a separate resource definition file as the patch target.
+
+This capability is not included in version 0.1 to limit scope and allow the overlay model to mature
+on resource definition patching first. When introduced, it will enable use cases such as:
+
+- Enriching ORD resource descriptions or documentation links centrally
+- Adding classification tags or AI-related metadata at the ORD resource level
+- Adjusting visibility or lifecycle metadata through overlay governance workflows

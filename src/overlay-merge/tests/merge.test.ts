@@ -100,7 +100,7 @@ test("applies ordId selectors to ORD document resources", async () => {
 			createOverlayPatch({
 				selector: {
 					ordId: "sap.foo:apiResource:astronomy:v1",
-				},
+				} as any,
 				data: {
 					shortDescription: "Overlay short description",
 					labels: {
@@ -112,7 +112,7 @@ test("applies ordId selectors to ORD document resources", async () => {
 				action: "remove",
 				selector: {
 					ordId: "sap.foo:apiResource:astronomy:v1",
-				},
+				} as any,
 				data: {
 					description: null,
 					extensible: {
@@ -125,7 +125,7 @@ test("applies ordId selectors to ORD document resources", async () => {
 					action: "remove",
 					selector: {
 						ordId: "sap.foo:eventResource:ExampleEventResource:v1",
-					},
+					} as any,
 				},
 				{ omitData: true },
 			),
@@ -179,7 +179,7 @@ test("derives ORD collection names from ordId resource types ending in 'y'", () 
 			createOverlayPatch({
 				selector: {
 					ordId: "sap.foo:capability:catalog-search:v1",
-				},
+				} as any,
 				data: {
 					description: "Overlay enriched capability",
 				},

@@ -134,7 +134,7 @@ test("validateOverlaySemantics does not emit metadata-definition warnings for or
 			createOverlayPatch({
 				selector: {
 					ordId: "sap.foo:apiResource:astronomy:v1",
-				},
+				} as any,
 				data: {
 					title: "patched",
 				},

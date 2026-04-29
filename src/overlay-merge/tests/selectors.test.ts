@@ -69,9 +69,12 @@ test("resolveSelector requires JSON objects for operation selectors", () => {
 test("resolveSelector requires ORD documents for ordId selectors", () => {
 	assert.throws(
 		() =>
-			resolveSelector(["not-an-ord-document"] as JSONValue, {
-				ordId: "sap.foo:apiResource:astronomy:v1",
-			}),
+			resolveSelector(
+				["not-an-ord-document"] as JSONValue,
+				{
+					ordId: "sap.foo:apiResource:astronomy:v1",
+				} as any,
+			),
 		/ordId selector requires an ORD Document object as target/,
 	);
 });

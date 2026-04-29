@@ -78,7 +78,6 @@ In that case, ORD Configuration is the viable distribution mechanism.
 #### Prefer ORD Configuration when
 
 - the overlay is created by someone other than the original resource provider
-- the overlay patches ORD resource metadata itself rather than only one attached definition file
 - the overlay is cross-cutting and applies to multiple resources
 - the overlay should be published independently from the lifecycle of one concrete API or Event resource
 - the overlay provider needs its own publication channel and cannot modify the target resource entry
