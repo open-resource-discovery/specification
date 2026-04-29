@@ -35,8 +35,9 @@ This is the preferred approach for cross-cutting overlays that are not tied to a
 ```json
 {
   "openResourceDiscoveryV1": {
+    "documents": [],
     "overlays": [
-      { "url": "/ord/overlays/my-api.overlay.json", "accessStrategies": [{ "type": "open" }] }
+      { "url": "/ord/overlays/my-api.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "ord:ai-enhancement" }
     ]
   }
 }

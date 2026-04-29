@@ -121,8 +121,8 @@ export type OverlayPatchValue =
 /**
  * ⚠️ BETA: This specification is in beta and subject to change.
  *
- * The ORD Overlay is an optional ORD model extension that allows patching both ORD resource metadata
- * and referenced resource definition files without modifying the original source files.
+ * The ORD Overlay is an optional ORD model extension that allows patching referenced resource definition files
+ * (e.g. OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards) without modifying the original source files.
  *
  * Overlays use concept-level [selectors](#overlay-selector) that are independent of the target format's
  * internal structure, making them resilient to format changes.

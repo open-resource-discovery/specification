@@ -111,7 +111,7 @@ An overlay may also add machine-readable metadata that specific use cases requir
 In some cases it is acceptable to **remove** parts of the metadata — for example when the intended consumer (again guided by `purpose`) should not see information that is irrelevant or confusing in their context.
 
 As a general rule, the result after applying an overlay SHOULD be a **compatible variant** of the original:
-either an enriched superset or a valid subset, but not a contradictory or structurally incompatible mutation.
+either an enriched superset or a valid subset, but not a contradictory or structurally incompatible.
 
 Examples of changes that are typically **appropriate**:
 - Adding or improving descriptions, summaries, or documentation links
@@ -125,7 +125,7 @@ Examples of changes that are typically **inappropriate**:
 - Contradicting the original meaning of the resource (e.g. changing a resource's title to describe something else entirely)
 
 Enforcement of these expectations is left to ORD Aggregators and overlay governance processes.
-The `purpose` field on the overlay or its resource-definition entry can help aggregators decide which changes are acceptable for a given overlay source.
+The `purpose` field on the overlay's resource-definition entry can help aggregators decide which changes are acceptable for a given overlay source.
 
 ## Current Constraints
 
