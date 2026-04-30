@@ -1,0 +1,24 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlayselectorbyroot'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlaySelectorByRoot'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'root'
+      type: 'boolean'
+      description: "Concept-level selector targeting the root of the document being patched.\nMUST be `true`.\n\nUse this selector to patch top-level properties of any JSON/YAML-based metadata format\nwithout coupling to specific structural paths. This is especially useful for:\n\n- Patching document-level metadata (title, description, version, contact info)\n- Adding or merging top-level sections (e.g. `components`, `tags`, `servers` in OpenAPI)\n- Extending the root object with new properties across format versions\n\nSupported metadata formats and typical use cases:\n\n**OpenAPI** (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`):\n- Patch `info.description`, `info.title`, `info.contact`\n- Add `components.securitySchemes` or `components.schemas`\n- Add `tags`, `servers`, or `externalDocs`\n\n**AsyncAPI** (`asyncapi-v2`):\n- Patch `info` block, `servers`, `channels` at the root\n\n**OData CSDL JSON** (`csdl-json`):\n- Patch root-level `$Version`, `$EntityContainer`, or add namespace objects\n\n**ORD Document** (no specific `definitionType`):\n- Patch root-level ORD document properties\n\n**MCP / A2A** (any Specification ID):\n- Patch top-level metadata or add root-level tool/skill definitions\n\nThe `root` selector is equivalent to `jsonPath: \"$\"` but is preferred because it\nexplicitly communicates intent and is resilient to format differences where `$`\nmight have ambiguous semantics."
+      mandatory: true
+  customTypeDefinitions: []
+  metadataRelations: []

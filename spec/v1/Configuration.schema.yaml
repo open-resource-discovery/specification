@@ -64,6 +64,16 @@ definitions:
         items:
           "$ref": "#/definitions/V1DocumentDescription"
 
+      overlays:
+        type: array
+        description: |-
+          List of all ORD Overlay documents that can be retrieved.
+
+          Overlay documents can patch referenced resource definitions without changing the original source files.
+          For more details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
+        items:
+          "$ref": "#/definitions/V1OverlayDescription"
+
       capabilities:
         "$ref": "#/definitions/V1Capabilities"
 
@@ -176,6 +186,64 @@ definitions:
           $ref: "#/definitions/AccessStrategy"
         minItems: 1
 
+    additionalProperties: false
+    required:
+      - url
+      - accessStrategies
+
+  V1OverlayDescription:
+    type: object
+    title: Ord V1 Overlay Description
+    description: |-
+      Describes an ORD Overlay document that is available for pull transport consumption.
+    x-ums-type: "ignore"
+    properties:
+      url:
+        type: string
+        format: uri-reference
+        description: |-
+          URL or relative URL to the ORD Overlay document.
+
+          It is RECOMMENDED to provide a relative URL (to `baseUrl`).
+          If a `baseUrl` is given, the relative URLs will be resolved with it.
+        examples:
+          - "/open-resource-discovery/v1/overlays/example1"
+          - "../../overlays/example1"
+          - "https://example.com/open-resource-discovery/v1/overlays/example1"
+
+      accessStrategies:
+        type: array
+        description: |-
+          List of supported access strategies for retrieving the overlay document from the ORD provider.
+
+          An ORD Consumer/ORD Aggregator MAY freely choose any of the listed strategies.
+        items:
+          $ref: "#/definitions/AccessStrategy"
+        minItems: 1
+      purpose:
+        type: string
+        description: |-
+          Describes the intended purpose or role of this resource definition.
+
+          While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+          This allows multiple definitions of the same type to coexist when they serve different purposes.
+
+          For example, an API Resource might have multiple OpenAPI definitions:
+          one for standard API documentation and another specifically enriched for AI/agent consumption.
+
+          MUST be a valid [Concept ID](../index.md#concept-id).
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+          - const: ord:ai-enrichment
+            description: |-
+              The definition is enriched with additional metadata specifically for AI/agent consumption.
+              This may include enhanced descriptions, examples, or semantic annotations that help AI systems
+              better understand and utilize the API or event resource.
+        examples:
+          - ord:ai-enrichment
     additionalProperties: false
     required:
       - url

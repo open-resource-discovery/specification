@@ -124,12 +124,6 @@ properties:
     examples:
       - "system-instance"
 
-  describedSystemInstance:
-    $ref: "#/definitions/SystemInstance"
-    description: |-
-      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
-
-      Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   describedSystemType:
     $ref: "#/definitions/SystemType"
     x-introduced-in-version: "1.10.0"
@@ -140,6 +134,12 @@ properties:
     x-introduced-in-version: "1.10.0"
     description: |-
       Information on the [system version](../index.md#system-version) that this ORD document describes.
+  describedSystemInstance:
+    $ref: "#/definitions/SystemInstance"
+    description: |-
+      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
+
+      Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   policyLevel: &policyLevel
     type: string
     description: |
@@ -2617,6 +2617,11 @@ definitions:
               [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.
               The `mediaType` MUST be be set to `application/json`.
             x-introduced-in-version: "1.9.4"
+          - const: ord:overlay:v1
+            description: |-
+              ORD Overlay file for patching referenced resource definition files.
+              For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
+              The `mediaType` MUST be set to `application/json`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
@@ -2730,6 +2735,11 @@ definitions:
               WARNING: Only expose the CDS Service definition that effectively is governed by the API contract and stability. Do not expose internal models!
 
               The `mediaType` MUST be be set to `application/json`.
+          - const: ord:overlay:v1
+            description: |-
+              ORD Overlay file for patching referenced resource definition files.
+              For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
+              The `mediaType` MUST be set to `application/json`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
@@ -4563,13 +4573,28 @@ definitions:
     properties:
       supported:
         type: string
-        enum: ["no", "manual", "automatic"]
-        description: |-
-          This property defines whether the resource is extensible.
+        title: Extensibility Support Level
+        x-ums-type: "ignore"
+        description: Defines whether and how the resource can be extended with custom fields.
+        oneOf:
+          - const: "no"
+            description: |-
+              Not extensible.
 
-          **Not extensible** means that the data model of the resource (i.e. API or event) cannot be extended with custom fields.
-          **Manually extensible** means that in addition to defining a custom field, manual activities to include the field in the data model of the resource (i.e. API or event) are required. E.g. using a specific mapping tool or by selecting the resource in the data model extension tool.
-          **Automatically extensible** means that after defining a custom field in the local domain model, the resource (i.e. API or event) is automatically extended as part of the default extension field definition.
+              The data model of the resource (API or event) cannot be extended with custom fields.
+          - const: "manual"
+            description: |-
+              Manually extensible.
+
+              In addition to defining a custom field, manual activities are required to include the field
+              in the data model of the resource (API or event).
+              Examples: using a specific mapping tool or selecting the resource in a data model extension tool.
+          - const: "automatic"
+            description: |-
+              Automatically extensible.
+
+              After defining a custom field in the local domain model, the resource (API or event)
+              is automatically extended as part of the default extension field definition.
 
       description:
         type: string

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Minimal OData Business Partner EDMX fixture for overlay-merge tests.
+     This is a simplified excerpt of a Business Partner API, not a real SAP API document. -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="http://tinyurl.com/Org-OData-Core">
+    <edmx:Include Namespace="Org.OData.Core.V1" Alias="Core" />
+  </edmx:Reference>
+  <edmx:Reference Uri="http://tinyurl.com/Org-OData-PersonalData">
+    <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData" />
+  </edmx:Reference>
+  <edmx:Reference Uri="http://tinyurl.com/com-sap-vocabularies-Common">
+    <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common" />
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="API_BUSINESS_PARTNER" Alias="Model">
+      <EntityContainer Name="Container">
+        <EntitySet Name="A_BusinessPartner" EntityType="Model.A_BusinessPartnerType" />
+        <EntitySet Name="A_BusinessPartnerAddress" EntityType="Model.A_BusinessPartnerAddressType" />
+      </EntityContainer>
+      <EntityType Name="A_BusinessPartnerType">
+        <Key>
+          <PropertyRef Name="BusinessPartner" />
+        </Key>
+        <Property Name="BusinessPartner" Type="Edm.String" Nullable="false" MaxLength="10" />
+        <Property Name="BusinessPartnerFullName" Type="Edm.String" MaxLength="81" />
+        <Property Name="BusinessPartnerIsBlocked" Type="Edm.Boolean" />
+        <Property Name="SearchTerm1" Type="Edm.String" MaxLength="20" />
+        <Property Name="LegacySearchTerm1" Type="Edm.String" MaxLength="20" />
+        <Property Name="CreditScore" Type="Edm.Int32" />
+        <Property Name="FirstName" Type="Edm.String" MaxLength="40" />
+        <Property Name="LastName" Type="Edm.String" MaxLength="40" />
+        <Property Name="DateOfBirth" Type="Edm.Date" />
+        <Property Name="OrganizationBPName1" Type="Edm.String" MaxLength="40" />
+        <Property Name="CountryOfBirth" Type="Edm.String" MaxLength="3" />
+      </EntityType>
+      <EntityType Name="A_BusinessPartnerAddressType">
+        <Key>
+          <PropertyRef Name="BusinessPartner" />
+          <PropertyRef Name="AddressID" />
+        </Key>
+        <Property Name="BusinessPartner" Type="Edm.String" Nullable="false" MaxLength="10" />
+        <Property Name="AddressID" Type="Edm.String" Nullable="false" MaxLength="10" />
+        <Property Name="StreetName" Type="Edm.String" MaxLength="60" />
+        <Property Name="CityName" Type="Edm.String" MaxLength="40" />
+        <Property Name="PostalCode" Type="Edm.String" MaxLength="10" />
+        <Property Name="Country" Type="Edm.String" MaxLength="3" />
+      </EntityType>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

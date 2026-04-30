@@ -1,0 +1,21 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlaymeta'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlayMeta'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Optional arbitrary metadata for use by overlay consumers, tooling, and registries.\nThe contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.\n\nWhen used at the document level, this carries information about the overlay as a whole (e.g. provenance, approval status, processing instructions).\nWhen used at the patch level, this carries information specific to the patched element (e.g. confidence scores, source references).\n\nThis is an open/extensible object — any properties are allowed."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+  customTypeDefinitions: []
+  metadataRelations: []
