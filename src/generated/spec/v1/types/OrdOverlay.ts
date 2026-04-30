@@ -137,7 +137,7 @@ export interface ORDOverlay {
    * Optional [URL](https://tools.ietf.org/html/rfc3986) to the ORD Overlay schema (defined as a JSON Schema).
    * If provided, this enables code intelligence and validation in supported editors (like VSCode) and tools.
    */
-  $schema?: (string | "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#") & string;
+  $schema?: (string | "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#") & string;
   /**
    * Version of the ORD Overlay specification.
    */

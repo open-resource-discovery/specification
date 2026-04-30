@@ -1,5 +1,5 @@
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.platform:overlay:ord-reference-app-enrichment:v1",
   "description": "Assigns ORD resources from the reference app to platform groups and adds platform-managed labels, without modifying the original ORD document.",

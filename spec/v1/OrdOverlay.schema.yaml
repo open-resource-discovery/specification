@@ -1,5 +1,5 @@
 $schema: "http://json-schema.org/draft-07/schema#"
-$id: https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#
+$id: https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#
 title: ORD Overlay
 x-status: beta
 description: |-
@@ -29,7 +29,7 @@ properties:
     anyOf:
       - type: string
         format: uri-reference
-      - const: "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#"
+      - const: "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#"
 
   ordOverlay:
     type: string

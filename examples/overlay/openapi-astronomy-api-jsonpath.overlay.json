@@ -1,5 +1,5 @@
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:astronomy-api-openapi-jsonpath:v1",
   "description": "Patches the sample Astronomy OpenAPI metadata using JSONPath selectors only.",

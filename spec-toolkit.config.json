@@ -38,24 +38,13 @@
 		{
 			"type": "spec",
 			"id": "OrdOverlay",
-			"sourceFilePath": "./spec-extension/models/OrdOverlay.schema.yaml",
-			"sourceIntroFilePath": "./spec-extension/models/OrdOverlay.intro.md",
-			"sourceOutroFilePath": "./spec-extension/models/OrdOverlay.outro.md",
+			"sourceFilePath": "./spec/v1/OrdOverlay.schema.yaml",
+			"sourceIntroFilePath": "./spec/v1/OrdOverlay.intro.md",
+			"sourceOutroFilePath": "./spec/v1/OrdOverlay.outro.md",
 			"mdFrontmatter": {
 				"title": "ORD Overlay",
 				"sidebar_position": "2",
 				"description": "Describes the technical interface / schema for the ORD Overlay (beta), used to patch ORD resources and their resource definitions."
-			}
-		},
-		{
-			"type": "spec",
-			"id": "AgentGovernance",
-			"sourceFilePath": "./spec-extension/models/AgentGovernance.schema.yaml",
-			"sourceIntroFilePath": "./spec-extension/models/AgentGovernance.intro.md",
-			"mdFrontmatter": {
-				"title": "Agent Governance",
-				"sidebar_position": "3",
-				"description": "Model extension for AI agent governance metadata."
 			}
 		}
 	],

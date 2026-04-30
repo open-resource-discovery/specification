@@ -1,5 +1,5 @@
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:astronomy-api-openapi:v1",
   "description": "Adds deprecation notices and supplementary documentation to the Astronomy REST API without modifying the original OpenAPI specification.\n\nThe first patch uses the 'operation' concept-level selector, which maps to the OpenAPI 'operationId' field.",

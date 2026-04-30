@@ -79,6 +79,10 @@ const config = {
 						from: "/spec-v1/interfaces/document",
 						to: "/spec-v1/interfaces/Document",
 					},
+					{
+						from: "/spec-extensions/models/OrdOverlay",
+						to: "/spec-v1/interfaces/OrdOverlay",
+					},
 				],
 			},
 		],
@@ -141,25 +145,30 @@ const config = {
 								to: "/spec-v1/",
 							},
 							{
-								label: "ORD Configuration Interface",
+								label: "ORD Configuration",
 								to: "spec-v1/interfaces/Configuration",
 							},
 							{
-								label: "ORD Document Interface",
+								label: "ORD Document",
 								to: "spec-v1/interfaces/Document",
 							},
 							{
-								label: "Schema Explorer (Interactive)",
-								href: "/tools/schema-viewer/index.html?schema=Document",
-								target: "_blank",
+								label: "ORD Overlay",
+								to: "spec-v1/interfaces/OrdOverlay",
 							},
 							{
-								label: "ORD Concepts",
+								label: "ORD Concepts / Details",
 								to: "spec-v1/concepts",
 							},
 							{
-								label: "ORD Provider API",
-								to: "spec-v1/interfaces/document-api",
+								type: "html",
+								value:
+									'<hr style="margin: 0.1rem 0.1rem; border: none; border-top: 1px solid var(--ifm-color-emphasis-300);">',
+							},
+							{
+								label: "Schema Explorer",
+								href: "/tools/schema-viewer/index.html?schema=Document",
+								target: "_blank",
 							},
 							{
 								label: "Example Files",
@@ -188,10 +197,6 @@ const config = {
 							{
 								label: "Global Group Types",
 								to: "spec-extensions/group-types/",
-							},
-							{
-								label: "Model Extensions",
-								to: "spec-extensions/models/",
 							},
 						],
 					},

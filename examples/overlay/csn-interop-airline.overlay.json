@@ -1,5 +1,5 @@
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:airline-csn-interop:v1",
   "description": "Enriches the CSN Interop Airline service with AI-facing descriptions and vocabulary annotations.\n\nFor CSN Interop targets (sap-csn-interop-effective-v1), patch data is plain CSN JSON merged\ndirectly into the matched definition or element object. Use 'doc' for human-readable descriptions\nand '@AnnotationName' keys for vocabulary annotations (e.g. @EndUserText.label).\nentityType selectors use the fully qualified definitions key (e.g. 'AirlineService.Airline').\nSee: https://sap.github.io/csn-interop-specification/",

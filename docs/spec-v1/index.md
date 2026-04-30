@@ -329,7 +329,7 @@ The motivation behind the ORD configuration endpoint is to:
 - Define where and how the ORD information can be accessed
   - Which transport mode is available (URLs to ORD document(s) indicate the [pull transport mode](#pull-transport))
   - Which [access strategies](../spec-extensions/access-strategies/index.mdx) are available
-- Optionally provide discoverable ORD Overlay files via `openResourceDiscoveryV1.overlays` (see [ORD Overlay](../spec-extensions/models/OrdOverlay.md))
+- Optionally provide discoverable ORD Overlay files via `openResourceDiscoveryV1.overlays` (see [ORD Overlay](./interfaces/OrdOverlay.md))
 
 The idea behind the configuration endpoint is inspired by the [well-known URI](https://datatracker.ietf.org/doc/html/rfc8615) discovery mechanism.
 
@@ -421,7 +421,7 @@ The response contains the requested resource and MAY include related ORD informa
 
 ORD does not aim to replace these standards. Instead, it discovers and transports them alongside shared metadata. The ORD layer adds common properties (like `version`, `visibility`, `releaseStatus`), [taxonomy](#ord-taxonomy) (via `Package`, `Product`, etc.), and relationships between resources.
 
-An ORD resource can also reference an ORD Overlay as an additional `resourceDefinitions` entry with type `ord:overlay:v1`. The same overlay files can optionally be discovered independently via the [ORD configuration endpoint](#ord-configuration-endpoint). For details, see [ORD Overlay](../spec-extensions/models/OrdOverlay.md).
+An ORD resource can also reference an ORD Overlay as an additional `resourceDefinitions` entry with type `ord:overlay:v1`. The same overlay files can optionally be discovered independently via the [ORD configuration endpoint](#ord-configuration-endpoint). For details, see [ORD Overlay](./interfaces/OrdOverlay.md).
 
 For details on how resource definitions are referenced, see the `resourceDefinitions` property on [API Resource](./interfaces/Document.md#api-resource) and [Event Resource](./interfaces/Document.md#event-resource) in the interface documentation.
 When consumed via an [ORD aggregator](#ord-aggregator), the aggregator may [host the resource definitions](#hosting-resource-definitions) for easier access.

@@ -43,7 +43,7 @@ export interface OrdV1Support {
    * List of all ORD Overlay documents that can be retrieved.
    *
    * Overlay documents can patch referenced resource definitions without changing the original source files.
-   * For more details, see [ORD Overlay](../../spec-extensions/models/OrdOverlay).
+   * For more details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
    */
   overlays?: OrdV1OverlayDescription[];
   capabilities?: OrdV1Capabilities;

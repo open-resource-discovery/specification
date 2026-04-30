@@ -26,7 +26,7 @@ test("cli applies YAML overlay to YAML input and outputs YAML", async () => {
 
 	await writeFile(
 		overlayPath,
-		`$schema: https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#
+		`$schema: https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#
 ordOverlay: "0.1"
 description: Test overlay
 patches:

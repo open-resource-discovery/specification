@@ -1,5 +1,5 @@
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:document-1-ord:v1",
   "description": "Patches ORD resource metadata in document-1.json using ordId selectors.",

@@ -191,7 +191,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### ORD Overlays
 
-- [ORD Overlays](../../spec-extensions/models/OrdOverlay.md) MUST always provide a [`target.ordId`](../../spec-extensions/models/OrdOverlay.md#overlay-target_ordid) to identify the ORD resource being patched.
+- [ORD Overlays](../../spec-v1/interfaces/OrdOverlay.md) MUST always provide a [`target.ordId`](../../spec-v1/interfaces/OrdOverlay.md#overlay-target_ordid) to identify the ORD resource being patched.
 
 ### Correlation IDs
 

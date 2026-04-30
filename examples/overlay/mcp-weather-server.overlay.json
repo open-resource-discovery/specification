@@ -1,5 +1,5 @@
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:weather-mcp-server:v1",
   "description": "Enriches an MCP server's tool metadata with extended descriptions for AI agent consumption.\n\nThe 'operation' selector maps to MCP tool names (tools[].name).\nMCP targets use a Specification ID as definitionType (e.g., 'sap.foo:weather-server:v1').",

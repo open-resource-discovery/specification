@@ -908,7 +908,7 @@ test("entitySet selector patches EntitySet in CSDL JSON", async () => {
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test entitySet selector on CSDL JSON",
 		patches: [
@@ -944,7 +944,7 @@ test("entitySet selector patches EntitySet in EDMX XML", async () => {
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test entitySet selector on EDMX",
 		patches: [
@@ -995,7 +995,7 @@ test("namespace selector patches Schema namespace object in CSDL JSON", async ()
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test namespace selector on CSDL JSON",
 		patches: [
@@ -1027,7 +1027,7 @@ test("namespace selector patches Schema element in EDMX XML", async () => {
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test namespace selector on EDMX",
 		patches: [
@@ -1070,7 +1070,7 @@ test("enumType selector resolves EnumType in CSDL JSON", async () => {
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test EnumType via enumType selector",
 		patches: [
@@ -1105,7 +1105,7 @@ test("propertyType + enumType selectors target EnumType member in CSDL JSON", as
 	// since "merge" cannot merge an object into a number.
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description:
 			"Test EnumType member via propertyType selector with enumType context",
@@ -1142,7 +1142,7 @@ test("complexType selector resolves ComplexType in CSDL JSON", async () => {
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test ComplexType via complexType selector",
 		patches: [
@@ -1174,7 +1174,7 @@ test("propertyType + complexType selectors target ComplexType property in CSDL J
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description:
 			"Test ComplexType property via propertyType selector with complexType context",
@@ -1208,7 +1208,7 @@ test("recursive merge: entityType with nested property annotations in CSDL JSON"
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description:
 			"Test recursive merge of EntityType with all property annotations in one patch",
@@ -1274,7 +1274,7 @@ test("recursive merge: entityType with nested property annotations in EDMX", asy
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description:
 			"Test recursive merge of EntityType with all property annotations in one patch (EDMX)",
@@ -1335,7 +1335,7 @@ test("parameter selector targets Action parameter in CSDL JSON", async () => {
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test parameter selector on CSDL JSON",
 		patches: [
@@ -1371,7 +1371,7 @@ test("parameter selector targets Action Parameter in EDMX XML", async () => {
 	);
 	const overlay: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		description: "Test parameter selector on EDMX",
 		patches: [
@@ -1430,7 +1430,7 @@ test("applyOverlayToEdmxDocument throws on ambiguous unqualified entityType acro
 
 	const overlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1" as const,
 		description: "Test",
 		patches: [

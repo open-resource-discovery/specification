@@ -166,7 +166,7 @@ export function convertODataV2EnrichmentToOrd(
 
 	const result: ORDOverlay = {
 		$schema:
-			"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+			"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 		ordOverlay: "0.1",
 		...(options.ordId !== undefined ? { ordId: options.ordId } : {}),
 		description,

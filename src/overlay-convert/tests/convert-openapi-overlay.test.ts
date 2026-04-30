@@ -15,7 +15,7 @@ test("converts a standard OpenAPI overlay to ORD overlay format", async () => {
 	assert.equal(overlay.ordOverlay, "0.1");
 	assert.equal(
 		overlay.$schema,
-		"https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+		"https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
 	);
 
 	// target.url should be derived from source.extends

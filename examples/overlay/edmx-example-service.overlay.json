@@ -1,5 +1,5 @@
 {
-  "$schema": "https://open-resource-discovery.org/spec-extension/models/OrdOverlay.schema.json#",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:example-service-odata:v1",
   "description": "Enriches the OData.Demo example service with AI-facing descriptions and deprecation annotations.\n\nPatch data for OData targets (edmx / csdl-json) is expressed in CSDL JSON annotation format:\nhttps://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html\nAnnotation keys use the @TermName convention (e.g. @Core.Description).\nThis applies to both XML (edmx) and JSON (csdl-json) target files. When the target is EDMX XML,\nthe overlay merge implementation converts the CSDL JSON patch to equivalent <Annotation> elements.",
