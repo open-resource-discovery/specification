@@ -330,13 +330,9 @@ In the common case where the provider *is* the described system, both base URLs 
 Metadata files such as resource definitions and document links are physically hosted by the **ORD provider** — the system that serves the ORD document.
 Their relative URLs are resolved against the provider base URL using the following order (applied by ORD aggregators):
 
-1. **Document root `baseUrl`** — takes precedence when explicitly set in the document. This wins even over the fetch context URL (e.g., when the document is served via a CDN or reverse proxy where the fetch URL and the canonical serving URL differ).
+1. **Document root `baseUrl`** — takes precedence when explicitly set in the document. 
 2. **Fetch context URL** (pull scenarios only) — the URL the ORD document was fetched from.
-3. **ORD Configuration `baseUrl`** — or its default derived from the well-known endpoint URL.
-4. **`describedSystemInstance.baseUrl`** — backward-compatibility fallback for documents predating version 1.15 that do not set the document root `baseUrl`. In the common case where provider and described system are the same, this yields the same result as rule 3.
-
-> **Important:** Unlike the described system base URL (see below), ORD aggregators generally do not hold independent authoritative knowledge of the provider base URL from their landscape configuration. The only context-derived knowledge is the fetch URL in pull scenarios.
-> This is why setting the document root `baseUrl` explicitly is particularly important in **push, offline, and self-contained document scenarios**, and is **REQUIRED when the provider and the described system differ**.
+3. **`describedSystemInstance.baseUrl`** — backward-compatibility fallback for documents predating version 1.15 that do not set the document root `baseUrl`. In the common case where provider and described system are the same, this yields the same result.
 
 ##### Described System Base URL (entry points)
 

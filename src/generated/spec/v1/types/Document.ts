@@ -37,8 +37,7 @@ export interface OrdDocument {
     | "1.11"
     | "1.12"
     | "1.13"
-    | "1.14"
-    | "1.15";
+    | "1.14";
   /**
    * Optional description of the ORD document itself.
    * Please note that this information is NOT further processed or considered by an ORD aggregator.
@@ -56,7 +55,7 @@ export interface OrdDocument {
    * It may differ from `describedSystemInstance.baseUrl` when an ORD provider describes another system on its behalf.
    * In the common case where the ORD provider and the described system are the same, both values are identical.
    *
-   * The `baseUrl` MUST NOT contain a leading slash.
+   * The `baseUrl` MUST NOT contain a trailing slash.
    *
    * This property is particularly important in push, offline, and self-contained document scenarios,
    * and REQUIRED when the provider and the described system differ.
@@ -180,7 +179,7 @@ export interface SystemInstance {
    * ORD aggregators that hold authoritative knowledge of the described system's base URL
    * (e.g., from landscape configuration or service discovery) MAY prefer that over this value.
    *
-   * The `baseUrl` MUST NOT contain a leading slash.
+   * The `baseUrl` MUST NOT contain a trailing slash.
    *
    * MUST be provided if the base URL is not known to the ORD aggregators.
    * MUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.

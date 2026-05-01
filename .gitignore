@@ -32,3 +32,4 @@ docs/spec-extensions/models/*.md
 /static/spec-extension/models/*.schema.json
 
 .codex
+.DS_Store

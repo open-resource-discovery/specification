@@ -13,11 +13,6 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Added
 
 - Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/concepts/implementing-ord-natively) guide
-
-## [1.15.0]
-
-### Added
-
 - Added optional root-level `baseUrl` property to ORD Documents (analogous to the existing root-level `baseUrl` in the ORD Configuration).
   This property represents the base URL of the **ORD provider** and is used to resolve relative URLs to metadata files within the document (e.g., `resourceDefinitions[].url`, `links[].url`).
 
@@ -30,8 +25,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Defined the resolution order for relative metadata file URLs (applied by ORD aggregators):
   1. Document root `baseUrl` (if present) — takes precedence, including over the fetch context URL.
   2. In pull scenarios: the URL the ORD document was fetched from (the provider request URL).
-  3. ORD Configuration `baseUrl` (or its default derived from the well-known endpoint).
-  4. `describedSystemInstance.baseUrl` — backward-compatibility fallback for documents predating version 1.15 that do not provide a root `baseUrl`.
+  3. `describedSystemInstance.baseUrl` — backward-compatibility fallback for documents predating version 1.15 that do not provide a root `baseUrl`.
 - Clarified that ORD aggregators holding authoritative knowledge of the **described system's** base URL (e.g., from landscape configuration or service discovery) MAY prefer that over `describedSystemInstance.baseUrl` when resolving relative entry point URLs. This is an aggregator decision. No equivalent override exists for the provider base URL, since aggregators generally do not hold independent authoritative knowledge of it.
 
 ## [1.14.4]
