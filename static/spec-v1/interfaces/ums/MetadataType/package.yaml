@@ -176,7 +176,7 @@ spec:
             minLength: 1
         - name: 'url'
           type: 'string'
-          description: "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe file target MAY be relative or absolute.\nIf a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).\nIf an absolute URL is given, then it MUST be openly accessible."
+          description: "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe file target MAY be relative or absolute.\nIf a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).\nIf an absolute URL is given, then it MUST be openly accessible."
           mandatory: true
         - name: 'description'
           type: 'string'

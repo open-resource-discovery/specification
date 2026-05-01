@@ -37,7 +37,8 @@ export interface OrdDocument {
     | "1.11"
     | "1.12"
     | "1.13"
-    | "1.14";
+    | "1.14"
+    | "1.15";
   /**
    * Optional description of the ORD document itself.
    * Please note that this information is NOT further processed or considered by an ORD aggregator.
@@ -45,6 +46,24 @@ export interface OrdDocument {
    * Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    */
   description?: string;
+  /**
+   * Optional [base URL](../index.md#base-url) of the ORD provider system instance that serves this document.
+   *
+   * Used to resolve relative URLs to [resource definition](../index.md#resource-definition) files and other metadata file
+   * references within this document (e.g., `resourceDefinitions[].url`, `links[].url`).
+   * This differs from `describedSystemInstance.baseUrl`, which is used for entry point URLs.
+   *
+   * It may differ from `describedSystemInstance.baseUrl` when an ORD provider describes another system on its behalf.
+   * In the common case where the ORD provider and the described system are the same, both values are identical.
+   *
+   * The `baseUrl` MUST NOT contain a leading slash.
+   *
+   * This property is particularly important in push, offline, and self-contained document scenarios,
+   * and REQUIRED when the provider and the described system differ.
+   *
+   * See [Relative URL Resolution](../index.md#relative-url-resolution) for the full resolution order including fallbacks and backward-compatibility rules.
+   */
+  baseUrl?: string;
   /**
    * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
    *
@@ -152,10 +171,16 @@ export interface OrdDocument {
  */
 export interface SystemInstance {
   /**
-   * Optional [base URL](../index.md#base-url) of the **system instance**.
-   * By providing the base URL, relative URLs in the document are resolved relative to it.
+   * Optional [base URL](../index.md#base-url) of the **described system instance**.
    *
-   * The `baseUrl` MUST not contain a leading slash.
+   * Used to resolve relative [entry point](../index.md#entry-point) URLs within this document.
+   * Relative URLs to metadata files (e.g., `resourceDefinitions[].url`) are resolved against
+   * the document root `baseUrl` instead — see [Relative URL Resolution](../index.md#relative-url-resolution).
+   *
+   * ORD aggregators that hold authoritative knowledge of the described system's base URL
+   * (e.g., from landscape configuration or service discovery) MAY prefer that over this value.
+   *
+   * The `baseUrl` MUST NOT contain a leading slash.
    *
    * MUST be provided if the base URL is not known to the ORD aggregators.
    * MUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.
@@ -556,11 +581,14 @@ export interface ApiResource {
    * If there is no match, the information in ORD takes precedence.
    *
    * **Provider View:**
-   * If the URL is relative to the system that describes the ORD information,
-   * it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
+   * Relative entry point URLs are resolved against `describedSystemInstance`.`baseUrl` (the described system's base URL).
+   * It is RECOMMENDED to use relative references and (if known) to provide `describedSystemInstance`.`baseUrl`.
    * If the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.
    * If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.
    * The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.
+   *
+   * Note: this is distinct from relative resource definition URLs, which resolve against the document root `baseUrl`.
+   * See [Relative URL Resolution](../index.md#relative-url-resolution) for full rules including the aggregator-override behavior.
    *
    * **Consumer View**:
    * When fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs.
@@ -955,7 +983,8 @@ export interface ApiResourceDefinition {
   /**
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
-   * It is RECOMMENDED to provide a relative URL (to base URL).
+   * It is RECOMMENDED to provide a relative URL.
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -1188,7 +1217,7 @@ export interface ApiAndEventResourceLink {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.
    *
    * The link target SHOULD be absolute and SHOULD be openly accessible.
-   * If a relative link is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+   * If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
    */
   url: string;
 }
@@ -1702,7 +1731,8 @@ export interface EventResourceDefinition {
   /**
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
-   * It is RECOMMENDED to provide a relative URL (to base URL).
+   * It is RECOMMENDED to provide a relative URL.
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -2272,7 +2302,8 @@ export interface CapabilityDefinition {
   /**
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
-   * It is RECOMMENDED to provide a relative URL (to base URL).
+   * It is RECOMMENDED to provide a relative URL.
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -2717,7 +2748,7 @@ export interface DataProductLink {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the Data Product Link.
    *
    * The link target SHOULD be absolute and SHOULD be openly accessible.
-   * If a relative link is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+   * If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
    */
   url: string;
 }
@@ -3776,7 +3807,7 @@ export interface File {
    * [URL](https://tools.ietf.org/html/rfc3986) of the link.
    *
    * The file target MAY be relative or absolute.
-   * If a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+   * If a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
    * If an absolute URL is given, then it MUST be openly accessible.
    */
   url: string;

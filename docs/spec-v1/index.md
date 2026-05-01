@@ -193,7 +193,7 @@ Manual import of the [ORD document](#ord-document) as a JSON file into an intere
 
 - The system instances do not need to know each other or be integrated in any way
 - The ORD document alone is sufficient for this type of consumption
-- All URLs in the document MUST be resolvable (e.g. through `baseUrl` or full URLs)
+- All URLs in the document MUST be resolvable (e.g. through the document root `baseUrl`, `describedSystemInstance.baseUrl`, or as full absolute URLs — see [Relative URL Resolution](#relative-url-resolution))
 
 #### Push Transport
 
@@ -309,6 +309,44 @@ Additional information or categorization can be added through the generic `Label
 
 If such custom values or labels are relied upon by more than one application or team, they SHOULD be standardized through ORD.
 Please [create an issue](https://github.com/open-resource-discovery/specification/issues) to request this.
+
+#### Relative URL Resolution
+
+ORD documents may contain both absolute and relative URLs.
+ORD aggregators MUST resolve all relative URLs to absolute URLs before exposing them to ORD consumers.
+
+The base URL used for resolution depends on **what** the URL references, because two different systems may be involved:
+
+| URL type | Resolved against | Declared via |
+|---|---|---|
+| **Metadata files**: `resourceDefinitions[].url`, `links[].url`, and similar file references | Provider base URL | Document root `baseUrl` |
+| **Entry points**: `entryPoints[]` | Described system base URL | `describedSystemInstance.baseUrl` |
+
+This distinction matters when the ORD provider and the described system differ (e.g., a central aggregator describing multiple systems on its behalf).
+In the common case where the provider *is* the described system, both base URLs are identical and the distinction has no practical effect.
+
+##### Provider Base URL (metadata files)
+
+Metadata files such as resource definitions and document links are physically hosted by the **ORD provider** — the system that serves the ORD document.
+Their relative URLs are resolved against the provider base URL using the following order (applied by ORD aggregators):
+
+1. **Document root `baseUrl`** — takes precedence when explicitly set in the document. This wins even over the fetch context URL (e.g., when the document is served via a CDN or reverse proxy where the fetch URL and the canonical serving URL differ).
+2. **Fetch context URL** (pull scenarios only) — the URL the ORD document was fetched from.
+3. **ORD Configuration `baseUrl`** — or its default derived from the well-known endpoint URL.
+4. **`describedSystemInstance.baseUrl`** — backward-compatibility fallback for documents predating version 1.15 that do not set the document root `baseUrl`. In the common case where provider and described system are the same, this yields the same result as rule 3.
+
+> **Important:** Unlike the described system base URL (see below), ORD aggregators generally do not hold independent authoritative knowledge of the provider base URL from their landscape configuration. The only context-derived knowledge is the fetch URL in pull scenarios.
+> This is why setting the document root `baseUrl` explicitly is particularly important in **push, offline, and self-contained document scenarios**, and is **REQUIRED when the provider and the described system differ**.
+
+##### Described System Base URL (entry points)
+
+Entry points are runtime endpoints on the **described system** — the system being documented.
+Their relative URLs are resolved against the described system base URL:
+
+1. **Aggregator-authoritative URL** — ORD aggregators that hold authoritative knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value. This is an aggregator decision, appropriate when the aggregator has more reliable or up-to-date information than the provider.
+2. **`describedSystemInstance.baseUrl`** — the value declared in the document.
+
+> **The asymmetry is intentional.** Aggregators commonly have landscape authority over the systems they describe (rule 1 above), but not over the system that merely *serves* ORD documents. For the described system, deferring to the aggregator's landscape knowledge is appropriate; for the provider, the document is the authoritative source, especially in push scenarios where no fetch context exists.
 
 ### ORD Provider API
 
@@ -533,10 +571,8 @@ The following rules need to be implemented by ORD aggregators:
     - Values of the same label key will be merged.
     - Duplicate values of the same label key will be removed.
 - The aggregator MUST rewrite all URLs for [hosted resource definitions](#hosting-resource-definitions) to point to their own hosted URLs.
-- The aggregator MUST convert all relative URLs to absolute URLs
-  - Relative URLs MUST be rewritten according to the detected [base URL](#base-url) of the described system instance.
-    - The base URL MUST be made known to the aggregator, either via context (e.g. service discovery or trust context) or by explicitly describing it in the ORD document via `describedSystemInstance`.`baseUrl`.
-    - When both bits of information are available and differ, the aggregator MAY decide to give precedence to the context information.
+- The aggregator MUST convert all relative URLs to absolute URLs.
+  See [Relative URL Resolution](#relative-url-resolution) for the full resolution rules, including the ordering for provider base URL and described system base URL.
 - The information on the [described system instance](#described-system-instance) SHOULD be added if it is missing.
   - If system instance information is missing, the aggregator SHOULD obtain and enrich the ORD information, for example, via service discovery or trust context.
   - If the ORD aggregator has additional information on a system instance that is not standardized through the ORD interfaces, they MAY be added and exposed through the ORD Discovery API.
@@ -1192,3 +1228,11 @@ A **base URL** is the consistent part of a [system deployment](#system-deploymen
 From ORD perspective this is the base URL where the discovery starts and where the [ORD config endpoint](#ord-configuration-endpoint) location is relative to.
 In most cases the base URL consists of the URL protocol, domain name and (if necessary) the port, for example `https://example.com`.
 In rare cases, a relative path (e.g. including a tenant ID) might be included, for example `https://example.com/tenantA/`.
+
+In ORD, two base URLs can be involved in a single document:
+
+- **Provider base URL**: the base URL of the system that *serves* the ORD document and hosts metadata files (e.g., resource definition files). Declared via the document root `baseUrl` property.
+- **Described system base URL**: the base URL of the system being described (its entry points). Declared via `describedSystemInstance.baseUrl`.
+
+In the common case where the ORD provider and the described system are the same, both values are identical.
+See [Relative URL Resolution](#relative-url-resolution) for how these are used to resolve relative URLs.
