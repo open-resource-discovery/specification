@@ -376,7 +376,7 @@ definitions:
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
           maxLength: 255
         examples:
-          - ["sap.s4:communicationScenario:SAP_COM_0008"]
+          - ["foo.bar:conceptName:localIdentifier"]
 
       title: &title
         type: string
