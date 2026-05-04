@@ -18,11 +18,16 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Clarified the two-level relative URL resolution in ORD Documents to remove ambiguity when the ORD provider and the described system differ:
-  - Relative URLs to **metadata files** (resource definitions, document links, API/Event/Data Product links) are resolved against the document root `baseUrl` (ORD provider base URL).
-  - Relative URLs to **entry points** are resolved against `describedSystemInstance.baseUrl` (described system base URL).
-  - In the common case where the ORD provider and the described system are the same, both properties hold identical values and no behavioral change occurs.
-- Defined the resolution order for relative metadata file URLs (applied by ORD aggregators):
+- Specified that relative URL resolution follows [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-5) semantics and documented the three URL reference types:
+  - **Absolute URLs** (`https://...`) — used as-is.
+  - **Root-relative URLs** (leading slash, e.g., `/path/file.json`) — resolved against the applicable base URL including its path component.
+  - **Document-relative URLs** (`./`, `../`, or bare path without leading slash) — resolved relative to the current document's URL per RFC 3986. This is particularly useful for static ORD providers serving files from a file system or git repository.
+- Clarified that `path/file.json` (no leading slash, no dot prefix) is document-relative per RFC 3986, equivalent to `./path/file.json`.
+- Clarified the two-level resolution for root-relative URLs to remove ambiguity when the ORD provider and the described system differ:
+  - Root-relative URLs to **metadata files** (resource definitions, document links, API/Event/Data Product links) are resolved against the provider base URL.
+  - Root-relative URLs to **entry points** are resolved against `describedSystemInstance.baseUrl` (described system base URL).
+  - In the common case where the ORD provider and the described system are the same, both values are identical and no behavioral change occurs.
+- Defined the resolution fallback order for the provider base URL (applied by ORD aggregators):
   1. Document root `baseUrl` (if present) — takes precedence, including over the fetch context URL.
   2. In pull scenarios: the URL the ORD document was fetched from (the provider request URL).
   3. `describedSystemInstance.baseUrl` — backward-compatibility fallback for documents predating version 1.15 that do not provide a root `baseUrl`.
