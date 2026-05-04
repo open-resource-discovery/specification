@@ -3520,6 +3520,16 @@ export interface Package {
    */
   localId?: string;
   /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
+  /**
    * Human-readable title.
    *
    * MUST NOT exceed 255 chars.
