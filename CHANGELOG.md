@@ -10,8 +10,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.14.5]
+
 ### Added
 
+- Added `correlationIds` to package
 - Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/concepts/implementing-ord-natively) guide
 - Added optional root-level `baseUrl` property to ORD Documents (analogous to the existing root-level `baseUrl` in the ORD Configuration).
   This property represents the base URL of the **ORD provider** and is used to resolve relative URLs to metadata files within the document (e.g., `resourceDefinitions[].url`, `links[].url`).
