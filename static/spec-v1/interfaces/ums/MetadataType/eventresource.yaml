@@ -240,7 +240,7 @@ spec:
             pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
         - name: 'url'
           type: 'string'
-          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL (to base URL)."
+          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL)."
           mandatory: true
         - name: 'accessStrategies'
           type: 'custom'
@@ -323,7 +323,7 @@ spec:
             pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
         - name: 'url'
           type: 'string'
-          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.\n\nThe link target SHOULD be absolute and SHOULD be openly accessible.\nIf a relative link is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl)."
+          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.\n\nThe link target SHOULD be absolute and SHOULD be openly accessible.\nIf a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL)."
           mandatory: true
     - name: 'Link'
       metadataProperties:
