@@ -1,5 +1,5 @@
-:::caution Beta
-This specification is in **beta** and subject to change.
+:::caution Alpha
+This specification is in **alpha** and subject to change.
 :::
 
 The **ORD Overlay** is an optional ORD model extension that allows patching referenced resource definition files

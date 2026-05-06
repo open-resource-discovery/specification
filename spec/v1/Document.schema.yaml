@@ -2705,6 +2705,8 @@ definitions:
 
       purpose: &definitionPurpose
         type: string
+        x-feature-status: alpha
+        x-introduced-in-version: "1.15.0"
         description: |-
           Describes the intended purpose or role of this resource definition.
 
