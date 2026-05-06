@@ -230,7 +230,7 @@ The ORD document MUST be a valid [JSON](https://www.json.org/json-en.html) docum
 It MUST NOT exceed 2MB in size to ensure efficient transport and processing.
 If content exceeds this limit, split the information into multiple ORD documents.
 
-The interfaces are described in [ORD document interface](./interfaces/Document.md), including [examples](./interfaces/Document.md#examples).
+The interfaces are described in [ORD document interface](./interfaces/Document.md).
 
 An ORD document MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Document.schema.json](https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json).
 
@@ -346,7 +346,7 @@ The response MUST be a valid UTF-8 encoded [JSON](https://www.json.org/json-en.h
 
 - The response MUST not contain any sensitive information or leak tenant-specific information.
 - It MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Configuration.schema.json](https://open-resource-discovery.org/spec-v1/interfaces/Configuration.schema.json).
-- Please refer to the [interface documentation](./interfaces/Configuration.md) for more details and [examples](./interfaces/Configuration.md#complete-examples).
+- Please refer to the [interface documentation](./interfaces/Configuration.md) for more details.
 
 All of the [common REST characteristics](#common-rest-characteristics) MUST be met.
 The rules on [ORD Provider Cache Handling](#ord-provider-cache-handling) apply.
@@ -1038,7 +1038,7 @@ For example, a `public` resource can have `releaseStatus` of `beta`, meaning it'
 When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
-- MUST explicitly set a [`Tombstone`](interfaces/Document.md#document.tombstones).
+- MUST explicitly set a [`Tombstone`](interfaces/Document.md#ord-document_tombstones).
 
 ![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
 
@@ -1129,7 +1129,7 @@ In most places, the specification uses more precise terms like [system type](#sy
 
 #### System Type
 
-A **system type** is the abstract type of an application or service from an operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
+A <dfn id="def-system-type">**system type**</dfn> is the abstract type of an application or service from an operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
 
 Since system type is an abstract concept, it is not concretely addressable.
 A [system deployment](#system-deployment) of a specific [system version](#system-version) and potentially a [system instance](#system-instance) needs to be created to have a concrete, addressable system.
