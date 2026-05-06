@@ -5,7 +5,7 @@
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">ORD Specification | Open Resource Discovery</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://open-resource-discovery.org/spec-v1"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="ORD Specification | Open Resource Discovery"><meta data-rh="true" name="description" content="Notational Conventions"><meta data-rh="true" property="og:description" content="Notational Conventions"><link data-rh="true" rel="icon" href="/img/favicon.svg"><link data-rh="true" rel="canonical" href="https://open-resource-discovery.org/spec-v1"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1" hreflang="en"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ORD Specification","item":"https://open-resource-discovery.org/spec-v1/"}]}</script><script>window.bannerServerBaseUrl="https://banner-server.cert.cfapps.sap.hana.ondemand.com"</script>
 <script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.ca9dfb27.css">
-<script src="/assets/js/runtime~main.c1882ebb.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.5dd70665.js" defer="defer"></script>
 <script src="/assets/js/main.a0acc7f6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -129,7 +129,7 @@ It is notated and distributed in the <a href="https://www.json.org/json-en.html"
 <p>The ORD document MUST be a valid <a href="https://www.json.org/json-en.html" target="_blank" rel="noopener noreferrer" class="">JSON</a> document with <a href="https://en.wikipedia.org/wiki/UTF-8" target="_blank" rel="noopener noreferrer" class="">UTF-8</a> encoding.
 It MUST NOT exceed 2MB in size to ensure efficient transport and processing.
 If content exceeds this limit, split the information into multiple ORD documents.</p>
-<p>The interfaces are described in <a class="" href="/spec-v1/interfaces/Document">ORD document interface</a>, including <a class="" href="/spec-v1/interfaces/Document#examples">examples</a>.</p>
+<p>The interfaces are described in <a class="" href="/spec-v1/interfaces/Document">ORD document interface</a>, including <a class="" href="/spec-v1/examples">examples</a>.</p>
 <p>An ORD document MUST be compliant with the following <a href="https://json-schema.org/" target="_blank" rel="noopener noreferrer" class="">JSON Schema</a> definition: <a href="https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json" target="_blank" rel="noopener noreferrer" class="">Document.schema.json</a>.</p>
 <p>Internationalization and localization are not supported natively in ORD documents.
 It is therefore RECOMMENDED to use American English for human-readable titles and descriptions.</p>
@@ -216,7 +216,7 @@ before making a request.</p>
 <ul>
 <li class="">The response MUST not contain any sensitive information or leak tenant-specific information.</li>
 <li class="">It MUST be compliant with the following <a href="https://json-schema.org/" target="_blank" rel="noopener noreferrer" class="">JSON Schema</a> definition: <a href="https://open-resource-discovery.org/spec-v1/interfaces/Configuration.schema.json" target="_blank" rel="noopener noreferrer" class="">Configuration.schema.json</a>.</li>
-<li class="">Please refer to the <a class="" href="/spec-v1/interfaces/Configuration">interface documentation</a> for more details and <a class="" href="/spec-v1/interfaces/Configuration#complete-examples">examples</a>.</li>
+<li class="">Please refer to the <a class="" href="/spec-v1/interfaces/Configuration">interface documentation</a> for more details.</li>
 </ul>
 <p>All of the <a href="#common-rest-characteristics" class="">common REST characteristics</a> MUST be met.
 The rules on <a href="#ord-provider-cache-handling" class="">ORD Provider Cache Handling</a> apply.</p>
@@ -834,7 +834,7 @@ For example, a <code>public</code> resource can have <code>releaseStatus</code> 
 <p>When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:</p>
 <ul>
 <li class="">MUST be removed from ORD or set the <code>releaseStatus</code> to <code>sunset</code>.</li>
-<li class="">MUST explicitly set a <a class="" href="/spec-v1/interfaces/Document#document.tombstones"><code>Tombstone</code></a>.</li>
+<li class="">MUST explicitly set a <a class="" href="/spec-v1/interfaces/Document#ord-document_tombstones"><code>Tombstone</code></a>.</li>
 </ul>
 <p><img decoding="async" loading="lazy" alt="IDs, Version and Lifecycle" src="/assets/images/versioning-and-lifecycle.drawio-c7c4d6bf02f21255e7a663e39f69c332.svg" title="IDs, Version and Lifecycle" class="img_ev3q"></p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="common-rest-characteristics">Common REST Characteristics<a href="#common-rest-characteristics" class="hash-link" aria-label="Direct link to Common REST Characteristics" title="Direct link to Common REST Characteristics" translate="no">​</a></h2>
