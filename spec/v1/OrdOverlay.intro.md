@@ -37,7 +37,8 @@ This is the preferred approach for cross-cutting overlays that are not tied to a
   "openResourceDiscoveryV1": {
     "documents": [],
     "overlays": [
-      { "url": "/ord/overlays/my-api.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "ord:ai-enhancement" }
+      { "url": "/ord/overlays/ai-enrichment.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "ord:ai-enrichment" },
+      { "url": "/ord/overlays/governance.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "foo.bar:governance" }
     ]
   }
 }
@@ -48,6 +49,10 @@ This is the preferred approach for cross-cutting overlays that are not tied to a
 Overlays can also be attached directly to an API or Event resource as a `resourceDefinitions` entry with type `ord:overlay:v1`.
 This keeps the overlay co-located with the resource it patches.
 
+A single resource can have multiple overlays with different `purpose` values.
+This allows independent concerns (e.g. AI enrichment, platform governance) to be managed by different teams
+without conflicting with each other or the original definition.
+
 ```json
 {
   "apiResources": [{
@@ -55,7 +60,8 @@ This keeps the overlay co-located with the resource it patches.
     "resourceDefinitions": [
       { "type": "openapi-v3", "url": "/ord/metadata/my-api.oas3.json", "visibility": "public" },
       { "type": "edmx", "url": "/ord/metadata/my-api.edmx.xml", "visibility": "public" },
-      { "type": "ord:overlay:v1", "url": "/ord/overlays/my-api.overlay.json", "visibility": "internal", "purpose": "ord:ai-enhancement" }
+      { "type": "ord:overlay:v1", "url": "/ord/overlays/ai-enrichment.overlay.json", "visibility": "public", "purpose": "ord:ai-enrichment" },
+      { "type": "ord:overlay:v1", "url": "/ord/overlays/governance.overlay.json", "visibility": "internal", "purpose": "foo.bar:governance" }
     ]
   }]
 }
@@ -118,6 +124,13 @@ Key points:
 Overlays assume the target document is already valid for its native format.
 The merge tool does not fully re-validate target formats.
 After applying an overlay, validate the merged output with the corresponding format-specific tooling.
+
+## Tooling
+
+A reference implementation for merging, validating, and converting ORD Overlays is provided as a separate package.
+It supports all selector types and patch actions defined in this specification, including EDMX XML targets.
+
+The tooling package will be linked here once published.
 
 ## ORD Aggregator Expectations
 

@@ -37,7 +37,17 @@
     ],
     "overlays": [
       {
-        "url": "/open-resource-discovery/v1/overlays/astronomy-api-openapi.overlay.json",
+        "url": "/open-resource-discovery/v1/overlays/astronomy-api-ai-enrichment.overlay.json",
+        "purpose": "ord:ai-enrichment",
+        "accessStrategies": [
+          {
+            "type": "open"
+          }
+        ]
+      },
+      {
+        "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json",
+        "purpose": "foo.bar:governance",
         "accessStrategies": [
           {
             "type": "open"

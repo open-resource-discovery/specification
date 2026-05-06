@@ -987,6 +987,18 @@ export interface ApiResourceDefinition {
    * @minItems 1
    */
   accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
 }
 /**
  * Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the resource definitions.
@@ -1727,6 +1739,18 @@ export interface EventResourceDefinition {
    * in case that some metadata must only be made accessible to internal consumers.
    */
   visibility?: "public" | "internal" | "private";
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
 }
 /**
  * Describes the compatibility of the Event with other Events. This can be used to express that an Event is compatible with another Event version.
@@ -2297,6 +2321,18 @@ export interface CapabilityDefinition {
    * in case that some metadata must only be made accessible to internal consumers.
    */
   visibility?: "public" | "internal" | "private";
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
 }
 /**
  * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
