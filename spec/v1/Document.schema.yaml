@@ -361,6 +361,23 @@ definitions:
           - "SuccessFactorsRecruiting"
           - "91cd9972-c05d-4d29-8b6e-dbef2a2d48e9"
 
+      correlationIds: &correlationIds
+        type: array
+        description: |-
+          Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+
+          They express an "identity" / "equals" / "mappable" relationship to the target ID.
+
+          If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+
+          MUST be a valid [Correlation ID](../index.md#correlation-id).
+        items: &correlationId
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
+          maxLength: 255
+        examples:
+          - ["foo.bar:conceptName:localIdentifier"]
+
       title: &title
         type: string
         description: |-
@@ -689,20 +706,8 @@ definitions:
       localId:
         <<: *localId
 
-      correlationIds: &correlationIds
-        type: array
-        description: |-
-          Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
-
-          They express an "identity" / "equals" / "mappable" relationship to the target ID.
-
-          If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
-
-          MUST be a valid [Correlation ID](../index.md#correlation-id).
-        items: &correlationId
-          type: string
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
-          maxLength: 255
+      correlationIds:
+        <<: *correlationIds
         examples:
           - ["sap.s4:communicationScenario:SAP_COM_0008"]
 
