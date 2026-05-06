@@ -230,7 +230,7 @@ The ORD document MUST be a valid [JSON](https://www.json.org/json-en.html) docum
 It MUST NOT exceed 2MB in size to ensure efficient transport and processing.
 If content exceeds this limit, split the information into multiple ORD documents.
 
-The interfaces are described in [ORD document interface](./interfaces/Document.md).
+The interfaces are described in [ORD document interface](./interfaces/Document.md), including [examples](spec-v1/examples/).
 
 An ORD document MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Document.schema.json](https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json).
 
