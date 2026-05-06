@@ -1129,7 +1129,7 @@ In most places, the specification uses more precise terms like [system type](#sy
 
 #### System Type
 
-A <dfn id="def-system-type">**system type**</dfn> is the abstract type of an application or service from an operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
+A **system type** is the abstract type of an application or service from an operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
 
 Since system type is an abstract concept, it is not concretely addressable.
 A [system deployment](#system-deployment) of a specific [system version](#system-version) and potentially a [system instance](#system-instance) needs to be created to have a concrete, addressable system.
