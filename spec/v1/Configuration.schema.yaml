@@ -66,6 +66,8 @@ definitions:
 
       overlays:
         type: array
+        x-feature-status: alpha
+        x-introduced-in-version: "1.15.0"
         description: |-
           List of all ORD Overlay documents that can be retrieved.
 

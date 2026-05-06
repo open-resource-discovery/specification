@@ -2623,6 +2623,8 @@ definitions:
               The `mediaType` MUST be be set to `application/json`.
             x-introduced-in-version: "1.9.4"
           - const: ord:overlay:v1
+            x-feature-status: alpha
+            x-introduced-in-version: "1.15.0"
             description: |-
               ORD Overlay file for patching referenced resource definition files.
               For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
@@ -2766,6 +2768,8 @@ definitions:
 
               The `mediaType` MUST be be set to `application/json`.
           - const: ord:overlay:v1
+            x-feature-status: alpha
+            x-introduced-in-version: "1.15.0"
             description: |-
               ORD Overlay file for patching referenced resource definition files.
               For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
