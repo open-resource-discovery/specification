@@ -79,6 +79,10 @@ const config = {
 						from: "/spec-v1/interfaces/document",
 						to: "/spec-v1/interfaces/Document",
 					},
+					{
+						from: "/overview",
+						to: "/",
+					},
 				],
 			},
 		],
@@ -122,10 +126,6 @@ const config = {
 					src: "img/logo/ORD_Icon_Color_Logo.svg",
 				},
 				items: [
-					{
-						label: "Overview",
-						to: "overview",
-					},
 					{
 						label: "Primer",
 						to: "introduction",

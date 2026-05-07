@@ -331,8 +331,8 @@ nav.navbar::before {
 html[data-nav-scrolled="0"] nav.navbar:not(.navbar-sidebar--show),
 html:not([data-nav-scrolled="1"]) .navbar {
   background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  border-bottom: 1px solid var(--nav-border-scrolled) !important;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12) !important;
 }
 html[data-nav-scrolled="0"]:not(:has(.ord-home-flag)) nav.navbar:not(.navbar-sidebar--show),
 html:not([data-nav-scrolled="1"]):not(:has(.ord-home-flag)) .navbar {
@@ -466,9 +466,11 @@ nav.navbar [class*="toggleButton_"]:focus-visible {
 }
 /* Light theme variations */
 html[data-theme="light"] nav.navbar {
-  background: transparent !important;
-  border-bottom: 0 !important;
-  box-shadow: none !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-bottom: 1px solid var(--nav-border-scrolled) !important;
+  box-shadow: 0 1px 8px rgba(4, 13, 18, 0.06) !important;
+  backdrop-filter: blur(10px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
 }
 
 html[data-theme="light"] nav.navbar .navbar__title {
