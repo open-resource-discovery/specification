@@ -287,13 +287,17 @@ html[data-theme="light"] .neonephos-logo--light {
   width: 100%;
   height: 100%;
 }
+@media (max-width: 959px) {
+  .lp-home .image {
+    display: none;
+  }
+  .lp-home .lp-hero-bottom {
+    order: 3;
+  }
+}
 @media (max-width: 480px) {
   .lp-home {
     padding: var(--nav-pad-x) !important;
-  }
-  .lp-home .image-container {
-    width: 150px;
-    height: 150px;
   }
   .lp-home .container.lp-hero {
     gap: var(--nav-pad-x) !important;
@@ -310,10 +314,6 @@ html[data-theme="light"] .neonephos-logo--light {
   }
 }
 @media (min-width: 481px) and (max-width: 959px) {
-  .lp-home .image-container {
-    width: 180px;
-    height: 180px;
-  }
   .lp-home {
     padding: 40px 24px 48px !important;
   }
