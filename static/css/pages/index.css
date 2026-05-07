@@ -347,6 +347,7 @@ html[data-theme="light"] .neonephos-logo--light {
     grid-template-columns: 1fr 220px;
     text-align: left;
     gap: 16px 48px;
+    margin-bottom: 16px;
   }
   .lp-home .main {
     grid-column: 1;
