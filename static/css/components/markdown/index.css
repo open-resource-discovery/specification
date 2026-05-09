@@ -151,6 +151,11 @@ article .card {
 }
 
 /* Cards and iframes */
+.markdown img[src$=".svg"]:not([src*="/logo/"]):not([src*="/icons/"]) {
+  border-radius: 8px;
+  padding: 4px;
+  background: #eff1f3;
+}
 iframe {
   border: 1px solid #e7e7e7;
   border-radius: 8px;
