@@ -127,7 +127,7 @@ const config = {
 				},
 				items: [
 					{
-						label: "Primer",
+						label: "Introduction",
 						to: "introduction",
 					},
 					{

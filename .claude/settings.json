@@ -1,4 +1,16 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(grep -o 'img/[^\\)\"` ]*\\\\.svg')",
+      "Bash(python3)",
+      "Bash(git stash *)",
+      "Bash(sed -n '60:70p' docs/spec-v1/concepts/system-landscape-model.md)",
+      "Bash(sed -n '148:198p' docs/spec-v1/concepts/grouping-and-bundling.md)",
+      "Bash(grep -A 50 '```mermaid' docs/spec-v1/diagrams/ord-document.md)",
+      "Bash(grep -A 50 '```mermaid' docs/spec-v1/diagrams/ord-configuration.md)",
+      "Bash(grep -A 50 '```mermaid' docs/spec-v1/concepts/implementing-ord-natively.md)"
+    ]
+  },
   "contextFiles": [
     "AGENTS.md",
     "package.json"
