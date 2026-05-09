@@ -7,9 +7,11 @@ export * from "./generated/spec/v1/types";
 /**
  * The JSON Schema (draft-07) describing the ORD Document interface
  */
-export const ordDocumentSchema = staticDocumentSchema as unknown as SpecJsonSchemaRoot;
+export const ordDocumentSchema =
+	staticDocumentSchema as unknown as SpecJsonSchemaRoot;
 
 /**
  * The JSON Schema (draft-07) describing the ORD Configuration interface
  */
-export const ordConfigurationSchema = staticConfigurationSchema as unknown as SpecJsonSchemaRoot;
+export const ordConfigurationSchema =
+	staticConfigurationSchema as unknown as SpecJsonSchemaRoot;

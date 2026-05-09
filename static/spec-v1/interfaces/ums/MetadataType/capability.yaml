@@ -232,11 +232,11 @@ spec:
     - propertyName: 'relatedApiResources'
       relatedTypeName: 'RelatedApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Optional list of related API Resources.\n\nUse this to indicate which APIs implement, expose, or are otherwise related to this capability."
+      description: "Optional list of related API Resources.\n\nUse this to indicate which APIs implement, expose, or are otherwise related to this entity."
     - propertyName: 'relatedEventResources'
       relatedTypeName: 'RelatedEventResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this capability."
+      description: "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this entity."
     - propertyName: 'relatedCapabilities'
       relatedTypeName: 'RelatedCapability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

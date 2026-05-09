@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "A Group Type defines the semantics of [group assignments](#group).\nWhat the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).\n\nGroup Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups)."
+  description: "A Group Type defines the semantics of [group assignments](#group).\nWhat the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).\n\nGroup Types can be defined centrally (ownership by an authority namespace or another shared owning namespace) or decentrally (defined by the application / service itself).\n\nTo learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).\nFor the distinction between system-scoped and system-independent shared taxonomy, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources)."
   metadataProperties:
     - name: 'id'
       type: 'guid'

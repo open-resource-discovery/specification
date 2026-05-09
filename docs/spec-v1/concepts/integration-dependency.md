@@ -30,9 +30,17 @@ Therefore, we introduced Integration Dependency as a means to describe what a sy
 If this is setup and connected at run-time, we call this an integration.
 But at ORD level, we're only describing the "type-level" ability to integrate and what dependencies and requirements that entails.
 
+> **Tip:** When the integration target resource uses a shared ORD ID, for example with an [authority namespace](../index.md#authority-namespace), a reused system namespace or an [abstract resource](./compatibility.md#abstract-ord-resources), a single dependency reference covers all system types providing that contract.
+> This is simpler than listing multiple system-type-specific ORD IDs as alternatives in the aspect.
+> See [Shared Taxonomy, Resources and Contracts](./shared-resources.md).
+
 The following diagram shows how two systems can integrate with each other via APIs and Events:
 
+<div className="img-box">
+
 ![Integration Dependency Problem Statement](/img/integration-dependency-ps.drawio.svg "Integration Dependency Problem Statement")
+
+</div>
 
 > **Figure 1:** This figure shows an integration scenario between System A and System B. System Instance A has implemented API clients against API Resources B-1 and B-2 of its integration target, as well as an event subscription (client implementation) for events from event resource B-3. It has an API Resource A-2, which the integration target uses to provide data back to System A.
 
@@ -43,7 +51,11 @@ We introduce a new ORD resource type **Integration Dependency**. It can be used 
 In addition, it is also possible to further define that only a subset of the depended resources is necessary for the integration, allowing us to be more precise when necessary (e.g., for the SAP Event Broker use case).
 With the proposed solution we can handle SAP Event Broker and Data Product related requirements with a shared, generic concept. In general, Integration Dependencies are optional to be provided and will only be mandated through specific use cases, e.g., SAP Event Broker or Data Products.
 
+<div className="img-box">
+
 ![Integration Dependency](/img/integration-dependency.drawio.svg "Integration Dependency")
+
+</div>
 
 > **Figure 2:** This figure is based on the situation in Figure 1. It shows how System Instance A not only exposes API resources, but also defines an Integration Dependency with multiple requirements referencing external resources (System Instance B). Requirement 1 can be realized by accessing either API Resource B-1 or B-2 (alternatives). Requirement 2 covers event subscription. Requirement 3 points to its own API resource, which the integration target uses to send data back to System A.
 
@@ -72,7 +84,11 @@ Also be aware that Integration Dependencies and Requirements are describing a ty
 
 We think describing such outward requirements fits well into the ORD scope, because only the system itself knows what external requirements it has and what integration outcomes / scenarios it realizes by integrating with the requirement targets.
 
+<div className="img-box">
+
 ![ORD High Level Data Model](/img/ord-high-level-data-model.drawio.svg "ORD High Level Data Model")
+
+</div>
 
 > This figure shows a high-Level overview on ORD entities and where Integration Dependency and Requirements fit in.
 

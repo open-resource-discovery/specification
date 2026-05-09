@@ -23,12 +23,20 @@ From there ORD is used to fill in the details.
 However, those two worlds need to be connected and therefore ORD has a simplified, very high-level system landscape model.
 It is mostly described in the [ORD Terminology section](../index.md#terminology).
 
+<div className="img-box">
+
 ![System and namespace concept overview](/img/system-landscape/system.drawio.svg)
+
+</div>
 
 The most essential concept to understand is the **[System Instance](../index.md#system-instance)**.
 It's a simplified concept that usually stands for a technical tenant of a system, but in case of single-tenant system it can also stand for the system itself.
 The important aspect is that it's where the isolation of resources, capabilities and data is ensured.
 In the diagram, it's also marked with "dynamic", as it is a live running system that can describe its actual state at run-time.
+
+A System Instance is hosted by a [System Deployment](../index.md#system-deployment), which is a concrete, addressable deployment of a system.
+A single [System Type](../index.md#system-type) can have multiple deployments (e.g., one per region or data center), and each deployment can host multiple system instances (tenants).
+The System Deployment concept is shown with a dotted border in the diagram, indicating it's not yet a formal ORD interface but is conceptually important for understanding the system landscape hierarchy.
 
 A System Instance can be of a [System Type](../index.md#system-type), which is the technical type.
 This is not to be confused with the [Product](../index.md#product), which lives in the commercial domain and can have a more complicated relationship with the concepts from the technical system domain.
@@ -46,6 +54,9 @@ It should be pointed out that the:
 - [system namespace](../index.md#system-namespace) corresponds to the [ORD System Type](../index.md#system-type).
 - [sub-context namespaces](../index.md#sub-context-namespace) have no corresponding ORD concept.
 
+When resources, taxonomy or contracts are shared across multiple system types, the namespace identifies the owner of the shared definition.
+See [Namespace Ownership](./shared-resources.md#namespace-ownership) for guidance on choosing the correct namespace.
+
 ## System Resources and Capabilities
 
 From here we can place most of the ORD concepts, e.g. like the APIs and Events.
@@ -55,8 +66,10 @@ The ORD Resources and Capabilities describe either a System Type (in static pers
 
 Taxonomy is independent of Systems, but can be defined either locally or globally.
 
-<div style={{"text-align": "left"}}>
+<div className="img-box">
+
 ![ORD Data Model Overview](/img/ord-high-level-data-model.drawio.svg 'ORD Data Model Overview')
+
 </div>
 
 ## Taxonomy
@@ -67,10 +80,10 @@ Here is an overview which ORD concepts can be dynamic (different per System Inst
 
 | ORD Concept            | Category              | Can be Dynamic | Can be Global | Always Global |
 | ---------------------- | --------------------- | -------------- | ------------- | ------------- |
-| API Resource           | Resource / Capability | ✅             | ❌            | ❌            |
-| Event Resource         | Resource / Capability | ✅             | ❌            | ❌            |
+| API Resource           | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
+| Event Resource         | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
 | Capability             | Resource / Capability | ✅             | ❌            | ❌            |
-| Data Product           | Resource / Capability | ✅             | ❌            | ❌            |
+| Data Product           | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
 | Integration Dependency | Resource / Capability | ✅             | ❌            | ❌            |
 | Entity Type            | Taxonomy              | ✅             | ✅            | ❌            |
 | Vendor                 | Taxonomy              | ❌             | ✅            | ✅            |

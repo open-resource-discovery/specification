@@ -10,6 +10,41 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.14.5]
+
+### Added
+
+- Added `correlationIds` to package
+- Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/concepts/implementing-ord-natively) guide
+
+## [1.14.4]
+
+### Changed
+
+- Added recommendation to use [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts. The `labels` key validation pattern now also allows `:` and `/` characters accordingly.
+- Clarified the use of [authority namespaces](https://open-resource-discovery.org/spec-v1#authority-namespace) for resource ORD IDs: when multiple system types share the same resource contract under a shared authority namespace, the uniqueness and aggregation rules now explicitly address this. See [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
+- Added concept page on [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
+- Clarification: Consolidated and clarified the [static perspective resolution](https://open-resource-discovery.org/spec-v1/concepts/perspectives#static-perspective-resolution) algorithm for aggregators. When no specific version is requested, explicit `system-type` perspective data takes precedence; if unavailable, the aggregator SHOULD derive it from the latest `system-version`. Previously this behavior was scattered and only stated as MAY.
+
+## [1.14.3]
+
+### Added
+
+- Added relationship property to `ApiResource` for expressing relations to other ORD resources:
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link API resources to API resources
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link API resources to event resources
+
+- Added relationship property to `EventResource` for expressing relations to other ORD resources:
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link event resources to event resources
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link event resources to API resources
+
+### Changed
+
+- Improved the [Grouping and Bundling](./docs/spec-v1/concepts/grouping-and-bundling.md) documentation page:
+  - Added missing **Product** section explaining the concept and its role in portfolio structuring.
+  - Added a "Choosing the Right Concept" comparison table to help decide which grouping mechanism to use.
+  - Improved descriptions for all grouping concepts (Package, Consumption Bundle, Entity Type, Tags, Labels, Groups).
+
 ## [1.14.2]
 
 ### Added

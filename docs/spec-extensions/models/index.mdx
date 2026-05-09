@@ -5,11 +5,29 @@ hide_table_of_contents: true
 
 # Model Extensions
 
-This section contains additional model schemas that extend the ORD specification.
+Model Extensions are **independent specification documents** that extend the ORD ecosystem with additional schemas for specific use cases.
 
-These models provide structured formats for specific use cases that complement the core ORD Document and Configuration interfaces.
+## When to Use Model Extensions
+
+Model extensions are often preferable to extending the core ORD specification with additional attributes:
+
+- **Multiple Sources**: When metadata comes from different sources or systems (e.g., governance data from a separate team), a model extension allows each source to maintain its own document with its own lifecycle.
+- **Different Update Cadence**: When certain metadata changes more frequently or independently from core ORD information.
+- **Specialized Domains**: When metadata is specific to a particular domain or use case that doesn't belong in the core specification.
+- **Organizational Boundaries**: When different teams or organizations own different aspects of the metadata.
+
+## Key Characteristics
+
+- **Independent Lifecycle**: Each model extension has its own versioning and release cycle, separate from the core ORD specification.
+- **Own Ownership**: Model extensions can be maintained by different teams or organizations.
+- **ORD Integration**: Model extensions can be:
+  - Referenced from ORD Documents via ORD IDs
+  - Attached to ORD resources
+  - Cross-reference ORD concepts and resources
+- **Structured Schemas**: Like core ORD interfaces, model extensions provide JSON Schema definitions and TypeScript types.
+
+## Available Model Extensions
 
 import DocCardList from '@theme/DocCardList'
 
-<br />
 <DocCardList />

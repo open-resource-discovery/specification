@@ -89,7 +89,7 @@ properties:
     oneOf:
       - const: "system-type"
         description: |-
-          Describes a static [system-type](../index.md#def-system-type) perspective, which is version independent.
+          Describes a static [system-type](../index.md#system-type) perspective, which is version independent.
 
           If a system is not versioned (continuous delivery) or resources are not tied to a system, the system-type perspective
           implies that the information apply, no matter which system version or instance.
@@ -100,7 +100,7 @@ properties:
           If chosen, `describedSystemVersion`.`version` MUST be provided, too.
 
           This perspective describes how a system of a particular type and version generally look like.
-          The latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective.
+          If no explicit `system-type` perspective is available, the latest system-version SHOULD be interpreted as the [system-type](../index.md#system-type) perspective (see [static perspective resolution](../concepts/perspectives#static-perspective-resolution)).
       - const: "system-instance"
         description: |-
           Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
@@ -119,6 +119,7 @@ properties:
           The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
 
           Examples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems.
+          For the distinction between system-independent content and system-scoped shared publications, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).
     default: "system-instance"
     examples:
       - "system-instance"
@@ -325,7 +326,6 @@ definitions:
 
       The Package can also be used to indicate which products or vendors provided the packaged resources.
       For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
-      In any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.
 
       A Package SHOULD contain at least one resource. Avoid empty Packages.
 
@@ -360,6 +360,23 @@ definitions:
         examples:
           - "SuccessFactorsRecruiting"
           - "91cd9972-c05d-4d29-8b6e-dbef2a2d48e9"
+
+      correlationIds: &correlationIds
+        type: array
+        description: |-
+          Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+
+          They express an "identity" / "equals" / "mappable" relationship to the target ID.
+
+          If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+
+          MUST be a valid [Correlation ID](../index.md#correlation-id).
+        items: &correlationId
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
+          maxLength: 255
+        examples:
+          - ["foo.bar:conceptName:localIdentifier"]
 
       title: &title
         type: string
@@ -667,10 +684,10 @@ definitions:
     title: Consumption Bundle
     x-ums-type: root
     description: |-
-      A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
-      Ideally it also includes instructions and details how to request access and credentials for resources.
+      A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the same credentials and auth mechanism.
+      Ideally it also includes instructions and details on how to request access and credentials for resources.
 
-      For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).
+      For more documentation and guidance on how to use this correctly, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).
 
       A Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.
       A Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned
@@ -689,20 +706,8 @@ definitions:
       localId:
         <<: *localId
 
-      correlationIds: &correlationIds
-        type: array
-        description: |-
-          Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
-
-          They express an "identity" / "equals" / "mappable" relationship to the target ID.
-
-          If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
-
-          MUST be a valid [Correlation ID](../index.md#correlation-id).
-        items: &correlationId
-          type: string
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
-          maxLength: 255
+      correlationIds:
+        <<: *correlationIds
         examples:
           - ["sap.s4:communicationScenario:SAP_COM_0008"]
 
@@ -1033,8 +1038,10 @@ definitions:
           Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
 
           Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+          Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
 
           More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+          See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
       visibility:
         <<: *visibility
 
@@ -1062,7 +1069,7 @@ definitions:
               Breaking changes may occur at any time without notice or deprecation period.
 
               Not recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,
-              and feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion.
+              and feedback gathering. Resources of `beta` `releaseStatus` MAY be changed or removed at the provider's discretion.
 
           - const: active
             description: |-
@@ -1076,6 +1083,7 @@ definitions:
               The resource is still functional but scheduled for removal. No new development should depend on it.
 
               If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+              If the `releaseStatus` is set to `deprecated`, and the `sunsetDate` is already known, then the `sunsetDate` SHOULD be provided.
 
               If successor resources exist, they MUST be referenced through `successors`.
 
@@ -1086,7 +1094,7 @@ definitions:
             description: |-
               The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.
 
-              If the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided.
+              If the `releaseStatus` is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided.
         examples:
           - active
 
@@ -1116,6 +1124,30 @@ definitions:
         examples:
           - "1.2.3"
           - "2024.8.0"
+
+      relatedApiResources: &relatedApiResources
+        type: array
+        x-introduced-in-version: "1.14.3"
+        description: |-
+          Optional list of related API Resources.
+
+          Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
+        items:
+          $ref: "#/definitions/RelatedApiResource"
+        examples:
+          - [{ "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1", "relationType": "foo.bar:relationName" }]
+
+      relatedEventResources: &relatedEventResources
+        type: array
+        x-introduced-in-version: "1.14.3"
+        description: |-
+          Optional list of related Event Resources.
+
+          Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
+        items:
+          $ref: "#/definitions/RelatedEventResource"
+        examples:
+          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "foo.bar:relationName" }]
 
       deprecationDate: &deprecationDate
         type: string
@@ -1693,6 +1725,14 @@ definitions:
       minSystemVersion:
         <<: *minSystemVersion
 
+      relatedApiResources:
+        <<: *relatedApiResources
+        x-introduced-in-version: "1.14.3"
+
+      relatedEventResources:
+        <<: *relatedEventResources
+        x-introduced-in-version: "1.14.3"
+
       deprecationDate:
         <<: *deprecationDate
 
@@ -1866,8 +1906,8 @@ definitions:
     title: Entity Type
     x-ums-type: root
     description: |-
-      An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
-      The same entity type can be exposed through one or multiple API and events resources.
+      An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model (e.g. a business object / domain model).
+      Entity Types can be related to API & Event resources, Data Products and other Entity Types, connecting exposed resources to business semantics.
 
       To learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).
     x-introduced-in-version: "1.8.0"
@@ -2745,7 +2785,7 @@ definitions:
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         examples:
           - "sap.foo.bar:agent:disputeAgent:v1"
 
@@ -2888,7 +2928,7 @@ definitions:
           MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
         items:
           type: string
-          pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           x-association-target:
             - "#/definitions/IntegrationDependency/ordId"
@@ -2927,15 +2967,17 @@ definitions:
     title: Product
     x-ums-type: root
     description: |-
-      A **product** in ORD is understood as a commercial product or service.
+      A [**Product**](../concepts/grouping-and-bundling#product) in ORD is understood as a software product or service offering (whether commercial or free).
 
-      It is a high-level entity for structuring the software portfolio from a sales / software logistics perspective.
-      While **system type** is a technical concept, **product** covers the commercial and marketing view.
+      It is a high-level entity for structuring the software portfolio from a portfolio / software logistics perspective.
+      While **system type** is a technical concept, **product** covers the portfolio and marketing view.
 
       Please note that the ORD concept of a product is very simple on purpose.
       There is no distinction between products and services and concepts like product versions, variants, etc.
 
       ORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.
+
+      To learn more about the concept, see [Product](../concepts/grouping-and-bundling#product).
     properties:
       ordId:
         <<: *ordId
@@ -3120,28 +3162,12 @@ definitions:
           - ["sap.odm:entityType:WorkforcePerson:v1"]
 
       relatedApiResources:
-        type: array
+        <<: *relatedApiResources
         x-introduced-in-version: "1.14.2"
-        description: |-
-          Optional list of related API Resources.
-
-          Use this to indicate which APIs implement, expose, or are otherwise related to this capability.
-        items:
-          $ref: "#/definitions/RelatedApiResource"
-        examples:
-          - [{ "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1", "relationType": "foo.bar:relationName" }]
 
       relatedEventResources:
-        type: array
+        <<: *relatedEventResources
         x-introduced-in-version: "1.14.2"
-        description: |-
-          Optional list of related Event Resources.
-
-          Use this to indicate which events are emitted, consumed, or otherwise related to this capability.
-        items:
-          $ref: "#/definitions/RelatedEventResource"
-        examples:
-          - [{ "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1", "relationType": "foo.bar:relationName" }]
 
       relatedCapabilities:
         type: array
@@ -4059,7 +4085,7 @@ definitions:
     description: |-
       A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.
       In a multi-tenant system, it corresponds to a tenant.
-      In a single-tenant system, it corresponds to the [system installation](../index.md#system-deployment) itself.
+      In a single-tenant system, it corresponds to the [system deployment](../index.md#system-deployment) itself.
     properties:
       baseUrl:
         type: string
@@ -4321,12 +4347,14 @@ definitions:
     title: Labels
     type: object
     description: |-
-      Generic labels that can be applied to most ORD information.
+      Generic key-value labels that can be applied to most ORD information.
       They are defined as an object that may have arbitrary keys.
       The value of a key is an array of strings.
 
       Labels can be used to attach technical information that cannot be expressed natively in ORD.
       An ORD aggregator should allow to categorize and query information based on the labels provided.
+
+      To learn more about the concept, see [Labels](../concepts/grouping-and-bundling#labels).
 
       If multiple parties rely on the existence of certain label information,
       standardization through ORD SHOULD be preferred.
@@ -4335,15 +4363,19 @@ definitions:
       Duplicate labels will be merged by the ORD aggregator according to the following rules:
       * Values of the same label key will be merged.
       * Duplicate values of the same label key will be removed.
+
+      **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
+      The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
     x-ums-type: "custom"
     patternProperties:
-      "^[a-zA-Z0-9-_.]*$":
+      "^[a-zA-Z0-9-_.:\/]*$":
         type: array
         items:
           type: string
           minLength: 1
     examples:
-      - label-key-1: ["label-value-1", "label-value-2"]
+      - foo.bar:labelKeyName: ["value"]
+      - foo.bar:cost-center: ["CC-12345", "CC-67890"]
 
   ############################################################################################################
 
@@ -4355,9 +4387,10 @@ definitions:
       A Group Type defines the semantics of [group assignments](#group).
       What the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).
 
-      Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
+      Group Types can be defined centrally (ownership by an authority namespace or another shared owning namespace) or decentrally (defined by the application / service itself).
 
       To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
+      For the distinction between system-scoped and system-independent shared taxonomy, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).
     x-introduced-in-version: "1.9.0"
     properties:
       groupTypeId: &groupTypeId

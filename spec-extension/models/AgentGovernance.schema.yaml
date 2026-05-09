@@ -1,0 +1,10 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://open-resource-discovery.org/spec-extension/v1/AgentGovernance.schema.json"
+title: Agent Governance
+description: |-
+  Agent Governance is a model extension for ORD that provides governance metadata for AI agents.
+
+  This is a placeholder schema for future development.
+x-feature-status: alpha
+type: object
+additionalProperties: false

@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "A **product** in ORD is understood as a commercial product or service.\n\nIt is a high-level entity for structuring the software portfolio from a sales / software logistics perspective.\nWhile **system type** is a technical concept, **product** covers the commercial and marketing view.\n\nPlease note that the ORD concept of a product is very simple on purpose.\nThere is no distinction between products and services and concepts like product versions, variants, etc.\n\nORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them."
+  description: "A [**Product**](../concepts/grouping-and-bundling#product) in ORD is understood as a software product or service offering (whether commercial or free).\n\nIt is a high-level entity for structuring the software portfolio from a portfolio / software logistics perspective.\nWhile **system type** is a technical concept, **product** covers the portfolio and marketing view.\n\nPlease note that the ORD concept of a product is very simple on purpose.\nThere is no distinction between products and services and concepts like product versions, variants, etc.\n\nORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.\n\nTo learn more about the concept, see [Product](../concepts/grouping-and-bundling#product)."
   metadataProperties:
     - name: 'id'
       type: 'guid'

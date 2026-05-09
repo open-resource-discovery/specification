@@ -1,6 +1,7 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.14",
+  "perspective": "system-instance",
   "description": "This ORD Document example contains more special examples, like custom SAP protocols",
   "policyLevels": ["sap:core:v1"],
   "consumptionBundles": [
@@ -30,7 +31,6 @@
       "lastUpdate": "2022-12-19T15:47:04+00:00",
       "visibility": "internal",
       "releaseStatus": "active",
-      "systemInstanceAware": true,
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "apiProtocol": "sap-rfc",
       "partOfConsumptionBundles": [
@@ -64,7 +64,6 @@
       "lastUpdate": "2022-12-19T15:47:04+00:00",
       "visibility": "internal",
       "releaseStatus": "active",
-      "systemInstanceAware": true,
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "apiProtocol": "websocket",
       "direction": "mixed",
@@ -87,7 +86,6 @@
       "lastUpdate": "2022-12-19T15:47:04+00:00",
       "visibility": "internal",
       "releaseStatus": "active",
-      "systemInstanceAware": true,
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "partOfConsumptionBundles": [
         {

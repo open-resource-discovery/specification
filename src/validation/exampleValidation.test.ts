@@ -95,7 +95,7 @@ async function getExampleFiles(
 		return files
 			.filter((file) => pattern.test(file))
 			.map((file) => path.join(dirPath, file));
-	} catch (error) {
+	} catch (_error) {
 		// Directory doesn't exist or isn't readable
 		return [];
 	}
