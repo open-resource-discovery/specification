@@ -175,7 +175,7 @@ html[data-theme="light"] .neonephos-logo--light {
   display: grid;
   background: var(--lp-c-bg);
   gap: 32px;
-  padding: 60px 24px 72px;
+  padding: 60px 24px 20px;
 }
 .lp-home .container {
   display: flex;
@@ -279,6 +279,8 @@ html[data-theme="light"] .neonephos-logo--light {
   max-width: 800px;
   height: 0;
   padding-bottom: min(56.25%, 454px);
+  margin-left: auto;
+  margin-right: auto;
 }
 .videoIframe {
   position: absolute;
@@ -337,17 +339,23 @@ html[data-theme="light"] .neonephos-logo--light {
 }
 @media (min-width: 960px) {
   .lp-home .name {
-    font-size: 64px;
+    font-size: 76px;
   }
   .lp-home {
     padding: 60px 64px 48px !important;
   }
   .lp-home .container.lp-hero {
     display: grid;
-    grid-template-columns: 1fr 220px;
+    grid-template-columns: 1fr 350px;
     text-align: left;
     gap: 16px 48px;
     margin-bottom: 16px;
+    min-height: calc(100vh - var(--ifm-navbar-height, 60px) - 80px);
+    align-content: center;
+  }
+  .lp-home .image-container {
+    width: 350px;
+    height: 350px;
   }
   .lp-home .main {
     grid-column: 1;
@@ -366,7 +374,7 @@ html[data-theme="light"] .neonephos-logo--light {
     grid-column: 1 / -1;
   }
   .lp-home .subtitle {
-    font-size: 36px;
+    font-size: 40px;
   }
   .lp-home .tagline {
     margin: 0 0 0;
@@ -519,10 +527,14 @@ html[data-theme="light"] .neonephos-logo--light {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: -30px;
 }
 .lp-overview-diagram img {
   max-width: 100%;
   height: auto;
+  border-radius: 8px;
+  padding: 4px;
+  background: #eff1f3;
 }
 @media (max-width: 959px) {
   .lp-overview-grid {
