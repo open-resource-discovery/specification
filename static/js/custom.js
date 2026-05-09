@@ -2,7 +2,10 @@
 // Little script to highlight the links and definitions that were navigated to
 
 window.addEventListener("load", function() {
-  locationHashChanged(true);
+  // Defer one frame so React finishes hydration before we mutate class names
+  requestAnimationFrame(function() {
+    locationHashChanged(true);
+  });
 }, false);
 
 window.addEventListener("hashchange", function() {
@@ -10,15 +13,9 @@ window.addEventListener("hashchange", function() {
 }, false);
 
 function locationHashChanged(checkDrift) {
-  document.querySelectorAll(".highlight").forEach(function(el) {
-    el.classList.remove("highlight");
-  });
-
   var id = window.location.hash.substring(1);
   var el = document.getElementById(id);
   if (!el) return;
-
-  el.classList.add("highlight");
 
   if (checkDrift) {
     var rect = el.getBoundingClientRect();

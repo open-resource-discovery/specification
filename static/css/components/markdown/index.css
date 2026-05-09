@@ -107,7 +107,7 @@ article .card {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
 }
-.markdown .highlight {
+.markdown :target {
   background: var(--lp-highlight-bg) !important;
   color: var(--lp-highlight-text) !important;
   border-radius: 3px;
@@ -250,7 +250,7 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markd
   background: rgba(255, 255, 255, 0.04);
   color: var(--c-text-strong);
 }
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .highlight {
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown :target {
   background: var(--lp-highlight-bg) !important;
   color: var(--lp-highlight-text) !important;
   border-radius: 3px;
