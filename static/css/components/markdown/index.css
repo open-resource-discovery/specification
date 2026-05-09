@@ -107,7 +107,8 @@ article .card {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
 }
-.markdown :target {
+.markdown :target,
+.markdown [data-is-target] {
   background: var(--lp-highlight-bg) !important;
   color: var(--lp-highlight-text) !important;
   border-radius: 3px;
@@ -250,7 +251,8 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markd
   background: rgba(255, 255, 255, 0.04);
   color: var(--c-text-strong);
 }
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown :target {
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown :target,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown [data-is-target] {
   background: var(--lp-highlight-bg) !important;
   color: var(--lp-highlight-text) !important;
   border-radius: 3px;
@@ -356,7 +358,8 @@ html {
   scroll-margin-top: calc(var(--doc-header-offset) + 8px);
 }
 
-.markdown :is(h1, h2, h3, h4, h5, h6).is-target .hash-link {
+.markdown :is(h1, h2, h3, h4, h5, h6):target .hash-link,
+.markdown :is(h1, h2, h3, h4, h5, h6)[data-is-target] .hash-link {
   color: var(--c-accent) !important;
   text-decoration-color: var(--c-accent);
 }

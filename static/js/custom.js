@@ -17,6 +17,11 @@ function locationHashChanged(checkDrift) {
   var el = document.getElementById(id);
   if (!el) return;
 
+  // Use data attribute (not class) so React reconciliation won't remove it
+  var prev = document.querySelector('[data-is-target]');
+  if (prev) prev.removeAttribute('data-is-target');
+  el.setAttribute('data-is-target', 'true');
+
   if (checkDrift) {
     var rect = el.getBoundingClientRect();
     var headerOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--doc-header-offset')) || 72;
