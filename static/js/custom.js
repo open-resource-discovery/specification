@@ -1,69 +1,36 @@
 /* globals window, document */
 // Little script to highlight the links and definitions that were navigated to
-var isInitialLoad = true;
 
 window.addEventListener("load", function() {
-  // Wait for images and banner adjustment to complete before highlighting
-  waitForImagesToLoad(function() {
-    locationHashChanged(true); // Pass true for initial load
-    isInitialLoad = false;
-  });
+  locationHashChanged(true);
 }, false);
 
 window.addEventListener("hashchange", function() {
-  locationHashChanged(false); // Pass false for hash changes
+  locationHashChanged(false);
 }, false);
 
-function waitForImagesToLoad(callback) {
-  var images = document.querySelectorAll('img');
-  var imagesToLoad = 0;
-  var imagesLoaded = 0;
-
-  // Check which images haven't loaded yet
-  images.forEach(function(img) {
-    if (!img.complete) {
-      imagesToLoad++;
-      var onComplete = function() {
-        imagesLoaded++;
-        if (imagesLoaded === imagesToLoad) {
-          callback();
-        }
-      };
-      img.addEventListener('load', onComplete, { once: true });
-      img.addEventListener('error', onComplete, { once: true });
-    }
+function locationHashChanged(checkDrift) {
+  document.querySelectorAll(".highlight").forEach(function(el) {
+    el.classList.remove("highlight");
   });
 
-  // If all images are already loaded, call callback immediately
-  if (imagesToLoad === 0) {
-    callback();
-  }
-}
+  var id = window.location.hash.substring(1);
+  var el = document.getElementById(id);
+  if (!el) return;
 
-function locationHashChanged(shouldScrollIntoView) {
-  // Wait for Docusaurus to finish scrolling to the anchor
-  setTimeout(function() {
-    document.querySelectorAll(".highlight").forEach((dfn) => {
-      dfn.classList.remove("highlight");
-    });
-    const highlightedElementId = window.location.hash.substring(1); // Remove leading #
-    console.debug("highlighting", highlightedElementId);
-    const highlightedElement = document.getElementById(highlightedElementId);
-    if (highlightedElement) {
-      highlightedElement.classList.add("highlight");
+  el.classList.add("highlight");
 
-      // Only force scroll on initial page load, not on hash changes
-      if (shouldScrollIntoView) {
-        highlightedElement.scrollIntoView();
-      }
-
-      if (highlightedElement.getElementsByTagName("a")[0]) {
-        addAnchorTitle(highlightedElement.getElementsByTagName("a")[0].title);
-      } else {
-        addAnchorTitle(highlightedElement.textContent);
-      }
+  if (checkDrift) {
+    var rect = el.getBoundingClientRect();
+    var headerOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--doc-header-offset')) || 72;
+    // Re-scroll only if element has drifted from where the browser placed it (e.g. mermaid still rendering)
+    if (Math.abs(rect.top - headerOffset) > 20) {
+      el.scrollIntoView();
     }
-  }, 100);
+  }
+
+  var anchor = el.getElementsByTagName("a")[0];
+  addAnchorTitle(anchor ? anchor.title : el.textContent);
 }
 
 function addAnchorTitle(anchorTitle) {

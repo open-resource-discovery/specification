@@ -14,6 +14,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 The following diagram provides a high-level overview of how the ORD specification is structured.
 Click on the elements to navigate to the corresponding sections.
 
+<div style={{minHeight: "590px"}}>
+
 ```mermaid
 flowchart TB
     subgraph Roles["ORD Roles"]
@@ -57,6 +59,8 @@ flowchart TB
     click Resources "#ord-resource"
     click Taxonomy "#ord-taxonomy"
 ```
+
+</div>
 
 ## ORD Roles
 
@@ -168,31 +172,11 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 ##### Pull Transport Sequence Diagram
 
-```mermaid
-sequenceDiagram
-    participant Aggregator as ORD Aggregator
-    participant Provider as ORD Provider
-    participant Landscape as System Landscape
+<div className="img-box" style={{aspectRatio: "872/596"}}>
 
-    Provider->>Landscape: Register system instance
-    Aggregator->>Landscape: Discover system instances
-    Landscape-->>Aggregator:
+![Pull Transport Sequence](/img/ord-pull-transport-sequence.svg "Pull Transport Sequence")
 
-    loop once per discovered system instance
-        Aggregator->>Provider: Request ORD configuration
-        Provider-->>Aggregator:
-
-        loop once per ORD document
-            Aggregator->>Provider: Request ORD document (using an access strategy)
-            Provider-->>Aggregator:
-
-            loop once per resource definition
-                Aggregator->>Provider: Request resource definition file
-                Provider-->>Aggregator:
-            end
-        end
-    end
-```
+</div>
 
 ### Other Modes of Transport
 
