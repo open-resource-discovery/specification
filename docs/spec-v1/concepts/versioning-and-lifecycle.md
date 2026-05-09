@@ -5,8 +5,6 @@ description: How versioning and lifecycle management work for ORD resources.
 
 # Versioning and Lifecycle
 
-> ⏩ The normative rules are defined in the [Version and Lifecycle](../index.md#version-and-lifecycle) section of the specification.
-
 ## Overview
 
 ORD uses two complementary mechanisms to track the state of a resource over time:
@@ -30,6 +28,8 @@ The `version` field MUST follow [Semantic Versioning 2.0.0](https://semver.org/)
 | Major (`x.0.0`) | `2.0.0` | Breaking changes — existing consumers may need to adapt |
 
 The `version` SHOULD be updated whenever the resource definition changes in a way that is relevant to consumers. If runtime customizations or extensions lead to a changed resource definition, a build number SHOULD be appended (e.g. `1.2.3+build.42`).
+
+If the resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD be kept in sync with the resource `version` to avoid inconsistencies.
 
 ### The `<majorVersion>` in the ORD ID
 
