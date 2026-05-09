@@ -149,7 +149,11 @@ Entity Types are part of the ORD taxonomy and represent an "internal" concept. T
 
 Relationships to entity types can be assigned to API & Event resources, data products and other entity types:
 
+<div className="img-box">
+
 ![Entity Type Relations](/img/entity-type-relations.drawio.svg)
+
+</div>
 
 Entity Types can serve two roles:
 
@@ -188,8 +192,10 @@ Labels defined on a [Package](#package) are inherited by all resources it contai
 
 [**Groups**](../interfaces/Document#group) and the corresponding [Group Types](../interfaces/Document#group-type) can be used to define and apply your own taxonomy in a generic, extensible way.
 
-<div style={{"text-align": "left", "margin-top": "12px"}}>
+<div className="img-box">
+
 ![Group Concept Overview](/img/group-concept-overview.drawio.svg)
+
 </div>
 
 The concept has three parts: The **Group Type** defines the semantics / meaning of a particular type of group assignments.

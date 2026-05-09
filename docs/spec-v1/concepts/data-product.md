@@ -60,7 +60,11 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 
 ### Model
 
+<div className="img-box">
+
 ![Data Product Model Overview](/img/data-product-model.drawio.svg "Data Product Model Overview")
+
+</div>
 
 The diagram is not a complete ER model, but highlights the most important relationships from Data Product perspective.
 

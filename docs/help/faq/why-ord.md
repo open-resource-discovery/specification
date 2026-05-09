@@ -90,7 +90,11 @@ ORD can be used to describe two different application perspectives:
 - The **static catalog** ("yellow-pages") view for publishing to [SAP Business Accelerator Hub](https://api.sap.com/).
 - The **as-is** view that describe the actual, customer specific runtime view (reflecting customizations and extensions).
 
+<div className="img-box">
+
 ![Reduce ORD Provider TCO](/img/ord-motivation-reduce-provider-tco.svg)
+
+</div>
 
 Without a single, aligned standard many of those use cases would need a special, proprietary integration.
 Through ORD, we can reduce the integration complexity to O(1) instead of O(n) for each affected application / use case.
@@ -122,7 +126,11 @@ While each LoB may handle their internal metadata differently, with ORD we stand
 ORD also comes with the concept of an ORD Aggregator, which is a central service that aggregates and exposes the ORD information.
 This saves metadata consumers from point-to-point integrations with each metadata provider they are interested in.
 
+<div className="img-box">
+
 ![Reduce ORD Consumer TCO](/img/ord-motivation-reduce-consumer-tco.svg)
+
+</div>
 
 Similar to the complexity on the provider's side, we can again reduce the integration complexity to O(1) instead of O(n) for each ORD provider from which information needs to be retrieved.
 

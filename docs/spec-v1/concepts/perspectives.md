@@ -85,7 +85,11 @@ If no dynamic perspective has been published for a system instance, the static p
 
 This is depicted in the following diagram:
 
+<div className="img-box">
+
 ![Perspectives to Relation](/img/ord-explicit-system-perspectives.drawio.svg "Perspectives Relation")
+
+</div>
 
 The `system-instance` perspective is the most specific, because a consumer could ask how a particular system instance / tenant really looks like. If there is system-instance metadata for it, we can return it directly.
 If we don't have it, we need to fall back to the `system-version` layer and instead return the metadata for the version of the system instance.
@@ -113,7 +117,11 @@ To migrate: replace `systemInstanceAware: true` with `perspective: "system-insta
 
 The following diagram gives an overview which perspectives need to be described by an ORD Provider:
 
+<div className="img-box">
+
 ![Perspectives to Provide](/img/ord-explicit-system-persectices-flow.drawio.svg "Perspectives to Provide")
+
+</div>
 
 If the system has only static metadata, it should explicitly use the `system-version` perspective and state its version (`describedSystemVersion`).
 If the system has dynamic metadata, it should describe both perspectives completely, if possible.
