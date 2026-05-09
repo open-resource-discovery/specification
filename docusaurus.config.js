@@ -19,7 +19,12 @@ const config = {
 	favicon: "img/favicon.svg",
 
 	future: {
-		v4: true,
+		v4: {
+			removeLegacyPostBuildHeadAttribute: true,
+			mdx1CompatDisabledByDefault: true,
+			siteStorageNamespacing: true,
+			fasterByDefault: true,
+		},
 	},
 
 	// Even if you don't use internalization, you can use this field to set useful
