@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">Grouping and Bundling | Open Resource Discovery</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://open-resource-discovery.org/spec-v1/concepts/grouping-and-bundling"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Grouping and Bundling | Open Resource Discovery"><meta data-rh="true" name="description" content="How to group, bundle and package ORD content."><meta data-rh="true" property="og:description" content="How to group, bundle and package ORD content."><link data-rh="true" rel="icon" href="/img/favicon.svg"><link data-rh="true" rel="canonical" href="https://open-resource-discovery.org/spec-v1/concepts/grouping-and-bundling"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1/concepts/grouping-and-bundling" hreflang="en"><link data-rh="true" rel="alternate" href="https://open-resource-discovery.org/spec-v1/concepts/grouping-and-bundling" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ORD Concepts","item":"https://open-resource-discovery.org/spec-v1/concepts/"},{"@type":"ListItem","position":2,"name":"Grouping and Bundling","item":"https://open-resource-discovery.org/spec-v1/concepts/grouping-and-bundling"}]}</script><script>window.bannerServerBaseUrl="https://banner-server.cert.cfapps.sap.hana.ondemand.com"</script>
-<script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.64950092.css">
-<script src="/assets/js/runtime~main.d4e820c5.js" defer="defer"></script>
+<script src="/js/custom.js"></script><link rel="stylesheet" href="/assets/css/styles.ce034904.css">
+<script src="/assets/js/runtime~main.98de9d3b.js" defer="defer"></script>
 <script src="/assets/js/main.cae2facc.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -143,7 +143,7 @@ For example, how credentials can be programmatically obtained could be described
 In special cases, the entity type could just be a term, describing the semantics but without an actual model behind it.</p>
 <p>Entity Types are part of the ORD taxonomy and represent an &quot;internal&quot; concept. They should not leak internal implementation details, but can be used to relate external resources and capabilities to &quot;business semantics&quot;.</p>
 <p>Relationships to entity types can be assigned to API &amp; Event resources, data products and other entity types:</p>
-<div class="img-box"><p><img decoding="async" loading="lazy" alt="Entity Type Relations" src="/assets/images/entity-type-relations.drawio-0e02bb795a0dbdb59d473f91ef6ee963.svg" class="img_ev3q"></p></div>
+<div class="img-box" style="aspect-ratio:401/251"><p><img decoding="async" loading="lazy" alt="Entity Type Relations" src="/assets/images/entity-type-relations.drawio-0e02bb795a0dbdb59d473f91ef6ee963.svg" class="img_ev3q"></p></div>
 <p>Entity Types can serve two roles:</p>
 <ol>
 <li class="">
@@ -178,7 +178,7 @@ They are optimized for machine-readability and can be used to query, select and 
 Labels defined on a <a href="#package" class="">Package</a> are inherited by all resources it contains (duplicate keys are merged).</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="groups">Groups<a href="#groups" class="hash-link" aria-label="Direct link to Groups" title="Direct link to Groups" translate="no">​</a></h3>
 <p><a class="" href="/spec-v1/interfaces/Document#group"><strong>Groups</strong></a> and the corresponding <a class="" href="/spec-v1/interfaces/Document#group-type">Group Types</a> can be used to define and apply your own taxonomy in a generic, extensible way.</p>
-<div class="img-box"><p><img decoding="async" loading="lazy" alt="Group Concept Overview" src="/assets/images/group-concept-overview.drawio-d66b0e634d2ebdcd432e45e24e802634.svg" class="img_ev3q"></p></div>
+<div class="img-box" style="aspect-ratio:574/79"><p><img decoding="async" loading="lazy" alt="Group Concept Overview" src="/assets/images/group-concept-overview.drawio-d66b0e634d2ebdcd432e45e24e802634.svg" class="img_ev3q"></p></div>
 <p>The concept has three parts: The <strong>Group Type</strong> defines the semantics / meaning of a particular type of group assignments.
 An example would be to have a Group Type for a &quot;part of a CDS Service&quot; or &quot;part of a Process&quot;.</p>
 <p>Second, the <strong>Group</strong> itself defines the actual group things can be assigned to.
