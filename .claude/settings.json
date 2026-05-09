@@ -1,4 +1,11 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(grep -o 'img/[^\\)\"` ]*\\\\.svg')",
+      "Bash(python3)",
+      "Bash(git stash *)"
+    ]
+  },
   "contextFiles": [
     "AGENTS.md",
     "package.json"
