@@ -22,7 +22,7 @@ This not only means a lot of integrations, but also that the integrations may ne
 This is a similar situation when there was no standardization on charging cable adapters.
 It was difficult or sometimes impossible to connect various devices and led to high efforts and waste for everyone.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3869/1690"}}>
 
 ![ORD Provider Overview](/img/no-aligned-standards.svg "Metadata Integration without alignment")
 
@@ -36,7 +36,7 @@ It was difficult or sometimes impossible to connect various devices and led to h
 We can tackle this problem by introducing two concepts: First, use **aligned standards for metadata description and discovery**.
 Second, use a **central aggregator**, which can read metadata from all providers and can serve the information to all consumers.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3716/1714"}}>
 
 ![ORD Provider Overview](/img/aligned-standards.svg "Metadata Integration with ORD")
 
@@ -53,7 +53,7 @@ It can be used to describe static documentation, but can also reflect tenant-spe
 
 By adopting ORD, an application will implement a single-entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl the relevant information / metadata.
 
-<div className="img-box" style={{"maxWidth": "480px"}}>
+<div className="img-box" style={{"maxWidth": "480px", aspectRatio: "1771/1422"}}>
 
 ![ORD Provider Overview](/img/ord-provider-overview.svg "ORD Provider Overview")
 
@@ -91,7 +91,7 @@ In case that the standardized concepts or attributes are not sufficient, there a
 The mentioned concepts can be grouped by different concerns via [Packages](./spec-v1/interfaces/Document.md#package) and [Consumption Bundles](./spec-v1/interfaces/Document.md#consumption-bundle) and various taxonomy attributes.
 Additionally, relations between the concepts can be expressed (e.g., which APIs and Events share the same Entity Types?).
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "862/537"}}>
 
 ![ORD Data Model Overview](/img/ord-high-level-data-model.drawio.svg "ORD Data Model Overview")
 
@@ -101,7 +101,7 @@ Additionally, relations between the concepts can be expressed (e.g., which APIs 
 
 Below is a simplified overview of how ORD has been adopted at SAP:
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "2757/1652"}}>
 
 ![ORD Provider Overview](/img/ord-sap-architecture-overview.svg "SAP ORD Architecture Overview")
 
@@ -147,13 +147,13 @@ The flow to crawl the application for relevant metadata is the following:
 The [SAP Business Accelerator Hub](https://api.sap.com/) is an ORD aggregator that uses static information to present generic documentation.
 This perspective is very important, as it describes technical aspects of products without the need to first own and provision the system.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "2293/1078"}}>
 
 ![SAP Business Accelerator Hub Example 1](/img/business-accelerator-hub-example1.png "SAP Business Accelerator Hub Example 1")
 
 </div>
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "1814/902"}}>
 
 ![SAP Business Accelerator Hub Example 2](/img/business-accelerator-hub-example2.png "SAP Business Accelerator Hub Example 2")
 
@@ -164,7 +164,7 @@ This perspective is very important, as it describes technical aspects of product
 Unified Customer Landscape (UCL) is a set of technical services that also offers the system landscape metadata (incl. ORD information) to other applications and services.
 While the [SAP Business Accelerator Hub](#sap-business-accelerator-hub) focuses on the static perspective of a product, the UCL can provide the actual system tenant metadata - including possible customer extensions and customizations.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "2265/1290"}}>
 
 ![BTP Cockpit System Landscape via UCL](/img/btp-cockpit-ucl-example.png "BTP Cockpit System Landscape via UCL")
 
@@ -209,7 +209,7 @@ Typical questions that are addressed on ORD level are:
 - How the resources fit into a global taxonomy
 - How resources relate to each other (e.g. for navigation)
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3180/1390"}}>
 
 ![ORD Information Overview](/img/ord-information-overview.svg "ORD Information Overview")
 
@@ -223,7 +223,7 @@ Typical questions that are addressed on ORD level are:
 ORD can enable fully automated metadata discovery and exchange (after initial onboarding).
 by also standardizing how the information is discovered, transported and accessed. See [ORD Transport Modes](./spec-v1/index.md#ord-transport-modes) for an example.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3941/1370"}}>
 
 ![ORD Behavior Overview](/img/ord-behavior-overview.svg "ORD Behavior Overview")
 
@@ -238,7 +238,7 @@ In ORD there are three roles that systems can have.
 Depending on the role, only some parts of the specification are relevant and need to be implemented.
 One system can also have more than one role, e.g. an ORD Provider can also be an ORD Consumer.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3979/1214"}}>
 
 ![ORD Roles Overview](/img/ord-roles-overview.svg "ORD Roles Overview")
 
@@ -253,7 +253,7 @@ The [ORD Provider](./spec-v1/index.md#ord-provider) is a system that describes i
 
 They have to implement one of the ORD transport modes (currently only a pull-based API is supported), so the ORD information and related metadata definitions can be discovered and fetched.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3144/972"}}>
 
 ![ORD Provider Role](/img/ord-role-provider.svg "ORD Provider Role")
 
@@ -272,7 +272,7 @@ Since it builds an aggregated overview, here the decentralized information from 
 It's most notable feature is that it offers an [ORD Discovery API](./spec-v1/index.md#ord-discovery-api), which offers a high-quality API to ORD consumers.
 The information offered represent an aggregated, connected and consolidated metadata overview.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3472/809"}}>
 
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
 
@@ -287,7 +287,7 @@ The [ORD Consumer](./spec-v1/index.md#ord-consumer) is interested in learning ab
 
 An ORD consumer should get their information from an ORD Aggregator, where a complete overview is offered with a more consumer friendly [ORD Discovery API](./spec-v1/index.md#ord-discovery-api) API
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "2740/1181"}}>
 
 ![ORD Consumer Role](/img/ord-role-consumer.svg "ORD Consumer Role")
 

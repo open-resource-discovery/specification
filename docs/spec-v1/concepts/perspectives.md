@@ -85,7 +85,7 @@ If no dynamic perspective has been published for a system instance, the static p
 
 This is depicted in the following diagram:
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "572/377"}}>
 
 ![Perspectives to Relation](/img/ord-explicit-system-perspectives.drawio.svg "Perspectives Relation")
 
@@ -117,7 +117,7 @@ To migrate: replace `systemInstanceAware: true` with `perspective: "system-insta
 
 The following diagram gives an overview which perspectives need to be described by an ORD Provider:
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "642/160"}}>
 
 ![Perspectives to Provide](/img/ord-explicit-system-persectices-flow.drawio.svg "Perspectives to Provide")
 

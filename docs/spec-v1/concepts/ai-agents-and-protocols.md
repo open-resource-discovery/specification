@@ -35,7 +35,7 @@ From a technical perspective, an Agent is simply a specialized type of applicati
 -   **Instantiation:** While the "Agent Resource" describes the *type* or *class* of the agent (Design Time), the running software represents an *instance* of that agent (Runtime).
     -   *See [System Landscape Model](./system-landscape-model.md) for more on the distinction between Systems, Tenants, and Resources.*
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "512/378"}}>
 
 ![AI Agent Overview](/img/ord-ai-agent.drawio.svg "AI Agent Overview")
 

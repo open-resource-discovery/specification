@@ -14,6 +14,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 The following diagram provides a high-level overview of how the ORD specification is structured.
 Click on the elements to navigate to the corresponding sections.
 
+<div style={{minHeight: "590px"}}>
+
 ```mermaid
 flowchart TB
     subgraph Roles["ORD Roles"]
@@ -58,6 +60,8 @@ flowchart TB
     click Taxonomy "#ord-taxonomy"
 ```
 
+</div>
+
 ## ORD Roles
 
 The ORD specification consists of several [parts](#ord-parts).
@@ -82,7 +86,7 @@ An ORD provider MUST use one of the standardized [ORD transport modes](#ord-tran
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3144/972"}}>
 
 ![ORD Provider Role](/img/ord-role-provider.svg "ORD Provider Role")
 
@@ -113,7 +117,7 @@ In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-pe
 - See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3472/809"}}>
 
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
 
@@ -134,7 +138,7 @@ An ORD consumer that receives information with a `visibility` of `private` or `i
 The ORD consumer MUST ensure that private and internal information is not exposed to consumers without the corresponding permissions.
 If the ORD consumer only needs public information, it SHOULD only request those from the ORD aggregator in the first place.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "2740/1181"}}>
 
 ![ORD Consumer Role](/img/ord-role-consumer.svg "ORD Consumer Role")
 
@@ -168,31 +172,11 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 ##### Pull Transport Sequence Diagram
 
-```mermaid
-sequenceDiagram
-    participant Aggregator as ORD Aggregator
-    participant Provider as ORD Provider
-    participant Landscape as System Landscape
+<div className="img-box" style={{aspectRatio: "872/596"}}>
 
-    Provider->>Landscape: Register system instance
-    Aggregator->>Landscape: Discover system instances
-    Landscape-->>Aggregator:
+![Pull Transport Sequence](/img/ord-pull-transport-sequence.svg "Pull Transport Sequence")
 
-    loop once per discovered system instance
-        Aggregator->>Provider: Request ORD configuration
-        Provider-->>Aggregator:
-
-        loop once per ORD document
-            Aggregator->>Provider: Request ORD document (using an access strategy)
-            Provider-->>Aggregator:
-
-            loop once per resource definition
-                Aggregator->>Provider: Request resource definition file
-                Provider-->>Aggregator:
-            end
-        end
-    end
-```
+</div>
 
 ### Other Modes of Transport
 
@@ -251,7 +235,7 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### ORD Document Data Model (Simplified)
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "862/537"}}>
 
 ![High-Level ORD Entities (simplified)](/img/ord-high-level-data-model.drawio.svg "High-Level ORD Entities (simplified)")
 
@@ -672,7 +656,7 @@ A complete namespace MUST match the following [regular expression](https://en.wi
 
 #### Structure of Namespaces
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3045/1013"}}>
 
 ![Namespace Concept Overview](/img/namespace-concept.svg "Namespace Concept Overview")
 
@@ -1060,7 +1044,7 @@ When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
 - MUST explicitly set a [`Tombstone`](interfaces/Document.md#ord-document_tombstones).
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "841/490"}}>
 
 ![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
 

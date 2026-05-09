@@ -30,5 +30,6 @@ docs/spec-extensions/models/*.md
 /static/spec-v1/interfaces/*.schema.json
 /static/spec-extension/models/*.schema.json
 
+.claude/
 .codex
 .DS_Store

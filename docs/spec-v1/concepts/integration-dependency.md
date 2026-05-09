@@ -36,7 +36,7 @@ But at ORD level, we're only describing the "type-level" ability to integrate an
 
 The following diagram shows how two systems can integrate with each other via APIs and Events:
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "611/271"}}>
 
 ![Integration Dependency Problem Statement](/img/integration-dependency-ps.drawio.svg "Integration Dependency Problem Statement")
 
@@ -51,7 +51,7 @@ We introduce a new ORD resource type **Integration Dependency**. It can be used 
 In addition, it is also possible to further define that only a subset of the depended resources is necessary for the integration, allowing us to be more precise when necessary (e.g., for the SAP Event Broker use case).
 With the proposed solution we can handle SAP Event Broker and Data Product related requirements with a shared, generic concept. In general, Integration Dependencies are optional to be provided and will only be mandated through specific use cases, e.g., SAP Event Broker or Data Products.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "611/481"}}>
 
 ![Integration Dependency](/img/integration-dependency.drawio.svg "Integration Dependency")
 
@@ -84,7 +84,7 @@ Also be aware that Integration Dependencies and Requirements are describing a ty
 
 We think describing such outward requirements fits well into the ORD scope, because only the system itself knows what external requirements it has and what integration outcomes / scenarios it realizes by integrating with the requirement targets.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "862/537"}}>
 
 ![ORD High Level Data Model](/img/ord-high-level-data-model.drawio.svg "ORD High Level Data Model")
 
