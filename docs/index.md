@@ -26,7 +26,7 @@ hide_table_of_contents: true
     <div className="lp-hero-bottom">
       <div className="actions">
         <div className="action medium brand">
-          [Primer](./introduction.mdx)
+          [Introduction](./introduction.mdx)
         </div>
         <div className="action medium alt">
           [Specification](./spec-v1/index.md)
