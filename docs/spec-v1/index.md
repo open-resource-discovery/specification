@@ -857,7 +857,7 @@ It MUST be constructed as defined here:
     - If the described resource has a `releaseStatus` of `beta`, this rule can be ignored. Incompatible changes MAY be introduced in `beta` resources.
   - MUST NOT be incremented if non-breaking changes have been made to the resource; the updated resource should replace the current one.
   - The `<majorVersion>` and the major version of [`version`](./concepts/versioning-and-lifecycle.md#relationship-between-version-and-ord-id-majorversion) SHOULD be identical.
-  - In the case of REST APIs, the `<majorVersion>` MUST also equal the API Version. Please be aware that most organizations have defined API Compatibility rules that MUST be followed in this context.
+  - If the REST API expresses its version in the URL path (e.g. `/v2/`), `<majorVersion>` SHOULD match it.
 
 - The ORD ID MUST be globally unique.
 

@@ -31,6 +31,10 @@ The `version` SHOULD be updated whenever the resource definition changes in a wa
 
 If the resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD be kept in sync with the resource `version` to avoid inconsistencies.
 
+**Scope of version increments:** A version change is only relevant if the ORD resource or taxonomy itself changed. If a resource inside a `Package` changes but the `Package` definition did not, the `Package` version does not need to be incremented.
+
+**Extension changes:** If a resource has been extended by a user (tenant-specific customization), that change MUST be indicated via `lastUpdate` — the `version` MUST NOT be bumped for extension changes. See [Tracking Changes with `lastUpdate`](#tracking-changes-with-lastupdate) below.
+
 ### The `<majorVersion>` in the ORD ID
 
 The `<majorVersion>` fragment in the [ORD ID](../index.md#ord-id) (e.g. `v1`, `v2`) signals a breaking change in the API contract. It is part of the resource's permanent identity.
@@ -44,6 +48,8 @@ The `<majorVersion>` fragment in the [ORD ID](../index.md#ord-id) (e.g. `v1`, `v
 When `<majorVersion>` is incremented, the resource gets a new ORD ID — it becomes a distinct successor resource. The previous resource retains its original ORD ID and continues to exist until it is explicitly deprecated and eventually sunset.
 
 **Non-breaking changes MUST NOT increment `<majorVersion>`.** The updated resource replaces the current one under the same ORD ID.
+
+**REST API alignment:** If the REST API expresses its version in the URL path (e.g. `/v2/`), `<majorVersion>` SHOULD match it.
 
 ### Relationship between `version` and ORD ID `<majorVersion>`
 
@@ -63,9 +69,33 @@ In both cases, changing a published ORD ID is **more harmful** than the mismatch
 
 Validators SHOULD warn when `version` major and `<majorVersion>` are out of sync, as this is most often an unintentional error. However, because legitimate divergence exists, a mismatch alone MUST NOT be treated as a hard validation failure.
 
-### Exception for `beta` Resources
+### Exception for `development` and `beta` Resources
 
-Resources with `releaseStatus: beta` may introduce breaking changes without incrementing `<majorVersion>`. The `beta` status itself communicates instability, so consumers should not expect stability guarantees and should not be surprised by breaking changes.
+Resources with `releaseStatus: development` or `releaseStatus: beta` may introduce breaking changes without incrementing `<majorVersion>`. These statuses communicate instability, so consumers should not expect stability guarantees.
+
+### Tracking Changes with `lastUpdate`
+
+The `lastUpdate` field (RECOMMENDED) records when the last change to the resource or its definitions occurred (RFC 3339 date-time).
+
+It serves a different purpose from `version`:
+
+- `version` expresses the semantic state of the API contract.
+- `lastUpdate` tells aggregators when to re-fetch resource definition files.
+
+If a resource has attached definitions, either `version` or `lastUpdate` MUST be defined and updated whenever those definitions change, so that ORD aggregators know to re-fetch them.
+
+For extension changes (tenant-specific customizations), `lastUpdate` is the correct signal — `version` MUST NOT be bumped for these.
+
+### Changelog Entries
+
+The `changelogEntries` property (available on API Resources, Event Resources, Entity Types, Integration Dependencies, and Agents) allows providers to document a human-readable history of version and lifecycle changes directly in the ORD document.
+
+Each entry records:
+- `version` — the version this entry describes
+- `releaseStatus` — the release status at that version
+- `date` — the date of the change (RFC 3339 date only)
+- `description` — a CommonMark description of what changed
+- `url` (optional) — a link to a more detailed external changelog
 
 ## Lifecycle
 
@@ -75,11 +105,11 @@ Resources progress through the following lifecycle states via the [`releaseStatu
 
 | State | Meaning |
 |---|---|
-| `development` | Under active development, not yet released for consumption. |
-| `beta` | Unstable, not suitable for production. Breaking changes may be introduced without a new major version. |
-| `active` | Stable and production-ready. Breaking changes require a new major version and a new ORD ID. |
-| `deprecated` | Scheduled for removal. Consumers should migrate to a successor. |
-| `sunset` | Decommissioned. The resource is no longer available. |
+| `development` | Unreleased and under active development. The API contract is unstable and may change at any time. Not intended for consumption outside the development team. |
+| `beta` | Released but without final stability guarantees. Breaking changes may occur at any time without notice or a deprecation period. Suitable for early adopters and feedback gathering. |
+| `active` | Stable and production-ready. Breaking changes will only be introduced through proper deprecation cycles or new major versions. |
+| `deprecated` | Still functional but scheduled for removal. No new consumers should depend on it. |
+| `sunset` | Decommissioned and no longer available at runtime. This entry exists for historical reference only. |
 
 Note that [`visibility`](../interfaces/Document.md#api-resource_visibility) and `releaseStatus` are independent concerns: visibility controls *who* can see the resource (`public`, `internal`, or `private`), while release status controls the *stability* of the API contract. For example, a `public` resource can have `releaseStatus: beta`, meaning it is visible to external consumers but without stability guarantees.
 
@@ -89,20 +119,21 @@ Once a newer resource succeeds an older one, the old resource SHOULD be deprecat
 
 When deprecating a resource:
 
-- A `deprecationDate` SHOULD be provided.
+- A `deprecationDate` SHOULD be provided — this records when the resource was set as deprecated.
+- A `sunsetDate` SHOULD be provided if already known — this is when the resource will actually be decommissioned. These are two distinct dates.
 - `successors` MUST be referenced if successor resources exist.
-- A `sunsetDate` MAY be set to signal the planned removal date.
+
+Conversely, if `successors` is set on a resource, that resource SHOULD have its `releaseStatus` set to `deprecated`.
 
 Deprecation does not automatically imply sunset. A resource can remain in `deprecated` state for an extended period while consumers migrate. These are separate decisions.
 
 ### Sunset and Tombstones
 
-When a resource is decommissioned, it:
+When a resource is decommissioned:
 
-- MUST be removed from ORD or have `releaseStatus` set to `sunset`.
-- MUST have a [`Tombstone`](../interfaces/Document.md#ord-document_tombstones) entry added to the ORD document, so aggregators know the resource was intentionally removed rather than accidentally dropped.
-
-The `Tombstone` is critical for aggregators: without it, they cannot distinguish an intentional removal from a temporary unavailability or a publishing error.
+- `releaseStatus` MUST be set to `sunset`, and a `sunsetDate` MUST be provided.
+- A [`Tombstone`](../interfaces/Document.md#ord-document_tombstones) MUST be added to the ORD document. Aggregators need this to distinguish an intentional removal from a temporary unavailability or publishing error.
+- The resource MAY be removed from the ORD document entirely, but keeping it with `releaseStatus: sunset` allows historical reference.
 
 ## Visual Overview
 
