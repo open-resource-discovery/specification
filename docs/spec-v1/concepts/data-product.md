@@ -60,7 +60,7 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 
 ### Model
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "682/361"}}>
 
 ![Data Product Model Overview](/img/data-product-model.drawio.svg "Data Product Model Overview")
 

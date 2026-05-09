@@ -8,7 +8,10 @@
       "Bash(sed -n '148:198p' docs/spec-v1/concepts/grouping-and-bundling.md)",
       "Bash(grep -A 50 '```mermaid' docs/spec-v1/diagrams/ord-document.md)",
       "Bash(grep -A 50 '```mermaid' docs/spec-v1/diagrams/ord-configuration.md)",
-      "Bash(grep -A 50 '```mermaid' docs/spec-v1/concepts/implementing-ord-natively.md)"
+      "Bash(grep -A 50 '```mermaid' docs/spec-v1/concepts/implementing-ord-natively.md)",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && head -3 {}')",
+      "Bash(grep -v '^--$')",
+      "Bash(grep -rn '```mermaid' /Users/I522722/dev/ord-public/docs --include=\"*.md\" --include=\"*.mdx\" -l)"
     ]
   },
   "contextFiles": [

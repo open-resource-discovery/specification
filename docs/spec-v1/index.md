@@ -82,7 +82,7 @@ An ORD provider MUST use one of the standardized [ORD transport modes](#ord-tran
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3144/972"}}>
 
 ![ORD Provider Role](/img/ord-role-provider.svg "ORD Provider Role")
 
@@ -113,7 +113,7 @@ In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-pe
 - See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3472/809"}}>
 
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
 
@@ -134,7 +134,7 @@ An ORD consumer that receives information with a `visibility` of `private` or `i
 The ORD consumer MUST ensure that private and internal information is not exposed to consumers without the corresponding permissions.
 If the ORD consumer only needs public information, it SHOULD only request those from the ORD aggregator in the first place.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "2740/1181"}}>
 
 ![ORD Consumer Role](/img/ord-role-consumer.svg "ORD Consumer Role")
 
@@ -251,7 +251,7 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### ORD Document Data Model (Simplified)
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "862/537"}}>
 
 ![High-Level ORD Entities (simplified)](/img/ord-high-level-data-model.drawio.svg "High-Level ORD Entities (simplified)")
 
@@ -672,7 +672,7 @@ A complete namespace MUST match the following [regular expression](https://en.wi
 
 #### Structure of Namespaces
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "3045/1013"}}>
 
 ![Namespace Concept Overview](/img/namespace-concept.svg "Namespace Concept Overview")
 
@@ -1060,7 +1060,7 @@ When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
 - MUST explicitly set a [`Tombstone`](interfaces/Document.md#ord-document_tombstones).
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "841/490"}}>
 
 ![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
 

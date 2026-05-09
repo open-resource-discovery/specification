@@ -23,7 +23,7 @@ From there ORD is used to fill in the details.
 However, those two worlds need to be connected and therefore ORD has a simplified, very high-level system landscape model.
 It is mostly described in the [ORD Terminology section](../index.md#terminology).
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "701/362"}}>
 
 ![System and namespace concept overview](/img/system-landscape/system.drawio.svg)
 
@@ -66,7 +66,7 @@ The ORD Resources and Capabilities describe either a System Type (in static pers
 
 Taxonomy is independent of Systems, but can be defined either locally or globally.
 
-<div className="img-box">
+<div className="img-box" style={{aspectRatio: "862/537"}}>
 
 ![ORD Data Model Overview](/img/ord-high-level-data-model.drawio.svg 'ORD Data Model Overview')
 
