@@ -164,6 +164,14 @@ article .card {
   margin: 16px auto;
   text-align: center;
 }
+.markdown .img-box p {
+  margin: 0;
+  line-height: 0;
+}
+.markdown .img-box img {
+  display: block;
+  margin: 0 auto;
+}
 iframe {
   border: 1px solid #e7e7e7;
   border-radius: 8px;
