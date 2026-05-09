@@ -142,7 +142,13 @@ article .card {
   padding: 0 4px;
 }
 .markdown details {
-  padding: 4px 8px 4px 14px;
+  margin: 16px 0;
+  padding: 8px 12px 8px 16px;
+  background: #f1f4f8;
+  border: none;
+  border-left: var(--ifm-blockquote-border-left-width) solid #a1b2cb;
+  border-radius: 4px;
+  --docusaurus-details-decoration-color: #a1b2cb;
 }
 .markdown details .collapsibleContent_node_modules-\@docusaurus-theme-common-lib-components-Details-styles-module {
   margin: 4px 0 0 0;
@@ -151,6 +157,26 @@ article .card {
 }
 
 /* Cards and iframes */
+.markdown img[src$=".svg"]:not([src*="/logo/"]):not([src*="/icons/"]) {
+  border-radius: 8px;
+  padding: 4px;
+  background: #eff1f3;
+}
+.markdown .img-box {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 16px auto;
+  text-align: center;
+}
+.markdown .img-box p {
+  margin: 0;
+  line-height: 0;
+}
+.markdown .img-box img {
+  display: block;
+  margin: 0 auto;
+}
 iframe {
   border: 1px solid #e7e7e7;
   border-radius: 8px;
@@ -233,13 +259,22 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markd
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown dfn {
   background: rgba(39, 224, 209, 0.12);
 }
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown details,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown details {
+  background: #25262b;
+  border: none;
+  border-left: var(--ifm-blockquote-border-left-width) solid rgba(255, 255, 255, 0.15);
+  --docusaurus-details-decoration-color: rgba(255, 255, 255, 0.3);
+}
 html[data-theme="dark"]
   #__docusaurus:not(:has(.ord-home-flag))
   .theme-doc-markdown.markdown
   details
   .collapsibleContent_node_modules-\@docusaurus-theme-common-lib-components-Details-styles-module {
   background: transparent;
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .theme-doc-markdown.markdown .img-box {
+  background: #eff1f3;
+  border-color: transparent;
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) iframe {
   border-color: var(--c-sep);

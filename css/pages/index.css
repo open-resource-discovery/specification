@@ -534,6 +534,9 @@ html[data-theme="light"] .neonephos-logo--light {
   height: auto;
   border-radius: 8px;
   padding: 4px;
+  background: var(--lp-c-bg-soft);
+}
+html[data-theme="dark"] .lp-overview-diagram img {
   background: #eff1f3;
 }
 @media (max-width: 959px) {
