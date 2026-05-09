@@ -75,27 +75,15 @@ Resources with `releaseStatus: development` or `releaseStatus: beta` may introdu
 
 ### Tracking Changes with `lastUpdate`
 
-The `lastUpdate` field (RECOMMENDED) records when the last change to the resource or its definitions occurred (RFC 3339 date-time).
+The [`lastUpdate`](../interfaces/Document.md#api-resource_lastupdate) field (RECOMMENDED) records when the last change to the resource or its definitions occurred.
 
-It serves a different purpose from `version`:
-
-- `version` expresses the semantic state of the API contract.
-- `lastUpdate` tells aggregators when to re-fetch resource definition files.
-
-If a resource has attached definitions, either `version` or `lastUpdate` MUST be defined and updated whenever those definitions change, so that ORD aggregators know to re-fetch them.
+It serves a different purpose from `version`: while `version` expresses the semantic state of the API contract, `lastUpdate` tells aggregators when to re-fetch resource definition files. If a resource has attached definitions, either `version` or `lastUpdate` MUST be defined and updated whenever those definitions change.
 
 For extension changes (tenant-specific customizations), `lastUpdate` is the correct signal — `version` MUST NOT be bumped for these.
 
 ### Changelog Entries
 
-The `changelogEntries` property (available on API Resources, Event Resources, Entity Types, Integration Dependencies, and Agents) allows providers to document a human-readable history of version and lifecycle changes directly in the ORD document.
-
-Each entry records:
-- `version` — the version this entry describes
-- `releaseStatus` — the release status at that version
-- `date` — the date of the change (RFC 3339 date only)
-- `description` — a CommonMark description of what changed
-- `url` (optional) — a link to a more detailed external changelog
+The [`changelogEntries`](../interfaces/Document.md#changelog-entry) property allows providers to document a human-readable history of version and lifecycle changes directly in the ORD document. See the schema documentation for the full structure.
 
 ## Lifecycle
 
@@ -115,17 +103,13 @@ Note that [`visibility`](../interfaces/Document.md#api-resource_visibility) and 
 
 ### Deprecation
 
-Once a newer resource succeeds an older one, the old resource SHOULD be deprecated by setting `releaseStatus` to `deprecated`. Deprecation is a deliberate signal to consumers that migration should begin.
+Once a newer resource succeeds an older one, the old resource SHOULD be deprecated by setting [`releaseStatus`](../interfaces/Document.md#api-resource_releasestatus) to `deprecated`. Deprecation is a deliberate signal to consumers that migration should begin.
 
-When deprecating a resource:
+- A [`deprecationDate`](../interfaces/Document.md#api-resource_deprecationdate) SHOULD be provided — this records when the resource was set as deprecated.
+- A [`sunsetDate`](../interfaces/Document.md#api-resource_sunsetdate) SHOULD be provided if already known — this is when the resource will actually be decommissioned. These are two distinct dates.
+- [`successors`](../interfaces/Document.md#api-resource_successors) MUST be referenced if successor resources exist. Conversely, if `successors` is set, the resource SHOULD be deprecated.
 
-- A `deprecationDate` SHOULD be provided — this records when the resource was set as deprecated.
-- A `sunsetDate` SHOULD be provided if already known — this is when the resource will actually be decommissioned. These are two distinct dates.
-- `successors` MUST be referenced if successor resources exist.
-
-Conversely, if `successors` is set on a resource, that resource SHOULD have its `releaseStatus` set to `deprecated`.
-
-Deprecation does not automatically imply sunset. A resource can remain in `deprecated` state for an extended period while consumers migrate. These are separate decisions.
+Deprecation does not automatically imply sunset. A resource can remain in `deprecated` state for an extended period while consumers migrate.
 
 ### Sunset and Tombstones
 
