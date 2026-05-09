@@ -22,6 +22,7 @@ const config = {
 		faster: true,
 		v4: {
 			removeLegacyPostBuildHeadAttribute: true,
+			mdx1CompatDisabledByDefault: true,
 		},
 	},
 
