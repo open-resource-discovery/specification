@@ -11,7 +11,7 @@ ORD uses two complementary mechanisms to track the state of a resource over time
 
 - **`version`**: A full [Semantic Versioning 2.0.0](https://semver.org/) string (e.g. `1.4.2`) that expresses the precise state of the resource definition.
 - **`<majorVersion>` in the ORD ID**: An integer fragment (e.g. `v1`, `v2`) that encodes whether a breaking change has been introduced, forming a stable identity for each major generation of a resource.
-- **`releaseStatus`**: Reflects the maturity and stability commitment of the resource contract (`beta`, `active`, `deprecated`, `sunset`).
+- **`releaseStatus`**: Reflects the maturity and stability commitment of the resource contract (`development`, `beta`, `active`, `deprecated`, `sunset`).
 
 Together, these allow aggregators and consumers to track resource evolution without breaking existing integrations.
 
@@ -75,6 +75,7 @@ Resources progress through the following lifecycle states via the [`releaseStatu
 
 | State | Meaning |
 |---|---|
+| `development` | Under active development, not yet released for consumption. |
 | `beta` | Unstable, not suitable for production. Breaking changes may be introduced without a new major version. |
 | `active` | Stable and production-ready. Breaking changes require a new major version and a new ORD ID. |
 | `deprecated` | Scheduled for removal. Consumers should migrate to a successor. |
