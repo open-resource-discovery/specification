@@ -49,12 +49,17 @@ When `<majorVersion>` is incremented, the resource gets a new ORD ID — it beco
 
 In the ideal case these two are synchronized: when the `version` major increments (e.g. from `1.x.x` to `2.0.0`), `<majorVersion>` also increments (e.g. from `v1` to `v2`). This is the expected and recommended behavior.
 
-However, strict enforcement creates a problematic edge case in practice: some teams increment the semver major for reasons unrelated to breaking API changes — release train policies, monorepo tooling, or internal conventions. In those cases, mechanically forcing a new ORD ID would be **more harmful** than the version mismatch, because:
+However, strict enforcement creates an unresolvable conflict with the ORD ID stability requirement. Two scenarios can cause a divergence:
 
-1. **ORD IDs MUST be stable** — changing a published ORD ID breaks downstream consumers who reference it by ID (see [ORD ID Construction](../index.md#ord-id-construction)).
-2. The purpose of `<majorVersion>` is to track *breaking API changes*, not to mirror an organizational semver decision.
+1. **No breaking change, but semver major was bumped** — release train policies, monorepo tooling, or internal conventions cause teams to increment the semver major without any change to the API contract. Forcing a new ORD ID here would rename an unchanged resource for no consumer-facing reason.
+2. **A breaking change occurred, but no new resource was created** — the provider didn't follow best practice and kept the old resource instead of creating a successor. Forcing an ORD ID change here would compound the provider's mistake: the breaking change already happened, and renaming the resource ID on top of it breaks every downstream consumer who references it.
 
-**Practical rule:** Increment `<majorVersion>` when you introduce a breaking API change. The semver major in `version` is a strong signal and SHOULD be kept in sync, but when they conflict, prefer ORD ID stability.
+In both cases, changing a published ORD ID is **more harmful** than the mismatch itself, because:
+
+- **ORD IDs MUST be stable** — changing a published ORD ID breaks downstream consumers who reference it by ID (see [ORD ID Construction](../index.md#ord-id-construction)).
+- The purpose of `<majorVersion>` is to track *breaking API changes*, not to mirror an organizational semver decision.
+
+**Practical rule:** Increment `<majorVersion>` when you introduce a breaking API change and create a new resource. The semver major in `version` is a strong signal and SHOULD be kept in sync, but when they conflict, prefer ORD ID stability.
 
 Validators SHOULD warn when `version` major and `<majorVersion>` are out of sync, as this is most often an unintentional error. However, because legitimate divergence exists, a mismatch alone MUST NOT be treated as a hard validation failure.
 
