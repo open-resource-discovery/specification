@@ -149,7 +149,7 @@ Entity Types are part of the ORD taxonomy and represent an "internal" concept. T
 
 Relationships to entity types can be assigned to API & Event resources, data products and other entity types:
 
-<div className="img-box" style={{aspectRatio: "401/251"}}>
+<div className="img-box" style={{aspectRatio: "400/140", maxWidth: "500px"}}>
 
 ![Entity Type Relations](/img/entity-type-relations.drawio.svg)
 
