@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([[617],{617:(e,c,s)=>{s.d(c,{createPieServices:()=>i.f});var i=s(9150);s(7960)}}]);

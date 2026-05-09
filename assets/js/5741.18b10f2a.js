@@ -1,1 +1,0 @@
-(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([[5741],{5741:()=>{}}]);
