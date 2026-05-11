@@ -161,7 +161,7 @@ article .card {
 .markdown img[src$=".svg"]:not([src*="/logo/"]):not([src*="/icons/"]) {
   border-radius: 8px;
   padding: 4px;
-  background: #eff1f3;
+  background: #f6f8f9;
 }
 .markdown .img-box {
   background: #ffffff;
