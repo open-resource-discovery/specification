@@ -522,9 +522,6 @@ html[data-theme="light"] .neonephos-logo--light {
   padding: 4px;
   background: var(--lp-c-bg-soft);
 }
-html[data-theme="dark"] .lp-overview-diagram img {
-  background: #eff1f3;
-}
 @media (max-width: 959px) {
   .lp-overview-grid {
     grid-template-columns: 1fr;
@@ -604,6 +601,7 @@ html[data-theme="dark"] .lp-overview-diagram img {
   color: var(--lp-c-text-2);
   font-size: 1rem;
   line-height: 1.7;
+  text-align: left;
 }
 .lp-home .card__body ul {
   padding-left: 1.2rem;
