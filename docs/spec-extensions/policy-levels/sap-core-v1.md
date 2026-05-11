@@ -41,10 +41,10 @@ IF the resources have already been published to the public [SAP Business Acceler
 - **Preferred Approach**:
   - Get in touch with the Business Hub colleagues, to clarify which existing packages need to be associated with the registered [namespace](../../spec-v1/index.md#namespaces) (from step above).
   - Keep the `<resourceId>` fragment of the [ORD ID](../../spec-v1/index.md#ord-id) identical to the ID that was previously published on the Business Accelerator Hub.
-  <!-- - Alternatively, add a [Correlation ID](../../spec-v1/index.md#correlation-id) to the resource:
+  - Alternatively, add a [Correlation ID](../../spec-v1/index.md#correlation-id) to the resource:
     - Add a `correlationIds` entry, that starts with `sap.businesshub` namespace and then the Business Accelerator Hub concept name (that is also part of the Old URL), e.g. `api` or `package`
     - Package Example: `{ "ordId": "sap.s4:package:SomeName:v1", "correlationIds": ["sap.businesshub:package:SAPS4HANACloud"] }`
-    - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }` -->
+    - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }`
 
 ### Title Constraints
 
