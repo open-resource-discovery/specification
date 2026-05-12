@@ -1,4 +1,5 @@
-:::caution Alpha
+
+:::caution[Alpha]
 This specification is in **alpha** and subject to change.
 :::
 
