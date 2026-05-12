@@ -213,6 +213,17 @@ See [Shared Taxonomy, Resources and Contracts](./shared-resources.md) for choosi
 
 > The Group concept is the correct choice when ORD resources need to be grouped by additional concerns, beyond the predefined concepts from ORD (like Package).
 
+#### Visibility of Groups and Group Types
+
+Both **Group** and **Group Type** support the `visibility` property (same values as other ORD resources: `public`, `internal`, `private`).
+If not set, both default to `public`.
+
+Use `internal` or `private` visibility to restrict group taxonomy that is not meant to be exposed outside the vendor or the system itself — for example, an internal domain-model grouping that should not appear in a customer-facing API catalog.
+
+**Important for aggregators and consumers:** A `partOfGroups` assignment on a resource effectively leaks information about the referenced Group and Group Type.
+Aggregators and consumers MUST NOT forward such assignments to audiences whose access level is more permissive than the referenced Group's (or Group Type's) `visibility`.
+For example, an `internal` group assignment MUST NOT be included in responses served to `public` consumers.
+
 ### Examples
 
 ### Bundling CAP APIs by CSN Service:

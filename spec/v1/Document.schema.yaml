@@ -981,6 +981,10 @@ definitions:
 
           All resources that share the same group ID assignment are effectively grouped together.
 
+          **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+          group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+          See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
+
       partOfConsumptionBundles: &partOfConsumptionBundles
         type: array
         description: |-
@@ -4436,6 +4440,15 @@ definitions:
 
           This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
 
+      visibility:
+        <<: *visibility
+        x-introduced-in-version: "1.15.0"
+        default: "public"
+        description: |-
+          Defines who is allowed to discover and access this Group Type and its metadata.
+          Defaults to `public` if not set.
+          See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
+
     required:
       - groupTypeId
       - title
@@ -4516,6 +4529,15 @@ definitions:
           propertyName: inversePartOfGroup
           description: |-
             The groups that are part of the given Group, assigned from the inverse direction.
+
+      visibility:
+        <<: *visibility
+        x-introduced-in-version: "1.15.0"
+        default: "public"
+        description: |-
+          Defines who is allowed to discover and access this Group and its metadata.
+          Defaults to `public` if not set.
+          See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
 
     required:
       - groupId
