@@ -133,10 +133,12 @@ Overlays assume the target document is already valid for its native format.
 The merge tool does not fully re-validate target formats.
 After applying an overlay, validate the merged output with the corresponding format-specific tooling.
 
-Overlays MUST NOT alter the target resource's external contract in a breaking way —
-for example by removing operations, required parameters, or mandatory properties.
-The intended use case is enrichment (adding descriptions, tags, documentation) and governance annotations.
-Breaking changes must go through the normal versioning process on the source definition instead.
+Overlays MUST NOT alter the target resource's external contract in a breaking way for the intended audience —
+for example by removing operations or properties that consumers of this overlay's `purpose` and `visibility` still rely on.
+Removals are valid when the overlay is explicitly scoped (via `visibility`, `purpose`, or `perspective`) to an audience
+for whom the removed element is not part of the contract.
+The primary use case is enrichment (adding descriptions, tags, documentation) and governance annotations.
+Breaking changes to the source definition must go through the normal versioning process instead.
 
 ## Tooling
 
