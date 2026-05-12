@@ -383,6 +383,11 @@ export interface ApiResource {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
+   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
+   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
+   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
    */
   partOfGroups?: string[];
   /**
@@ -1309,6 +1314,11 @@ export interface EventResource {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
+   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
+   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
+   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
    */
   partOfGroups?: string[];
   /**
@@ -1821,6 +1831,11 @@ export interface EntityType {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
+   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
+   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
+   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
    */
   partOfGroups?: string[];
   /**
@@ -2088,6 +2103,11 @@ export interface Capability {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
+   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
+   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
+   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
    */
   partOfGroups?: string[];
   /**
@@ -2369,6 +2389,11 @@ export interface DataProduct {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
+   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
+   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
+   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
    */
   partOfGroups?: string[];
   /**
@@ -2794,6 +2819,11 @@ export interface Agent {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
+   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
+   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
+   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
    */
   partOfGroups?: string[];
   /**
@@ -3128,6 +3158,11 @@ export interface IntegrationDependency {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
+   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
+   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
+   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
    */
   partOfGroups?: string[];
   /**
@@ -4025,6 +4060,12 @@ export interface Group {
    * This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
    */
   partOfGroups?: string[];
+  /**
+   * Defines who is allowed to see and access this Group and its metadata.
+   *
+   * If not given, the Group is assumed to be `public`.
+   */
+  visibility?: "public" | "internal" | "private";
   [k: string]: unknown | undefined;
 }
 /**
@@ -4070,6 +4111,12 @@ export interface GroupType {
    * This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
    */
   partOfGroupTypes?: string[];
+  /**
+   * Defines who is allowed to see and access this Group Type and its metadata.
+   *
+   * If not given, the Group Type is assumed to be `public`.
+   */
+  visibility?: "public" | "internal" | "private";
   [k: string]: unknown | undefined;
 }
 /**

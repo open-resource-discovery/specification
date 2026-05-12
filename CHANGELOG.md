@@ -10,6 +10,15 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `visibility` property to `Group` and `GroupType` to control who can discover and access group metadata.
+  If not set, both default to `public`.
+
+### Changed
+
+- Clarified `partOfGroups`: aggregators and consumers MUST NOT expose group assignments that reference `internal` or `private` Groups (or Group Types) to consumers whose visibility access level is more permissive than that of the referenced Group or Group Type.
+
 ## [1.14.5]
 
 ### Added
