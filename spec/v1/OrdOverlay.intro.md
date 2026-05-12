@@ -55,8 +55,8 @@ without conflicting with each other or the original definition.
 
 Within the same aggregation scope, each overlay applied to a given resource SHOULD have a unique `purpose`.
 If two overlays share the same `purpose` on the same resource, behavior is implementation-defined — consumers
-SHOULD treat this as a configuration error. When an aggregator applies multiple overlays, they are applied
-in the order they appear (document order in the ORD Configuration list, or top-to-bottom in `resourceDefinitions`).
+SHOULD treat this as a configuration error. When a consumer applies multiple overlays to the same target,
+the processing order is not defined by this specification and MUST be established by the aggregator or provider.
 
 ```json
 {
@@ -133,12 +133,7 @@ Overlays assume the target document is already valid for its native format.
 The merge tool does not fully re-validate target formats.
 After applying an overlay, validate the merged output with the corresponding format-specific tooling.
 
-Overlays MUST NOT alter the target resource's external contract in a breaking way for the intended audience —
-for example by removing operations or properties that consumers of this overlay's `purpose` and `visibility` still rely on.
-Removals are valid when the overlay is explicitly scoped (via `visibility`, `purpose`, or `perspective`) to an audience
-for whom the removed element is not part of the contract.
-The primary use case is enrichment (adding descriptions, tags, documentation) and governance annotations.
-Breaking changes to the source definition must go through the normal versioning process instead.
+See [Compatibility Expectations](#compatibility-expectations) for rules on what overlays may and may not change.
 
 ## Tooling
 
