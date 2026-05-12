@@ -53,6 +53,11 @@ A single resource can have multiple overlays with different `purpose` values.
 This allows independent concerns (e.g. AI enrichment, platform governance) to be managed by different teams
 without conflicting with each other or the original definition.
 
+Within the same aggregation scope, each overlay applied to a given resource SHOULD have a unique `purpose`.
+If two overlays share the same `purpose` on the same resource, behavior is implementation-defined — consumers
+SHOULD treat this as a configuration error. When an aggregator applies multiple overlays, they are applied
+in the order they appear (document order in the ORD Configuration list, or top-to-bottom in `resourceDefinitions`).
+
 ```json
 {
   "apiResources": [{
@@ -71,6 +76,9 @@ without conflicting with each other or the original definition.
 
 The optional [`target`](#overlay-target) object narrows which document the overlay applies to.
 When omitted, all patches in the file are context-free and each patch's [`selector`](#overlay-selector) alone identifies the element.
+Omitting `target` is only appropriate when the association between the overlay and its target definition file
+is established by external convention (e.g. a pipeline that always merges a fixed overlay into a fixed file).
+For all other cases, specifying `target.ordId` is strongly recommended to make patch resolution unambiguous.
 
 Key fields on `target`:
 
@@ -124,6 +132,11 @@ Key points:
 Overlays assume the target document is already valid for its native format.
 The merge tool does not fully re-validate target formats.
 After applying an overlay, validate the merged output with the corresponding format-specific tooling.
+
+Overlays MUST NOT alter the target resource's external contract in a breaking way —
+for example by removing operations, required parameters, or mandatory properties.
+The intended use case is enrichment (adding descriptions, tags, documentation) and governance annotations.
+Breaking changes must go through the normal versioning process on the source definition instead.
 
 ## Tooling
 

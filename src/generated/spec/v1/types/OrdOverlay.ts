@@ -508,7 +508,8 @@ export interface OverlaySelectorByEntitySet {
    *
    * Use `entitySet` when you need to patch EntityContainer-bound metadata such as
    * Capabilities annotations (InsertRestrictions, UpdateRestrictions, etc.).
-   * For patching the EntityType structure (Properties, NavigationProperties), use `entityType`.
+   * For patching EntityType structure (Properties, NavigationProperties) via deep merge, use `entityType`.
+   * To target a specific property for fine-grained patching, prefer `propertyType` (requires `entityType` as context).
    */
   entitySet: string;
 }

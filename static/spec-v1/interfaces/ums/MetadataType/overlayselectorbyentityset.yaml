@@ -18,7 +18,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'entitySet'
       type: 'string'
-      description: "Concept-level entity set identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets an EntitySet element inside EntityContainer.\n  May use the unqualified name (e.g. `Customers`) or namespace-prefixed name.\n- `csdl-json` (OData v4 CSDL JSON): targets a key with `$Collection: true` inside the\n  EntityContainer object in the namespace.\n\nUse `entitySet` when you need to patch EntityContainer-bound metadata such as\nCapabilities annotations (InsertRestrictions, UpdateRestrictions, etc.).\nFor patching the EntityType structure (Properties, NavigationProperties), use `entityType`."
+      description: "Concept-level entity set identifier.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets an EntitySet element inside EntityContainer.\n  May use the unqualified name (e.g. `Customers`) or namespace-prefixed name.\n- `csdl-json` (OData v4 CSDL JSON): targets a key with `$Collection: true` inside the\n  EntityContainer object in the namespace.\n\nUse `entitySet` when you need to patch EntityContainer-bound metadata such as\nCapabilities annotations (InsertRestrictions, UpdateRestrictions, etc.).\nFor patching EntityType structure (Properties, NavigationProperties) via deep merge, use `entityType`.\nTo target a specific property for fine-grained patching, prefer `propertyType` (requires `entityType` as context)."
       mandatory: true
       constraints:
         minLength: 1
