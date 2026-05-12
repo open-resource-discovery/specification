@@ -632,3 +632,8 @@ html[data-theme="light"][data-nav-scrolled="1"]
   :is(.navbar__search, [class*="searchBarContainer_"])::before {
   filter: invert(1) opacity(0.95);
 }
+
+/* Doc pages: solid navbar bg prevents sidebar border-right from showing through the navbar */
+html[data-nav-scrolled="0"]:not(:has(.ord-home-flag)) nav.navbar:not(.navbar-sidebar--show) {
+  background: var(--c-bg) !important;
+}
