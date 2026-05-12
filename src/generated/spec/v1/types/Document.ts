@@ -384,10 +384,9 @@ export interface ApiResource {
    *
    * All resources that share the same group ID assignment are effectively grouped together.
    *
-   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
-   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
-   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
-   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -1315,10 +1314,9 @@ export interface EventResource {
    *
    * All resources that share the same group ID assignment are effectively grouped together.
    *
-   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
-   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
-   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
-   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -1832,10 +1830,9 @@ export interface EntityType {
    *
    * All resources that share the same group ID assignment are effectively grouped together.
    *
-   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
-   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
-   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
-   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -2104,10 +2101,9 @@ export interface Capability {
    *
    * All resources that share the same group ID assignment are effectively grouped together.
    *
-   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
-   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
-   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
-   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -2390,10 +2386,9 @@ export interface DataProduct {
    *
    * All resources that share the same group ID assignment are effectively grouped together.
    *
-   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
-   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
-   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
-   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -2820,10 +2815,9 @@ export interface Agent {
    *
    * All resources that share the same group ID assignment are effectively grouped together.
    *
-   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
-   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
-   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
-   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -3159,10 +3153,9 @@ export interface IntegrationDependency {
    *
    * All resources that share the same group ID assignment are effectively grouped together.
    *
-   * **Visibility notice:** Groups and Group Types may have a `visibility` that restricts who is allowed to see them.
-   * Aggregators and consumers MUST NOT expose group assignments (`partOfGroups`) that reference `internal` or `private` Groups (or Group Types)
-   * to consumers whose visibility access level is more permissive than the referenced Group's (or Group Type's) visibility.
-   * For example, an `internal` group assignment MUST NOT be made visible to `public` consumers.
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -4061,9 +4054,9 @@ export interface Group {
    */
   partOfGroups?: string[];
   /**
-   * Defines who is allowed to see and access this Group and its metadata.
-   *
-   * If not given, the Group is assumed to be `public`.
+   * Defines who is allowed to discover and access this Group and its metadata.
+   * Defaults to `public` if not set.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   visibility?: "public" | "internal" | "private";
   [k: string]: unknown | undefined;
@@ -4112,9 +4105,9 @@ export interface GroupType {
    */
   partOfGroupTypes?: string[];
   /**
-   * Defines who is allowed to see and access this Group Type and its metadata.
-   *
-   * If not given, the Group Type is assumed to be `public`.
+   * Defines who is allowed to discover and access this Group Type and its metadata.
+   * Defaults to `public` if not set.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   visibility?: "public" | "internal" | "private";
   [k: string]: unknown | undefined;
