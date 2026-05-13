@@ -126,7 +126,7 @@ const config = {
 				respectPrefersColorScheme: false,
 			},
 			prism: {
-				theme: prismThemes.github,
+				theme: prismThemes.oceanicNext,
 				darkTheme: prismThemes.oceanicNext,
 			},
 			mermaid: {
