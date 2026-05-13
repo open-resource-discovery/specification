@@ -23,15 +23,15 @@ The **ORD Overlay** is an optional ORD model extension that allows patching refe
 }
 ```
 
-## Distribution
+## Publishing
 
-Decision guidance for choosing a distribution mode is collected in the
+Decision guidance for choosing a publishing approach is collected in the
 [Appendix: ORD Document Resource vs. Attached Resource Definition](#deep-dive-ord-document-resource-vs-attached-resource-definition).
 
 ### Attached to an ORD Resource
 
-Overlays can also be attached directly to an API or Event resource as a `resourceDefinitions` entry with type `ord:overlay:v1`.
-This keeps the overlay co-located with the resource it patches and is convenient when the same ORD Provider owns both.
+Overlays can be attached directly to an API or Event resource as a `resourceDefinitions` entry with type `ord:overlay:v1`.
+This keeps the overlay co-located with the resource it patches and is the preferred approach when the same ORD Provider owns both.
 
 A single resource can have multiple overlays with different `purpose` values.
 This allows independent concerns (e.g. AI enrichment, platform governance) to be managed by different teams
@@ -40,7 +40,7 @@ without conflicting with each other or the original definition.
 Within the same aggregation scope, each overlay applied to a given resource SHOULD have a unique `purpose`.
 If two overlays share the same `purpose` on the same resource, behavior is implementation-defined — consumers
 SHOULD treat this as a configuration error. When a consumer applies multiple overlays to the same target,
-the processing order is not defined by this specification and MUST be established by the aggregator or provider.
+the processing order is not defined by this specification and MUST be established by the ORD Aggregator or ORD Provider.
 
 ```json
 {
