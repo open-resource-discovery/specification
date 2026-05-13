@@ -162,11 +162,7 @@ describe("Example Validation", async () => {
 
 					if (typeof example.$schema === "string") {
 						// Verify schema URL matches the expected pattern
-						const expectedSchemaPattern =
-							mapping.schemaName === "Configuration" ||
-							mapping.schemaName === "Document"
-								? `spec-v1/interfaces/${mapping.schemaName}.schema.json`
-								: `spec-extension/models/${mapping.schemaName}.schema.json`;
+						const expectedSchemaPattern = `spec-v1/interfaces/${mapping.schemaName}.schema.json`;
 
 						assert.ok(
 							example.$schema.includes(expectedSchemaPattern),
