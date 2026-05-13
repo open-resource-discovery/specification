@@ -80,10 +80,6 @@
         "system-instance"
       ]
     },
-    "describedSystemInstance": {
-      "$ref": "#/definitions/SystemInstance",
-      "description": "Information on the [system-instance](../index.md#system-instance) that this ORD document describes.\n\nWhether this information is required or recommended to add, depends on the requirements of the ORD aggregator."
-    },
     "describedSystemType": {
       "$ref": "#/definitions/SystemType",
       "x-introduced-in-version": "1.10.0",
@@ -93,6 +89,10 @@
       "$ref": "#/definitions/SystemVersion",
       "x-introduced-in-version": "1.10.0",
       "description": "Information on the [system version](../index.md#system-version) that this ORD document describes."
+    },
+    "describedSystemInstance": {
+      "$ref": "#/definitions/SystemInstance",
+      "description": "Information on the [system-instance](../index.md#system-instance) that this ORD document describes.\n\nWhether this information is required or recommended to add, depends on the requirements of the ORD aggregator."
     },
     "policyLevel": {
       "type": "string",
@@ -190,6 +190,15 @@
       "x-feature-status": "beta",
       "items": {
         "$ref": "#/definitions/Agent"
+      }
+    },
+    "overlays": {
+      "type": "array",
+      "description": "Array of all metadata overlays described in this ORD document.\n\nAn ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches\nresource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.\n\nFor overlays that are tightly coupled to a single API or Event resource, consider attaching them directly\nas a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.",
+      "x-introduced-in-version": "1.15.0",
+      "x-feature-status": "alpha",
+      "items": {
+        "$ref": "#/definitions/Overlay"
       }
     },
     "integrationDependencies": {
@@ -3704,6 +3713,12 @@
               "x-introduced-in-version": "1.9.4"
             },
             {
+              "const": "ord:overlay:v1",
+              "x-feature-status": "alpha",
+              "x-introduced-in-version": "1.15.0",
+              "description": "ORD Overlay file for patching referenced resource definition files.\nFor details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).\nThe `mediaType` MUST be set to `application/json`."
+            },
+            {
               "const": "custom",
               "description": "If chosen, `customType` MUST be provided."
             }
@@ -3719,25 +3734,6 @@
           "maxLength": 255,
           "examples": [
             "sap:custom-definition-format:v1"
-          ]
-        },
-        "purpose": {
-          "type": "string",
-          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
-            },
-            {
-              "const": "ord:ai-enrichment",
-              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
-            }
-          ],
-          "examples": [
-            "ord:ai-enrichment",
-            "sap:authorization"
           ]
         },
         "mediaType": {
@@ -3791,6 +3787,26 @@
               }
             ]
           ]
+        },
+        "purpose": {
+          "type": "string",
+          "x-feature-status": "alpha",
+          "x-introduced-in-version": "1.15.0",
+          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+              "description": "Any valid [Concept ID](../index.md#concept-id)."
+            },
+            {
+              "const": "ord:ai-enrichment",
+              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
+            }
+          ],
+          "examples": [
+            "ord:ai-enrichment"
+          ]
         }
       },
       "additionalProperties": false,
@@ -3824,6 +3840,12 @@
               "description": "[CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable flavor of [CSN](https://cap.cloud.sap/docs/cds/csn).\nCSN is a notation for compact representations of [CDS](https://cap.cloud.sap/docs/cds/) models.\n\nIn CDS based frameworks (like ABAP, CAP), APIs and Events are derived from a CDS Service definition and its constituent entities.\nIn this case the original CDS service definition MAY be attached, as it usually contains more metadata insight than other formats.\n\nWARNING: Only expose the CDS Service definition that effectively is governed by the API contract and stability. Do not expose internal models!\n\nThe `mediaType` MUST be be set to `application/json`."
             },
             {
+              "const": "ord:overlay:v1",
+              "x-feature-status": "alpha",
+              "x-introduced-in-version": "1.15.0",
+              "description": "ORD Overlay file for patching metadata / resource definition files.\nFor details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).\nThe `mediaType` MUST be set to `application/json`."
+            },
+            {
               "const": "custom",
               "description": "If chosen, `customType` MUST be provided."
             }
@@ -3839,25 +3861,6 @@
           "maxLength": 255,
           "examples": [
             "sap:custom-definition-format:v1"
-          ]
-        },
-        "purpose": {
-          "type": "string",
-          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
-            },
-            {
-              "const": "ord:ai-enrichment",
-              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
-            }
-          ],
-          "examples": [
-            "ord:ai-enrichment",
-            "sap:authorization"
           ]
         },
         "mediaType": {
@@ -3909,6 +3912,26 @@
               "const": "private",
               "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "x-feature-status": "alpha",
+          "x-introduced-in-version": "1.15.0",
+          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+              "description": "Any valid [Concept ID](../index.md#concept-id)."
+            },
+            {
+              "const": "ord:ai-enrichment",
+              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
+            }
+          ],
+          "examples": [
+            "ord:ai-enrichment"
           ]
         }
       },
@@ -4459,6 +4482,277 @@
         "lastUpdate"
       ]
     },
+    "Overlay": {
+      "type": "object",
+      "title": "Overlay",
+      "x-ums-type": "root",
+      "x-introduced-in-version": "1.15.0",
+      "x-feature-status": "alpha",
+      "description": "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.\nFor producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.",
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "maxLength": 255,
+          "examples": [
+            "sap.foo:overlay:astronomy-api-ai-enrichment:v1"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks.",
+          "minLength": 1,
+          "maxLength": 255,
+          "examples": [
+            "Astronomy API AI Enrichment Overlay"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
+        },
+        "version": {
+          "type": "string",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+          "examples": [
+            "1.2.3",
+            "1.0.0-alpha.1"
+          ]
+        },
+        "lastUpdate": {
+          "type": "string",
+          "format": "date-time",
+          "x-introduced-in-version": "1.4.0",
+          "description": "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.",
+          "examples": [
+            "2022-12-19T15:47:04+00:00"
+          ]
+        },
+        "visibility": {
+          "type": "string",
+          "description": "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences.",
+          "oneOf": [
+            {
+              "const": "public",
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+            },
+            {
+              "const": "internal",
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
+            },
+            {
+              "const": "private",
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
+            }
+          ]
+        },
+        "releaseStatus": {
+          "type": "string",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "oneOf": [
+            {
+              "const": "development",
+              "x-introduced-in-version": "1.14.2",
+              "description": "The resource is unreleased and under active development. The API contract is unstable and subject to\nbreaking changes at any time. Not intended for consumption outside of the development team."
+            },
+            {
+              "const": "beta",
+              "description": "The API contract is released / available to consumers, but has no final stability guarantees.\nBreaking changes may occur at any time without notice or deprecation period.\n\nNot recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,\nand feedback gathering. Resources of `beta` `releaseStatus` MAY be changed or removed at the provider's discretion."
+            },
+            {
+              "const": "active",
+              "description": "The API contract is stable and recommended for production use.\n\nBreaking changes will only be introduced through proper deprecation cycles or new major versions,\nfollowing versioning and compatibility policies. Consumers can rely on active resources with confidence."
+            },
+            {
+              "const": "deprecated",
+              "description": "The resource is still functional but scheduled for removal. No new development should depend on it.\n\nIf the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.\nIf the `releaseStatus` is set to `deprecated`, and the `sunsetDate` is already known, then the `sunsetDate` SHOULD be provided.\n\nIf successor resources exist, they MUST be referenced through `successors`.\n\nA deprecated resource MAY be sunset (decommissioned/removed) in the future through setting a `Tombstone`.\nOnce the resource is sunset, its description MAY be removed from ORD, but could also be kept with `releaseStatus` set to `sunset`."
+            },
+            {
+              "const": "sunset",
+              "description": "The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.\n\nIf the `releaseStatus` is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided."
+            }
+          ],
+          "examples": [
+            "active"
+          ]
+        },
+        "relatedApiResources": {
+          "type": "array",
+          "x-introduced-in-version": "1.15.0",
+          "description": "Optional list of API Resources whose definition files this overlay patches.\n\nSHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,\nas it enables efficient indexing without requiring the aggregator to parse each overlay file.\nUse `relationType: ord:patches` to express the patching relationship.\n\nMay be omitted when the target resource is not described in an accessible ORD document,\nor when the overlay is cross-cutting and patches resources from multiple providers.",
+          "items": {
+            "$ref": "#/definitions/RelatedApiResource"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.s4:apiResource:API_BUSINESS_PARTNER:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
+          ]
+        },
+        "relatedEventResources": {
+          "type": "array",
+          "x-introduced-in-version": "1.15.0",
+          "description": "Optional list of Event Resources whose definition files this overlay patches.\n\nSHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,\nas it enables efficient indexing without requiring the aggregator to parse each overlay file.\nUse `relationType: ord:patches` to express the patching relationship.\n\nMay be omitted when the target resource is not described in an accessible ORD document,\nor when the overlay is cross-cutting and patches resources from multiple providers.",
+          "items": {
+            "$ref": "#/definitions/RelatedEventResource"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.s4:eventResource:BusinessPartnerEvents:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
+          ]
+        },
+        "definitions": {
+          "type": "array",
+          "description": "List of overlay definition files referenced by this ORD Overlay Resource.\nEach entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches.",
+          "items": {
+            "$ref": "#/definitions/OverlayDefinition"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-_.\\/ ]*$",
+            "minLength": 1
+          },
+          "description": "List of free text style tags.\nNo special characters are allowed except `-`, `_`, `.`, `/` and ` `.\n\nTags that are assigned to a `Package` are inherited to all of the ORD resources it contains.",
+          "examples": [
+            [
+              "storage",
+              "high-availability"
+            ]
+          ]
+        },
+        "labels": {
+          "$ref": "#/definitions/Labels"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "ordId",
+        "version",
+        "releaseStatus",
+        "visibility"
+      ],
+      "x-recommended": [
+        "lastUpdate"
+      ]
+    },
+    "OverlayDefinition": {
+      "type": "object",
+      "title": "Overlay Definition",
+      "x-ums-type": "custom",
+      "x-introduced-in-version": "1.15.0",
+      "x-feature-status": "alpha",
+      "description": "Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.",
+      "properties": {
+        "type": {
+          "description": "Type of the overlay definition",
+          "type": "string",
+          "anyOf": [
+            {
+              "const": "ord:overlay:v1",
+              "description": "ORD Overlay document (v1). The `mediaType` MUST be set to `application/json`."
+            },
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            }
+          ],
+          "examples": [
+            "ord:overlay:v1"
+          ]
+        },
+        "mediaType": {
+          "description": "The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.\nA consuming application can use this information to know which file format parser it needs to use.\nFor example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.\n\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.\n",
+          "type": "string",
+          "pattern": "^(application|text)\\/[a-zA-Z0-9][a-zA-Z0-9.+\\-]*$",
+          "examples": [
+            "application/json",
+            "text/plain",
+            "application/xml"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri-reference",
+          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL (to base URL).",
+          "examples": [
+            "/open-resource-discovery/v1/overlays/ai-enrichment.overlay.json"
+          ]
+        },
+        "accessStrategies": {
+          "type": "array",
+          "description": "List of supported access strategies for retrieving metadata from the ORD provider.\nAn ORD Consumer/ORD Aggregator MAY choose any of the strategies.\n\nThe access strategies only apply to the metadata access and not the actual API access.\nThe actual access to the APIs for clients is described via Consumption Bundles.\n\nIf this property is not provided, the definition URL will be available through the same access strategy as this ORD document.\nIt is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.",
+          "items": {
+            "$ref": "#/definitions/AccessStrategy"
+          },
+          "minItems": 1,
+          "examples": [
+            [
+              {
+                "type": "open"
+              }
+            ]
+          ]
+        },
+        "visibility": {
+          "type": "string",
+          "description": "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.\nE.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.\n\nThis makes it also possible to provide both a public and an internal metadata description of the resource,\nin case that some metadata must only be made accessible to internal consumers.",
+          "oneOf": [
+            {
+              "const": "public",
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+            },
+            {
+              "const": "internal",
+              "description": "Metadata can only be discovered and accessed by vendor internal consumers (e.g. applications or services of the same vendor).\nMUST NOT be made available to external parties or vendor customers.\n\nInternal resources are intended for integration between a vendors own applications and services.\nAPI stability and maturity are explicitly defined via the `releaseStatus` property, which is a separate concern from visibility.\n\nInternal resources MUST NOT be made available without checking the necessary access permissions.\nInternal resources MAY be published through an internal API Catalog if access permissions are ensured by it."
+            },
+            {
+              "const": "private",
+              "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
+            }
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "x-feature-status": "alpha",
+          "x-introduced-in-version": "1.15.0",
+          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+              "description": "Any valid [Concept ID](../index.md#concept-id)."
+            },
+            {
+              "const": "ord:ai-enrichment",
+              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
+            }
+          ],
+          "examples": [
+            "ord:ai-enrichment"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "mediaType",
+        "url"
+      ]
+    },
     "Product": {
       "type": "object",
       "title": "Product",
@@ -4927,25 +5221,6 @@
             "sap:custom-definition-format:v1"
           ]
         },
-        "purpose": {
-          "type": "string",
-          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
-            },
-            {
-              "const": "ord:ai-enrichment",
-              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
-            }
-          ],
-          "examples": [
-            "ord:ai-enrichment",
-            "sap:authorization"
-          ]
-        },
         "mediaType": {
           "description": "The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.\nA consuming application can use this information to know which file format parser it needs to use.\nFor example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.\n\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.\n",
           "type": "string",
@@ -4995,6 +5270,26 @@
               "const": "private",
               "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "x-feature-status": "alpha",
+          "x-introduced-in-version": "1.15.0",
+          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
+              "description": "Any valid [Concept ID](../index.md#concept-id)."
+            },
+            {
+              "const": "ord:ai-enrichment",
+              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
+            }
+          ],
+          "examples": [
+            "ord:ai-enrichment"
           ]
         }
       },
@@ -6452,12 +6747,23 @@
       "properties": {
         "supported": {
           "type": "string",
-          "enum": [
-            "no",
-            "manual",
-            "automatic"
-          ],
-          "description": "This property defines whether the resource is extensible.\n\n**Not extensible** means that the data model of the resource (i.e. API or event) cannot be extended with custom fields.\n**Manually extensible** means that in addition to defining a custom field, manual activities to include the field in the data model of the resource (i.e. API or event) are required. E.g. using a specific mapping tool or by selecting the resource in the data model extension tool.\n**Automatically extensible** means that after defining a custom field in the local domain model, the resource (i.e. API or event) is automatically extended as part of the default extension field definition."
+          "title": "Extensibility Support Level",
+          "x-ums-type": "ignore",
+          "description": "Defines whether and how the resource can be extended with custom fields.",
+          "oneOf": [
+            {
+              "const": "no",
+              "description": "Not extensible.\n\nThe data model of the resource (API or event) cannot be extended with custom fields."
+            },
+            {
+              "const": "manual",
+              "description": "Manually extensible.\n\nIn addition to defining a custom field, manual activities are required to include the field\nin the data model of the resource (API or event).\nExamples: using a specific mapping tool or selecting the resource in a data model extension tool."
+            },
+            {
+              "const": "automatic",
+              "description": "Automatically extensible.\n\nAfter defining a custom field in the local domain model, the resource (API or event)\nis automatically extended as part of the default extension field definition."
+            }
+          ]
         },
         "description": {
           "type": "string",
@@ -6815,6 +7121,11 @@
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
               "description": "Any valid [Concept ID](../index.md#concept-id)."
+            },
+            {
+              "const": "ord:patches",
+              "x-introduced-in-version": "1.15.0",
+              "description": "The source resource patches one or more definition files of the target resource.\nUsed on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch."
             }
           ],
           "examples": [
@@ -6854,6 +7165,11 @@
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
               "description": "Any valid [Concept ID](../index.md#concept-id)."
+            },
+            {
+              "const": "ord:patches",
+              "x-introduced-in-version": "1.15.0",
+              "description": "The source resource patches one or more definition files of the target resource.\nUsed on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch."
             }
           ],
           "examples": [

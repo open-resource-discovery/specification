@@ -1,0 +1,26 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlayselectorbynamespace'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlaySelectorByNamespace'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'namespace'
+      type: 'string'
+      description: "Concept-level OData schema/namespace selector.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets the `<Schema Namespace=\"...\">` element.\n  Use the namespace value exactly as declared (e.g. `com.example.OrderService`).\n- `csdl-json` (OData v4 CSDL JSON): targets the namespace-level object (the non-`$`-prefixed\n  key in the CSDL JSON document that matches the namespace value).\n\nUse this selector for service/schema-level annotations such as `@Core.Description` and\n`@Core.LongDescription` on the OData service as a whole."
+      mandatory: true
+      constraints:
+        minLength: 1
+  customTypeDefinitions: []
+  metadataRelations: []
