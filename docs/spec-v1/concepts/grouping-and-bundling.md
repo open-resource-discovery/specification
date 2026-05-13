@@ -97,7 +97,7 @@ Every ORD Resource MUST be assigned to exactly one [**Package**](../interfaces/D
 The Package is primarily motivated by publishing and API catalog presentation concerns, including human-readable documentation and presentation.
 It can also express information about the resource providers, terms of use of the APIs, pricing for the usage of the packages, APIs, Events, etc.
 
-Several Package properties — such as `vendor`, `partOfProducts`, `tags`, `labels` and `policyLevel` — are **inherited** by all resources within the Package. This makes the Package a convenient place to define shared metadata once, rather than repeating it on every resource.
+Several Package properties — such as `vendor`, `partOfProducts`, `tags`, `labels` and `policyLevels` — are **inherited** by all resources within the Package. This makes the Package a convenient place to define shared metadata once, rather than repeating it on every resource.
 
 The granularity of Packages is driven by all of the following concerns:
 
