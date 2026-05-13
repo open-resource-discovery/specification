@@ -149,7 +149,7 @@ Key points:
 ## Validation
 
 Overlays assume the target document is already valid for its native format.
-The merge tool does not fully re-validate target formats.
+Overlay tooling does not fully re-validate target formats.
 After applying an overlay, validate the merged output with the corresponding format-specific tooling.
 
 See [Compatibility Expectations](#compatibility-expectations) for rules on what overlays may and may not change.
