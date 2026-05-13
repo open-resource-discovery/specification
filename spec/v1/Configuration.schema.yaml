@@ -200,6 +200,17 @@ definitions:
       Describes an ORD Overlay document that is available for pull transport consumption.
     x-ums-type: "ignore"
     properties:
+      ordId:
+        type: string
+        maxLength: 255
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        description: |-
+          ORD ID of the overlay document.
+
+          MUST be unique within the ORD Configuration.
+        examples:
+          - "sap.foo:overlay:astronomy-api-openapi:v1"
+
       url:
         type: string
         format: uri-reference
@@ -222,6 +233,7 @@ definitions:
         items:
           $ref: "#/definitions/AccessStrategy"
         minItems: 1
+
       purpose:
         type: string
         x-feature-status: alpha
@@ -250,6 +262,7 @@ definitions:
           - ord:ai-enrichment
     additionalProperties: false
     required:
+      - ordId
       - url
       - accessStrategies
 

@@ -144,7 +144,6 @@ export interface ORDOverlay {
   ordOverlay: "0.1";
   /**
    * Optional ORD ID of this overlay document.
-   * MUST be provided if the ORD Overlay is published via ORD Configuration endpoint.
    */
   ordId?: string;
   /**

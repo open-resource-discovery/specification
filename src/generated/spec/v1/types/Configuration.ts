@@ -123,6 +123,12 @@ export interface OrdV1DocumentAccessStrategy {
  */
 export interface OrdV1OverlayDescription {
   /**
+   * ORD ID of the overlay document.
+   *
+   * MUST be unique within the ORD Configuration.
+   */
+  ordId: string;
+  /**
    * URL or relative URL to the ORD Overlay document.
    *
    * It is RECOMMENDED to provide a relative URL (to `baseUrl`).
