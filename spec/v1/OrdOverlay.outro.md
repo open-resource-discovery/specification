@@ -65,17 +65,17 @@ Rule of thumb:
 - use resource-definition visibility for authoritative producer-owned variants
 - use overlays for additive, externally managed, or use-case-specific enrichment layers
 
-### Deep Dive: ORD Configuration vs. Attached Resource Definition
+### Deep Dive: ORD Document Resource vs. Attached Resource Definition
 
-Overlays can be distributed either through the ORD Configuration endpoint or by attaching them as `ord:overlay:v1` resource definitions to a resource.
+Overlays can be distributed either as a standalone `OrdOverlayResource` in an ORD Document or by attaching them as `ord:overlay:v1` resource definitions to an API or Event resource.
 Those options are not interchangeable in practice, because they imply different ownership and publication models.
 
 The strongest discriminator is ownership:
 if the overlay is created by a different ORD Provider than the one describing the target resource,
 there is in practice no way to attach that overlay as a resource definition of the foreign resource.
-In that case, ORD Configuration is the viable distribution mechanism.
+In that case, distributing it as an `OrdOverlayResource` in a separate ORD Document is the viable option.
 
-#### Prefer ORD Configuration when
+#### Prefer an ORD Document Resource when
 
 - the overlay is created by someone other than the original resource provider
 - the overlay is cross-cutting and applies to multiple resources
@@ -92,15 +92,15 @@ In that case, ORD Configuration is the viable distribution mechanism.
 
 #### Main tradeoff
 
-- ORD Configuration is more flexible for independent publishers, cross-resource overlays, and separate release cycles
+- ORD Document Resources are more flexible for independent publishers, cross-resource overlays, and separate release cycles
 - attached resource definitions are easier to understand when the overlay is just another producer-owned artifact of the same resource
-- ORD Configuration makes provenance and authorization more important, because overlays may come from outside the original resource provider
+- ORD Document Resources make provenance and authorization more important, because overlays may come from outside the original resource provider
 - attached overlays reduce indirection, but only work when the publisher controls the target resource entry
 
 Rule of thumb:
 
 - use attached resource definitions for producer-owned, resource-local overlays
-- use ORD Configuration for externally managed, cross-resource, or ORD-level overlays
+- use ORD Document Resources for externally managed, cross-resource, or independently versioned overlays
 
 ## Compatibility Expectations
 

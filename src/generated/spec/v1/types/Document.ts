@@ -114,6 +114,16 @@ export interface OrdDocument {
    */
   agents?: Agent[];
   /**
+   * Array of all ORD Overlay resources described in this ORD document.
+   *
+   * An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
+   * resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
+   *
+   * For overlays that are tightly coupled to a single API or Event resource, consider attaching them directly
+   * as a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.
+   */
+  overlays?: ORDOverlayResource[];
+  /**
    * Array of all integration dependencies that are described in this ORD document.
    */
   integrationDependencies?: IntegrationDependency[];
@@ -850,7 +860,7 @@ export interface RelatedAPIResource {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: string;
+  relationType?: (string | "ord:patches") & string;
 }
 /**
  * Defines a relation to an Event Resource (via its ORD ID).
@@ -868,7 +878,7 @@ export interface RelatedEventResource {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: string;
+  relationType?: (string | "ord:patches") & string;
 }
 /**
  * A changelog entry can be used to indicate changes.
@@ -3082,6 +3092,188 @@ export interface ExposedAPIResource {
    * MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
    */
   ordId: string;
+}
+/**
+ * An ORD Overlay Resource is a standalone, versioned resource that references an [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
+ * The overlay document patches resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
+ *
+ * Use an ORD Overlay Resource for overlays that are cross-cutting, independently managed, or not tightly coupled to a single API or Event resource.
+ * For producer-owned overlays that belong to a single resource, consider attaching them directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+ */
+export interface ORDOverlayResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Human-readable title.
+   *
+   * MUST NOT exceed 255 chars.
+   * MUST NOT contain line breaks.
+   */
+  title?: string;
+  /**
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
+   * Detailed documentation SHOULD be attached as (typed) links.
+   */
+  description?: string;
+  /**
+   * The complete [SemVer](https://semver.org/) version string.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   * It SHOULD be changed if the ORD information or referenced resource definitions changed.
+   * It SHOULD express minor and patch changes that don't lead to incompatible changes.
+   *
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   *
+   * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
+   * The `version` MUST not be bumped for changes in extensions.
+   *
+   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   *
+   * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
+   */
+  version: string;
+  /**
+   * Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   *
+   * When retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.
+   * Therefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.
+   *
+   * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
+   *
+   * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+   */
+  lastUpdate?: string;
+  /**
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
+   */
+  visibility: "public" | "internal" | "private";
+  /**
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   */
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
+  /**
+   * Optional list of API Resources whose definition files this overlay patches.
+   *
+   * SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+   * as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+   * Use `relationType: ord:patches` to express the patching relationship.
+   *
+   * May be omitted when the target resource is not described in an accessible ORD document,
+   * or when the overlay is cross-cutting and patches resources from multiple providers.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of Event Resources whose definition files this overlay patches.
+   *
+   * SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+   * as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+   * Use `relationType: ord:patches` to express the patching relationship.
+   *
+   * May be omitted when the target resource is not described in an accessible ORD document,
+   * or when the overlay is cross-cutting and patches resources from multiple providers.
+   */
+  relatedEventResources?: RelatedEventResource[];
+  /**
+   * List of overlay definition files referenced by this ORD Overlay Resource.
+   * Each entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches.
+   */
+  definitions?: ORDOverlayDefinition[];
+  /**
+   * Generic Links with arbitrary meaning and content.
+   */
+  links?: Link[];
+  /**
+   * List of free text style tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  tags?: string[];
+  labels?: Labels;
+  documentationLabels?: DocumentationLabels;
+}
+/**
+ * Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
+ */
+export interface ORDOverlayDefinition {
+  /**
+   * Type of the overlay definition
+   */
+  type: ("ord:overlay:v1" | string) & string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   * For example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.
+   *
+   * If no Media Type is registered for the referenced file,
+   * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
+  /**
+   * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
+   *
+   * It is RECOMMENDED to provide a relative URL (to base URL).
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving metadata from the ORD provider.
+   * An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
+   *
+   * The access strategies only apply to the metadata access and not the actual API access.
+   * The actual access to the APIs for clients is described via Consumption Bundles.
+   *
+   * If this property is not provided, the definition URL will be available through the same access strategy as this ORD document.
+   * It is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.
+   *
+   * @minItems 1
+   */
+  accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+   *
+   * If not given, the resource definition has the same visibility as the resource it describes.
+   * The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+   * E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+   *
+   * This makes it also possible to provide both a public and an internal metadata description of the resource,
+   * in case that some metadata must only be made accessible to internal consumers.
+   */
+  visibility?: "public" | "internal" | "private";
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

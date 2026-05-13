@@ -1,0 +1,43 @@
+{
+  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
+  "openResourceDiscovery": "1.14",
+  "description": "Example ORD document showing standalone ORD Overlay Resources",
+  "overlays": [
+    {
+      "ordId": "sap.foo:overlay:astronomy-api-ai-enrichment:v1",
+      "title": "Astronomy API AI Enrichment Overlay",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "relatedApiResources": [
+        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
+      ],
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/astronomy-api-ai-enrichment.overlay.json",
+          "purpose": "ord:ai-enrichment"
+        }
+      ]
+    },
+    {
+      "ordId": "sap.foo:overlay:astronomy-api-governance:v1",
+      "title": "Astronomy API Governance Overlay",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "internal",
+      "relatedApiResources": [
+        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
+      ],
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json",
+          "purpose": "foo.bar:governance"
+        }
+      ]
+    }
+  ]
+}

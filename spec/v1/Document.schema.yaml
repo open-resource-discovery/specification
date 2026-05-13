@@ -250,6 +250,21 @@ properties:
     items:
       $ref: "#/definitions/Agent"
 
+  overlays:
+    type: array
+    description: |-
+      Array of all ORD Overlay resources described in this ORD document.
+
+      An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
+      resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
+
+      For overlays that are tightly coupled to a single API or Event resource, consider attaching them directly
+      as a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.
+    x-introduced-in-version: "1.15.0"
+    x-feature-status: alpha
+    items:
+      $ref: "#/definitions/OrdOverlayResource"
+
   integrationDependencies:
     type: array
     description: |-
@@ -3010,6 +3025,155 @@ definitions:
 
   ############################################################################################################
 
+  OrdOverlayResource:
+    type: object
+    title: ORD Overlay Resource
+    x-ums-type: root
+    x-introduced-in-version: "1.15.0"
+    x-feature-status: alpha
+    x-ums-implements: "#/definitions/OrdResource"
+    description: |-
+      An ORD Overlay Resource is a standalone, versioned resource that references an [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
+      The overlay document patches resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
+
+      Use an ORD Overlay Resource for overlays that are cross-cutting, independently managed, or not tightly coupled to a single API or Event resource.
+      For producer-owned overlays that belong to a single resource, consider attaching them directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.foo:overlay:astronomy-api-ai-enrichment:v1"
+
+      title:
+        <<: *title
+        examples:
+          - Astronomy API AI Enrichment Overlay
+
+      description:
+        type: string
+        minLength: 1
+        description: *descriptionText
+
+      version:
+        <<: *version
+
+      lastUpdate:
+        <<: *lastUpdate
+
+      visibility:
+        <<: *visibility
+
+      releaseStatus:
+        <<: *releaseStatus
+
+      relatedApiResources:
+        <<: *relatedApiResources
+        x-introduced-in-version: "1.15.0"
+        description: |-
+          Optional list of API Resources whose definition files this overlay patches.
+
+          SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+          as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+          Use `relationType: ord:patches` to express the patching relationship.
+
+          May be omitted when the target resource is not described in an accessible ORD document,
+          or when the overlay is cross-cutting and patches resources from multiple providers.
+
+      relatedEventResources:
+        <<: *relatedEventResources
+        x-introduced-in-version: "1.15.0"
+        description: |-
+          Optional list of Event Resources whose definition files this overlay patches.
+
+          SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+          as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+          Use `relationType: ord:patches` to express the patching relationship.
+
+          May be omitted when the target resource is not described in an accessible ORD document,
+          or when the overlay is cross-cutting and patches resources from multiple providers.
+
+      definitions:
+        type: array
+        description: |-
+          List of overlay definition files referenced by this ORD Overlay Resource.
+          Each entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches.
+        items:
+          $ref: "#/definitions/OrdOverlayDefinition"
+
+      links:
+        <<: *links
+        description: |-
+          Generic Links with arbitrary meaning and content.
+
+      tags:
+        <<: *tags
+
+      labels:
+        <<: *labels
+
+      documentationLabels:
+        <<: *documentationLabels
+
+    additionalProperties: false
+    required:
+      - ordId
+      - version
+      - releaseStatus
+      - visibility
+    x-recommended:
+      - lastUpdate
+
+  ############################################################################################################
+
+  OrdOverlayDefinition:
+    type: object
+    title: ORD Overlay Definition
+    x-ums-type: "custom"
+    x-introduced-in-version: "1.15.0"
+    x-feature-status: alpha
+    description: |-
+      Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
+    properties:
+      type:
+        description: Type of the overlay definition
+        type: string
+        anyOf:
+          - const: "ord:overlay:v1"
+            description: |-
+              ORD Overlay document (v1). The `mediaType` MUST be set to `application/json`.
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            description: |-
+              Any valid [Specification ID](../index.md#specification-id).
+        examples:
+          - "ord:overlay:v1"
+
+      mediaType:
+        <<: *mediaType
+
+      url:
+        <<: *resourceDefinitionUrl
+        examples:
+          - /open-resource-discovery/v1/overlays/ai-enrichment.overlay.json
+
+      accessStrategies:
+        <<: *accessStrategies
+
+      visibility:
+        <<: *definitionVisibility
+
+      purpose:
+        <<: *resourceDefinitionPurpose
+
+    additionalProperties: false
+    required:
+      - type
+      - mediaType
+      - url
+
+  ############################################################################################################
+
   Product:
     type: object
     title: Product
@@ -5088,6 +5252,11 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
+          - const: "ord:patches"
+            x-introduced-in-version: "1.15.0"
+            description: |-
+              The source resource patches one or more definition files of the target resource.
+              Used on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch.
         examples:
           - "foo.bar:relationName"
     required:
@@ -5129,6 +5298,11 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
+          - const: "ord:patches"
+            x-introduced-in-version: "1.15.0"
+            description: |-
+              The source resource patches one or more definition files of the target resource.
+              Used on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch.
         examples:
           - "foo.bar:relationName"
     required:

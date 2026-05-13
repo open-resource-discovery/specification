@@ -26,29 +26,12 @@ The **ORD Overlay** is an optional ORD model extension that allows patching refe
 ## Distribution
 
 Decision guidance for choosing a distribution mode is collected in the
-[Appendix: ORD Configuration vs. Attached Resource Definition](#deep-dive-ord-configuration-vs-attached-resource-definition).
-
-### Via the ORD Configuration Endpoint
-
-Overlays can be listed directly in the [ORD Configuration Endpoint](../../spec-v1/index.md#ord-configuration-endpoint) under `openResourceDiscoveryV1.overlays`.
-This is the preferred approach for cross-cutting overlays that are not tied to a single resource.
-
-```json
-{
-  "openResourceDiscoveryV1": {
-    "documents": [],
-    "overlays": [
-      { "ordId": "sap.foo:overlay:ai-enrichment:v1", "url": "/ord/overlays/ai-enrichment.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "ord:ai-enrichment" },
-      { "ordId": "sap.foo:overlay:governance:v1", "url": "/ord/overlays/governance.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "foo.bar:governance" }
-    ]
-  }
-}
-```
+[Appendix: ORD Document Resource vs. Attached Resource Definition](#deep-dive-ord-document-resource-vs-attached-resource-definition).
 
 ### Attached to an ORD Resource
 
 Overlays can also be attached directly to an API or Event resource as a `resourceDefinitions` entry with type `ord:overlay:v1`.
-This keeps the overlay co-located with the resource it patches.
+This keeps the overlay co-located with the resource it patches and is convenient when the same ORD Provider owns both.
 
 A single resource can have multiple overlays with different `purpose` values.
 This allows independent concerns (e.g. AI enrichment, platform governance) to be managed by different teams
@@ -70,6 +53,40 @@ the processing order is not defined by this specification and MUST be establishe
       { "type": "ord:overlay:v1", "url": "/ord/overlays/governance.overlay.json", "visibility": "internal", "purpose": "foo.bar:governance" }
     ]
   }]
+}
+```
+
+### As an ORD Document Resource
+
+Overlays can be described as standalone `OrdOverlayResource` entries inside an [ORD Document](../../spec-v1/index.md#ord-document).
+This is the preferred approach for cross-cutting overlays that are not tightly coupled to a single resource,
+or for overlays managed by a different team than the resource provider.
+
+The ORD Overlay Resource acts as any other ORD resource: it has its own `ordId`, `version`, `releaseStatus`, and `visibility`,
+and references the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`.
+
+```json
+{
+  "overlays": [
+    {
+      "ordId": "sap.foo:overlay:astronomy-api-ai-enrichment:v1",
+      "title": "Astronomy API AI Enrichment Overlay",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "relatedApiResources": [
+        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
+      ],
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/ord/overlays/ai-enrichment.overlay.json",
+          "purpose": "ord:ai-enrichment"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -155,7 +172,7 @@ so that individual consumers do not need to implement overlay processing themsel
 When an ORD Aggregator performs the merge, it SHOULD produce a new resource definition entry with the merged content.
 The new entry takes over the `type` from the original resource definition,
 the `visibility` from the overlay document,
-and the `purpose` from the overlay's resource-definition or ORD Configuration entry.
+and the `purpose` from the overlay's definition entry.
 
 ## Overlay Document Metadata
 

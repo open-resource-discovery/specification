@@ -35,28 +35,6 @@
         ]
       }
     ],
-    "overlays": [
-      {
-        "ordId": "sap.foo:overlay:astronomy-api-ai-enrichment:v1",
-        "url": "/open-resource-discovery/v1/overlays/astronomy-api-ai-enrichment.overlay.json",
-        "purpose": "ord:ai-enrichment",
-        "accessStrategies": [
-          {
-            "type": "open"
-          }
-        ]
-      },
-      {
-        "ordId": "sap.foo:overlay:astronomy-api-governance:v1",
-        "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json",
-        "purpose": "foo.bar:governance",
-        "accessStrategies": [
-          {
-            "type": "open"
-          }
-        ]
-      }
-    ],
     "capabilities": {
       "selector": true
     }
