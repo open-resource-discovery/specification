@@ -1,7 +1,7 @@
 {
 	"$schema": "http://json.schemastore.org/package",
 	"name": "@open-resource-discovery/specification",
-	"version": "1.14.5",
+	"version": "1.15.0",
 	"description": "Open Resource Discovery (ORD) Specification",
 	"author": "SAP SE",
 	"license": "Apache-2.0",
@@ -39,7 +39,7 @@
 		"generate:llm-notebook": "npm run generate && ts-node ./src/helper/exportForNotebookLM.ts"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.14",
+		"@biomejs/biome": "2.4.15",
 		"@docusaurus/core": "3.10.1",
 		"@docusaurus/faster": "3.10.1",
 		"@docusaurus/plugin-client-redirects": "3.10.1",
