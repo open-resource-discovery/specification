@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich or correct resource definition files (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals — for example to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.\nFor producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`."
+  description: "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.\nFor producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`."
   metadataProperties:
     - name: 'id'
       type: 'guid'
