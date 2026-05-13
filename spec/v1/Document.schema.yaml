@@ -89,7 +89,7 @@ properties:
     oneOf:
       - const: "system-type"
         description: |-
-          Describes a static [system-type](../index.md#def-system-type) perspective, which is version independent.
+          Describes a static [system-type](../index.md#system-type) perspective, which is version independent.
 
           If a system is not versioned (continuous delivery) or resources are not tied to a system, the system-type perspective
           implies that the information apply, no matter which system version or instance.
@@ -100,7 +100,7 @@ properties:
           If chosen, `describedSystemVersion`.`version` MUST be provided, too.
 
           This perspective describes how a system of a particular type and version generally look like.
-          The latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective.
+          If no explicit `system-type` perspective is available, the latest system-version SHOULD be interpreted as the [system-type](../index.md#system-type) perspective (see [static perspective resolution](../concepts/perspectives#static-perspective-resolution)).
       - const: "system-instance"
         description: |-
           Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
@@ -119,6 +119,7 @@ properties:
           The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
 
           Examples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems.
+          For the distinction between system-independent content and system-scoped shared publications, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).
     default: "system-instance"
     examples:
       - "system-instance"
@@ -325,7 +326,6 @@ definitions:
 
       The Package can also be used to indicate which products or vendors provided the packaged resources.
       For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
-      In any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.
 
       A Package SHOULD contain at least one resource. Avoid empty Packages.
 
@@ -360,6 +360,23 @@ definitions:
         examples:
           - "SuccessFactorsRecruiting"
           - "91cd9972-c05d-4d29-8b6e-dbef2a2d48e9"
+
+      correlationIds: &correlationIds
+        type: array
+        description: |-
+          Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+
+          They express an "identity" / "equals" / "mappable" relationship to the target ID.
+
+          If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+
+          MUST be a valid [Correlation ID](../index.md#correlation-id).
+        items: &correlationId
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
+          maxLength: 255
+        examples:
+          - ["foo.bar:conceptName:localIdentifier"]
 
       title: &title
         type: string
@@ -689,20 +706,8 @@ definitions:
       localId:
         <<: *localId
 
-      correlationIds: &correlationIds
-        type: array
-        description: |-
-          Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
-
-          They express an "identity" / "equals" / "mappable" relationship to the target ID.
-
-          If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
-
-          MUST be a valid [Correlation ID](../index.md#correlation-id).
-        items: &correlationId
-          type: string
-          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
-          maxLength: 255
+      correlationIds:
+        <<: *correlationIds
         examples:
           - ["sap.s4:communicationScenario:SAP_COM_0008"]
 
@@ -1033,8 +1038,10 @@ definitions:
           Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
 
           Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+          Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
 
           More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+          See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
       visibility:
         <<: *visibility
 
@@ -1062,7 +1069,7 @@ definitions:
               Breaking changes may occur at any time without notice or deprecation period.
 
               Not recommended for production use unless you can tolerate breaking changes. Suitable for experimentation, early adopters,
-              and feedback gathering. Resources of `beta` status MAY be changed or removed at the provider's discretion.
+              and feedback gathering. Resources of `beta` `releaseStatus` MAY be changed or removed at the provider's discretion.
 
           - const: active
             description: |-
@@ -1076,6 +1083,7 @@ definitions:
               The resource is still functional but scheduled for removal. No new development should depend on it.
 
               If the `releaseStatus` is set to `deprecated`, the `deprecationDate` SHOULD be provided.
+              If the `releaseStatus` is set to `deprecated`, and the `sunsetDate` is already known, then the `sunsetDate` SHOULD be provided.
 
               If successor resources exist, they MUST be referenced through `successors`.
 
@@ -1086,7 +1094,7 @@ definitions:
             description: |-
               The resource has been decommissioned and is no longer available at runtime. This entry exists for historical reference only.
 
-              If the status is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided.
+              If the `releaseStatus` is set to `sunset`, a `Tombstone` MUST be set as well and a `sunsetDate` MUST be provided.
         examples:
           - active
 
@@ -2808,7 +2816,7 @@ definitions:
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         examples:
           - "sap.foo.bar:agent:disputeAgent:v1"
 
@@ -2951,7 +2959,7 @@ definitions:
           MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
         items:
           type: string
-          pattern: ^([a-z0-9-]+(?:[.][a-z0-9-]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
           maxLength: 255
           x-association-target:
             - "#/definitions/IntegrationDependency/ordId"
@@ -4111,7 +4119,7 @@ definitions:
     description: |-
       A [system instance](../index.md#system-instance) is a concrete, running instance of a system type.
       In a multi-tenant system, it corresponds to a tenant.
-      In a single-tenant system, it corresponds to the [system installation](../index.md#system-deployment) itself.
+      In a single-tenant system, it corresponds to the [system deployment](../index.md#system-deployment) itself.
     properties:
       baseUrl:
         type: string
@@ -4389,15 +4397,19 @@ definitions:
       Duplicate labels will be merged by the ORD aggregator according to the following rules:
       * Values of the same label key will be merged.
       * Duplicate values of the same label key will be removed.
+
+      **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
+      The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
     x-ums-type: "custom"
     patternProperties:
-      "^[a-zA-Z0-9-_.]*$":
+      "^[a-zA-Z0-9-_.:\/]*$":
         type: array
         items:
           type: string
           minLength: 1
     examples:
-      - label-key-1: ["label-value-1", "label-value-2"]
+      - foo.bar:labelKeyName: ["value"]
+      - foo.bar:cost-center: ["CC-12345", "CC-67890"]
 
   ############################################################################################################
 
@@ -4409,9 +4421,10 @@ definitions:
       A Group Type defines the semantics of [group assignments](#group).
       What the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).
 
-      Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
+      Group Types can be defined centrally (ownership by an authority namespace or another shared owning namespace) or decentrally (defined by the application / service itself).
 
       To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
+      For the distinction between system-scoped and system-independent shared taxonomy, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).
     x-introduced-in-version: "1.9.0"
     properties:
       groupTypeId: &groupTypeId

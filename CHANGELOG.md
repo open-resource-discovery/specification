@@ -18,6 +18,22 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - The combination of `type`, `purpose`, and `visibility` MUST be unique within a resource's definitions list
 - Documented `ord` as a reserved vendor namespace for ORD specification-defined values in extensible enums
 
+## [1.14.5]
+
+### Added
+
+- Added `correlationIds` to package
+- Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/concepts/implementing-ord-natively) guide
+
+## [1.14.4]
+
+### Changed
+
+- Added recommendation to use [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts. The `labels` key validation pattern now also allows `:` and `/` characters accordingly.
+- Clarified the use of [authority namespaces](https://open-resource-discovery.org/spec-v1#authority-namespace) for resource ORD IDs: when multiple system types share the same resource contract under a shared authority namespace, the uniqueness and aggregation rules now explicitly address this. See [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
+- Added concept page on [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
+- Clarification: Consolidated and clarified the [static perspective resolution](https://open-resource-discovery.org/spec-v1/concepts/perspectives#static-perspective-resolution) algorithm for aggregators. When no specific version is requested, explicit `system-type` perspective data takes precedence; if unavailable, the aggregator SHOULD derive it from the latest `system-version`. Previously this behavior was scattered and only stated as MAY.
+
 ## [1.14.3]
 
 ### Added

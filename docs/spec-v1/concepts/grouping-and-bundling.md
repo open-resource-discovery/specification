@@ -106,6 +106,9 @@ The granularity of Packages is driven by all of the following concerns:
 - The resources share certain aspects/taxonomy that is inherited down to them (e.g. `vendor`).
 - If applicable: The resources are meant to be used by only a particular target platform / software.
 
+When a package groups resources that are shared across multiple [system types](../index.md#system-type), the package itself SHOULD normally use the same owning namespace as the grouped resources.
+See [Namespace Ownership](./shared-resources.md#namespace-ownership) for guidance on choosing the correct namespace.
+
 All resources that are not created by the described systems vendor MUST be put into separate packages.
 This is the case, when:
 
@@ -146,7 +149,11 @@ Entity Types are part of the ORD taxonomy and represent an "internal" concept. T
 
 Relationships to entity types can be assigned to API & Event resources, data products and other entity types:
 
+<div className="img-box" style={{aspectRatio: "400/140", maxWidth: "500px"}}>
+
 ![Entity Type Relations](/img/entity-type-relations.drawio.svg)
+
+</div>
 
 Entity Types can serve two roles:
 
@@ -185,8 +192,10 @@ Labels defined on a [Package](#package) are inherited by all resources it contai
 
 [**Groups**](../interfaces/Document#group) and the corresponding [Group Types](../interfaces/Document#group-type) can be used to define and apply your own taxonomy in a generic, extensible way.
 
-<div style={{"text-align": "left", "margin-top": "12px"}}>
+<div className="img-box" style={{aspectRatio: "574/79"}}>
+
 ![Group Concept Overview](/img/group-concept-overview.drawio.svg)
+
 </div>
 
 The concept has three parts: The **Group Type** defines the semantics / meaning of a particular type of group assignments.
@@ -198,8 +207,9 @@ In the examples before, this would be the "Employee Service" or the "Hire to Ret
 Lastly, we need to state the **partOfGroup** assignment of a particular ORD Resource.
 E.g. a particular OData API for Employee Management can be part of both the "Employee Service" group (of type CSN Service) and the "Hire to Retire" group of type "Process".
 
-The Group Type could even be defined globally. If the Group Type is shared across different applications, it should have an [authority namespace](../index.md#authority-namespace).
-The Group Instances can potentially be globally defined, too. In this case it works like a global taxonomy with a predefined list of values. It's also possible for the application itself to define and assign its own Group Types and Instances.
+The Group Type could even be defined globally. If the Group Type is shared across different applications, it should use the namespace of the owner that governs the taxonomy (see [Namespace Ownership](./shared-resources.md#namespace-ownership)).
+The Group Instances can potentially be globally defined, too. In this case it works like a global taxonomy with a predefined list of values and can use the `system-independent` perspective. It's also possible for the application itself to define and assign its own Group Types and Instances.
+See [Shared Taxonomy, Resources and Contracts](./shared-resources.md) for choosing between system-scoped and system-independent publication.
 
 > The Group concept is the correct choice when ORD resources need to be grouped by additional concerns, beyond the predefined concepts from ORD (like Package).
 

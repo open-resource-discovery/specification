@@ -35,7 +35,11 @@ From a technical perspective, an Agent is simply a specialized type of applicati
 -   **Instantiation:** While the "Agent Resource" describes the *type* or *class* of the agent (Design Time), the running software represents an *instance* of that agent (Runtime).
     -   *See [System Landscape Model](./system-landscape-model.md) for more on the distinction between Systems, Tenants, and Resources.*
 
+<div className="img-box" style={{aspectRatio: "512/378"}}>
+
 ![AI Agent Overview](/img/ord-ai-agent.drawio.svg "AI Agent Overview")
+
+</div>
 
 ## Agent Example
 
@@ -101,9 +105,9 @@ These are API protocols specifically designed for simple consumption by LLMs and
 
 ```mermaid
 graph TD
-    classDef concept fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-    classDef tech fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
-    classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef concept fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#333;
+    classDef tech fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333;
+    classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333;
 
     Agent["Agent<br/>(Product-like Concept)"]:::concept
     System["System / Application"]:::tech

@@ -204,11 +204,14 @@ export interface SystemInstance {
  * Duplicate labels will be merged by the ORD aggregator according to the following rules:
  * * Values of the same label key will be merged.
  * * Duplicate values of the same label key will be removed.
+ *
+ * **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
+ * The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
  */
 export interface Labels {
   /**
    * This interface was referenced by `Labels`'s JSON-Schema definition
-   * via the `patternProperty` "^[a-zA-Z0-9-_.]*$".
+   * via the `patternProperty` "^[a-zA-Z0-9-_.:/]*$".
    */
   [k: string]: string[];
 }
@@ -453,8 +456,10 @@ export interface ApiResource {
    * Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
    *
    * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+   * Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
    *
    * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
    */
   abstract?: boolean;
   /**
@@ -1391,8 +1396,10 @@ export interface EventResource {
    * Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
    *
    * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+   * Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
    *
    * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
    */
   abstract?: boolean;
   /**
@@ -3529,7 +3536,6 @@ export interface Product {
  *
  * The Package can also be used to indicate which products or vendors provided the packaged resources.
  * For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
- * In any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.
  *
  * A Package SHOULD contain at least one resource. Avoid empty Packages.
  *
@@ -3555,6 +3561,16 @@ export interface Package {
    * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
    */
   localId?: string;
+  /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
   /**
    * Human-readable title.
    *
@@ -4057,9 +4073,10 @@ export interface Group {
  * A Group Type defines the semantics of [group assignments](#group).
  * What the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).
  *
- * Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
+ * Group Types can be defined centrally (ownership by an authority namespace or another shared owning namespace) or decentrally (defined by the application / service itself).
  *
  * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
+ * For the distinction between system-scoped and system-independent shared taxonomy, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).
  */
 export interface GroupType {
   /**
