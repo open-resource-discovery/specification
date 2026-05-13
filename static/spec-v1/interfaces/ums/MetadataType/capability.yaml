@@ -105,7 +105,7 @@ spec:
       type: 'custom'
       customTypeName: 'CapabilityDefinition'
       array: true
-      description: "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nAs a consequence the same definition type MUST NOT be provided more than once.\nThe exception is when the same definition type is provided more than once, but with a different `visibility`.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented."
+      description: "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nThe combination of `type`, `purpose`, and `visibility` MUST be unique within the list.\n\nA definition without a `purpose` is considered the primary/default definition for its type.\nAdditional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented."
     - name: 'links'
       type: 'custom'
       customTypeName: 'Link'
@@ -139,6 +139,9 @@ spec:
           constraints:
             maxLength: 255
             pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+        - name: 'purpose'
+          type: 'string'
+          description: "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id)."
         - name: 'mediaType'
           type: 'string'
           description: "The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.\nA consuming application can use this information to know which file format parser it needs to use.\nFor example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.\n\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.\n"
