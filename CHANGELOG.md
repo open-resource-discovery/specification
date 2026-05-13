@@ -10,6 +10,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.15.0]
+
 ### Added
 
 - Added **ORD Overlay** as an alpha spec extension model (`ord:overlay:v1`)
