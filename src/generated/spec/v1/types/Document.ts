@@ -950,18 +950,6 @@ export interface ApiResourceDefinition {
    */
   customType?: string;
   /**
-   * Describes the intended purpose or role of this resource definition.
-   *
-   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
-   * This allows multiple definitions of the same type to coexist when they serve different purposes.
-   *
-   * For example, an API Resource might have multiple OpenAPI definitions:
-   * one for standard API documentation and another specifically enriched for AI/agent consumption.
-   *
-   * MUST be a valid [Concept ID](../index.md#concept-id).
-   */
-  purpose?: (string | "ord:ai-enrichment") & string;
-  /**
    * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
    * A consuming application can use this information to know which file format parser it needs to use.
    * For example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.
@@ -1716,18 +1704,6 @@ export interface EventResourceDefinition {
    */
   customType?: string;
   /**
-   * Describes the intended purpose or role of this resource definition.
-   *
-   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
-   * This allows multiple definitions of the same type to coexist when they serve different purposes.
-   *
-   * For example, an API Resource might have multiple OpenAPI definitions:
-   * one for standard API documentation and another specifically enriched for AI/agent consumption.
-   *
-   * MUST be a valid [Concept ID](../index.md#concept-id).
-   */
-  purpose?: (string | "ord:ai-enrichment") & string;
-  /**
    * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
    * A consuming application can use this information to know which file format parser it needs to use.
    * For example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.
@@ -2311,18 +2287,6 @@ export interface CapabilityDefinition {
    * MUST only be provided if `type` is set to `custom`.
    */
   customType?: string;
-  /**
-   * Describes the intended purpose or role of this resource definition.
-   *
-   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
-   * This allows multiple definitions of the same type to coexist when they serve different purposes.
-   *
-   * For example, an API Resource might have multiple OpenAPI definitions:
-   * one for standard API documentation and another specifically enriched for AI/agent consumption.
-   *
-   * MUST be a valid [Concept ID](../index.md#concept-id).
-   */
-  purpose?: (string | "ord:ai-enrichment") & string;
   /**
    * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
    * A consuming application can use this information to know which file format parser it needs to use.
