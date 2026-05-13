@@ -23,6 +23,7 @@ x-property-order:
   - Group
   - GroupType
   - Tombstone
+  - Overlay
 x-ums-type: "ignore"
 type: object
 properties:
@@ -124,12 +125,6 @@ properties:
     examples:
       - "system-instance"
 
-  describedSystemInstance:
-    $ref: "#/definitions/SystemInstance"
-    description: |-
-      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
-
-      Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   describedSystemType:
     $ref: "#/definitions/SystemType"
     x-introduced-in-version: "1.10.0"
@@ -140,6 +135,12 @@ properties:
     x-introduced-in-version: "1.10.0"
     description: |-
       Information on the [system version](../index.md#system-version) that this ORD document describes.
+  describedSystemInstance:
+    $ref: "#/definitions/SystemInstance"
+    description: |-
+      Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
+
+      Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
   policyLevel: &policyLevel
     type: string
     x-hide: true
@@ -249,6 +250,21 @@ properties:
     x-feature-status: beta
     items:
       $ref: "#/definitions/Agent"
+
+  overlays:
+    type: array
+    description: |-
+      Array of all metadata overlays described in this ORD document.
+
+      An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
+      resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
+
+      For overlays that are tightly coupled to a single API or Event resource, consider attaching them directly
+      as a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.
+    x-introduced-in-version: "1.15.0"
+    x-feature-status: alpha
+    items:
+      $ref: "#/definitions/Overlay"
 
   integrationDependencies:
     type: array
@@ -2626,6 +2642,13 @@ definitions:
               [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.
               The `mediaType` MUST be be set to `application/json`.
             x-introduced-in-version: "1.9.4"
+          - const: ord:overlay:v1
+            x-feature-status: alpha
+            x-introduced-in-version: "1.15.0"
+            description: |-
+              ORD Overlay file for patching referenced resource definition files.
+              For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
+              The `mediaType` MUST be set to `application/json`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
@@ -2644,32 +2667,6 @@ definitions:
         maxLength: 255
         examples:
           - "sap:custom-definition-format:v1"
-
-      purpose: &resourceDefinitionPurpose
-        type: string
-        description: |-
-          Describes the intended purpose or role of this resource definition.
-
-          While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
-          This allows multiple definitions of the same type to coexist when they serve different purposes.
-
-          For example, an API Resource might have multiple OpenAPI definitions:
-          one for standard API documentation and another specifically enriched for AI/agent consumption.
-
-          MUST be a valid [Concept ID](../index.md#concept-id).
-        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
-          - type: string
-            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
-            description: |-
-              Any valid [Concept ID](../index.md#concept-id).
-          - const: ord:ai-enrichment
-            description: |-
-              The definition is enriched with additional metadata specifically for AI/agent consumption.
-              This may include enhanced descriptions, examples, or semantic annotations that help AI systems
-              better understand and utilize the API or event resource.
-        examples:
-          - ord:ai-enrichment
-          - sap:authorization
 
       mediaType: &mediaType
         description: |
@@ -2726,6 +2723,33 @@ definitions:
         examples:
           - - type: "open"
 
+      purpose: &resourceDefinitionPurpose
+        type: string
+        x-feature-status: alpha
+        x-introduced-in-version: "1.15.0"
+        description: |-
+          Describes the intended purpose or role of this resource definition.
+
+          While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+          This allows multiple definitions of the same type to coexist when they serve different purposes.
+
+          For example, an API Resource might have multiple OpenAPI definitions:
+          one for standard API documentation and another specifically enriched for AI/agent consumption.
+
+          MUST be a valid [Concept ID](../index.md#concept-id).
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+          - const: ord:ai-enrichment
+            description: |-
+              The definition is enriched with additional metadata specifically for AI/agent consumption.
+              This may include enhanced descriptions, examples, or semantic annotations that help AI systems
+              better understand and utilize the API or event resource.
+        examples:
+          - ord:ai-enrichment
+
     additionalProperties: false
     required:
       - type
@@ -2765,6 +2789,13 @@ definitions:
               WARNING: Only expose the CDS Service definition that effectively is governed by the API contract and stability. Do not expose internal models!
 
               The `mediaType` MUST be be set to `application/json`.
+          - const: ord:overlay:v1
+            x-feature-status: alpha
+            x-introduced-in-version: "1.15.0"
+            description: |-
+              ORD Overlay file for patching metadata / resource definition files.
+              For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
+              The `mediaType` MUST be set to `application/json`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
@@ -2774,9 +2805,6 @@ definitions:
       customType:
         # TODO: Deprecate this?
         <<: *customType
-
-      purpose:
-        <<: *resourceDefinitionPurpose
 
       mediaType:
         <<: *mediaType
@@ -2791,6 +2819,9 @@ definitions:
 
       visibility:
         <<: *definitionVisibility
+
+      purpose:
+        <<: *resourceDefinitionPurpose
 
     additionalProperties: false
     required:
@@ -2992,6 +3023,147 @@ definitions:
       - partOfPackage
     x-recommended:
       - lastUpdate
+
+  ############################################################################################################
+
+  Overlay:
+    type: object
+    title: Overlay
+    x-ums-type: root
+    x-introduced-in-version: "1.15.0"
+    x-feature-status: alpha
+    x-ums-implements: "#/definitions/OrdResource"
+    description: |-
+      An Overlay Resource is a standalone, versioned resource that references a metadata patch file.
+      Overlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
+
+      Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
+      For producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.foo:overlay:astronomy-api-ai-enrichment:v1"
+
+      title:
+        <<: *title
+        examples:
+          - Astronomy API AI Enrichment Overlay
+
+      description:
+        type: string
+        minLength: 1
+        description: *descriptionText
+
+      version:
+        <<: *version
+
+      lastUpdate:
+        <<: *lastUpdate
+
+      visibility:
+        <<: *visibility
+
+      releaseStatus:
+        <<: *releaseStatus
+
+      relatedApiResources:
+        <<: *relatedApiResources
+        x-introduced-in-version: "1.15.0"
+        description: |-
+          Optional list of API Resources whose definition files this overlay patches.
+
+          SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+          as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+          Use `relationType: ord:patches` to express the patching relationship.
+
+          May be omitted when the target resource is not described in an accessible ORD document,
+          or when the overlay is cross-cutting and patches resources from multiple providers.
+
+      relatedEventResources:
+        <<: *relatedEventResources
+        x-introduced-in-version: "1.15.0"
+        description: |-
+          Optional list of Event Resources whose definition files this overlay patches.
+
+          SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+          as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+          Use `relationType: ord:patches` to express the patching relationship.
+
+          May be omitted when the target resource is not described in an accessible ORD document,
+          or when the overlay is cross-cutting and patches resources from multiple providers.
+
+      definitions:
+        type: array
+        description: |-
+          List of overlay definition files referenced by this ORD Overlay Resource.
+          Each entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches.
+        items:
+          $ref: "#/definitions/OverlayDefinition"
+
+      tags:
+        <<: *tags 
+        
+      labels:
+        <<: *labels
+
+    additionalProperties: false
+    required:
+      - ordId
+      - version
+      - releaseStatus
+      - visibility
+    x-recommended:
+      - lastUpdate
+
+  ############################################################################################################
+
+  OverlayDefinition:
+    type: object
+    title: Overlay Definition
+    x-ums-type: "custom"
+    x-introduced-in-version: "1.15.0"
+    x-feature-status: alpha
+    description: |-
+      Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
+    properties:
+      type:
+        description: Type of the overlay definition
+        type: string
+        anyOf:
+          - const: "ord:overlay:v1"
+            description: |-
+              ORD Overlay document (v1). The `mediaType` MUST be set to `application/json`.
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            description: |-
+              Any valid [Specification ID](../index.md#specification-id).
+        examples:
+          - "ord:overlay:v1"
+
+      mediaType:
+        <<: *mediaType
+
+      url:
+        <<: *resourceDefinitionUrl
+        examples:
+          - /open-resource-discovery/v1/overlays/ai-enrichment.overlay.json
+
+      accessStrategies:
+        <<: *accessStrategies
+
+      visibility:
+        <<: *definitionVisibility
+
+      purpose:
+        <<: *resourceDefinitionPurpose
+
+    additionalProperties: false
+    required:
+      - type
+      - mediaType
+      - url
 
   ############################################################################################################
 
@@ -3283,9 +3455,6 @@ definitions:
         # TODO: Deprecate this?
         <<: *customType
 
-      purpose:
-        <<: *resourceDefinitionPurpose
-
       mediaType:
         <<: *mediaType
 
@@ -3299,6 +3468,9 @@ definitions:
 
       visibility:
         <<: *definitionVisibility
+
+      purpose:
+        <<: *resourceDefinitionPurpose
 
     additionalProperties: false
     required:
@@ -4604,13 +4776,28 @@ definitions:
     properties:
       supported:
         type: string
-        enum: ["no", "manual", "automatic"]
-        description: |-
-          This property defines whether the resource is extensible.
+        title: Extensibility Support Level
+        x-ums-type: "ignore"
+        description: Defines whether and how the resource can be extended with custom fields.
+        oneOf:
+          - const: "no"
+            description: |-
+              Not extensible.
 
-          **Not extensible** means that the data model of the resource (i.e. API or event) cannot be extended with custom fields.
-          **Manually extensible** means that in addition to defining a custom field, manual activities to include the field in the data model of the resource (i.e. API or event) are required. E.g. using a specific mapping tool or by selecting the resource in the data model extension tool.
-          **Automatically extensible** means that after defining a custom field in the local domain model, the resource (i.e. API or event) is automatically extended as part of the default extension field definition.
+              The data model of the resource (API or event) cannot be extended with custom fields.
+          - const: "manual"
+            description: |-
+              Manually extensible.
+
+              In addition to defining a custom field, manual activities are required to include the field
+              in the data model of the resource (API or event).
+              Examples: using a specific mapping tool or selecting the resource in a data model extension tool.
+          - const: "automatic"
+            description: |-
+              Automatically extensible.
+
+              After defining a custom field in the local domain model, the resource (API or event)
+              is automatically extended as part of the default extension field definition.
 
       description:
         type: string
@@ -5058,6 +5245,11 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
+          - const: "ord:patches"
+            x-introduced-in-version: "1.15.0"
+            description: |-
+              The source resource patches one or more definition files of the target resource.
+              Used on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch.
         examples:
           - "foo.bar:relationName"
     required:
@@ -5099,6 +5291,11 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
+          - const: "ord:patches"
+            x-introduced-in-version: "1.15.0"
+            description: |-
+              The source resource patches one or more definition files of the target resource.
+              Used on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch.
         examples:
           - "foo.bar:relationName"
     required:

@@ -18,6 +18,10 @@ export async function copyGeneratedToDestination(): Promise<void> {
 			"./src/generated/spec/v1/docs/Document.md",
 			"docs/spec-v1/interfaces/Document.md",
 		);
+		await fs.copy(
+			"./src/generated/spec/v1/docs/OrdOverlay.md",
+			"docs/spec-v1/interfaces/OrdOverlay.md",
+		);
 
 		// Copy Model Extensions (any .md files in docs/ that aren't Configuration or Document)
 		await fs.ensureDir("docs/spec-extensions/models/");
@@ -28,7 +32,8 @@ export async function copyGeneratedToDestination(): Promise<void> {
 				(file) =>
 					file.endsWith(".md") &&
 					file !== "Configuration.md" &&
-					file !== "Document.md",
+					file !== "Document.md" &&
+					file !== "OrdOverlay.md",
 			);
 			for (const doc of modelExtensionDocs) {
 				await fs.copy(
@@ -48,7 +53,8 @@ export async function copyGeneratedToDestination(): Promise<void> {
 				(file) =>
 					file.endsWith(".schema.json") &&
 					file !== "Configuration.schema.json" &&
-					file !== "Document.schema.json",
+					file !== "Document.schema.json" &&
+					file !== "OrdOverlay.schema.json",
 			);
 			for (const schema of modelExtensionSchemas) {
 				await fs.copy(

@@ -83,6 +83,31 @@
           "type": "openapi-v3",
           "mediaType": "application/json",
           "url": "/ord/metadata/astronomy-v1.oas3.json",
+          "visibility": "public",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        },
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/ord/overlays/astronomy-api-ai-enrichment.overlay.json",
+          "visibility": "public",
+          "purpose": "ord:ai-enrichment",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        },
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/ord/overlays/astronomy-api-governance.overlay.json",
+          "visibility": "internal",
+          "purpose": "foo.bar:governance",
           "accessStrategies": [
             {
               "type": "open"

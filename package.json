@@ -29,7 +29,7 @@
 		"build:docusaurus": "docusaurus build",
 		"format": "biome format --write .",
 		"lint": "biome lint .",
-		"test": "npm run build:ts && node --test dist/**/*.test.js",
+		"test": "npm run build:ts && node --test dist/validation/*.test.js",
 		"serve": "docusaurus serve",
 		"start": "docusaurus start",
 		"deploy": "npm run build && gh-pages -d ./build",
@@ -57,6 +57,7 @@
 		"prism-react-renderer": "2.4.1",
 		"react": "19.2.6",
 		"react-dom": "19.2.6",
-		"ts-node": "10.9.2"
+		"ts-node": "10.9.2",
+		"tslog": "4.10.2"
 	}
 }

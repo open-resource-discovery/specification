@@ -12,10 +12,25 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added `purpose` property to resource definitions (`ApiResourceDefinition`, `EventResourceDefinition`, `CapabilityDefinition`)
+- Added **ORD Overlay** as an alpha spec extension model (`ord:overlay:v1`)
+  - Overlays allow patching referenced resource definition files (OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards) without modifying the originals.
+  - Overlays can be distributed as a standalone **ORD Overlay Resource** (`overlays` array in the ORD Document) or attached directly to an API/Event resource as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+  - Patches use concept-level selectors (`operation`, `entityType`, `complexType`, `enumType`, `propertyType`, `entitySet`, `namespace`, `parameter`, `returnType`, `root`) or a generic `jsonPath` fallback, with actions `merge`, `update`, and `remove`.
+  - A dedicated `ordId` selector for patching ORD document-level metadata is planned for a future version.
+  - Optional `target` object narrows a patch to a specific definition file or format (e.g. `definitionType: openapi-v3`).
+  - Optional top-level fields (`describedSystemType`, `describedSystemVersion`, `describedSystemInstance`, `visibility`) scope the overlay to a particular system context.
+- Added **ORD Overlay Resource** as a new first-class resource type in the ORD Document
+  - Standalone, versioned resource (`ordId`, `title`, `version`, `releaseStatus`, `visibility`) for overlays that are cross-cutting or independently managed
+  - References the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`
+  - Use `relatedApiResources` / `relatedEventResources` with `relationType: ord:patches` to declare which resources the overlay targets
+  - Use this for overlays managed by a different team than the resource provider, or for overlays that apply across multiple resources
+- Added `purpose` property to resource definitions (`ApiResourceDefinition`, `EventResourceDefinition`, `CapabilityDefinition`, `OverlayDefinition`)
   - Describes the intended purpose or role of the definition (e.g., `ord:ai-enrichment` for AI-optimized definitions)
   - Allows multiple definitions of the same `type` when they serve different purposes
   - The combination of `type`, `purpose`, and `visibility` MUST be unique within a resource's definitions list
+- Added `ord:patches` as a standardized `relationType` value on `RelatedApiResource` and `RelatedEventResource`
+  - Indicates that the source resource patches one or more definition files of the target resource
+  - Used on Overlay Resources to declare which API or Event resources they patch
 - Documented `ord` as a reserved vendor namespace for ORD specification-defined values in extensible enums
 
 ### Changed
