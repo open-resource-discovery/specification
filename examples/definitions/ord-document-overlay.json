@@ -2,7 +2,7 @@
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
   "ordId": "sap.platform:overlay:ord-reference-app-enrichment:v1",
-  "description": "Assigns ORD resources from the reference app to platform groups and adds platform-managed labels, without modifying the original ORD document.",
+  "description": "Assigns ORD resources from the reference app to platform groups and adds platform-managed labels, without modifying the original ORD document. Note: a dedicated ordId selector for ORD document-level patching is planned for a future version.",
   "target": {
     "ordId": "sap.foo:package:ord-reference-app:v0",
     "url": "/open-resource-discovery/v1/documents/example"
@@ -11,7 +11,7 @@
     {
       "action": "merge",
       "selector": {
-        "ordId": "sap.foo:apiResource:astronomy:v1"
+        "jsonPath": "$.apiResources[?(@.ordId=='sap.foo:apiResource:astronomy:v1')]"
       },
       "data": {
         "partOfGroups": [
@@ -27,7 +27,7 @@
     {
       "action": "merge",
       "selector": {
-        "ordId": "sap.foo:eventResource:ExampleEventResource:v1"
+        "jsonPath": "$.eventResources[?(@.ordId=='sap.foo:eventResource:ExampleEventResource:v1')]"
       },
       "data": {
         "partOfGroups": [
@@ -41,7 +41,7 @@
     {
       "action": "merge",
       "selector": {
-        "ordId": "sap.foo:package:ord-reference-app:v0"
+        "jsonPath": "$.packages[?(@.ordId=='sap.foo:package:ord-reference-app:v0')]"
       },
       "data": {
         "labels": {

@@ -38,8 +38,8 @@ This is the preferred approach for cross-cutting overlays that are not tied to a
   "openResourceDiscoveryV1": {
     "documents": [],
     "overlays": [
-      { "url": "/ord/overlays/ai-enrichment.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "ord:ai-enrichment" },
-      { "url": "/ord/overlays/governance.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "foo.bar:governance" }
+      { "ordId": "sap.foo:overlay:ai-enrichment:v1", "url": "/ord/overlays/ai-enrichment.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "ord:ai-enrichment" },
+      { "ordId": "sap.foo:overlay:governance:v1", "url": "/ord/overlays/governance.overlay.json", "accessStrategies": [{ "type": "open" }], "purpose": "foo.bar:governance" }
     ]
   }
 }
@@ -126,6 +126,7 @@ Key points:
 - **`remove` semantics**:
   - Omit `data` to remove the entire selected element.
   - Provide `data` with `null`-valued properties to remove only those specific fields.
+  - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]` — these are invalid and will be rejected by conformant tooling.
 - **`merge` behavior**: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array field with `data: { "arrayField": null }`, then `merge` the new value.
 
 ## Validation

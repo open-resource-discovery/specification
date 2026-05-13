@@ -66,7 +66,6 @@ export type OverlayDefinitionType = (
   | "sap-csn-interop-effective-v1"
   | "asyncapi-v2"
   | "sap.mdo:mdi-capability-definition:v1"
-  | "ord:overlay:v1"
 ) &
   string;
 /**

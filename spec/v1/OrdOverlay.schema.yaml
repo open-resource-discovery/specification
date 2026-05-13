@@ -282,7 +282,6 @@ definitions:
           - const: sap-csn-interop-effective-v1
           - const: asyncapi-v2
           - const: sap.mdo:mdi-capability-definition:v1
-          - const: ord:overlay:v1
         examples:
           - "openapi-v3"
           - "asyncapi-v2"
