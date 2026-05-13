@@ -3201,10 +3201,6 @@ export interface Overlay {
    */
   definitions?: OverlayDefinition[];
   /**
-   * Generic Links with arbitrary meaning and content.
-   */
-  links?: Link[];
-  /**
    * List of free text style tags.
    * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
    *
@@ -3212,7 +3208,6 @@ export interface Overlay {
    */
   tags?: string[];
   labels?: Labels;
-  documentationLabels?: DocumentationLabels;
 }
 /**
  * Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.

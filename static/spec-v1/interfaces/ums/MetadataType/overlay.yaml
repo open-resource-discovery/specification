@@ -57,11 +57,6 @@ spec:
       customTypeName: 'OverlayDefinition'
       array: true
       description: "List of overlay definition files referenced by this ORD Overlay Resource.\nEach entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches."
-    - name: 'links'
-      type: 'custom'
-      customTypeName: 'Link'
-      array: true
-      description: 'Generic Links with arbitrary meaning and content.'
     - name: 'tags'
       type: 'string'
       array: true
@@ -70,10 +65,6 @@ spec:
       type: 'custom'
       customTypeName: 'Labels'
       description: 'Generic labels that can be applied to most ORD information.'
-    - name: 'documentationLabels'
-      type: 'custom'
-      customTypeName: 'DocumentationLabels'
-      description: 'Generic documentation labels that can be applied to most ORD information.'
   customTypeDefinitions:
     - name: 'OverlayDefinition'
       metadataProperties:
@@ -119,30 +110,7 @@ spec:
           description: "Human-readable description about how the access is set up, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nMUST only be provided if `type` is set to `custom`."
           constraints:
             minLength: 1
-    - name: 'Link'
-      metadataProperties:
-        - name: 'title'
-          type: 'string'
-          description: "Human readable title of the link.\n\nMUST be unique within the collection of links provided."
-          mandatory: true
-          constraints:
-            minLength: 1
-        - name: 'url'
-          type: 'string'
-          description: "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe link target MUST be absolute and SHOULD be openly accessible."
-          mandatory: true
-        - name: 'description'
-          type: 'string'
-          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).'
-          constraints:
-            minLength: 1
     - name: 'Labels'
-      metadataProperties:
-        - name: 'key'
-          type: 'string'
-        - name: 'value'
-          type: 'string'
-    - name: 'DocumentationLabels'
       metadataProperties:
         - name: 'key'
           type: 'string'

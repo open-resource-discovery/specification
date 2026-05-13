@@ -3102,19 +3102,11 @@ definitions:
         items:
           $ref: "#/definitions/OverlayDefinition"
 
-      links:
-        <<: *links
-        description: |-
-          Generic Links with arbitrary meaning and content.
-
       tags:
-        <<: *tags
-
+        <<: *tags 
+        
       labels:
         <<: *labels
-
-      documentationLabels:
-        <<: *documentationLabels
 
     additionalProperties: false
     required:
