@@ -114,7 +114,7 @@ export interface OrdDocument {
    */
   agents?: Agent[];
   /**
-   * Array of all ORD Overlay resources described in this ORD document.
+   * Array of all metadata overlays described in this ORD document.
    *
    * An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
    * resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
@@ -122,7 +122,7 @@ export interface OrdDocument {
    * For overlays that are tightly coupled to a single API or Event resource, consider attaching them directly
    * as a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.
    */
-  overlays?: ORDOverlayResource[];
+  overlays?: Overlay[];
   /**
    * Array of all integration dependencies that are described in this ORD document.
    */
@@ -3094,13 +3094,13 @@ export interface ExposedAPIResource {
   ordId: string;
 }
 /**
- * An ORD Overlay Resource is a standalone, versioned resource that references an [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
- * The overlay document patches resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
+ * An Overlay Resource is a standalone, versioned resource that references a metadata patch file.
+ * Overlays enrich or correct resource definition files (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals — for example to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience.
  *
- * Use an ORD Overlay Resource for overlays that are cross-cutting, independently managed, or not tightly coupled to a single API or Event resource.
- * For producer-owned overlays that belong to a single resource, consider attaching them directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+ * Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
+ * For producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
  */
-export interface ORDOverlayResource {
+export interface Overlay {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
@@ -3199,7 +3199,7 @@ export interface ORDOverlayResource {
    * List of overlay definition files referenced by this ORD Overlay Resource.
    * Each entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches.
    */
-  definitions?: ORDOverlayDefinition[];
+  definitions?: OverlayDefinition[];
   /**
    * Generic Links with arbitrary meaning and content.
    */
@@ -3217,7 +3217,7 @@ export interface ORDOverlayResource {
 /**
  * Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
  */
-export interface ORDOverlayDefinition {
+export interface OverlayDefinition {
   /**
    * Type of the overlay definition
    */

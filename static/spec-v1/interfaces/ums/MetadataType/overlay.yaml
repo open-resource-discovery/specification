@@ -1,16 +1,16 @@
 apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
 type: 'MetadataType'
 metadata:
-  name: 'ordoverlayresource'
+  name: 'overlay'
   path: '/sap/core/ucl/metadata/ord/v1'
   labels: {}
 spec:
-  typeName: 'OrdOverlayResource'
+  typeName: 'Overlay'
   key:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "An ORD Overlay Resource is a standalone, versioned resource that references an [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.\nThe overlay document patches resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.\n\nUse an ORD Overlay Resource for overlays that are cross-cutting, independently managed, or not tightly coupled to a single API or Event resource.\nFor producer-owned overlays that belong to a single resource, consider attaching them directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`."
+  description: "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich or correct resource definition files (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals — for example to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.\nFor producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -54,7 +54,7 @@ spec:
       mandatory: true
     - name: 'definitions'
       type: 'custom'
-      customTypeName: 'OrdOverlayDefinition'
+      customTypeName: 'OverlayDefinition'
       array: true
       description: "List of overlay definition files referenced by this ORD Overlay Resource.\nEach entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches."
     - name: 'links'
@@ -75,7 +75,7 @@ spec:
       customTypeName: 'DocumentationLabels'
       description: 'Generic documentation labels that can be applied to most ORD information.'
   customTypeDefinitions:
-    - name: 'OrdOverlayDefinition'
+    - name: 'OverlayDefinition'
       metadataProperties:
         - name: 'type'
           type: 'string'
