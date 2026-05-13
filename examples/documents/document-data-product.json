@@ -1,6 +1,7 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.14",
+  "perspective": "system-instance",
   "policyLevels": ["sap:core:v1"],
   "products": [
     {
@@ -185,7 +186,7 @@
       "lineOfBusiness": ["Sales"],
       "tags": ["CustomerOrder", "Order", "Online Sales", "Offline Sales"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "foo.bar:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Scope Items": [
@@ -375,7 +376,7 @@
       "industry": ["Retail", "Consumer Products"],
       "tags": ["Commerce"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "foo.bar:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]
@@ -488,7 +489,7 @@
       "industry": ["Retail", "Consumer Products"],
       "tags": ["Commerce"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "foo.bar:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]
@@ -556,7 +557,7 @@
       "industry": ["Retail", "Consumer Products"],
       "tags": ["Commerce"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "foo.bar:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]
@@ -652,7 +653,7 @@
       "industry": ["Retail", "Consumer Products"],
       "tags": ["Commerce"],
       "labels": {
-        "label-key-1": ["label-value-1", "label-value-2"]
+        "foo.bar:cost-center": ["CC-12345", "CC-67890"]
       },
       "documentationLabels": {
         "Expected Access Performance ": ["free text/markdown"]

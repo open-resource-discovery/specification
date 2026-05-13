@@ -26,7 +26,7 @@ spec:
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
     - name: 'relationType'
       type: 'string'
-      description: "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\"."
+      description: "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\".\n\nMUST be a valid [Concept ID](../index.md#concept-id)."
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'ordId'

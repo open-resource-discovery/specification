@@ -1,6 +1,7 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.14",
+  "perspective": "system-instance",
   "description": "This ORD Document example contains more special examples, like custom SAP protocols",
   "policyLevels": ["sap:core:v1"],
   "consumptionBundles": [

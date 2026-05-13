@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 0
 hide_table_of_contents: true
 sidebar_class_name: hidden
 ---
@@ -12,9 +12,9 @@ Those specification extensions that have been centrally aligned can be hosted on
 
 Most notably, you'll find:
 
-- [Registered **Access Strategies**](./access-strategies/index.mdx) that standardize how ORD information can be accessed by the ORD Aggregators.
-- [Registered **Policy Levels**](access-strategies/index.mdx) that standardize (ideally verifiable) rules how ORD should be implemented by ORD Providers.
-- [Registered **Global Group Types**](group-types/index.mdx) for globally aligned and pre-defined group types (and potentially also predefined group instances).
-- [**Model Extensions**](./models/index.mdx) that provide additional model schemas for specific use cases.
+- [Registered **Access Strategies**](/spec-extensions/access-strategies/) that standardize how ORD information can be accessed by the ORD Aggregators.
+- [Registered **Policy Levels**](/spec-extensions/policy-levels/) that standardize (ideally verifiable) rules how ORD should be implemented by ORD Providers.
+- [Registered **Global Group Types**](/spec-extensions/group-types/) for globally aligned and pre-defined group types (and potentially also predefined group instances).
+- [**Model Extensions**](/spec-extensions/models/) that provide additional model schemas for specific use cases.
 
 Specification Extensions have registered [Specification IDs](../spec-v1/index.md#specification-id).

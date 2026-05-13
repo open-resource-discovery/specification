@@ -1,6 +1,13 @@
 {
   "openResourceDiscovery": "1.14",
   "policyLevels": ["sap:core:v1"],
+  "perspective": "system-version",
+  "describedSystemType": {
+    "systemNamespace": "foo.bar"
+  },
+  "describedSystemVersion": {
+    "version": "1.0.0"
+  },
   "apiResources": [
     {
       "ordId": "sap.foo:apiResource:astronomy:v1",

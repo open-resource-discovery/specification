@@ -41,10 +41,10 @@ IF the resources have already been published to the public [SAP Business Acceler
 - **Preferred Approach**:
   - Get in touch with the Business Hub colleagues, to clarify which existing packages need to be associated with the registered [namespace](../../spec-v1/index.md#namespaces) (from step above).
   - Keep the `<resourceId>` fragment of the [ORD ID](../../spec-v1/index.md#ord-id) identical to the ID that was previously published on the Business Accelerator Hub.
-  <!-- - Alternatively, add a [Correlation ID](../../spec-v1/index.md#correlation-id) to the resource:
+  - Alternatively, add a [Correlation ID](../../spec-v1/index.md#correlation-id) to the resource:
     - Add a `correlationIds` entry, that starts with `sap.businesshub` namespace and then the Business Accelerator Hub concept name (that is also part of the Old URL), e.g. `api` or `package`
     - Package Example: `{ "ordId": "sap.s4:package:SomeName:v1", "correlationIds": ["sap.businesshub:package:SAPS4HANACloud"] }`
-    - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }` -->
+    - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }`
 
 ### Title Constraints
 
@@ -185,7 +185,7 @@ The following constraints apply in addition to the constraints defined in the [O
 ### Integration Dependencies
 
 - If an Integration Dependency is used to indicate Subscription Content for the [SAP Event Broker](https://help.sap.com/docs/event-broker/event-broker-service-guide/what-is):
-  - Each [EventResourceIntegrationAspect](../../spec-v1/interfaces/Document.md#eventresourceintegrationaspect) MUST provide exactly one `systemTypeRestriction` application namespace.
+  - Each [EventResourceIntegrationAspect](../../spec-v1/interfaces/Document.md#event-resource-integration-aspect) MUST provide exactly one `systemTypeRestriction` application namespace.
     The value of the `systemTypeRestriction` MUST always be the same within an integration dependency.
     These limitation MAY be reconsidered in the future.
 

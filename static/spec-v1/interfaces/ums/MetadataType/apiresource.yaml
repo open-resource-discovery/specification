@@ -85,7 +85,7 @@ spec:
       description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
     - name: 'abstract'
       type: 'boolean'
-      description: "Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.\n\nAbstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page."
+      description: "Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.\n\nAbstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.\nAbstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page.\nSee also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs."
     - name: 'visibility'
       type: 'string'
       description: "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences."
@@ -357,7 +357,7 @@ spec:
           mandatory: true
         - name: 'description'
           type: 'string'
-          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)'
+          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).'
           constraints:
             minLength: 1
     - name: 'Labels'
@@ -406,6 +406,14 @@ spec:
       propertyBased: true
       managedByProperty: 'partOfProducts_ID'
       description: "List of products the resources of the Package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+    - propertyName: 'relatedApiResources'
+      relatedTypeName: 'RelatedApiResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of related API Resources.\n\nUse this to indicate which APIs implement, expose, or are otherwise related to this entity."
+    - propertyName: 'relatedEventResources'
+      relatedTypeName: 'RelatedEventResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of related Event Resources.\n\nUse this to indicate which events are emitted, consumed, or otherwise related to this entity."
     - propertyName: 'successors'
       relatedTypeName: 'ApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
@@ -424,3 +432,8 @@ spec:
       relatedTypeName: 'Extensible'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Describes extensibility (by customers or partners) of this resource.\nExtensibility usually happens at run-time by the end-users.\nExtensions can be field or entity extensions that come on top of the baseline contract.\n\nChanges in extensions do not lead to an increase in the `version`, but MUST lead to an updated `lastUpdate` date.\n\nSince the extensions are managed by the customer or a partner, whether those changes are compatible or not is not guaranteed by the base contract of the resource."
+    - propertyName: 'capabilities'
+      relatedTypeName: 'RelatedApiResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Capabilities related to this API Resource.'
+      mandatory: false

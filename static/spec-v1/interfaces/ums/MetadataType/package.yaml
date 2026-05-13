@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.\n\nThe Package can also be used to indicate which products or vendors provided the packaged resources.\nFor partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.\nIn any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.\n\nA Package SHOULD contain at least one resource. Avoid empty Packages.\n\nThe Package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.\n\nA Package does not have a `visibility` property.\nWhether it is displayed is decided by the fact, whether it contains any visible resources according to the visibility role of the aggregator.\n\nTo learn more about the concept and further guidance, see [Package](../concepts/grouping-and-bundling#package)."
+  description: "A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.\n\nThe Package can also be used to indicate which products or vendors provided the packaged resources.\nFor partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.\n\nA Package SHOULD contain at least one resource. Avoid empty Packages.\n\nThe Package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.\n\nA Package does not have a `visibility` property.\nWhether it is displayed is decided by the fact, whether it contains any visible resources according to the visibility role of the aggregator.\n\nTo learn more about the concept and further guidance, see [Package](../concepts/grouping-and-bundling#package)."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -29,6 +29,10 @@ spec:
       description: "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID."
       constraints:
         maxLength: 255
+    - name: 'correlationIds'
+      type: 'string'
+      array: true
+      description: "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id)."
     - name: 'title'
       type: 'string'
       description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
@@ -78,6 +82,11 @@ spec:
       customTypeName: 'Link'
       array: true
       description: "Generic links with arbitrary meaning and content.\n\n`packageLinks` MUST be preferred if applicable."
+    - name: 'files'
+      type: 'custom'
+      customTypeName: 'File'
+      array: true
+      description: 'Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.'
     - name: 'licenseType'
       type: 'string'
       description: "Standardized identifier for the license.\nIt MUST conform to the [SPDX License List](https://spdx.org/licenses)."
@@ -158,9 +167,32 @@ spec:
           mandatory: true
         - name: 'description'
           type: 'string'
-          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)'
+          description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).'
           constraints:
             minLength: 1
+    - name: 'File'
+      metadataProperties:
+        - name: 'title'
+          type: 'string'
+          description: "Human readable title of the file.\n\nMUST be unique within the collection of files provided."
+          mandatory: true
+          constraints:
+            minLength: 1
+        - name: 'url'
+          type: 'string'
+          description: "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe file target MAY be relative or absolute.\nIf a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).\nIf an absolute URL is given, then it MUST be openly accessible."
+          mandatory: true
+        - name: 'description'
+          type: 'string'
+          description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
+          constraints:
+            minLength: 1
+        - name: 'mediaType'
+          type: 'string'
+          description: "The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.\nA consuming application can use this information to know which file format parser it needs to use.\n\nIf no Media Type is registered for the referenced file, `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.\n"
+          mandatory: true
+          constraints:
+            pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
     - name: 'Labels'
       metadataProperties:
         - name: 'key'

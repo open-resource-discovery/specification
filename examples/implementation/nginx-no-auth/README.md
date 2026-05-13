@@ -10,6 +10,8 @@ But it shows that ORD can be implemented without writing code, just by staticall
 Please note that this example shouldn't promote manually creating ORD documents.
 In the best case, they are generated automatically and derived from internal metadata / reflections.
 
+> For just static metadata exposure, consider using the [ORD Provider Server](https://github.com/open-resource-discovery/provider-server), which is explicitly built to make static metadata exposure easy and comes with additional features.
+
 ## Docker
 
 We use Docker to make the example portable.

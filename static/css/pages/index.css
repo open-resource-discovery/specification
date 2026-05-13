@@ -3,6 +3,8 @@
  - Hero area and layout
  - Primary/secondary buttons
  - Features grid
+ - Overview grid (diagram + text)
+ - Landing page section typography
  - Global doc tweaks for LP context
  - Light theme specifics for LP
 */
@@ -270,8 +272,11 @@ html[data-theme="light"] .neonephos-logo--light {
 .videoContainer {
   position: relative;
   width: 100%;
+  max-width: 800px;
   height: 0;
   padding-bottom: min(56.25%, 454px);
+  margin-left: auto;
+  margin-right: auto;
 }
 .videoIframe {
   position: absolute;
@@ -279,7 +284,6 @@ html[data-theme="light"] .neonephos-logo--light {
   left: 0;
   width: 100%;
   height: 100%;
-  max-width: 800px;
 }
 @media (max-width: 480px) {
   .lp-home {
@@ -312,9 +316,14 @@ html[data-theme="light"] .neonephos-logo--light {
     padding: 60px 24px 0 !important;
   }
 }
+@media (max-width: 959px) {
+  .lp-home .image {
+    display: none;
+  }
+}
 @media (min-width: 768px) {
   .lp-home .name {
-    font-size: 56px;
+    font-size: 75px;
   }
   .lp-home .text {
     font-size: 48px;
@@ -331,25 +340,27 @@ html[data-theme="light"] .neonephos-logo--light {
 }
 @media (min-width: 960px) {
   .lp-home .name {
-    font-size: 64px;
+    font-size: 77px;
   }
   .lp-home {
-    padding: 120px 64px 0 !important;
+    padding: 100px 64px 0 !important;
   }
-  .lp-home .container {
+  .lp-home .container.lp-hero {
     flex-direction: row;
+    align-items: flex-start;
     text-align: left;
     gap: 64px;
   }
   .lp-home .main {
-    flex: 1 1 50%;
+    flex: 1 1 70%;
     order: 1;
   }
   .lp-home .text {
-    font-size: 56px;
+    font-size: 46px;
   }
   .lp-home .tagline {
     margin: 0 0 32px;
+    max-width: none;
   }
   .lp-home .definition {
     margin: 24px 0 32px;
@@ -424,6 +435,7 @@ html[data-theme="light"] .neonephos-logo--light {
 }
 .lp-home .actions {
   gap: 10px;
+  margin-bottom: 70px;
 }
 
 /* Features grid */
@@ -440,26 +452,17 @@ html[data-theme="light"] .neonephos-logo--light {
   align-items: stretch;
   align-content: start;
   height: max-content;
-  cursor: pointer;
 }
 .lp-feature-card {
   color: #dfdfd6;
   padding: 16px 28px 20px;
-  transition: all 0.25s ease;
   display: flex;
   flex-direction: column;
   height: 100%;
   background: #202126;
   box-shadow: none;
   background-clip: padding-box;
-}
-.lp-feature-card:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  transform: translateY(-1px);
-}
-.lp-feature-card:active {
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
-  transform: translateY(0);
+  border-radius: 8px;
 }
 .lp-feature-card p {
   margin: 10px 0 0;
@@ -486,6 +489,128 @@ html[data-theme="light"] .neonephos-logo--light {
   }
 }
 
+/* Overview grid (diagram + text) */
+.lp-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: start;
+  max-width: 1152px;
+  margin: 0 auto;
+  text-align: left;
+}
+.lp-overview-text {
+  color: var(--lp-c-text-2);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.lp-overview-text p {
+  margin: 0 0 14px;
+}
+.lp-overview-text p:last-child {
+  margin-bottom: 0;
+}
+.lp-overview-diagram {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.lp-overview-diagram img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  padding: 4px;
+  background: var(--lp-c-bg-soft);
+}
+@media (max-width: 959px) {
+  .lp-overview-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .lp-overview-diagram {
+    order: -1;
+  }
+}
+
+/* Landing page section typography */
+.lp-quickstart-container h2,
+.lp-usecases-container h2,
+.lp-learnmore-container h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: var(--lp-c-text-1);
+}
+.lp-quickstart-container ol,
+.lp-usecases-container ul,
+.lp-usecases-container p {
+  color: var(--lp-c-text-2);
+  font-size: 1rem;
+  line-height: 1.7;
+  padding-left: 1.4rem;
+  margin: 0;
+}
+.lp-usecases-container p {
+  padding-left: 0;
+  margin-bottom: 12px;
+}
+.lp-quickstart-container li,
+.lp-usecases-container li {
+  margin-bottom: 4px;
+}
+.lp-learnmore-container ul {
+  color: var(--lp-c-text-2);
+  font-size: 1rem;
+  line-height: 1.7;
+  padding-left: 1.4rem;
+  margin: 0 0 16px;
+}
+.lp-home .lp-quickstart-container,
+.lp-home .lp-usecases-container,
+.lp-home .lp-learnmore-container {
+  max-width: 1152px;
+  width: 100%;
+  text-align: left;
+  gap: 0;
+}
+
+/* Design Goals / Non-Goals cards */
+.lp-home .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+}
+.lp-home .row .col {
+  flex: 1 1 0;
+  min-width: 280px;
+}
+.lp-home .card {
+  background: var(--lp-c-bg-elv);
+  border: 1px solid var(--lp-c-border);
+  border-radius: 8px;
+  height: 100%;
+}
+.lp-home .card__header h3 {
+  color: var(--lp-c-text-1);
+  font-size: 1.25rem;
+  margin-bottom: 0;
+}
+.lp-home .card__body {
+  color: var(--lp-c-text-2);
+  font-size: 1rem;
+  line-height: 1.7;
+  text-align: left;
+}
+.lp-home .card__body ul {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+.lp-home .card__body li {
+  margin-bottom: 6px;
+}
+
 /* Global doc tweaks for LP context */
 .theme-edit-this-page,
 .docusaurus-mt-lg.pagination-nav,
@@ -508,8 +633,8 @@ html[data-theme="light"] .neonephos-logo--light {
   color: var(--c-accent) !important;
   font-weight: 500;
 }
-.container {
-  color: #1b1b1f;
+.lp-home .container {
+  color: var(--lp-c-text-2);
 }
 @media (max-width: 400px) {
   #__docusaurus:is(:not(:not(:has(.ord-home-flag)))) .container .row .col {
@@ -535,7 +660,7 @@ html[data-theme="light"] .lp-home {
 html[data-theme="light"] .lp-home .heading .name {
   color: var(--lp-c-text-1);
 }
-html[data-theme="light"] .lp-home .heading .text,
+html[data-theme="light"] .lp-home .text,
 html[data-theme="light"] .lp-home .tagline {
   color: var(--lp-c-text-2);
 }
@@ -558,16 +683,6 @@ html[data-theme="light"] .lp-home .lp-feature-card h3 {
 html[data-theme="light"] .lp-features .lp-feature-card {
   background: var(--lp-c-bg-soft);
   box-shadow: none;
-  transition: all 0.25s ease;
-}
-html[data-theme="light"] .lp-features .lp-feature-card:hover {
-  background: var(--lp-c-bg-soft);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-html[data-theme="light"] .lp-features .lp-feature-card:active {
-  background: var(--lp-c-bg-soft);
-  transform: translateY(2px);
 }
 @media (min-width: 481px) and (max-width: 959px) {
   html[data-theme="light"] .lp-features {
