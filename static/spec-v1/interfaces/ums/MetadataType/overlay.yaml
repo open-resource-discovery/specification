@@ -1,0 +1,127 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlay'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'Overlay'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: false
+  description: "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.\nFor producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId'
+      type: 'string'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: true
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'title'
+      type: 'string'
+      description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
+      constraints:
+        minLength: 1
+        maxLength: 255
+    - name: 'description'
+      type: 'string'
+      description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
+      constraints:
+        minLength: 1
+    - name: 'version'
+      type: 'string'
+      description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented."
+      mandatory: true
+      constraints:
+        pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+    - name: 'lastUpdate'
+      type: 'string'
+      description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
+    - name: 'visibility'
+      type: 'string'
+      description: "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences."
+      mandatory: true
+    - name: 'releaseStatus'
+      type: 'string'
+      description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details."
+      mandatory: true
+    - name: 'definitions'
+      type: 'custom'
+      customTypeName: 'OverlayDefinition'
+      array: true
+      description: "List of overlay definition files referenced by this ORD Overlay Resource.\nEach entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches."
+    - name: 'tags'
+      type: 'string'
+      array: true
+      description: "List of free text style tags.\nNo special characters are allowed except `-`, `_`, `.`, `/` and ` `.\n\nTags that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+    - name: 'labels'
+      type: 'custom'
+      customTypeName: 'Labels'
+      description: 'Generic labels that can be applied to most ORD information.'
+  customTypeDefinitions:
+    - name: 'OverlayDefinition'
+      metadataProperties:
+        - name: 'type'
+          type: 'string'
+          description: 'Type of the overlay definition'
+          mandatory: true
+        - name: 'mediaType'
+          type: 'string'
+          description: "The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.\nA consuming application can use this information to know which file format parser it needs to use.\nFor example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.\n\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.\n"
+          mandatory: true
+          constraints:
+            pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
+        - name: 'url'
+          type: 'string'
+          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL)."
+          mandatory: true
+        - name: 'accessStrategies'
+          type: 'custom'
+          customTypeName: 'AccessStrategy'
+          array: true
+          description: "List of supported access strategies for retrieving metadata from the ORD provider.\nAn ORD Consumer/ORD Aggregator MAY choose any of the strategies.\n\nThe access strategies only apply to the metadata access and not the actual API access.\nThe actual access to the APIs for clients is described via Consumption Bundles.\n\nIf this property is not provided, the definition URL will be available through the same access strategy as this ORD document.\nIt is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process."
+        - name: 'visibility'
+          type: 'string'
+          description: "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.\nE.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.\n\nThis makes it also possible to provide both a public and an internal metadata description of the resource,\nin case that some metadata must only be made accessible to internal consumers."
+        - name: 'purpose'
+          type: 'string'
+          description: "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id)."
+    - name: 'AccessStrategy'
+      metadataProperties:
+        - name: 'type'
+          type: 'string'
+          description: 'Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.'
+          mandatory: true
+        - name: 'customType'
+          type: 'string'
+          description: "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`."
+          constraints:
+            maxLength: 255
+            pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+        - name: 'customDescription'
+          type: 'string'
+          description: "Human-readable description about how the access is set up, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nMUST only be provided if `type` is set to `custom`."
+          constraints:
+            minLength: 1
+    - name: 'Labels'
+      metadataProperties:
+        - name: 'key'
+          type: 'string'
+        - name: 'value'
+          type: 'string'
+  metadataRelations:
+    - propertyName: 'relatedApiResources'
+      relatedTypeName: 'RelatedApiResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of API Resources whose definition files this overlay patches.\n\nSHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,\nas it enables efficient indexing without requiring the aggregator to parse each overlay file.\nUse `relationType: ord:patches` to express the patching relationship.\n\nMay be omitted when the target resource is not described in an accessible ORD document,\nor when the overlay is cross-cutting and patches resources from multiple providers."
+    - propertyName: 'relatedEventResources'
+      relatedTypeName: 'RelatedEventResource'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of Event Resources whose definition files this overlay patches.\n\nSHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,\nas it enables efficient indexing without requiring the aggregator to parse each overlay file.\nUse `relationType: ord:patches` to express the patching relationship.\n\nMay be omitted when the target resource is not described in an accessible ORD document,\nor when the overlay is cross-cutting and patches resources from multiple providers."

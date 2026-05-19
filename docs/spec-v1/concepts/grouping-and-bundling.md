@@ -97,7 +97,7 @@ Every ORD Resource MUST be assigned to exactly one [**Package**](../interfaces/D
 The Package is primarily motivated by publishing and API catalog presentation concerns, including human-readable documentation and presentation.
 It can also express information about the resource providers, terms of use of the APIs, pricing for the usage of the packages, APIs, Events, etc.
 
-Several Package properties — such as `vendor`, `partOfProducts`, `tags`, `labels` and `policyLevel` — are **inherited** by all resources within the Package. This makes the Package a convenient place to define shared metadata once, rather than repeating it on every resource.
+Several Package properties — such as `vendor`, `partOfProducts`, `tags`, `labels` and `policyLevels` — are **inherited** by all resources within the Package. This makes the Package a convenient place to define shared metadata once, rather than repeating it on every resource.
 
 The granularity of Packages is driven by all of the following concerns:
 
@@ -149,7 +149,11 @@ Entity Types are part of the ORD taxonomy and represent an "internal" concept. T
 
 Relationships to entity types can be assigned to API & Event resources, data products and other entity types:
 
+<div className="img-box" style={{aspectRatio: "400/140", maxWidth: "500px"}}>
+
 ![Entity Type Relations](/img/entity-type-relations.drawio.svg)
+
+</div>
 
 Entity Types can serve two roles:
 
@@ -188,8 +192,10 @@ Labels defined on a [Package](#package) are inherited by all resources it contai
 
 [**Groups**](../interfaces/Document#group) and the corresponding [Group Types](../interfaces/Document#group-type) can be used to define and apply your own taxonomy in a generic, extensible way.
 
-<div style={{"text-align": "left", "margin-top": "12px"}}>
+<div className="img-box" style={{aspectRatio: "574/79"}}>
+
 ![Group Concept Overview](/img/group-concept-overview.drawio.svg)
+
 </div>
 
 The concept has three parts: The **Group Type** defines the semantics / meaning of a particular type of group assignments.
