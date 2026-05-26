@@ -342,7 +342,7 @@ The base URL used for resolving root-relative URLs (leading slash) depends on **
 
 | URL type | Resolved against | Declared via |
 |---|---|---|
-| **Metadata files**: `resourceDefinitions[].url`, `links[].url`, and similar file references | Provider base URL | Document root `baseUrl` |
+| **Metadata files**: `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`, `APIEventResourceLink.url`, `DataProductLink.url` | Provider base URL | Document root `baseUrl` |
 | **Entry points**: `entryPoints[]` | Described system base URL | `describedSystemInstance.baseUrl` |
 
 This distinction matters when the ORD provider and the described system differ (e.g., a central aggregator describing multiple systems on its behalf).

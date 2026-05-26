@@ -81,8 +81,8 @@ properties:
     description: |-
       Optional [base URL](../index.md#base-url) of the ORD provider system instance that serves this document.
 
-      Used to resolve relative URLs to [resource definition](../index.md#resource-definition) files and other metadata file
-      references within this document (e.g., `resourceDefinitions[].url`, `links[].url`).
+      Used to resolve relative URLs to [resource definition](../index.md#resource-definition) files and resource definition metadata file
+      references within this document (e.g., `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`).
       This differs from `describedSystemInstance.baseUrl`, which is used for entry point URLs.
 
       It may differ from `describedSystemInstance.baseUrl` when an ORD provider describes another system on its behalf.
