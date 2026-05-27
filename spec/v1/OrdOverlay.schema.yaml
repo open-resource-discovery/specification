@@ -287,6 +287,10 @@ definitions:
           - "asyncapi-v2"
           - "sap.mdo:mdi-capability-definition:v1"
 
+      # TODO: Future enhancement — add `definitionPurpose` and `definitionVisibility` fields here to allow
+      # unambiguous targeting when a resource has multiple definitions of the same type that differ only
+      # by `purpose` or `visibility` (the full uniqueness key per the resource definition uniqueness rule).
+
       systemInstance:
         $ref: "#/definitions/OverlaySystemInstance"
         description: |-

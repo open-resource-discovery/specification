@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Clarified the resource definition uniqueness rule to explicitly include `customType` (for `type: "custom"`) as part of the composite uniqueness key alongside `type`, `purpose`, and `visibility`.
+- Added a note to the `purpose` field description stating that it forms part of the uniqueness key for `resourceDefinitions` entries — no two entries on the same resource may share the same `type`/`customType`, `purpose`, and `visibility` combination.
+- Aligned ORD Overlay documentation to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique (was SHOULD) across overlay entries (`type: "ord:overlay:v1"`) on the same resource.
+- Added a TODO note in `OverlayTarget` marking `definitionPurpose` and `definitionVisibility` as planned fields for unambiguous definition targeting when multiple definitions of the same type differ only by `purpose` or `visibility`.
+
 ## [1.15.0]
 
 ### Added
