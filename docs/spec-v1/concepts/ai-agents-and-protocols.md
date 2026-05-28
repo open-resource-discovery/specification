@@ -104,6 +104,8 @@ graph TD
     classDef concept fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
     classDef tech fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
     classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef skill fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef agent2 fill:#e1f5fe,stroke:#01579b,stroke-width:2px,stroke-dasharray:5 5;
 
     Agent["Agent<br/>(Product-like Concept)"]:::concept
     System["System / Application"]:::tech
@@ -115,8 +117,10 @@ graph TD
     Agent -- Requires --> Dep
 
     API -.->|Protocol: A2A| A2A[A2A Protocol]
-    Dep -.->|Protocol: MCP| MCP[MCP Server]
-    Dep -.->|Generic| Other["Other Resources (APIs, Events, etc.)"]
+    Dep -.->|mcpResources| MCP["MCP Server"]
+    Dep -.->|agents| OtherAgent["Other Agent<br/>(Agent chaining)"]:::agent2
+    Dep -.->|capabilities| Skill["Capability<br/>(type: agent-skill)"]:::skill
+    Dep -.->|apiResources / eventResources| Other["Other Resources<br/>(APIs, Events, etc.)"]
 ```
 
 ### Exposing Capabilities (Interaction)
@@ -161,16 +165,24 @@ The `resourceDefinitions` with type `a2a-agent-card` points to the full A2A Agen
 ### Consuming Capabilities (Dependencies)
 
 Agents rarely work in isolation.
-They often need to access real-world data or invoke business functions.
-This is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**.
+They often need to access real-world data, invoke business functions, delegate to other agents, or load reusable skills.
+All of this is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**, which declare what external resources an agent requires to function.
 
--   **MCP (Model Context Protocol):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
-    The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections to data sources and tools.
--   **Other Resources:** Agents are not limited to AI-native protocols.
+An Integration Dependency groups its requirements into **aspects**, and each aspect can reference one or more of the following resource types:
+
+-   **MCP Servers (`mcpResources`):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
+    MCP Servers expose tools, resources, and prompts that the agent's LLM can invoke at runtime.
+    The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections.
+-   **Other Agents (`agents`):** Agents can depend on other Agents, enabling **agent chaining** and multi-agent workflows.
+    One agent may orchestrate or delegate subtasks to specialized agents, and those dependencies are made explicit through Integration Dependencies.
+    This allows the system landscape to model and reason about agent-to-agent relationships.
+-   **Skills (`capabilities`):** Agents can depend on external **[Agent Skills](../interfaces/Document#capability)** (Capabilities with `type: "ord:agent-skill:v1"`).
+    Skills are discrete, reusable capability packages (instructions, scripts, resources) that can be shared across multiple agents.
+    Declaring a skill dependency allows the runtime to load the skill on demand and makes the dependency discoverable in the catalog.
+-   **Other Resources (`apiResources` / `eventResources`):** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
--   **Agent Chaining:** Agents can also have dependencies on other Agents, forming complex workflows.
 
-Here's an example of an Integration Dependency for an agent:
+Here's an example of an Integration Dependency that covers all three AI-native dependency types:
 
 ```json
 {
@@ -188,9 +200,32 @@ Here's an example of an Integration Dependency for an agent:
           "apiResources": [
             { "ordId": "sap.bar:apiResource:DisputeResolutionAPI:v1" }
           ]
+        },
+        {
+          "title": "Case Data via MCP",
+          "description": "MCP Server providing live dispute case data as LLM context",
+          "mandatory": false,
+          "mcpResources": [
+            { "ordId": "sap.bar:mcpResource:DisputeCaseMCP:v1" }
+          ]
+        },
+        {
+          "title": "Escalation Agent",
+          "description": "Delegates complex cases to a specialized escalation agent",
+          "mandatory": false,
+          "agents": [
+            { "ordId": "sap.bar:agent:escalationAgent:v1" }
+          ]
+        },
+        {
+          "title": "Document Processing Skill",
+          "description": "Reusable skill for extracting structured data from uploaded documents",
+          "mandatory": false,
+          "capabilities": [
+            { "ordId": "sap.bar:capability:documentProcessing:v1" }
+          ]
         }
       ]
-      // ...
     }
   ]
 }
