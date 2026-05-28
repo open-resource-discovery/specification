@@ -1,0 +1,32 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlayselectorbyparameter'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlaySelectorByParameter'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'parameter'
+      type: 'string'
+      description: "Concept-level parameter name.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets a `<Parameter Name=\"...\">` child element on\n  an Action, Function, or FunctionImport. Use the unqualified parameter name.\n- `csdl-json` (OData v4 CSDL JSON): targets an entry in the `$Parameter` array of an\n  Action/Function overload whose `$Name` matches.\n- OpenAPI (`openapi-v2`, `openapi-v3`, `openapi-v3.1+`): targets an entry in the\n  `parameters` array of the operation identified by `operation` (operationId), matching\n  by the parameter `name` field.\n\n`operation` MUST always accompany this field to unambiguously identify the owning operation."
+      mandatory: true
+      constraints:
+        minLength: 1
+    - name: 'operation'
+      type: 'string'
+      description: "Required operation context for the selected parameter.\n- For OData: the namespace-qualified Action, Function, or FunctionImport name.\n- For OpenAPI: the `operationId` of the HTTP operation."
+      mandatory: true
+      constraints:
+        minLength: 1
+  customTypeDefinitions: []
+  metadataRelations: []

@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from "react";
-import OriginalRoot from "@theme-original/Root";
 import { useLocation } from "@docusaurus/router";
+import OriginalRoot from "@theme-original/Root";
+import type React from "react";
+import { useEffect, useRef } from "react";
 
 /** Idempotent: only sets data-label, no structural mutations */
 function enhanceTables(root: Document | HTMLElement = document) {

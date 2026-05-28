@@ -1,10 +1,14 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.14",
+  "openResourceDiscovery": "1.15",
+  "perspective": "system-version",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1"],
   "describedSystemType": {
     "systemNamespace": "sap.foo"
+  },
+  "describedSystemVersion": {
+    "version": "1.0.0"
   },
   "products": [
     {
@@ -26,7 +30,7 @@
       "vendor": "sap:vendor:SAP:",
       "tags": ["reference application"],
       "labels": {
-        "customLabel": ["labels are more flexible than tags as you can define your own keys"]
+        "foo.bar:custom-label": ["labels are more flexible than tags as you can define your own keys"]
       },
       "documentationLabels": {
         "Some Aspect": ["Markdown Documentation [with links](#)", "With multiple values"]
@@ -53,7 +57,6 @@
       "lastUpdate": "2022-12-19T15:47:04+00:00",
       "visibility": "public",
       "releaseStatus": "active",
-      "systemInstanceAware": false,
       "minSystemVersion": "2024.4.0",
       "policyLevels": ["sap.foo:custom:v1"],
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
@@ -80,6 +83,31 @@
           "type": "openapi-v3",
           "mediaType": "application/json",
           "url": "/ord/metadata/astronomy-v1.oas3.json",
+          "visibility": "public",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        },
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/ord/overlays/astronomy-api-ai-enrichment.overlay.json",
+          "visibility": "public",
+          "purpose": "ord:ai-enrichment",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        },
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/ord/overlays/astronomy-api-governance.overlay.json",
+          "visibility": "internal",
+          "purpose": "foo.bar:governance",
           "accessStrategies": [
             {
               "type": "open"

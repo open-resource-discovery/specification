@@ -3,7 +3,7 @@ sidebar_position: 0
 title: ORD Specification
 ---
 
-# Open Resource Discovery Specification 1.14
+# Open Resource Discovery Specification 1.15
 
 ## Notational Conventions
 
@@ -13,6 +13,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 The following diagram provides a high-level overview of how the ORD specification is structured.
 Click on the elements to navigate to the corresponding sections.
+
+<div style={{minHeight: "590px"}}>
 
 ```mermaid
 flowchart TB
@@ -58,6 +60,8 @@ flowchart TB
     click Taxonomy "#ord-taxonomy"
 ```
 
+</div>
+
 ## ORD Roles
 
 The ORD specification consists of several [parts](#ord-parts).
@@ -82,7 +86,11 @@ An ORD provider MUST use one of the standardized [ORD transport modes](#ord-tran
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
+<div className="img-box" style={{aspectRatio: "3144/972"}}>
+
 ![ORD Provider Role](/img/ord-role-provider.svg "ORD Provider Role")
+
+</div>
 
 ### ORD Aggregator
 
@@ -98,16 +106,22 @@ There are [aggregation rules](#aggregation-rules) and [validation rules](#valida
 
 It MUST support all [ORD transport modes](#ord-transport-modes) that are used by the systems it aggregates.
 
+When serving static perspective requests (`system-type` or `system-version`), the aggregator SHOULD follow the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm.
+
 In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-perspective):
 
 - the aggregator MUST support [system-instance-aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
 - In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
   - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Discovery consumer should not need to understand whether the information is currently static or system-instance-aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
-  - See chapter on [perspectives](#perspectives).
+- See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
+<div className="img-box" style={{aspectRatio: "3472/809"}}>
+
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
+
+</div>
 
 ### ORD Consumer
 
@@ -124,7 +138,11 @@ An ORD consumer that receives information with a `visibility` of `private` or `i
 The ORD consumer MUST ensure that private and internal information is not exposed to consumers without the corresponding permissions.
 If the ORD consumer only needs public information, it SHOULD only request those from the ORD aggregator in the first place.
 
+<div className="img-box" style={{aspectRatio: "2740/1181"}}>
+
 ![ORD Consumer Role](/img/ord-role-consumer.svg "ORD Consumer Role")
+
+</div>
 
 ## ORD Transport Modes
 
@@ -154,31 +172,11 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 ##### Pull Transport Sequence Diagram
 
-```mermaid
-sequenceDiagram
-    participant Aggregator as ORD Aggregator
-    participant Provider as ORD Provider
-    participant Landscape as System Landscape
+<div className="img-box" style={{aspectRatio: "872/596"}}>
 
-    Provider->>Landscape: Register system instance
-    Aggregator->>Landscape: Discover system instances
-    Landscape-->>Aggregator:
+![Pull Transport Sequence](/img/ord-pull-transport-sequence.svg "Pull Transport Sequence")
 
-    loop once per discovered system instance
-        Aggregator->>Provider: Request ORD configuration
-        Provider-->>Aggregator:
-
-        loop once per ORD document
-            Aggregator->>Provider: Request ORD document (using an access strategy)
-            Provider-->>Aggregator:
-
-            loop once per resource definition
-                Aggregator->>Provider: Request resource definition file
-                Provider-->>Aggregator:
-            end
-        end
-    end
-```
+</div>
 
 ### Other Modes of Transport
 
@@ -228,7 +226,7 @@ The ORD document MUST be a valid [JSON](https://www.json.org/json-en.html) docum
 It MUST NOT exceed 2MB in size to ensure efficient transport and processing.
 If content exceeds this limit, split the information into multiple ORD documents.
 
-The interfaces are described in [ORD document interface](./interfaces/Document.md), including [examples](./interfaces/Document.md#examples).
+The interfaces are described in [ORD document interface](./interfaces/Document.md), including [examples](spec-v1/examples/).
 
 An ORD document MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Document.schema.json](https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json).
 
@@ -237,7 +235,11 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### ORD Document Data Model (Simplified)
 
+<div className="img-box" style={{aspectRatio: "862/537"}}>
+
 ![High-Level ORD Entities (simplified)](/img/ord-high-level-data-model.drawio.svg "High-Level ORD Entities (simplified)")
+
+</div>
 
 #### Considerations on the ORD Content
 
@@ -245,9 +247,12 @@ The ORD documents MUST describe the current state of a concrete, running [system
 
 All resources that are described within one document MUST describe the same system instance.
 
-The described information MUST not be duplicated within or across ORD documents.
+The described information MUST not be duplicated within or across ORD documents of the same [system type](#system-type).
 If some information like Package or Consumption Bundle is needed across multiple documents they can either be put in one of the documents or be moved to a separate document for shared information.
-This also applies across ORD Providers, which is ensured through the correct use of namespaces and namespace ownerships.
+This also applies across ORD Providers of the same system type, which is ensured through the correct use of namespaces and namespace ownerships.
+Shared ORD information MAY be published by multiple system types when the ORD ID identifies the same governed definition.
+This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 The [validation rules](#validation-rules) MUST be considered.
 
@@ -283,7 +288,7 @@ Which attributes support information reuse and how it works is described in the 
 ##### Document Level Inheritance
 
 Some ORD information is described on the document root level and applies to all information that the ORD Document contains.
-In some cases (like `policyLevel`), it is also possible to override the values locally.
+In some cases (like `policyLevels`), it is also possible to override the values locally.
 
 ##### Package Level Inheritance
 
@@ -324,6 +329,7 @@ The motivation behind the ORD configuration endpoint is to:
 - Define where and how the ORD information can be accessed
   - Which transport mode is available (URLs to ORD document(s) indicate the [pull transport mode](#pull-transport))
   - Which [access strategies](../spec-extensions/access-strategies/index.mdx) are available
+- Optionally provide discoverable ORD Overlay files via `openResourceDiscoveryV1.overlays` (see [ORD Overlay](./interfaces/OrdOverlay.md))
 
 The idea behind the configuration endpoint is inspired by the [well-known URI](https://datatracker.ietf.org/doc/html/rfc8615) discovery mechanism.
 
@@ -341,7 +347,7 @@ The response MUST be a valid UTF-8 encoded [JSON](https://www.json.org/json-en.h
 
 - The response MUST not contain any sensitive information or leak tenant-specific information.
 - It MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Configuration.schema.json](https://open-resource-discovery.org/spec-v1/interfaces/Configuration.schema.json).
-- Please refer to the [interface documentation](./interfaces/Configuration.md) for more details and [examples](./interfaces/Configuration.md#complete-examples).
+- Please refer to the [interface documentation](./interfaces/Configuration.md) for more details.
 
 All of the [common REST characteristics](#common-rest-characteristics) MUST be met.
 The rules on [ORD Provider Cache Handling](#ord-provider-cache-handling) apply.
@@ -414,6 +420,8 @@ The response contains the requested resource and MAY include related ORD informa
 [ORD resources](#ord-resource) like APIs and Events reference [resource definitions](#resource-definition), which are machine-readable documents that describe the resource's interface in detail. These use industry-standard formats such as [OpenAPI](https://www.openapis.org/), [AsyncAPI](https://www.asyncapi.com/), JSON Schema, or WSDL.
 
 ORD does not aim to replace these standards. Instead, it discovers and transports them alongside shared metadata. The ORD layer adds common properties (like `version`, `visibility`, `releaseStatus`), [taxonomy](#ord-taxonomy) (via `Package`, `Product`, etc.), and relationships between resources.
+
+An ORD resource can also reference an ORD Overlay as an additional `resourceDefinitions` entry with type `ord:overlay:v1`. The same overlay files can optionally be discovered independently via the [ORD configuration endpoint](#ord-configuration-endpoint). For details, see [ORD Overlay](./interfaces/OrdOverlay.md).
 
 For details on how resource definitions are referenced, see the `resourceDefinitions` property on [API Resource](./interfaces/Document.md#api-resource) and [Event Resource](./interfaces/Document.md#event-resource) in the interface documentation.
 When consumed via an [ORD aggregator](#ord-aggregator), the aggregator may [host the resource definitions](#hosting-resource-definitions) for easier access.
@@ -521,7 +529,7 @@ The following rules need to be implemented by ORD aggregators:
   - This ensures that consumers can rely on `lastUpdate` to be always available and to understand if a change happened, even if the ORD Provider did not update it at the source
   - Ideally this situation doesn't happen and the ORD Providers update `lastUpdate`. Then the date can also better reflect the time when the change happened, not when it was detected.
 - The aggregator MUST apply all defined inheritances from root document properties to all the ORD information that it contains.
-  - `policyLevel` (and the corresponding `customPolicyLevel`) MUST be inherited to the resource / Package level, with the latter taking precedence.
+  - `policyLevels` MUST be inherited to the resource / Package level, with the latter taking precedence.
 - The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
   - `vendor`, `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
   - `labels` MUST be merged without duplicated values.
@@ -565,9 +573,13 @@ The following validation rules apply specifically for ORD aggregators:
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
   This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
-- The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times.
-  Please be aware that this could happen within an ORD Document, within the same ORD Provider on different ORD Documents or even across different ORD Providers.
+- The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times within the same [system type](#system-type) or [system version](#system-version) scope.
+  Please be aware that this could happen within an ORD Document or within the same ORD Provider on different ORD Documents.
   For migration transitions this rule MAY be violated temporarily.
+- Shared ORD information MAY be published by multiple [system types](#system-type) when the ORD ID identifies the same governed definition.
+  In this case, all publishers MUST describe the ORD information consistently for the same `version`. The aggregator MUST validate consistency.
+  This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
+  See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
 
 ### ORD Discovery API
 
@@ -609,8 +621,12 @@ There is a `perspective` attribute, which allows setting the following values:
   - In this case the same static metadata will be used to describe all system instances of the same version (or for `system-type`, all systems regardless of version)
 - Systems, which have dynamic metadata MUST use the `system-instance` perspective.
   - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
+  - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
+    In this case, both perspectives MUST use the same ORD IDs for the same resources and MUST NOT describe those resources inconsistently.
 - If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
+
+> ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
 
 ## ID Concepts
 
@@ -643,7 +659,11 @@ A complete namespace MUST match the following [regular expression](https://en.wi
 
 #### Structure of Namespaces
 
+<div className="img-box" style={{aspectRatio: "3045/1013"}}>
+
 ![Namespace Concept Overview](/img/namespace-concept.svg "Namespace Concept Overview")
+
+</div>
 
 Namespaces MUST follow the below structure:
 
@@ -687,9 +707,9 @@ A vendor namespace MUST be constructed according to the following rules:
 - `<vendorId>` is a registered ID of a vendor.
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
-  - There is a special reserved vendor namespace `customer`:
-    - It can be used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources.
-    - This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+  - There are reserved vendor namespaces:
+    - `customer`: Used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources. This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+    - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
 - MUST match Regexp: `^[a-z0-9]+$`
 
 **Examples**: For SAP, we chose and registered `sap`.
@@ -726,6 +746,8 @@ An system namespace MUST be constructed according to the following rules:
 
 An <dfn id="def-authority-namespace">authority namespace</dfn> is a stable and globally unique identifier namespace that corresponds to an **organizational unit** responsible for cross-alignment and governance.
 Authority namespaces are relevant when contracts, interfaces or taxonomy are owned and defined on a level that spans across individual applications or services.
+This includes shared API contracts, event definitions, data products, capabilities, integration dependencies, consumption bundles, and agents that are provided by multiple [system types](#system-type) built from the same software components.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details on namespace ownership and authority namespaces.
 
 An authority namespace MUST be constructed according to the following rules:
 
@@ -790,6 +812,9 @@ The same resource (with the same ORD ID) can be exposed in different variations 
 To get a globally unique ID at run-time, a composite key is required.
 This can be achieved by either combining it with a system instance ID or a full version, depending on the use cases.
 
+When the same shared ORD information is published or reused by multiple [system types](#system-type), the ORD ID identifies the shared contract, taxonomy item, definition or governance model, and the system type or system instance provides the additional context for uniqueness.
+This commonly uses an [authority namespace](#authority-namespace), but can also use a system namespace when that system type owns the reused definition.
+
 #### ORD ID Construction
 
 The ORD ID consists of four fragments, separated by `:`.
@@ -799,17 +824,18 @@ It MUST be constructed as defined here:
 **`<ordId>`** := `<namespace>:<conceptName>:<resourceName>:[v<majorVersion>]`
 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
-  The namespace MUST reflect the provider of the described resource.
-  - For `Package`, `Consumption Bundle`, `APIResource` and `EventResource`, `Capability` and `IntegrationDependency`:
-    - MUST be a valid [system namespace](#system-namespace) or an [sub-context namespace](#sub-context-namespace) thereof
-  - For `EntityType`
-    - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace)
+  The namespace MUST reflect the owner governing the described ORD information.
+  - For `Package`, `ConsumptionBundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`, `DataProduct` and `Agent`:
+    - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace) thereof
+    - A [system namespace](#system-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item is specific to a single system type.
+    - An [authority namespace](#authority-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item represents a shared contract, definition or governance model across multiple [system types](#system-type). See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
   - For `Vendor` and `Product`:
     - MUST be a valid [vendor namespace](#vendor-namespace) for `Vendor` and `Product`
-  - The provider is the system hosting the described resource.
-    - In advanced cases, the provider could be an embedded system / sidecar with its own system namespace.
-      This can lead to multiple system namespaces within one system.
-      In this case it needs to be taken care that static publishing does not create conflicts, e.g. through moving the publishing responsibility to the embedded system (and not by the parent system).
+  - For system-namespaced ORD IDs, the provider is the system hosting the described resource.
+    In advanced cases, the provider could be an embedded system / sidecar with its own system namespace.
+    This can lead to multiple system namespaces within one system.
+    In this case it needs to be taken care that static publishing does not create conflicts, e.g. through moving the publishing responsibility to the embedded system (and not by the parent system).
+  - For authority-namespaced ORD IDs, the namespace identifies the organizational unit governing the shared contract, definition, taxonomy item or access grouping.
 
 - **`<conceptName>`** := The ORD concept name of the described resource / taxonomy.
   - Use `product` for `Product`
@@ -833,7 +859,7 @@ It MUST be constructed as defined here:
     - If this cannot be followed, the relationship to the successor APIs can still be indicated via the `successors` property.
 
 - **`<majorVersion>`** := a version incrementor of the resource that increases on breaking changes.
-  - MUST be provided for `Package`, `Consumption Bundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`
+  - MUST be provided for `Package`, `ConsumptionBundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`, `DataProduct` and `Agent`
   - MUST NOT be provided for `Product` and `Vendor`
   - If provided: MUST be an integer and MUST NOT contain leading zeroes.
   - MUST be incremented if the resource introduced an incompatible API change. This correlates with a major version change in [Semantic Versioning](https://semver.org/).
@@ -1021,9 +1047,13 @@ For example, a `public` resource can have `releaseStatus` of `beta`, meaning it'
 When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
-- MUST explicitly set a [`Tombstone`](interfaces/Document.md#document.tombstones).
+- MUST explicitly set a [`Tombstone`](interfaces/Document.md#ord-document_tombstones).
+
+<div className="img-box" style={{aspectRatio: "841/490"}}>
 
 ![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
+
+</div>
 
 ## Common REST Characteristics
 
@@ -1108,33 +1138,33 @@ Taxonomies span across [products](#product) and [system types](#system-type).
 #### System
 
 A **system** is sometimes used as a generic, imprecise term when no further distinctions are necessary.
-In most places, the specification uses more precise terms, though:
+In most places, the specification uses more precise terms like [system type](#system-type), [system deployment](#system-deployment), [system version](#system-version), and [system instance](#system-instance).
 
 #### System Type
 
 A **system type** is the abstract type of an application or service from an operational perspective. It is also known as system role ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)). Within the specification it is also referred to as _application and service_ for better readability.
 
 Since system type is an abstract concept, it is not concretely addressable.
-A [system installation](#system-installation) of a specific [system version](#system-version) and potentially a [system instance](#system-instance) needs to be created to have a concrete, addressable system.
+A [system deployment](#system-deployment) of a specific [system version](#system-version) and potentially a [system instance](#system-instance) needs to be created to have a concrete, addressable system.
 
 Please note that a system type is similar, but not necessarily identical to a [product](#product).
 System type is a technical concept, while product is a term for external communication and sales.
 
-#### System Installation
+#### System Deployment
 
-##### System Deployment
+A **system deployment** is a concrete, addressable deployment of a [system type](#system-type) running a specific [system version](#system-version).
 
-A **system installation** (also called **system deployment**) is a concrete running instance of a [system type](#system-type) of a specific [system version](#system-version). If the system type supports tenant isolation, a system installation may offer multiple [system instances](#system-instance). A system installation has at least one [base URL](#base-url).
+A single system type can have multiple deployments, for example one per region or data center. Each deployment has at least one [base URL](#base-url) and serves as a container/host for [system instances](#system-instance) (tenants). If the system type supports tenant isolation (multi-tenancy), a system deployment may host multiple system instances.
 
 #### System Version
 
-A **system version** is a particular software version of a [system installation](#system-installation), which is always of the same [system type](#system-type). It states the design-time version or release of a system and provides versioning for operational purposes. All system instances of the same system version could have the same static metadata description.
+A **system version** is a particular software version of a [system type](#system-type). It states the design-time version or release of a system and provides versioning for operational purposes. A [system deployment](#system-deployment) always runs a specific system version. All system instances of the same system version could have the same static metadata description.
 
 #### System Instance
 
-A **system instance** is a running, isolated instance of a [system type](#system-type), running in a [system installation](#system-installation) of a particular [system version](#system-version). It always refers to the _most specific_ instance from a customer, account, and data isolation perspective.
+A **system instance** is a running, isolated instance of a [system type](#system-type), running in a [system deployment](#system-deployment) of a particular [system version](#system-version). It always refers to the _most specific_ instance from a customer, account, and data isolation perspective.
 
-If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system installation](#system-installation) per tenant or system isolation does not matter. In those cases, system instance equals the system installation.
+If the system type offers tenant isolation (multi-tenancy), system instance refers to a tenant. If there is no tenant isolation, there are two options: Either the isolation is achieved by having a dedicated [system deployment](#system-deployment) per tenant or system isolation does not matter. In those cases, system instance equals the system deployment.
 
 The term is also known as System (simplified public SAP communication). For internal SAP communication it is referred to as tenant ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if multi-tenancy is supported or system ([SAP CLD](https://support.sap.com/en/tools/software-logistics-tools/landscape-management-process/system-landscape-directory.html)) if not.
 
@@ -1171,7 +1201,7 @@ While [system type](#system-type) addresses the technical perspective, product i
 
 #### Base URL
 
-A **base URL** is the consistent part of a [system instance](#system-instance) URL.
+A **base URL** is the consistent part of a [system deployment](#system-deployment) or [system instance](#system-instance) URL.
 From ORD perspective this is the base URL where the discovery starts and where the [ORD config endpoint](#ord-configuration-endpoint) location is relative to.
 In most cases the base URL consists of the URL protocol, domain name and (if necessary) the port, for example `https://example.com`.
 In rare cases, a relative path (e.g. including a tenant ID) might be included, for example `https://example.com/tenantA/`.
