@@ -1284,7 +1284,7 @@
         },
         "resourceDefinitions": {
           "type": "array",
-          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nThe combination of `type`, `purpose`, and `visibility` MUST be unique within the list.\n\nA definition without a `purpose` is considered the primary/default definition for its type.\nAdditional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
+          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nThe combination of `type` (or `customType` for `type: \"custom\"`), `purpose`, and `visibility` MUST be unique within the list.\n\nA definition without a `purpose` is considered the primary/default definition for its type.\nAdditional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
           "items": {
             "$ref": "#/definitions/ApiResourceDefinition"
           }
@@ -2057,7 +2057,7 @@
         },
         "resourceDefinitions": {
           "type": "array",
-          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nThe combination of `type`, `purpose`, and `visibility` MUST be unique within the list.\n\nA definition without a `purpose` is considered the primary/default definition for its type.\nAdditional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
+          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nThe combination of `type` (or `customType` for `type: \"custom\"`), `purpose`, and `visibility` MUST be unique within the list.\n\nA definition without a `purpose` is considered the primary/default definition for its type.\nAdditional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
           "items": {
             "$ref": "#/definitions/EventResourceDefinition"
           }
@@ -3793,7 +3793,7 @@
           "type": "string",
           "x-feature-status": "alpha",
           "x-introduced-in-version": "1.15.0",
-          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
+          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the `resourceDefinitions` list — no two entries on the same resource\nmay share the same combination.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
           "anyOf": [
             {
               "type": "string",
@@ -3919,7 +3919,7 @@
           "type": "string",
           "x-feature-status": "alpha",
           "x-introduced-in-version": "1.15.0",
-          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
+          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the `resourceDefinitions` list — no two entries on the same resource\nmay share the same combination.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
           "anyOf": [
             {
               "type": "string",
@@ -4730,7 +4730,7 @@
           "type": "string",
           "x-feature-status": "alpha",
           "x-introduced-in-version": "1.15.0",
-          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
+          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the `resourceDefinitions` list — no two entries on the same resource\nmay share the same combination.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
           "anyOf": [
             {
               "type": "string",
@@ -5126,7 +5126,7 @@
         },
         "definitions": {
           "type": "array",
-          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nThe combination of `type`, `purpose`, and `visibility` MUST be unique within the list.\n\nA definition without a `purpose` is considered the primary/default definition for its type.\nAdditional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
+          "description": "List of available machine-readable definitions, which describe the resource or capability in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEach definition is to be understood as an alternative description format, describing the same resource / capability.\nThe combination of `type` (or `customType` for `type: \"custom\"`), `purpose`, and `visibility` MUST be unique within the list.\n\nA definition without a `purpose` is considered the primary/default definition for its type.\nAdditional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
           "items": {
             "$ref": "#/definitions/CapabilityDefinition"
           }
@@ -5277,7 +5277,7 @@
           "type": "string",
           "x-feature-status": "alpha",
           "x-introduced-in-version": "1.15.0",
-          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
+          "description": "Describes the intended purpose or role of this resource definition.\n\nWhile `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.\nThis allows multiple definitions of the same type to coexist when they serve different purposes.\n\nFor example, an API Resource might have multiple OpenAPI definitions:\none for standard API documentation and another specifically enriched for AI/agent consumption.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the `resourceDefinitions` list — no two entries on the same resource\nmay share the same combination.\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
           "anyOf": [
             {
               "type": "string",
