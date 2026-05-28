@@ -156,7 +156,7 @@ All of this is modeled using **[Integration Dependencies](../interfaces/Document
     When only a subset of tools is needed, the `subset` field narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
     This lets an agent runtime load only the relevant tool descriptions and use the declared subset when configuring permissions.
     Declaring a subset does not grant access; runtime authentication and authorization remain separate concerns.
--   **Skills (`capabilities`):** Agents can depend on external Agent Skills represented as Capabilities with `type: "agent-skill"`.
+-   **Skills (`capabilities`):** Agents can depend on [Agent Skills](../interfaces/Document#capability) represented as Capabilities with `type: "agent-skill"`.
     Declaring the skill dependency allows a runtime to load it on demand and makes the dependency discoverable in the catalog.
 -   **Other Resources:** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
