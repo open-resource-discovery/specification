@@ -148,14 +148,16 @@ The `resourceDefinitions` with type `a2a-agent-card` points to the full A2A Agen
 ### Consuming Capabilities (Dependencies)
 
 Agents rarely work in isolation.
-They often need to access real-world data or invoke business functions.
-This is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**.
+They often need to access real-world data, invoke business functions, delegate to other agents, or load reusable skills.
+All of this is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**, which declare what external resources an agent requires to function.
 
 -   **MCP (Model Context Protocol):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
     The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections to data sources and tools.
     When only a subset of tools is needed, the `subset` field narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
     This lets an agent runtime load only the relevant tool descriptions and use the declared subset when configuring permissions.
     Declaring a subset does not grant access; runtime authentication and authorization remain separate concerns.
+-   **Skills (`capabilities`):** Agents can depend on external Agent Skills represented as Capabilities with `type: "ord:agent-skill:v1"`.
+    Declaring the skill dependency allows a runtime to load it on demand and makes the dependency discoverable in the catalog.
 -   **Other Resources:** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
 -   **Agent Chaining:** An Agent can depend on another Agent's interaction API by referencing its API Resource in an Integration Dependency.
@@ -184,6 +186,14 @@ Without `subset`, the dependency would imply access to all operations of the ref
                 { "operationId": "updateDisputeStatus" }
               ]
             }
+          ]
+        },
+        {
+          "title": "Document Processing Skill",
+          "description": "Reusable skill for extracting structured data from uploaded documents",
+          "mandatory": false,
+          "capabilities": [
+            { "ordId": "sap.bar:capability:documentProcessing:v1" }
           ]
         }
       ]
