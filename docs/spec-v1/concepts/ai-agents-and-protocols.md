@@ -169,14 +169,14 @@ The `resourceDefinitions` with type `a2a-agent-card` points to the full A2A Agen
 ### Consuming Capabilities (Dependencies)
 
 Agents rarely work in isolation.
-They often need to access real-world data, invoke business functions, delegate to other agents, or load reusable skills.
+They often need to access real-world data, invoke business functions, or load reusable skills.
 All of this is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**, which declare what external resources an agent requires to function.
 
 -   **MCP (Model Context Protocol):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
     The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections to data sources and tools.
     When only a subset of tools is needed, the `subset` field narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
     This matters for agents specifically: it keeps LLM context lean by loading only the relevant tool descriptions, and it scopes permission grants to the minimal required surface area.
--   **Skills (`capabilities`):** Agents can depend on external Agent Skills represented as Capabilities with `type: "ord:agent-skill:v1"`.
+-   **Skills (`capabilities`):** Agents can depend on external Agent Skills represented as Capabilities with `type: "agent-skill"`.
     Declaring the skill dependency allows a runtime to load it on demand and makes the dependency discoverable in the catalog.
 -   **Other Resources:** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
@@ -288,7 +288,7 @@ Given the rapidly evolving AI ecosystem, ORD takes a conservative approach to ad
 ### Agent Skills as Capabilities
 
 [Agent skills](https://agentskills.io/home) are discrete, reusable capabilities that agents can perform—packaged as folders of instructions, scripts, and resources.
-In ORD, these are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "ord:agent-skill:v1"`.
+In ORD, these are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "agent-skill"`.
 
 This enables:
 - **Discovery:** Agents can discover and load skills on-demand through the catalog
@@ -305,10 +305,10 @@ This enables:
       "title": "Dispute Summarization Skill",
       "shortDescription": "Summarizes dispute cases and their resolution history",
       "version": "1.0.0",
-      "type": "ord:agent-skill:v1",
+      "type": "agent-skill",
       "definitions": [
         {
-          "type": "ord:agent-skill-zip:v1",
+          "type": "agent-skill-zip",
           "mediaType": "application/zip",
           "url": "/capabilities/disputeSummarization/skill.zip",
           "accessStrategies": [{ "type": "open" }]
