@@ -108,6 +108,8 @@ graph TD
     classDef concept fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#333;
     classDef tech fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333;
     classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333;
+    classDef skill fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef agent2 fill:#e1f5fe,stroke:#01579b,stroke-width:2px,stroke-dasharray:5 5;
 
     Agent["Agent<br/>(Product-like Concept)"]:::concept
     System["System / Application"]:::tech
@@ -119,8 +121,10 @@ graph TD
     Agent -- Requires --> Dep
 
     API -.->|Protocol: A2A| A2A[A2A Protocol]
-    Dep -.->|Protocol: MCP| MCP[MCP Server]
-    Dep -.->|Generic| Other["Other Resources (APIs, Events, etc.)"]
+    Dep -.->|mcpResources| MCP["MCP Server"]
+    Dep -.->|agents| OtherAgent["Other Agent<br/>(Agent chaining)"]:::agent2
+    Dep -.->|capabilities| Skill["Capability<br/>(type: agent-skill)"]:::skill
+    Dep -.->|apiResources / eventResources| Other["Other Resources<br/>(APIs, Events, etc.)"]
 ```
 
 ### Exposing Capabilities (Interaction)
@@ -165,16 +169,17 @@ The `resourceDefinitions` with type `a2a-agent-card` points to the full A2A Agen
 ### Consuming Capabilities (Dependencies)
 
 Agents rarely work in isolation.
-They often need to access real-world data or invoke business functions.
-This is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**.
+They often need to access real-world data, invoke business functions, delegate to other agents, or load reusable skills.
+All of this is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**, which declare what external resources an agent requires to function.
 
 -   **MCP (Model Context Protocol):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
     The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections to data sources and tools.
     When only a subset of tools is needed, the `subset` field narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
     This matters for agents specifically: it keeps LLM context lean by loading only the relevant tool descriptions, and it scopes permission grants to the minimal required surface area.
+-   **Skills (`capabilities`):** Agents can depend on external Agent Skills represented as Capabilities with `type: "ord:agent-skill:v1"`.
+    Declaring the skill dependency allows a runtime to load it on demand and makes the dependency discoverable in the catalog.
 -   **Other Resources:** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
--   **Agent Chaining:** Agents can also have dependencies on other Agents, forming complex workflows.
 
 Here's an example of an Integration Dependency for an agent that depends on a specific set of MCP tools.
 Without `subset`, the dependency would imply access to all operations of the referenced resource:
@@ -200,6 +205,14 @@ Without `subset`, the dependency would imply access to all operations of the ref
                 { "operationId": "updateDisputeStatus" }
               ]
             }
+          ]
+        },
+        {
+          "title": "Document Processing Skill",
+          "description": "Reusable skill for extracting structured data from uploaded documents",
+          "mandatory": false,
+          "capabilities": [
+            { "ordId": "sap.bar:capability:documentProcessing:v1" }
           ]
         }
       ]
