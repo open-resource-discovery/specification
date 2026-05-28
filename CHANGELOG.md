@@ -21,6 +21,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is now explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
 - Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
 
+## [1.15.0]
+
 ### Added
 
 - Added **ORD Overlay** as an alpha spec extension model (`ord:overlay:v1`)
@@ -71,7 +73,6 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified the use of [authority namespaces](https://open-resource-discovery.org/spec-v1#authority-namespace) for resource ORD IDs: when multiple system types share the same resource contract under a shared authority namespace, the uniqueness and aggregation rules now explicitly address this. See [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
 - Added concept page on [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
 - Clarification: Consolidated and clarified the [static perspective resolution](https://open-resource-discovery.org/spec-v1/concepts/perspectives#static-perspective-resolution) algorithm for aggregators. When no specific version is requested, explicit `system-type` perspective data takes precedence; if unavailable, the aggregator SHOULD derive it from the latest `system-version`. Previously this behavior was scattered and only stated as MAY.
->>>>>>> origin/main
 
 ## [1.14.3]
 
