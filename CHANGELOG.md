@@ -10,8 +10,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added capability type `agent-skill` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
+- Added capability definition type `agent-skill-zip` for ZIP archive definitions of agent skills (mediaType `application/zip`).
+
 ### Changed
 
+- Clarified that `ord` is a reserved vendor namespace owned by the ORD specification itself, used to register well-known, cross-vendor [Specification IDs](docs/spec-v1/index.md#specification-id).
 - Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is now explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
 - Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
 
