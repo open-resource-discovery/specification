@@ -180,7 +180,7 @@ An Integration Dependency groups its requirements into **aspects**, and each asp
 -   **Other Agents (`agents`):** Agents can depend on other Agents, enabling **agent chaining** and multi-agent workflows.
     One agent may orchestrate or delegate subtasks to specialized agents, and those dependencies are made explicit through Integration Dependencies.
     This allows the system landscape to model and reason about agent-to-agent relationships.
--   **Skills (`capabilities`):** Agents can depend on external **[Agent Skills](../interfaces/Document#capability)** (Capabilities with `type: "agent-skill"`).
+-   **Skills (`capabilities`):** Agents can depend on  **[Agent Skills](../interfaces/Document#capability)** (Capabilities with `type: "agent-skill"`).
     Skills are discrete, reusable capability packages (instructions, scripts, resources) that can be shared across multiple agents.
     Declaring a skill dependency allows the runtime to load the skill on demand and makes the dependency discoverable in the catalog.
 -   **Other Resources (`apiResources` / `eventResources`):** Agents are not limited to AI-native protocols.
