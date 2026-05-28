@@ -176,7 +176,7 @@ An Integration Dependency groups its requirements into **aspects**, and each asp
 -   **Other Agents (`agents`):** Agents can depend on other Agents, enabling **agent chaining** and multi-agent workflows.
     One agent may orchestrate or delegate subtasks to specialized agents, and those dependencies are made explicit through Integration Dependencies.
     This allows the system landscape to model and reason about agent-to-agent relationships.
--   **Skills (`capabilities`):** Agents can depend on external **[Agent Skills](../interfaces/Document#capability)** (Capabilities with `type: "ord:agent-skill:v1"`).
+-   **Skills (`capabilities`):** Agents can depend on external **[Agent Skills](../interfaces/Document#capability)** (Capabilities with `type: "agent-skill"`).
     Skills are discrete, reusable capability packages (instructions, scripts, resources) that can be shared across multiple agents.
     Declaring a skill dependency allows the runtime to load the skill on demand and makes the dependency discoverable in the catalog.
 -   **Other Resources (`apiResources` / `eventResources`):** Agents are not limited to AI-native protocols.
@@ -269,7 +269,7 @@ Given the rapidly evolving AI ecosystem, ORD takes a conservative approach to ad
 ### Agent Skills as Capabilities
 
 [Agent skills](https://agentskills.io/home) are discrete, reusable capabilities that agents can perform—packaged as folders of instructions, scripts, and resources.
-In ORD, these are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "ord:agent-skill:v1"`.
+In ORD, these are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "agent-skill"`.
 
 This enables:
 - **Discovery:** Agents can discover and load skills on-demand through the catalog
@@ -286,10 +286,10 @@ This enables:
       "title": "Dispute Summarization Skill",
       "shortDescription": "Summarizes dispute cases and their resolution history",
       "version": "1.0.0",
-      "type": "ord:agent-skill:v1",
+      "type": "agent-skill",
       "definitions": [
         {
-          "type": "ord:agent-skill-zip:v1",
+          "type": "agent-skill-zip",
           "mediaType": "application/zip",
           "url": "/capabilities/disputeSummarization/skill.zip",
           "accessStrategies": [{ "type": "open" }]

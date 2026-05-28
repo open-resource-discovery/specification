@@ -12,8 +12,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added capability type `ord:agent-skill:v1` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
-- Added capability definition type `ord:agent-skill-zip:v1` for ZIP archive definitions of agent skills (mediaType `application/zip`).
+- Added capability type `agent-skill` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
+- Added capability definition type `agent-skill-zip` for ZIP archive definitions of agent skills (mediaType `application/zip`).
 
 ### Changed
 
