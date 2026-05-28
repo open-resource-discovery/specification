@@ -117,10 +117,10 @@
       "visibility": "public",
       "releaseStatus": "active",
       "partOfPackage": "sap.foo:package:ord-reference-app:v1",
-      "type": "ord:agent-skill:v1",
+      "type": "agent-skill",
       "definitions": [
         {
-          "type": "ord:agent-skill-zip:v1",
+          "type": "agent-skill-zip",
           "mediaType": "application/zip",
           "url": "/capabilities/disputeSummarization/skill.zip",
           "accessStrategies": [{ "type": "open" }]
