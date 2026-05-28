@@ -615,7 +615,7 @@ export interface ApiResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * The combination of `type`, `purpose`, and `visibility` MUST be unique within the list.
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST be unique within the list.
    *
    * A definition without a `purpose` is considered the primary/default definition for its type.
    * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
@@ -1008,6 +1008,10 @@ export interface ApiResourceDefinition {
    *
    * For example, an API Resource might have multiple OpenAPI definitions:
    * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
+   * may share the same combination.
    *
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
@@ -1497,7 +1501,7 @@ export interface EventResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * The combination of `type`, `purpose`, and `visibility` MUST be unique within the list.
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST be unique within the list.
    *
    * A definition without a `purpose` is considered the primary/default definition for its type.
    * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
@@ -1762,6 +1766,10 @@ export interface EventResourceDefinition {
    *
    * For example, an API Resource might have multiple OpenAPI definitions:
    * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
+   * may share the same combination.
    *
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
@@ -2227,7 +2235,7 @@ export interface Capability {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * The combination of `type`, `purpose`, and `visibility` MUST be unique within the list.
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST be unique within the list.
    *
    * A definition without a `purpose` is considered the primary/default definition for its type.
    * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
@@ -2346,6 +2354,10 @@ export interface CapabilityDefinition {
    *
    * For example, an API Resource might have multiple OpenAPI definitions:
    * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
+   * may share the same combination.
    *
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
@@ -3266,6 +3278,10 @@ export interface OverlayDefinition {
    *
    * For example, an API Resource might have multiple OpenAPI definitions:
    * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
+   * may share the same combination.
    *
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
