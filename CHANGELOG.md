@@ -12,6 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
+- Strengthened `partOfProducts` guidance: every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package. Setting `partOfProducts` on the `Package` is the preferred approach as it propagates automatically to all contained resources.
 - Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is now explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
 - Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
 
