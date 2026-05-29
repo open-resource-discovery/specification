@@ -209,12 +209,6 @@ export interface SystemType {
  *
  * **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
  * The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
- *
- * ### Pre-defined Label Keys
- *
- * The `ord` namespace reserves the following label keys for standardized use:
- *
- * - `ord:ai-hint`: Provides a hint for AI consumers (e.g., LLMs) on how to use or interpret the ORD resource. Intentionally kept separate from human-readable description fields so that end-user-facing documentation and AI-targeted guidance can evolve independently. MUST contain exactly one value. The value SHOULD be in [CommonMark](https://spec.commonmark.org/) (Markdown) format.
  */
 export interface Labels {
   /**
