@@ -4,6 +4,10 @@
  * Define from where the API resource can be used and accessed
  */
 export type Usage = "external" | "local";
+/**
+ * Defines whether and how the resource can be extended with custom fields.
+ */
+export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
 
 /**
  * The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
@@ -37,7 +41,8 @@ export interface OrdDocument {
     | "1.11"
     | "1.12"
     | "1.13"
-    | "1.14";
+    | "1.14"
+    | "1.15";
   /**
    * Optional description of the ORD document itself.
    * Please note that this information is NOT further processed or considered by an ORD aggregator.
@@ -57,9 +62,9 @@ export interface OrdDocument {
    * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
    */
   perspective?: ("system-type" | "system-version" | "system-instance" | "system-independent") & string;
-  describedSystemInstance?: SystemInstance;
   describedSystemType?: SystemType;
   describedSystemVersion?: SystemVersion;
+  describedSystemInstance?: SystemInstance;
   /**
    * The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.
    * Depending on the chosen policy level, additional expectations and validations rules will be applied.
@@ -110,6 +115,16 @@ export interface OrdDocument {
    */
   agents?: Agent[];
   /**
+   * Array of all metadata overlays described in this ORD document.
+   *
+   * An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
+   * resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
+   *
+   * For overlays that are tightly coupled to a single API or Event resource, consider attaching them directly
+   * as a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.
+   */
+  overlays?: Overlay[];
+  /**
    * Array of all integration dependencies that are described in this ORD document.
    */
   integrationDependencies?: IntegrationDependency[];
@@ -146,27 +161,14 @@ export interface OrdDocument {
   tombstones?: Tombstone[];
 }
 /**
- * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
- *
- * Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
+ * Information on the [system type](../index.md#system-type) that this ORD document describes.
  */
-export interface SystemInstance {
+export interface SystemType {
   /**
-   * Optional [base URL](../index.md#base-url) of the **system instance**.
-   * By providing the base URL, relative URLs in the document are resolved relative to it.
-   *
-   * The `baseUrl` MUST not contain a leading slash.
-   *
-   * MUST be provided if the base URL is not known to the ORD aggregators.
-   * MUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.
+   * The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.
+   * It is used to reference the system type in the ORD.
    */
-  baseUrl?: string;
-  /**
-   * Optional local ID for the system instance, as known by the described system.
-   *
-   * In case of multi-tenant systems, it is equivalent to the local tenant id.
-   */
-  localId?: string;
+  systemNamespace?: string;
   /**
    * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
    *
@@ -238,14 +240,23 @@ export interface DocumentationLabels {
   [k: string]: string[];
 }
 /**
- * Information on the [system type](../index.md#system-type) that this ORD document describes.
+ * Information on the [system version](../index.md#system-version) that this ORD document describes.
  */
-export interface SystemType {
+export interface SystemVersion {
   /**
-   * The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.
-   * It is used to reference the system type in the ORD.
+   * The version of the system instance (run-time) or the version of the described system-version perspective.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   *
+   * MUST be provided if the ORD document is `perspective`: `system-version`.
+   *
+   * For continuous-delivery systems, the version MAY be fixed to the same value, e.g. `1.0.0`, but be aware that phased rollouts may benefit from a more precise versioning like adding a build number.
    */
-  systemNamespace?: string;
+  version?: string;
+  /**
+   * Human-readable title of the system version.
+   */
+  title?: string;
   /**
    * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
    *
@@ -267,23 +278,27 @@ export interface SystemType {
   tags?: string[];
 }
 /**
- * Information on the [system version](../index.md#system-version) that this ORD document describes.
+ * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
+ *
+ * Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
  */
-export interface SystemVersion {
+export interface SystemInstance {
   /**
-   * The version of the system instance (run-time) or the version of the described system-version perspective.
+   * Optional [base URL](../index.md#base-url) of the **system instance**.
+   * By providing the base URL, relative URLs in the document are resolved relative to it.
    *
-   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   * The `baseUrl` MUST not contain a leading slash.
    *
-   * MUST be provided if the ORD document is `perspective`: `system-version`.
-   *
-   * For continuous-delivery systems, the version MAY be fixed to the same value, e.g. `1.0.0`, but be aware that phased rollouts may benefit from a more precise versioning like adding a build number.
+   * MUST be provided if the base URL is not known to the ORD aggregators.
+   * MUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.
    */
-  version?: string;
+  baseUrl?: string;
   /**
-   * Human-readable title of the system version.
+   * Optional local ID for the system instance, as known by the described system.
+   *
+   * In case of multi-tenant systems, it is equivalent to the local tenant id.
    */
-  title?: string;
+  localId?: string;
   /**
    * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
    *
@@ -600,8 +615,10 @@ export interface ApiResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST be unique within the list.
+   *
+   * A definition without a `purpose` is considered the primary/default definition for its type.
+   * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -844,7 +861,7 @@ export interface RelatedAPIResource {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: string;
+  relationType?: (string | "ord:patches") & string;
 }
 /**
  * Defines a relation to an Event Resource (via its ORD ID).
@@ -862,7 +879,7 @@ export interface RelatedEventResource {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: string;
+  relationType?: (string | "ord:patches") & string;
 }
 /**
  * A changelog entry can be used to indicate changes.
@@ -931,6 +948,7 @@ export interface ApiResourceDefinition {
     | "sap-rfc-metadata-v1"
     | "sap-sql-api-definition-v1"
     | "sap-csn-interop-effective-v1"
+    | "ord:overlay:v1"
     | "custom"
   ) &
     string;
@@ -982,6 +1000,22 @@ export interface ApiResourceDefinition {
    * @minItems 1
    */
   accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
+   * may share the same combination.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
 }
 /**
  * Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the resource definitions.
@@ -1221,14 +1255,7 @@ export interface Link {
  * If applicable, a description and further resources about extending this resource are provided.
  */
 export interface Extensible {
-  /**
-   * This property defines whether the resource is extensible.
-   *
-   * **Not extensible** means that the data model of the resource (i.e. API or event) cannot be extended with custom fields.
-   * **Manually extensible** means that in addition to defining a custom field, manual activities to include the field in the data model of the resource (i.e. API or event) are required. E.g. using a specific mapping tool or by selecting the resource in the data model extension tool.
-   * **Automatically extensible** means that after defining a custom field in the local domain model, the resource (i.e. API or event) is automatically extended as part of the default extension field definition.
-   */
-  supported: "no" | "manual" | "automatic";
+  supported: ExtensibilitySupportLevel;
   /**
    * A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
@@ -1474,8 +1501,10 @@ export interface EventResource {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST be unique within the list.
+   *
+   * A definition without a `purpose` is considered the primary/default definition for its type.
+   * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1680,7 +1709,7 @@ export interface EventResourceDefinition {
   /**
    * Type of the event resource definition
    */
-  type: (string | "asyncapi-v2" | "sap-csn-interop-effective-v1" | "custom") & string;
+  type: (string | "asyncapi-v2" | "sap-csn-interop-effective-v1" | "ord:overlay:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -1729,6 +1758,22 @@ export interface EventResourceDefinition {
    * in case that some metadata must only be made accessible to internal consumers.
    */
   visibility?: "public" | "internal" | "private";
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
+   * may share the same combination.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
 }
 /**
  * Describes the compatibility of the Event with other Events. This can be used to express that an Event is compatible with another Event version.
@@ -2190,8 +2235,10 @@ export interface Capability {
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
    * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST be unique within the list.
+   *
+   * A definition without a `purpose` is considered the primary/default definition for its type.
+   * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -2299,6 +2346,22 @@ export interface CapabilityDefinition {
    * in case that some metadata must only be made accessible to internal consumers.
    */
   visibility?: "public" | "internal" | "private";
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
+   * may share the same combination.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
 }
 /**
  * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
@@ -3042,6 +3105,187 @@ export interface ExposedAPIResource {
    * MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
    */
   ordId: string;
+}
+/**
+ * An Overlay Resource is a standalone, versioned resource that references a metadata patch file.
+ * Overlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
+ *
+ * Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
+ * For producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+ */
+export interface Overlay {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Human-readable title.
+   *
+   * MUST NOT exceed 255 chars.
+   * MUST NOT contain line breaks.
+   */
+  title?: string;
+  /**
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
+   * Detailed documentation SHOULD be attached as (typed) links.
+   */
+  description?: string;
+  /**
+   * The complete [SemVer](https://semver.org/) version string.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   * It SHOULD be changed if the ORD information or referenced resource definitions changed.
+   * It SHOULD express minor and patch changes that don't lead to incompatible changes.
+   *
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   *
+   * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
+   * The `version` MUST not be bumped for changes in extensions.
+   *
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
+   *
+   * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
+   */
+  version: string;
+  /**
+   * Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   *
+   * When retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.
+   * Therefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.
+   *
+   * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
+   *
+   * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+   */
+  lastUpdate?: string;
+  /**
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
+   */
+  visibility: "public" | "internal" | "private";
+  /**
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   */
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
+  /**
+   * Optional list of API Resources whose definition files this overlay patches.
+   *
+   * SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+   * as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+   * Use `relationType: ord:patches` to express the patching relationship.
+   *
+   * May be omitted when the target resource is not described in an accessible ORD document,
+   * or when the overlay is cross-cutting and patches resources from multiple providers.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of Event Resources whose definition files this overlay patches.
+   *
+   * SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+   * as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+   * Use `relationType: ord:patches` to express the patching relationship.
+   *
+   * May be omitted when the target resource is not described in an accessible ORD document,
+   * or when the overlay is cross-cutting and patches resources from multiple providers.
+   */
+  relatedEventResources?: RelatedEventResource[];
+  /**
+   * List of overlay definition files referenced by this ORD Overlay Resource.
+   * Each entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches.
+   */
+  definitions?: OverlayDefinition[];
+  /**
+   * List of free text style tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  tags?: string[];
+  labels?: Labels;
+}
+/**
+ * Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
+ */
+export interface OverlayDefinition {
+  /**
+   * Type of the overlay definition
+   */
+  type: ("ord:overlay:v1" | string) & string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   * For example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.
+   *
+   * If no Media Type is registered for the referenced file,
+   * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
+  /**
+   * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
+   *
+   * It is RECOMMENDED to provide a relative URL (to base URL).
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving metadata from the ORD provider.
+   * An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
+   *
+   * The access strategies only apply to the metadata access and not the actual API access.
+   * The actual access to the APIs for clients is described via Consumption Bundles.
+   *
+   * If this property is not provided, the definition URL will be available through the same access strategy as this ORD document.
+   * It is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.
+   *
+   * @minItems 1
+   */
+  accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+   *
+   * If not given, the resource definition has the same visibility as the resource it describes.
+   * The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+   * E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+   *
+   * This makes it also possible to provide both a public and an internal metadata description of the resource,
+   * in case that some metadata must only be made accessible to internal consumers.
+   */
+  visibility?: "public" | "internal" | "private";
+  /**
+   * Describes the intended purpose or role of this resource definition.
+   *
+   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
+   * This allows multiple definitions of the same type to coexist when they serve different purposes.
+   *
+   * For example, an API Resource might have multiple OpenAPI definitions:
+   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
+   * may share the same combination.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  purpose?: (string | "ord:ai-enrichment") & string;
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

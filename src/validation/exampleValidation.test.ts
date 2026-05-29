@@ -31,49 +31,7 @@ const schemaMappings: SchemaMapping[] = [
 		examplesPath: "./examples/documents",
 		filePattern: /\.json$/,
 	},
-	// Model extensions will be automatically added here when they exist
-	// by scanning spec-extension/models/ directory
 ];
-
-/**
- * Dynamically discover model extension schemas and their examples
- */
-async function discoverModelExtensionSchemas(): Promise<SchemaMapping[]> {
-	const modelExtensions: SchemaMapping[] = [];
-	const schemasDir = "./src/generated/spec/v1/schemas";
-
-	try {
-		const files = await fs.readdir(schemasDir);
-		for (const file of files) {
-			// Look for schema files that aren't Configuration or Document
-			if (
-				file.endsWith(".schema.json") &&
-				file !== "Configuration.schema.json" &&
-				file !== "Document.schema.json"
-			) {
-				const schemaName = file.replace(".schema.json", "");
-				const examplesPath = `./examples/models/${schemaName.toLowerCase()}`;
-
-				// Check if examples directory exists
-				try {
-					await fs.access(examplesPath);
-					modelExtensions.push({
-						schemaName,
-						schemaPath: path.join(schemasDir, file),
-						examplesPath,
-						filePattern: /\.json$/,
-					});
-				} catch {
-					// Examples directory doesn't exist yet, skip
-				}
-			}
-		}
-	} catch {
-		// Generated schemas directory doesn't exist yet
-	}
-
-	return modelExtensions;
-}
 
 /**
  * Read and parse a JSON file
@@ -118,14 +76,8 @@ function createValidator() {
  * Main test suite
  */
 describe("Example Validation", async () => {
-	// Discover all schema mappings including model extensions
-	const allMappings = [
-		...schemaMappings,
-		...(await discoverModelExtensionSchemas()),
-	];
-
 	// Create a test suite for each schema
-	for (const mapping of allMappings) {
+	for (const mapping of schemaMappings) {
 		await describe(`${mapping.schemaName} Examples`, async () => {
 			// Load schema
 			let schema: unknown;
@@ -193,7 +145,7 @@ describe("Example Validation", async () => {
 
 	// Additional test: verify all examples have $schema property pointing to correct URL
 	await describe("Schema References", async () => {
-		for (const mapping of allMappings) {
+		for (const mapping of schemaMappings) {
 			const exampleFiles = await getExampleFiles(
 				mapping.examplesPath,
 				mapping.filePattern,
@@ -210,11 +162,7 @@ describe("Example Validation", async () => {
 
 					if (typeof example.$schema === "string") {
 						// Verify schema URL matches the expected pattern
-						const expectedSchemaPattern =
-							mapping.schemaName === "Configuration" ||
-							mapping.schemaName === "Document"
-								? `spec-v1/interfaces/${mapping.schemaName}.schema.json`
-								: `spec-extension/models/${mapping.schemaName}.schema.json`;
+						const expectedSchemaPattern = `spec-v1/interfaces/${mapping.schemaName}.schema.json`;
 
 						assert.ok(
 							example.$schema.includes(expectedSchemaPattern),

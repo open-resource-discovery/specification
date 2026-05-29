@@ -13,8 +13,8 @@ hide_table_of_contents: true
     <div className="main">
       <h1 className="heading">
         <span className="name clip">Open Resource Discovery</span>
+        <span className="text">Self-describing applications and services</span>
       </h1>
-      <p className="subtitle">Self-describing applications and services</p>
       <p className="tagline">An open protocol for decentralized application / service metadata publishing and discovery</p>
     </div>
     <div className="image">
@@ -23,26 +23,27 @@ hide_table_of_contents: true
         <div className="lp-image image-src" alt="Open Resource Discovery" />
       </div>
     </div>
-    <div className="lp-hero-bottom">
-      <div className="actions">
-        <div className="action medium brand">
-          [Primer](./introduction.mdx)
-        </div>
-        <div className="action medium alt">
-          [Specification](./spec-v1/index.md)
-        </div>
-        <div className="action medium alt">
-          [Extensions](./spec-extensions/index.md)
-        </div>
-        <div className="action medium alt">
-          [Ecosystem](./ecosystem/index.mdx)
-        </div>
-        <div className="action medium alt">
-          [FAQ](./help/faq/index.md)
-        </div>
-        <div className="action medium alt">
-          [Videos](./help/videos/index.mdx)
-        </div>
+  </div>
+
+  <div className="container">
+    <div className="actions">
+      <div className="action medium brand">
+        [Introduction](./introduction.mdx)
+      </div>
+      <div className="action medium alt">
+        [Specification](./spec-v1/index.md)
+      </div>
+      <div className="action medium alt">
+        [Extensions](./spec-extensions/index.md)
+      </div>
+      <div className="action medium alt">
+        [Ecosystem](./ecosystem/index.mdx)
+      </div>
+      <div className="action medium alt">
+        [FAQ](./help/faq/index.md)
+      </div>
+      <div className="action medium alt">
+        [Videos](./help/videos/index.mdx)
       </div>
     </div>
   </div>

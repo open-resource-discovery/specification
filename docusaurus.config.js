@@ -18,6 +18,15 @@ const config = {
 	staticDirectories: ["static"],
 	favicon: "img/favicon.svg",
 
+	future: {
+		v4: {
+			removeLegacyPostBuildHeadAttribute: true,
+			mdx1CompatDisabledByDefault: true,
+			siteStorageNamespacing: true,
+			fasterByDefault: true,
+		},
+	},
+
 	// Even if you don't use internalization, you can use this field to set useful
 	// metadata like html lang. For example, if your site is Chinese, you may want
 	// to replace "en" with "zh-Hans".
@@ -80,6 +89,10 @@ const config = {
 						to: "/spec-v1/interfaces/Document",
 					},
 					{
+						from: "/spec-extensions/models/OrdOverlay",
+						to: "/spec-v1/interfaces/OrdOverlay",
+					},
+					{
 						from: "/overview",
 						to: "/",
 					},
@@ -113,7 +126,7 @@ const config = {
 				respectPrefersColorScheme: false,
 			},
 			prism: {
-				theme: prismThemes.github,
+				theme: prismThemes.oceanicNext,
 				darkTheme: prismThemes.oceanicNext,
 			},
 			mermaid: {
@@ -127,7 +140,7 @@ const config = {
 				},
 				items: [
 					{
-						label: "Primer",
+						label: "Introduction",
 						to: "introduction",
 					},
 					{
@@ -141,25 +154,30 @@ const config = {
 								to: "/spec-v1/",
 							},
 							{
-								label: "ORD Configuration Interface",
+								label: "ORD Configuration",
 								to: "spec-v1/interfaces/Configuration",
 							},
 							{
-								label: "ORD Document Interface",
+								label: "ORD Document",
 								to: "spec-v1/interfaces/Document",
 							},
 							{
-								label: "Schema Explorer (Interactive)",
-								href: "/tools/schema-viewer/index.html?schema=Document",
-								target: "_blank",
+								label: "ORD Overlay",
+								to: "spec-v1/interfaces/OrdOverlay",
 							},
 							{
-								label: "ORD Concepts",
+								label: "ORD Concepts / Details",
 								to: "spec-v1/concepts",
 							},
 							{
-								label: "ORD Provider API",
-								to: "spec-v1/interfaces/document-api",
+								type: "html",
+								value:
+									'<hr style="margin: 0.1rem 0.1rem; border: none; border-top: 1px solid var(--ifm-color-emphasis-300);">',
+							},
+							{
+								label: "Schema Explorer",
+								href: "/tools/schema-viewer/index.html?schema=Document",
+								target: "_blank",
 							},
 							{
 								label: "Example Files",
@@ -188,10 +206,6 @@ const config = {
 							{
 								label: "Global Group Types",
 								to: "spec-extensions/group-types/",
-							},
-							{
-								label: "Model Extensions",
-								to: "spec-extensions/models/",
 							},
 						],
 					},
@@ -250,7 +264,7 @@ const config = {
           <div class="footer-container">
             <div class="footer-funding">
               <div class="footer-funding__image">
-                <img src="${baseUrl + "img/ord-footer-bmwe.png"}" alt="EU and German government funding logos" />
+                <img src="${`${baseUrl}img/ord-footer-bmwe.png`}" alt="EU and German government funding logos" />
               </div>
               <div class="footer-funding__text">
                 <p><strong>Funded by the European Union – NextGenerationEU.</strong></p>
@@ -264,12 +278,12 @@ const config = {
             <div class="neonephos-logos">
               <a href="https://neonephos.org/" target="_blank" rel="noopener noreferrer" class="neonephos-link">
                 <img
-                  src="${baseUrl + "img/ord-footer-neonephos.svg"}"
+                  src="${`${baseUrl}img/ord-footer-neonephos.svg`}"
                   alt="Neonephos Logo"
                   class="neonephos-logo neonephos-logo--dark"
                 />
                 <img
-                  src="${baseUrl + "img/ord-footer-neonephos-light.svg"}"
+                  src="${`${baseUrl}img/ord-footer-neonephos-light.svg`}"
                   alt=""
                   aria-hidden="true"
                   class="neonephos-logo neonephos-logo--light"
@@ -278,11 +292,11 @@ const config = {
             </div>
             <!--
             <div class="footer-legal-links">
-              <a href="${baseUrl + "about/terms-of-use"}">Terms of Use</a>
+              <a href="${`${baseUrl}about/terms-of-use`}">Terms of Use</a>
               <span class="footer-legal-sep">|</span>
-              <a href="${baseUrl + "about/privacy"}">Privacy Statement</a>
+              <a href="${`${baseUrl}about/privacy`}">Privacy Statement</a>
               <span class="footer-legal-sep">|</span>
-              <a href="${baseUrl + "about/legal-disclosure"}">Legal Disclosure</a>
+              <a href="${`${baseUrl}about/legal-disclosure`}">Legal Disclosure</a>
             </div>
             -->
           </div>
