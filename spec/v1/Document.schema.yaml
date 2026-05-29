@@ -4579,7 +4579,25 @@ definitions:
 
       **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
       The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
+
+      ### Pre-defined Label Keys
+
+      The `ord` namespace reserves the following label keys for standardized use:
+
+      - `ord:ai-hint`: Provides a hint for AI consumers (e.g., LLMs) on how to use or interpret the ORD resource. Intentionally kept separate from human-readable description fields so that end-user-facing documentation and AI-targeted guidance can evolve independently. MUST contain exactly one value. The value SHOULD be in [CommonMark](https://spec.commonmark.org/) (Markdown) format.
     x-ums-type: "custom"
+    properties:
+      "ord:ai-hint":
+        type: array
+        description: |-
+          Provides a hint for AI consumers (e.g., LLMs) on how to use or interpret the ORD resource.
+          Intentionally kept separate from human-readable description fields so that end-user-facing documentation
+          and AI-targeted guidance can evolve independently.
+          MUST contain exactly one value. The value SHOULD be in CommonMark (Markdown) format.
+        maxItems: 1
+        items:
+          type: string
+          minLength: 1
     patternProperties:
       "^[a-zA-Z0-9-_.:\/]*$":
         type: array
@@ -4589,6 +4607,7 @@ definitions:
     examples:
       - foo.bar:labelKeyName: ["value"]
       - foo.bar:cost-center: ["CC-12345", "CC-67890"]
+      - ord:ai-hint: ["Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools."]
 
   ############################################################################################################
 

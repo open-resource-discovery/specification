@@ -200,6 +200,37 @@ Here's an example of an Integration Dependency for an agent:
 }
 ```
 
+## AI Hints on ORD Resources
+
+Any ORD resource (APIs, Events, Agents, Entity Types, Data Products, etc.) can carry an `ord:ai-hint` label — a pre-defined, ORD-standardized label key that provides guidance specifically for AI consumers such as LLMs and agent orchestrators.
+
+```json
+{
+  "apiResources": [
+    {
+      "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1",
+      "title": "Dispute Resolution Agent",
+      "labels": {
+        "ord:ai-hint": [
+          "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools. Do not call `DELETE /cases/{id}` unless the case status is `closed`."
+        ]
+      }
+      // ...
+    }
+  ]
+}
+```
+
+### Why a Separate Field?
+
+Human-readable documentation (`description`, `shortDescription`) is written for end users and developers browsing a catalog. AI-targeted guidance has different concerns — it may include tool-use patterns, LLM-specific caveats, or instructions that would read as noise in standard docs. Keeping these separate lets both evolve independently.
+
+### Constraints
+
+- **Exactly one value**: The array MUST contain exactly one string. (Labels normally allow multiple values, but `ord:ai-hint` is constrained to a single entry so consumers always receive one coherent text.)
+- **Markdown recommended**: The value SHOULD be written in [CommonMark](https://spec.commonmark.org/) Markdown, but any plain text is accepted.
+- **Inheritance from Package**: Because `ord:ai-hint` is a regular label, it is inherited by all resources inside a `Package` — a convenient way to set a landscape-wide or package-wide hint that applies unless overridden on individual resources.
+
 ## Use Cases
 
 Describing agents in ORD enables several key scenarios:
