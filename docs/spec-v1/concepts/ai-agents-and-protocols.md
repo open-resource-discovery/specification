@@ -229,7 +229,6 @@ Human-readable documentation (`description`, `shortDescription`) is written for 
 
 - **Exactly one value**: The array MUST contain exactly one string. (Labels normally allow multiple values, but `ord:ai-hint` is constrained to a single entry so consumers always receive one coherent text.)
 - **Markdown recommended**: The value SHOULD be written in [CommonMark](https://spec.commonmark.org/) Markdown, but any plain text is accepted.
-- **Inheritance from Package**: Because `ord:ai-hint` is a regular label, it is inherited by all resources inside a `Package` — a convenient way to set a landscape-wide or package-wide hint that applies unless overridden on individual resources.
 
 ## Use Cases
 

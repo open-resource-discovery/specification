@@ -12,7 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added `ord:ai-hint` as a pre-defined label key on all ORD resources for guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable description fields. MUST contain exactly one value; SHOULD be CommonMark Markdown. Inheritable from `Package`. See [AI Agents and Protocols](./docs/spec-v1/concepts/ai-agents-and-protocols.md).
+- Added `ord:ai-hint` as a pre-defined label key on all ORD resources for guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable description fields. MUST contain exactly one value; SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols).
 
 ### Changed
 
