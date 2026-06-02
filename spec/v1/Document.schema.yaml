@@ -1706,8 +1706,6 @@ definitions:
 
       aiHint:
         <<: *aiHint
-        examples:
-          - "Subscribe to this event to react when an invoice is cancelled. Filter by `companyCode` to narrow to relevant tenants."
 
       ## Assignments to groupings
 
@@ -2004,8 +2002,6 @@ definitions:
 
       aiHint:
         <<: *aiHint
-        examples:
-          - "A **BusinessPartner** can be an individual or organization. Prefer `type: Organization` for B2B contexts. Use the `roles` array to filter by supplier, customer, or bank."
 
       partOfPackage:
         <<: *partOfPackage
@@ -2206,8 +2202,6 @@ definitions:
 
       aiHint:
         <<: *aiHint
-        examples:
-          - "Use this data product to access **customer order** data. Filter by `customerId` and `orderDate` for targeted queries. Output port `customerOrderItems` provides line-item detail."
 
       ## Assignment to Bundles
 
