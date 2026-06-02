@@ -210,7 +210,9 @@ Without `subset`, the dependency would imply access to all operations of the ref
 
 ## AI Hints on ORD Resources
 
-Any ORD resource (APIs, Events, Agents, Entity Types, Data Products, etc.) can carry an `ord:ai-hint` label — a pre-defined, ORD-standardized label key that provides guidance specifically for AI consumers such as LLMs and agent orchestrators.
+The following ORD resource types support an `aiHint` property: API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities.
+
+`aiHint` provides guidance specifically for AI consumers such as LLMs and agent orchestrators, and is intentionally separate from human-facing `description` and `shortDescription` fields so both can evolve independently.
 
 ```json
 {
@@ -218,12 +220,8 @@ Any ORD resource (APIs, Events, Agents, Entity Types, Data Products, etc.) can c
     {
       "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1",
       "title": "Dispute Resolution Agent",
-      "labels": {
-        "ord:ai-hint": [
-          "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools. Do not call `DELETE /cases/{id}` unless the case status is `closed`."
-        ]
-      }
-      // ...
+      "description": "Manages dispute cases in the system.",
+      "aiHint": "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools. Do not call `DELETE /cases/{id}` unless the case status is `closed`."
     }
   ]
 }
@@ -233,10 +231,11 @@ Any ORD resource (APIs, Events, Agents, Entity Types, Data Products, etc.) can c
 
 Human-readable documentation (`description`, `shortDescription`) is written for end users and developers browsing a catalog. AI-targeted guidance has different concerns — it may include tool-use patterns, LLM-specific caveats, or instructions that would read as noise in standard docs. Keeping these separate lets both evolve independently.
 
-### Constraints
+### Best Practices
 
-- **Exactly one value**: The array MUST contain exactly one string. (Labels normally allow multiple values, but `ord:ai-hint` is constrained to a single entry so consumers always receive one coherent text.)
-- **Markdown recommended**: The value SHOULD be written in [CommonMark](https://spec.commonmark.org/) Markdown, but any plain text is accepted.
+- **Markdown recommended**: The value SHOULD be written in [CommonMark](https://spec.commonmark.org/) Markdown.
+- **Be action-oriented**: Describe *how* to use the resource (verbs, conditions, caveats), not just *what* it is — the `description` already covers that.
+- **Keep it focused**: Aim for a short, dense paragraph rather than exhaustive documentation. Link to detailed docs via the `links` property.
 
 ## Use Cases
 

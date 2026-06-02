@@ -12,7 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added `ord:ai-hint` as a pre-defined label key on all ORD resources for guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable description fields. MUST contain exactly one value; SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols).
+- Added `aiHint` as a dedicated, optional property on API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities. Provides guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable `description` fields so both can evolve independently. SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
 
 ### Changed
 

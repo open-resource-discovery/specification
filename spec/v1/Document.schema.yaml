@@ -951,6 +951,18 @@ definitions:
             read existing Request for Quotation data from the SAP S/4HANA Cloud
             or SAP S/4HANA on-Premise.
 
+      aiHint: &aiHint
+        type: string
+        minLength: 1
+        description: &aiHintText |-
+          Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+          Intentionally separate from human-facing `description` so both can evolve independently.
+          SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+        examples:
+          - "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools."
+
       ## Assignments to bundling concepts
 
       partOfPackage: &partOfPackage
@@ -1692,6 +1704,11 @@ definitions:
           - |
             This event is raised by the SAP S/4HANA Cloud system when an invoice document is cancelled.
 
+      aiHint:
+        <<: *aiHint
+        examples:
+          - "Subscribe to this event to react when an invoice is cancelled. Filter by `companyCode` to narrow to relevant tenants."
+
       ## Assignments to groupings
 
       partOfPackage:
@@ -1985,6 +2002,11 @@ definitions:
           - |
             A workforce person is a natural person with a work agreement or relationship in form of a work assignment; it can be an employee or a contingent worker.
 
+      aiHint:
+        <<: *aiHint
+        examples:
+          - "A **BusinessPartner** can be an individual or organization. Prefer `type: Organization` for B2B contexts. Use the `roles` array to filter by supplier, customer, or bank."
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -2181,6 +2203,11 @@ definitions:
         description: *descriptionText
         examples:
           - The data product Customer Order offers access to all online and offline orders submitted by customers. It provides a customer view on the orders. For fulfillment-specific aspects please refer to the data product Fulfillment Order.
+
+      aiHint:
+        <<: *aiHint
+        examples:
+          - "Use this data product to access **customer order** data. Filter by `customerId` and `orderDate` for targeted queries. Output port `customerOrderItems` provides line-item detail."
 
       ## Assignment to Bundles
 
@@ -2877,6 +2904,11 @@ definitions:
         minLength: 1
         description: *descriptionText
 
+      aiHint:
+        <<: *aiHint
+        examples:
+          - "Invoke this agent to **resolve** open dispute cases. Provide the `caseId`; the agent autonomously gathers evidence, proposes resolution, and awaits approval before closing."
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -3314,6 +3346,9 @@ definitions:
         type: string
         minLength: 1
         description: *descriptionText
+
+      aiHint:
+        <<: *aiHint
 
       partOfPackage:
         <<: *partOfPackage
@@ -4594,22 +4629,9 @@ definitions:
         items:
           type: string
           minLength: 1
-    properties:
-      "ord:ai-hint":
-        type: array
-        description: |-
-          Provides a hint for AI consumers (e.g., LLMs) on how to use or interpret the ORD resource.
-          Intentionally kept separate from human-readable description fields so that end-user-facing documentation
-          and AI-targeted guidance can evolve independently.
-          MUST contain exactly one value. The value SHOULD be in CommonMark (Markdown) format.
-        maxItems: 1
-        items:
-          type: string
-          minLength: 1
     examples:
       - foo.bar:labelKeyName: ["value"]
       - foo.bar:cost-center: ["CC-12345", "CC-67890"]
-      - ord:ai-hint: ["Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools."]
 
   ############################################################################################################
 
