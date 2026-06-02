@@ -533,7 +533,7 @@ definitions:
       partOfProducts: &partOfProducts
         type: array
         description: |-
-          List of products this Package and its resources are a part of.
+          List of products this package and its resources are a part of.
 
           MUST be a valid reference to a [Product](#product) ORD ID.
 
