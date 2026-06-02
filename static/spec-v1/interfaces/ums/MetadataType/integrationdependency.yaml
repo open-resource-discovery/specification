@@ -171,7 +171,7 @@ spec:
           type: 'custom'
           customTypeName: 'ApiResourceIntegrationAspectSubset'
           array: true
-          description: "Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.\n\nIf `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.\nIf `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.\n\nThis is especially valuable for agents: knowing the exact set of required tools allows runtimes to load only those tool descriptions into the LLM context and to scope permission grants to the minimal required surface area."
+          description: "Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.\n\nIf `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.\nIf `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.\n\nFor more details and examples, see [Integration Dependency](../concepts/integration-dependency)."
     - name: 'ApiResourceIntegrationAspectSubset'
       metadataProperties:
         - name: 'operationId'

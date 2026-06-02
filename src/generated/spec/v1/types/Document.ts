@@ -3540,7 +3540,7 @@ export interface ApiResourceIntegrationAspect {
    * If `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.
    * If `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.
    *
-   * This is especially valuable for agents: knowing the exact set of required tools allows runtimes to load only those tool descriptions into the LLM context and to scope permission grants to the minimal required surface area.
+   * For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
    */
   subset?: APIResourceIntegrationAspectSubset[];
 }
@@ -3549,11 +3549,9 @@ export interface ApiResourceIntegrationAspect {
  *
  * For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
  * Without a `subset`, the dependency implies access to the full resource.
- * With a `subset`, only the listed operations are required, allowing consumers to understand the minimal surface area needed.
+ * With a `subset`, only the listed operations are required, allowing consumers to understand /load only the minimal surface area needed.
  *
- * This is particularly important for agents consuming MCP servers:
- * the listed tools can be selectively loaded into the LLM context to reduce prompt size and cost,
- * and permission grants or routing decisions can be scoped to exactly what is required.
+ * For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
  */
 export interface APIResourceIntegrationAspectSubset {
   /**
