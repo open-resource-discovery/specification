@@ -3535,15 +3535,23 @@ export interface ApiResourceIntegrationAspect {
    */
   minVersion?: string;
   /**
-   * List of individual API operations that are sufficient to achieve the aspect.
+   * Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.
+   *
+   * If `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.
+   * If `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.
+   *
+   * For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
    */
   subset?: APIResourceIntegrationAspectSubset[];
 }
 /**
- * Defines that API Resource Integration Aspect only requires a subset of the referenced contract.
+ * Defines that the API Resource Integration Aspect only requires a subset of the referenced contract.
  *
  * For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
- * This information helps to narrow down what is really necessary and can help optimize the integration.
+ * Without a `subset`, the dependency implies access to the full resource.
+ * With a `subset`, only the listed operations are required, allowing consumers to understand /load only the minimal surface area needed.
+ *
+ * For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
  */
 export interface APIResourceIntegrationAspectSubset {
   /**
