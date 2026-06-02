@@ -170,31 +170,39 @@ This is modeled using **[Integration Dependencies](../interfaces/Document#integr
 
 -   **MCP (Model Context Protocol):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
     The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections to data sources and tools.
+    When only a subset of tools is needed, the `subset` field narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
+    This matters for agents specifically: it keeps LLM context lean by loading only the relevant tool descriptions, and it scopes permission grants to the minimal required surface area.
 -   **Other Resources:** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
 -   **Agent Chaining:** Agents can also have dependencies on other Agents, forming complex workflows.
 
-Here's an example of an Integration Dependency for an agent:
+Here's an example of an Integration Dependency for an agent that depends on a specific set of MCP tools.
+Without `subset`, the dependency would imply access to all operations of the referenced resource:
 
 ```json
 {
   "integrationDependencies": [
     {
-      "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
-      "title": "Dispute Case Management Integration",
-      "shortDescription": "Integration dependency for dispute case management system",
+      "ordId": "foo.app1:integrationDependency:DisputeAgent-mcpDeps:v1",
+      "title": "MCP Tool Dependencies for Dispute Agent",
+      "shortDescription": "MCP tools required by the Dispute Agent at runtime.",
       "mandatory": true,
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo:package:MyPackage:v1",
       "aspects": [
         {
-          "title": "Case Management API Access",
-          "description": "Access to dispute case management APIs",
-          "mandatory": true,
           "apiResources": [
-            { "ordId": "sap.bar:apiResource:DisputeResolutionAPI:v1" }
+            {
+              "ordId": "foo.app2:apiResource:DisputeToolsMCPServer:v1",
+              "subset": [
+                { "operationId": "searchDisputeCases" },
+                { "operationId": "getDisputeDetails" },
+                { "operationId": "updateDisputeStatus" }
+              ]
+            }
           ]
         }
       ]
-      // ...
     }
   ]
 }
