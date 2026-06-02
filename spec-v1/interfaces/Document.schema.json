@@ -5629,7 +5629,7 @@
         },
         "subset": {
           "type": "array",
-          "description": "List of individual API operations that are sufficient to achieve the aspect.",
+          "description": "Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.\n\nIf `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.\nIf `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.\n\nFor more details and examples, see [Integration Dependency](../concepts/integration-dependency).",
           "items": {
             "$ref": "#/definitions/ApiResourceIntegrationAspectSubset"
           }
@@ -5718,7 +5718,7 @@
       "title": "API Resource Integration Aspect Subset",
       "x-introduced-in-version": "1.10.0",
       "x-ums-type": "custom",
-      "description": "Defines that API Resource Integration Aspect only requires a subset of the referenced contract.\n\nFor APIs, this is a list of the operations or tools that need to be available in order to make the integration work.\nThis information helps to narrow down what is really necessary and can help optimize the integration.",
+      "description": "Defines that the API Resource Integration Aspect only requires a subset of the referenced contract.\n\nFor APIs, this is a list of the operations or tools that need to be available in order to make the integration work.\nWithout a `subset`, the dependency implies access to the full resource.\nWith a `subset`, only the listed operations are required, allowing consumers to understand /load only the minimal surface area needed.\n\nFor more details and examples, see [Integration Dependency](../concepts/integration-dependency).",
       "properties": {
         "operationId": {
           "type": "string",
