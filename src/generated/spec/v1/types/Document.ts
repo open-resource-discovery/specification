@@ -3535,15 +3535,25 @@ export interface ApiResourceIntegrationAspect {
    */
   minVersion?: string;
   /**
-   * List of individual API operations that are sufficient to achieve the aspect.
+   * Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.
+   *
+   * If `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.
+   * If `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.
+   *
+   * This is especially valuable for agents: knowing the exact set of required tools allows runtimes to load only those tool descriptions into the LLM context and to scope permission grants to the minimal required surface area.
    */
   subset?: APIResourceIntegrationAspectSubset[];
 }
 /**
- * Defines that API Resource Integration Aspect only requires a subset of the referenced contract.
+ * Defines that the API Resource Integration Aspect only requires a subset of the referenced contract.
  *
  * For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
- * This information helps to narrow down what is really necessary and can help optimize the integration.
+ * Without a `subset`, the dependency implies access to the full resource.
+ * With a `subset`, only the listed operations are required, allowing consumers to understand the minimal surface area needed.
+ *
+ * This is particularly important for agents consuming MCP servers:
+ * the listed tools can be selectively loaded into the LLM context to reduce prompt size and cost,
+ * and permission grants or routing decisions can be scoped to exactly what is required.
  */
 export interface APIResourceIntegrationAspectSubset {
   /**

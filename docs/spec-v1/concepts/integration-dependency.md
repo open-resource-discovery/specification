@@ -133,3 +133,39 @@ The `systemTypeRestriction` indicates that only events published by that system 
 In the future, we may need to extend the Integration Dependency with knowledge about whether it has been instantiated (or "enabled"). This becomes necessary when outside parties need to learn about whether the Integration Dependency has already been enabled for them or not. Whether this should be done via ORD protocol is not clear and needs further clarification.
 
 Let's explore the target picture together with blueprint driven provisioning and Unified Resource Manager for SAP defined processes: In the solution blueprint architects with the knowledge of the overall process define that there needs to be an integration between S/4 and SAP Event Broker that events from Subscription Billing needs to be transferred. This results in URM resources that setup the integration channel between S/4 and Event Broker as well as with Subscription Billing and Event Broker. In the last step Event Broker takes the information from the integration dependency in ORD that this specific S/4 tenant needs to consume a set of specific subscription billing events.
+
+### MCP Tool Subset
+
+An agent that depends on only a subset of tools in an MCP server can use `subset` on the `apiResources` aspect entry. The `operationId` value must match the tool `name` as defined in the MCP server card.
+
+```json
+{
+  "integrationDependencies": [
+    {
+      "ordId": "foo.myapp:integrationDependency:MyAgent-mcpDeps:v1",
+      "version": "1.0.0",
+      "title": "MCP Tool Dependencies for My Agent",
+      "shortDescription": "MCP tools required by My Agent at runtime.",
+      "mandatory": true,
+      "releaseStatus": "active",
+      "partOfPackage": "foo.myapp:package:MyPackage:v1",
+      "aspects": [
+        {
+          "apiResources": [
+            {
+              "ordId": "foo.sometool:apiResource:SomeToolMCPServer:v1",
+              "subset": [
+                { "operationId": "searchProducts" },
+                { "operationId": "getProductDetails" },
+                { "operationId": "checkAvailability" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+The `subset` narrows the dependency to only the listed tools, which helps consumers understand the exact surface area required and can optimize permission grants or routing.
