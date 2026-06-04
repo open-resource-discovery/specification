@@ -2883,7 +2883,7 @@ definitions:
           [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
 
           It is RECOMMENDED to provide a relative URL.
-          If relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+          If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
         examples:
           - /api/openApi.yaml
           - https://example.com/api/API_RFQ_PROCESS_SRV/$metadata
@@ -4263,7 +4263,7 @@ definitions:
           [URL](https://tools.ietf.org/html/rfc3986) of the link.
 
           The file target MAY be relative or absolute.
-          If a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+          If a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
           If an absolute URL is given, then it MUST be openly accessible.
         examples:
           - "/ord/v1/Ariba/Files/DeveloperPortal/SAP-Ariba-developer-portal.pdf"
@@ -4423,7 +4423,7 @@ definitions:
           [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.
 
           The link target SHOULD be absolute and SHOULD be openly accessible.
-          If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+          If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
         examples:
           - https://example.com/some/absolute/url
           - /some/relative/url
@@ -4487,7 +4487,7 @@ definitions:
           [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the Data Product Link.
 
           The link target SHOULD be absolute and SHOULD be openly accessible.
-          If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+          If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
         examples:
           - https://example.com/some/absolute/url
 
@@ -4516,7 +4516,7 @@ definitions:
         description: |-
           Optional [base URL](../index.md#base-url) of the **described system instance**.
 
-          Used to resolve relative [entry point](../index.md#entry-point) URLs within this document.
+          Used to resolve relative [entry point](../index.md#described-system-base-url-entry-points) URLs within this document.
           Relative URLs to metadata files (e.g., `resourceDefinitions[].url`) are resolved against
           the document root `baseUrl` instead — see [Relative URL Resolution](../index.md#relative-url-resolution).
 
@@ -5488,7 +5488,7 @@ definitions:
             x-introduced-in-version: "1.15.0"
             description: |-
               The source resource patches one or more definition files of the target resource.
-              Used on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch.
+              Used on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch.
         examples:
           - "foo.bar:relationName"
     required:
@@ -5534,7 +5534,7 @@ definitions:
             x-introduced-in-version: "1.15.0"
             description: |-
               The source resource patches one or more definition files of the target resource.
-              Used on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch.
+              Used on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch.
         examples:
           - "foo.bar:relationName"
     required:

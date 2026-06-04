@@ -305,7 +305,7 @@ export interface SystemInstance {
   /**
    * Optional [base URL](../index.md#base-url) of the **described system instance**.
    *
-   * Used to resolve relative [entry point](../index.md#entry-point) URLs within this document.
+   * Used to resolve relative [entry point](../index.md#described-system-base-url-entry-points) URLs within this document.
    * Relative URLs to metadata files (e.g., `resourceDefinitions[].url`) are resolved against
    * the document root `baseUrl` instead — see [Relative URL Resolution](../index.md#relative-url-resolution).
    *
@@ -1019,7 +1019,7 @@ export interface ApiResourceDefinition {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
    * It is RECOMMENDED to provide a relative URL.
-   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -1268,7 +1268,7 @@ export interface ApiAndEventResourceLink {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.
    *
    * The link target SHOULD be absolute and SHOULD be openly accessible.
-   * If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+   * If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
 }
@@ -1794,7 +1794,7 @@ export interface EventResourceDefinition {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
    * It is RECOMMENDED to provide a relative URL.
-   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -2477,7 +2477,7 @@ export interface CapabilityDefinition {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
    * It is RECOMMENDED to provide a relative URL.
-   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -2954,7 +2954,7 @@ export interface DataProductLink {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the Data Product Link.
    *
    * The link target SHOULD be absolute and SHOULD be openly accessible.
-   * If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+   * If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
 }
@@ -3434,7 +3434,7 @@ export interface OverlayDefinition {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
    * It is RECOMMENDED to provide a relative URL.
-   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -4237,7 +4237,7 @@ export interface File {
    * [URL](https://tools.ietf.org/html/rfc3986) of the link.
    *
    * The file target MAY be relative or absolute.
-   * If a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).
+   * If a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    * If an absolute URL is given, then it MUST be openly accessible.
    */
   url: string;
