@@ -443,13 +443,13 @@ definitions:
           It SHOULD be changed if the ORD information or referenced resource definitions changed.
           It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
-          When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+          When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
           In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
           If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
           The `version` MUST not be bumped for changes in extensions.
 
-          The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+          The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
 
           Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
           For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -788,7 +788,7 @@ definitions:
             description: |-
               Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.
 
-              Public resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.
+              Public resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.
               and follow formal API lifecycle management and deprecation policies.
 
               Example: A REST API that customers use to integrate with your SaaS product.
@@ -1090,7 +1090,7 @@ definitions:
 
           Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
 
-          See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+          See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
         oneOf:
           - const: development
             x-introduced-in-version: "1.14.2"
