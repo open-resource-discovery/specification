@@ -987,6 +987,7 @@ definitions:
       aiHint: &aiHint
         type: string
         minLength: 1
+        x-introduced-in-version: "1.16.0"
         description: &aiHintText |-
           Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
           Intentionally separate from human-facing `description` so both can evolve independently.
@@ -4866,7 +4867,7 @@ definitions:
 
       visibility:
         <<: *visibility
-        x-introduced-in-version: "1.15.0"
+        x-introduced-in-version: "1.16.0"
         default: "public"
         description: |-
           Defines who is allowed to discover and access this Group Type and its metadata.
@@ -4956,7 +4957,7 @@ definitions:
 
       visibility:
         <<: *visibility
-        x-introduced-in-version: "1.15.0"
+        x-introduced-in-version: "1.16.0"
         default: "public"
         description: |-
           Defines who is allowed to discover and access this Group and its metadata.
