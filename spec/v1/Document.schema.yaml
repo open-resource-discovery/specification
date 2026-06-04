@@ -2206,7 +2206,7 @@ definitions:
   EntityTypeDefinition:
     type: object
     title: Entity Type Definition
-    x-introduced-in-version: "1.15.0"
+    x-introduced-in-version: "1.16.0"
     x-feature-status: beta
     x-ums-type: "custom"
     description: |-
