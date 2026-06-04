@@ -35,7 +35,11 @@ From a technical perspective, an Agent is simply a specialized type of applicati
 -   **Instantiation:** While the "Agent Resource" describes the *type* or *class* of the agent (Design Time), the running software represents an *instance* of that agent (Runtime).
     -   *See [System Landscape Model](./system-landscape-model.md) for more on the distinction between Systems, Tenants, and Resources.*
 
+<div className="img-box" style={{aspectRatio: "512/378"}}>
+
 ![AI Agent Overview](/img/ord-ai-agent.drawio.svg "AI Agent Overview")
+
+</div>
 
 ## Agent Example
 
@@ -101,9 +105,9 @@ These are API protocols specifically designed for simple consumption by LLMs and
 
 ```mermaid
 graph TD
-    classDef concept fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-    classDef tech fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
-    classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef concept fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#333;
+    classDef tech fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333;
+    classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333;
 
     Agent["Agent<br/>(Product-like Concept)"]:::concept
     System["System / Application"]:::tech
@@ -166,35 +170,72 @@ This is modeled using **[Integration Dependencies](../interfaces/Document#integr
 
 -   **MCP (Model Context Protocol):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
     The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections to data sources and tools.
+    When only a subset of tools is needed, the `subset` field narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
+    This matters for agents specifically: it keeps LLM context lean by loading only the relevant tool descriptions, and it scopes permission grants to the minimal required surface area.
 -   **Other Resources:** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
 -   **Agent Chaining:** Agents can also have dependencies on other Agents, forming complex workflows.
 
-Here's an example of an Integration Dependency for an agent:
+Here's an example of an Integration Dependency for an agent that depends on a specific set of MCP tools.
+Without `subset`, the dependency would imply access to all operations of the referenced resource:
 
 ```json
 {
   "integrationDependencies": [
     {
-      "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
-      "title": "Dispute Case Management Integration",
-      "shortDescription": "Integration dependency for dispute case management system",
+      "ordId": "foo.app1:integrationDependency:DisputeAgent-mcpDeps:v1",
+      "title": "MCP Tool Dependencies for Dispute Agent",
+      "shortDescription": "MCP tools required by the Dispute Agent at runtime.",
       "mandatory": true,
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo:package:MyPackage:v1",
       "aspects": [
         {
-          "title": "Case Management API Access",
-          "description": "Access to dispute case management APIs",
-          "mandatory": true,
           "apiResources": [
-            { "ordId": "sap.bar:apiResource:DisputeResolutionAPI:v1" }
+            {
+              "ordId": "foo.app2:apiResource:DisputeToolsMCPServer:v1",
+              "subset": [
+                { "operationId": "searchDisputeCases" },
+                { "operationId": "getDisputeDetails" },
+                { "operationId": "updateDisputeStatus" }
+              ]
+            }
           ]
         }
       ]
-      // ...
     }
   ]
 }
 ```
+
+## AI Hints on ORD Resources
+
+The following ORD resource types support an `aiHint` property: API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities.
+
+`aiHint` provides guidance specifically for AI consumers such as LLMs and agent orchestrators, and is intentionally separate from human-facing `description` and `shortDescription` fields so both can evolve independently.
+
+```json
+{
+  "apiResources": [
+    {
+      "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1",
+      "title": "Dispute Resolution Agent",
+      "description": "Manages dispute cases in the system.",
+      "aiHint": "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools. Do not call `DELETE /cases/{id}` unless the case status is `closed`."
+    }
+  ]
+}
+```
+
+### Why a Separate Field?
+
+Human-readable documentation (`description`, `shortDescription`) is written for end users and developers browsing a catalog. AI-targeted guidance has different concerns — it may include tool-use patterns, LLM-specific caveats, or instructions that would read as noise in standard docs. Keeping these separate lets both evolve independently.
+
+### Best Practices
+
+- **Markdown recommended**: The value SHOULD be written in [CommonMark](https://spec.commonmark.org/) Markdown.
+- **Be action-oriented**: Describe *how* to use the resource (verbs, conditions, caveats), not just *what* it is — the `description` already covers that.
+- **Keep it focused**: Aim for a short, dense paragraph rather than exhaustive documentation. Link to detailed docs via the `links` property.
 
 ## Use Cases
 

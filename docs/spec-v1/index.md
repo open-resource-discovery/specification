@@ -3,7 +3,7 @@ sidebar_position: 0
 title: ORD Specification
 ---
 
-# Open Resource Discovery Specification 1.14
+# Open Resource Discovery Specification 1.15
 
 ## Notational Conventions
 
@@ -13,6 +13,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 The following diagram provides a high-level overview of how the ORD specification is structured.
 Click on the elements to navigate to the corresponding sections.
+
+<div style={{minHeight: "590px"}}>
 
 ```mermaid
 flowchart TB
@@ -58,6 +60,8 @@ flowchart TB
     click Taxonomy "#ord-taxonomy"
 ```
 
+</div>
+
 ## ORD Roles
 
 The ORD specification consists of several [parts](#ord-parts).
@@ -82,7 +86,11 @@ An ORD provider MUST use one of the standardized [ORD transport modes](#ord-tran
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
+<div className="img-box" style={{aspectRatio: "3144/972"}}>
+
 ![ORD Provider Role](/img/ord-role-provider.svg "ORD Provider Role")
+
+</div>
 
 ### ORD Aggregator
 
@@ -98,16 +106,22 @@ There are [aggregation rules](#aggregation-rules) and [validation rules](#valida
 
 It MUST support all [ORD transport modes](#ord-transport-modes) that are used by the systems it aggregates.
 
+When serving static perspective requests (`system-type` or `system-version`), the aggregator SHOULD follow the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm.
+
 In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-perspective):
 
 - the aggregator MUST support [system-instance-aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
 - In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
   - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Discovery consumer should not need to understand whether the information is currently static or system-instance-aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
-  - See chapter on [perspectives](#perspectives).
+- See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
+<div className="img-box" style={{aspectRatio: "3472/809"}}>
+
 ![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
+
+</div>
 
 ### ORD Consumer
 
@@ -124,7 +138,11 @@ An ORD consumer that receives information with a `visibility` of `private` or `i
 The ORD consumer MUST ensure that private and internal information is not exposed to consumers without the corresponding permissions.
 If the ORD consumer only needs public information, it SHOULD only request those from the ORD aggregator in the first place.
 
+<div className="img-box" style={{aspectRatio: "2740/1181"}}>
+
 ![ORD Consumer Role](/img/ord-role-consumer.svg "ORD Consumer Role")
+
+</div>
 
 ## ORD Transport Modes
 
@@ -154,31 +172,11 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 ##### Pull Transport Sequence Diagram
 
-```mermaid
-sequenceDiagram
-    participant Aggregator as ORD Aggregator
-    participant Provider as ORD Provider
-    participant Landscape as System Landscape
+<div className="img-box" style={{aspectRatio: "872/596"}}>
 
-    Provider->>Landscape: Register system instance
-    Aggregator->>Landscape: Discover system instances
-    Landscape-->>Aggregator:
+![Pull Transport Sequence](/img/ord-pull-transport-sequence.svg "Pull Transport Sequence")
 
-    loop once per discovered system instance
-        Aggregator->>Provider: Request ORD configuration
-        Provider-->>Aggregator:
-
-        loop once per ORD document
-            Aggregator->>Provider: Request ORD document (using an access strategy)
-            Provider-->>Aggregator:
-
-            loop once per resource definition
-                Aggregator->>Provider: Request resource definition file
-                Provider-->>Aggregator:
-            end
-        end
-    end
-```
+</div>
 
 ### Other Modes of Transport
 
@@ -191,7 +189,7 @@ Manual import of the [ORD document](#ord-document) as a JSON file into an intere
 
 - The system instances do not need to know each other or be integrated in any way
 - The ORD document alone is sufficient for this type of consumption
-- All URLs in the document MUST be resolvable (e.g. through `baseUrl` or full URLs)
+- All URLs in the document MUST be resolvable (e.g. through the document root `baseUrl`, `describedSystemInstance.baseUrl`, or as full absolute URLs — see [Relative URL Resolution](#relative-url-resolution))
 
 #### Push Transport
 
@@ -228,7 +226,7 @@ The ORD document MUST be a valid [JSON](https://www.json.org/json-en.html) docum
 It MUST NOT exceed 2MB in size to ensure efficient transport and processing.
 If content exceeds this limit, split the information into multiple ORD documents.
 
-The interfaces are described in [ORD document interface](./interfaces/Document.md), including [examples](./interfaces/Document.md#examples).
+The interfaces are described in [ORD document interface](./interfaces/Document.md), including [examples](spec-v1/examples/).
 
 An ORD document MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Document.schema.json](https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json).
 
@@ -237,7 +235,11 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### ORD Document Data Model (Simplified)
 
+<div className="img-box" style={{aspectRatio: "862/537"}}>
+
 ![High-Level ORD Entities (simplified)](/img/ord-high-level-data-model.drawio.svg "High-Level ORD Entities (simplified)")
+
+</div>
 
 #### Considerations on the ORD Content
 
@@ -245,9 +247,12 @@ The ORD documents MUST describe the current state of a concrete, running [system
 
 All resources that are described within one document MUST describe the same system instance.
 
-The described information MUST not be duplicated within or across ORD documents.
+The described information MUST not be duplicated within or across ORD documents of the same [system type](#system-type).
 If some information like Package or Consumption Bundle is needed across multiple documents they can either be put in one of the documents or be moved to a separate document for shared information.
-This also applies across ORD Providers, which is ensured through the correct use of namespaces and namespace ownerships.
+This also applies across ORD Providers of the same system type, which is ensured through the correct use of namespaces and namespace ownerships.
+Shared ORD information MAY be published by multiple system types when the ORD ID identifies the same governed definition.
+This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 The [validation rules](#validation-rules) MUST be considered.
 
@@ -262,7 +267,7 @@ For example, a configuration could explicitly disable an API. In this case, the 
 Some systems are even extensible in a way that customers can add new APIs or alter existing APIs at run-time.
 Those changes MUST be documented via ORD.
 Please note that some changes only affect the referenced [resource definitions](#resource-definition) and not the ORD document itself.
-However, the change in the resource definition MUST be indicated through a version increment (see [Version and Lifecycle](#version-and-lifecycle)).
+However, the change in the resource definition MUST be indicated through a version increment (see [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md)).
 
 #### Considerations on the Granularity of ORD Documents
 
@@ -283,7 +288,7 @@ Which attributes support information reuse and how it works is described in the 
 ##### Document Level Inheritance
 
 Some ORD information is described on the document root level and applies to all information that the ORD Document contains.
-In some cases (like `policyLevel`), it is also possible to override the values locally.
+In some cases (like `policyLevels`), it is also possible to override the values locally.
 
 ##### Package Level Inheritance
 
@@ -305,6 +310,78 @@ Additional information or categorization can be added through the generic `Label
 If such custom values or labels are relied upon by more than one application or team, they SHOULD be standardized through ORD.
 Please [create an issue](https://github.com/open-resource-discovery/specification/issues) to request this.
 
+#### Relative URL Resolution
+
+ORD documents may contain both absolute and relative URLs.
+ORD aggregators MUST resolve all relative URLs to absolute URLs before exposing them to ORD consumers.
+
+Relative URL resolution follows [RFC 3986 (Uniform Resource Identifier: Generic Syntax)](https://datatracker.ietf.org/doc/html/rfc3986#section-5), with the base URI determined as described below.
+
+##### URL Reference Types
+
+ORD recognizes three types of URL references:
+
+| Pattern | Type | Resolved against |
+|---|---|---|
+| `https://example.com/path` | Absolute URL | Used as-is — no resolution needed |
+| `/path/file.json` | Root-relative (leading slash) | The applicable **base URL** (see below) |
+| `./path/file.json`, `../path/file.json`, `path/file.json` | Document-relative | The URL/location of the **current document** |
+
+**Root-relative URLs** (leading slash) are resolved against the applicable base URL *including its path component*.
+For example, if `baseUrl` is `https://provider.com/api/v1`, then `/metadata/schema.json` resolves to `https://provider.com/api/v1/metadata/schema.json`.
+
+**Document-relative URLs** (with `./`, `../`, or bare path without leading slash) are resolved relative to the URL from which the current document was retrieved, per [RFC 3986 Section 5](https://datatracker.ietf.org/doc/html/rfc3986#section-5).
+For example, if a document was fetched from `https://provider.com/ord/v1/documents/apis.json`, then `./schemas.json` resolves to `https://provider.com/ord/v1/documents/schemas.json`.
+This pattern is particularly useful for static ORD providers serving files from a file system or git repository, where relative references remain valid regardless of where the directory tree is hosted.
+
+> **Note:** Per RFC 3986, `path/file.json` (no leading slash, no dot prefix) is equivalent to `./path/file.json` — both are document-relative.
+
+##### Base URL for Root-Relative URLs
+
+The base URL used for resolving root-relative URLs (leading slash) depends on **what** the URL references, because two different systems may be involved:
+
+| URL type | Resolved against | Declared via |
+|---|---|---|
+| **Metadata files**: `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`, `APIEventResourceLink.url`, `DataProductLink.url` | Provider base URL | Document root `baseUrl` |
+| **Entry points**: `entryPoints[]` | Described system base URL | `describedSystemInstance.baseUrl` |
+
+This distinction matters when the ORD provider and the described system differ (e.g., a central aggregator describing multiple systems on its behalf).
+In the common case where the provider *is* the described system, both base URLs are identical and the distinction has no practical effect.
+
+##### Provider Base URL (metadata files)
+
+Metadata files such as resource definitions and document links are physically hosted by the **ORD provider** — the system that serves the ORD document.
+Their root-relative URLs are resolved against the provider base URL using the following order (applied by ORD aggregators):
+
+1. **Document root `baseUrl`** — takes precedence when explicitly set in the document.
+2. **Fetch context URL** (pull scenarios only) — the URL the ORD document was fetched from.
+3. **`describedSystemInstance.baseUrl`** — backward-compatibility fallback for documents predating version 1.15 that do not set the document root `baseUrl`. In the common case where provider and described system are the same, this yields the same result.
+
+##### Described System Base URL (entry points)
+
+Entry points are runtime endpoints on the **described system** — the system being documented.
+Their root-relative URLs are resolved against the described system base URL:
+
+1. **Aggregator-authoritative URL** — ORD aggregators that hold authoritative knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value. This is an aggregator decision, appropriate when the aggregator has more reliable or up-to-date information than the provider.
+2. **`describedSystemInstance.baseUrl`** — the value declared in the document.
+
+> **The asymmetry is intentional.** Aggregators commonly have landscape authority over the systems they describe (rule 1 above), but not over the system that merely *serves* ORD documents. For the described system, deferring to the aggregator's landscape knowledge is appropriate; for the provider, the document is the authoritative source, especially in push scenarios where no fetch context exists.
+
+##### Resolution Examples
+
+Given:
+- Document root `baseUrl`: `https://provider.com/api/v1`
+- `describedSystemInstance.baseUrl`: `https://system.com`
+- Document fetched from: `https://provider.com/api/v1/ord/documents/apis.json`
+
+| Reference in document | Context | Resolves to |
+|---|---|---|
+| `https://cdn.example.com/schema.json` | Any | `https://cdn.example.com/schema.json` |
+| `/metadata/schema.json` | Metadata file | `https://provider.com/api/v1/metadata/schema.json` |
+| `/v1/orders` | Entry point | `https://system.com/v1/orders` |
+| `./related/events.json` | Any | `https://provider.com/api/v1/ord/documents/related/events.json` |
+| `../shared/types.json` | Any | `https://provider.com/api/v1/ord/shared/types.json` |
+
 ### ORD Provider API
 
 This section details how an [ORD Provider](#ord-provider) exposes one or multiple [ORD documents](#ord-document) for the [pull transport mode](#pull-transport).
@@ -324,6 +401,7 @@ The motivation behind the ORD configuration endpoint is to:
 - Define where and how the ORD information can be accessed
   - Which transport mode is available (URLs to ORD document(s) indicate the [pull transport mode](#pull-transport))
   - Which [access strategies](../spec-extensions/access-strategies/index.mdx) are available
+- Optionally provide discoverable ORD Overlay files via `openResourceDiscoveryV1.overlays` (see [ORD Overlay](./interfaces/OrdOverlay.md))
 
 The idea behind the configuration endpoint is inspired by the [well-known URI](https://datatracker.ietf.org/doc/html/rfc8615) discovery mechanism.
 
@@ -341,7 +419,7 @@ The response MUST be a valid UTF-8 encoded [JSON](https://www.json.org/json-en.h
 
 - The response MUST not contain any sensitive information or leak tenant-specific information.
 - It MUST be compliant with the following [JSON Schema](https://json-schema.org/) definition: [Configuration.schema.json](https://open-resource-discovery.org/spec-v1/interfaces/Configuration.schema.json).
-- Please refer to the [interface documentation](./interfaces/Configuration.md) for more details and [examples](./interfaces/Configuration.md#complete-examples).
+- Please refer to the [interface documentation](./interfaces/Configuration.md) for more details.
 
 All of the [common REST characteristics](#common-rest-characteristics) MUST be met.
 The rules on [ORD Provider Cache Handling](#ord-provider-cache-handling) apply.
@@ -415,6 +493,8 @@ The response contains the requested resource and MAY include related ORD informa
 
 ORD does not aim to replace these standards. Instead, it discovers and transports them alongside shared metadata. The ORD layer adds common properties (like `version`, `visibility`, `releaseStatus`), [taxonomy](#ord-taxonomy) (via `Package`, `Product`, etc.), and relationships between resources.
 
+An ORD resource can also reference an ORD Overlay as an additional `resourceDefinitions` entry with type `ord:overlay:v1`. The same overlay files can optionally be discovered independently via the [ORD configuration endpoint](#ord-configuration-endpoint). For details, see [ORD Overlay](./interfaces/OrdOverlay.md).
+
 For details on how resource definitions are referenced, see the `resourceDefinitions` property on [API Resource](./interfaces/Document.md#api-resource) and [Event Resource](./interfaces/Document.md#event-resource) in the interface documentation.
 When consumed via an [ORD aggregator](#ord-aggregator), the aggregator may [host the resource definitions](#hosting-resource-definitions) for easier access.
 
@@ -483,7 +563,7 @@ If multiple systems/system instances describe the same ORD taxonomy instance, th
 - If both instances have the same version but different content, the most recent information takes precedence.
   This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
 - If a breaking change was introduced to a taxonomy entity (e.g. the meaning changed), a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](#version-and-lifecycle).
+  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
 
 ###### Merging ORD Resources
 
@@ -505,7 +585,7 @@ If the same system instances describe the same ORD resource, the following mergi
 - If both instances have the same version but different content, the most recent information takes precedence.
   This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
 - If a breaking change was introduced to an ORD resource, a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](#version-and-lifecycle).
+  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
 
 ##### Content Enrichment and Preservation
 
@@ -521,17 +601,15 @@ The following rules need to be implemented by ORD aggregators:
   - This ensures that consumers can rely on `lastUpdate` to be always available and to understand if a change happened, even if the ORD Provider did not update it at the source
   - Ideally this situation doesn't happen and the ORD Providers update `lastUpdate`. Then the date can also better reflect the time when the change happened, not when it was detected.
 - The aggregator MUST apply all defined inheritances from root document properties to all the ORD information that it contains.
-  - `policyLevel` (and the corresponding `customPolicyLevel`) MUST be inherited to the resource / Package level, with the latter taking precedence.
+  - `policyLevels` MUST be inherited to the resource / Package level, with the latter taking precedence.
 - The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
   - `vendor`, `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
   - `labels` MUST be merged without duplicated values.
     - Values of the same label key will be merged.
     - Duplicate values of the same label key will be removed.
 - The aggregator MUST rewrite all URLs for [hosted resource definitions](#hosting-resource-definitions) to point to their own hosted URLs.
-- The aggregator MUST convert all relative URLs to absolute URLs
-  - Relative URLs MUST be rewritten according to the detected [base URL](#base-url) of the described system instance.
-    - The base URL MUST be made known to the aggregator, either via context (e.g. service discovery or trust context) or by explicitly describing it in the ORD document via `describedSystemInstance`.`baseUrl`.
-    - When both bits of information are available and differ, the aggregator MAY decide to give precedence to the context information.
+- The aggregator MUST convert all relative URLs to absolute URLs.
+  See [Relative URL Resolution](#relative-url-resolution) for the full resolution rules, including the ordering for provider base URL and described system base URL.
 - The information on the [described system instance](#described-system-instance) SHOULD be added if it is missing.
   - If system instance information is missing, the aggregator SHOULD obtain and enrich the ORD information, for example, via service discovery or trust context.
   - If the ORD aggregator has additional information on a system instance that is not standardized through the ORD interfaces, they MAY be added and exposed through the ORD Discovery API.
@@ -565,9 +643,13 @@ The following validation rules apply specifically for ORD aggregators:
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
   This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
-- The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times.
-  Please be aware that this could happen within an ORD Document, within the same ORD Provider on different ORD Documents or even across different ORD Providers.
+- The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times within the same [system type](#system-type) or [system version](#system-version) scope.
+  Please be aware that this could happen within an ORD Document or within the same ORD Provider on different ORD Documents.
   For migration transitions this rule MAY be violated temporarily.
+- Shared ORD information MAY be published by multiple [system types](#system-type) when the ORD ID identifies the same governed definition.
+  In this case, all publishers MUST describe the ORD information consistently for the same `version`. The aggregator MUST validate consistency.
+  This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
+  See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
 
 ### ORD Discovery API
 
@@ -609,8 +691,12 @@ There is a `perspective` attribute, which allows setting the following values:
   - In this case the same static metadata will be used to describe all system instances of the same version (or for `system-type`, all systems regardless of version)
 - Systems, which have dynamic metadata MUST use the `system-instance` perspective.
   - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
+  - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
+    In this case, both perspectives MUST use the same ORD IDs for the same resources and MUST NOT describe those resources inconsistently.
 - If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
+
+> ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
 
 ## ID Concepts
 
@@ -643,7 +729,11 @@ A complete namespace MUST match the following [regular expression](https://en.wi
 
 #### Structure of Namespaces
 
+<div className="img-box" style={{aspectRatio: "3045/1013"}}>
+
 ![Namespace Concept Overview](/img/namespace-concept.svg "Namespace Concept Overview")
+
+</div>
 
 Namespaces MUST follow the below structure:
 
@@ -687,9 +777,9 @@ A vendor namespace MUST be constructed according to the following rules:
 - `<vendorId>` is a registered ID of a vendor.
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
-  - There is a special reserved vendor namespace `customer`:
-    - It can be used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources.
-    - This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+  - There are reserved vendor namespaces:
+    - `customer`: Used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources. This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+    - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
 - MUST match Regexp: `^[a-z0-9]+$`
 
 **Examples**: For SAP, we chose and registered `sap`.
@@ -724,6 +814,8 @@ An system namespace MUST be constructed according to the following rules:
 
 An <dfn id="def-authority-namespace">authority namespace</dfn> is a stable and globally unique identifier namespace that corresponds to an **organizational unit** responsible for cross-alignment and governance.
 Authority namespaces are relevant when contracts, interfaces or taxonomy are owned and defined on a level that spans across individual applications or services.
+This includes shared API contracts, event definitions, data products, capabilities, integration dependencies, consumption bundles, and agents that are provided by multiple [system types](#system-type) built from the same software components.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details on namespace ownership and authority namespaces.
 
 An authority namespace MUST be constructed according to the following rules:
 
@@ -788,6 +880,9 @@ The same resource (with the same ORD ID) can be exposed in different variations 
 To get a globally unique ID at run-time, a composite key is required.
 This can be achieved by either combining it with a system instance ID or a full version, depending on the use cases.
 
+When the same shared ORD information is published or reused by multiple [system types](#system-type), the ORD ID identifies the shared contract, taxonomy item, definition or governance model, and the system type or system instance provides the additional context for uniqueness.
+This commonly uses an [authority namespace](#authority-namespace), but can also use a system namespace when that system type owns the reused definition.
+
 #### ORD ID Construction
 
 The ORD ID consists of four fragments, separated by `:`.
@@ -797,17 +892,18 @@ It MUST be constructed as defined here:
 **`<ordId>`** := `<namespace>:<conceptName>:<resourceName>:[v<majorVersion>]`
 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
-  The namespace MUST reflect the provider of the described resource.
-  - For `Package`, `Consumption Bundle`, `APIResource` and `EventResource`, `Capability` and `IntegrationDependency`:
-    - MUST be a valid [system namespace](#system-namespace) or an [sub-context namespace](#sub-context-namespace) thereof
-  - For `EntityType`
-    - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace)
+  The namespace MUST reflect the owner governing the described ORD information.
+  - For `Package`, `ConsumptionBundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`, `DataProduct` and `Agent`:
+    - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace) thereof
+    - A [system namespace](#system-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item is specific to a single system type.
+    - An [authority namespace](#authority-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item represents a shared contract, definition or governance model across multiple [system types](#system-type). See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
   - For `Vendor` and `Product`:
     - MUST be a valid [vendor namespace](#vendor-namespace) for `Vendor` and `Product`
-  - The provider is the system hosting the described resource.
-    - In advanced cases, the provider could be an embedded system / sidecar with its own system namespace.
-      This can lead to multiple system namespaces within one system.
-      In this case it needs to be taken care that static publishing does not create conflicts, e.g. through moving the publishing responsibility to the embedded system (and not by the parent system).
+  - For system-namespaced ORD IDs, the provider is the system hosting the described resource.
+    In advanced cases, the provider could be an embedded system / sidecar with its own system namespace.
+    This can lead to multiple system namespaces within one system.
+    In this case it needs to be taken care that static publishing does not create conflicts, e.g. through moving the publishing responsibility to the embedded system (and not by the parent system).
+  - For authority-namespaced ORD IDs, the namespace identifies the organizational unit governing the shared contract, definition, taxonomy item or access grouping.
 
 - **`<conceptName>`** := The ORD concept name of the described resource / taxonomy.
   - Use `product` for `Product`
@@ -831,14 +927,14 @@ It MUST be constructed as defined here:
     - If this cannot be followed, the relationship to the successor APIs can still be indicated via the `successors` property.
 
 - **`<majorVersion>`** := a version incrementor of the resource that increases on breaking changes.
-  - MUST be provided for `Package`, `Consumption Bundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`
+  - MUST be provided for `Package`, `ConsumptionBundle`, `APIResource`, `EventResource`, `EntityType`, `Capability`, `IntegrationDependency`, `DataProduct` and `Agent`
   - MUST NOT be provided for `Product` and `Vendor`
   - If provided: MUST be an integer and MUST NOT contain leading zeroes.
   - MUST be incremented if the resource introduced an incompatible API change. This correlates with a major version change in [Semantic Versioning](https://semver.org/).
     - If the described resource has a `releaseStatus` of `beta`, this rule can be ignored. Incompatible changes MAY be introduced in `beta` resources.
   - MUST NOT be incremented if non-breaking changes have been made to the resource; the updated resource should replace the current one.
-  - The `<majorVersion>` and the major version of [`version`](#version-and-lifecycle) MUST be identical.
-  - In the case of REST APIs, the `<majorVersion>` MUST also equal the API Version. Please be aware that most organizations have defined API Compatibility rules that MUST be followed in this context.
+  - The `<majorVersion>` and the major version of [`version`](./concepts/versioning-and-lifecycle.md#relationship-between-version-and-ord-id-majorversion) SHOULD be identical.
+  - If the REST API expresses its version in the URL path (e.g. `/v2/`), `<majorVersion>` SHOULD match it.
 
 - The ORD ID MUST be globally unique.
 
@@ -989,6 +1085,10 @@ A Specification ID MUST match the following [regular expression](https://en.wiki
 
 ## Version and Lifecycle
 
+ORD resources carry a `version` (full [SemVer](https://semver.org/)) and a `<majorVersion>` fragment in their [ORD ID](#ord-id) that encodes breaking-change boundaries. Lifecycle is managed via `releaseStatus`, `deprecationDate`, and `sunsetDate`.
+
+For a detailed explanation with practical guidance, see the [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md) concept page.
+
 ### Versioning
 
 The `version` expresses the complete/full resource version number of an [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy).
@@ -998,7 +1098,7 @@ It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and
 The version SHOULD be changed when the resource or the resource definition changed in any way relevant to consumers.
 If (potentially runtime) customization/extension leads to changes in the resource definition, a build number SHOULD be added or incremented to indicate that this change happened.
 
-When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
 If the resource definition also contains a version number, it SHOULD be in sync with the resource `version` (if possible).
 
 When a breaking change is introduced, the rules on constructing [ORD IDs](#ord-id) will ensure that the old version of the resource is not replaced.
@@ -1019,9 +1119,8 @@ For example, a `public` resource can have `releaseStatus` of `beta`, meaning it'
 When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
-- MUST explicitly set a [`Tombstone`](interfaces/Document.md#document.tombstones).
+- MUST explicitly set a [`Tombstone`](interfaces/Document.md#ord-document_tombstones).
 
-![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
 
 ## Common REST Characteristics
 
@@ -1173,3 +1272,11 @@ A **base URL** is the consistent part of a [system deployment](#system-deploymen
 From ORD perspective this is the base URL where the discovery starts and where the [ORD config endpoint](#ord-configuration-endpoint) location is relative to.
 In most cases the base URL consists of the URL protocol, domain name and (if necessary) the port, for example `https://example.com`.
 In rare cases, a relative path (e.g. including a tenant ID) might be included, for example `https://example.com/tenantA/`.
+
+In ORD, two base URLs can be involved in a single document:
+
+- **Provider base URL**: the base URL of the system that *serves* the ORD document and hosts metadata files (e.g., resource definition files). Declared via the document root `baseUrl` property.
+- **Described system base URL**: the base URL of the system being described (its entry points). Declared via `describedSystemInstance.baseUrl`.
+
+In the common case where the ORD provider and the described system are the same, both values are identical.
+See [Relative URL Resolution](#relative-url-resolution) for how these are used to resolve relative URLs.

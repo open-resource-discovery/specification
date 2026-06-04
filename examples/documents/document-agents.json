@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.14",
+  "openResourceDiscovery": "1.15",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1", "sap:ai-agent:v1"],
   "describedSystemVersion": {
@@ -94,7 +94,7 @@
       "exposedApiResources": [{"ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1"}],
       "integrationDependencies": ["sap.foo:integrationDependency:DisputeCaseManagement:v1"],
       "labels": {
-        "interactionMode": ["conversational", "system-triggered"]
+        "foo.ai:interaction-mode": ["conversational", "system-triggered"]
       },
       "tags": ["finance", "billing", "dispute-resolution", "invoicing", "ai-agent"],
       "links": [

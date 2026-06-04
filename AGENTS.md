@@ -12,12 +12,15 @@ Open Resource Discovery (ORD) is a protocol specification that enables applicati
 
 YAML schemas in `spec/v1/*.schema.yaml` → `npm run generate` → outputs to `src/generated/`, `dist/`, `static/spec-v1/interfaces/`
 
+**When editing schemas**: Always run `npm run generate` after modifying `spec/v1/*.schema.yaml` or `spec-extension/models/*.schema.yaml` to verify changes work before committing.
+
 ## Verify Loop (before committing)
 
 ```bash
-npm run build     # Build TS + Docusaurus + validate
 npm run lint      # Linting
+npm run generate  # Verifies that can generate without errors
 npm run test      # Tests
+npm run build     # Build TS + Docusaurus + validate, incl. generate
 ```
 
 Note: `npm run generate` runs automatically via pre-commit hook.

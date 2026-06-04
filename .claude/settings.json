@@ -1,9 +1,0 @@
-{
-  "contextFiles": [
-    "AGENTS.md",
-    "package.json"
-  ],
-  "hooks": {
-    "beforeCommit": "npm run lint && npm run test"
-  }
-}
