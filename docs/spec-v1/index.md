@@ -3,7 +3,7 @@ sidebar_position: 0
 title: ORD Specification
 ---
 
-# Open Resource Discovery Specification 1.14
+# Open Resource Discovery Specification 1.15
 
 ## Notational Conventions
 
@@ -267,7 +267,7 @@ For example, a configuration could explicitly disable an API. In this case, the 
 Some systems are even extensible in a way that customers can add new APIs or alter existing APIs at run-time.
 Those changes MUST be documented via ORD.
 Please note that some changes only affect the referenced [resource definitions](#resource-definition) and not the ORD document itself.
-However, the change in the resource definition MUST be indicated through a version increment (see [Version and Lifecycle](#version-and-lifecycle)).
+However, the change in the resource definition MUST be indicated through a version increment (see [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md)).
 
 #### Considerations on the Granularity of ORD Documents
 
@@ -288,7 +288,7 @@ Which attributes support information reuse and how it works is described in the 
 ##### Document Level Inheritance
 
 Some ORD information is described on the document root level and applies to all information that the ORD Document contains.
-In some cases (like `policyLevel`), it is also possible to override the values locally.
+In some cases (like `policyLevels`), it is also possible to override the values locally.
 
 ##### Package Level Inheritance
 
@@ -329,6 +329,7 @@ The motivation behind the ORD configuration endpoint is to:
 - Define where and how the ORD information can be accessed
   - Which transport mode is available (URLs to ORD document(s) indicate the [pull transport mode](#pull-transport))
   - Which [access strategies](../spec-extensions/access-strategies/index.mdx) are available
+- Optionally provide discoverable ORD Overlay files via `openResourceDiscoveryV1.overlays` (see [ORD Overlay](./interfaces/OrdOverlay.md))
 
 The idea behind the configuration endpoint is inspired by the [well-known URI](https://datatracker.ietf.org/doc/html/rfc8615) discovery mechanism.
 
@@ -420,6 +421,8 @@ The response contains the requested resource and MAY include related ORD informa
 
 ORD does not aim to replace these standards. Instead, it discovers and transports them alongside shared metadata. The ORD layer adds common properties (like `version`, `visibility`, `releaseStatus`), [taxonomy](#ord-taxonomy) (via `Package`, `Product`, etc.), and relationships between resources.
 
+An ORD resource can also reference an ORD Overlay as an additional `resourceDefinitions` entry with type `ord:overlay:v1`. The same overlay files can optionally be discovered independently via the [ORD configuration endpoint](#ord-configuration-endpoint). For details, see [ORD Overlay](./interfaces/OrdOverlay.md).
+
 For details on how resource definitions are referenced, see the `resourceDefinitions` property on [API Resource](./interfaces/Document.md#api-resource) and [Event Resource](./interfaces/Document.md#event-resource) in the interface documentation.
 When consumed via an [ORD aggregator](#ord-aggregator), the aggregator may [host the resource definitions](#hosting-resource-definitions) for easier access.
 
@@ -488,7 +491,7 @@ If multiple systems/system instances describe the same ORD taxonomy instance, th
 - If both instances have the same version but different content, the most recent information takes precedence.
   This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
 - If a breaking change was introduced to a taxonomy entity (e.g. the meaning changed), a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](#version-and-lifecycle).
+  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
 
 ###### Merging ORD Resources
 
@@ -510,7 +513,7 @@ If the same system instances describe the same ORD resource, the following mergi
 - If both instances have the same version but different content, the most recent information takes precedence.
   This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
 - If a breaking change was introduced to an ORD resource, a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](#version-and-lifecycle).
+  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
 
 ##### Content Enrichment and Preservation
 
@@ -526,7 +529,7 @@ The following rules need to be implemented by ORD aggregators:
   - This ensures that consumers can rely on `lastUpdate` to be always available and to understand if a change happened, even if the ORD Provider did not update it at the source
   - Ideally this situation doesn't happen and the ORD Providers update `lastUpdate`. Then the date can also better reflect the time when the change happened, not when it was detected.
 - The aggregator MUST apply all defined inheritances from root document properties to all the ORD information that it contains.
-  - `policyLevel` (and the corresponding `customPolicyLevel`) MUST be inherited to the resource / Package level, with the latter taking precedence.
+  - `policyLevels` MUST be inherited to the resource / Package level, with the latter taking precedence.
 - The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
   - `vendor`, `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
   - `labels` MUST be merged without duplicated values.
@@ -704,9 +707,9 @@ A vendor namespace MUST be constructed according to the following rules:
 - `<vendorId>` is a registered ID of a vendor.
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
-  - There is a special reserved vendor namespace `customer`:
-    - It can be used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources.
-    - This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+  - There are reserved vendor namespaces:
+    - `customer`: Used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources. This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+    - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
 - MUST match Regexp: `^[a-z0-9]+$`
 
 **Examples**: For SAP, we chose and registered `sap`.
@@ -860,8 +863,8 @@ It MUST be constructed as defined here:
   - MUST be incremented if the resource introduced an incompatible API change. This correlates with a major version change in [Semantic Versioning](https://semver.org/).
     - If the described resource has a `releaseStatus` of `beta`, this rule can be ignored. Incompatible changes MAY be introduced in `beta` resources.
   - MUST NOT be incremented if non-breaking changes have been made to the resource; the updated resource should replace the current one.
-  - The `<majorVersion>` and the major version of [`version`](#version-and-lifecycle) MUST be identical.
-  - In the case of REST APIs, the `<majorVersion>` MUST also equal the API Version. Please be aware that most organizations have defined API Compatibility rules that MUST be followed in this context.
+  - The `<majorVersion>` and the major version of [`version`](./concepts/versioning-and-lifecycle.md#relationship-between-version-and-ord-id-majorversion) SHOULD be identical.
+  - If the REST API expresses its version in the URL path (e.g. `/v2/`), `<majorVersion>` SHOULD match it.
 
 - The ORD ID MUST be globally unique.
 
@@ -1012,6 +1015,10 @@ A Specification ID MUST match the following [regular expression](https://en.wiki
 
 ## Version and Lifecycle
 
+ORD resources carry a `version` (full [SemVer](https://semver.org/)) and a `<majorVersion>` fragment in their [ORD ID](#ord-id) that encodes breaking-change boundaries. Lifecycle is managed via `releaseStatus`, `deprecationDate`, and `sunsetDate`.
+
+For a detailed explanation with practical guidance, see the [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md) concept page.
+
 ### Versioning
 
 The `version` expresses the complete/full resource version number of an [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy).
@@ -1021,7 +1028,7 @@ It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and
 The version SHOULD be changed when the resource or the resource definition changed in any way relevant to consumers.
 If (potentially runtime) customization/extension leads to changes in the resource definition, a build number SHOULD be added or incremented to indicate that this change happened.
 
-When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
 If the resource definition also contains a version number, it SHOULD be in sync with the resource `version` (if possible).
 
 When a breaking change is introduced, the rules on constructing [ORD IDs](#ord-id) will ensure that the old version of the resource is not replaced.
@@ -1044,11 +1051,6 @@ When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
 - MUST explicitly set a [`Tombstone`](interfaces/Document.md#ord-document_tombstones).
 
-<div className="img-box" style={{aspectRatio: "841/490"}}>
-
-![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
-
-</div>
 
 ## Common REST Characteristics
 

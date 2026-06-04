@@ -18,6 +18,50 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Changed
 
 - Clarified `partOfGroups`: aggregators and consumers MUST NOT expose group assignments that reference `internal` or `private` Groups (or Group Types) to consumers whose visibility access level is more permissive than that of the referenced Group or Group Type.
+- Added `aiHint` as a dedicated, optional property on API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities. Provides guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable `description` fields so both can evolve independently. SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+- Relaxed the rule that `<majorVersion>` in the ORD ID and the major of `version` MUST be identical to a SHOULD (recommended). Strict enforcement created an unresolvable conflict with the ORD ID stability requirement: when a provider bumps the semver major without creating a new resource — whether because no breaking change occurred, or because they simply didn't follow best practice — the old MUST rule would have required changing the published ORD ID of an existing resource, breaking every downstream consumer that references it. Even when a breaking change did happen, forcing an ID change compounds the provider's mistake rather than containing it. The `<majorVersion>` is now explicitly defined as tracking *breaking API changes*, with `version` major as a strong signal that should be kept in sync but does not override ID stability. Validators SHOULD warn on a mismatch but MUST NOT treat it as a hard failure.
+- Moved the Versioning and Lifecycle content into a dedicated [Versioning and Lifecycle](https://open-resource-discovery.org/spec-v1/concepts/versioning-and-lifecycle) concept page with expanded guidance.
+- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
+- Strengthened `partOfProducts` guidance: every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package. Setting `partOfProducts` on the `Package` is the preferred approach as it propagates automatically to all contained resources.
+- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is now explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
+- Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
+
+## [1.15.0]
+
+### Added
+
+- Added **ORD Overlay** as an alpha spec extension model (`ord:overlay:v1`)
+  - Overlays allow patching referenced resource definition files (OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards) without modifying the originals.
+  - Overlays can be distributed as a standalone **ORD Overlay Resource** (`overlays` array in the ORD Document) or attached directly to an API/Event resource as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+  - Patches use concept-level selectors (`operation`, `entityType`, `complexType`, `enumType`, `propertyType`, `entitySet`, `namespace`, `parameter`, `returnType`, `root`) or a generic `jsonPath` fallback, with actions `merge`, `update`, and `remove`.
+  - A dedicated `ordId` selector for patching ORD document-level metadata is planned for a future version.
+  - Optional `target` object narrows a patch to a specific definition file or format (e.g. `definitionType: openapi-v3`).
+  - Optional top-level fields (`describedSystemType`, `describedSystemVersion`, `describedSystemInstance`, `visibility`) scope the overlay to a particular system context.
+- Added **ORD Overlay Resource** as a new first-class resource type in the ORD Document
+  - Standalone, versioned resource (`ordId`, `title`, `version`, `releaseStatus`, `visibility`) for overlays that are cross-cutting or independently managed
+  - References the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`
+  - Use `relatedApiResources` / `relatedEventResources` with `relationType: ord:patches` to declare which resources the overlay targets
+  - Use this for overlays managed by a different team than the resource provider, or for overlays that apply across multiple resources
+- Added `purpose` property to resource definitions (`ApiResourceDefinition`, `EventResourceDefinition`, `CapabilityDefinition`, `OverlayDefinition`)
+  - Describes the intended purpose or role of the definition (e.g., `ord:ai-enrichment` for AI-optimized definitions)
+  - Allows multiple definitions of the same `type` when they serve different purposes
+  - The combination of `type`, `purpose`, and `visibility` MUST be unique within a resource's definitions list
+- Added `ord:patches` as a standardized `relationType` value on `RelatedApiResource` and `RelatedEventResource`
+  - Indicates that the source resource patches one or more definition files of the target resource
+  - Used on Overlay Resources to declare which API or Event resources they patch
+- Documented `ord` as a reserved vendor namespace for ORD specification-defined values in extensible enums
+
+### Changed
+
+- Hidden deprecated properties from documentation using `x-hide: true`:
+  - `policyLevel` and `customPolicyLevel` (deprecated since v1.9.9) - use `policyLevels` instead
+  - `entityTypeMappings` (deprecated since v1.11.0) - use `exposedEntityTypes` instead
+  - `systemInstanceAware` (deprecated since v1.12.0) - use `perspective` instead
+  - Related definitions: `EntityTypeMapping`, `ApiModelSelectorOData`, `ApiModelSelectorJsonPointer`, `EntityTypeOrdIdTarget`, `EntityTypeCorrelationIdTarget`
+- Updated documentation to reference current concepts instead of deprecated ones:
+  - Changed `policyLevel`/`customPolicyLevel` references to `policyLevels` in spec index
+  - Changed `systemInstanceAware` references to `perspective` in access strategy docs and FAQ
+- Removed deprecated property usage from example files (`systemInstanceAware`, `policyLevel`, `customPolicyLevel`)
 
 ## [1.14.5]
 
