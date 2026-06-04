@@ -352,9 +352,6 @@ export interface OverlaySelectorByRoot {
    * **OData CSDL JSON** (`csdl-json`):
    * - Patch root-level `$Version`, `$EntityContainer`, or add namespace objects
    *
-   * **ORD Document** (no specific `definitionType`):
-   * - Patch root-level ORD document properties
-   *
    * **MCP / A2A** (any Specification ID):
    * - Patch top-level metadata or add root-level tool/skill definitions
    *
