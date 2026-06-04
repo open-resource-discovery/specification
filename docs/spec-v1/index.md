@@ -328,7 +328,7 @@ ORD recognizes three types of URL references:
 **Base-URL-relative URLs** (leading slash) are resolved by appending the reference path to the applicable base URL: `baseUrl + "/" + ref_path_without_leading_slash`.
 For example, if `baseUrl` is `https://provider.com/api/v1`, then `/metadata/schema.json` resolves to `https://provider.com/api/v1/metadata/schema.json`.
 
-If no base URL is known (neither explicitly declared nor determinable from fetch context), the fallback is to treat the base URL as scheme+authority only (e.g. `https://provider.com`), which produces the same result as standard [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-5) root-relative resolution.
+If no base URL is known through any other means, it is derived from the [ORD configuration endpoint](#ord-configuration-endpoint) URL by stripping the `/.well-known/open-resource-discovery` suffix — consistent with how the ORD Configuration's implicit `baseUrl` is defined. For example, if the config endpoint is `https://provider.com/api/v1/.well-known/open-resource-discovery`, the derived base URL is `https://provider.com/api/v1`.
 
 **Document-relative URLs** (with `./`, `../`, or bare path without leading slash) are resolved per [RFC 3986 Section 5](https://datatracker.ietf.org/doc/html/rfc3986#section-5) against the URL from which the current document was retrieved.
 For example, if a document was fetched from `https://provider.com/ord/v1/documents/apis.json`, then `./schemas.json` resolves to `https://provider.com/ord/v1/documents/schemas.json`.
@@ -356,8 +356,7 @@ Their base-URL-relative URLs are resolved against the provider base URL using th
 1. **Document root `baseUrl`** — takes precedence when explicitly set in the document.
 2. **Fetch context URL** (pull scenarios only) — the URL the ORD document was fetched from.
 3. **`describedSystemInstance.baseUrl`** — backward-compatibility fallback for documents predating version 1.15 that do not set the document root `baseUrl`. In the common case where provider and described system are the same, this yields the same result.
-
-If none of the above are available, the scheme+authority of any known URL for the provider MAY be used as fallback.
+4. **ORD configuration endpoint URL** — if the aggregator knows the provider's `/.well-known/open-resource-discovery` endpoint, the base URL is derived by stripping that suffix. This ensures consistent fallback behavior with how `Configuration.baseUrl` is implicitly computed when omitted.
 
 ##### Described System Base URL (entry points)
 

@@ -12,7 +12,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Fixed
 
-- Clarified that base-URL-relative URLs (leading `/`) in ORD use **ORD-specific concatenation semantics** (`baseUrl + "/" + path`), not RFC 3986 root-relative resolution (which strips the base path). Renamed the URL reference type from "Root-relative" to "Base-URL-relative" to avoid the RFC 3986 naming conflict. Added explicit concatenation rule and no-`baseUrl` fallback (scheme+authority only, which coincides with RFC 3986 behavior). Document-relative (`./`, `../`) URLs continue to follow RFC 3986 §5 unchanged.
+- Clarified that base-URL-relative URLs (leading `/`) in ORD use **ORD-specific concatenation semantics** (`baseUrl + "/" + path`), not RFC 3986 root-relative resolution (which strips the base path). Renamed the URL reference type from "Root-relative" to "Base-URL-relative" to avoid the RFC 3986 naming conflict. Added explicit concatenation rule. Document-relative (`./`, `../`) URLs continue to follow RFC 3986 §5 unchanged.
+- Clarified the last-resort fallback for the provider base URL: when no `baseUrl`, fetch context, or `describedSystemInstance.baseUrl` is available, the base URL is derived from the ORD configuration endpoint by stripping the `/.well-known/open-resource-discovery` suffix — consistent with how `Configuration.baseUrl` is implicitly computed when omitted.
   See [issue #145](https://github.com/open-resource-discovery/specification/issues/145).
 
 ### Added
