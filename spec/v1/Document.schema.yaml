@@ -3287,7 +3287,7 @@ definitions:
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: "agent-skill"
-            x-introduced-in-version: "1.14.3"
+            x-introduced-in-version: "1.17.0"
             description: |-
               An [agent skill](https://agentskills.io/home) is a discrete, reusable capability that an agent can perform.
               Agent skills can be invoked by agents or other systems and represent
@@ -3452,10 +3452,10 @@ definitions:
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
           - const: "agent-skill-zip"
-            x-introduced-in-version: "1.14.3"
+            x-introduced-in-version: "1.17.0"
             description: |-
-              A ZIP archive containing the definition of an agent skill, including all relevant
-              assets such as configuration and schema files.
+              A ZIP archive containing the definition of an agent skill following the [agent skill standard](https://agentskills.io/home), 
+              including all relevant assets such as configuration and schema files.
 
               The `mediaType` MUST be set to `application/zip`.
               The capability `type` SHOULD be set to `agent-skill`.
