@@ -40,6 +40,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   1. Document root `baseUrl` (if present) — takes precedence, including over the fetch context URL.
   2. In pull scenarios: the URL the ORD document was fetched from (the provider request URL).
   3. `describedSystemInstance.baseUrl` — backward-compatibility fallback for documents predating version 1.15 that do not provide a root `baseUrl`.
+  4. ORD configuration endpoint URL — the base URL is derived by stripping the `/.well-known/open-resource-discovery` suffix, consistent with how `Configuration.baseUrl` is implicitly computed when omitted.
 - Clarified the resolution order for the described system base URL (applied by ORD aggregators):
   1. **Aggregator-authoritative URL** — aggregators that hold independent knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value.
   2. **`describedSystemInstance.baseUrl`** — the value declared in the document; MUST be provided when the base URL is not otherwise known to the aggregator (e.g., push, offline, or self-contained document scenarios).
