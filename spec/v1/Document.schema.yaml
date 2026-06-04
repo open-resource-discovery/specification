@@ -77,7 +77,7 @@ properties:
   baseUrl:
     type: string
     format: uri
-    x-introduced-in-version: "1.15.0"
+    x-introduced-in-version: "1.16.0"
     description: |-
       Optional [base URL](../index.md#base-url) of the ORD provider system instance that serves this document.
 
