@@ -10,6 +10,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Fixed
+
+- Clarified that base-URL-relative URLs (leading `/`) in ORD use **ORD-specific concatenation semantics** (`baseUrl + "/" + path`), not RFC 3986 root-relative resolution (which strips the base path). Renamed the URL reference type from "Root-relative" to "Base-URL-relative" to avoid the RFC 3986 naming conflict. Added explicit concatenation rule and no-`baseUrl` fallback (scheme+authority only, which coincides with RFC 3986 behavior). Document-relative (`./`, `../`) URLs continue to follow RFC 3986 §5 unchanged.
+  See [issue #145](https://github.com/open-resource-discovery/specification/issues/145).
+
 ### Added
 
 - Added `definitions` property to `EntityType` resources to allow linking machine-readable entity type definitions
