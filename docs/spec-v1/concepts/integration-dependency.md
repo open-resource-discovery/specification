@@ -15,20 +15,19 @@ Each requirement describes one aspect / ingredient and can be used to express al
 
 See also: [Integration Dependency interface](../interfaces/Document#integration-dependency).
 
-## Problem Statement
+## Background
 
-In a distributed and technology-agnostic system landscape we need to understand which integrations can (or have to) be setup.
+In a distributed and technology-agnostic system landscape it is necessary to understand which integrations can (or have to) be set up.
 
 Up until ORD v1.6, the specification focused only on describing what capabilities and resources a system offers _to others_.
 Most notably, ORD can be used to describe APIs, Events and Capabilities which can be consumed and used externally.
 
-If we only know this side, we cannot fully understand the integration possibilities in a distributed and technology-agnostic system landscape.
-What we are missing, is not only to describe what a systems _offers_, but also describe what it (potentially) _can consume_.
-This is usually implemented as integration client code (usually against an external or assumed target API contract).
+Knowing only this side is not enough to fully understand the integration possibilities in a distributed landscape.
+What is also needed is a way to describe what a system (potentially) _can consume_ — typically implemented as integration client code against an external API contract.
 
-Therefore, we introduced Integration Dependency as a means to describe what a system can an _consume_ / "make use of" from other systems.
-If this is setup and connected at run-time, we call this an integration.
-But at ORD level, we're only describing the "type-level" ability to integrate and what dependencies and requirements that entails.
+Integration Dependency was introduced to describe what a system can _consume_ / "make use of" from other systems.
+If this is set up and connected at run-time, it constitutes an integration.
+At ORD level, only the "type-level" ability to integrate and its requirements are described — not concrete runtime instances.
 
 > **Tip:** When the integration target resource uses a shared ORD ID, for example with an [authority namespace](../index.md#authority-namespace), a reused system namespace or an [abstract resource](./compatibility.md#abstract-ord-resources), a single dependency reference covers all system types providing that contract.
 > This is simpler than listing multiple system-type-specific ORD IDs as alternatives in the aspect.
@@ -44,12 +43,12 @@ The following diagram shows how two systems can integrate with each other via AP
 
 > **Figure 1:** This figure shows an integration scenario between System A and System B. System Instance A has implemented API clients against API Resources B-1 and B-2 of its integration target, as well as an event subscription (client implementation) for events from event resource B-3. It has an API Resource A-2, which the integration target uses to provide data back to System A.
 
-## Proposed Solution
+## Concept
 
-We introduce a new ORD resource type **Integration Dependency**. It can be used to describe the ability, and therefore dependency to integrate with an external application / service for the purpose of achieving an integration goal (or scenario). In practice, this is often implemented as client integration code. This includes listing **Requirements** what API and Event interfaces need or may be used. Typically, these are also described via ORD by the integration target system or the owner of the API or Event contract.
+An **Integration Dependency** describes the ability to integrate with an external application or service for the purpose of achieving an integration goal or scenario. In practice this is often implemented as client integration code. It lists the API and Event interfaces that need or may be used — typically also described via ORD by the integration target system or the owner of the contract.
 
-In addition, it is also possible to further define that only a subset of the depended resources is necessary for the integration, allowing us to be more precise when necessary (e.g., for the SAP Event Broker use case).
-With the proposed solution we can handle SAP Event Broker and Data Product related requirements with a shared, generic concept. In general, Integration Dependencies are optional to be provided and will only be mandated through specific use cases, e.g., SAP Event Broker or Data Products.
+It is also possible to define that only a `subset` of the referenced resource is required, allowing the dependency to be expressed with minimal surface area (e.g. specific event types for SAP Event Broker subscriptions, or specific MCP tools for an agent).
+Integration Dependencies are optional to provide and are mandated only by specific use cases (e.g. SAP Event Broker, Data Products, AI Agents).
 
 <div className="img-box" style={{aspectRatio: "611/481"}}>
 
@@ -70,19 +69,19 @@ Requirements express the following additional information:
 - Requirements can be optional if the application can still provide meaningful results without it being provided.
 - Within a requirement there can be references to semantically equivalent API or event resources that are alternatives to each other (OR condition).
 - Constraints like a minimum version of the target resource.
-- Define a subset of the target resource that is needed. This helps in some situations to not give out wider rights or create more subscriptions than necessary.
+- Define a `subset` of the target resource that is needed — specific API operations, MCP tools, or event types. This avoids granting broader permissions than necessary, reduces subscription scope, and for agents allows the runtime to load only the relevant tool descriptions into the LLM context.
 - The requirement API or event resources can be references to descriptions from another (external) application if the integration target application owns the contract and lifecycle of it. But the contract can also be owned by the described application itself.
 - Additionally, it is possible to describe which Consumption Bundle is to be used for setting up trust and credentials to the target API or Event resource.
 - The application could also decide to expose an API or event resource contract itself, that another (external) application needs to implement and fulfill to integrate with the application in focus.
 
 Integration Dependencies can also be mandatory, which implies that it's a prerequisite for provisioning the described system.
 They inherit the typical, shared ORD attributes that can be used to handle lifecycle, versioning, globally unique IDs, correlations and more.
-Integration Dependencies are not meant to describe complete processes, where multiple parties are involved. They are only meant to describe the technical ingredients that are involved in integrating with ideally only one type of target systems for exactly one integration purpose. Overarching information like processes and blueprints is usually governed and defined centrally as they go beyond just pure self-description of individual systems.
-Also be aware that Integration Dependencies and Requirements are describing a type-level / "scenario-level" information. This proposal does not cover describing concrete integration instances. In our current target picture, we would prefer integrations to be setup via centralized tools like URM and UCL . In theory ORD could also be used to describe integration instances if only the application / service knows them itself (no central setup) – but this is out of scope of this proposal.
+Integration Dependencies are not meant to describe complete processes where multiple parties are involved. They describe the technical ingredients for integrating with ideally one type of target system for exactly one integration purpose. Overarching processes and blueprints are usually governed centrally, as they go beyond the self-description of individual systems.
+Integration Dependencies describe type-level / scenario-level information, not concrete integration instances.
 
 ## Big Picture
 
-We think describing such outward requirements fits well into the ORD scope, because only the system itself knows what external requirements it has and what integration outcomes / scenarios it realizes by integrating with the requirement targets.
+Only the system itself knows what external requirements it has and what integration outcomes it realizes by integrating with its targets — which is why describing outward requirements fits naturally into the ORD scope.
 
 <div className="img-box" style={{aspectRatio: "862/537"}}>
 
@@ -96,7 +95,7 @@ We think describing such outward requirements fits well into the ORD scope, beca
 
 ### SAP Subscription Billing Events
 
-```yaml
+```json
 {
   # ...
   "integrationDependencies": [
@@ -130,6 +129,38 @@ If we want to add more event subscriptions that are defined across more than one
 
 The `systemTypeRestriction` indicates that only events published by that system type (application or service) are meant to be subscribed, further narrowing down the subscription.
 
-In the future, we may need to extend the Integration Dependency with knowledge about whether it has been instantiated (or "enabled"). This becomes necessary when outside parties need to learn about whether the Integration Dependency has already been enabled for them or not. Whether this should be done via ORD protocol is not clear and needs further clarification.
+### MCP Tool Subset
 
-Let's explore the target picture together with blueprint driven provisioning and Unified Resource Manager for SAP defined processes: In the solution blueprint architects with the knowledge of the overall process define that there needs to be an integration between S/4 and SAP Event Broker that events from Subscription Billing needs to be transferred. This results in URM resources that setup the integration channel between S/4 and Event Broker as well as with Subscription Billing and Event Broker. In the last step Event Broker takes the information from the integration dependency in ORD that this specific S/4 tenant needs to consume a set of specific subscription billing events.
+An agent that depends on only a subset of tools in an MCP server can use `subset` on the `apiResources` aspect entry. The `operationId` value must match the tool `name` as defined in the MCP server card.
+
+```json
+{
+  "integrationDependencies": [
+    {
+      "ordId": "foo.myapp:integrationDependency:MyAgent-mcpDeps:v1",
+      "version": "1.0.0",
+      "title": "MCP Tool Dependencies for My Agent",
+      "shortDescription": "MCP tools required by My Agent at runtime.",
+      "mandatory": true,
+      "releaseStatus": "active",
+      "partOfPackage": "foo.myapp:package:MyPackage:v1",
+      "aspects": [
+        {
+          "apiResources": [
+            {
+              "ordId": "foo.sometool:apiResource:SomeToolMCPServer:v1",
+              "subset": [
+                { "operationId": "searchProducts" },
+                { "operationId": "getProductDetails" },
+                { "operationId": "checkAvailability" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+The `subset` narrows the dependency to only the listed tools, which helps consumers understand the exact surface area required and can optimize permission grants or routing.
