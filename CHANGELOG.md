@@ -14,6 +14,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
+- Added `aiHint` as a dedicated, optional property on API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities. Provides guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable `description` fields so both can evolve independently. SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
 - Added `definitions` property to `EntityType` resources to allow linking machine-readable entity type definitions
   - Includes new `EntityTypeDefinition` object with `type`, `mediaType`, `url`, `accessStrategies`, and `visibility` properties
   - The `type` field accepts any valid [Specification ID](./docs/spec-v1/index.md#specification-id)
@@ -25,18 +26,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Clarified `partOfGroups`: aggregators and consumers MUST NOT expose group assignments that reference `internal` or `private` Groups (or Group Types) to consumers whose visibility access level is more permissive than that of the referenced Group or Group Type.
-- Added `aiHint` as a dedicated, optional property on API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities. Provides guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable `description` fields so both can evolve independently. SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
 - Relaxed the rule that `<majorVersion>` in the ORD ID and the major of `version` MUST be identical to a SHOULD (recommended). Strict enforcement created an unresolvable conflict with the ORD ID stability requirement: when a provider bumps the semver major without creating a new resource — whether because no breaking change occurred, or because they simply didn't follow best practice — the old MUST rule would have required changing the published ORD ID of an existing resource, breaking every downstream consumer that references it. Even when a breaking change did happen, forcing an ID change compounds the provider's mistake rather than containing it. The `<majorVersion>` is now explicitly defined as tracking *breaking API changes*, with `version` major as a strong signal that should be kept in sync but does not override ID stability. Validators SHOULD warn on a mismatch but MUST NOT treat it as a hard failure.
-- Moved the Versioning and Lifecycle content into a dedicated [Versioning and Lifecycle](https://open-resource-discovery.org/spec-v1/concepts/versioning-and-lifecycle) concept page with expanded guidance.
-- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
-- Strengthened `partOfProducts` guidance: every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package. Setting `partOfProducts` on the `Package` is the preferred approach as it propagates automatically to all contained resources.
-- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is now explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
-- Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
 - Specified that relative URL resolution follows [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-5) semantics and documented the three URL reference types:
   - **Absolute URLs** (`https://...`) — used as-is.
   - **Root-relative URLs** (leading slash, e.g., `/path/file.json`) — resolved against the applicable base URL including its path component.
-  - **Document-relative URLs** (`./`, `../`, or bare path without leading slash) — resolved relative to the current document's URL per RFC 3986. 
+  - **Document-relative URLs** (`./`, `../`, or bare path without leading slash) — resolved relative to the current document's URL per RFC 3986.
 - Clarified that `path/file.json` (no leading slash, no dot prefix) is document-relative per RFC 3986, equivalent to `./path/file.json`.
 - Clarified the two-level resolution for root-relative URLs to remove ambiguity when the ORD provider and the described system differ:
   - Root-relative URLs to **metadata files** (resource definitions, API/Event/Data Product links) are resolved against the provider base URL.
@@ -49,6 +43,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified the resolution order for the described system base URL (applied by ORD aggregators):
   1. **Aggregator-authoritative URL** — aggregators that hold independent knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value.
   2. **`describedSystemInstance.baseUrl`** — the value declared in the document; MUST be provided when the base URL is not otherwise known to the aggregator (e.g., push, offline, or self-contained document scenarios).
+- Improved `subset` documentation on `ApiResourceIntegrationAspect`: clarified that when `subset` is absent the dependency implies access to all operations of the referenced resource, and when present only the listed operations are required. Expanded the `ApiResourceIntegrationAspectSubset` description accordingly.
+- Strengthened `partOfProducts` guidance: every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package. Setting `partOfProducts` on the `Package` is the preferred approach as it propagates automatically to all contained resources.
+- Clarified `partOfGroups`: aggregators and consumers MUST NOT expose group assignments that reference `internal` or `private` Groups (or Group Types) to consumers whose visibility access level is more permissive than that of the referenced Group or Group Type.
+- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
+- Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
+- Moved the Versioning and Lifecycle content into a dedicated [Versioning and Lifecycle](https://open-resource-discovery.org/spec-v1/concepts/versioning-and-lifecycle) concept page with expanded guidance.
 
 ## [1.15.0]
 
