@@ -12,6 +12,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
+- Added `definitions` property to `EntityType` resources to allow linking machine-readable entity type definitions
+  - Includes new `EntityTypeDefinition` object with `type`, `mediaType`, `url`, `accessStrategies`, and `visibility` properties
+  - The `type` field accepts any valid [Specification ID](./docs/spec-v1/index.md#specification-id)
+  - **Important**: Entity Type definitions SHOULD usually be marked as `private` since they represent conceptual domain models that cannot be accessed directly. Consumers should interact with the data through related API Resources instead. Use the API Resource's `relatedEntityTypes` property to discover which APIs expose a particular entity type.
 - Added `visibility` property to `Group` and `GroupType` to control who can discover and access group metadata.
   If not set, both default to `public`.
 - Added optional root-level `baseUrl` property to ORD Documents (analogous to the existing root-level `baseUrl` in the ORD Configuration).
