@@ -2146,7 +2146,7 @@ definitions:
 
       definitions:
         type: array
-        x-introduced-in-version: "1.15.0"
+        x-introduced-in-version: "1.16.0"
         x-feature-status: beta
         description: |-
           List of available machine-readable definitions that describe the entity type's internal model in detail.
