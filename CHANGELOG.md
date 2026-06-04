@@ -14,6 +14,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added `visibility` property to `Group` and `GroupType` to control who can discover and access group metadata.
   If not set, both default to `public`.
+- Added optional root-level `baseUrl` property to ORD Documents (analogous to the existing root-level `baseUrl` in the ORD Configuration).
+  This property represents the base URL of the **ORD provider** and is used to resolve relative URLs to metadata files within the document (e.g., `resourceDefinitions[].url`).
 
 ### Changed
 
@@ -25,6 +27,22 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Strengthened `partOfProducts` guidance: every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package. Setting `partOfProducts` on the `Package` is the preferred approach as it propagates automatically to all contained resources.
 - Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is now explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
 - Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
+- Specified that relative URL resolution follows [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-5) semantics and documented the three URL reference types:
+  - **Absolute URLs** (`https://...`) — used as-is.
+  - **Root-relative URLs** (leading slash, e.g., `/path/file.json`) — resolved against the applicable base URL including its path component.
+  - **Document-relative URLs** (`./`, `../`, or bare path without leading slash) — resolved relative to the current document's URL per RFC 3986. 
+- Clarified that `path/file.json` (no leading slash, no dot prefix) is document-relative per RFC 3986, equivalent to `./path/file.json`.
+- Clarified the two-level resolution for root-relative URLs to remove ambiguity when the ORD provider and the described system differ:
+  - Root-relative URLs to **metadata files** (resource definitions, API/Event/Data Product links) are resolved against the provider base URL.
+  - Root-relative URLs to **entry points** are resolved against `describedSystemInstance.baseUrl` (described system base URL).
+  - In the common case where the ORD provider and the described system are the same, both values are identical and no behavioral change occurs.
+- Defined the resolution fallback order for the provider base URL (applied by ORD aggregators):
+  1. Document root `baseUrl` (if present) — takes precedence, including over the fetch context URL.
+  2. In pull scenarios: the URL the ORD document was fetched from (the provider request URL).
+  3. `describedSystemInstance.baseUrl` — backward-compatibility fallback for documents predating version 1.15 that do not provide a root `baseUrl`.
+- Clarified the resolution order for the described system base URL (applied by ORD aggregators):
+  1. **Aggregator-authoritative URL** — aggregators that hold independent knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value.
+  2. **`describedSystemInstance.baseUrl`** — the value declared in the document; MUST be provided when the base URL is not otherwise known to the aggregator (e.g., push, offline, or self-contained document scenarios).
 
 ## [1.15.0]
 
