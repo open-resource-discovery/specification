@@ -1,7 +1,7 @@
 {
 	"$schema": "http://json.schemastore.org/package",
 	"name": "@open-resource-discovery/specification",
-	"version": "1.15.0",
+	"version": "1.16.0",
 	"description": "Open Resource Discovery (ORD) Specification",
 	"author": "SAP SE",
 	"license": "Apache-2.0",
@@ -39,13 +39,13 @@
 		"generate:llm-notebook": "npm run generate && ts-node ./src/helper/exportForNotebookLM.ts"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.15",
+		"@biomejs/biome": "2.4.16",
 		"@docusaurus/core": "3.10.1",
 		"@docusaurus/faster": "3.10.1",
 		"@docusaurus/plugin-client-redirects": "3.10.1",
 		"@docusaurus/preset-classic": "3.10.1",
 		"@docusaurus/theme-mermaid": "3.10.1",
-		"@easyops-cn/docusaurus-search-local": "0.55.1",
+		"@easyops-cn/docusaurus-search-local": "0.55.2",
 		"@mdx-js/react": "3.1.1",
 		"@open-resource-discovery/spec-toolkit": "0.8.0",
 		"@types/fs-extra": "11.0.4",
@@ -53,10 +53,10 @@
 		"ajv-formats": "3.0.1",
 		"clsx": "2.1.1",
 		"fs-extra": "11.3.5",
-		"lefthook": "2.1.6",
+		"lefthook": "2.1.9",
 		"prism-react-renderer": "2.4.1",
-		"react": "19.2.6",
-		"react-dom": "19.2.6",
+		"react": "19.2.7",
+		"react-dom": "19.2.7",
 		"ts-node": "10.9.2",
 		"tslog": "4.10.2"
 	}

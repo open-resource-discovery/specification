@@ -93,7 +93,7 @@ Key aspects of this example:
 - **`ordId`**: A globally unique identifier for the agent
 - **`exposedApiResources`**: Links to the API(s) through which the agent can be invoked (e.g., an A2A API)
 - **`integrationDependencies`**: Declares what external resources the agent requires to function
-- **`relatedEntityTypes`**: Documents which domain bjebusiness entities the agent operates on
+- **`relatedEntityTypes`**: Documents which domain business entities the agent operates on
 - **`labels`**: Extensible key-value pairs for additional metadata like LLM models used
 
 ## Connectivity & Protocols

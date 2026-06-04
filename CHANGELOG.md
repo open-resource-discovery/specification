@@ -10,49 +10,50 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
-### Fixed
-
-- Clarified that base-URL-relative URLs (leading `/`) in ORD use **ORD-specific concatenation semantics** (`baseUrl + "/" + path`), not RFC 3986 root-relative resolution (which strips the base path). Renamed the URL reference type from "Root-relative" to "Base-URL-relative" to avoid the RFC 3986 naming conflict. Added explicit concatenation rule. Document-relative (`./`, `../`) URLs continue to follow RFC 3986 §5 unchanged.
-- Clarified the last-resort fallback for the provider base URL: when no `baseUrl`, fetch context, or `describedSystemInstance.baseUrl` is available, the base URL is derived from the ORD configuration endpoint by stripping the `/.well-known/open-resource-discovery` suffix — consistent with how `Configuration.baseUrl` is implicitly computed when omitted.
-  See [issue #145](https://github.com/open-resource-discovery/specification/issues/145).
+## [1.16.0]
 
 ### Added
 
+- Added `aiHint` as a dedicated, optional property on API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities. Provides guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable `description` fields so both can evolve independently. SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
 - Added `definitions` property to `EntityType` resources to allow linking machine-readable entity type definitions
   - Includes new `EntityTypeDefinition` object with `type`, `mediaType`, `url`, `accessStrategies`, and `visibility` properties
-  - The `type` field accepts any valid [Specification ID](./docs/spec-v1/index.md#specification-id)
+  - The `type` field accepts any valid [Specification ID](https://open-resource-discovery.org/spec-v1/#specification-id)
   - **Important**: Entity Type definitions SHOULD usually be marked as `private` since they represent conceptual domain models that cannot be accessed directly. Consumers should interact with the data through related API Resources instead. Use the API Resource's `relatedEntityTypes` property to discover which APIs expose a particular entity type.
 - Added `visibility` property to `Group` and `GroupType` to control who can discover and access group metadata.
   If not set, both default to `public`.
 - Added optional root-level `baseUrl` property to ORD Documents (analogous to the existing root-level `baseUrl` in the ORD Configuration).
   This property represents the base URL of the **ORD provider** and is used to resolve relative URLs to metadata files within the document (e.g., `resourceDefinitions[].url`).
 
+### Fixed
+
+- Fixed `Configuration.baseUrl` description: the property MUST NOT contain a **trailing** slash (was incorrectly documented as "leading slash").
+
 ### Changed
 
-- Clarified `partOfGroups`: aggregators and consumers MUST NOT expose group assignments that reference `internal` or `private` Groups (or Group Types) to consumers whose visibility access level is more permissive than that of the referenced Group or Group Type.
-- Added `aiHint` as a dedicated, optional property on API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities. Provides guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable `description` fields so both can evolve independently. SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
 - Relaxed the rule that `<majorVersion>` in the ORD ID and the major of `version` MUST be identical to a SHOULD (recommended). Strict enforcement created an unresolvable conflict with the ORD ID stability requirement: when a provider bumps the semver major without creating a new resource — whether because no breaking change occurred, or because they simply didn't follow best practice — the old MUST rule would have required changing the published ORD ID of an existing resource, breaking every downstream consumer that references it. Even when a breaking change did happen, forcing an ID change compounds the provider's mistake rather than containing it. The `<majorVersion>` is now explicitly defined as tracking *breaking API changes*, with `version` major as a strong signal that should be kept in sync but does not override ID stability. Validators SHOULD warn on a mismatch but MUST NOT treat it as a hard failure.
-- Moved the Versioning and Lifecycle content into a dedicated [Versioning and Lifecycle](https://open-resource-discovery.org/spec-v1/concepts/versioning-and-lifecycle) concept page with expanded guidance.
-- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
-- Strengthened `partOfProducts` guidance: every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package. Setting `partOfProducts` on the `Package` is the preferred approach as it propagates automatically to all contained resources.
-- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is now explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
-- Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
-- Specified that relative URL resolution follows [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-5) semantics and documented the three URL reference types:
+- Documented the three URL reference types used in ORD documents:
   - **Absolute URLs** (`https://...`) — used as-is.
-  - **Root-relative URLs** (leading slash, e.g., `/path/file.json`) — resolved against the applicable base URL including its path component.
-  - **Document-relative URLs** (`./`, `../`, or bare path without leading slash) — resolved relative to the current document's URL per RFC 3986. 
-- Clarified that `path/file.json` (no leading slash, no dot prefix) is document-relative per RFC 3986, equivalent to `./path/file.json`.
-- Clarified the two-level resolution for root-relative URLs to remove ambiguity when the ORD provider and the described system differ:
-  - Root-relative URLs to **metadata files** (resource definitions, API/Event/Data Product links) are resolved against the provider base URL.
-  - Root-relative URLs to **entry points** are resolved against `describedSystemInstance.baseUrl` (described system base URL).
+  - **Base-URL-relative URLs** (leading slash, e.g., `/path/file.json`) — resolved by appending to the applicable base URL (`baseUrl + "/" + path`). Note: this is an ORD-specific convention; it differs from RFC 3986 root-relative resolution, which strips the base path.
+  - **Document-relative URLs** (`./`, `../`, or bare path without leading slash) — resolved relative to the current document's URL per [RFC 3986 §5](https://datatracker.ietf.org/doc/html/rfc3986#section-5).
+- Clarified that `path/file.json` (no leading slash, no dot prefix) is document-relative, equivalent to `./path/file.json`.
+- Clarified the two-level resolution for base-URL-relative URLs to remove ambiguity when the ORD provider and the described system differ:
+  - Base-URL-relative URLs to **metadata files** (resource definitions, API/Event/Data Product links) are resolved against the provider base URL.
+  - Base-URL-relative URLs to **entry points** are resolved against `describedSystemInstance.baseUrl` (described system base URL).
   - In the common case where the ORD provider and the described system are the same, both values are identical and no behavioral change occurs.
 - Defined the resolution fallback order for the provider base URL (applied by ORD aggregators):
   1. Document root `baseUrl` (if present) — takes precedence, including over the fetch context URL.
   2. In pull scenarios: the URL the ORD document was fetched from (the provider request URL).
   3. `describedSystemInstance.baseUrl` — backward-compatibility fallback for documents predating version 1.15 that do not provide a root `baseUrl`.
+  4. ORD configuration endpoint URL — the base URL is derived by stripping the `/.well-known/open-resource-discovery` suffix, consistent with how `Configuration.baseUrl` is implicitly computed when omitted.
 - Clarified the resolution order for the described system base URL (applied by ORD aggregators):
   1. **Aggregator-authoritative URL** — aggregators that hold independent knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value.
   2. **`describedSystemInstance.baseUrl`** — the value declared in the document; MUST be provided when the base URL is not otherwise known to the aggregator (e.g., push, offline, or self-contained document scenarios).
+- Improved `subset` documentation on `ApiResourceIntegrationAspect`: clarified that when `subset` is absent the dependency implies access to all operations of the referenced resource, and when present only the listed operations are required. Expanded the `ApiResourceIntegrationAspectSubset` description accordingly.
+- Strengthened `partOfProducts` guidance: every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package. Setting `partOfProducts` on the `Package` is the preferred approach as it propagates automatically to all contained resources.
+- Clarified `partOfGroups`: aggregators and consumers MUST NOT expose group assignments that reference `internal` or `private` Groups (or Group Types) to consumers whose visibility access level is more permissive than that of the referenced Group or Group Type.
+- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
+- Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
+- Moved the Versioning and Lifecycle content into a dedicated [Versioning and Lifecycle](https://open-resource-discovery.org/spec-v1/concepts/versioning-and-lifecycle) concept page with expanded guidance.
 
 ## [1.15.0]
 
@@ -121,7 +122,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Improved the [Grouping and Bundling](./docs/spec-v1/concepts/grouping-and-bundling.md) documentation page:
+- Improved the [Grouping and Bundling](https://open-resource-discovery.org/spec-v1/concepts/grouping-and-bundling) documentation page:
   - Added missing **Product** section explaining the concept and its role in portfolio structuring.
   - Added a "Choosing the Right Concept" comparison table to help decide which grouping mechanism to use.
   - Improved descriptions for all grouping concepts (Package, Consumption Bundle, Entity Type, Tags, Labels, Groups).
@@ -145,14 +146,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Made `RelatedEntityType.relationType` an extensible enum that now also accepts any valid [Concept ID](./docs/spec-v1/index.md#concept-id) in addition to the existing values (`part-of`, `can-share-identity`)
+- Made `RelatedEntityType.relationType` an extensible enum that now also accepts any valid [Concept ID](https://open-resource-discovery.org/spec-v1/#concept-id) in addition to the existing values (`part-of`, `can-share-identity`)
 
 ## [1.14.1]
 
 ### Changed
 
 - Clarification: ORD IDs MUST be interpreted case-insensitively when used for comparison, lookups or deduplication. This was previously left open and is now explicitly required.
-- Clarification: The `type` field on `ApiResourceDefinition` and `EventResourceDefinition` accepts not only the predefined enum values and `custom`, but also any valid [Specification ID](./docs/spec-v1/index.md#specification-id) as an extension point. All `apiProtocol` descriptions that listed allowed `type` values now consistently mention this option alongside `custom`.
+- Clarification: The `type` field on `ApiResourceDefinition` and `EventResourceDefinition` accepts not only the predefined enum values and `custom`, but also any valid [Specification ID](https://open-resource-discovery.org/spec-v1/#specification-id) as an extension point. All `apiProtocol` descriptions that listed allowed `type` values now consistently mention this option alongside `custom`.
 - Allow all media types under under `application/*` and `text/*` for resource definitions
 
 ## [1.14.0]
@@ -163,7 +164,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Agents provide high-level descriptions of systems that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals. This may be an AI agent or a rule-based agent.
   - Agents have `exposedApiResources` to describe their API interface, e.g. using the A2A protocol.
   - Agents have `integrationDependencies` to describe which external resources like APIs, MCP Servers etc. they depend on.
-  - Added [AI Agents and Protocols](docs/spec-v1/concepts/ai-agents-and-protocols.md) concept documentation
+  - Added [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols) concept documentation
 - Introduced `abstract` property for API, Event and Data Product Resources to indicate interface-only resources.
 - Added `subset` property to `ApiResourceIntegrationAspect` with new `ApiResourceIntegrationAspectSubset` definition
   - This allows narrowing down API resource integration aspects to specific operations or tools
@@ -562,7 +563,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added [Data Product](../../spec-v1/interfaces/Document.md#data-product) concept.
+- Added [Data Product](https://open-resource-discovery.org/spec-v1/interfaces/Document#data-product) concept.
   - for the time being in **beta** status
 - Added `runtimeRestriction` to packages
 - Added `responsible` to APIs, events and data products
