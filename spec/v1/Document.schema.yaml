@@ -1712,6 +1712,7 @@ definitions:
 
       aiHint:
         <<: *aiHint
+        examples: []
 
       ## Assignments to groupings
 
@@ -2008,6 +2009,7 @@ definitions:
 
       aiHint:
         <<: *aiHint
+        examples: []
 
       partOfPackage:
         <<: *partOfPackage
@@ -3355,6 +3357,7 @@ definitions:
 
       aiHint:
         <<: *aiHint
+        examples: []
 
       partOfPackage:
         <<: *partOfPackage
