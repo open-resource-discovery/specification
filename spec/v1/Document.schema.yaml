@@ -3290,7 +3290,7 @@ definitions:
             x-introduced-in-version: "1.14.3"
             description: |-
               An [agent skill](https://agentskills.io/home) is a discrete, reusable capability that an agent can perform.
-              Agent skills can be invoked by orchestrator agents or other systems and represent
+              Agent skills can be invoked by agents or other systems and represent
               a well-defined task or function that the agent is capable of executing.
 
               For the capability definitions: `type` SHOULD be set to `agent-skill-zip`.
