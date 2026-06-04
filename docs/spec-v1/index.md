@@ -315,8 +315,6 @@ Please [create an issue](https://github.com/open-resource-discovery/specificatio
 ORD documents may contain both absolute and relative URLs.
 ORD aggregators MUST resolve all relative URLs to absolute URLs before exposing them to ORD consumers.
 
-Relative URL resolution follows [RFC 3986 (Uniform Resource Identifier: Generic Syntax)](https://datatracker.ietf.org/doc/html/rfc3986#section-5), with the base URI determined as described below.
-
 ##### URL Reference Types
 
 ORD recognizes three types of URL references:
@@ -324,21 +322,23 @@ ORD recognizes three types of URL references:
 | Pattern | Type | Resolved against |
 |---|---|---|
 | `https://example.com/path` | Absolute URL | Used as-is — no resolution needed |
-| `/path/file.json` | Root-relative (leading slash) | The applicable **base URL** (see below) |
+| `/path/file.json` | Base-URL-relative (leading slash) | The applicable **base URL** (see below) |
 | `./path/file.json`, `../path/file.json`, `path/file.json` | Document-relative | The URL/location of the **current document** |
 
-**Root-relative URLs** (leading slash) are resolved against the applicable base URL *including its path component*.
+**Base-URL-relative URLs** (leading slash) are resolved by appending the reference path to the applicable base URL: `baseUrl + "/" + ref_path_without_leading_slash`.
 For example, if `baseUrl` is `https://provider.com/api/v1`, then `/metadata/schema.json` resolves to `https://provider.com/api/v1/metadata/schema.json`.
 
-**Document-relative URLs** (with `./`, `../`, or bare path without leading slash) are resolved relative to the URL from which the current document was retrieved, per [RFC 3986 Section 5](https://datatracker.ietf.org/doc/html/rfc3986#section-5).
+If no base URL is known (neither explicitly declared nor determinable from fetch context), the fallback is to treat the base URL as scheme+authority only (e.g. `https://provider.com`), which produces the same result as standard [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-5) root-relative resolution.
+
+**Document-relative URLs** (with `./`, `../`, or bare path without leading slash) are resolved per [RFC 3986 Section 5](https://datatracker.ietf.org/doc/html/rfc3986#section-5) against the URL from which the current document was retrieved.
 For example, if a document was fetched from `https://provider.com/ord/v1/documents/apis.json`, then `./schemas.json` resolves to `https://provider.com/ord/v1/documents/schemas.json`.
 This pattern is particularly useful for static ORD providers serving files from a file system or git repository, where relative references remain valid regardless of where the directory tree is hosted.
 
 > **Note:** Per RFC 3986, `path/file.json` (no leading slash, no dot prefix) is equivalent to `./path/file.json` — both are document-relative.
 
-##### Base URL for Root-Relative URLs
+##### Base URL for Base-URL-Relative URLs
 
-The base URL used for resolving root-relative URLs (leading slash) depends on **what** the URL references, because two different systems may be involved:
+The base URL used for resolving base-URL-relative URLs (leading slash) depends on **what** the URL references, because two different systems may be involved:
 
 | URL type | Resolved against | Declared via |
 |---|---|---|
@@ -351,16 +351,18 @@ In the common case where the provider *is* the described system, both base URLs 
 ##### Provider Base URL (metadata files)
 
 Metadata files such as resource definitions and document links are physically hosted by the **ORD provider** — the system that serves the ORD document.
-Their root-relative URLs are resolved against the provider base URL using the following order (applied by ORD aggregators):
+Their base-URL-relative URLs are resolved against the provider base URL using the following order (applied by ORD aggregators):
 
 1. **Document root `baseUrl`** — takes precedence when explicitly set in the document.
 2. **Fetch context URL** (pull scenarios only) — the URL the ORD document was fetched from.
 3. **`describedSystemInstance.baseUrl`** — backward-compatibility fallback for documents predating version 1.15 that do not set the document root `baseUrl`. In the common case where provider and described system are the same, this yields the same result.
 
+If none of the above are available, the scheme+authority of any known URL for the provider MAY be used as fallback.
+
 ##### Described System Base URL (entry points)
 
 Entry points are runtime endpoints on the **described system** — the system being documented.
-Their root-relative URLs are resolved against the described system base URL:
+Their base-URL-relative URLs are resolved against the described system base URL:
 
 1. **Aggregator-authoritative URL** — ORD aggregators that hold authoritative knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value. This is an aggregator decision, appropriate when the aggregator has more reliable or up-to-date information than the provider.
 2. **`describedSystemInstance.baseUrl`** — the value declared in the document.

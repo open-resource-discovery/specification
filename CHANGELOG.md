@@ -27,14 +27,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Changed
 
 - Relaxed the rule that `<majorVersion>` in the ORD ID and the major of `version` MUST be identical to a SHOULD (recommended). Strict enforcement created an unresolvable conflict with the ORD ID stability requirement: when a provider bumps the semver major without creating a new resource — whether because no breaking change occurred, or because they simply didn't follow best practice — the old MUST rule would have required changing the published ORD ID of an existing resource, breaking every downstream consumer that references it. Even when a breaking change did happen, forcing an ID change compounds the provider's mistake rather than containing it. The `<majorVersion>` is now explicitly defined as tracking *breaking API changes*, with `version` major as a strong signal that should be kept in sync but does not override ID stability. Validators SHOULD warn on a mismatch but MUST NOT treat it as a hard failure.
-- Specified that relative URL resolution follows [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-5) semantics and documented the three URL reference types:
+- Documented the three URL reference types used in ORD documents:
   - **Absolute URLs** (`https://...`) — used as-is.
-  - **Root-relative URLs** (leading slash, e.g., `/path/file.json`) — resolved against the applicable base URL including its path component.
-  - **Document-relative URLs** (`./`, `../`, or bare path without leading slash) — resolved relative to the current document's URL per RFC 3986.
-- Clarified that `path/file.json` (no leading slash, no dot prefix) is document-relative per RFC 3986, equivalent to `./path/file.json`.
-- Clarified the two-level resolution for root-relative URLs to remove ambiguity when the ORD provider and the described system differ:
-  - Root-relative URLs to **metadata files** (resource definitions, API/Event/Data Product links) are resolved against the provider base URL.
-  - Root-relative URLs to **entry points** are resolved against `describedSystemInstance.baseUrl` (described system base URL).
+  - **Base-URL-relative URLs** (leading slash, e.g., `/path/file.json`) — resolved by appending to the applicable base URL (`baseUrl + "/" + path`). Note: this is an ORD-specific convention; it differs from RFC 3986 root-relative resolution, which strips the base path.
+  - **Document-relative URLs** (`./`, `../`, or bare path without leading slash) — resolved relative to the current document's URL per [RFC 3986 §5](https://datatracker.ietf.org/doc/html/rfc3986#section-5).
+- Clarified that `path/file.json` (no leading slash, no dot prefix) is document-relative, equivalent to `./path/file.json`.
+- Clarified the two-level resolution for base-URL-relative URLs to remove ambiguity when the ORD provider and the described system differ:
+  - Base-URL-relative URLs to **metadata files** (resource definitions, API/Event/Data Product links) are resolved against the provider base URL.
+  - Base-URL-relative URLs to **entry points** are resolved against `describedSystemInstance.baseUrl` (described system base URL).
   - In the common case where the ORD provider and the described system are the same, both values are identical and no behavioral change occurs.
 - Defined the resolution fallback order for the provider base URL (applied by ORD aggregators):
   1. Document root `baseUrl` (if present) — takes precedence, including over the fetch context URL.
