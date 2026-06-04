@@ -815,8 +815,7 @@ definitions:
             description: |-
               Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.
 
-              Public resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.
-              and follow formal API lifecycle management and deprecation policies.
+              Public resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).
 
               Example: A REST API that customers use to integrate with your SaaS product.
 
@@ -2242,7 +2241,7 @@ definitions:
           - const: sap-csn-interop-effective-v1
             description: |-
               [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.
-              The `mediaType` MUST be be set to `application/json`.
+              The `mediaType` MUST be set to `application/json`.
         examples:
           - "sap-csn-interop-effective-v1"
           - "sap.example:entity-model-definition:v1"
