@@ -381,6 +381,14 @@ export interface ApiResource {
    */
   description: string;
   /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -1323,6 +1331,14 @@ export interface EventResource {
    */
   description: string;
   /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -1857,6 +1873,14 @@ export interface EntityType {
    */
   description?: string;
   /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -2127,6 +2151,14 @@ export interface Capability {
    * Detailed documentation SHOULD be attached as (typed) links.
    */
   description?: string;
+  /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
   /**
    * Defines which Package the resource is part of.
    *
@@ -2426,6 +2458,14 @@ export interface DataProduct {
    * Detailed documentation SHOULD be attached as (typed) links.
    */
   description: string;
+  /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
   /**
    * Defines which Package the resource is part of.
    *
@@ -2855,6 +2895,14 @@ export interface Agent {
    * Detailed documentation SHOULD be attached as (typed) links.
    */
   description?: string;
+  /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
   /**
    * Defines which Package the resource is part of.
    *

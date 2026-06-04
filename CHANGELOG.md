@@ -10,8 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `aiHint` as a dedicated, optional property on API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities. Provides guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable `description` fields so both can evolve independently. SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+
 ### Changed
 
+- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
 - Strengthened `partOfProducts` guidance: every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package. Setting `partOfProducts` on the `Package` is the preferred approach as it propagates automatically to all contained resources.
 - Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is now explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
 - Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
