@@ -426,11 +426,15 @@ export interface ApiResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -1364,11 +1368,15 @@ export interface EventResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -1869,11 +1877,15 @@ export interface EntityType {
    */
   partOfGroups?: string[];
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -2439,7 +2451,11 @@ export interface DataProduct {
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -2932,11 +2948,15 @@ export interface Agent {
    */
   minSystemVersion?: string;
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -3535,15 +3555,23 @@ export interface ApiResourceIntegrationAspect {
    */
   minVersion?: string;
   /**
-   * List of individual API operations that are sufficient to achieve the aspect.
+   * Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.
+   *
+   * If `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.
+   * If `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.
+   *
+   * For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
    */
   subset?: APIResourceIntegrationAspectSubset[];
 }
 /**
- * Defines that API Resource Integration Aspect only requires a subset of the referenced contract.
+ * Defines that the API Resource Integration Aspect only requires a subset of the referenced contract.
  *
  * For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
- * This information helps to narrow down what is really necessary and can help optimize the integration.
+ * Without a `subset`, the dependency implies access to the full resource.
+ * With a `subset`, only the listed operations are required, allowing consumers to understand /load only the minimal surface area needed.
+ *
+ * For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
  */
 export interface APIResourceIntegrationAspectSubset {
   /**
@@ -3878,11 +3906,15 @@ export interface Package {
    */
   vendor: string;
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
