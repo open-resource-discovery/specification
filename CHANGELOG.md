@@ -10,6 +10,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.16.0]
+
 ### Added
 
 - Added `definitions` property to `EntityType` resources to allow linking machine-readable entity type definitions
