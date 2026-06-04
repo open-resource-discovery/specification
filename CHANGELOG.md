@@ -17,7 +17,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added `aiHint` as a dedicated, optional property on API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities. Provides guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable `description` fields so both can evolve independently. SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
 - Added `definitions` property to `EntityType` resources to allow linking machine-readable entity type definitions
   - Includes new `EntityTypeDefinition` object with `type`, `mediaType`, `url`, `accessStrategies`, and `visibility` properties
-  - The `type` field accepts any valid [Specification ID](./docs/spec-v1/index.md#specification-id)
+  - The `type` field accepts any valid [Specification ID](https://open-resource-discovery.org/spec-v1/#specification-id)
   - **Important**: Entity Type definitions SHOULD usually be marked as `private` since they represent conceptual domain models that cannot be accessed directly. Consumers should interact with the data through related API Resources instead. Use the API Resource's `relatedEntityTypes` property to discover which APIs expose a particular entity type.
 - Added `visibility` property to `Group` and `GroupType` to control who can discover and access group metadata.
   If not set, both default to `public`.
@@ -118,7 +118,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Improved the [Grouping and Bundling](./docs/spec-v1/concepts/grouping-and-bundling.md) documentation page:
+- Improved the [Grouping and Bundling](https://open-resource-discovery.org/spec-v1/concepts/grouping-and-bundling) documentation page:
   - Added missing **Product** section explaining the concept and its role in portfolio structuring.
   - Added a "Choosing the Right Concept" comparison table to help decide which grouping mechanism to use.
   - Improved descriptions for all grouping concepts (Package, Consumption Bundle, Entity Type, Tags, Labels, Groups).
@@ -142,14 +142,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Made `RelatedEntityType.relationType` an extensible enum that now also accepts any valid [Concept ID](./docs/spec-v1/index.md#concept-id) in addition to the existing values (`part-of`, `can-share-identity`)
+- Made `RelatedEntityType.relationType` an extensible enum that now also accepts any valid [Concept ID](https://open-resource-discovery.org/spec-v1/#concept-id) in addition to the existing values (`part-of`, `can-share-identity`)
 
 ## [1.14.1]
 
 ### Changed
 
 - Clarification: ORD IDs MUST be interpreted case-insensitively when used for comparison, lookups or deduplication. This was previously left open and is now explicitly required.
-- Clarification: The `type` field on `ApiResourceDefinition` and `EventResourceDefinition` accepts not only the predefined enum values and `custom`, but also any valid [Specification ID](./docs/spec-v1/index.md#specification-id) as an extension point. All `apiProtocol` descriptions that listed allowed `type` values now consistently mention this option alongside `custom`.
+- Clarification: The `type` field on `ApiResourceDefinition` and `EventResourceDefinition` accepts not only the predefined enum values and `custom`, but also any valid [Specification ID](https://open-resource-discovery.org/spec-v1/#specification-id) as an extension point. All `apiProtocol` descriptions that listed allowed `type` values now consistently mention this option alongside `custom`.
 - Allow all media types under under `application/*` and `text/*` for resource definitions
 
 ## [1.14.0]
@@ -160,7 +160,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Agents provide high-level descriptions of systems that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals. This may be an AI agent or a rule-based agent.
   - Agents have `exposedApiResources` to describe their API interface, e.g. using the A2A protocol.
   - Agents have `integrationDependencies` to describe which external resources like APIs, MCP Servers etc. they depend on.
-  - Added [AI Agents and Protocols](docs/spec-v1/concepts/ai-agents-and-protocols.md) concept documentation
+  - Added [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols) concept documentation
 - Introduced `abstract` property for API, Event and Data Product Resources to indicate interface-only resources.
 - Added `subset` property to `ApiResourceIntegrationAspect` with new `ApiResourceIntegrationAspectSubset` definition
   - This allows narrowing down API resource integration aspects to specific operations or tools
@@ -559,7 +559,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added [Data Product](../../spec-v1/interfaces/Document.md#data-product) concept.
+- Added [Data Product](https://open-resource-discovery.org/spec-v1/interfaces/Document#data-product) concept.
   - for the time being in **beta** status
 - Added `runtimeRestriction` to packages
 - Added `responsible` to APIs, events and data products
