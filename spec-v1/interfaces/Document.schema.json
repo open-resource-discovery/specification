@@ -337,7 +337,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -779,7 +779,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -802,7 +802,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -1031,7 +1031,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -1060,7 +1060,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -1074,7 +1074,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -1914,7 +1914,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -1943,7 +1943,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -1957,7 +1957,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -2634,7 +2634,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -2656,7 +2656,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -2670,7 +2670,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -3006,7 +3006,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -3028,7 +3028,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -3793,7 +3793,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -3934,7 +3934,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -4071,7 +4071,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -4093,7 +4093,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -4107,7 +4107,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -4555,7 +4555,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -4577,7 +4577,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -4591,7 +4591,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -4753,7 +4753,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -5026,7 +5026,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -5048,7 +5048,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -5062,7 +5062,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -5306,7 +5306,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -5434,7 +5434,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -5456,7 +5456,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -5470,7 +5470,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -5896,7 +5896,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -7445,7 +7445,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -7467,7 +7467,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -7481,7 +7481,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
           "oneOf": [
             {
               "const": "development",
