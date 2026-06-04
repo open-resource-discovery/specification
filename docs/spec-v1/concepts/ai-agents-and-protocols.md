@@ -208,6 +208,35 @@ Without `subset`, the dependency would imply access to all operations of the ref
 }
 ```
 
+## AI Hints on ORD Resources
+
+The following ORD resource types support an `aiHint` property: API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities.
+
+`aiHint` provides guidance specifically for AI consumers such as LLMs and agent orchestrators, and is intentionally separate from human-facing `description` and `shortDescription` fields so both can evolve independently.
+
+```json
+{
+  "apiResources": [
+    {
+      "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1",
+      "title": "Dispute Resolution Agent",
+      "description": "Manages dispute cases in the system.",
+      "aiHint": "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools. Do not call `DELETE /cases/{id}` unless the case status is `closed`."
+    }
+  ]
+}
+```
+
+### Why a Separate Field?
+
+Human-readable documentation (`description`, `shortDescription`) is written for end users and developers browsing a catalog. AI-targeted guidance has different concerns — it may include tool-use patterns, LLM-specific caveats, or instructions that would read as noise in standard docs. Keeping these separate lets both evolve independently.
+
+### Best Practices
+
+- **Markdown recommended**: The value SHOULD be written in [CommonMark](https://spec.commonmark.org/) Markdown.
+- **Be action-oriented**: Describe *how* to use the resource (verbs, conditions, caveats), not just *what* it is — the `description` already covers that.
+- **Keep it focused**: Aim for a short, dense paragraph rather than exhaustive documentation. Link to detailed docs via the `links` property.
+
 ## Use Cases
 
 Describing agents in ORD enables several key scenarios:
