@@ -24,6 +24,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added optional root-level `baseUrl` property to ORD Documents (analogous to the existing root-level `baseUrl` in the ORD Configuration).
   This property represents the base URL of the **ORD provider** and is used to resolve relative URLs to metadata files within the document (e.g., `resourceDefinitions[].url`).
 
+### Fixed
+
+- Fixed `Configuration.baseUrl` description: the property MUST NOT contain a **trailing** slash (was incorrectly documented as "leading slash").
+
 ### Changed
 
 - Relaxed the rule that `<majorVersion>` in the ORD ID and the major of `version` MUST be identical to a SHOULD (recommended). Strict enforcement created an unresolvable conflict with the ORD ID stability requirement: when a provider bumps the semver major without creating a new resource — whether because no breaking change occurred, or because they simply didn't follow best practice — the old MUST rule would have required changing the published ORD ID of an existing resource, breaking every downstream consumer that references it. Even when a breaking change did happen, forcing an ID change compounds the provider's mistake rather than containing it. The `<majorVersion>` is now explicitly defined as tracking *breaking API changes*, with `version` major as a strong signal that should be kept in sync but does not override ID stability. Validators SHOULD warn on a mismatch but MUST NOT treat it as a hard failure.
