@@ -39,10 +39,11 @@
         "1.12",
         "1.13",
         "1.14",
-        "1.15"
+        "1.15",
+        "1.16"
       ],
       "examples": [
-        "1.15"
+        "1.16"
       ]
     },
     "description": {
@@ -814,7 +815,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -969,6 +970,7 @@
         "aiHint": {
           "type": "string",
           "minLength": 1,
+          "x-introduced-in-version": "1.16.0",
           "description": "Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.\nIntentionally separate from human-facing `description` so both can evolve independently.\nSHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nFor guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).",
           "examples": [
             "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools."
@@ -1072,7 +1074,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -1354,7 +1356,7 @@
           "x-introduced-in-version": "1.13.0",
           "x-feature-status": "beta",
           "type": "array",
-          "description": "A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.\n\nServes as a declaration of compatible implementation of API contract, effectively functioning as an \"implementationOf\" relationship. The data that compatible APIs return follow the same schema, but itself can be different.\nThis means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page.",
+          "description": "A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.\nIt does not imply the same endpoints, security or tenant specific configuration is used.\n\nServes as a declaration of compatible implementation of API contract, effectively functioning as an \"implementationOf\" relationship. The data that compatible APIs return follow the same schema, but itself can be different.\nThis means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page.",
           "items": {
             "$ref": "#/definitions/ApiCompatibility"
           },
@@ -1854,6 +1856,7 @@
         "aiHint": {
           "type": "string",
           "minLength": 1,
+          "x-introduced-in-version": "1.16.0",
           "description": "Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.\nIntentionally separate from human-facing `description` so both can evolve independently.\nSHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nFor guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).",
           "examples": []
         },
@@ -1955,7 +1958,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -2600,6 +2603,7 @@
         "aiHint": {
           "type": "string",
           "minLength": 1,
+          "x-introduced-in-version": "1.16.0",
           "description": "Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.\nIntentionally separate from human-facing `description` so both can evolve independently.\nSHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nFor guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).",
           "examples": []
         },
@@ -2668,7 +2672,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -2928,7 +2932,7 @@
             },
             {
               "const": "sap-csn-interop-effective-v1",
-              "description": "[CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.\nThe `mediaType` MUST be be set to `application/json`."
+              "description": "[CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.\nThe `mediaType` MUST be set to `application/json`."
             }
           ],
           "examples": [
@@ -3065,6 +3069,7 @@
         "aiHint": {
           "type": "string",
           "minLength": 1,
+          "x-introduced-in-version": "1.16.0",
           "description": "Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.\nIntentionally separate from human-facing `description` so both can evolve independently.\nSHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nFor guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).",
           "examples": [
             "Use this data product to access **customer order** data. Filter by `customerId` and `orderDate` for targeted queries. Output port `customerOrderItems` provides line-item detail."
@@ -3136,7 +3141,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -3889,7 +3894,7 @@
         "url": {
           "type": "string",
           "format": "uri-reference",
-          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).",
+          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).",
           "examples": [
             "/api/openApi.yaml",
             "https://example.com/api/API_RFQ_PROCESS_SRV/$metadata"
@@ -3901,7 +3906,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -4016,7 +4021,7 @@
         "url": {
           "type": "string",
           "format": "uri-reference",
-          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).",
+          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).",
           "examples": [
             "/some/url/events/eventCatalog.json"
           ]
@@ -4042,7 +4047,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -4149,6 +4154,7 @@
         "aiHint": {
           "type": "string",
           "minLength": 1,
+          "x-introduced-in-version": "1.16.0",
           "description": "Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.\nIntentionally separate from human-facing `description` so both can evolve independently.\nSHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nFor guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).",
           "examples": [
             "Invoke this agent to **resolve** open dispute cases. Provide the `caseId`; the agent autonomously gathers evidence, proposes resolution, and awaits approval before closing."
@@ -4201,7 +4207,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -4685,7 +4691,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -4835,7 +4841,7 @@
         "url": {
           "type": "string",
           "format": "uri-reference",
-          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).",
+          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).",
           "examples": [
             "/open-resource-discovery/v1/overlays/ai-enrichment.overlay.json"
           ]
@@ -4861,7 +4867,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -5106,6 +5112,7 @@
         "aiHint": {
           "type": "string",
           "minLength": 1,
+          "x-introduced-in-version": "1.16.0",
           "description": "Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.\nIntentionally separate from human-facing `description` so both can evolve independently.\nSHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nFor guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).",
           "examples": []
         },
@@ -5156,7 +5163,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -5388,7 +5395,7 @@
         "url": {
           "type": "string",
           "format": "uri-reference",
-          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).",
+          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).",
           "examples": [
             "/capabilities/someCapability/someDocument.json"
           ]
@@ -5414,7 +5421,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -5564,7 +5571,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -6122,7 +6129,7 @@
         "url": {
           "type": "string",
           "format": "uri-reference",
-          "description": "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe file target MAY be relative or absolute.\nIf a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).\nIf an absolute URL is given, then it MUST be openly accessible.",
+          "description": "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe file target MAY be relative or absolute.\nIf a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).\nIf an absolute URL is given, then it MUST be openly accessible.",
           "examples": [
             "/ord/v1/Ariba/Files/DeveloperPortal/SAP-Ariba-developer-portal.pdf"
           ]
@@ -6304,7 +6311,7 @@
         "url": {
           "type": "string",
           "format": "uri-reference",
-          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.\n\nThe link target SHOULD be absolute and SHOULD be openly accessible.\nIf a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).",
+          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.\n\nThe link target SHOULD be absolute and SHOULD be openly accessible.\nIf a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).",
           "examples": [
             "https://example.com/some/absolute/url",
             "/some/relative/url"
@@ -6374,7 +6381,7 @@
         "url": {
           "type": "string",
           "format": "uri-reference",
-          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the Data Product Link.\n\nThe link target SHOULD be absolute and SHOULD be openly accessible.\nIf a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#baseurl) (the ORD provider base URL).",
+          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the Data Product Link.\n\nThe link target SHOULD be absolute and SHOULD be openly accessible.\nIf a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).",
           "examples": [
             "https://example.com/some/absolute/url"
           ]
@@ -6401,7 +6408,7 @@
         "baseUrl": {
           "type": "string",
           "format": "uri-reference",
-          "description": "Optional [base URL](../index.md#base-url) of the **described system instance**.\n\nUsed to resolve relative [entry point](../index.md#entry-point) URLs within this document.\nRelative URLs to metadata files (e.g., `resourceDefinitions[].url`) are resolved against\nthe document root `baseUrl` instead — see [Relative URL Resolution](../index.md#relative-url-resolution).\n\nORD aggregators that hold authoritative knowledge of the described system's base URL\n(e.g., from landscape configuration or service discovery) MAY prefer that over this value.\n\nThe `baseUrl` MUST NOT contain a trailing slash.\n\nMUST be provided if the base URL is not known to the ORD aggregators.\nMUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.",
+          "description": "Optional [base URL](../index.md#base-url) of the **described system instance**.\n\nUsed to resolve relative [entry point](../index.md#described-system-base-url-entry-points) URLs within this document.\nRelative URLs to metadata files (e.g., `resourceDefinitions[].url`) are resolved against\nthe document root `baseUrl` instead — see [Relative URL Resolution](../index.md#relative-url-resolution).\n\nORD aggregators that hold authoritative knowledge of the described system's base URL\n(e.g., from landscape configuration or service discovery) MAY prefer that over this value.\n\nThe `baseUrl` MUST NOT contain a trailing slash.\n\nMUST be provided if the base URL is not known to the ORD aggregators.\nMUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.",
           "pattern": "^http[s]?:\\/\\/[^:\\/\\s]+\\.[^:\\/\\s\\.]+(:\\d+)?(\\/[a-zA-Z0-9-\\._~]+)*$",
           "examples": [
             "https://example-sap-system.com",
@@ -6778,7 +6785,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -6789,7 +6796,7 @@
               "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ],
-          "x-introduced-in-version": "1.15.0",
+          "x-introduced-in-version": "1.16.0",
           "default": "public"
         }
       },
@@ -6882,7 +6889,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",
@@ -6893,7 +6900,7 @@
               "description": "Metadata should not be discoverable outside the application / service's own deployment scope (e.g., outside of the provider application or the same system namespace / system type).\nUsed for metadata completeness when describing implementation details or dependencies.\n\nPrivate resources usually have no stability guarantees and can change or be removed at any time.\nThese are typically implementation details not meant for consumption by other services.\n\nExample: Services only used within a microservice architecture or APIs that are only used for the own UIs, not for general consumption.\n\nPrivate resources MUST NOT be made discoverable or accessible outside the application / service's own deployment scope."
             }
           ],
-          "x-introduced-in-version": "1.15.0",
+          "x-introduced-in-version": "1.16.0",
           "default": "public"
         }
       },
@@ -7319,7 +7326,7 @@
             {
               "const": "ord:patches",
               "x-introduced-in-version": "1.15.0",
-              "description": "The source resource patches one or more definition files of the target resource.\nUsed on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch."
+              "description": "The source resource patches one or more definition files of the target resource.\nUsed on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch."
             }
           ],
           "examples": [
@@ -7363,7 +7370,7 @@
             {
               "const": "ord:patches",
               "x-introduced-in-version": "1.15.0",
-              "description": "The source resource patches one or more definition files of the target resource.\nUsed on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch."
+              "description": "The source resource patches one or more definition files of the target resource.\nUsed on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch."
             }
           ],
           "examples": [
@@ -7615,7 +7622,7 @@
           "oneOf": [
             {
               "const": "public",
-              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md) section.\nand follow formal API lifecycle management and deprecation policies.\n\nExample: A REST API that customers use to integrate with your SaaS product."
+              "description": "Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.\n\nPublic resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).\n\nExample: A REST API that customers use to integrate with your SaaS product."
             },
             {
               "const": "internal",

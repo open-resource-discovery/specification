@@ -762,7 +762,7 @@
         "baseUrl": {
           "type": "string",
           "format": "uri-reference",
-          "description": "Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.\nBy providing the base URL, relative URLs in the overlay are resolved relative to it.",
+          "description": "Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.\nBy providing the base URL, relative URLs in the overlay are resolved relative to it.\n\nThe `baseUrl` MUST NOT contain a trailing slash.",
           "pattern": "^http[s]?:\\/\\/[^:\\/\\s]+\\.[^:\\/\\s\\.]+(:\\d+)?(\\/[a-zA-Z0-9-\\._~]+)*$",
           "examples": [
             "https://example-sap-system.com",
