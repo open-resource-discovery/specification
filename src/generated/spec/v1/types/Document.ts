@@ -426,7 +426,7 @@ export interface ApiResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products this Package and its resources are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
@@ -1368,7 +1368,7 @@ export interface EventResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products this Package and its resources are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
@@ -1877,7 +1877,7 @@ export interface EntityType {
    */
   partOfGroups?: string[];
   /**
-   * List of products this Package and its resources are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
@@ -2948,7 +2948,7 @@ export interface Agent {
    */
   minSystemVersion?: string;
   /**
-   * List of products this Package and its resources are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
@@ -3906,7 +3906,7 @@ export interface Package {
    */
   vendor: string;
   /**
-   * List of products this Package and its resources are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
