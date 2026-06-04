@@ -2758,7 +2758,7 @@
         },
         "level": {
           "type": "string",
-          "description": "Defining the abstraction level of the entity type using the DDD terminology.\n\nIn Domain-Driven Design, there is a concept of entities and aggregates.\nThere are root entities which may contain further sub entities by composition.\nThe complete \"package\" is then called an aggregate, which gets its name and identity from the root entity.\nAn aggregate is a cluster of domain objects that can be treated as a single unit.\nThe root is the entity that is referenced from outside the aggregate. There must be only one root per aggregate.\nThe root ensures the integrity of the aggregate. A sub entity is any other non-root entity in the aggregate.\n\nSource, see [Martin Fowler on DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html)",
+          "description": "Defining the abstraction level of the entity type using the DDD terminology.\n\nIn Domain-Driven Design, there is a concept of domain entities and aggregates.\nThere are root entities which may contain further sub entities by composition.\nThe complete \"package\" is then called an aggregate, which gets its name and identity from the root entity.\nAn aggregate is a cluster of domain objects that can be treated as a single unit.\nThe root is the entity that is referenced from outside the aggregate. There must be only one root per aggregate.\nThe root ensures the integrity of the aggregate. A sub entity is any other non-root entity in the aggregate.\n\nSource, see [Martin Fowler on DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html)",
           "oneOf": [
             {
               "const": "aggregate",
@@ -2791,6 +2791,15 @@
               }
             ]
           ]
+        },
+        "definitions": {
+          "type": "array",
+          "x-introduced-in-version": "1.16.0",
+          "x-feature-status": "beta",
+          "description": "List of available machine-readable definitions that describe the entity type's internal model in detail.",
+          "items": {
+            "$ref": "#/definitions/EntityTypeDefinition"
+          }
         },
         "links": {
           "type": "array",
@@ -2898,6 +2907,93 @@
       ],
       "x-recommended": [
         "lastUpdate"
+      ]
+    },
+    "EntityTypeDefinition": {
+      "type": "object",
+      "title": "Entity Type Definition",
+      "x-introduced-in-version": "1.16.0",
+      "x-feature-status": "beta",
+      "x-ums-type": "custom",
+      "description": "Machine-readable definition that describes the entity type's internal model structure.\n\nEntity Type definitions represent an internal implementation detail - the underlying domain model of your application.\nThis can be used to describe a shared internal model multiple APIs and Events are based on.\nHowever, interaction with the actual data happens through API Resources or Event Resources that expose these entity types with a defined interface and contract.\n\nEach definition is an alternative description format for the same entity type.\nThe same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.\n\n**Why Entity Types are private by default**: Since entity type definitions are internal implementation details, they SHOULD be marked as `private` visibility by default.\n\n**Finding related APIs**: To discover which APIs expose a particular Entity Type, check the API Resource's `relatedEntityTypes` property.",
+      "properties": {
+        "type": {
+          "description": "Type of the entity type resource definition.\n\nMUST be either:\n- any valid [Specification ID](../index.md#specification-id), or\n- one of the pre-defined values listed below.",
+          "type": "string",
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+              "description": "Any valid [Specification ID](../index.md#specification-id)."
+            },
+            {
+              "const": "sap-csn-interop-effective-v1",
+              "description": "[CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.\nThe `mediaType` MUST be be set to `application/json`."
+            }
+          ],
+          "examples": [
+            "sap-csn-interop-effective-v1",
+            "sap.example:entity-model-definition:v1"
+          ]
+        },
+        "mediaType": {
+          "description": "[Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) that describes the format of the definition.\n\nMedia Types under `application/*` and `text/*` are allowed.\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.",
+          "type": "string",
+          "pattern": "^(application|text)\\/[a-zA-Z0-9][a-zA-Z0-9.+\\-]*$",
+          "examples": [
+            "application/json",
+            "text/plain"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri-reference",
+          "description": "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL (to base URL).",
+          "examples": [
+            "/entityTypes/BusinessPartner/model.json"
+          ]
+        },
+        "accessStrategies": {
+          "type": "array",
+          "description": "List of supported access strategies for retrieving metadata from the ORD provider.\nAn ORD Consumer/ORD Aggregator MAY choose any of the strategies.\n\nThe access strategies only apply to the metadata access and not the actual API access.\nThe actual access to the APIs for clients is described via Consumption Bundles.\n\nIf this property is not provided, the definition URL will be available through the same access strategy as this ORD document.\nIt is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.",
+          "items": {
+            "$ref": "#/definitions/AccessStrategy"
+          },
+          "minItems": 1,
+          "examples": [
+            [
+              {
+                "type": "open"
+              }
+            ]
+          ]
+        },
+        "visibility": {
+          "type": "string",
+          "description": "Who is allowed to access the entity type definition. Defaults to `private`.\n\nEntity Type definitions are internal implementation details and SHOULD remain `private` by default.\nConsumers interact with the data through related API Resources, not the internal model directly.\n\nThe visibility MUST be equal to or more restrictive than the Entity Type resource's visibility.\n\nOnly use `public` visibility when the internal model definition itself needs open access for standardization or documentation purposes.",
+          "oneOf": [
+            {
+              "const": "public",
+              "description": "Publicly accessible."
+            },
+            {
+              "const": "internal",
+              "description": "Can be accessed by applications and services from the same company / legal entity."
+            },
+            {
+              "const": "private",
+              "description": "Can only be accessed by applications and services from the same internal organisation / installation / cluster, identified through the system namespace."
+            }
+          ],
+          "default": "private"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "mediaType",
+        "url",
+        "visibility"
       ]
     },
     "DataProduct": {
