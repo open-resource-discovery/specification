@@ -2839,7 +2839,7 @@ definitions:
             x-feature-status: alpha
             x-introduced-in-version: "1.15.0"
             description: |-
-              ORD Overlay file for patching referenced resource definition files.
+              ORD Overlay file for patching ORD resources and/or referenced resource definition files.
               For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
               The `mediaType` MUST be set to `application/json`.
           - const: custom
@@ -2991,7 +2991,7 @@ definitions:
             x-feature-status: alpha
             x-introduced-in-version: "1.15.0"
             description: |-
-              ORD Overlay file for patching metadata / resource definition files.
+              ORD Overlay file for patching ORD resources and/or referenced resource definition files.
               For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
               The `mediaType` MUST be set to `application/json`.
           - const: custom

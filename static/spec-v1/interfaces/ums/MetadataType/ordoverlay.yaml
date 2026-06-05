@@ -22,7 +22,7 @@ spec:
       description: "Optional [URL](https://tools.ietf.org/html/rfc3986) to the ORD Overlay schema (defined as a JSON Schema).\nIf provided, this enables code intelligence and validation in supported editors (like VSCode) and tools."
     - name: 'ordOverlay'
       type: 'string'
-      description: 'Version of the ORD Overlay specification.'
+      description: "Version of the ORD Overlay specification.\n\nVersion `0.2` adds the `ordId` selector for patching ORD resource metadata directly,\nand allows the document-level `target` to be omitted when all patches use `selector.ordId`.\nVersion `0.1` is still accepted for backward compatibility with overlays produced under\nORD 1.16.0; new overlays SHOULD use `\"0.2\"`."
       mandatory: true
     - name: 'ordId'
       type: 'string'
