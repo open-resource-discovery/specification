@@ -34,11 +34,18 @@ properties:
 
   ordOverlay:
     type: string
-    description: Version of the ORD Overlay specification.
+    description: |-
+      Version of the ORD Overlay specification.
+
+      Version `0.2` adds the `ordId` selector for patching ORD resource metadata directly,
+      and allows the document-level `target` to be omitted when all patches use `selector.ordId`.
+      Version `0.1` is still accepted for backward compatibility with overlays produced under
+      ORD 1.16.0; new overlays SHOULD use `"0.2"`.
     enum:
       - "0.1"
+      - "0.2"
     examples:
-      - "0.1"
+      - "0.2"
 
   ordId:
     type: string
@@ -197,8 +204,13 @@ definitions:
 
       When this object is present, at least one of `ordId`, `url`, `correlationIds`, or `definitionType`
       MUST be provided so that consumers can identify what is being patched.
-      `ordId` identifies the ORD resource whose attached definition file is being patched.
-      Use `url` and/or `definitionType` to disambiguate which definition file to target.
+      Exception: if all patches exclusively use [`selector.ordId`](#overlay-selector-by-ord-id) selectors,
+      `target` may be omitted entirely — each patch then carries its own resource identifier and the
+      overlay file may patch multiple ORD resources at once.
+
+      `ordId` may target the ORD resource metadata itself.
+      For patching a specific resource definition file of that resource, use `url` and/or `definitionType`
+      to disambiguate.
 
       Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
       In such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.
@@ -447,8 +459,7 @@ definitions:
     oneOf:
       - $ref: "#/definitions/OverlaySelectorByRoot"
       - $ref: "#/definitions/OverlaySelectorByJsonPath"
-      # NOTE: OverlaySelectorByOrdId is planned for a future version but not included in v0.1.
-      # - $ref: "#/definitions/OverlaySelectorByOrdId"
+      - $ref: "#/definitions/OverlaySelectorByOrdId"
       - $ref: "#/definitions/OverlaySelectorByOperation"
       - $ref: "#/definitions/OverlaySelectorByEntityType"
       - $ref: "#/definitions/OverlaySelectorByComplexType"
@@ -534,34 +545,37 @@ definitions:
       - jsonPath: "$.info.description"
       - jsonPath: "$.paths['/constellations'].get"
 
-  # OverlaySelectorByOrdId is planned for a future overlay version but not included in v0.1.
-  # It will allow patching ORD resource metadata (title, description, tags, etc.) directly.
-  # OverlaySelectorByOrdId:
-  #   type: object
-  #   title: Overlay Selector By ORD ID
-  #   x-ums-type: "embedded"
-  #   additionalProperties: false
-  #   required:
-  #     - ordId
-  #   properties:
-  #     ordId:
-  #       type: string
-  #       description: |-
-  #         ORD ID targeting an ORD resource (API, Event, Data Product, ...) in an ORD document.
-  #         MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).
-  #         Supported metadata formats:
-  #         - ORD document (no specific `definitionType`): locates the ORD resource object whose
-  #           `ordId` field matches this value. The resource type (apiResource, eventResource,
-  #           dataProduct, etc.) is derived from the ORD ID namespace and is not required in the selector.
-  #
-  #         Use this selector when patching ORD resource metadata itself (e.g. title, description,
-  #         visibility, tags). For patching the technical API definition file that the resource
-  #         references, apply the overlay to that definition file directly using its own selectors.
-  #       pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
-  #       examples:
-  #         - "sap.s4:apiResource:OP_API_BUSINESS_PARTNER_SRV:v1"
-  #   examples:
-  #     - ordId: "sap.foo:apiResource:astronomy:v1"
+  OverlaySelectorByOrdId:
+    type: object
+    title: Overlay Selector By ORD ID
+    x-introduced-in-version: "1.17.0"
+    x-ums-type: "embedded"
+    additionalProperties: false
+    required:
+      - ordId
+    properties:
+      ordId:
+        type: string
+        description: |-
+          ORD ID targeting an ORD resource (API, Event, Data Product, ...) in an ORD document.
+          MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).
+          Supported metadata formats:
+          - ORD document (no specific `definitionType`): locates the ORD resource object whose
+            `ordId` field matches this value. The resource type (apiResource, eventResource,
+            dataProduct, etc.) is derived from the ORD ID namespace and is not required in the selector.
+
+          Use this selector when patching ORD resource metadata itself (e.g. title, description,
+          visibility, tags). For patching the technical API definition file that the resource
+          references, apply the overlay to that definition file directly using its own selectors.
+
+          A single overlay file MAY contain multiple patches with different `selector.ordId` values,
+          allowing one overlay document to patch multiple ORD resources at once. In that case the
+          document-level `target` SHOULD be omitted.
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.s4:apiResource:OP_API_BUSINESS_PARTNER_SRV:v1"
+    examples:
+      - ordId: "sap.foo:apiResource:astronomy:v1"
 
   OverlaySelectorByOperation:
     type: object

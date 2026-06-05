@@ -10,6 +10,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Bumped ORD Overlay spec to `0.2` and reintroduced the `ordId` selector (`OverlaySelectorByOrdId`).
+  - A patch can now target an ORD resource itself (e.g. an API Resource or Event Resource) by its [ORD ID](https://open-resource-discovery.org/spec-v1/#ord-id) and patch its ORD-level metadata (title, description, tags, visibility, ...) without going through a referenced definition file.
+  - When all patches in an overlay use `selector.ordId`, the document-level `target` MAY be omitted — each patch carries its own resource identifier and a single overlay file MAY patch multiple ORD resources at once.
+  - ORD Aggregators MUST apply such overlays when building their ORD Discovery API and related indexes so that ORD-level overlay changes are reflected in discovery, filtering, and searching.
+  - The `ordOverlay` enum now accepts both `"0.1"` (kept for backward compatibility with overlays produced under ORD 1.16.0) and `"0.2"` (new overlays SHOULD use `"0.2"`).
+
 ## [1.16.0]
 
 ### Added

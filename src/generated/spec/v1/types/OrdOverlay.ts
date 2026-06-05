@@ -82,6 +82,7 @@ export type OverlayPatchAction = "update" | "remove" | "merge";
 export type OverlaySelector =
   | OverlaySelectorByRoot
   | OverlaySelectorByJsonPath
+  | OverlaySelectorByORDID
   | OverlaySelectorByOperation
   | OverlaySelectorByEntityType
   | OverlaySelectorByComplexType
@@ -139,8 +140,13 @@ export interface ORDOverlay {
   $schema?: (string | "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#") & string;
   /**
    * Version of the ORD Overlay specification.
+   *
+   * Version `0.2` adds the `ordId` selector for patching ORD resource metadata directly,
+   * and allows the document-level `target` to be omitted when all patches use `selector.ordId`.
+   * Version `0.1` is still accepted for backward compatibility with overlays produced under
+   * ORD 1.16.0; new overlays SHOULD use `"0.2"`.
    */
-  ordOverlay: "0.1";
+  ordOverlay: "0.1" | "0.2";
   /**
    * Optional ORD ID of this overlay document.
    */
@@ -380,6 +386,25 @@ export interface OverlaySelectorByJsonPath {
    * where no concept-level selector covers the target location.
    */
   jsonPath: string;
+}
+export interface OverlaySelectorByORDID {
+  /**
+   * ORD ID targeting an ORD resource (API, Event, Data Product, ...) in an ORD document.
+   * MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).
+   * Supported metadata formats:
+   * - ORD document (no specific `definitionType`): locates the ORD resource object whose
+   *   `ordId` field matches this value. The resource type (apiResource, eventResource,
+   *   dataProduct, etc.) is derived from the ORD ID namespace and is not required in the selector.
+   *
+   * Use this selector when patching ORD resource metadata itself (e.g. title, description,
+   * visibility, tags). For patching the technical API definition file that the resource
+   * references, apply the overlay to that definition file directly using its own selectors.
+   *
+   * A single overlay file MAY contain multiple patches with different `selector.ordId` values,
+   * allowing one overlay document to patch multiple ORD resources at once. In that case the
+   * document-level `target` SHOULD be omitted.
+   */
+  ordId: string;
 }
 export interface OverlaySelectorByOperation {
   /**
