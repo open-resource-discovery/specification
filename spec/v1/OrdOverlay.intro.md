@@ -113,7 +113,7 @@ Example of ambiguity: an OData API resource may expose both `edmx` and `openapi-
 Provide `definitionType` and/or `url` to make the concrete patch target explicit.
 
 For overlays that only patch ORD metadata via [`selector.ordId`](#overlay-selector-by-ord-id), `target` may be omitted.
-Multiple resources can be patched in a single overlay file by using multiple patches with different `selector.ordId` values.
+Multiple resources can be patched on ORD level via a single overlay file by using multiple patches with different `selector.ordId` values.
 
 
 ## Selectors
