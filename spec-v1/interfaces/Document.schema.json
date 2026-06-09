@@ -5754,6 +5754,9 @@
           "items": {
             "$ref": "#/definitions/CapabilityIntegrationAspect"
           }
+        },
+        "labels": {
+          "$ref": "#/definitions/Labels"
         }
       },
       "additionalProperties": false,
@@ -5793,6 +5796,9 @@
           "items": {
             "$ref": "#/definitions/ApiResourceIntegrationAspectSubset"
           }
+        },
+        "labels": {
+          "$ref": "#/definitions/Labels"
         }
       },
       "additionalProperties": false,
@@ -5846,6 +5852,9 @@
               "sap.s4"
             ]
           ]
+        },
+        "labels": {
+          "$ref": "#/definitions/Labels"
         }
       },
       "additionalProperties": false,
@@ -5918,6 +5927,9 @@
             "1.2.3",
             "1.0.0-alpha.1"
           ]
+        },
+        "labels": {
+          "$ref": "#/definitions/Labels"
         }
       },
       "additionalProperties": false,

@@ -153,6 +153,10 @@ spec:
           customTypeName: 'CapabilityIntegrationAspect'
           array: true
           description: 'List of Capability Dependencies.'
+        - name: 'labels'
+          type: 'custom'
+          customTypeName: 'Labels'
+          description: 'Generic labels that can be applied to most ORD information.'
     - name: 'ApiResourceIntegrationAspect'
       metadataProperties:
         - name: 'ordId'
@@ -172,12 +176,22 @@ spec:
           customTypeName: 'ApiResourceIntegrationAspectSubset'
           array: true
           description: "Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.\n\nIf `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.\nIf `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.\n\nFor more details and examples, see [Integration Dependency](../concepts/integration-dependency)."
+        - name: 'labels'
+          type: 'custom'
+          customTypeName: 'Labels'
+          description: 'Generic labels that can be applied to most ORD information.'
     - name: 'ApiResourceIntegrationAspectSubset'
       metadataProperties:
         - name: 'operationId'
           type: 'string'
           description: "The ID of the individual API operation or tool.\n\nThis MUST be an ID that is understood by the used protocol and resource definition format.\nE.g. for OpenAPI this is the `operationId`, for MCP this is the tool `name`."
           mandatory: true
+    - name: 'Labels'
+      metadataProperties:
+        - name: 'key'
+          type: 'string'
+        - name: 'value'
+          type: 'string'
     - name: 'EventResourceIntegrationAspect'
       metadataProperties:
         - name: 'ordId'
@@ -201,6 +215,10 @@ spec:
           type: 'string'
           array: true
           description: "In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).\n\nIf given, only system types of the defined namespaces are supported as integration partners.\nIf not given, there is no restriction which system type provides the events."
+        - name: 'labels'
+          type: 'custom'
+          customTypeName: 'Labels'
+          description: 'Generic labels that can be applied to most ORD information.'
     - name: 'EventResourceIntegrationAspectSubset'
       metadataProperties:
         - name: 'eventType'
@@ -221,6 +239,10 @@ spec:
           description: "Minimum version of the references resource that the integration requires.\n"
           constraints:
             pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+        - name: 'labels'
+          type: 'custom'
+          customTypeName: 'Labels'
+          description: 'Generic labels that can be applied to most ORD information.'
     - name: 'Link'
       metadataProperties:
         - name: 'title'
@@ -238,12 +260,6 @@ spec:
           description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).'
           constraints:
             minLength: 1
-    - name: 'Labels'
-      metadataProperties:
-        - name: 'key'
-          type: 'string'
-        - name: 'value'
-          type: 'string'
     - name: 'DocumentationLabels'
       metadataProperties:
         - name: 'key'
