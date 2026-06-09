@@ -46,7 +46,11 @@ For detailed and recent changes, please refer to the [CHANGELOG.md](CHANGELOG.md
 
 ## License
 
-Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/open-resource-discovery/specification).
+The ORD specification documents are licensed under the [**Community Specification License 1.0**](./Community_Specification_License-v1.md) (SPDX: `Community-Spec-1.0`). Source code in this repository — including build tooling, generated TypeScript types, validation helpers, examples, and the Docusaurus site configuration — is licensed under the [**Apache License, Version 2.0**](./LICENSES/Apache-2.0.txt) (SPDX: `Apache-2.0`).
+
+See [`License.md`](./License.md) for the full project license statement and [`LICENSE`](./LICENSE) for the top-level summary. Detailed per-file licensing and third-party component information is available [via the REUSE tool](https://api.reuse.software/info/github.com/open-resource-discovery/specification).
+
+Contributions to the specification are made under the [Community Specification Contributor License Agreement](./Community_Specification_Contributor_License_Agreement.md). See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ## Open Resource Discovery and NeoNephos
 

@@ -1,22 +1,26 @@
-# Contributing to an SAP Open Source Project
+# Contributing to Open Resource Discovery
 
 ## Code of Conduct
 
-All members of the project community must abide by the [SAP Open Source Code of Conduct](https://github.com/SAP/.github/blob/main/CODE_OF_CONDUCT.md).
+All members of the project community must abide by the [LF Europe Code of Conduct](https://linuxfoundation.eu/policies/code-of-conduct).
 Only by respecting each other can we develop a productive, collaborative community.
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by creating a [GitHub issue](https://github.com/open-resource-discovery/specification/issues).
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported per [`Notices.md`](./Notices.md), or by creating a [GitHub issue](https://github.com/open-resource-discovery/specification/issues).
 
-Contributors will be asked to accept a DCO before they submit the first pull request to this projects, this happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
+## Contributor License Agreement
+
+Open Resource Discovery is developed under the [**Community Specification License 1.0**](./Community_Specification_License-v1.md). Before a first contribution can be merged, contributors must agree to the [Community Specification Contributor License Agreement](./Community_Specification_Contributor_License_Agreement.md), which binds participants to the specification's license, governance, and contribution policies, and the [LF Europe Code of Conduct](https://linuxfoundation.eu/policies/code-of-conduct).
+
+> **Open question:** Whether agreement is captured via an automated CLA bot (e.g., EasyCLA) or via another mechanism is to be decided by the [ORD Steering Committee](https://github.com/open-resource-discovery/steering).
 
 ## Contributing with AI-generated code
 
-- If you are a new contributor, see: [Steps to Contribute](#steps-to-contribute)
+See [CONTRIBUTING_USING_GENAI.md](./CONTRIBUTING_USING_GENAI.md).
+
+## Steps to Contribute
 
 - Before implementing your change, create an issue that describes the problem you would like to solve or the code that should be enhanced. Please note that you are willing to work on that issue.
 
 - The team will review the issue and decide whether it should be implemented as a pull request. In that case, they will assign the issue to you. If the team decides against picking up the issue, the team will post a comment with an explanation.
-
-## Steps to Contribute
 
 Should you wish to work on an issue, please claim it first by commenting on the GitHub issue that you want to work on. This is to prevent duplicated efforts from other contributors on the same issue.
 
@@ -26,10 +30,11 @@ If you have questions about one of the issues, please comment on them, and one o
 
 You are welcome to contribute code in order to fix a bug or to implement a new feature that is logged as an issue.
 
-The following rule governs code contributions:
+The following rules govern contributions:
 
-- Contributions must be licensed under the [Apache 2.0 License](./LICENSE)
-- Due to legal reasons, contributors will be asked to accept a Developer Certificate of Origin (DCO) when they create the first pull request to this project. This happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
+- Specification content (under `spec/`, `spec-extension/`, `docs/`, and the published specification documents) is contributed under the [Community Specification License 1.0](./Community_Specification_License-v1.md).
+- Source code, sample/reference code, build tooling, and the Docusaurus site configuration are contributed under the [Apache License, Version 2.0](./LICENSES/Apache-2.0.txt).
+- See [`License.md`](./License.md) and [`REUSE.toml`](./REUSE.toml) for the authoritative per-path licensing.
 
 ## Generated Artifacts and Review Process
 

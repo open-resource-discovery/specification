@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- **License switch from Apache-2.0 to Community Specification License 1.0 (CS-1.0).** The ORD specification documents are now licensed under the [Community Specification License 1.0](./Community_Specification_License-v1.md), which is purpose-built for community-driven specification projects and provides a patent grant scoped to the entire specification (not only per-contributor contributions, as Apache-2.0 does). Source code, build tooling, generated TypeScript types, and the Docusaurus site configuration remain under the Apache License 2.0. Contributions are now governed by the [Community Specification Contributor License Agreement](./Community_Specification_Contributor_License_Agreement.md). This change does not modify the technical content of the specification — see [`License.md`](./License.md), [`Scope.md`](./Scope.md), [`Notices.md`](./Notices.md), and [`Governance.md`](./Governance.md) for details. Aligned with the OCM specification's recent license switch and with peer LF / Joint Development Foundation specification projects.
+
 ## [1.16.0]
 
 ### Added
