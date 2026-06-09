@@ -3713,6 +3713,7 @@ export interface Aspect {
    * List of Capability Dependencies.
    */
   capabilities?: CapabilityIntegrationAspect[];
+  labels?: Labels;
 }
 /**
  * API resource related integration aspect
@@ -3738,6 +3739,7 @@ export interface ApiResourceIntegrationAspect {
    * For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
    */
   subset?: APIResourceIntegrationAspectSubset[];
+  labels?: Labels;
 }
 /**
  * Defines that the API Resource Integration Aspect only requires a subset of the referenced contract.
@@ -3785,6 +3787,7 @@ export interface EventResourceIntegrationAspect {
    * @minItems 1
    */
   systemTypeRestriction?: [string, ...string[]];
+  labels?: Labels;
 }
 /**
  * Defines that Event Resource Integration Aspect only requires a subset of the referenced contract.
@@ -3816,6 +3819,7 @@ export interface CapabilityIntegrationAspect {
    *
    */
   minVersion?: string;
+  labels?: Labels;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.

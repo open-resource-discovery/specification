@@ -1,7 +1,7 @@
 {
 	"$schema": "http://json.schemastore.org/package",
 	"name": "@open-resource-discovery/specification",
-	"version": "1.16.0",
+	"version": "1.16.1",
 	"description": "Open Resource Discovery (ORD) Specification",
 	"author": "SAP SE",
 	"license": "Apache-2.0",
@@ -47,7 +47,7 @@
 		"@docusaurus/theme-mermaid": "3.10.1",
 		"@easyops-cn/docusaurus-search-local": "0.55.2",
 		"@mdx-js/react": "3.1.1",
-		"@open-resource-discovery/spec-toolkit": "0.8.0",
+		"@open-resource-discovery/spec-toolkit": "0.8.1",
 		"@types/fs-extra": "11.0.4",
 		"ajv": "8.20.0",
 		"ajv-formats": "3.0.1",

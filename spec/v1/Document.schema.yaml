@@ -3889,6 +3889,9 @@ definitions:
         items:
           $ref: "#/definitions/CapabilityIntegrationAspect"
 
+      labels:
+        <<: *labels
+
     additionalProperties: false
     required:
       - title # TODO: Do we need a mandatory title?
@@ -3936,6 +3939,9 @@ definitions:
       #     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+]*):(consumptionBundle):([a-zA-Z0-9._\-]+):(alpha|beta|v[0-9]+|)$
       #   examples:
       #     - ['sap.foo:consumptionBundle:basicAuth:v1']
+
+      labels:
+        <<: *labels
 
     additionalProperties: false
     required:
@@ -3985,6 +3991,9 @@ definitions:
 
       # consumptionBundleRestriction:
       #   <<: *consumptionBundleRestriction
+
+      labels:
+        <<: *labels
 
     additionalProperties: false
     required:
@@ -4066,6 +4075,9 @@ definitions:
 
       minVersion:
         <<: *minVersion
+
+      labels:
+        <<: *labels
 
     additionalProperties: false
     required:

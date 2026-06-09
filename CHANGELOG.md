@@ -10,6 +10,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.16.1]
+
+### Added
+
+- Added `labels` property to `IntegrationAspect`, `ApiResourceIntegrationAspect`, `EventResourceIntegrationAspect`, and `CapabilityIntegrationAspect`.
+
 ## [1.16.0]
 
 ### Added
