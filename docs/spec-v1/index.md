@@ -583,6 +583,7 @@ The information MAY be [system-instance-aware](#system-instance-aware).
 Therefore, the information MUST be retrieved and stored for each [system instance](#system-instance) individually.
 In this case, an ORD resource with the same [ORD ID](#ord-id) will exist exactly once for each system instance.
 Therefore, the ORD ID MUST be further qualified by a system instance ID when stored by the aggregator.
+This isolation MUST also be applied to any HTTP cache entries during crawling — see [ORD Consumer Cache Handling](#ord-consumer-cache-handling).
 If a [system landscape](#system-landscape) view needs to be supported, the information about the landscape assignment/zone information MUST be enriched and considered by the aggregator.
 
 If the same system instances describe the same ORD resource, the following merging rules MUST be followed:
