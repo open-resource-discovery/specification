@@ -515,11 +515,16 @@ The most important rules are:
 
 ##### ORD Provider Cache Handling
 
-The GET endpoints MUST provide a [`Cache-Control`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) HTTP header defining the caching behavior.
-It is RECOMMENDED to also provide an [`ETag`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) HTTP header with the corresponding [`304`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304) (Not Modified) response behavior.
+It is RECOMMENDED to provide a [`Cache-Control`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) HTTP header on all GET endpoints.
+For ORD metadata endpoints, the RECOMMENDED value is `Cache-Control: no-cache`, which allows caching but requires revalidation with the origin server before serving a cached response.
 
-If an ORD resource, or any of its referenced resource definitions, has changed, the `version` of the affected resource MUST be updated/incremented.
-The `ETag` header value on the document REST response will implicitly be updated as a consequence.
+It is RECOMMENDED to also provide an [`ETag`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) HTTP header and to handle conditional requests via [`If-None-Match`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match), returning [`304 Not Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304) when the content has not changed.
+`Cache-Control: no-cache` combined with ETags is the RECOMMENDED approach: it enables efficient revalidation without the risk of serving stale metadata.
+
+If the server implements cache handing and serves different content per tenant or user (perspective: `system-instance`), it MUST set a [`Vary: Authorization`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary) response header to prevent shared caches from serving one tenant's response to another.
+
+When an ORD resource or any of its referenced resource definitions changes, either the `version` or the `lastUpdate` of the affected resource MUST be updated to let the ORD aggregator know that the resource definitions need to be re-fetched (see [Versioning](#versioning)).
+When ETags are derived from the response body, any change to the document content will cause the ETag to change as a natural consequence — including changes to `version` or `lastUpdate`.
 
 ##### ORD Consumer Cache Handling
 
@@ -1097,7 +1102,8 @@ The `version` expresses the complete/full resource version number of an [ORD res
 It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and therefore express minor and patch changes that don't lead to incompatible changes.
 
 The version SHOULD be changed when the resource or the resource definition changed in any way relevant to consumers.
-If (potentially runtime) customization/extension leads to changes in the resource definition, a build number SHOULD be added or incremented to indicate that this change happened.
+If (potentially runtime) customization/extension leads to changes in the resource definition, the `lastUpdate` MUST be updated.
+Optionally, a build number MAY be added or incremented to the `version` indicate that this change happened.
 
 When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
 If the resource definition also contains a version number, it SHOULD be in sync with the resource `version` (if possible).

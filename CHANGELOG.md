@@ -10,6 +10,15 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Clarified HTTP cache handling guidance for ORD providers:
+  - Downgraded `Cache-Control` and `ETag` headers from MUST/RECOMMENDED to both RECOMMENDED, as neither is universally required across all deployment topologies.
+  - Added explicit recommendation for `Cache-Control: no-cache` as the appropriate value for ORD metadata endpoints — allows caching but requires revalidation before serving a cached response.
+  - Clarified that `Cache-Control: no-cache` combined with `ETag`/`If-None-Match`/`304 Not Modified` is the recommended approach for efficient revalidation without serving stale metadata.
+  - Added requirement to set `Vary: Authorization` when serving `system-instance`-aware (per-tenant) content, to prevent shared caches from serving one tenant's response to another.
+  - Corrected the relationship between resource changes and cache invalidation: either `version` or `lastUpdate` MUST be updated when a resource or its definitions change (not `version` alone), consistent with the `lastUpdate` schema description.
+
 ## [1.16.1]
 
 ### Added
