@@ -23,6 +23,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Clarified that `If-None-Match` and `304 Not Modified` handling is conditional on the provider supplying an `ETag` header.
   - Added guidance to use `lastUpdate` as a crawl optimization signal to skip re-processing unchanged resources.
   - Corrected definition re-fetch trigger to reference either `version` or `lastUpdate` (not `version` alone).
+  - Added requirement to scope cache entries by system instance for system-instance-aware resources, to prevent cross-tenant data leakage.
 
 ## [1.16.1]
 
