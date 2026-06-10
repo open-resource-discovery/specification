@@ -12,6 +12,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
+- Clarified HTTP cache handling guidance for ORD providers:
+  - Downgraded `Cache-Control` and `ETag` headers from MUST and RECOMMENDED to both RECOMMENDED because neither is universally required across all deployment topologies.
+  - Added `Cache-Control: no-cache` as the recommended value for ORD metadata endpoints because it allows caching while requiring revalidation before serving a cached response.
+  - Clarified that `Cache-Control: no-cache` combined with `ETag`, `If-None-Match`, and `304 Not Modified` is the recommended approach for efficient revalidation without serving stale metadata.
+  - Required `Vary: Authorization` when serving `system-instance`-aware content to prevent shared caches from serving one tenant's response to another.
+  - Corrected cache invalidation guidance so either `version` or `lastUpdate` MUST be updated when a resource or its definitions change.
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
 - Defined OData annotation identity as term plus optional qualifier, required OData v4 EDMX annotations to use reconciled external `<Annotations Target="...">` blocks, and made OData v2 EDMX overlay application explicitly unsupported.
 - Clarified EDMX action semantics, its annotation-only restriction, CSDL JSON annotation-set updates for concept-level selectors, and CSDL JSON enum-member actions.
