@@ -10,6 +10,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.16.2]
+
 ### Changed
 
 - Clarified HTTP cache handling guidance for ORD providers:
