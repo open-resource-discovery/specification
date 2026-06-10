@@ -18,6 +18,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Clarified that `Cache-Control: no-cache` combined with `ETag`/`If-None-Match`/`304 Not Modified` is the recommended approach for efficient revalidation without serving stale metadata.
   - Added requirement to set `Vary: Authorization` when serving `system-instance`-aware (per-tenant) content, to prevent shared caches from serving one tenant's response to another.
   - Corrected the relationship between resource changes and cache invalidation: either `version` or `lastUpdate` MUST be updated when a resource or its definitions change (not `version` alone), consistent with the `lastUpdate` schema description.
+- Clarified HTTP cache handling guidance for ORD aggregators:
+  - Downgraded the requirement to implement cache handling from MUST to SHOULD, as provider-side caching headers are themselves only RECOMMENDED.
+  - Clarified that `If-None-Match` and `304 Not Modified` handling is conditional on the provider supplying an `ETag` header.
+  - Added guidance to use `lastUpdate` as a crawl optimization signal to skip re-processing unchanged resources.
+  - Corrected definition re-fetch trigger to reference either `version` or `lastUpdate` (not `version` alone).
 
 ## [1.16.1]
 

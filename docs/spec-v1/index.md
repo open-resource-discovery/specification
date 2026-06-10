@@ -529,14 +529,18 @@ When ETags are derived from the response body, any change to the document conten
 ##### ORD Consumer Cache Handling
 
 An arbitrary [ORD consumer](#ord-consumer) MAY implement the following cache handling rules to optimize frequent access.
-An [ORD aggregator](#ord-aggregator) MUST implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
+An [ORD aggregator](#ord-aggregator) SHOULD implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
 
-The `Cache-Control` and `ETag` headers (as described in [ORD Provider Cache Handling](#ord-provider-cache-handling)) MUST be respected and correctly implemented from the client's side.
+If the provider supplies an [`ETag`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) header, the aggregator SHOULD send the stored ETag value in the [`If-None-Match`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) header on subsequent requests and SHOULD treat a [`304 Not Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304) response as confirmation that the previously fetched document is still current.
 
-Referenced definition files MUST only be fetched if they have not been retrieved yet or the `version` has been incremented since the last retrieval.
+If the provider supplies a `lastUpdate` property on resources, the aggregator SHOULD use it to detect whether a resource has changed since the last crawl, and MAY skip re-processing resources whose `lastUpdate` has not changed.
+
+Referenced definition files MUST only be fetched if they have not been retrieved yet or either the `version` or `lastUpdate` of the resource has changed since the last retrieval.
 
 ORD documents and ORD resources that have been marked as [system-instance-aware](#system-instance-aware) MUST each be fetched per tenant.
 If they are [system-instance-unaware](#system-instance-unaware) they SHOULD only be fetched once per system.
+
+When caching [system-instance-aware](#system-instance-aware) resources, the aggregator MUST scope its cache entries by system instance to prevent cross-tenant data leakage. Keying the cache by URL alone is insufficient — the same URL returns different content per tenant.
 
 ### ORD Aggregation
 
