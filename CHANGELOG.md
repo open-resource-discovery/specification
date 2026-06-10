@@ -23,6 +23,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Clarified that `If-None-Match` and `304 Not Modified` handling is conditional on the provider supplying an `ETag` header.
   - Added guidance to use `lastUpdate` as a crawl optimization signal to skip reprocessing unchanged resources.
   - Corrected the definition refetch trigger to reference either `version` or `lastUpdate`.
+  - Required cache entries for system-instance-aware resources to be scoped by system instance to prevent cross-tenant data leakage.
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
 - Defined OData annotation identity as term plus optional qualifier, required OData v4 EDMX annotations to use reconciled external `<Annotations Target="...">` blocks, and made OData v2 EDMX overlay application explicitly unsupported.
 - Clarified EDMX action semantics, its annotation-only restriction, CSDL JSON annotation-set updates for concept-level selectors, and CSDL JSON enum-member actions.
