@@ -230,6 +230,8 @@ export interface OverlaySystemInstance {
   /**
    * Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.
    * By providing the base URL, relative URLs in the overlay are resolved relative to it.
+   *
+   * The `baseUrl` MUST NOT contain a trailing slash.
    */
   baseUrl?: string;
   /**
@@ -281,6 +283,8 @@ export interface OverlaySystemInstance1 {
   /**
    * Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.
    * By providing the base URL, relative URLs in the overlay are resolved relative to it.
+   *
+   * The `baseUrl` MUST NOT contain a trailing slash.
    */
   baseUrl?: string;
   /**

@@ -53,6 +53,11 @@ spec:
       mandatory: true
       constraints:
         minLength: 1
+    - name: 'aiHint'
+      type: 'string'
+      description: "Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.\nIntentionally separate from human-facing `description` so both can evolve independently.\nSHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nFor guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources)."
+      constraints:
+        minLength: 1
     - name: 'partOfPackage_ID'
       type: 'guid'
       description: "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package."
@@ -63,7 +68,7 @@ spec:
     - name: 'partOfGroups_ID'
       type: 'guid'
       array: true
-      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
+      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together.\n\n**Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose\ngroup assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.\nSee [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types)."
     - name: 'defaultConsumptionBundle_ID'
       type: 'guid'
       description: "References the default Consumption Bundle to use for this resource.\n\nMUST be a valid reference to a [Consumption Bundle](#consumption-bundle) ORD ID.\n\nCan be used by clients to make a deterministic and preferred choice when multiple options are available.\n\nThe value MUST be an existing option in the corresponding `partOfConsumptionBundles` array."
@@ -73,10 +78,10 @@ spec:
     - name: 'partOfProducts_ID'
       type: 'guid'
       array: true
-      description: "List of products the resources of the Package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+      description: "List of products this package and its resources are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.\nResources that belong to a different product than their package can override this directly.\n\nEvery ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.\nSetting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources."
     - name: 'version'
       type: 'string'
-      description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented."
+      description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented."
       mandatory: true
       constraints:
         pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
@@ -92,7 +97,7 @@ spec:
       mandatory: true
     - name: 'releaseStatus'
       type: 'string'
-      description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details."
+      description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details."
       mandatory: true
     - name: 'disabled'
       type: 'boolean'
@@ -120,7 +125,7 @@ spec:
     - name: 'entryPoints'
       type: 'string'
       array: true
-      description: "List of [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the target host.\n\nIf the API resource can be accessed through an entry point, it MUST be described here.\n\nThe list of entry points MUST not include duplicates.\nIf multiple entry points are provided they MUST be arbitrarily exchangeable without effects.\nThis means that the URLs are just an alias to each other and the `resourceDefinitions` apply to all entry points equally.\nIn case of multiple entry points it is RECOMMENDED to provide a `defaultEntryPoint` through `partOfConsumptionBundles`.\nThe entry point URLs SHOULD match with the target host(s) in the resource definition files (e.g. OpenAPI `servers`).\nIf there is no match, the information in ORD takes precedence.\n\n**Provider View:**\nIf the URL is relative to the system that describes the ORD information,\nit is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.\nIf the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.\nIf the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.\nThe provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.\n\n**Consumer View**:\nWhen fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs."
+      description: "List of [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the target host.\n\nIf the API resource can be accessed through an entry point, it MUST be described here.\n\nThe list of entry points MUST not include duplicates.\nIf multiple entry points are provided they MUST be arbitrarily exchangeable without effects.\nThis means that the URLs are just an alias to each other and the `resourceDefinitions` apply to all entry points equally.\nIn case of multiple entry points it is RECOMMENDED to provide a `defaultEntryPoint` through `partOfConsumptionBundles`.\nThe entry point URLs SHOULD match with the target host(s) in the resource definition files (e.g. OpenAPI `servers`).\nIf there is no match, the information in ORD takes precedence.\n\n**Provider View:**\nRelative entry point URLs are resolved against `describedSystemInstance`.`baseUrl` (the described system's base URL).\nIt is RECOMMENDED to use relative references and (if known) to provide `describedSystemInstance`.`baseUrl`.\nIf the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.\nIf the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.\nThe provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.\n\nNote: this is distinct from relative resource definition URLs, which resolve against the document root `baseUrl`.\nSee [Relative URL Resolution](../index.md#relative-url-resolution) for full rules including the aggregator-override behavior.\n\n**Consumer View**:\nWhen fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs."
     - name: 'direction'
       type: 'string'
       description: "Direction of the API Resource consumption.\nIf not provided, \"inbound\" is assumed.\n\nIn case of SOAP APIs, the direction is already indicated through the `apiProtocol`, making this property redundant and optional. But if it is provided, it MUST not be in contradiction with the `apiProtocol` direction."
@@ -224,7 +229,7 @@ spec:
             minLength: 1
         - name: 'releaseStatus'
           type: 'string'
-          description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details."
+          description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details."
           mandatory: true
         - name: 'date'
           type: 'date'
@@ -258,7 +263,7 @@ spec:
             pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
         - name: 'url'
           type: 'string'
-          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL (to base URL)."
+          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.\n\nIt is RECOMMENDED to provide a relative URL.\nIf relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL)."
           mandatory: true
         - name: 'visibility'
           type: 'string'
@@ -344,7 +349,7 @@ spec:
             pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
         - name: 'url'
           type: 'string'
-          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.\n\nThe link target SHOULD be absolute and SHOULD be openly accessible.\nIf a relative link is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl)."
+          description: "[URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.\n\nThe link target SHOULD be absolute and SHOULD be openly accessible.\nIf a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL)."
           mandatory: true
     - name: 'Link'
       metadataProperties:
@@ -390,7 +395,7 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: true
       managedByProperty: 'partOfGroups_ID'
-      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
+      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together.\n\n**Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose\ngroup assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.\nSee [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types)."
       reverseRelation:
         relationPropertyName: 'apiResourceMembers'
     - propertyName: 'partOfConsumptionBundles'
@@ -408,7 +413,7 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: true
       managedByProperty: 'partOfProducts_ID'
-      description: "List of products the resources of the Package are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains."
+      description: "List of products this package and its resources are a part of.\n\nMUST be a valid reference to a [Product](#product) ORD ID.\n\n`partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.\nResources that belong to a different product than their package can override this directly.\n\nEvery ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.\nSetting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources."
     - propertyName: 'relatedApiResources'
       relatedTypeName: 'RelatedApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
@@ -426,7 +431,7 @@ spec:
     - propertyName: 'compatibleWith'
       relatedTypeName: 'ApiCompatibility'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.\n\nServes as a declaration of compatible implementation of API contract, effectively functioning as an \"implementationOf\" relationship. The data that compatible APIs return follow the same schema, but itself can be different.\nThis means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page."
+      description: "A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.\nIt does not imply the same endpoints, security or tenant specific configuration is used.\n\nServes as a declaration of compatible implementation of API contract, effectively functioning as an \"implementationOf\" relationship. The data that compatible APIs return follow the same schema, but itself can be different.\nThis means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page."
     - propertyName: 'exposedEntityTypes'
       relatedTypeName: 'ExposedEntityType'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

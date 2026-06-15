@@ -16,7 +16,7 @@ Exceptions are only allowed on a case by case basis.
 This policy level is based on various SAP guidelines and rules - most of them which are already established.
 It defines the core rules and guidelines that are shared across SAP, although more specific rules and guidelines MAY be applied on top.
 
-**All constraints of the ORD specification itself still apply (valid ORD document). The constraints described here come on top.**
+**All constraints of the ORD specification itself still apply (valid ORD document). The constraints described here come on top and may be stricter than the base spec where the base spec intentionally leaves room for exceptional use cases.**
 
 ## General Policies
 
@@ -177,6 +177,11 @@ The following constraints apply in addition to the constraints defined in the [O
       - Events can only be consumed at an intermediary, i.e., the SAP Event Mesh.
       - Consequently, the producing application cannot describe how they are eventually consumed.
 - SAP Event Catalogs SHOULD be validated via the SAP API Metadata Validator, using `sap:core:v1` compliance level.
+
+### Entity Type
+
+- For [Entity Types](../../spec-v1/interfaces/Document.md#entity-type):
+  - Entity Type definitions MUST have `visibility` set to either `private` or `internal` (stricter than the base spec, which permits `public` for exceptional open-standardization cases).
 
 ### Extensible
 

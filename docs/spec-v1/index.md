@@ -3,7 +3,7 @@ sidebar_position: 0
 title: ORD Specification
 ---
 
-# Open Resource Discovery Specification 1.15
+# Open Resource Discovery Specification 1.16
 
 ## Notational Conventions
 
@@ -189,7 +189,7 @@ Manual import of the [ORD document](#ord-document) as a JSON file into an intere
 
 - The system instances do not need to know each other or be integrated in any way
 - The ORD document alone is sufficient for this type of consumption
-- All URLs in the document MUST be resolvable (e.g. through `baseUrl` or full URLs)
+- All URLs in the document MUST be resolvable (e.g. through the document root `baseUrl`, `describedSystemInstance.baseUrl`, or as full absolute URLs — see [Relative URL Resolution](#relative-url-resolution))
 
 #### Push Transport
 
@@ -267,7 +267,7 @@ For example, a configuration could explicitly disable an API. In this case, the 
 Some systems are even extensible in a way that customers can add new APIs or alter existing APIs at run-time.
 Those changes MUST be documented via ORD.
 Please note that some changes only affect the referenced [resource definitions](#resource-definition) and not the ORD document itself.
-However, the change in the resource definition MUST be indicated through a version increment (see [Version and Lifecycle](#version-and-lifecycle)).
+However, the change in the resource definition MUST be indicated through a version increment (see [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md)).
 
 #### Considerations on the Granularity of ORD Documents
 
@@ -309,6 +309,79 @@ Additional information or categorization can be added through the generic `Label
 
 If such custom values or labels are relied upon by more than one application or team, they SHOULD be standardized through ORD.
 Please [create an issue](https://github.com/open-resource-discovery/specification/issues) to request this.
+
+#### Relative URL Resolution
+
+ORD documents may contain both absolute and relative URLs.
+ORD aggregators MUST resolve all relative URLs to absolute URLs before exposing them to ORD consumers.
+
+##### URL Reference Types
+
+ORD recognizes three types of URL references:
+
+| Pattern | Type | Resolved against |
+|---|---|---|
+| `https://example.com/path` | Absolute URL | Used as-is — no resolution needed |
+| `/path/file.json` | Base-URL-relative (leading slash) | The applicable **base URL** (see below) |
+| `./path/file.json`, `../path/file.json`, `path/file.json` | Document-relative | The URL/location of the **current document** |
+
+**Base-URL-relative URLs** (leading slash) are resolved by appending the reference path to the applicable base URL: `baseUrl + "/" + ref_path_without_leading_slash`.
+For example, if `baseUrl` is `https://provider.com/api/v1`, then `/metadata/schema.json` resolves to `https://provider.com/api/v1/metadata/schema.json`.
+
+If no base URL is known through any other means, it is derived from the [ORD configuration endpoint](#ord-configuration-endpoint) URL by stripping the `/.well-known/open-resource-discovery` suffix — consistent with how the ORD Configuration's implicit `baseUrl` is defined. For example, if the config endpoint is `https://provider.com/api/v1/.well-known/open-resource-discovery`, the derived base URL is `https://provider.com/api/v1`.
+
+**Document-relative URLs** (with `./`, `../`, or bare path without leading slash) are resolved per [RFC 3986 Section 5](https://datatracker.ietf.org/doc/html/rfc3986#section-5) against the URL from which the current document was retrieved.
+For example, if a document was fetched from `https://provider.com/ord/v1/documents/apis.json`, then `./schemas.json` resolves to `https://provider.com/ord/v1/documents/schemas.json`.
+This pattern is particularly useful for static ORD providers serving files from a file system or git repository, where relative references remain valid regardless of where the directory tree is hosted.
+
+> **Note:** Per RFC 3986, `path/file.json` (no leading slash, no dot prefix) is equivalent to `./path/file.json` — both are document-relative.
+
+##### Base URL for Base-URL-Relative URLs
+
+The base URL used for resolving base-URL-relative URLs (leading slash) depends on **what** the URL references, because two different systems may be involved:
+
+| URL type | Resolved against | Declared via |
+|---|---|---|
+| **Metadata files**: `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`, `APIEventResourceLink.url`, `DataProductLink.url` | Provider base URL | Document root `baseUrl` |
+| **Entry points**: `entryPoints[]` | Described system base URL | `describedSystemInstance.baseUrl` |
+
+This distinction matters when the ORD provider and the described system differ (e.g., a central aggregator describing multiple systems on its behalf).
+In the common case where the provider *is* the described system, both base URLs are identical and the distinction has no practical effect.
+
+##### Provider Base URL (metadata files)
+
+Metadata files such as resource definitions and document links are physically hosted by the **ORD provider** — the system that serves the ORD document.
+Their base-URL-relative URLs are resolved against the provider base URL using the following order (applied by ORD aggregators):
+
+1. **Document root `baseUrl`** — takes precedence when explicitly set in the document.
+2. **Fetch context URL** (pull scenarios only) — the URL the ORD document was fetched from.
+3. **`describedSystemInstance.baseUrl`** — backward-compatibility fallback for documents predating version 1.15 that do not set the document root `baseUrl`. In the common case where provider and described system are the same, this yields the same result.
+4. **ORD configuration endpoint URL** — if the aggregator knows the provider's `/.well-known/open-resource-discovery` endpoint, the base URL is derived by stripping that suffix. This ensures consistent fallback behavior with how `Configuration.baseUrl` is implicitly computed when omitted.
+
+##### Described System Base URL (entry points)
+
+Entry points are runtime endpoints on the **described system** — the system being documented.
+Their base-URL-relative URLs are resolved against the described system base URL:
+
+1. **Aggregator-authoritative URL** — ORD aggregators that hold authoritative knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value. This is an aggregator decision, appropriate when the aggregator has more reliable or up-to-date information than the provider.
+2. **`describedSystemInstance.baseUrl`** — the value declared in the document.
+
+> **The asymmetry is intentional.** Aggregators commonly have landscape authority over the systems they describe (rule 1 above), but not over the system that merely *serves* ORD documents. For the described system, deferring to the aggregator's landscape knowledge is appropriate; for the provider, the document is the authoritative source, especially in push scenarios where no fetch context exists.
+
+##### Resolution Examples
+
+Given:
+- Document root `baseUrl`: `https://provider.com/api/v1`
+- `describedSystemInstance.baseUrl`: `https://system.com`
+- Document fetched from: `https://provider.com/api/v1/ord/documents/apis.json`
+
+| Reference in document | Context | Resolves to |
+|---|---|---|
+| `https://cdn.example.com/schema.json` | Any | `https://cdn.example.com/schema.json` |
+| `/metadata/schema.json` | Metadata file | `https://provider.com/api/v1/metadata/schema.json` |
+| `/v1/orders` | Entry point | `https://system.com/v1/orders` |
+| `./related/events.json` | Any | `https://provider.com/api/v1/ord/documents/related/events.json` |
+| `../shared/types.json` | Any | `https://provider.com/api/v1/ord/shared/types.json` |
 
 ### ORD Provider API
 
@@ -491,7 +564,7 @@ If multiple systems/system instances describe the same ORD taxonomy instance, th
 - If both instances have the same version but different content, the most recent information takes precedence.
   This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
 - If a breaking change was introduced to a taxonomy entity (e.g. the meaning changed), a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](#version-and-lifecycle).
+  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
 
 ###### Merging ORD Resources
 
@@ -513,7 +586,7 @@ If the same system instances describe the same ORD resource, the following mergi
 - If both instances have the same version but different content, the most recent information takes precedence.
   This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
 - If a breaking change was introduced to an ORD resource, a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](#version-and-lifecycle).
+  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
 
 ##### Content Enrichment and Preservation
 
@@ -536,10 +609,8 @@ The following rules need to be implemented by ORD aggregators:
     - Values of the same label key will be merged.
     - Duplicate values of the same label key will be removed.
 - The aggregator MUST rewrite all URLs for [hosted resource definitions](#hosting-resource-definitions) to point to their own hosted URLs.
-- The aggregator MUST convert all relative URLs to absolute URLs
-  - Relative URLs MUST be rewritten according to the detected [base URL](#base-url) of the described system instance.
-    - The base URL MUST be made known to the aggregator, either via context (e.g. service discovery or trust context) or by explicitly describing it in the ORD document via `describedSystemInstance`.`baseUrl`.
-    - When both bits of information are available and differ, the aggregator MAY decide to give precedence to the context information.
+- The aggregator MUST convert all relative URLs to absolute URLs.
+  See [Relative URL Resolution](#relative-url-resolution) for the full resolution rules, including the ordering for provider base URL and described system base URL.
 - The information on the [described system instance](#described-system-instance) SHOULD be added if it is missing.
   - If system instance information is missing, the aggregator SHOULD obtain and enrich the ORD information, for example, via service discovery or trust context.
   - If the ORD aggregator has additional information on a system instance that is not standardized through the ORD interfaces, they MAY be added and exposed through the ORD Discovery API.
@@ -865,8 +936,8 @@ It MUST be constructed as defined here:
   - MUST be incremented if the resource introduced an incompatible API change. This correlates with a major version change in [Semantic Versioning](https://semver.org/).
     - If the described resource has a `releaseStatus` of `beta`, this rule can be ignored. Incompatible changes MAY be introduced in `beta` resources.
   - MUST NOT be incremented if non-breaking changes have been made to the resource; the updated resource should replace the current one.
-  - The `<majorVersion>` and the major version of [`version`](#version-and-lifecycle) MUST be identical.
-  - In the case of REST APIs, the `<majorVersion>` MUST also equal the API Version. Please be aware that most organizations have defined API Compatibility rules that MUST be followed in this context.
+  - The `<majorVersion>` and the major version of [`version`](./concepts/versioning-and-lifecycle.md#relationship-between-version-and-ord-id-majorversion) SHOULD be identical.
+  - If the REST API expresses its version in the URL path (e.g. `/v2/`), `<majorVersion>` SHOULD match it.
 
 - The ORD ID MUST be globally unique.
 
@@ -1017,6 +1088,10 @@ A Specification ID MUST match the following [regular expression](https://en.wiki
 
 ## Version and Lifecycle
 
+ORD resources carry a `version` (full [SemVer](https://semver.org/)) and a `<majorVersion>` fragment in their [ORD ID](#ord-id) that encodes breaking-change boundaries. Lifecycle is managed via `releaseStatus`, `deprecationDate`, and `sunsetDate`.
+
+For a detailed explanation with practical guidance, see the [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md) concept page.
+
 ### Versioning
 
 The `version` expresses the complete/full resource version number of an [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy).
@@ -1026,7 +1101,7 @@ It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and
 The version SHOULD be changed when the resource or the resource definition changed in any way relevant to consumers.
 If (potentially runtime) customization/extension leads to changes in the resource definition, a build number SHOULD be added or incremented to indicate that this change happened.
 
-When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
 If the resource definition also contains a version number, it SHOULD be in sync with the resource `version` (if possible).
 
 When a breaking change is introduced, the rules on constructing [ORD IDs](#ord-id) will ensure that the old version of the resource is not replaced.
@@ -1049,11 +1124,6 @@ When an ORD resource has been sunset or an ORD taxonomy is no longer used, it:
 - MUST be removed from ORD or set the `releaseStatus` to `sunset`.
 - MUST explicitly set a [`Tombstone`](interfaces/Document.md#ord-document_tombstones).
 
-<div className="img-box" style={{aspectRatio: "841/490"}}>
-
-![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
-
-</div>
 
 ## Common REST Characteristics
 
@@ -1205,3 +1275,11 @@ A **base URL** is the consistent part of a [system deployment](#system-deploymen
 From ORD perspective this is the base URL where the discovery starts and where the [ORD config endpoint](#ord-configuration-endpoint) location is relative to.
 In most cases the base URL consists of the URL protocol, domain name and (if necessary) the port, for example `https://example.com`.
 In rare cases, a relative path (e.g. including a tenant ID) might be included, for example `https://example.com/tenantA/`.
+
+In ORD, two base URLs can be involved in a single document:
+
+- **Provider base URL**: the base URL of the system that *serves* the ORD document and hosts metadata files (e.g., resource definition files). Declared via the document root `baseUrl` property.
+- **Described system base URL**: the base URL of the system being described (its entry points). Declared via `describedSystemInstance.baseUrl`.
+
+In the common case where the ORD provider and the described system are the same, both values are identical.
+See [Relative URL Resolution](#relative-url-resolution) for how these are used to resolve relative URLs.

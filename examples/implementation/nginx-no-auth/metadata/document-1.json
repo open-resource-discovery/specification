@@ -1,5 +1,5 @@
 {
-  "openResourceDiscovery": "1.15",
+  "openResourceDiscovery": "1.16",
   "policyLevels": ["sap:core:v1"],
   "perspective": "system-version",
   "describedSystemType": {

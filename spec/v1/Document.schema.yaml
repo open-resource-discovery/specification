@@ -58,8 +58,9 @@ properties:
       - "1.13"
       - "1.14"
       - "1.15"
+      - "1.16"
     examples:
-      - "1.15"
+      - "1.16"
 
   description:
     type: string
@@ -73,6 +74,32 @@ properties:
       - |
         This ORD document contains all APIs that are system-instance-aware and have APIs that
         can change their behavior at runtime.
+
+  baseUrl:
+    type: string
+    format: uri
+    x-introduced-in-version: "1.16.0"
+    description: |-
+      Optional [base URL](../index.md#base-url) of the ORD provider system instance that serves this document.
+
+      Used to resolve relative URLs to [resource definition](../index.md#resource-definition) files and resource definition metadata file
+      references within this document (e.g., `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`).
+      This differs from `describedSystemInstance.baseUrl`, which is used for entry point URLs.
+
+      It may differ from `describedSystemInstance.baseUrl` when an ORD provider describes another system on its behalf.
+      In the common case where the ORD provider and the described system are the same, both values are identical.
+
+      The `baseUrl` MUST NOT contain a trailing slash.
+
+      This property is particularly important in push, offline, and self-contained document scenarios,
+      and REQUIRED when the provider and the described system differ.
+
+      See [Relative URL Resolution](../index.md#relative-url-resolution) for the full resolution order including fallbacks and backward-compatibility rules.
+    pattern: ^http[s]?:\/\/[^:\/\s]+\.[^:\/\s\.]+(:\d+)?(\/[a-zA-Z0-9-\._~]+)*$
+    examples:
+      - "https://example-sap-system.com"
+      - "https://sub.foo.bar.com"
+      - "https://sub.foo.bar.com/api/v1"
 
   perspective:
     type: string
@@ -443,13 +470,13 @@ definitions:
           It SHOULD be changed if the ORD information or referenced resource definitions changed.
           It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
-          When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+          When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
           In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
 
           If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
           The `version` MUST not be bumped for changes in extensions.
 
-          The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+          The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
 
           Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
           For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -533,11 +560,15 @@ definitions:
       partOfProducts: &partOfProducts
         type: array
         description: |-
-          List of products the resources of the Package are a part of.
+          List of products this package and its resources are a part of.
 
           MUST be a valid reference to a [Product](#product) ORD ID.
 
-          `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+          `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+          Resources that belong to a different product than their package can override this directly.
+
+          Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+          Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
         items:
           type: string
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\-]+):()$
@@ -692,6 +723,8 @@ definitions:
       - description
       - version
       - vendor
+    x-recommended:
+     - partOfProducts
     additionalProperties: false
 
   ############################################################################################################
@@ -782,8 +815,7 @@ definitions:
             description: |-
               Metadata can be discovered and accessed by anyone, including customers, partners, and unauthenticated external parties.
 
-              Public resources typically come with stability guarantees, expressed via versioning and follow formal API lifecycle management. For more details see [Version and Lifecycle](../index.md#version-and-lifecycle) section.
-              and follow formal API lifecycle management and deprecation policies.
+              Public resources typically come with stability guarantees, expressed via versioning and formal API lifecycle management. For more details see [Versioning and Lifecycle](../concepts/versioning-and-lifecycle.md).
 
               Example: A REST API that customers use to integrate with your SaaS product.
 
@@ -951,6 +983,19 @@ definitions:
             read existing Request for Quotation data from the SAP S/4HANA Cloud
             or SAP S/4HANA on-Premise.
 
+      aiHint: &aiHint
+        type: string
+        minLength: 1
+        x-introduced-in-version: "1.16.0"
+        description: &aiHintText |-
+          Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+          Intentionally separate from human-facing `description` so both can evolve independently.
+          SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+
+          For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+        examples:
+          - "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools."
+
       ## Assignments to bundling concepts
 
       partOfPackage: &partOfPackage
@@ -997,6 +1042,10 @@ definitions:
           If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
 
           All resources that share the same group ID assignment are effectively grouped together.
+
+          **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+          group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+          See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
 
       partOfConsumptionBundles: &partOfConsumptionBundles
         type: array
@@ -1072,7 +1121,7 @@ definitions:
 
           Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
 
-          See [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+          See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
         oneOf:
           - const: development
             x-introduced-in-version: "1.14.2"
@@ -1232,11 +1281,14 @@ definitions:
           If there is no match, the information in ORD takes precedence.
 
           **Provider View:**
-          If the URL is relative to the system that describes the ORD information,
-          it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
+          Relative entry point URLs are resolved against `describedSystemInstance`.`baseUrl` (the described system's base URL).
+          It is RECOMMENDED to use relative references and (if known) to provide `describedSystemInstance`.`baseUrl`.
           If the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.
           If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.
           The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.
+
+          Note: this is distinct from relative resource definition URLs, which resolve against the document root `baseUrl`.
+          See [Relative URL Resolution](../index.md#relative-url-resolution) for full rules including the aggregator-override behavior.
 
           **Consumer View**:
           When fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs.
@@ -1429,6 +1481,7 @@ definitions:
         type: array
         description: |-
           A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
+          It does not imply the same endpoints, security or tenant specific configuration is used.
 
           Serves as a declaration of compatible implementation of API contract, effectively functioning as an "implementationOf" relationship. The data that compatible APIs return follow the same schema, but itself can be different.
           This means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.
@@ -1691,6 +1744,10 @@ definitions:
         examples:
           - |
             This event is raised by the SAP S/4HANA Cloud system when an invoice document is cancelled.
+
+      aiHint:
+        <<: *aiHint
+        examples: []
 
       ## Assignments to groupings
 
@@ -1985,6 +2042,10 @@ definitions:
           - |
             A workforce person is a natural person with a work agreement or relationship in form of a work assignment; it can be an employee or a contingent worker.
 
+      aiHint:
+        <<: *aiHint
+        examples: []
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -2046,7 +2107,7 @@ definitions:
         description: |-
           Defining the abstraction level of the entity type using the DDD terminology.
 
-          In Domain-Driven Design, there is a concept of entities and aggregates.
+          In Domain-Driven Design, there is a concept of domain entities and aggregates.
           There are root entities which may contain further sub entities by composition.
           The complete "package" is then called an aggregate, which gets its name and identity from the root entity.
           An aggregate is a cluster of domain objects that can be treated as a single unit.
@@ -2084,6 +2145,15 @@ definitions:
           $ref: "#/definitions/RelatedEntityType"
         examples:
           - [{ "ordId": "sap.odm:entityType:WorkforcePerson:v1" }]
+
+      definitions:
+        type: array
+        x-introduced-in-version: "1.16.0"
+        x-feature-status: beta
+        description: |-
+          List of available machine-readable definitions that describe the entity type's internal model in detail.
+        items:
+          $ref: "#/definitions/EntityTypeDefinition"
 
       ## Links & Extensibility
 
@@ -2135,6 +2205,119 @@ definitions:
 
   ############################################################################################################
 
+  EntityTypeDefinition:
+    type: object
+    title: Entity Type Definition
+    x-introduced-in-version: "1.16.0"
+    x-feature-status: beta
+    x-ums-type: "custom"
+    description: |-
+      Machine-readable definition that describes the entity type's internal model structure.
+
+      Entity Type definitions represent an internal implementation detail - the underlying domain model of your application.
+      This can be used to describe a shared internal model multiple APIs and Events are based on.
+      However, interaction with the actual data happens through API Resources or Event Resources that expose these entity types with a defined interface and contract.
+
+      Each definition is an alternative description format for the same entity type.
+      The same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
+
+      **Why Entity Types are private by default**: Since entity type definitions are internal implementation details, they SHOULD be marked as `private` visibility by default.
+
+      **Finding related APIs**: To discover which APIs expose a particular Entity Type, check the API Resource's `relatedEntityTypes` property.
+    properties:
+      type:
+        description: |-
+          Type of the entity type resource definition.
+
+          MUST be either:
+          - any valid [Specification ID](../index.md#specification-id), or
+          - one of the pre-defined values listed below.
+        type: string
+        anyOf:
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            description: |-
+              Any valid [Specification ID](../index.md#specification-id).
+          - const: sap-csn-interop-effective-v1
+            description: |-
+              [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.
+              The `mediaType` MUST be set to `application/json`.
+        examples:
+          - "sap-csn-interop-effective-v1"
+          - "sap.example:entity-model-definition:v1"
+
+      mediaType:
+        description: |-
+          [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) that describes the format of the definition.
+
+          Media Types under `application/*` and `text/*` are allowed.
+          If no Media Type is registered for the referenced file,
+          `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+        type: string
+        pattern: ^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$
+        examples:
+          - application/json
+          - text/plain
+
+      url:
+        type: string
+        format: uri-reference
+        description: |-
+          [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
+
+          It is RECOMMENDED to provide a relative URL (to base URL).
+        examples:
+          - /entityTypes/BusinessPartner/model.json
+
+      accessStrategies:
+        type: array
+        description: |-
+          List of supported access strategies for retrieving metadata from the ORD provider.
+          An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
+
+          The access strategies only apply to the metadata access and not the actual API access.
+          The actual access to the APIs for clients is described via Consumption Bundles.
+
+          If this property is not provided, the definition URL will be available through the same access strategy as this ORD document.
+          It is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.
+        items:
+          $ref: "#/definitions/AccessStrategy"
+        minItems: 1
+        examples:
+          - - type: "open"
+
+      visibility:
+        type: string
+        description: |-
+          Who is allowed to access the entity type definition. Defaults to `private`.
+
+          Entity Type definitions are internal implementation details and SHOULD remain `private` by default.
+          Consumers interact with the data through related API Resources, not the internal model directly.
+
+          The visibility MUST be equal to or more restrictive than the Entity Type resource's visibility.
+
+          Only use `public` visibility when the internal model definition itself needs open access for standardization or documentation purposes.
+        oneOf:
+          - const: public
+            description: |-
+              Publicly accessible.
+          - const: internal
+            description: |-
+              Can be accessed by applications and services from the same company / legal entity.
+          - const: private
+            description: |-
+              Can only be accessed by applications and services from the same internal organisation / installation / cluster, identified through the system namespace.
+        default: private
+
+    additionalProperties: false
+    required:
+      - type
+      - mediaType
+      - url
+      - visibility
+
+  ############################################################################################################
+
   DataProduct:
     type: object
     title: Data Product
@@ -2182,6 +2365,11 @@ definitions:
         examples:
           - The data product Customer Order offers access to all online and offline orders submitted by customers. It provides a customer view on the orders. For fulfillment-specific aspects please refer to the data product Fulfillment Order.
 
+      aiHint:
+        <<: *aiHint
+        examples:
+          - "Use this data product to access **customer order** data. Filter by `customerId` and `orderDate` for targeted queries. Output port `customerOrderItems` provides line-item detail."
+
       ## Assignment to Bundles
 
       partOfPackage:
@@ -2208,7 +2396,11 @@ definitions:
 
           MUST be a valid reference to a [Product](#product) ORD ID.
 
-          `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+          `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+          Resources that belong to a different product than their package can override this directly.
+
+          Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+          Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
         minItems: 0
 
       ## Version & Lifecycle
@@ -2690,7 +2882,8 @@ definitions:
         description: |-
           [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
 
-          It is RECOMMENDED to provide a relative URL (to base URL).
+          It is RECOMMENDED to provide a relative URL.
+          If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
         examples:
           - /api/openApi.yaml
           - https://example.com/api/API_RFQ_PROCESS_SRV/$metadata
@@ -2876,6 +3069,11 @@ definitions:
         type: string
         minLength: 1
         description: *descriptionText
+
+      aiHint:
+        <<: *aiHint
+        examples:
+          - "Invoke this agent to **resolve** open dispute cases. Provide the `caseId`; the agent autonomously gathers evidence, proposes resolution, and awaits approval before closing."
 
       partOfPackage:
         <<: *partOfPackage
@@ -3323,6 +3521,10 @@ definitions:
         minLength: 1
         description: *descriptionText
 
+      aiHint:
+        <<: *aiHint
+        examples: []
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -3703,6 +3905,9 @@ definitions:
         items:
           $ref: "#/definitions/CapabilityIntegrationAspect"
 
+      labels:
+        <<: *labels
+
     additionalProperties: false
     required:
       - title # TODO: Do we need a mandatory title?
@@ -3732,7 +3937,12 @@ definitions:
       subset:
         type: array
         description: |-
-          List of individual API operations that are sufficient to achieve the aspect.
+          Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.
+
+          If `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.
+          If `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.
+
+          For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
         items:
           $ref: "#/definitions/ApiResourceIntegrationAspectSubset"
 
@@ -3745,6 +3955,9 @@ definitions:
       #     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+]*):(consumptionBundle):([a-zA-Z0-9._\-]+):(alpha|beta|v[0-9]+|)$
       #   examples:
       #     - ['sap.foo:consumptionBundle:basicAuth:v1']
+
+      labels:
+        <<: *labels
 
     additionalProperties: false
     required:
@@ -3795,6 +4008,9 @@ definitions:
       # consumptionBundleRestriction:
       #   <<: *consumptionBundleRestriction
 
+      labels:
+        <<: *labels
+
     additionalProperties: false
     required:
       - ordId
@@ -3834,10 +4050,13 @@ definitions:
     x-introduced-in-version: "1.10.0"
     x-ums-type: "custom"
     description: |-
-      Defines that API Resource Integration Aspect only requires a subset of the referenced contract.
+      Defines that the API Resource Integration Aspect only requires a subset of the referenced contract.
 
       For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
-      This information helps to narrow down what is really necessary and can help optimize the integration.
+      Without a `subset`, the dependency implies access to the full resource.
+      With a `subset`, only the listed operations are required, allowing consumers to understand /load only the minimal surface area needed.
+
+      For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
     properties:
       operationId:
         type: string
@@ -3872,6 +4091,9 @@ definitions:
 
       minVersion:
         <<: *minVersion
+
+      labels:
+        <<: *labels
 
     additionalProperties: false
     required:
@@ -4069,7 +4291,7 @@ definitions:
           [URL](https://tools.ietf.org/html/rfc3986) of the link.
 
           The file target MAY be relative or absolute.
-          If a relative URL is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+          If a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
           If an absolute URL is given, then it MUST be openly accessible.
         examples:
           - "/ord/v1/Ariba/Files/DeveloperPortal/SAP-Ariba-developer-portal.pdf"
@@ -4229,7 +4451,7 @@ definitions:
           [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.
 
           The link target SHOULD be absolute and SHOULD be openly accessible.
-          If a relative link is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+          If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
         examples:
           - https://example.com/some/absolute/url
           - /some/relative/url
@@ -4293,7 +4515,7 @@ definitions:
           [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the Data Product Link.
 
           The link target SHOULD be absolute and SHOULD be openly accessible.
-          If a relative link is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+          If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
         examples:
           - https://example.com/some/absolute/url
 
@@ -4320,10 +4542,16 @@ definitions:
         type: string
         format: uri-reference
         description: |-
-          Optional [base URL](../index.md#base-url) of the **system instance**.
-          By providing the base URL, relative URLs in the document are resolved relative to it.
+          Optional [base URL](../index.md#base-url) of the **described system instance**.
 
-          The `baseUrl` MUST not contain a leading slash.
+          Used to resolve relative [entry point](../index.md#described-system-base-url-entry-points) URLs within this document.
+          Relative URLs to metadata files (e.g., `resourceDefinitions[].url`) are resolved against
+          the document root `baseUrl` instead — see [Relative URL Resolution](../index.md#relative-url-resolution).
+
+          ORD aggregators that hold authoritative knowledge of the described system's base URL
+          (e.g., from landscape configuration or service discovery) MAY prefer that over this value.
+
+          The `baseUrl` MUST NOT contain a trailing slash.
 
           MUST be provided if the base URL is not known to the ORD aggregators.
           MUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.
@@ -4665,6 +4893,15 @@ definitions:
 
           This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
 
+      visibility:
+        <<: *visibility
+        x-introduced-in-version: "1.16.0"
+        default: "public"
+        description: |-
+          Defines who is allowed to discover and access this Group Type and its metadata.
+          Defaults to `public` if not set.
+          See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
+
     required:
       - groupTypeId
       - title
@@ -4745,6 +4982,15 @@ definitions:
           propertyName: inversePartOfGroup
           description: |-
             The groups that are part of the given Group, assigned from the inverse direction.
+
+      visibility:
+        <<: *visibility
+        x-introduced-in-version: "1.16.0"
+        default: "public"
+        description: |-
+          Defines who is allowed to discover and access this Group and its metadata.
+          Defaults to `public` if not set.
+          See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
 
     required:
       - groupId
@@ -5270,7 +5516,7 @@ definitions:
             x-introduced-in-version: "1.15.0"
             description: |-
               The source resource patches one or more definition files of the target resource.
-              Used on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch.
+              Used on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch.
         examples:
           - "foo.bar:relationName"
     required:
@@ -5316,7 +5562,7 @@ definitions:
             x-introduced-in-version: "1.15.0"
             description: |-
               The source resource patches one or more definition files of the target resource.
-              Used on [ORD Overlay Resources](#ord-overlay-resource) to declare which API or Event resource they patch.
+              Used on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch.
         examples:
           - "foo.bar:relationName"
     required:

@@ -93,7 +93,7 @@ Key aspects of this example:
 - **`ordId`**: A globally unique identifier for the agent
 - **`exposedApiResources`**: Links to the API(s) through which the agent can be invoked (e.g., an A2A API)
 - **`integrationDependencies`**: Declares what external resources the agent requires to function
-- **`relatedEntityTypes`**: Documents which domain bjebusiness entities the agent operates on
+- **`relatedEntityTypes`**: Documents which domain business entities the agent operates on
 - **`labels`**: Extensible key-value pairs for additional metadata like LLM models used
 
 ## Connectivity & Protocols
@@ -177,32 +177,41 @@ An Integration Dependency groups its requirements into **aspects**, and each asp
 -   **MCP Servers (`mcpResources`):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
     MCP Servers expose tools, resources, and prompts that the agent's LLM can invoke at runtime.
     The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections.
+    When only a subset of tools is needed, the `subset` field on an `apiResources` reference narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
+    This keeps LLM context lean by loading only the relevant tool descriptions and scopes permission grants to the minimal required surface area.
 -   **Other Agents (`agents`):** Agents can depend on other Agents, enabling **agent chaining** and multi-agent workflows.
     One agent may orchestrate or delegate subtasks to specialized agents, and those dependencies are made explicit through Integration Dependencies.
     This allows the system landscape to model and reason about agent-to-agent relationships.
--   **Skills (`capabilities`):** Agents can depend on  **[Agent Skills](../interfaces/Document#capability)** (Capabilities with `type: "agent-skill"`).
+-   **Skills (`capabilities`):** Agents can depend on **[Agent Skills](../interfaces/Document#capability)** (Capabilities with `type: "agent-skill"`).
     Skills are discrete, reusable capability packages (instructions, scripts, resources) that can be shared across multiple agents.
     Declaring a skill dependency allows the runtime to load the skill on demand and makes the dependency discoverable in the catalog.
 -   **Other Resources (`apiResources` / `eventResources`):** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
 
-Here's an example of an Integration Dependency that covers all three AI-native dependency types:
+Here's an example of an Integration Dependency that covers all AI-native dependency types.
+Without `subset` on an `apiResources` reference, the dependency implies access to all operations of the referenced resource:
 
 ```json
 {
   "integrationDependencies": [
     {
-      "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
-      "title": "Dispute Case Management Integration",
-      "shortDescription": "Integration dependency for dispute case management system",
+      "ordId": "foo.app1:integrationDependency:DisputeAgent-mcpDeps:v1",
+      "title": "MCP Tool Dependencies for Dispute Agent",
+      "shortDescription": "MCP tools required by the Dispute Agent at runtime.",
       "mandatory": true,
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo:package:MyPackage:v1",
       "aspects": [
         {
-          "title": "Case Management API Access",
-          "description": "Access to dispute case management APIs",
-          "mandatory": true,
           "apiResources": [
-            { "ordId": "sap.bar:apiResource:DisputeResolutionAPI:v1" }
+            {
+              "ordId": "foo.app2:apiResource:DisputeToolsMCPServer:v1",
+              "subset": [
+                { "operationId": "searchDisputeCases" },
+                { "operationId": "getDisputeDetails" },
+                { "operationId": "updateDisputeStatus" }
+              ]
+            }
           ]
         },
         {
@@ -234,6 +243,35 @@ Here's an example of an Integration Dependency that covers all three AI-native d
   ]
 }
 ```
+
+## AI Hints on ORD Resources
+
+The following ORD resource types support an `aiHint` property: API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities.
+
+`aiHint` provides guidance specifically for AI consumers such as LLMs and agent orchestrators, and is intentionally separate from human-facing `description` and `shortDescription` fields so both can evolve independently.
+
+```json
+{
+  "apiResources": [
+    {
+      "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1",
+      "title": "Dispute Resolution Agent",
+      "description": "Manages dispute cases in the system.",
+      "aiHint": "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools. Do not call `DELETE /cases/{id}` unless the case status is `closed`."
+    }
+  ]
+}
+```
+
+### Why a Separate Field?
+
+Human-readable documentation (`description`, `shortDescription`) is written for end users and developers browsing a catalog. AI-targeted guidance has different concerns — it may include tool-use patterns, LLM-specific caveats, or instructions that would read as noise in standard docs. Keeping these separate lets both evolve independently.
+
+### Best Practices
+
+- **Markdown recommended**: The value SHOULD be written in [CommonMark](https://spec.commonmark.org/) Markdown.
+- **Be action-oriented**: Describe *how* to use the resource (verbs, conditions, caveats), not just *what* it is — the `description` already covers that.
+- **Keep it focused**: Aim for a short, dense paragraph rather than exhaustive documentation. Link to detailed docs via the `links` property.
 
 ## Use Cases
 

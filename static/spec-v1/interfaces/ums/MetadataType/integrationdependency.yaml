@@ -61,10 +61,10 @@ spec:
     - name: 'partOfGroups_ID'
       type: 'guid'
       array: true
-      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
+      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together.\n\n**Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose\ngroup assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.\nSee [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types)."
     - name: 'version'
       type: 'string'
-      description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented."
+      description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIn case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented."
       mandatory: true
       constraints:
         pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
@@ -77,7 +77,7 @@ spec:
       mandatory: true
     - name: 'releaseStatus'
       type: 'string'
-      description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../index.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details."
+      description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details."
       mandatory: true
     - name: 'sunsetDate'
       type: 'string'
@@ -153,6 +153,10 @@ spec:
           customTypeName: 'CapabilityIntegrationAspect'
           array: true
           description: 'List of Capability Dependencies.'
+        - name: 'labels'
+          type: 'custom'
+          customTypeName: 'Labels'
+          description: 'Generic labels that can be applied to most ORD information.'
     - name: 'ApiResourceIntegrationAspect'
       metadataProperties:
         - name: 'ordId'
@@ -171,13 +175,23 @@ spec:
           type: 'custom'
           customTypeName: 'ApiResourceIntegrationAspectSubset'
           array: true
-          description: 'List of individual API operations that are sufficient to achieve the aspect.'
+          description: "Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.\n\nIf `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.\nIf `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.\n\nFor more details and examples, see [Integration Dependency](../concepts/integration-dependency)."
+        - name: 'labels'
+          type: 'custom'
+          customTypeName: 'Labels'
+          description: 'Generic labels that can be applied to most ORD information.'
     - name: 'ApiResourceIntegrationAspectSubset'
       metadataProperties:
         - name: 'operationId'
           type: 'string'
           description: "The ID of the individual API operation or tool.\n\nThis MUST be an ID that is understood by the used protocol and resource definition format.\nE.g. for OpenAPI this is the `operationId`, for MCP this is the tool `name`."
           mandatory: true
+    - name: 'Labels'
+      metadataProperties:
+        - name: 'key'
+          type: 'string'
+        - name: 'value'
+          type: 'string'
     - name: 'EventResourceIntegrationAspect'
       metadataProperties:
         - name: 'ordId'
@@ -201,6 +215,10 @@ spec:
           type: 'string'
           array: true
           description: "In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).\n\nIf given, only system types of the defined namespaces are supported as integration partners.\nIf not given, there is no restriction which system type provides the events."
+        - name: 'labels'
+          type: 'custom'
+          customTypeName: 'Labels'
+          description: 'Generic labels that can be applied to most ORD information.'
     - name: 'EventResourceIntegrationAspectSubset'
       metadataProperties:
         - name: 'eventType'
@@ -221,6 +239,10 @@ spec:
           description: "Minimum version of the references resource that the integration requires.\n"
           constraints:
             pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+        - name: 'labels'
+          type: 'custom'
+          customTypeName: 'Labels'
+          description: 'Generic labels that can be applied to most ORD information.'
     - name: 'Link'
       metadataProperties:
         - name: 'title'
@@ -238,12 +260,6 @@ spec:
           description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).'
           constraints:
             minLength: 1
-    - name: 'Labels'
-      metadataProperties:
-        - name: 'key'
-          type: 'string'
-        - name: 'value'
-          type: 'string'
     - name: 'DocumentationLabels'
       metadataProperties:
         - name: 'key'
@@ -265,7 +281,7 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: true
       managedByProperty: 'partOfGroups_ID'
-      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together."
+      description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together.\n\n**Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose\ngroup assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.\nSee [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types)."
       reverseRelation:
         relationPropertyName: 'integrationDependencyMembers'
     - propertyName: 'successors'
