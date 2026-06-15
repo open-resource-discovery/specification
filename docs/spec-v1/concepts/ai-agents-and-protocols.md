@@ -170,25 +170,14 @@ The `resourceDefinitions` with type `a2a-agent-card` points to the full A2A Agen
 
 Agents rarely work in isolation.
 They often need to access real-world data, invoke business functions, delegate to other agents, or load reusable skills.
-All of this is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**, which declare what external resources an agent requires to function.
+ORD models these requirements with [Integration Dependencies](../interfaces/Document#integration-dependency). Each Integration Dependency contains one or more aspects, which are logical groupings of dependencies that can be marked mandatory or optional. An aspect can be marked mandatory or optional and reference one or more of the following resource types: 
 
-An Integration Dependency groups its requirements into **aspects**, and each aspect can reference one or more of the following resource types:
+-   **MCP Servers (`mcpResources`):** Reference an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro) when the agent's LLM needs to invoke tools, fetch context, or use prompts through the MCP protocol. Declaring this requirement allows the runtime environment to provision the necessary connections.
+-   **Other Agents (`agents`):** Reference another Agent when the agent orchestrates or delegates subtasks to specialized agents, enabling agent chaining and multi-agent workflows. Making the dependency explicit lets the system landscape model and reason about agent-to-agent relationships.
+-   **Skills (`capabilities`):** Reference a [Capability](../interfaces/Document#capability) of type `agent-skill` when the agent depends on an [Agent Skill](#agent-skills-as-capabilities). Agent Skills are discrete, reusable capability packages that contain instructions, scripts, and resources and can be shared across multiple agents.
+-   **Other Resources (`apiResources` / `eventResources`):** Reference any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, when the Agent interact with existing business systems. Agent dependencies are not limited to AI-native protocols.
 
--   **MCP Servers (`mcpResources`):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
-    MCP Servers expose tools, resources, and prompts that the agent's LLM can invoke at runtime.
-    The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections.
-    When only a subset of tools is needed, the `subset` field on an `apiResources` reference narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
-    This keeps LLM context lean by loading only the relevant tool descriptions and scopes permission grants to the minimal required surface area.
--   **Other Agents (`agents`):** Agents can depend on other Agents, enabling **agent chaining** and multi-agent workflows.
-    One agent may orchestrate or delegate subtasks to specialized agents, and those dependencies are made explicit through Integration Dependencies.
-    This allows the system landscape to model and reason about agent-to-agent relationships.
--   **Skills (`capabilities`):** Agents can depend on **[Agent Skills](../interfaces/Document#capability)** (Capabilities with `type: "agent-skill"`).
-    Skills are discrete, reusable capability packages (instructions, scripts, resources) that can be shared across multiple agents.
-    Declaring a skill dependency allows the runtime to load the skill on demand and makes the dependency discoverable in the catalog.
--   **Other Resources (`apiResources` / `eventResources`):** Agents are not limited to AI-native protocols.
-    They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
-
-Here's an example of an Integration Dependency that covers all AI-native dependency types.
+Here's an example of an Integration Dependency that covers all four dependency types.
 Without `subset` on an `apiResources` reference, the dependency implies access to all operations of the referenced resource:
 
 ```json
