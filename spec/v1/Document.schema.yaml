@@ -2945,6 +2945,11 @@ definitions:
               The definition is enriched with additional metadata specifically for AI/agent consumption.
               This may include enhanced descriptions, examples, or semantic annotations that help AI systems
               better understand and utilize the API or event resource.
+          - const: ord:agent-security-permissions
+            description: |-
+              The definition describes the security permissions an AI agent requires to access the resource.
+              This allows agent runtimes and consent flows to discover and request the appropriate
+              authorizations before the agent invokes the resource.
         examples:
           - ord:ai-enrichment
 
