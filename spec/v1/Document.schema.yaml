@@ -3484,6 +3484,14 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
+          - const: "agent-skill"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              An [agent skill](https://agentskills.io/home) is a discrete, reusable capability that an agent can perform.
+              Agent skills can be invoked by agents or other systems and represent
+              a well-defined task or function that the agent is capable of executing.
+
+              For the capability definitions: `type` SHOULD be set to `agent-skill-zip`.
           - const: "sap.mdo:mdi-capability:v1"
             description: |-
               Capability for SAP Master Data Integration (MDI).
@@ -3494,7 +3502,7 @@ definitions:
               If chosen, `customType` MUST be provided.
             # Deprecate this in future?
         examples:
-          - custom
+          - "agent-skill"
 
       customType:
         <<: *customType
@@ -3593,6 +3601,25 @@ definitions:
         examples:
           - [{ "ordId": "sap.foo:capability:baseExtensibility:v1", "relationType": "foo.bar:relationName" }]
 
+      integrationDependencies:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          Optional list of integration dependencies that the capability relies on.
+
+          This is particularly useful for capabilities of type `agent-skill`, which may require access to APIs, MCP tools, other agents, or other skills to function.
+          The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
+
+          MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          maxLength: 255
+          x-association-target:
+            - "#/definitions/IntegrationDependency/ordId"
+        examples:
+          - ["sap.foo.bar:integrationDependency:DocumentProcessing:v1"]
+
       definitions:
         <<: *resourceDefinitions
         items:
@@ -3645,6 +3672,14 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../index.md#specification-id).
+          - const: "agent-skill-zip"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              A ZIP archive containing the definition of an agent skill following the [agent skill standard](https://agentskills.io/home), 
+              including all relevant assets such as configuration and schema files.
+
+              The `mediaType` MUST be set to `application/zip`.
+              The capability `type` SHOULD be set to `agent-skill`.
           - const: "sap.mdo:mdi-capability-definition:v1"
             description: |-
               Specification for describing master data integration capabilities for Master Data Orchestration (MDO).

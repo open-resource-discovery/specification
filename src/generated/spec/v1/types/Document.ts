@@ -2230,7 +2230,7 @@ export interface Capability {
   /**
    * Type of the Capability
    */
-  type: (string | "sap.mdo:mdi-capability:v1" | "custom") & string;
+  type: (string | "agent-skill" | "sap.mdo:mdi-capability:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -2388,6 +2388,15 @@ export interface Capability {
    */
   relatedCapabilities?: RelatedCapability[];
   /**
+   * Optional list of integration dependencies that the capability relies on.
+   *
+   * This is particularly useful for capabilities of type `agent-skill`, which may require access to APIs, MCP tools, other agents, or other skills to function.
+   * The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
+   *
+   * MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+   */
+  integrationDependencies?: string[];
+  /**
    * List of available machine-readable definitions, which describe the resource or capability in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
@@ -2454,7 +2463,7 @@ export interface CapabilityDefinition {
   /**
    * Type of the capability resource definition
    */
-  type: (string | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
+  type: (string | "agent-skill-zip" | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *

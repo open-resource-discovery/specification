@@ -106,6 +106,10 @@ spec:
       type: 'guid'
       array: true
       description: "Optional list of related EntityType Resources.\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID."
+    - name: 'integrationDependencies_ID'
+      type: 'guid'
+      array: true
+      description: "Optional list of integration dependencies that the capability relies on.\n\nThis is particularly useful for capabilities of type `agent-skill`, which may require access to APIs, MCP tools, other agents, or other skills to function.\nThe mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.\n\nMUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID."
     - name: 'definitions'
       type: 'custom'
       customTypeName: 'CapabilityDefinition'
@@ -249,6 +253,12 @@ spec:
       relatedTypeName: 'RelatedCapability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Optional list of related Capabilities.\n\nUse this to indicate dependencies, extensions, or other relationships between capabilities."
+    - propertyName: 'integrationDependencies'
+      relatedTypeName: 'IntegrationDependency'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'integrationDependencies_ID'
+      description: "Optional list of integration dependencies that the capability relies on.\n\nThis is particularly useful for capabilities of type `agent-skill`, which may require access to APIs, MCP tools, other agents, or other skills to function.\nThe mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.\n\nMUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID."
     - propertyName: 'inverseRelatedCapabilities'
       relatedTypeName: 'RelatedCapability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
