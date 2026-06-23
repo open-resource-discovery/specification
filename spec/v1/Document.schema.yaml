@@ -3601,6 +3601,25 @@ definitions:
         examples:
           - [{ "ordId": "sap.foo:capability:baseExtensibility:v1", "relationType": "foo.bar:relationName" }]
 
+      integrationDependencies:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          Optional list of integration dependencies that the capability relies on.
+
+          This is particularly useful for capabilities of type `agent-skill`, which may require access to APIs, MCP tools, other agents, or other skills to function.
+          The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
+
+          MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          maxLength: 255
+          x-association-target:
+            - "#/definitions/IntegrationDependency/ordId"
+        examples:
+          - ["sap.foo.bar:integrationDependency:DocumentProcessing:v1"]
+
       definitions:
         <<: *resourceDefinitions
         items:

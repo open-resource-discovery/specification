@@ -14,6 +14,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added capability type `agent-skill` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
 - Added capability definition type `agent-skill-zip` for ZIP archive definitions of agent skills (mediaType `application/zip`).
+- Added `integrationDependencies` property to `Capability`, mirroring the property on `Agent` and analogous to `inputPorts` on Data Products. Lets a capability (notably `agent-skill`) declare the APIs, MCP tools, agents, or other skills it requires to function. See [AI Agents and Protocols → Skill Dependencies](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#skill-dependencies).
 
 ### Changed
 

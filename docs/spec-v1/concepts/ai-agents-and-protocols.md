@@ -110,22 +110,27 @@ graph TD
     classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333;
     classDef skill fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#333;
     classDef agent2 fill:#e1f5fe,stroke:#01579b,stroke-width:2px,stroke-dasharray:5 5,color:#333;
+    classDef skill2 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,stroke-dasharray:5 5,color:#333;
 
     Agent["Agent<br/>(Product-like Concept)"]:::concept
     System["System / Application"]:::tech
     API["API Resource<br/>(Interaction Contract)"]:::tech
+    Skill["Capability<br/>(type: agent-skill)"]:::skill
     Dep["Integration Dependency<br/>(Required External Data/Tools)"]:::dep
 
     System -- Hosts --> Agent
     Agent -- Exposes --> API
     Agent -- Requires --> Dep
+    Skill -- Requires --> Dep
 
     API -.->|Protocol: A2A| A2A[A2A Protocol]
     Dep -.->|mcpResources| MCP["MCP Server"]
     Dep -.->|agents| OtherAgent["Other Agent<br/>(Agent chaining)"]:::agent2
-    Dep -.->|capabilities| Skill["Capability<br/>(type: agent-skill)"]:::skill
+    Dep -.->|capabilities| OtherSkill["Other Capability / Skill"]:::skill2
     Dep -.->|apiResources / eventResources| Other["Other Resources<br/>(APIs, Events, etc.)"]
 ```
+
+Both Agents and Capabilities (notably `agent-skill` capabilities) can declare `integrationDependencies`, and they use the identical mechanism — each Integration Dependency groups one or more aspects referencing APIs, MCP tools, other agents, or other skills.
 
 ### Exposing Capabilities (Interaction)
 
@@ -306,7 +311,7 @@ In ORD, these are modeled using the **[Capability](../interfaces/Document#capabi
 This enables:
 - **Discovery:** Agents can discover and load skills on-demand through the catalog
 - **Reusability:** Skills can be shared across multiple agents and systems
-- **Dependency Management:** Agents can declare dependencies on external skills
+- **Dependency Management:** Both agents and skills can declare `integrationDependencies` on APIs, MCP tools, other agents, or other skills (see [Skill Dependencies](#skill-dependencies) below).
 
 **Example agent skill:**
 
@@ -355,6 +360,32 @@ Agents can depend on external skills through Integration Dependency aspects:
   ]
 }
 ```
+
+### Skill Dependencies
+
+A Capability of type `agent-skill` can itself declare `integrationDependencies` — the same mechanism Agents use, and the direct analogue of `inputPorts` on [Data Products](./data-product.md): the artifact itself declares what it needs to run.
+
+```json
+{
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:disputeSummarization:v1",
+      "type": "agent-skill",
+      "title": "Dispute Summarization Skill",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      // The skill itself depends on external resources to function
+      "integrationDependencies": [
+        "sap.foo:integrationDependency:DisputeCaseManagement:v1"
+      ]
+    }
+  ]
+}
+```
+
+The referenced Integration Dependency is structured exactly like the [example above](#consuming-capabilities-dependencies), and the [Connectivity & Protocols diagram](#connectivity--protocols) shows skills participating in the same dependency graph as agents.
 
 ## Example
 
