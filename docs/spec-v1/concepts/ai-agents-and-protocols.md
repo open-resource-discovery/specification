@@ -105,6 +105,9 @@ These are API protocols specifically designed for simple consumption by LLMs and
 
 <AgentConnectivityDiagram />
 
+Both Agents and Capabilities, notably `agent-skill` capabilities, can declare `integrationDependencies` using the same mechanism.
+Each Integration Dependency groups one or more aspects referencing API Resources, Event Resources, or Capabilities.
+
 ### Exposing Capabilities (Interaction)
 
 If an agent exposes an interaction interface, its contract is described separately by an **[API Resource](../interfaces/Document#api-resource)**.
@@ -276,7 +279,7 @@ In ORD, these are modeled using the **[Capability](../interfaces/Document#capabi
 This enables:
 - **Discovery:** Agents can discover and load skills on-demand through the catalog
 - **Reusability:** Skills can be shared across multiple agents and systems
-- **Dependency Management:** Agents can declare dependencies on external skills
+- **Dependency Management:** Both agents and skills can declare `integrationDependencies` on APIs, MCP tools, other agents, or other skills (see [Skill Dependencies](#skill-dependencies) below).
 
 **Example agent skill:**
 
@@ -325,6 +328,32 @@ Agents can depend on external skills through Integration Dependency aspects:
   ]
 }
 ```
+
+### Skill Dependencies
+
+A Capability of type `agent-skill` can itself declare `integrationDependencies` — the same mechanism Agents use, and the direct analogue of `inputPorts` on [Data Products](./data-product.md): the artifact itself declares what it needs to run.
+
+```json
+{
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:disputeSummarization:v1",
+      "type": "agent-skill",
+      "title": "Dispute Summarization Skill",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      // The skill itself depends on external resources to function
+      "integrationDependencies": [
+        "sap.foo:integrationDependency:DisputeCaseManagement:v1"
+      ]
+    }
+  ]
+}
+```
+
+The referenced Integration Dependency is structured exactly like the [example above](#consuming-capabilities-dependencies), and the [Connectivity & Protocols diagram](#connectivity--protocols) shows skills participating in the same dependency graph as agents.
 
 ## Example
 
