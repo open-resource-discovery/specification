@@ -3946,7 +3946,13 @@
             },
             {
               "const": "ord:ai-enrichment",
-              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
+              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource.",
+              "x-introduced-in-version": "1.15.0"
+            },
+            {
+              "const": "ord:agent-security-permissions",
+              "description": "The definition describes the security permissions an AI agent requires to access the resource.\nThis allows agent runtimes and consent flows to discover and request the appropriate\nauthorizations before the agent invokes the resource.",
+              "x-introduced-in-version": "1.16.2"
             }
           ],
           "examples": [
@@ -4072,7 +4078,13 @@
             },
             {
               "const": "ord:ai-enrichment",
-              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
+              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource.",
+              "x-introduced-in-version": "1.15.0"
+            },
+            {
+              "const": "ord:agent-security-permissions",
+              "description": "The definition describes the security permissions an AI agent requires to access the resource.\nThis allows agent runtimes and consent flows to discover and request the appropriate\nauthorizations before the agent invokes the resource.",
+              "x-introduced-in-version": "1.16.2"
             }
           ],
           "examples": [
@@ -4892,7 +4904,13 @@
             },
             {
               "const": "ord:ai-enrichment",
-              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
+              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource.",
+              "x-introduced-in-version": "1.15.0"
+            },
+            {
+              "const": "ord:agent-security-permissions",
+              "description": "The definition describes the security permissions an AI agent requires to access the resource.\nThis allows agent runtimes and consent flows to discover and request the appropriate\nauthorizations before the agent invokes the resource.",
+              "x-introduced-in-version": "1.16.2"
             }
           ],
           "examples": [
@@ -5446,7 +5464,13 @@
             },
             {
               "const": "ord:ai-enrichment",
-              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource."
+              "description": "The definition is enriched with additional metadata specifically for AI/agent consumption.\nThis may include enhanced descriptions, examples, or semantic annotations that help AI systems\nbetter understand and utilize the API or event resource.",
+              "x-introduced-in-version": "1.15.0"
+            },
+            {
+              "const": "ord:agent-security-permissions",
+              "description": "The definition describes the security permissions an AI agent requires to access the resource.\nThis allows agent runtimes and consent flows to discover and request the appropriate\nauthorizations before the agent invokes the resource.",
+              "x-introduced-in-version": "1.16.2"
             }
           ],
           "examples": [
