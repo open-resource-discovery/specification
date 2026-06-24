@@ -1061,7 +1061,7 @@ export interface ApiResourceDefinition {
    *
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
-  purpose?: (string | "ord:ai-enrichment") & string;
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the resource definitions.
@@ -1836,7 +1836,7 @@ export interface EventResourceDefinition {
    *
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
-  purpose?: (string | "ord:ai-enrichment") & string;
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * Describes the compatibility of the Event with other Events. This can be used to express that an Event is compatible with another Event version.
@@ -2519,7 +2519,7 @@ export interface CapabilityDefinition {
    *
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
-  purpose?: (string | "ord:ai-enrichment") & string;
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
@@ -3476,7 +3476,7 @@ export interface OverlayDefinition {
    *
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
-  purpose?: (string | "ord:ai-enrichment") & string;
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

@@ -10,6 +10,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.16.2]
+
+### Added
+
+- Added new `purpose` value `ord:agent-security-permissions` for resource definitions that describe the security permissions an AI agent requires to access the resource.
+
 ## [1.16.1]
 
 ### Added
