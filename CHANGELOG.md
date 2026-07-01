@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- `sap:base:v1`: Clarified that extensible enum values reserve both the `ord:` and the `sap:` root prefixes. Application-specific values MUST use a sub-namespace such as `sap.foo:...` (e.g., `sap.s4:...`); the bare `sap:` prefix is reserved for centrally aligned, specification-defined values.
+
 ## [1.16.3]
 
 ### Changed

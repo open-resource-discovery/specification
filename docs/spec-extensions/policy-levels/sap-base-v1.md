@@ -25,6 +25,12 @@ Usually SAP applications and services will use the more complete and opinionated
   - All ORD resources owned by SAP MUST use the `sap` vendor namespace
   - ORD resources / extensions created by the customer MAY use the `customer` vendor namespace or MUST use their own vendor namespace.
 
+### Extensible Enums
+
+- Values in [extensible enums](../../spec-v1/index.md#namespaces) reserve both the `ord:` and the `sap:` root prefixes for centrally aligned, specification-defined values.
+  - The `ord:` prefix MUST NOT be used by vendors (reserved for the ORD specification itself).
+  - The `sap:` root prefix MUST NOT be used for application-specific values. Applications and services MUST use a sub-namespace such as `sap.foo:...` instead. Example: `sap.s4:...` is allowed, `sap:...` is not.
+
 ### Packages
 
 - The vendor of a Package MUST be set and be equal to one of the allowed values: `sap:vendor:SAP:`, `customer:vendor:Customer:`.
