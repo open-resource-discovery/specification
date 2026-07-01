@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([["4794"],{5041(e,c,s){s.d(c,{createEventModelingServices:()=>i.g});var i=s(6737);s(1400)}}]);
