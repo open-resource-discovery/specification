@@ -16,6 +16,7 @@ Usually SAP applications and services will use the more complete and opinionated
 ## General Policies
 
 ### Policy Levels
+
 - SAP applications and services MAY define custom policy levels, but they MUST be namespaced under their application-specific namespace, e.g. `sap.s4:core:v1`.
 - Only centrally aligned policy levels (such as `sap:base:v1` or `sap:core:v1`) MAY use the root `sap` namespace. Custom policy levels MUST NOT use the root `sap` namespace, e.g. `sap:s4:v1` is not allowed.
 
@@ -24,6 +25,13 @@ Usually SAP applications and services will use the more complete and opinionated
 - All SAP [namespaces](../../spec-v1/index.md#namespaces) MUST be registered in the SAP namespace-registry.
   - All ORD resources owned by SAP MUST use the `sap` vendor namespace
   - ORD resources / extensions created by the customer MAY use the `customer` vendor namespace or MUST use their own vendor namespace.
+
+### Extensible Enums
+
+- The `ord:` and the root `sap:` prefixes are reserved for centrally aligned, specification-defined values in extensible enums whose values are namespace-prefixed.
+  This applies to any value that is a [Specification ID](../../spec-v1/index.md#specification-id), [Concept ID](../../spec-v1/index.md#concept-id), or [Correlation ID](../../spec-v1/index.md#correlation-id). Affected fields include `purpose`, `relationType`, `correlationIds`, and others.
+  - The `ord:` prefix MUST NOT be used by vendors (reserved for the ORD specification itself).
+  - The root `sap:` prefix MUST NOT be used for application-specific values. Applications and services MUST use a sub-namespace such as `sap.foo:...` instead (e.g. `sap.s4:...` is allowed, `sap:...` is not).
 
 ### Packages
 
