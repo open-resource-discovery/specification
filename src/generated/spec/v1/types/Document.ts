@@ -658,11 +658,18 @@ export interface ApiResource {
    * List of available machine-readable definitions, which describe the resource or capability in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST be unique within the list.
+   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
+   * representations (different formats) and complementary artifacts distinguished by `purpose`
+   * (e.g. overlays, AI-enriched variants, agent security permissions).
+   * This list MUST NOT be used to bundle multiple distinct APIs, event catalogs, or capabilities
+   * under a single resource — model those as separate ORD resources instead.
    *
-   * A definition without a `purpose` is considered the primary/default definition for its type.
-   * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
+   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
+   * default per `(type, visibility)` combination.
+   *
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
+   * be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1047,19 +1054,17 @@ export interface ApiResourceDefinition {
    */
   accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
   /**
-   * Describes the intended purpose or role of this resource definition.
-   *
-   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
-   * This allows multiple definitions of the same type to coexist when they serve different purposes.
-   *
-   * For example, an API Resource might have multiple OpenAPI definitions:
-   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   * Marks a resource definition as a *complementary* variant of the resource's default definition
+   * — for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in `resourceDefinitions`, with or without `purpose`, MUST describe the same
+   * underlying resource; see `resourceDefinitions` for the full modelling rules.
    *
    * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
-   * may share the same combination.
+   * key for entries in the `resourceDefinitions` list.
    *
-   * MUST be a valid [Concept ID](../index.md#concept-id).
+   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
   purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
@@ -1562,11 +1567,18 @@ export interface EventResource {
    * List of available machine-readable definitions, which describe the resource or capability in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST be unique within the list.
+   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
+   * representations (different formats) and complementary artifacts distinguished by `purpose`
+   * (e.g. overlays, AI-enriched variants, agent security permissions).
+   * This list MUST NOT be used to bundle multiple distinct APIs, event catalogs, or capabilities
+   * under a single resource — model those as separate ORD resources instead.
    *
-   * A definition without a `purpose` is considered the primary/default definition for its type.
-   * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
+   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
+   * default per `(type, visibility)` combination.
+   *
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
+   * be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1822,19 +1834,17 @@ export interface EventResourceDefinition {
    */
   visibility?: "public" | "internal" | "private";
   /**
-   * Describes the intended purpose or role of this resource definition.
-   *
-   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
-   * This allows multiple definitions of the same type to coexist when they serve different purposes.
-   *
-   * For example, an API Resource might have multiple OpenAPI definitions:
-   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   * Marks a resource definition as a *complementary* variant of the resource's default definition
+   * — for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in `resourceDefinitions`, with or without `purpose`, MUST describe the same
+   * underlying resource; see `resourceDefinitions` for the full modelling rules.
    *
    * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
-   * may share the same combination.
+   * key for entries in the `resourceDefinitions` list.
    *
-   * MUST be a valid [Concept ID](../index.md#concept-id).
+   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
   purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
@@ -2391,11 +2401,18 @@ export interface Capability {
    * List of available machine-readable definitions, which describe the resource or capability in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST be unique within the list.
+   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
+   * representations (different formats) and complementary artifacts distinguished by `purpose`
+   * (e.g. overlays, AI-enriched variants, agent security permissions).
+   * This list MUST NOT be used to bundle multiple distinct APIs, event catalogs, or capabilities
+   * under a single resource — model those as separate ORD resources instead.
    *
-   * A definition without a `purpose` is considered the primary/default definition for its type.
-   * Additional definitions of the same type MAY be provided if they have a distinct `purpose` (e.g., `ord:ai-enrichment` for AI-optimized definitions).
+   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
+   * default per `(type, visibility)` combination.
+   *
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
+   * be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -2505,19 +2522,17 @@ export interface CapabilityDefinition {
    */
   visibility?: "public" | "internal" | "private";
   /**
-   * Describes the intended purpose or role of this resource definition.
-   *
-   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
-   * This allows multiple definitions of the same type to coexist when they serve different purposes.
-   *
-   * For example, an API Resource might have multiple OpenAPI definitions:
-   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   * Marks a resource definition as a *complementary* variant of the resource's default definition
+   * — for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in `resourceDefinitions`, with or without `purpose`, MUST describe the same
+   * underlying resource; see `resourceDefinitions` for the full modelling rules.
    *
    * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
-   * may share the same combination.
+   * key for entries in the `resourceDefinitions` list.
    *
-   * MUST be a valid [Concept ID](../index.md#concept-id).
+   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
   purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
@@ -3462,19 +3477,17 @@ export interface OverlayDefinition {
    */
   visibility?: "public" | "internal" | "private";
   /**
-   * Describes the intended purpose or role of this resource definition.
-   *
-   * While `type` specifies the format (e.g., OpenAPI, AsyncAPI), `purpose` indicates what the definition is used for.
-   * This allows multiple definitions of the same type to coexist when they serve different purposes.
-   *
-   * For example, an API Resource might have multiple OpenAPI definitions:
-   * one for standard API documentation and another specifically enriched for AI/agent consumption.
+   * Marks a resource definition as a *complementary* variant of the resource's default definition
+   * — for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in `resourceDefinitions`, with or without `purpose`, MUST describe the same
+   * underlying resource; see `resourceDefinitions` for the full modelling rules.
    *
    * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the `resourceDefinitions` list — no two entries on the same resource
-   * may share the same combination.
+   * key for entries in the `resourceDefinitions` list.
    *
-   * MUST be a valid [Concept ID](../index.md#concept-id).
+   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
   purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
