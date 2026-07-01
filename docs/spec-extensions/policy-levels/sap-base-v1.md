@@ -28,7 +28,7 @@ Usually SAP applications and services will use the more complete and opinionated
 
 ### Extensible Enums
 
-- In extensible enums whose values are namespace-prefixed (i.e., use a [Specification ID](../../spec-v1/index.md#specification-id), [Concept ID](../../spec-v1/index.md#concept-id), or [Correlation ID](../../spec-v1/index.md#correlation-id) — e.g. `purpose`, `relationType`, `correlationIds`, ...), the `ord:` and the root `sap:` prefixes are reserved for centrally aligned, specification-defined values.
+- In extensible enums whose values are namespace-prefixed (i.e., use a [Specification ID](../../spec-v1/index.md#specification-id), [Concept ID](../../spec-v1/index.md#concept-id), or [Correlation ID](../../spec-v1/index.md#correlation-id), e.g. `purpose`, `relationType`, `correlationIds`, ...), the `ord:` and the root `sap:` prefixes are reserved for centrally aligned, specification-defined values.
   - The `ord:` prefix MUST NOT be used by vendors (reserved for the ORD specification itself).
   - The root `sap:` prefix MUST NOT be used for application-specific values. Applications and services MUST use a sub-namespace such as `sap.foo:...` instead (e.g. `sap.s4:...` is allowed, `sap:...` is not).
 
