@@ -10,6 +10,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.16.3]
+
 ### Changed
 
 - Clarified `resourceDefinitions` and `purpose`: all entries on a single resource MUST describe the same underlying resource. Multiple distinct resources MUST be modelled as separate ORD resources. The entry without a `purpose` is the default for its `(type, visibility)`, and consumers that don't filter by `purpose` MUST fall back to it. The `ord:` namespace on `purpose` is reserved; custom values MUST use a vendor-specific prefix.
