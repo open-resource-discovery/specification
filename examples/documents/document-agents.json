@@ -138,7 +138,8 @@
       "shortDescription": "Package containing reference application resources",
       "description": "This package contains all resources related to the ORD reference application including agents and APIs.",
       "version": "1.0.0",
-      "vendor": "sap:vendor:SAP:"
+      "vendor": "sap:vendor:SAP:",
+      "partOfProducts": ["sap:product:sapsuccessfactors:"]
     }
   ]
 }
