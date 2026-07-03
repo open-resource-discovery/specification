@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added [Arazzo Specification](https://www.openapis.org/arazzo-specification) support for describing multi-step API workflows.
+  - New resource definition type `arazzo-v1` on API Resources. Use this when the Arazzo workflow is scoped to a single API.
+  - New standardized Capability type `workflow` with definition type `arazzo-v1` for multi-API workflows. Such capabilities SHOULD use `relatedApiResources` to indicate which APIs the workflow orchestrates.
+  - New `relatedApiResources.relationType` value `ord:orchestrates` to declare that the source resource (e.g. a `workflow` Capability) orchestrates the target API Resource.
+
 ## [1.16.3]
 
 ### Changed
