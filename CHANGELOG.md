@@ -10,6 +10,22 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Clarified HTTP cache handling guidance for ORD providers:
+  - Downgraded `Cache-Control` and `ETag` headers from MUST/RECOMMENDED to both RECOMMENDED, as neither is universally required across all deployment topologies.
+  - Added explicit recommendation for `Cache-Control: no-cache` as the appropriate value for ORD metadata endpoints (allows caching but requires revalidation before serving a cached response).
+  - Clarified that `Cache-Control: no-cache` combined with `ETag`/`If-None-Match`/`304 Not Modified` is the recommended approach for efficient revalidation without serving stale metadata.
+  - Added requirement to set `Vary: Authorization` when serving `system-instance`-aware (per-tenant) content, to prevent shared caches from serving one tenant's response to another.
+  - Corrected the relationship between resource changes and cache invalidation: either `version` or `lastUpdate` MUST be updated when a resource or its definitions change (not `version` alone), consistent with the `lastUpdate` schema description.
+- Clarified HTTP cache handling guidance for ORD aggregators:
+  - Downgraded the requirement to implement cache handling from MUST to SHOULD, as provider-side caching headers are themselves only RECOMMENDED.
+  - Clarified that `If-None-Match` and `304 Not Modified` handling is conditional on the provider supplying an `ETag` header.
+  - Added guidance to use `lastUpdate` as a crawl optimization signal to skip re-processing unchanged resources.
+  - Corrected definition re-fetch trigger to reference either `version` or `lastUpdate` (not `version` alone).
+  - Added requirement to scope cache entries by system instance for system-instance-aware resources, to prevent cross-tenant data leakage.
+- Broadened scope of "Merging ORD Taxonomy" rules to apply to all ORD taxonomy interfaces (previously scoped only to `Package` and `Product`).
+
 ## [1.16.3]
 
 ### Changed
