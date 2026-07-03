@@ -139,7 +139,7 @@
       "description": "This package contains all resources related to the ORD reference application including agents and APIs.",
       "version": "1.0.0",
       "vendor": "sap:vendor:SAP:",
-      "partOfProducts": ["sap:product:S4HANA_OD:"],
+      "partOfProducts": ["sap:product:S4HANA_OD:"]
     }
   ]
 }
