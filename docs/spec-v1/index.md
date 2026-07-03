@@ -563,7 +563,7 @@ ORD taxonomy is independent of specific <a href="#product">products</a> or <a hr
 
 ###### Merging ORD Taxonomy
 
-This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
+This applies to all [ORD taxonomy](#ord-taxonomy) interfaces.
 
 The information is [system-instance-unaware](#system-instance-unaware) and therefore MUST not be stored for each [system instance](#system-instance).
 If multiple systems/system instances describe the same ORD taxonomy instance, the following merging rules MUST be followed:
