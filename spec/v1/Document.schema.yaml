@@ -2849,6 +2849,18 @@ definitions:
               ORD Overlay file for patching referenced resource definition files.
               For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
               The `mediaType` MUST be set to `application/json`.
+          - const: arazzo-v1
+            x-introduced-in-version: "1.16.4"
+            description: |-
+              [Arazzo Specification v1.0.0](https://spec.openapis.org/arazzo/v1.0.0.html) workflow document
+              describing multi-step API interactions.
+              The `mediaType` MUST be set to `application/json` or `application/yaml`.
+
+              Attaching an Arazzo definition to a single API Resource is ONLY appropriate when the
+              workflow is scoped to that specific API. For workflows that span multiple APIs, publish
+              a [Capability](#capability) with `type: "workflow"` and a definition of `type: "arazzo-v1"` instead,
+              and list every covered API via [`relatedApiResources`](#capability_relatedapiresources) with
+              `relationType: "ord:orchestrates"`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
@@ -3501,6 +3513,16 @@ definitions:
               Capability for SAP Master Data Integration (MDI).
 
               For the capability definitions: `type` MUST ONLY be set to `sap.mdo:mdi-capability-definition:v1`.
+          - const: workflow
+            x-introduced-in-version: "1.16.4"
+            description: |-
+              Standardized capability representing an executable, multi-step workflow that orchestrates
+              one or more APIs. Typically defined via an [Arazzo](https://spec.openapis.org/arazzo/v1.0.0.html)
+              document attached as a capability definition with `type: "arazzo-v1"`.
+
+              Workflow capabilities SHOULD list every API Resource they interact with in
+              [`relatedApiResources`](#capability_relatedapiresources), each with
+              `relationType: "ord:orchestrates"`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
@@ -3663,6 +3685,14 @@ definitions:
 
               The `mediaType` MUST be set to `application/json`.
               The capability `type` MUST be set to `sap.mdo:mdi-capability:v1`.
+          - const: arazzo-v1
+            x-introduced-in-version: "1.16.4"
+            description: |-
+              [Arazzo Specification v1.0.0](https://spec.openapis.org/arazzo/v1.0.0.html) workflow document
+              describing multi-step API interactions.
+
+              The `mediaType` MUST be set to `application/json` or `application/yaml`.
+              The capability `type` SHOULD be set to `workflow` when the Arazzo workflow spans multiple APIs.
           - const: custom
             description: |-
               If chosen, a custom type MUST be provided via `customType`
@@ -5513,6 +5543,13 @@ definitions:
             description: |-
               The source resource patches one or more definition files of the target resource.
               Used on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch.
+          - const: "ord:orchestrates"
+            x-introduced-in-version: "1.16.4"
+            description: |-
+              The source resource orchestrates the target API Resource as part of a multi-step workflow.
+              Typically used on [Capabilities](#capability) of `type: "workflow"` (e.g. defined via an
+              [Arazzo](https://spec.openapis.org/arazzo/v1.0.0.html) document) to declare which APIs
+              the workflow invokes.
         examples:
           - "foo.bar:relationName"
     required:
