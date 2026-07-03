@@ -6,6 +6,18 @@ This specification is in **alpha** and subject to change.
 The **ORD Overlay** is an optional ORD model extension that allows patching referenced resource definition files
 (e.g. OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards) without modifying the original source files.
 
+The ORD Overlay concept is inspired by the [OpenAPI Initiative Overlay Specification](https://spec.openapis.org/overlay/v1.0.0.html),
+which established the pattern of separating overlay content from the target definition file.
+ORD Overlay adopts that core idea but is intentionally dedicated and opinionated for the ORD ecosystem:
+it targets a broader set of metadata formats (not only OpenAPI), uses concept-level selectors that are resilient to
+format-version differences, and integrates with ORD identifiers, `purpose`, and `visibility`.
+For a detailed comparison and rationale, see
+[Appendix: Relation to the OpenAPI Initiative Overlay Specification](#appendix-relation-to-the-openapi-initiative-overlay-specification).
+
+If publishers prefer to author their overlays in the OpenAPI Initiative Overlay format directly,
+they can still expose them through ORD by attaching them as a resource definition with `type: oas-overlay-v1`.
+See the [API Resource Definition](../../spec-v1/interfaces/Document.md#api-resource-definition) type enum for details.
+
 ```json
 {
   "ordOverlay": "0.1",

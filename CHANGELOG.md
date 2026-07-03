@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `oas-overlay-v1` as a resource definition `type` on API Resource Definitions and Event Resource Definitions. This allows publishers to expose [OpenAPI Initiative Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html) documents directly through ORD.
+- Added `oas-overlay-v1` to the allowed values of `target.definitionType` on `OrdOverlay`, so ORD Overlays can target OpenAPI Overlay files.
+- Added an appendix section ["Relation to the OpenAPI Initiative Overlay Specification"](https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay#appendix-relation-to-the-openapi-initiative-overlay-specification) to the ORD Overlay documentation that describes what motivated a dedicated, ORD-opinionated overlay model, where the two specifications overlap, and how they interoperate.
+- `sap:core:v1` policy level: SAP applications and services MUST use `type: "ord:overlay:v1"` as the overlay format for all published overlays.
+
 ### Changed
 
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.

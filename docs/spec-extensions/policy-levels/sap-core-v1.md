@@ -197,6 +197,7 @@ The following constraints apply in addition to the constraints defined in the [O
 ### ORD Overlays
 
 - [ORD Overlays](../../spec-v1/interfaces/OrdOverlay.md) MUST always provide a [`target.ordId`](../../spec-v1/interfaces/OrdOverlay.md#overlay-target_ordid) to identify the ORD resource being patched.
+- SAP applications and services MUST use `type: "ord:overlay:v1"` as the overlay format for all published overlays. The `oas-overlay-v1` type is supported by the ORD specification for interoperability with the OpenAPI Initiative Overlay ecosystem, but within SAP we standardize on ORD Overlay because it works uniformly across all metadata formats we publish (OpenAPI, AsyncAPI, OData EDMX/CSDL, A2A, MCP, CSN Interop) and integrates with ORD identifiers, `purpose`, and `visibility`.
 
 ### Correlation IDs
 

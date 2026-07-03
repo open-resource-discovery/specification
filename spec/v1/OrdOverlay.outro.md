@@ -102,6 +102,58 @@ Rule of thumb:
 - use attached resource definitions for producer-owned, resource-local overlays
 - use ORD Document Resources for externally managed, cross-resource, or independently versioned overlays
 
+### Appendix: Relation to the OpenAPI Initiative Overlay Specification
+
+The [OpenAPI Initiative Overlay Specification](https://spec.openapis.org/overlay/v1.0.0.html) (OAS Overlay) inspired the overall idea of ORD Overlay:
+express metadata enrichment as a separate document that patches a target file, without modifying that file.
+ORD Overlay reuses that core pattern, and even preserves 1:1-compatible fields like `actions[].description` on individual patches to allow lossless round-tripping of OpenAPI-only overlays.
+
+However, ORD Overlay is intentionally a **dedicated, ORD-opinionated model** rather than a thin wrapper around OAS Overlay.
+This section explains what motivated a dedicated model and where the two specifications differ.
+
+#### Why a dedicated ORD Overlay model
+
+- **Multi-format targets.** OAS Overlay is defined against OpenAPI documents.
+  ORD-described resources use many other metadata formats — AsyncAPI, OData EDMX and CSDL JSON, GraphQL SDL,
+  A2A Agent Cards, MCP tool metadata, CSN Interop, SAP RFC / SQL API metadata, and more.
+  A single overlay model that works across all these formats is a native ORD concern and not in scope for OAS Overlay.
+- **Concept-level selectors instead of only JSONPath.** OAS Overlay uses JSONPath as its selector language.
+  JSONPath is powerful but tightly couples the overlay to the structural layout of a specific format version.
+  ORD Overlay defines concept-level selectors (`operation`, `entityType`, `entitySet`, `parameter`, `returnType`, ...)
+  that are resilient to structural changes (e.g. OpenAPI 3.0 to 3.1, EDMX to CSDL JSON).
+  `jsonPath` is still available as a generic fallback.
+- **Integration with ORD identifiers.** ORD Overlay's `target.ordId` and `target.definitionType` connect an overlay
+  directly to the ORD resource graph, so ORD Aggregators can resolve, authorize, and merge overlays without
+  format-specific heuristics.
+- **`purpose` and `visibility` on overlays and their patches.** ORD Overlay carries first-class `purpose`
+  (e.g. `ord:ai-enrichment`, `ord:agent-security-permissions`) and `visibility` on the overlay resource definition entry.
+  This enables audience-scoped variants and governance decisions that OAS Overlay does not model.
+- **Explicit patch actions.** OAS Overlay expresses removal via an `remove: true` flag and updates via `update` payloads.
+  ORD Overlay uses three explicit actions — `update`, `merge`, `remove` — with well-defined semantics per action
+  (including JSON Merge Patch style delete via `null`), which fits the wider range of target formats better
+  than a single JSONPath-driven mutation.
+- **First-class publishing paths.** Overlays can be attached to an API/Event resource as a
+  `resourceDefinitions` entry with `type: ord:overlay:v1`, or published as a standalone `OrdOverlayResource`
+  in an ORD Document. Both paths participate in normal ORD discovery, authorization, and lifecycle handling.
+- **Overlay-specific perspective.** The overlay `perspective` (`system-type`, `system-version`, `system-instance`)
+  scopes *where the patch applies*, which has no analogue in OAS Overlay.
+
+#### Where the two specifications overlap
+
+- Both keep overlays as a separate file from the target, to preserve the original source.
+- Both support enrichment (adding descriptions, annotations, examples) as the primary use case.
+- ORD Overlay `patches[].description` maps 1:1 to OAS Overlay `actions[].description`, enabling
+  lossless round-trip conversion for OpenAPI-only overlays.
+
+#### Interoperability with OAS Overlay documents
+
+Publishers who prefer authoring their overlays in the OpenAPI Initiative Overlay format can still expose them
+through ORD by attaching the file as a resource definition with `type: oas-overlay-v1` on the corresponding
+API resource, or by describing it via an `OrdOverlayResource` whose `definitions` entry uses that type.
+This keeps OAS Overlay documents discoverable through ORD without forcing them into the ORD Overlay format.
+
+Conversion between the two formats is possible for the OpenAPI subset of targets, but not required by this specification.
+
 ## Compatibility Expectations
 
 Overlays SHOULD NOT change the target in incompatible ways.
