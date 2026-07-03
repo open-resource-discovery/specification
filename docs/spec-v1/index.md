@@ -577,7 +577,7 @@ If multiple systems/system instances describe the same ORD taxonomy instance, th
 
 ###### Merging ORD Resources
 
-This applies currently to the `APIResource` and `EventResource` [ORD resource](#ord-resource) interfaces.
+This applies to all [ORD resource](#ord-resource) interfaces.
 
 The information MAY be [system-instance-aware](#system-instance-aware).
 Therefore, the information MUST be retrieved and stored for each [system instance](#system-instance) individually.
