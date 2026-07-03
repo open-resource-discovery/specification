@@ -145,8 +145,8 @@ export async function exportForNotebookLM(): Promise<void> {
 				continue;
 			}
 
-			// Generate output filename: prefix + original filename
-			const originalFilename = path.basename(doc.src);
+			// Generate output filename: prefix + original filename (normalize .mdx to .md)
+			const originalFilename = path.basename(doc.src).replace(/\.mdx$/, ".md");
 			const outputFilename = `${doc.prefix}${originalFilename}`;
 			const destPath = path.join(outputDir, outputFilename);
 
