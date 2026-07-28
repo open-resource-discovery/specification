@@ -719,7 +719,6 @@ definitions:
     required:
       - ordId
       - title
-      - shortDescription
       - description
       - version
       - vendor
@@ -1689,7 +1688,6 @@ definitions:
     required:
       - ordId
       - title
-      - shortDescription
       - description
       - version
       - releaseStatus
@@ -1975,7 +1973,6 @@ definitions:
     required:
       - ordId
       - title
-      - shortDescription
       - description
       - version
       - visibility
@@ -2693,7 +2690,6 @@ definitions:
       - type
       - category
       - title
-      - shortDescription
       - description
       - version
       - releaseStatus
@@ -3458,7 +3454,6 @@ definitions:
     required:
       - ordId
       - title
-      - shortDescription
       - vendor
 
   ############################################################################################################

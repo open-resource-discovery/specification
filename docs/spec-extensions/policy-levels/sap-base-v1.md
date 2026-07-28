@@ -37,6 +37,19 @@ Usually SAP applications and services will use the more complete and opinionated
 
 - The vendor of a Package MUST be set and be equal to one of the allowed values: `sap:vendor:SAP:`, `customer:vendor:Customer:`.
 
+### Short Description
+
+The base ORD specification makes `shortDescription` optional. Under this policy level the following applies, based on the resource `visibility`:
+
+- For `public` resources, `shortDescription` MUST be provided.
+- For `internal` resources, `shortDescription` is RECOMMENDED.
+  - It MUST be provided if the internal content is to be published to the SAP Business Accelerator Hub.
+- For `private` resources, `shortDescription` is optional (not consequential).
+
+This applies to all resources that carry a `visibility` (e.g. Package, API Resource, Event Resource, Data Product).
+
+- For `Product`, `shortDescription` MUST be provided. A Product describes public-facing information, so it is always treated as public.
+
 ### Misc Constraints
 
 - Although `Vendor` is technically not validated by a policy level, we need to ensure that within SAP we don't define the SAP vendor multiple times or reference it differently.

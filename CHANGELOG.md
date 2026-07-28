@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.17.0]
+
+### Changed
+
+- Made `shortDescription` optional in the base specification. It is no longer a required property on `Package`, `ApiResource`, `EventResource`, `DataProduct`, and `Product`. This lowers the barrier to adopting ORD, while stricter requirements can still be enforced via policy levels.
+- `sap:base:v1` policy level: `shortDescription` is now governed by resource `visibility`: MUST be provided for `public` resources, RECOMMENDED for `internal` resources (MUST if the internal content is to be published to the SAP Business Accelerator Hub), and optional for `private` resources. For `Product`, `shortDescription` MUST always be provided (a Product describes public-facing information).
+
 ## [1.16.3]
 
 ### Changed

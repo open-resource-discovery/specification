@@ -38,7 +38,6 @@ spec:
     - name: 'shortDescription'
       type: 'string'
       description: "Plain text short description.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
-      mandatory: true
       constraints:
         minLength: 1
         maxLength: 255
