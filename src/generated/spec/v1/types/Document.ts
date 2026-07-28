@@ -397,7 +397,7 @@ export interface ApiResource {
    * MUST NOT exceed 255 chars.
    * MUST NOT contain line breaks.
    */
-  shortDescription: string;
+  shortDescription?: string;
   /**
    * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
@@ -1361,7 +1361,7 @@ export interface EventResource {
    * MUST NOT exceed 255 chars.
    * MUST NOT contain line breaks.
    */
-  shortDescription: string;
+  shortDescription?: string;
   /**
    * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
@@ -2579,7 +2579,7 @@ export interface DataProduct {
    * MUST NOT exceed 255 chars.
    * MUST NOT contain line breaks.
    */
-  shortDescription: string;
+  shortDescription?: string;
   /**
    * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
@@ -3923,7 +3923,7 @@ export interface Product {
    * MUST NOT exceed 255 chars.
    * MUST NOT contain line breaks.
    */
-  shortDescription: string;
+  shortDescription?: string;
   /**
    * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
@@ -4006,7 +4006,7 @@ export interface Package {
    * MUST NOT exceed 255 chars.
    * MUST NOT contain line breaks.
    */
-  shortDescription: string;
+  shortDescription?: string;
   /**
    * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
