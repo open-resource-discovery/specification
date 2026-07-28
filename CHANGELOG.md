@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [1.17.0]
+
+### Changed
+
+- Made the `partOfPackage` assignment optional in the base specification. It is no longer a required property on `ApiResource`, `EventResource`, `EntityType`, `DataProduct`, `Agent`, `Capability`, and `IntegrationDependency`. This lowers the barrier to adopting ORD, while stricter requirements can still be enforced via policy levels.
+- `sap:base:v1` policy level: a Package assignment (`partOfPackage`) is now RECOMMENDED, and MUST be provided when the resource is to be published to the SAP Business Accelerator Hub.
+
 ## [1.16.3]
 
 ### Changed

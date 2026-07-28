@@ -37,6 +37,13 @@ Usually SAP applications and services will use the more complete and opinionated
 
 - The vendor of a Package MUST be set and be equal to one of the allowed values: `sap:vendor:SAP:`, `customer:vendor:Customer:`.
 
+### Package Assignment
+
+The base ORD specification makes the `partOfPackage` assignment optional. Under this policy level the following applies:
+
+- Resources SHOULD be assigned to a Package via `partOfPackage`.
+- A Package assignment MUST be provided if the resource is to be published to the SAP Business Accelerator Hub.
+
 ### Misc Constraints
 
 - Although `Vendor` is technically not validated by a policy level, we need to ensure that within SAP we don't define the SAP vendor multiple times or reference it differently.

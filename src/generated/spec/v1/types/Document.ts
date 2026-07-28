@@ -418,9 +418,10 @@ export interface ApiResource {
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
    *
-   * Every resource MUST be part of one package.
+   * A resource MAY be part of a Package.
+   * Some policy levels or ORD consumers (e.g. aggregators that navigate resources via Packages) require a Package assignment. See the applicable [policy level](../../spec-extensions/policy-levels/) for details.
    */
-  partOfPackage: string;
+  partOfPackage?: string;
   /**
    * Defines which groups the resource is assigned to.
    *
@@ -1382,9 +1383,10 @@ export interface EventResource {
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
    *
-   * Every resource MUST be part of one package.
+   * A resource MAY be part of a Package.
+   * Some policy levels or ORD consumers (e.g. aggregators that navigate resources via Packages) require a Package assignment. See the applicable [policy level](../../spec-extensions/policy-levels/) for details.
    */
-  partOfPackage: string;
+  partOfPackage?: string;
   /**
    * Defines which groups the resource is assigned to.
    *
@@ -1934,9 +1936,10 @@ export interface EntityType {
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
    *
-   * Every resource MUST be part of one package.
+   * A resource MAY be part of a Package.
+   * Some policy levels or ORD consumers (e.g. aggregators that navigate resources via Packages) require a Package assignment. See the applicable [policy level](../../spec-extensions/policy-levels/) for details.
    */
-  partOfPackage: string;
+  partOfPackage?: string;
   /**
    * Defines which groups the resource is assigned to.
    *
@@ -2283,9 +2286,10 @@ export interface Capability {
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
    *
-   * Every resource MUST be part of one package.
+   * A resource MAY be part of a Package.
+   * Some policy levels or ORD consumers (e.g. aggregators that navigate resources via Packages) require a Package assignment. See the applicable [policy level](../../spec-extensions/policy-levels/) for details.
    */
-  partOfPackage: string;
+  partOfPackage?: string;
   /**
    * Defines which groups the resource is assigned to.
    *
@@ -2600,9 +2604,10 @@ export interface DataProduct {
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
    *
-   * Every resource MUST be part of one package.
+   * A resource MAY be part of a Package.
+   * Some policy levels or ORD consumers (e.g. aggregators that navigate resources via Packages) require a Package assignment. See the applicable [policy level](../../spec-extensions/policy-levels/) for details.
    */
-  partOfPackage: string;
+  partOfPackage?: string;
   /**
    * Defines which groups the resource is assigned to.
    *
@@ -3041,9 +3046,10 @@ export interface Agent {
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
    *
-   * Every resource MUST be part of one package.
+   * A resource MAY be part of a Package.
+   * Some policy levels or ORD consumers (e.g. aggregators that navigate resources via Packages) require a Package assignment. See the applicable [policy level](../../spec-extensions/policy-levels/) for details.
    */
-  partOfPackage: string;
+  partOfPackage?: string;
   /**
    * Defines which groups the resource is assigned to.
    *
@@ -3563,9 +3569,10 @@ export interface IntegrationDependency {
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
    *
-   * Every resource MUST be part of one package.
+   * A resource MAY be part of a Package.
+   * Some policy levels or ORD consumers (e.g. aggregators that navigate resources via Packages) require a Package assignment. See the applicable [policy level](../../spec-extensions/policy-levels/) for details.
    */
-  partOfPackage: string;
+  partOfPackage?: string;
   /**
    * Defines which groups the resource is assigned to.
    *

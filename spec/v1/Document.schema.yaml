@@ -1015,7 +1015,8 @@ definitions:
 
           MUST be a valid reference to a [Package](#package) ORD ID.
 
-          Every resource MUST be part of one package.
+          A resource MAY be part of a Package.
+          Some policy levels or ORD consumers (e.g. aggregators that navigate resources via Packages) require a Package assignment. See the applicable [policy level](../../spec-extensions/policy-levels/) for details.
         examples:
           - "sap.xref:package:SomePackage:v1"
 
@@ -1695,7 +1696,6 @@ definitions:
       - releaseStatus
       - apiProtocol
       - visibility
-      - partOfPackage
     additionalProperties: false
 
   ############################################################################################################
@@ -1979,7 +1979,6 @@ definitions:
       - description
       - version
       - visibility
-      - partOfPackage
       - releaseStatus
     x-recommended:
       - lastUpdate
@@ -2205,7 +2204,6 @@ definitions:
       - title
       - version
       - visibility
-      - partOfPackage
       - releaseStatus
     x-recommended:
       - lastUpdate
@@ -2698,7 +2696,6 @@ definitions:
       - version
       - releaseStatus
       - visibility
-      - partOfPackage
       - responsible
       - outputPorts
     x-recommended:
@@ -3235,7 +3232,6 @@ definitions:
       - version
       - releaseStatus
       - visibility
-      - partOfPackage
     x-recommended:
       - lastUpdate
 
@@ -3635,7 +3631,6 @@ definitions:
       - version
       - releaseStatus
       - visibility
-      - partOfPackage
     x-recommended:
       - lastUpdate
 
@@ -3840,7 +3835,6 @@ definitions:
       - version
       - releaseStatus
       - visibility
-      - partOfPackage
       - mandatory
 
   ############################################################################################################
@@ -5870,5 +5864,4 @@ definitions:
       - version
       - visibility
       - releaseStatus
-      - partOfPackage
     additionalProperties: true
