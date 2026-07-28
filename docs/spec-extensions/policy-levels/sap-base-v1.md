@@ -43,6 +43,7 @@ The base ORD specification makes `shortDescription` optional. Under this policy 
 
 - For `public` resources, `shortDescription` MUST be provided.
 - For `internal` resources, `shortDescription` is RECOMMENDED.
+  - It MUST be provided if the internal content is to be published to the SAP Business Accelerator Hub.
 - For `private` resources, `shortDescription` is optional (not consequential).
 
 This applies to all resources that carry a `visibility` (e.g. Package, API Resource, Event Resource, Data Product).
