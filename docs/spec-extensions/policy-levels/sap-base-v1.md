@@ -41,8 +41,10 @@ Usually SAP applications and services will use the more complete and opinionated
 
 The base ORD specification makes the `partOfPackage` assignment optional. Under this policy level the following applies:
 
-- Resources SHOULD be assigned to a Package via `partOfPackage`.
-- A Package assignment MUST be provided if the resource is to be published to the SAP Business Accelerator Hub.
+- A Package assignment (`partOfPackage`) MUST be provided if either:
+  - the resource has `visibility` `public`, or
+  - the resource is to be published to the SAP Business Accelerator Hub (this MAY also apply to `internal` resources).
+- Otherwise, a Package assignment SHOULD be provided.
 
 ### Misc Constraints
 
