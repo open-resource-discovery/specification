@@ -1,12 +1,12 @@
 # Community Specification Contributor License Agreement 1.0
 
-By making a Contribution to this repository, I agree to the terms of the following documents located at [https://github.com/CommunitySpecification/Community_Specification](https://github.com/CommunitySpecification/Community_Specification):
+By making a Contribution to this repository, I agree to the terms below. Items (a) through (c) are pinned to revision [`8a05e46d768ac0525af882b619c42f3380a9e869`](https://github.com/CommunitySpecification/Community_Specification/tree/8a05e46d768ac0525af882b619c42f3380a9e869) of the Community Specification materials:
 
-(a) Community Specification License 1.0 (`01-community-specification-license-v1.md`)
+(a) [Community Specification License 1.0](https://github.com/CommunitySpecification/Community_Specification/blob/8a05e46d768ac0525af882b619c42f3380a9e869/01-community-specification-license-v1.md)
 
-(b) Community Specification Governance Policy 1.0 (`05-governance.md`)
+(b) [Community Specification Governance Policy 1.0](https://github.com/CommunitySpecification/Community_Specification/blob/8a05e46d768ac0525af882b619c42f3380a9e869/05-governance.md)
 
-(c) Community Specification Contribution Policy 1.0 (`06-contributing.md`)
+(c) [Community Specification Contribution Policy 1.0](https://github.com/CommunitySpecification/Community_Specification/blob/8a05e46d768ac0525af882b619c42f3380a9e869/06-contributing.md)
 
 (d) [LF Europe Code of Conduct](https://linuxfoundation.eu/policies/code-of-conduct)
 
