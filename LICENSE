@@ -1,36 +1,41 @@
 Open Resource Discovery (ORD) Specification
 ============================================
 
-Copyright contributors to the Open Resource Discovery project.
+Copyright SAP SE or an SAP affiliated Company and Open Resource Discovery
+contributors.
 
 Open Resource Discovery is a project of the [NeoNephos Foundation](https://neonephos.org/projects/open-resource-discovery-ord/), a [Linux Foundation Europe](https://linuxfoundation.eu) project. Individual contributions remain copyright of their respective authors (and, where applicable, their employers).
 
-This repository contains two kinds of content licensed under different terms:
+This repository contains material under different licenses:
 
-1. Specification documents (the ORD specification itself, including all
-   normative content under `spec/`, `spec-extension/`, `docs/`, generated
-   schemas under `static/spec-v1/` and `static/spec-extension/`, and the
-   specification text published at https://open-resource-discovery.org)
-   are licensed under the **Community Specification License 1.0**.
+1. The normative, human-readable ORD standard is licensed under the
+   **Community Specification License 1.0**.
 
-   See `Community_Specification_License-v1.md` (full text) and `License.md`
-   (project license statement) in the root of this repository.
+   See `LICENSES/Community-Spec-1.0.txt` (full text) and `License.md`
+   (boundary and path rules).
 
    SPDX-License-Identifier: Community-Spec-1.0
 
-2. Source code (build tooling under `src/`, validation helpers, generated
-   TypeScript types under `dist/`, the Docusaurus site configuration, and
-   any sample/reference code included with the specification or under
-   `examples/`) is licensed under the **Apache License, Version 2.0**.
+2. Normative YAML schema, OpenAPI, and UMS sources are dual-licensed under
+   **Community-Spec-1.0 OR Apache-2.0**.
+
+3. Generated JSON Schemas, TypeScript types and UMS artifacts, npm artifacts,
+   examples, validators, site code, automation, and other tooling are licensed
+   solely under the **Apache License, Version 2.0**.
 
    See `LICENSES/Apache-2.0.txt` for the full text.
 
    SPDX-License-Identifier: Apache-2.0
 
-Per-file license and copyright information is tracked via REUSE. See
-`REUSE.toml` and the REUSE compliance report for authoritative information:
-https://api.reuse.software/info/github.com/open-resource-discovery/specification
+4. Copied license texts and third-party material remain under their stated
+   licenses.
 
-In the case of any conflict between the two licenses, the Community
-Specification License governs the specification content and the Apache
-License 2.0 governs the source code content.
+The exact tracked-file mapping is recorded in `REUSE.toml`. The complete
+policy, including treatment of the generated human-readable reference, is in
+`License.md`:
+
+https://github.com/open-resource-discovery/specification/blob/main/License.md
+
+The REUSE compliance report is available at:
+
+https://api.reuse.software/info/github.com/open-resource-discovery/specification

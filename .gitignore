@@ -33,4 +33,3 @@ docs/spec-extensions/models/*.md
 .claude/
 .codex
 .DS_Store
-grounding/

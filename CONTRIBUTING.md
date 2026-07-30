@@ -8,7 +8,7 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 
 ## Contributor License Agreement
 
-Open Resource Discovery is developed under the [**Community Specification License 1.0**](./Community_Specification_License-v1.md). Before a first contribution can be merged, contributors must agree to the [Community Specification Contributor License Agreement](./Community_Specification_Contributor_License_Agreement.md), which binds participants to the specification's license, governance, and contribution policies, and the [LF Europe Code of Conduct](https://linuxfoundation.eu/policies/code-of-conduct).
+The normative Open Resource Discovery standard is developed under the [**Community Specification License 1.0**](./LICENSES/Community-Spec-1.0.txt). Normative YAML schema, OpenAPI, and UMS sources are additionally available under Apache-2.0, while generated implementation artifacts remain Apache-2.0-only. Before a first contribution can be merged, contributors must agree to the [Community Specification Contributor License Agreement](./Community_Specification_Contributor_License_Agreement.md), which binds participants to the specification's license, governance, and contribution policies, and the [LF Europe Code of Conduct](https://linuxfoundation.eu/policies/code-of-conduct).
 
 > **Open question:** Whether agreement is captured via an automated CLA bot (e.g., EasyCLA) or via another mechanism is to be decided by the [ORD Steering Committee](https://github.com/open-resource-discovery/steering).
 
@@ -32,15 +32,17 @@ You are welcome to contribute code in order to fix a bug or to implement a new f
 
 The following rules govern contributions:
 
-- Specification content (under `spec/`, `spec-extension/`, `docs/`, and the published specification documents) is contributed under the [Community Specification License 1.0](./Community_Specification_License-v1.md).
-- Source code, sample/reference code, build tooling, and the Docusaurus site configuration are contributed under the [Apache License, Version 2.0](./LICENSES/Apache-2.0.txt).
+- Normative, human-readable specification content is contributed under the [Community Specification License 1.0](./LICENSES/Community-Spec-1.0.txt). The exact tracked paths are listed in [`REUSE.toml`](./REUSE.toml).
+- Normative YAML schema, OpenAPI, and UMS sources are contributed under `Community-Spec-1.0 OR Apache-2.0`.
+- Generated machine-readable schemas, TypeScript types and UMS artifacts, npm artifacts, examples, validators, build tooling, and site code are contributed solely under the [Apache License, Version 2.0](./LICENSES/Apache-2.0.txt).
+- A change may update artifacts under different licenses. For example, a dual-licensed YAML schema change may produce a human-readable reference published under `Community-Spec-1.0` and generated JSON and TypeScript artifacts distributed under `Apache-2.0`.
 - See [`License.md`](./License.md) and [`REUSE.toml`](./REUSE.toml) for the authoritative per-path licensing.
 
 ## Generated Artifacts and Review Process
 
 This repository checks in certain generated files (TypeScript types and UMS types). We intentionally commit these artifacts so pull requests clearly show the impact on those interfaces and downstream consumers during review.
 
-- What is generated: TypeScript interfaces referenced unde `dist/generated/spec/v1` and `src/generated` and UMS types referenced under `spec/v1` and `src/generated/`.
+- What is generated: TypeScript interfaces under `dist/generated/spec/v1` and `src/generated`, JSON Schemas and human-readable interface reference pages, and UMS types under `static/spec-v1/interfaces/`.
 - How to generate: run `npm run generate` (this executes the spec toolkit and copies results via the postgenerate step).
 
 ### CI verification
