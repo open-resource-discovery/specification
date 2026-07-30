@@ -14,6 +14,24 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - **License model changed from repository-wide Apache-2.0 to a Community Specification model.** The normative, human-readable ORD standard is now licensed under the [Community Specification License 1.0](./LICENSES/Community-Spec-1.0.txt). Normative YAML schema, OpenAPI, and UMS sources are dual-licensed as `Community-Spec-1.0 OR Apache-2.0`. Generated JSON Schemas, TypeScript types and UMS artifacts, npm artifacts, examples, validators, build tooling, and site code remain Apache-2.0-only. Patent commitments are limited by [`Scope.md`](./Scope.md); the copyright license assigned to an artifact does not expand that scope. This change does not modify the technical content of the specification. See [`License.md`](./License.md), [`Notices.md`](./Notices.md), and [`Governance.md`](./Governance.md) for details.
 
+## [1.16.3]
+
+### Changed
+
+- Clarified `resourceDefinitions` and `purpose`: all entries on a single resource MUST describe the same underlying resource. Multiple distinct resources MUST be modelled as separate ORD resources. The entry without a `purpose` is the default for its `(type, visibility)`, and consumers that don't filter by `purpose` MUST fall back to it. The `ord:` namespace on `purpose` is reserved; custom values MUST use a vendor-specific prefix.
+
+## [1.16.2]
+
+### Added
+
+- Added new `purpose` value `ord:agent-security-permissions` for resource definitions that describe the security permissions an AI agent requires to access the resource.
+
+## [1.16.1]
+
+### Added
+
+- Added `labels` property to `IntegrationAspect`, `ApiResourceIntegrationAspect`, `EventResourceIntegrationAspect`, and `CapabilityIntegrationAspect`.
+
 ## [1.16.0]
 
 ### Added
