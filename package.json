@@ -17,6 +17,10 @@
   },
   "files": [
     "README.md",
+    "LICENSE",
+    "License.md",
+    "LICENSES/Apache-2.0.txt",
+    "LICENSES/Community-Spec-1.0.txt",
     "dist/index.js",
     "dist/index.d.ts",
     "dist/generated/spec/v1"
@@ -29,14 +33,15 @@
     "build:docusaurus": "docusaurus build",
     "format": "biome format --write .",
     "lint": "biome lint .",
-    "test": "npm run build:ts && node --test dist/validation/*.test.js",
+    "test": "npm run build:ts && node --test dist/validation/*.test.js && npm run check:license-policy",
     "serve": "docusaurus serve",
     "start": "docusaurus start",
     "deploy": "npm run build && gh-pages -d ./build",
     "pregenerate": "npm run clean",
     "generate": "npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json",
     "postgenerate": "npm run build:ts && node ./dist/helper/copyGeneratedToDestination.js",
-    "generate:llm-notebook": "npm run generate && node ./dist/helper/exportForNotebookLM.js"
+    "generate:llm-notebook": "npm run generate && node ./dist/helper/exportForNotebookLM.js",
+    "check:license-policy": "node src/helper/checkLicensePolicy.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
