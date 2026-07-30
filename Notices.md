@@ -34,7 +34,7 @@ Date of withdrawal:
 
 ## Exclusions
 
-This section includes any Exclusion Notices made against a Draft Deliverable or Approved Deliverable as set forth in the Community Specification Development License. Each Exclusion Notice must include the following information:
+This section includes any Exclusion Notices made against a Draft Specification or Approved Specification as set forth in the Community Specification License 1.0. Each Exclusion Notice must include the following information:
 
 - Name of party making the Exclusion Notice:
 
