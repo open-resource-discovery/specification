@@ -4,9 +4,9 @@
 
 The Open Resource Discovery project follows the [LF Europe Code of Conduct](https://linuxfoundation.eu/policies/code-of-conduct).
 
-Contact for Code of Conduct issues or inquiries: _<TBD — to be confirmed by the ORD Steering Committee. Suggested: 2 named maintainers from the [ORD steering committee](https://github.com/open-resource-discovery/steering)>_.
+Project-specific confidential reporting contacts: **To be appointed by the ORD Steering Committee.** The project intends to designate two named contacts from the [ORD steering committee](https://github.com/open-resource-discovery/steering).
 
-Reports may also be directed to [legal@linuxfoundation.eu](mailto:legal@linuxfoundation.eu) per the LF Europe Code of Conduct.
+Until those contacts are appointed, and at any time afterward, reports and appeals may be directed confidentially to [legal@linuxfoundation.eu](mailto:legal@linuxfoundation.eu) in accordance with the LF Europe Code of Conduct. Do not submit Code of Conduct reports through public GitHub issues.
 
 ## License Acceptance
 

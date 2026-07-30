@@ -4,7 +4,7 @@
 
 All members of the project community must abide by the [LF Europe Code of Conduct](https://linuxfoundation.eu/policies/code-of-conduct).
 Only by respecting each other can we develop a productive, collaborative community.
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported per [`Notices.md`](./Notices.md), or by creating a [GitHub issue](https://github.com/open-resource-discovery/specification/issues).
+Report abusive, harassing, or otherwise unacceptable behavior confidentially as described in [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) and [`Notices.md`](./Notices.md). Do not submit Code of Conduct reports through public GitHub issues.
 
 ## Contributor License Agreement
 
