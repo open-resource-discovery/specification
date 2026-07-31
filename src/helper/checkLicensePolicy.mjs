@@ -4,6 +4,8 @@ import fs from "node:fs";
 
 const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
 const reuseToml = fs.readFileSync("REUSE.toml", "utf8");
+const communitySpecificationRevision =
+	"8a05e46d768ac0525af882b619c42f3380a9e869";
 
 const annotationBlocks = reuseToml
 	.split(/\n\[\[annotations\]\]\s*\n/)
@@ -106,6 +108,34 @@ assert.equal(
 	"Apache-2.0",
 	"The npm package must remain Apache-2.0",
 );
+
+const incorporatedCommunitySpecificationTerms = [
+	{
+		path: "Community_Specification_Contributor_License_Agreement.md",
+		terms: [
+			"01-community-specification-license-v1.md",
+			"05-governance.md",
+			"06-contributing.md",
+		],
+	},
+	{
+		path: "Governance.md",
+		terms: ["05-governance.md"],
+	},
+];
+
+for (const { path, terms } of incorporatedCommunitySpecificationTerms) {
+	const document = fs.readFileSync(path, "utf8");
+
+	for (const term of terms) {
+		assert.ok(
+			document.includes(
+				`https://github.com/CommunitySpecification/Community_Specification/blob/${communitySpecificationRevision}/${term}`,
+			),
+			`${path} must pin ${term} to the adopted Community Specification revision`,
+		);
+	}
+}
 
 const packOutput = execFileSync(
 	"npm",
