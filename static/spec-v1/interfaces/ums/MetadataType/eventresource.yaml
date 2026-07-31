@@ -418,6 +418,10 @@ spec:
       relatedTypeName: 'ExposedEntityType'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Optional list of [entity types](#entity-type) that are exposed by the resource.\n\nThis replaces `entityTypeMappings`. If both is given, the `exposedEntityTypes` wins.\n\nMUST be a valid reference to an [EntityType](#entity-type) ORD ID."
+    - propertyName: 'relatedSchemas'
+      relatedTypeName: 'RelatedSchema'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of related [Schemas](#schema).\n\nAn Event resource typically references one payload Schema per event (often published in a schema registry).\nUse the `relationType` (e.g. `ord:payload`) to qualify the relationship."
     - propertyName: 'extensible'
       relatedTypeName: 'Extensible'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

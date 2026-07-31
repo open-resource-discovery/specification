@@ -1,0 +1,131 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
+  "openResourceDiscovery": "1.17",
+  "description": "Example for Schemas: reusable data contracts referenced by APIs and Events, and related to Entity Types.",
+  "policyLevels": ["sap:core:v1"],
+  "packages": [
+    {
+      "ordId": "sap.foo:package:SchemaExample:v1",
+      "title": "Schema Example Package",
+      "shortDescription": "Example package showcasing the Schema concept.",
+      "description": "This package bundles an API, an Event, and the Schemas they expose.",
+      "version": "1.0.0",
+      "policyLevels": ["sap:core:v1"],
+      "vendor": "sap:vendor:SAP:"
+    }
+  ],
+  "entityTypes": [
+    {
+      "ordId": "sap.odm:entityType:BusinessPartner:v1",
+      "localId": "BusinessPartner",
+      "level": "aggregate",
+      "title": "Business Partner",
+      "shortDescription": "A person, an organization, or a group of persons or organizations.",
+      "description": "A business partner is a person, an organization, or a group of persons or organizations in which a company has a business interest.",
+      "version": "1.0.0",
+      "lastUpdate": "2026-07-31T15:30:04+00:00",
+      "partOfPackage": "sap.foo:package:SchemaExample:v1",
+      "visibility": "public",
+      "releaseStatus": "active"
+    }
+  ],
+  "schemas": [
+    {
+      "ordId": "sap.foo:schema:BusinessPartner:v1",
+      "localId": "BusinessPartner",
+      "title": "Business Partner (JSON representation)",
+      "shortDescription": "JSON Schema representation of a Business Partner.",
+      "description": "The physical JSON Schema data contract for a Business Partner as exposed via the REST API.",
+      "version": "1.0.0",
+      "lastUpdate": "2026-07-31T15:30:04+00:00",
+      "partOfPackage": "sap.foo:package:SchemaExample:v1",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "compatibility": "backward",
+      "relatedEntityTypes": [
+        {
+          "ordId": "sap.odm:entityType:BusinessPartner:v1",
+          "relationType": "ord:represents"
+        }
+      ],
+      "definitions": [
+        {
+          "type": "json-schema-v2020-12",
+          "mediaType": "application/json",
+          "url": "/schemas/businessPartner.schema.json",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    },
+    {
+      "ordId": "sap.foo:schema:BusinessPartnerCreated:v1",
+      "localId": "BusinessPartnerCreated",
+      "title": "Business Partner Created (Event Payload)",
+      "shortDescription": "Avro payload schema for the BusinessPartnerCreated event.",
+      "description": "The physical event payload data contract, published in a schema registry.",
+      "version": "1.0.0",
+      "lastUpdate": "2026-07-31T15:30:04+00:00",
+      "partOfPackage": "sap.foo:package:SchemaExample:v1",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "compatibility": "full",
+      "relatedEntityTypes": [
+        {
+          "ordId": "sap.odm:entityType:BusinessPartner:v1",
+          "relationType": "ord:partial-representation"
+        }
+      ],
+      "definitions": [
+        {
+          "type": "avro-v1",
+          "mediaType": "application/json",
+          "url": "/schemas/businessPartnerCreated.avsc",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    }
+  ],
+  "apiResources": [
+    {
+      "ordId": "sap.foo:apiResource:BusinessPartnerApi:v1",
+      "title": "Business Partner API",
+      "shortDescription": "REST API for managing Business Partners.",
+      "description": "Provides CRUD operations for Business Partners. Exposes (contains) the Business Partner Schema.",
+      "version": "1.0.0",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:SchemaExample:v1",
+      "releaseStatus": "active",
+      "apiProtocol": "rest",
+      "relatedSchemas": [{ "ordId": "sap.foo:schema:BusinessPartner:v1", "relationType": "ord:exposes" }],
+      "resourceDefinitions": [
+        {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "url": "/apis/businessPartner/openapi.json",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    }
+  ],
+  "eventResources": [
+    {
+      "ordId": "sap.foo:eventResource:BusinessPartnerEvents:v1",
+      "title": "Business Partner Events",
+      "shortDescription": "Events emitted for Business Partner lifecycle changes.",
+      "description": "Event resource emitting BusinessPartnerCreated and related events. References the payload Schema.",
+      "version": "1.0.0",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:SchemaExample:v1",
+      "releaseStatus": "active",
+      "relatedSchemas": [{ "ordId": "sap.foo:schema:BusinessPartnerCreated:v1", "relationType": "ord:payload" }],
+      "resourceDefinitions": [
+        {
+          "type": "asyncapi-v2",
+          "mediaType": "application/json",
+          "url": "/events/businessPartner/asyncapi.json",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    }
+  ]
+}
