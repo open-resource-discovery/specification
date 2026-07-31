@@ -3,7 +3,7 @@
 
 # Open Resource Discovery Specification
 
-![Open Resource Discovery Logo](./static/img/open-resource-discovery-logo-wide.png "Open Resource Discovery Logo")
+![Open Resource Discovery Logo](https://open-resource-discovery.org/img/open-resource-discovery-logo-wide.png "Open Resource Discovery Logo")
 
 ## Summary
 
@@ -11,8 +11,10 @@ Open Resource Discovery (ORD) is a protocol that **enables applications and serv
 
 **To learn more, have a look at the [Open Resource Discovery Specification](https://open-resource-discovery.org/) documentation.**
 
-> ℹ ORD is an open standard by SAP, currently geared towards the SAP ecosystem.
-> However, it is designed as a generic standard that can be used outside SAP with appropriate infrastructure (aggregators and namespace registry).
+> ℹ ORD originated at SAP and is now developed as an open standard under
+> NeoNephos governance. It remains widely used in the SAP ecosystem, but is
+> designed as a generic standard that can be used elsewhere with appropriate
+> infrastructure (aggregators and namespace registry).
 > The standard is extensible through extensibility attributes, custom types, and policy levels.
 
 ## Communication, Feedback & FAQ
@@ -33,11 +35,11 @@ Check out the [ORD Reference Application](https://ord-reference-application.cfap
 
 #### ORD Example Data
 
-- Within this repository: [examples/](./examples/).
+- Within this repository: [examples](https://github.com/open-resource-discovery/specification/tree/main/examples).
 
 ## History
 
-For detailed and recent changes, please refer to the [CHANGELOG.md](CHANGELOG.md).
+For detailed and recent changes, please refer to the [changelog](https://github.com/open-resource-discovery/specification/blob/main/CHANGELOG.md).
 
 ## Acknowledgements
 
@@ -46,7 +48,11 @@ For detailed and recent changes, please refer to the [CHANGELOG.md](CHANGELOG.md
 
 ## License
 
-Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/open-resource-discovery/specification).
+The normative, human-readable ORD standard is licensed under the [**Community Specification License 1.0**](./LICENSES/Community-Spec-1.0.txt) (SPDX: `Community-Spec-1.0`). Normative YAML schema, OpenAPI, and UMS sources are dual-licensed as `Community-Spec-1.0 OR Apache-2.0`. Generated JSON Schemas, TypeScript types and UMS artifacts, npm artifacts, examples, validators, build tooling, and site code are licensed solely under the [**Apache License, Version 2.0**](./LICENSES/Apache-2.0.txt) (SPDX: `Apache-2.0`).
+
+See [`License.md`](./License.md) for the artifact boundary and [`LICENSE`](./LICENSE) for the top-level summary. Detailed per-file licensing and third-party component information is available [via the REUSE tool](https://api.reuse.software/info/github.com/open-resource-discovery/specification).
+
+Contributions to the normative specification are subject to the [Community Specification contribution terms](https://github.com/open-resource-discovery/specification/blob/main/Community_Specification_Contributor_License_Agreement.md). See the [contribution guide](https://github.com/open-resource-discovery/specification/blob/main/CONTRIBUTING.md).
 
 ## Open Resource Discovery and NeoNephos
 

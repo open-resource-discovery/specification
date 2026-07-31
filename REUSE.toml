@@ -1,11 +1,54 @@
 version = 1
 SPDX-PackageName = "open-resource-discovery-specification"
-SPDX-PackageSupplier = "ospo@sap.com"
+SPDX-PackageSupplier = "Organization: NeoNephos Foundation"
 SPDX-PackageDownloadLocation = "https://github.com/open-resource-discovery/specification"
 SPDX-PackageComment = "The code in this project may include calls to APIs (\"API Calls\") of\n SAP or third-party products or services developed outside of this project\n (\"External Products\").\n \"APIs\" means application programming interfaces, as well as their respective\n specifications and implementing code that allows software to communicate with\n other software.\n API Calls to External Products are not licensed under the open source license\n that governs this project. The use of such API Calls and related External\n Products are subject to applicable additional agreements with the relevant\n provider of the External Products. In no event shall the open source license\n that governs this project grant any rights in or to any External Products,or\n alter, expand or supersede any terms of the applicable additional agreements.\n If you have a valid license agreement with SAP for the use of a particular SAP\n External Product, then you may make use of any API Calls included in this\n project's code for that SAP External Product, subject to the terms of such\n license agreement. If you do not have a valid license agreement for the use of\n a particular SAP External Product, then you may only make use of any API Calls\n in this project for that SAP External Product for your internal, non-productive\n and non-commercial test and evaluation of such API Calls. Nothing herein grants\n you any rights to use or access any SAP External Product, or provide any third\n parties the right to use of access any SAP External Product, through API Calls."
 
+# Safe default: software, schemas, examples, tooling, site content, automation,
+# and administrative material are Apache-2.0 unless explicitly listed below.
 [[annotations]]
 path = "**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Copyright SAP SE or an SAP affiliated Company and Open Resource Discovery contributors."
 SPDX-License-Identifier = "Apache-2.0"
+
+# Normative, human-readable ORD specification sources. Machine-readable
+# interface definitions and generated implementation artifacts are deliberately
+# not included in this list.
+[[annotations]]
+path = [
+  "docs/spec-v1/index.md",
+  "docs/spec-v1/concepts/**",
+  "docs/spec-v1/interfaces/index.mdx",
+  "docs/spec-v1/interfaces/document-api.mdx",
+  "docs/spec-extensions/index.md",
+  "docs/spec-extensions/access-strategies/**",
+  "docs/spec-extensions/group-types/**",
+  "docs/spec-extensions/policy-levels/**",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "Copyright SAP SE or an SAP affiliated Company and Open Resource Discovery contributors."
+SPDX-License-Identifier = "Community-Spec-1.0"
+
+# Normative schema-first sources participate in the Community Specification,
+# while the Apache alternative is used for generated JSON, TypeScript, UMS, and
+# npm artifacts.
+[[annotations]]
+path = [
+  "spec/v1/*.yaml",
+  "spec-extension/models/*.schema.yaml",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "Copyright SAP SE or an SAP affiliated Company and Open Resource Discovery contributors."
+SPDX-License-Identifier = "Community-Spec-1.0 OR Apache-2.0"
+
+# Normative prose fragments used only in the generated human-readable
+# specification.
+[[annotations]]
+path = [
+  "spec/v1/OrdOverlay.intro.md",
+  "spec/v1/OrdOverlay.outro.md",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "Copyright SAP SE or an SAP affiliated Company and Open Resource Discovery contributors."
+SPDX-License-Identifier = "Community-Spec-1.0"

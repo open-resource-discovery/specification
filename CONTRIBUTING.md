@@ -1,22 +1,26 @@
-# Contributing to an SAP Open Source Project
+# Contributing to Open Resource Discovery
 
 ## Code of Conduct
 
-All members of the project community must abide by the [SAP Open Source Code of Conduct](https://github.com/SAP/.github/blob/main/CODE_OF_CONDUCT.md).
+All members of the project community must abide by the [LF Europe Code of Conduct](https://linuxfoundation.eu/policies/code-of-conduct).
 Only by respecting each other can we develop a productive, collaborative community.
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by creating a [GitHub issue](https://github.com/open-resource-discovery/specification/issues).
+Report abusive, harassing, or otherwise unacceptable behavior confidentially as described in [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) and [`Notices.md`](./Notices.md). Do not submit Code of Conduct reports through public GitHub issues.
 
-Contributors will be asked to accept a DCO before they submit the first pull request to this projects, this happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
+## Contributor License Agreement
+
+The normative Open Resource Discovery standard is developed under the [**Community Specification License 1.0**](./LICENSES/Community-Spec-1.0.txt). Normative YAML schema, OpenAPI, and UMS sources are additionally available under Apache-2.0, while generated implementation artifacts remain Apache-2.0-only. Before a first contribution can be merged, contributors must agree to the [Community Specification Contributor License Agreement](./Community_Specification_Contributor_License_Agreement.md), which binds participants to the specification's license, governance, and contribution policies, and the [LF Europe Code of Conduct](https://linuxfoundation.eu/policies/code-of-conduct).
+
+> **Open question:** Whether agreement is captured via an automated CLA bot (e.g., EasyCLA) or via another mechanism is to be decided by the [ORD Steering Committee](https://github.com/open-resource-discovery/steering).
 
 ## Contributing with AI-generated code
 
-- If you are a new contributor, see: [Steps to Contribute](#steps-to-contribute)
+See [CONTRIBUTING_USING_GENAI.md](./CONTRIBUTING_USING_GENAI.md).
+
+## Steps to Contribute
 
 - Before implementing your change, create an issue that describes the problem you would like to solve or the code that should be enhanced. Please note that you are willing to work on that issue.
 
 - The team will review the issue and decide whether it should be implemented as a pull request. In that case, they will assign the issue to you. If the team decides against picking up the issue, the team will post a comment with an explanation.
-
-## Steps to Contribute
 
 Should you wish to work on an issue, please claim it first by commenting on the GitHub issue that you want to work on. This is to prevent duplicated efforts from other contributors on the same issue.
 
@@ -26,16 +30,19 @@ If you have questions about one of the issues, please comment on them, and one o
 
 You are welcome to contribute code in order to fix a bug or to implement a new feature that is logged as an issue.
 
-The following rule governs code contributions:
+The following rules govern contributions:
 
-- Contributions must be licensed under the [Apache 2.0 License](./LICENSE)
-- Due to legal reasons, contributors will be asked to accept a Developer Certificate of Origin (DCO) when they create the first pull request to this project. This happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
+- Normative, human-readable specification content is contributed under the [Community Specification License 1.0](./LICENSES/Community-Spec-1.0.txt). The exact tracked paths are listed in [`REUSE.toml`](./REUSE.toml).
+- Normative YAML schema, OpenAPI, and UMS sources are contributed under `Community-Spec-1.0 OR Apache-2.0`.
+- Generated machine-readable schemas, TypeScript types and UMS artifacts, npm artifacts, examples, validators, build tooling, and site code are contributed solely under the [Apache License, Version 2.0](./LICENSES/Apache-2.0.txt).
+- A change may update artifacts under different licenses. For example, a dual-licensed YAML schema change may produce a human-readable reference published under `Community-Spec-1.0` and generated JSON and TypeScript artifacts distributed under `Apache-2.0`.
+- See [`License.md`](./License.md) and [`REUSE.toml`](./REUSE.toml) for the authoritative per-path licensing.
 
 ## Generated Artifacts and Review Process
 
 This repository checks in certain generated files (TypeScript types and UMS types). We intentionally commit these artifacts so pull requests clearly show the impact on those interfaces and downstream consumers during review.
 
-- What is generated: TypeScript interfaces referenced unde `dist/generated/spec/v1` and `src/generated` and UMS types referenced under `spec/v1` and `src/generated/`.
+- What is generated: TypeScript interfaces under `dist/generated/spec/v1` and `src/generated`, JSON Schemas and human-readable interface reference pages, and UMS types under `static/spec-v1/interfaces/`.
 - How to generate: run `npm run generate` (this executes the spec toolkit and copies results via the postgenerate step).
 
 ### CI verification
