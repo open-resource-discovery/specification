@@ -249,6 +249,10 @@ spec:
       relatedTypeName: 'RelatedCapability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Optional list of related Capabilities.\n\nUse this to indicate dependencies, extensions, or other relationships between capabilities."
+    - propertyName: 'relatedSchemas'
+      relatedTypeName: 'RelatedSchema'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of related [Schemas](#schema).\n\nAn API contract typically exposes (contains) many Schemas as its request/response or payload structures.\nUse the `relationType` (e.g. `ord:exposes`) to qualify the relationship."
     - propertyName: 'inverseRelatedCapabilities'
       relatedTypeName: 'RelatedCapability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

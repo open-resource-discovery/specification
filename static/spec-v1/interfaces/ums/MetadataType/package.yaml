@@ -249,6 +249,11 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: 'The capabilities that are part the given Package.'
       mandatory: false
+    - propertyName: 'schemas'
+      relatedTypeName: 'Schema'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The Schemas that are part of the given Package.'
+      mandatory: false
     - propertyName: 'integrationDependencies'
       relatedTypeName: 'IntegrationDependency'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

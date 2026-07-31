@@ -1,0 +1,40 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'relatedschema'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'RelatedSchema'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Defines a relationship from a resource (e.g. an API Resource, Event Resource, or Capability) to a\n[Schema](#schema) (via its ORD ID).\n\nUse `relationType` to qualify the nature of the relationship, e.g. whether the Schema is exposed\n(contained) by the resource or referenced as an event payload."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId_ID'
+      type: 'guid'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: true
+      constraints:
+        maxLength: 255
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(schema):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'relationType'
+      type: 'string'
+      description: "Optional type of the relationship, which defines a stricter semantic of what the relationship implies.\n\nIf not provided, the relationship type has no specific semantics; the Schema is \"related somehow\"\nto the resource.\n\nMUST be a valid [Concept ID](../index.md#concept-id)."
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'ordId'
+      relatedTypeName: 'Schema'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: true
+      managedByProperty: 'ordId_ID'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: true
+      reverseRelation:
+        relationPropertyName: 'relatedFromResources'

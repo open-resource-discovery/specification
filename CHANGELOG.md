@@ -10,6 +10,16 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added **`Schema`** as a new, lightweight top-level concept (**beta**). A Schema describes the concrete structure of a data object (e.g. a DTO, an event payload, an API request/response model, or a document/declarative-config contract such as a Kubernetes CRD), described with formats such as JSON Schema, CSN Interop, Avro, Protobuf, or XSD. It is distinct from `EntityType` (the conceptual domain model or business term): a Schema is a concrete, physical representation of an Entity Type. See the [Schema](https://open-resource-discovery.org/spec-v1/concepts/schema) concept page.
+  - Required: `ordId`, `title`, `version`, `releaseStatus`, `visibility`. `partOfPackage` is optional.
+  - Added optional `compatibility` mode (`none`/`backward`/`forward`/`full`).
+  - Added `SchemaDefinition` with an extensible `type` enum: global industry-standard formats as bare consts (`json-schema-v7`, `json-schema-v2020-12`, `avro-v1`, `protobuf-v3`, `xsd-v1`, `sap-csn-interop-effective-v1`), plus any valid Specification ID or `custom`.
+  - Added `SchemaEntityTypeRelation` (`{ordId, relationType}`, extensible; `ord:represents` / `ord:partial-representation`) as the value of `Schema.relatedEntityTypes` (direction: Schema → Entity Type).
+  - Added `schemas` array to the ORD Document root.
+- Added **`relatedSchemas`** (beta) to `ApiResource`, `EventResource`, and `Capability` to reference related Schemas. Modeled as a `RelatedSchema` object (`{ordId, relationType}`) with an extensible `relationType` (`ord:exposes` for schemas contained in an API contract, `ord:payload` for an event payload schema).
+
 ## [1.16.3]
 
 ### Changed

@@ -43,7 +43,8 @@ export interface OrdDocument {
     | "1.13"
     | "1.14"
     | "1.15"
-    | "1.16";
+    | "1.16"
+    | "1.17";
   /**
    * Optional description of the ORD document itself.
    * Please note that this information is NOT further processed or considered by an ORD aggregator.
@@ -125,6 +126,14 @@ export interface OrdDocument {
    * Array of all capabilities that are described in this ORD document.
    */
   capabilities?: Capability[];
+  /**
+   * Array of all Schemas that are described in this ORD document.
+   *
+   * A Schema describes the concrete structure of a data object (e.g. a DTO, an event payload,
+   * or an API request/response model), described with formats such as JSON Schema, CSN Interop,
+   * Avro, Protobuf, or XSD.
+   */
+  schemas?: Schema[];
   /**
    * Array of all data products that are described in this ORD document.
    */
@@ -741,6 +750,13 @@ export interface ApiResource {
    */
   exposedEntityTypes?: ExposedEntityType[];
   /**
+   * Optional list of related [Schemas](#schema).
+   *
+   * An API contract typically exposes (contains) many Schemas as its request/response or payload structures.
+   * Use the `relationType` (e.g. `ord:exposes`) to qualify the relationship.
+   */
+  relatedSchemas?: RelatedSchema[];
+  /**
    * Links with semantic meaning that are specific to API Resources.
    */
   apiResourceLinks?: ApiAndEventResourceLink[];
@@ -1241,6 +1257,30 @@ export interface ExposedEntityType {
   ordId: string;
 }
 /**
+ * Defines a relationship from a resource (e.g. an API Resource, Event Resource, or Capability) to a
+ * [Schema](#schema) (via its ORD ID).
+ *
+ * Use `relationType` to qualify the nature of the relationship, e.g. whether the Schema is exposed
+ * (contained) by the resource or referenced as an event payload.
+ */
+export interface RelatedSchema {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship, which defines a stricter semantic of what the relationship implies.
+   *
+   * If not provided, the relationship type has no specific semantics; the Schema is "related somehow"
+   * to the resource.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  relationType?: (string | "ord:exposes" | "ord:payload") & string;
+}
+/**
  * Links with specific semantic meaning that are related to API or event resources.
  *
  * If a generic [Link](#link) can also be expressed via an API / Event Resource Link, the latter MUST be chosen.
@@ -1638,6 +1678,13 @@ export interface EventResource {
    * MUST be a valid reference to an [EntityType](#entity-type) ORD ID.
    */
   exposedEntityTypes?: ExposedEntityType[];
+  /**
+   * Optional list of related [Schemas](#schema).
+   *
+   * An Event resource typically references one payload Schema per event (often published in a schema registry).
+   * Use the `relationType` (e.g. `ord:payload`) to qualify the relationship.
+   */
+  relatedSchemas?: RelatedSchema[];
   /**
    * Links with semantic meaning that are specific to event resources.
    *
@@ -2398,6 +2445,13 @@ export interface Capability {
    */
   relatedCapabilities?: RelatedCapability[];
   /**
+   * Optional list of related [Schemas](#schema).
+   *
+   * An API contract typically exposes (contains) many Schemas as its request/response or payload structures.
+   * Use the `relationType` (e.g. `ord:exposes`) to qualify the relationship.
+   */
+  relatedSchemas?: RelatedSchema[];
+  /**
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
@@ -2472,6 +2526,331 @@ export interface CapabilityDefinition {
    * Type of the capability resource definition
    */
   type: (string | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
+  /**
+   * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
+   *
+   * MUST be a valid [Specification ID](../index.md#specification-id).
+   *
+   * MUST only be provided if `type` is set to `custom`.
+   */
+  customType?: string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   * For example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.
+   *
+   * If no Media Type is registered for the referenced file,
+   * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
+  /**
+   * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
+   *
+   * It is RECOMMENDED to provide a relative URL.
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving metadata from the ORD provider.
+   * An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
+   *
+   * The access strategies only apply to the metadata access and not the actual API access.
+   * The actual access to the APIs for clients is described via Consumption Bundles.
+   *
+   * If this property is not provided, the definition URL will be available through the same access strategy as this ORD document.
+   * It is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.
+   *
+   * @minItems 1
+   */
+  accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+   *
+   * If not given, the resource definition has the same visibility as the resource it describes.
+   * The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+   * E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+   *
+   * This makes it also possible to provide both a public and an internal metadata description of the resource,
+   * in case that some metadata must only be made accessible to internal consumers.
+   */
+  visibility?: "public" | "internal" | "private";
+  /**
+   * Marks a resource definition as a *complementary* variant of the resource's default definition,
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in the definitions list, with or without `purpose`, MUST describe the same
+   * underlying resource; see the list property for the full modelling rules.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the definitions list.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
+}
+/**
+ * A Schema describes the concrete structure of a data object, e.g. a Data Transfer Object (DTO),
+ * an event payload, or an API request/response model.
+ * A Schema can be described with formats such as JSON Schema, CSN Interop, Avro, Protobuf, or XSD.
+ *
+ * Schemas can also describe the contract of whole documents or declarative configuration objects,
+ * e.g. Kubernetes Custom Resource Definitions (CRDs). The ORD specification itself is such an example:
+ * it publishes a JSON Schema that describes the structure of ORD Documents.
+ *
+ * Unlike an [Entity Type](#entity-type), which represents a conceptual domain model or a business term
+ * (a "noun"), a Schema describes the concrete serialization structure ("how the data is shaped on the wire").
+ * A Schema MAY reference the Entity Type(s) it realizes via `relatedEntityTypes`, providing traceability
+ * between the conceptual model and its physical representation.
+ *
+ * Schemas are lightweight to describe (similar to [Capabilities](#capability)) and are meant to be reusable:
+ * API resources typically expose (contain) many Schemas, while Event resources typically reference one payload
+ * Schema each, often published in a schema registry. A Schema MAY also stand on its own (e.g. a document
+ * contract), in which case it need not be exposed by any API or Event.
+ *
+ * Please note that this concept is in beta and MAY be changed or removed at the provider's discretion.
+ */
+export interface Schema {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * The locally unique ID under which this resource can be looked up / resolved in the described system itself.
+   * Unlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.
+   *
+   * It MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.
+   * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
+   */
+  localId?: string;
+  /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
+  /**
+   * Human-readable title.
+   *
+   * MUST NOT exceed 255 chars.
+   * MUST NOT contain line breaks.
+   */
+  title: string;
+  /**
+   * Plain text short description.
+   *
+   * MUST NOT exceed 255 chars.
+   * MUST NOT contain line breaks.
+   */
+  shortDescription?: string;
+  /**
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
+   * Detailed documentation SHOULD be attached as (typed) links.
+   */
+  description?: string;
+  /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
+   * Defines which Package the resource is part of.
+   *
+   * MUST be a valid reference to a [Package](#package) ORD ID.
+   *
+   * Every resource MUST be part of one package.
+   */
+  partOfPackage?: string;
+  /**
+   * Defines which groups the resource is assigned to.
+   *
+   * The property is optional, but if given the value MUST be an array of valid Group IDs.
+   *
+   * Groups are a lightweight custom taxonomy concept.
+   * They express a "part of" relationship to the chosen group concept.
+   * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
+   *
+   * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
+   */
+  partOfGroups?: string[];
+  /**
+   * The complete [SemVer](https://semver.org/) version string.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   * It SHOULD be changed if the ORD information or referenced resource definitions changed.
+   * It SHOULD express minor and patch changes that don't lead to incompatible changes.
+   *
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   *
+   * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
+   * The `version` MUST not be bumped for changes in extensions.
+   *
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
+   *
+   * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
+   */
+  version: string;
+  /**
+   * Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   *
+   * When retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.
+   * Therefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.
+   *
+   * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
+   *
+   * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+   */
+  lastUpdate?: string;
+  /**
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
+   */
+  visibility: "public" | "internal" | "private";
+  /**
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   */
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
+  /**
+   * Optional schema evolution / compatibility mode, describing how future versions of this Schema
+   * are allowed to change relative to prior versions.
+   *
+   * This mirrors the compatibility modes found in schema registries (e.g. Confluent, AWS Glue, CNCF xRegistry).
+   */
+  compatibility?: "none" | "backward" | "forward" | "full";
+  /**
+   * Optional list of [Entity Type](#entity-type) Resources that this Schema represents / serializes.
+   *
+   * A Schema is a concrete, physical data contract (representation) for an Entity Type.
+   * The same Entity Type MAY have several Schemas as representations, depending on the API,
+   * protocol, or serialization format that exposes it. Use `relationType` to further qualify
+   * the relationship where useful.
+   */
+  relatedEntityTypes?: SchemaEntityTypeRelation[];
+  /**
+   * List of available machine-readable definitions, which describe the resource in detail.
+   * See also [Resource Definitions](../index.md#resource-definitions) for more context.
+   *
+   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
+   * representations (different formats) and complementary artifacts distinguished by `purpose`
+   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
+   * Model those as separate ORD resources instead.
+   *
+   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
+   * default per `(type, visibility)` combination.
+   *
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
+   * be unique within the list.
+   *
+   * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
+   * If the definitions are added or changed, the `version` MUST be incremented.
+   * An ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.
+   */
+  definitions?: SchemaDefinition[];
+  /**
+   * Generic Links with arbitrary meaning and content.
+   */
+  links?: Link[];
+  /**
+   * List of free text style tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  tags?: string[];
+  labels?: Labels;
+  documentationLabels?: DocumentationLabels;
+  /**
+   * Defines whether this ORD resource is **system-instance-aware**.
+   * This is the case when the referenced resource definitions are potentially different between **system instances**.
+   *
+   * If this behavior applies, `systemInstanceAware` MUST be set to true.
+   * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
+   *
+   * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
+   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   *
+   * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
+   */
+  systemInstanceAware?: boolean;
+}
+/**
+ * Defines the relation between a [Schema](#schema) and an [Entity Type](#entity-type) (via its ORD ID).
+ *
+ * A Schema is a concrete, physical representation (data contract) of an Entity Type.
+ */
+export interface SchemaEntityTypeRelation {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship, which defines a stricter semantic of what the relationship implies.
+   *
+   * If not provided, the relationship type has no specific semantics; the Schema is "a representation of"
+   * the referenced Entity Type.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
+   */
+  relationType?: (string | "ord:represents" | "ord:partial-representation") & string;
+}
+/**
+ * Link and categorization of a machine-readable schema definition.
+ */
+export interface SchemaDefinition {
+  /**
+   * Type of the schema definition.
+   *
+   * This is an extensible enum. Global industry-standard schema formats are standardized by ORD as bare
+   * (unprefixed) values, consistent with existing resource definition types such as `openapi-v3` or
+   * `asyncapi-v2`. Formats that are specific to a vendor or organization use a namespace-prefixed
+   * [Specification ID](../index.md#specification-id) (e.g. `sap-csn-interop-effective-v1` for CSN Interop).
+   */
+  type: (
+    | string
+    | "json-schema-v7"
+    | "json-schema-v2020-12"
+    | "avro-v1"
+    | "protobuf-v3"
+    | "xsd-v1"
+    | "sap-csn-interop-effective-v1"
+    | "custom"
+  ) &
+    string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *

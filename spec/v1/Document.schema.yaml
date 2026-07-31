@@ -13,6 +13,7 @@ x-property-order:
   - EventResource
   - EntityType
   - Capability
+  - Schema
   - DataProduct
   - Agent
   - IntegrationDependency
@@ -59,6 +60,7 @@ properties:
       - "1.14"
       - "1.15"
       - "1.16"
+      - "1.17"
     examples:
       - "1.16"
 
@@ -261,6 +263,19 @@ properties:
     x-introduced-in-version: "1.4.0"
     items:
       $ref: "#/definitions/Capability"
+
+  schemas:
+    type: array
+    description: |-
+      Array of all Schemas that are described in this ORD document.
+
+      A Schema describes the concrete structure of a data object (e.g. a DTO, an event payload,
+      or an API request/response model), described with formats such as JSON Schema, CSN Interop,
+      Avro, Protobuf, or XSD.
+    x-introduced-in-version: "1.17.0"
+    x-feature-status: beta
+    items:
+      $ref: "#/definitions/Schema"
 
   dataProducts:
     type: array
@@ -1607,6 +1622,20 @@ definitions:
           - [{ "ordId": "sap.odm:entityType:WorkforcePerson:v1" }]
           - [{ "ordId": "sap.sm:entityType:PurchaseOrderItem:v1" }, { "ordId": "sap.sm:entityType:BusinessPartner:v1" }]
 
+      relatedSchemas: &relatedSchemas
+        type: array
+        x-introduced-in-version: "1.17.0"
+        x-feature-status: beta
+        description: |-
+          Optional list of related [Schemas](#schema).
+
+          An API contract typically exposes (contains) many Schemas as its request/response or payload structures.
+          Use the `relationType` (e.g. `ord:exposes`) to qualify the relationship.
+        items:
+          $ref: "#/definitions/RelatedSchema"
+        examples:
+          - [{ "ordId": "sap.foo:schema:BusinessPartner:v1", "relationType": "ord:exposes" }]
+
       # Additional links and extensibility info
 
       apiResourceLinks:
@@ -1918,6 +1947,16 @@ definitions:
 
       exposedEntityTypes:
         <<: *exposedEntityTypes
+
+      relatedSchemas:
+        <<: *relatedSchemas
+        description: |-
+          Optional list of related [Schemas](#schema).
+
+          An Event resource typically references one payload Schema per event (often published in a schema registry).
+          Use the `relationType` (e.g. `ord:payload`) to qualify the relationship.
+        examples:
+          - [{ "ordId": "sap.foo:schema:BusinessPartnerCreated:v1", "relationType": "ord:payload" }]
 
       eventResourceLinks:
         type: array
@@ -3605,6 +3644,9 @@ definitions:
         examples:
           - [{ "ordId": "sap.foo:capability:baseExtensibility:v1", "relationType": "foo.bar:relationName" }]
 
+      relatedSchemas:
+        <<: *relatedSchemas
+
       definitions:
         <<: *resourceDefinitions
         items:
@@ -3696,6 +3738,287 @@ definitions:
       - type
       - mediaType
       - url
+
+  ############################################################################################################
+
+  Schema:
+    type: object
+    title: Schema
+    x-ums-type: root
+    x-introduced-in-version: "1.17.0"
+    x-feature-status: beta
+    x-ums-implements: "#/definitions/OrdResource"
+    description: |-
+      A Schema describes the concrete structure of a data object, e.g. a Data Transfer Object (DTO),
+      an event payload, or an API request/response model.
+      A Schema can be described with formats such as JSON Schema, CSN Interop, Avro, Protobuf, or XSD.
+
+      Schemas can also describe the contract of whole documents or declarative configuration objects,
+      e.g. Kubernetes Custom Resource Definitions (CRDs). The ORD specification itself is such an example:
+      it publishes a JSON Schema that describes the structure of ORD Documents.
+
+      Unlike an [Entity Type](#entity-type), which represents a conceptual domain model or a business term
+      (a "noun"), a Schema describes the concrete serialization structure ("how the data is shaped on the wire").
+      A Schema MAY reference the Entity Type(s) it realizes via `relatedEntityTypes`, providing traceability
+      between the conceptual model and its physical representation.
+
+      Schemas are lightweight to describe (similar to [Capabilities](#capability)) and are meant to be reusable:
+      API resources typically expose (contain) many Schemas, while Event resources typically reference one payload
+      Schema each, often published in a schema registry. A Schema MAY also stand on its own (e.g. a document
+      contract), in which case it need not be exposed by any API or Event.
+
+      Please note that this concept is in beta and MAY be changed or removed at the provider's discretion.
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(schema):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        examples:
+          - "sap.foo:schema:BusinessPartnerCreated:v1"
+
+      localId:
+        <<: *localId
+
+      correlationIds:
+        <<: *correlationIds
+
+      title:
+        <<: *title
+        examples:
+          - Business Partner Created (Event Payload)
+
+      shortDescription:
+        <<: *shortDescription
+
+      description:
+        type: string
+        minLength: 1
+        description: *descriptionText
+
+      aiHint:
+        <<: *aiHint
+        examples: []
+
+      partOfPackage:
+        # NOTE: Optional for Schema (deliberately lighter than most ORD resources).
+        <<: *partOfPackage
+        x-ums-reverse-relationship:
+          propertyName: schemas
+          description: |-
+            The Schemas that are part of the given Package.
+          min: 0
+          max: "*"
+
+      partOfGroups:
+        <<: *partOfGroups
+        x-ums-reverse-relationship:
+          propertyName: schemaMembers
+          description: |-
+            The Schemas that are part of the given Group.
+
+      version:
+        <<: *version
+
+      lastUpdate:
+        <<: *lastUpdate
+
+      visibility:
+        <<: *visibility
+
+      releaseStatus:
+        <<: *releaseStatus
+
+      compatibility:
+        type: string
+        description: |-
+          Optional schema evolution / compatibility mode, describing how future versions of this Schema
+          are allowed to change relative to prior versions.
+
+          This mirrors the compatibility modes found in schema registries (e.g. Confluent, AWS Glue, CNCF xRegistry).
+        enum:
+          - none
+          - backward
+          - forward
+          - full
+        examples:
+          - backward
+
+      relatedEntityTypes:
+        type: array
+        description: |-
+          Optional list of [Entity Type](#entity-type) Resources that this Schema represents / serializes.
+
+          A Schema is a concrete, physical data contract (representation) for an Entity Type.
+          The same Entity Type MAY have several Schemas as representations, depending on the API,
+          protocol, or serialization format that exposes it. Use `relationType` to further qualify
+          the relationship where useful.
+        items:
+          $ref: "#/definitions/SchemaEntityTypeRelation"
+        examples:
+          - [{ "ordId": "sap.odm:entityType:BusinessPartner:v1", "relationType": "ord:represents" }]
+
+      definitions:
+        <<: *resourceDefinitions
+        items:
+          $ref: "#/definitions/SchemaDefinition"
+
+      links:
+        <<: *links
+        description: |-
+          Generic Links with arbitrary meaning and content.
+
+      tags:
+        <<: *tags
+
+      labels:
+        <<: *labels
+
+      documentationLabels:
+        <<: *documentationLabels
+
+      systemInstanceAware:
+        <<: *systemInstanceAware
+
+    additionalProperties: false
+    required:
+      - ordId
+      - title
+      - version
+      - releaseStatus
+      - visibility
+    x-recommended:
+      - lastUpdate
+      - partOfPackage
+
+  ############################################################################################################
+
+  SchemaDefinition:
+    type: object
+    title: Schema Definition
+    x-introduced-in-version: "1.17.0"
+    x-feature-status: beta
+    x-ums-type: "custom"
+    description: |-
+      Link and categorization of a machine-readable schema definition.
+    properties:
+      type:
+        description: |-
+          Type of the schema definition.
+
+          This is an extensible enum. Global industry-standard schema formats are standardized by ORD as bare
+          (unprefixed) values, consistent with existing resource definition types such as `openapi-v3` or
+          `asyncapi-v2`. Formats that are specific to a vendor or organization use a namespace-prefixed
+          [Specification ID](../index.md#specification-id) (e.g. `sap-csn-interop-effective-v1` for CSN Interop).
+        type: string
+        anyOf:
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            description: |-
+              Any valid [Specification ID](../index.md#specification-id).
+          - const: "json-schema-v7"
+            description: |-
+              [JSON Schema](https://json-schema.org/) draft-07.
+          - const: "json-schema-v2020-12"
+            description: |-
+              [JSON Schema](https://json-schema.org/) draft 2020-12.
+          - const: "avro-v1"
+            description: |-
+              [Apache Avro](https://avro.apache.org/) schema (v1.x).
+          - const: "protobuf-v3"
+            description: |-
+              [Protocol Buffers](https://protobuf.dev/) schema (proto3).
+          - const: "xsd-v1"
+            description: |-
+              [XML Schema Definition](https://www.w3.org/XML/Schema) (XSD 1.x).
+          - const: "sap-csn-interop-effective-v1"
+            description: |-
+              [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.
+
+              It is usually used to describe conceptual models (Entity Types), but with a known mapping, it can double as a description of the actual data / interface schema as well.
+
+              The `mediaType` MUST be set to `application/json`.
+          - const: custom
+            description: |-
+              If chosen, a custom type MUST be provided via `customType`.
+        examples:
+          - "json-schema-v2020-12"
+
+      customType:
+        <<: *customType
+
+      mediaType:
+        <<: *mediaType
+
+      url:
+        <<: *resourceDefinitionUrl
+        examples:
+          - /schemas/businessPartnerCreated.schema.json
+
+      accessStrategies:
+        <<: *accessStrategies
+
+      visibility:
+        <<: *definitionVisibility
+
+      purpose:
+        <<: *resourceDefinitionPurpose
+
+    additionalProperties: false
+    required:
+      - type
+      - mediaType
+      - url
+
+  ############################################################################################################
+
+  SchemaEntityTypeRelation:
+    title: Schema Entity Type Relation
+    x-introduced-in-version: "1.17.0"
+    x-feature-status: beta
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines the relation between a [Schema](#schema) and an [Entity Type](#entity-type) (via its ORD ID).
+
+      A Schema is a concrete, physical representation (data contract) of an Entity Type.
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/EntityType/ordId"
+        x-ums-reverse-relationship:
+          propertyName: schemas
+          description: |-
+            Schemas that materialize / serialize the given Entity Type.
+          min: 0
+          max: "*"
+        examples:
+          - "sap.odm:entityType:BusinessPartner:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship, which defines a stricter semantic of what the relationship implies.
+
+          If not provided, the relationship type has no specific semantics; the Schema is "a representation of"
+          the referenced Entity Type.
+
+          MUST be a valid [Concept ID](../index.md#concept-id).
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+          - const: "ord:represents"
+            description: |-
+              The Schema is a full, physical representation (data contract) of the referenced Entity Type.
+          - const: "ord:partial-representation"
+            description: |-
+              The Schema represents only a subset (partial view) of the referenced Entity Type.
+        examples:
+          - "ord:represents"
+    required:
+      - ordId
+    additionalProperties: false
 
   ############################################################################################################
 
@@ -5624,6 +5947,62 @@ definitions:
         examples:
           - "sap.s4.sot:entityType:BusinessPartner:v1"
 
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
+  RelatedSchema:
+    title: Related Schema
+    x-introduced-in-version: "1.17.0"
+    x-feature-status: beta
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines a relationship from a resource (e.g. an API Resource, Event Resource, or Capability) to a
+      [Schema](#schema) (via its ORD ID).
+
+      Use `relationType` to qualify the nature of the relationship, e.g. whether the Schema is exposed
+      (contained) by the resource or referenced as an event payload.
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(schema):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/Schema/ordId"
+        x-ums-reverse-relationship:
+          propertyName: relatedFromResources
+          description: |-
+            The resources that declare a relationship to the given Schema.
+          min: 0
+          max: "*"
+        examples:
+          - "sap.foo:schema:BusinessPartner:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship, which defines a stricter semantic of what the relationship implies.
+
+          If not provided, the relationship type has no specific semantics; the Schema is "related somehow"
+          to the resource.
+
+          MUST be a valid [Concept ID](../index.md#concept-id).
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../index.md#concept-id).
+          - const: "ord:exposes"
+            description: |-
+              The resource exposes (contains) the referenced Schema, e.g. as a request/response structure.
+              An API contract typically exposes many Schemas.
+          - const: "ord:payload"
+            description: |-
+              The resource references the Schema as its payload, e.g. an Event resource referencing the
+              payload Schema of its events (often published in a schema registry).
+        examples:
+          - "ord:exposes"
     required:
       - ordId
     additionalProperties: false

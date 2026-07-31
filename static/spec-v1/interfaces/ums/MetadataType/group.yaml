@@ -111,6 +111,11 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: 'The Capabilities that are part the given Group.'
       mandatory: false
+    - propertyName: 'schemaMembers'
+      relatedTypeName: 'Schema'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'The Schemas that are part of the given Group.'
+      mandatory: false
     - propertyName: 'integrationDependencyMembers'
       relatedTypeName: 'IntegrationDependency'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

@@ -26,3 +26,6 @@ spec:
     - includedType:
         name: 'Capability'
         namespace: '/sap/core/ucl/metadata/ord/v1'
+    - includedType:
+        name: 'Schema'
+        namespace: '/sap/core/ucl/metadata/ord/v1'
