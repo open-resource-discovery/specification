@@ -556,9 +556,9 @@ When information from many different system instances comes together, some situa
 
 An [ORD ID](#ord-id) is [globally unique](#ord-id) and identifies exactly one [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) instance.
 The isolation unit for uniqueness is the [perspective](#perspectives) scope: an ORD ID MUST be unique within one [system type](#system-type), [system version](#system-version) or [system instance](#system-instance).
-Two definitions sharing the same ORD ID within the same scope are a conflict, and a conflict is always an error (see [validation rules](#validation-rules)); there is no defined operation for combining them. For robustness an aggregator MAY deduplicate as a recovery step, but deduplication is not a modeling mechanism and MUST NOT be relied upon by providers.
+Two descriptions sharing the same ORD ID within the same scope are a conflict, and a conflict is always an error (see [validation rules](#validation-rules)); there is no defined operation for combining them. For robustness an aggregator MAY deduplicate as a recovery step, but deduplication is not a modeling mechanism and MUST NOT be relied upon by providers.
 
-The same ORD ID appearing in *different* scopes is not a conflict, because each publishes within its own perspective scope: a shared or governed definition reused across [system types](#system-type) (see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md)), or the same design-time resource exposed by different [system instances](#system-instance). Across scopes, all descriptions of the same `version` MUST be consistent.
+The same ORD ID appearing in *different* scopes is not a conflict, because each publishes within its own perspective scope: a shared or governed [ORD resource](#ord-resource) or [taxonomy](#ord-taxonomy) reused across [system types](#system-type) (see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md)), or the same design-time resource exposed by different [system instances](#system-instance). Across scopes, all descriptions of the same `version` MUST be consistent.
 
 Whether the aggregator stores an instance once or per [system instance](#system-instance) depends on whether the information is [system-instance-aware](#system-instance-aware), as described below.
 
@@ -639,8 +639,8 @@ The following validation rules apply specifically for ORD aggregators:
   This includes duplicates within one ORD Document, across different ORD Documents of the same ORD Provider, and across multiple ORD Providers publishing for the same system. Such a duplicate is a conflict and always an error.
   The aggregator MUST detect it and MAY deduplicate as a recovery step, but MUST NOT treat duplication as a valid way to model information.
   For migration transitions this rule MAY be violated temporarily.
-- The same ORD ID MAY be published by *different* [system types](#system-type) when it identifies the same shared or governed definition. This is not a duplicate: a different system type is a different scope, and the system type provides the additional context for uniqueness (see [ORD ID](#ord-id)).
-  In this case all publishers MUST describe the definition consistently for the same `version`; differences in publication context (product assignments, Consumption Bundles, entry points) are not part of the definition and are expected.
+- The same ORD ID MAY be published by *different* [system types](#system-type) when it identifies the same shared or governed [ORD resource](#ord-resource) or [taxonomy](#ord-taxonomy). This is not a duplicate: a different system type is a different scope, and the system type provides the additional context for uniqueness (see [ORD ID](#ord-id)).
+  In this case all publishers MUST describe the same ORD resource or taxonomy for the same `version`; differences in publication context (product assignments, Consumption Bundles, entry points) are expected.
   This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
   See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
 
