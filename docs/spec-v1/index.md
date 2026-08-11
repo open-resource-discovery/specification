@@ -560,13 +560,13 @@ Two definitions sharing the same ORD ID within the same scope are a conflict, an
 
 The same ORD ID appearing in *different* scopes is not a conflict, because each publishes within its own perspective scope: a shared or governed definition reused across [system types](#system-type) (see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md)), or the same design-time resource exposed by different [system instances](#system-instance). Across scopes, all descriptions of the same `version` MUST be consistent.
 
-Whether the aggregator stores an instance once or per [system instance](#system-instance) depends on whether it is taxonomy or a resource, as described below.
+Whether the aggregator stores an instance once or per [system instance](#system-instance) depends on whether the information is [system-instance-aware](#system-instance-aware), as described below.
 
 ###### Aggregating ORD Taxonomy
 
 This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
 
-ORD taxonomy is independent of specific [products](#product) or [system types](#system-type). It is [system-instance-unaware](#system-instance-unaware) and therefore MUST NOT be stored for each [system instance](#system-instance); a taxonomy instance is stored once, regardless of how many systems reference it.
+`Package` and `Product` are independent of specific [products](#product) or [system types](#system-type). They are [system-instance-unaware](#system-instance-unaware) and therefore MUST NOT be stored for each [system instance](#system-instance); such a taxonomy instance is stored once, regardless of how many systems reference it.
 For modeling taxonomy that is shared or reused across systems, see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 ###### Aggregating ORD Resources
