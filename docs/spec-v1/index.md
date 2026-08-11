@@ -558,14 +558,14 @@ An [ORD ID](#ord-id) is [globally unique](#ord-id) and identifies exactly one [O
 Within one [perspective](#perspectives) (and, for the `system-instance` perspective, within one [system instance](#system-instance)) an ORD ID MUST be unique.
 There is no defined operation for combining two differing definitions that share the same ORD ID; if the same ORD ID is described more than once within that scope, this is a validation error the aggregator SHOULD report (see [validation rules](#validation-rules)).
 
-ORD taxonomy is independent of specific <a href="#product">products</a> or <a href="#system-type">system types</a>. In contrast, [ORD resources](#ord-resource) may be either [system-instance-aware](#system-instance-aware) (varying per instance) or [system-instance-unaware](#system-instance-unaware) (static across instances). This affects how an aggregator stores them.
+Whether the aggregator stores an instance once or per [system instance](#system-instance) depends on whether it is taxonomy or a resource, as described below.
 
 ###### Aggregating ORD Taxonomy
 
 This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
 
-The information is [system-instance-unaware](#system-instance-unaware) and therefore MUST NOT be stored for each [system instance](#system-instance); a taxonomy instance is stored once, regardless of how many systems reference it.
-For how the same `Package` ORD ID published in multiple system contexts contributes its `partOfProducts`, tags and labels, see the Package inheritance rules under [Content Enrichment and Preservation](#content-enrichment-and-preservation). See also [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
+ORD taxonomy is independent of specific [products](#product) or [system types](#system-type). It is [system-instance-unaware](#system-instance-unaware) and therefore MUST NOT be stored for each [system instance](#system-instance); a taxonomy instance is stored once, regardless of how many systems reference it.
+For modeling taxonomy that is shared or reused across systems, see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 ###### Aggregating ORD Resources
 
