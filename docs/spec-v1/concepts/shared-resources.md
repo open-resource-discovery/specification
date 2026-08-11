@@ -114,7 +114,7 @@ The [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) can stil
 Each system type MUST fully describe itself, including shared ORD information it exposes, publishes or relies on.
 There is no implicit inheritance between system types.
 
-- The same ORD ID MAY be published by *different* system types when it identifies the same governed definition (a different scope, not a duplicate).
+- The same ORD ID MAY be published by *different* system types when it identifies the same underlying resource or taxonomy (a different scope, not a duplicate).
 - All publishers of the same ORD ID and same `version` MUST describe the shared definition consistently.
 - System-specific publication context MAY differ, such as product assignments, package inheritance, Consumption Bundle assignments, entry points or credentials.
 - The namespace owner is responsible for governing the shared definition and coordinating consistency.
