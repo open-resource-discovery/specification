@@ -640,7 +640,7 @@ The following validation rules apply specifically for ORD aggregators:
   The aggregator MUST detect it and MAY deduplicate as a recovery step, but MUST NOT treat duplication as a valid way to model information.
   For migration transitions this rule MAY be violated temporarily.
 - The same ORD ID MAY be published by *different* [system types](#system-type) when it identifies the same shared or governed definition. This is not a duplicate: a different system type is a different scope, and the system type provides the additional context for uniqueness (see [ORD ID](#ord-id)).
-  In this case all publishers MUST describe the definition consistently for the same `version`; a divergence in the definition itself is a conflict the aggregator MUST detect, while differences in publication context (product assignments, Consumption Bundles, entry points) are expected.
+  In this case all publishers MUST describe the definition consistently for the same `version`; differences in publication context (product assignments, Consumption Bundles, entry points) are not part of the definition and are expected.
   This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
   See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
 
