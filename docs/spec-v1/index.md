@@ -556,11 +556,7 @@ When information from many different system instances comes together, some situa
 
 An [ORD ID](#ord-id) is [globally unique](#ord-id) and identifies exactly one [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) instance.
 Within one [perspective](#perspectives) (and, for the `system-instance` perspective, within one [system instance](#system-instance)) an ORD ID MUST be unique.
-There is no defined operation for combining two differing definitions that share the same ORD ID.
-
-- If the same ORD ID is described more than once within that scope, this is a validation error the aggregator SHOULD report (see [validation rules](#validation-rules)).
-  The aggregator MUST NOT attempt to combine the conflicting definitions.
-- A [breaking change](./concepts/versioning-and-lifecycle.md) MUST introduce a new major version, which yields a new ORD ID (new `<majorVersion>` fragment) and therefore does not conflict with this rule.
+There is no defined operation for combining two differing definitions that share the same ORD ID; if the same ORD ID is described more than once within that scope, this is a validation error the aggregator SHOULD report (see [validation rules](#validation-rules)).
 
 ORD taxonomy is independent of specific <a href="#product">products</a> or <a href="#system-type">system types</a>. In contrast, [ORD resources](#ord-resource) may be either [system-instance-aware](#system-instance-aware) (varying per instance) or [system-instance-unaware](#system-instance-unaware) (static across instances). This affects how an aggregator stores them.
 
