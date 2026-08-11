@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Clarified ORD ID uniqueness and aggregation: an ORD ID MUST be unique within one perspective scope (system type, system version or system instance). Two definitions of the same ORD ID within the same scope are a conflict and always an error; there is no operation to combine them, and aggregator deduplication is only optional recovery, not a modeling mechanism. The same ORD ID appearing in different scopes (a shared definition reused across system types, or the same resource exposed by different system instances) is not a conflict but MUST be described consistently for the same `version`. Replaces the previous "merge instances with the same ORD ID" wording, which left field-level merging undefined and conflicted with the per-perspective isolation rule.
+
 ## [1.16.3]
 
 ### Changed
