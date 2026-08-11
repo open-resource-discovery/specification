@@ -569,7 +569,7 @@ ORD taxonomy is independent of specific <a href="#product">products</a> or <a hr
 This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
 
 The information is [system-instance-unaware](#system-instance-unaware) and therefore MUST NOT be stored for each [system instance](#system-instance); a taxonomy instance is stored once, regardless of how many systems reference it.
-The same taxonomy [ORD ID](#ord-id) MAY be published by multiple systems (see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md)). In that case all publishers MUST describe it consistently for the same `version`, and the aggregator MAY deduplicate the redundant copies into a single stored record. A divergence between publishers is a validation error the aggregator SHOULD report.
+For how the same `Package` ORD ID published in multiple system contexts contributes its `partOfProducts`, tags and labels, see the Package inheritance rules under [Content Enrichment and Preservation](#content-enrichment-and-preservation). See also [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 ###### Aggregating ORD Resources
 
