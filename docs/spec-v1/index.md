@@ -555,8 +555,10 @@ When information from many different system instances comes together, some situa
 ##### ORD ID Uniqueness and Aggregation
 
 An [ORD ID](#ord-id) is [globally unique](#ord-id) and identifies exactly one [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) instance.
-Within one [perspective](#perspectives) (and, for the `system-instance` perspective, within one [system instance](#system-instance)) an ORD ID MUST be unique.
-There is no defined operation for combining two differing definitions that share the same ORD ID; if the same ORD ID is described more than once within that scope, this is a validation error the aggregator SHOULD report (see [validation rules](#validation-rules)).
+The isolation unit for uniqueness is the [perspective](#perspectives) scope: an ORD ID MUST be unique within one [system type](#system-type), [system version](#system-version) or [system instance](#system-instance).
+Two definitions sharing the same ORD ID within the same scope are a conflict, and a conflict is always an error (see [validation rules](#validation-rules)); there is no defined operation for combining them. For robustness an aggregator MAY deduplicate as a recovery step, but deduplication is not a modeling mechanism and MUST NOT be relied upon by providers.
+
+The same ORD ID appearing in *different* scopes is not a conflict, because each publishes within its own perspective scope: a shared or governed definition reused across [system types](#system-type) (see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md)), or the same design-time resource exposed by different [system instances](#system-instance). Across scopes, all descriptions of the same `version` MUST be consistent.
 
 Whether the aggregator stores an instance once or per [system instance](#system-instance) depends on whether it is taxonomy or a resource, as described below.
 
@@ -633,11 +635,12 @@ The following validation rules apply specifically for ORD aggregators:
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
   This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
-- The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times within the same [system type](#system-type) or [system version](#system-version) scope.
-  Please be aware that this could happen within an ORD Document or within the same ORD Provider on different ORD Documents.
+- The same ORD information or resource (identical ORD ID) MUST NOT be described more than once within the same [system type](#system-type) or [system version](#system-version) scope.
+  This includes duplicates within one ORD Document, across different ORD Documents of the same ORD Provider, and across multiple ORD Providers publishing for the same system. Such a duplicate is a conflict and always an error.
+  The aggregator MUST detect it and MAY deduplicate as a recovery step, but MUST NOT treat duplication as a valid way to model information.
   For migration transitions this rule MAY be violated temporarily.
-- Shared ORD information MAY be published by multiple [system types](#system-type) when the ORD ID identifies the same governed definition.
-  In this case, all publishers MUST describe the ORD information consistently for the same `version`. The aggregator MUST validate consistency.
+- The same ORD ID MAY be published by *different* [system types](#system-type) when it identifies the same shared or governed definition. This is not a duplicate: a different system type is a different scope, and the system type provides the additional context for uniqueness (see [ORD ID](#ord-id)).
+  In this case all publishers MUST describe the definition consistently for the same `version`; a divergence in the definition itself is a conflict the aggregator MUST detect, while differences in publication context (product assignments, Consumption Bundles, entry points) are expected.
   This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
   See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
 
