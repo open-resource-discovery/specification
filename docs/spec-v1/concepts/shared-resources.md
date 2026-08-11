@@ -193,8 +193,7 @@ Aggregators can receive the same shared ORD ID from multiple system types.
 This is only expected when it identifies the same underlying resource or taxonomy reused across *different* system types (a different scope). The aggregator MUST keep these in their separate scopes so they do not collide; there is no merge of the descriptions across scopes. Each stored description MUST remain attributed to its publishing scope (system type, system version or system instance).
 
 - Uniqueness applies within one perspective scope (the same system type, system version or system instance), not globally across all system types. A duplicate within one scope is a conflict and always an error.
-- The same shared ORD ID with the same `version` MUST describe the same definition across publishers.
-- The aggregator SHOULD validate that the shared definition is consistent across publishers. Publication context (product assignments, Consumption Bundles, entry points) is not part of the shared definition and MAY differ per publisher; a divergence in the definition itself is an error.
+- The same shared ORD ID with the same `version` MUST describe the same definition across publishers. Publication context (product assignments, Consumption Bundles, entry points) is not part of the shared definition and MAY differ per publisher.
 - If different system types publish different versions of the same shared ORD information, the catalog MUST preserve the system type/version context.
 
 For static catalogs using `system-type` or `system-version` perspectives, there are two valid strategies:
