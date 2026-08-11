@@ -552,49 +552,34 @@ This section covers the aggregation rules and validations for [ORD aggregators](
 One of the responsibilities of an [ORD aggregator](#ord-aggregator) is to combine the ORD information from multiple system instances.
 When information from many different system instances comes together, some situations may arise that need to be resolved through clearly defined rules.
 
-##### Merging ORD information
+##### ORD ID Uniqueness and Aggregation
 
-This section outlines the rules of how ORD information is merged and - if conflicts arise - how they are resolved.
+An [ORD ID](#ord-id) is [globally unique](#ord-id) and identifies exactly one [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) instance.
+Within one [perspective](#perspectives) (and, for the `system-instance` perspective, within one [system instance](#system-instance)) an ORD ID MUST be unique.
+There is no defined operation for combining two differing definitions that share the same ORD ID.
 
-First, the distinction between [ORD taxonomy](#ord-taxonomy) and [ORD resource](#ord-resource) information must be understood.
+- If the same ORD ID is described more than once within that scope, this is a validation error the aggregator SHOULD report (see [validation rules](#validation-rules)).
+  The aggregator MUST NOT attempt to combine the conflicting definitions.
+- A [breaking change](./concepts/versioning-and-lifecycle.md) MUST introduce a new major version, which yields a new ORD ID (new `<majorVersion>` fragment) and therefore does not conflict with this rule.
 
-ORD taxonomy is independent of specific <a href="#product">products</a> or <a href="#system-type">system types</a>. In contrast, [ORD resources](#ord-resource) may be either [system-instance-aware](#system-instance-aware) (varying per instance) or [system-instance-unaware](#system-instance-unaware) (static across instances).
+ORD taxonomy is independent of specific <a href="#product">products</a> or <a href="#system-type">system types</a>. In contrast, [ORD resources](#ord-resource) may be either [system-instance-aware](#system-instance-aware) (varying per instance) or [system-instance-unaware](#system-instance-unaware) (static across instances). This affects how an aggregator stores them.
 
-###### Merging ORD Taxonomy
+###### Aggregating ORD Taxonomy
 
 This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
 
-The information is [system-instance-unaware](#system-instance-unaware) and therefore MUST not be stored for each [system instance](#system-instance).
-If multiple systems/system instances describe the same ORD taxonomy instance, the following merging rules MUST be followed:
+The information is [system-instance-unaware](#system-instance-unaware) and therefore MUST NOT be stored for each [system instance](#system-instance); a taxonomy instance is stored once, regardless of how many systems reference it.
+The same taxonomy [ORD ID](#ord-id) MAY be published by multiple systems (see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md)). In that case all publishers MUST describe it consistently for the same `version`, and the aggregator MAY deduplicate the redundant copies into a single stored record. A divergence between publishers is a validation error the aggregator SHOULD report.
 
-- Instances with the same [ORD ID](#ord-id) are considered to be the same and MUST be merged.
-- If there is a conflict, the instance with the higher `version` according to the [Semantic Versioning](https://semver.org/) rules takes precedence.
-- If both instances have the same version but different content, the most recent information takes precedence.
-  This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
-- If a breaking change was introduced to a taxonomy entity (e.g. the meaning changed), a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
-
-###### Merging ORD Resources
+###### Aggregating ORD Resources
 
 This applies currently to the `APIResource` and `EventResource` [ORD resource](#ord-resource) interfaces.
 
-The information MAY be [system-instance-aware](#system-instance-aware).
-Therefore, the information MUST be retrieved and stored for each [system instance](#system-instance) individually.
-In this case, an ORD resource with the same [ORD ID](#ord-id) will exist exactly once for each system instance.
-Therefore, the ORD ID MUST be further qualified by a system instance ID when stored by the aggregator.
-If a [system landscape](#system-landscape) view needs to be supported, the information about the landscape assignment/zone information MUST be enriched and considered by the aggregator.
+The information MAY be [system-instance-aware](#system-instance-aware) and therefore MUST be retrieved and stored for each [system instance](#system-instance) individually, qualified by a system instance ID.
+The same ORD ID appearing on *different* system instances is expected and MUST NOT be combined; it describes the same design-time resource as exposed by each instance.
+If a [system landscape](#system-landscape) view needs to be supported, the landscape assignment/zone information MUST be enriched and considered by the aggregator.
 
-If the same system instances describe the same ORD resource, the following merging rules MUST be followed:
-
-- Instances with the same ORD ID from the same system instance are considered to be the same and MUST be merged.
-- Instances with the same ORD ID from different system instances MUST not be merged.
-  If the aggregator knows for sure that the information is [system-instance-unaware](#system-instance-unaware) it MAY only retrieve and store some of the information once for optimization purposes.
-  However, the aggregator MUST store the information about which system instances (system instance IDs) the resource is available on.
-- If there is a conflict, the instance with the higher `version` according to [Semantic Versioning](https://semver.org/) rules takes precedence.
-- If both instances have the same version but different content, the most recent information takes precedence.
-  This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
-- If a breaking change was introduced to an ORD resource, a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
+If the aggregator knows for sure that the information is [system-instance-unaware](#system-instance-unaware) it MAY store some of the information only once for optimization, but it MUST still store which system instances the resource is available on.
 
 ##### Content Enrichment and Preservation
 
