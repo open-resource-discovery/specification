@@ -194,8 +194,7 @@ This is only expected when it identifies the same underlying resource or taxonom
 
 - Uniqueness applies within one perspective scope (the same system type, system version or system instance), not globally across all system types. A duplicate within one scope is a conflict and always an error.
 - The same shared ORD ID with the same `version` MUST describe the same definition across publishers.
-- The aggregator SHOULD validate that the shared definition is consistent across publishers. A divergence in the definition itself is a conflict and an error; differences in publication context (such as product assignments, Consumption Bundles or entry points) are expected and not conflicts.
-- As an optimization the aggregator MAY store the identical definition once and associate it with all publishing system types and products, provided each publisher's scope and context are preserved; or it MAY store scoped records per system type/version if that is simpler. This is a storage choice, not a merge of differing content.
+- The aggregator SHOULD validate that the shared definition is consistent across publishers. Publication context (product assignments, Consumption Bundles, entry points) is not part of the shared definition and MAY differ per publisher; a divergence in the definition itself is an error.
 - If different system types publish different versions of the same shared ORD information, the catalog MUST preserve the system type/version context.
 
 For static catalogs using `system-type` or `system-version` perspectives, there are two valid strategies:
