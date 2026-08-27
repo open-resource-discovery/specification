@@ -14,7 +14,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added capability type `agent-skill` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
 - Added capability definition type `agent-skill-zip` for ZIP archive definitions of agent skills (mediaType `application/zip`).
-- Added `integrationDependencies` property to `Capability`, mirroring the property on `Agent` and analogous to `inputPorts` on Data Products. Lets a capability (notably `agent-skill`) declare the APIs, MCP tools, agents, or other skills it requires to function. See [AI Agents and Protocols → Skill Dependencies](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#skill-dependencies).
+- Added capability type `agent-plugin` for bundling multiple agent resources (such as one or more agent skills) into a single, distributable package.
+- Added capability definition type `agent-plugin-zip` for ZIP archive definitions of agent plugins (mediaType `application/zip`).
+- Added `integrationDependencies` property to `Capability`, mirroring the property on `Agent` and analogous to `inputPorts` on Data Products. Lets a capability (notably `agent-skill` or `agent-plugin`) declare the APIs, MCP tools, agents, or other skills it requires to function. See [AI Agents and Protocols → Skill Dependencies](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#skill-dependencies).
+- Added `subset` property to `CapabilityIntegrationAspect` (new `CapabilityIntegrationAspectSubset` object with `skillName`). Lets a dependency on a bundling capability such as `agent-plugin` be narrowed to specific contained skills, so consumers load only the minimal surface into the harness / context instead of the whole bundle.
 
 ### Changed
 

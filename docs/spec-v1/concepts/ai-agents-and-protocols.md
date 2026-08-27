@@ -387,6 +387,73 @@ A Capability of type `agent-skill` can itself declare `integrationDependencies` 
 
 The referenced Integration Dependency is structured exactly like the [example above](#consuming-capabilities-dependencies), and the [Connectivity & Protocols diagram](#connectivity--protocols) shows skills participating in the same dependency graph as agents.
 
+### Agent Plugins as Capabilities
+
+Where an `agent-skill` describes a single discrete capability, an **agent plugin** bundles multiple agent resources (such as one or more agent skills) into a single, distributable package.
+In ORD, plugins are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "agent-plugin"`.
+
+This enables:
+- **Distribution:** A set of related skills and assets can be discovered, versioned, and installed as one unit.
+- **Reusability:** A plugin can be shared across multiple agents and systems, just like individual skills.
+- **Dependency Management:** Like `agent-skill`, an `agent-plugin` can declare `integrationDependencies` on APIs, MCP tools, other agents, or other skills (see [Skill Dependencies](#skill-dependencies) above).
+
+The bundle is referenced through a capability definition of type `agent-plugin-zip`, a ZIP archive (`mediaType: "application/zip"`) that packages the plugin's skills and assets together.
+Unlike an individual [agent skill](https://agentskills.io/home), the plugin bundle currently has no vendor-neutral packaging standard, so ORD does not prescribe the archive's internal layout: how the plugin declares and organizes its contained skills and resources is defined by the plugin format the consuming tool or harness expects.
+
+**Depending on a plugin:**
+
+Like any capability, an `agent-plugin` can be referenced from an Integration Dependency aspect (via `capabilities`). By default such a dependency is **coarse-grained**: it targets the plugin as a whole, so the consuming agent installs the entire plugin.
+
+To narrow this down, a capability reference MAY carry a `subset` listing the specific skills within the plugin that are actually required (analogous to `subset` on `apiResources`/`eventResources`). Only the listed skills then need to be loaded into the harness / context, rather than the whole bundle:
+
+```json
+{
+  "integrationDependencies": [
+    {
+      "ordId": "sap.foo:integrationDependency:DisputeHandling:v1",
+      "aspects": [
+        {
+          "title": "Dispute Summarization",
+          "mandatory": false,
+          "capabilities": [
+            {
+              "ordId": "sap.foo:capability:disputeManagementPlugin:v1",
+              "subset": [{ "skillName": "disputeSummarization" }]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+The `skillName` values are names understood within the plugin bundle itself; ORD does not prescribe the bundle's internal layout (see above).
+
+**Example agent plugin:**
+
+```json
+{
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:disputeManagementPlugin:v1",
+      "title": "Dispute Management Plugin",
+      "shortDescription": "Bundles the dispute summarization and resolution skills",
+      "version": "1.0.0",
+      "type": "agent-plugin",
+      "definitions": [
+        {
+          "type": "agent-plugin-zip",
+          "mediaType": "application/zip",
+          "url": "/capabilities/disputeManagementPlugin/plugin.zip",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## Example
 
 A complete example with agent and capability definitions is available at [document-agents.json](../examples/document-agents).

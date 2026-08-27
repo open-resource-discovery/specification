@@ -239,10 +239,21 @@ spec:
           description: "Minimum version of the references resource that the integration requires.\n"
           constraints:
             pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+        - name: 'subset'
+          type: 'custom'
+          customTypeName: 'CapabilityIntegrationAspectSubset'
+          array: true
+          description: "List of skills within the referenced capability that are required.\n\nThis is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.\nIf `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).\nIf `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context."
         - name: 'labels'
           type: 'custom'
           customTypeName: 'Labels'
           description: 'Generic labels that can be applied to most ORD information.'
+    - name: 'CapabilityIntegrationAspectSubset'
+      metadataProperties:
+        - name: 'skillName'
+          type: 'string'
+          description: "The name of the individual skill within the referenced capability.\n\nThis MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle)."
+          mandatory: true
     - name: 'Link'
       metadataProperties:
         - name: 'title'

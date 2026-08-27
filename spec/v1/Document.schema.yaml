@@ -3490,8 +3490,12 @@ definitions:
               An [agent skill](https://agentskills.io/home) is a discrete, reusable capability that an agent can perform.
               Agent skills can be invoked by agents or other systems and represent
               a well-defined task or function that the agent is capable of executing.
-
-              For the capability definitions: `type` SHOULD be set to `agent-skill-zip`.
+          - const: "agent-plugin"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              An agent plugin bundles multiple agent resources (such as one or more agent skills) into a single, distributable package.
+              Where an `agent-skill` describes a single discrete capability, an `agent-plugin` groups related agent resources together
+              so they can be discovered, versioned, and installed as one unit.
           - const: "sap.mdo:mdi-capability:v1"
             description: |-
               Capability for SAP Master Data Integration (MDI).
@@ -3607,7 +3611,7 @@ definitions:
         description: |-
           Optional list of integration dependencies that the capability relies on.
 
-          This is particularly useful for capabilities of type `agent-skill`, which may require access to APIs, MCP tools, other agents, or other skills to function.
+          This is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to APIs, MCP tools, other agents, or other skills to function.
           The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
 
           MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
@@ -3675,11 +3679,19 @@ definitions:
           - const: "agent-skill-zip"
             x-introduced-in-version: "1.17.0"
             description: |-
-              A ZIP archive containing the definition of an agent skill following the [agent skill standard](https://agentskills.io/home), 
+              A ZIP archive containing the definition of an agent skill following the [agent skill standard](https://agentskills.io/home),
               including all relevant assets such as configuration and schema files.
 
-              The `mediaType` MUST be set to `application/zip`.
+              The `mediaType` SHOULD be set to `application/zip`.
               The capability `type` SHOULD be set to `agent-skill`.
+          - const: "agent-plugin-zip"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              A ZIP archive that bundles multiple agent resources (such as one or more agent skills) into a single agent plugin package,
+              including all relevant assets such as configuration and schema files.
+
+              The `mediaType` SHOULD be set to `application/zip`.
+              The capability `type` SHOULD be set to `agent-plugin`.
           - const: "sap.mdo:mdi-capability-definition:v1"
             description: |-
               Specification for describing master data integration capabilities for Master Data Orchestration (MDO).
@@ -4111,12 +4123,52 @@ definitions:
       minVersion:
         <<: *minVersion
 
+      subset:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          List of skills within the referenced capability that are required.
+
+          This is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.
+          If `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).
+          If `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context.
+        items:
+          $ref: "#/definitions/CapabilityIntegrationAspectSubset"
+
       labels:
         <<: *labels
 
     additionalProperties: false
     required:
       - ordId
+
+  ############################################################################################################
+
+  CapabilityIntegrationAspectSubset:
+    type: object
+    title: Capability Integration Aspect Subset
+    x-introduced-in-version: "1.17.0"
+    x-ums-type: "custom"
+    description: |-
+      Defines that the Capability Integration Aspect only requires a subset of the referenced capability.
+
+      For bundling capabilities such as `agent-plugin`, this is the list of contained skills that need to be available to make the integration work.
+      Without a `subset`, the dependency implies the whole capability (e.g. the entire plugin).
+      With a `subset`, only the listed skills are required, allowing consumers to understand / load only the minimal surface area needed.
+    properties:
+      skillName:
+        type: string
+        description: |-
+          The name of the individual skill within the referenced capability.
+
+          This MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).
+        examples:
+          - "disputeSummarization"
+          - "disputeResolution"
+
+    additionalProperties: false
+    required:
+      - skillName
 
   ############################################################################################################
 

@@ -2230,7 +2230,7 @@ export interface Capability {
   /**
    * Type of the Capability
    */
-  type: (string | "agent-skill" | "sap.mdo:mdi-capability:v1" | "custom") & string;
+  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -2390,7 +2390,7 @@ export interface Capability {
   /**
    * Optional list of integration dependencies that the capability relies on.
    *
-   * This is particularly useful for capabilities of type `agent-skill`, which may require access to APIs, MCP tools, other agents, or other skills to function.
+   * This is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to APIs, MCP tools, other agents, or other skills to function.
    * The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
    *
    * MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
@@ -2463,7 +2463,7 @@ export interface CapabilityDefinition {
   /**
    * Type of the capability resource definition
    */
-  type: (string | "agent-skill-zip" | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
+  type: (string | "agent-skill-zip" | "agent-plugin-zip" | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -3828,7 +3828,30 @@ export interface CapabilityIntegrationAspect {
    *
    */
   minVersion?: string;
+  /**
+   * List of skills within the referenced capability that are required.
+   *
+   * This is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.
+   * If `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).
+   * If `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context.
+   */
+  subset?: CapabilityIntegrationAspectSubset[];
   labels?: Labels;
+}
+/**
+ * Defines that the Capability Integration Aspect only requires a subset of the referenced capability.
+ *
+ * For bundling capabilities such as `agent-plugin`, this is the list of contained skills that need to be available to make the integration work.
+ * Without a `subset`, the dependency implies the whole capability (e.g. the entire plugin).
+ * With a `subset`, only the listed skills are required, allowing consumers to understand / load only the minimal surface area needed.
+ */
+export interface CapabilityIntegrationAspectSubset {
+  /**
+   * The name of the individual skill within the referenced capability.
+   *
+   * This MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).
+   */
+  skillName: string;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.
