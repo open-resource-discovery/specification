@@ -501,12 +501,13 @@ export interface OverlaySelectorByEntitySet {
    * Concept-level entity set identifier.
    * Supported metadata formats:
    * - `edmx` (OData v2/v4 CSDL XML): targets an EntitySet element inside EntityContainer.
-   *   May use the unqualified name (e.g. `Customers`) or namespace-prefixed name.
    * - `csdl-json` (OData v4 CSDL JSON): targets a key with `$Collection: true` inside the
    *   EntityContainer object in the namespace.
    *
    * Use `entitySet` when you need to patch EntityContainer-bound metadata such as
    * Capabilities annotations (InsertRestrictions, UpdateRestrictions, etc.).
+   * You may use the unqualified name if unique (e.g. `Customers`) or the namespace-qualified name
+   * (e.g. `OData.Demo.Customers`) in case of ambiguity.
    * For patching EntityType structure (Properties, NavigationProperties) via deep merge, use `entityType`.
    * To target a specific property for fine-grained patching, prefer `propertyType` (requires `entityType` as context).
    */
