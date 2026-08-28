@@ -158,10 +158,10 @@ See [Compatibility Expectations](#compatibility-expectations) for rules on what 
 
 ## Tooling
 
-A reference implementation for merging, validating, and converting ORD Overlays is provided as a separate package.
+A [reference implementation](https://github.com/open-resource-discovery/overlay-tools) for merging, validating, and converting ORD Overlays is provided as a separate package.
 It supports all selector types and patch actions defined in this specification, including EDMX XML targets.
 
-The tooling package will be linked here once published.
+Additionally a [set of React components](https://github.com/open-resource-discovery/overlay-editor) for viewing Open Resource Discovery Overlay documents and a [reusable library](https://github.com/open-resource-discovery/overlay-golang) written in Go.
 
 ## ORD Aggregator Expectations
 
