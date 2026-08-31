@@ -395,8 +395,10 @@ export interface OverlaySelectorByOperation {
    *   MUST use the namespace-qualified name (e.g. `OData.Demo.Approval`) to be unambiguous.
    *   For OData v2 `edmx` targets: also searches FunctionImport elements in EntityContainer
    *   when no Schema-level Action/Function matches the name.
-   *   For bound operations overloaded on multiple entity types, use the fully qualified signature
-   *   (incl. parameters) or [`jsonPath`](#overlay-selector-by-jsonpath) as a fallback to target the specific overload.
+   *   When the name alone is ambiguous (e.g. bound operations overloaded on multiple entity types),
+   *   the selector MUST use the fully qualified signature (incl. parameters, e.g.
+   *   `OData.Demo.Approval(Edm.Int32,Edm.String)`), or fall back to [`jsonPath`](#overlay-selector-by-jsonpath),
+   *   to target the specific overload. When the name is already unique, the plain name is sufficient.
    *
    * When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.
    * When `definitionType` is absent, the implementation SHOULD infer the format from the target
