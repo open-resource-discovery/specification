@@ -506,8 +506,8 @@ export interface OverlaySelectorByEntitySet {
    *
    * Use `entitySet` when you need to patch EntityContainer-bound metadata such as
    * Capabilities annotations (InsertRestrictions, UpdateRestrictions, etc.).
-   * You may use the unqualified name if unique (e.g. `Customers`) or the namespace-qualified name
-   * (e.g. `OData.Demo.Customers`) in case of ambiguity.
+   * You MAY use an unqualified name if unique (e.g. `Customers`).
+   * If not unique a fully-qualified name (e.g. `OData.Demo.Customers`) MUST be used.
    * For patching EntityType structure (Properties, NavigationProperties) via deep merge, use `entityType`.
    * To target a specific property for fine-grained patching, prefer `propertyType` (requires `entityType` as context).
    */
