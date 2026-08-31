@@ -78,6 +78,18 @@ export type OverlayPatchAction = "update" | "remove" | "merge";
  *
  * Prefer concept-level selectors over generic `jsonPath` where possible,
  * as they are resilient to structural changes in the target format.
+ *
+ * Behavior when a selector matches nothing, for `merge` and `update`:
+ * - Concept-level selectors (`operation`, `entityType`, `complexType`, `enumType`,
+ *   `propertyType`, `entitySet`, `namespace`, `parameter`, `returnType`) MUST error.
+ *   Overlays patch structure the target already declares; they do not create modeled concepts.
+ * - The generic `jsonPath` selector MAY create the missing target when its parent path
+ *   resolves to an object (JSON Merge Patch-style). A fully unresolvable parent chain MUST error.
+ * - `root` always resolves.
+ *
+ * Tooling MAY offer a control to relax the concept-selector rule (e.g. warn or ignore instead
+ * of error), but the default behavior is as stated so that identical overlays behave identically
+ * across implementations. See the `remove` action for the no-match rule specific to removal.
  */
 export type OverlaySelector =
   | OverlaySelectorByRoot
@@ -98,8 +110,20 @@ export type OverlaySelector =
  * For OData targets (`edmx`, `csdl-json`), the value MUST be expressed in CSDL JSON
  * annotation format. Annotation keys use the `@TermName` convention:
  * e.g. `{ "@Core.Description": "...", "@Core.Revisions": [...] }`.
- * When the target is EDMX XML, the merge implementation converts this to `<Annotation>` elements.
+ * When the target is EDMX XML, the merge implementation converts this to `<Annotation>` elements
+ * and writes them as external targeting (`<Annotations Target="Qualified.Name/path">` blocks at
+ * the schema level), reconciling with any annotations already present for the same target so that
+ * a given target's annotations are never split across inline and external locations.
  * See: https://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html
+ *
+ * EDMX targets are annotation-only: overlays add, replace, or remove annotations on structure that
+ * already exists in the source schema. They cannot create new structural elements (EntityType,
+ * EntitySet, Property, Function/Action, EnumType, ComplexType), and `jsonPath` is not available for
+ * EDMX. New structure belongs in the source CSDL/CDS, not in an overlay.
+ *
+ * For CSDL JSON, enum-member annotations are carried as sibling keys on the enum type
+ * (`"Read@Core.Description"`), because an enum member is a scalar value that cannot itself hold
+ * annotation properties.
  *
  * For CSN Interop targets (`sap-csn-interop-effective-v1`), the value is plain CSN JSON
  * merged directly into the matched entity definition or element object.
