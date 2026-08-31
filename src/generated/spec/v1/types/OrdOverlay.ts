@@ -80,15 +80,18 @@ export type OverlayPatchAction = "update" | "remove" | "merge";
  * as they are resilient to structural changes in the target format.
  *
  * Behavior when a selector matches nothing, for `merge` and `update`:
- * - Concept-level selectors (`operation`, `entityType`, `complexType`, `enumType`,
- *   `propertyType`, `entitySet`, `namespace`, `parameter`, `returnType`) MUST error.
- *   Overlays patch structure the target already declares; they do not create modeled concepts.
- * - The generic `jsonPath` selector MAY create the missing target when its parent path
- *   resolves to an object (JSON Merge Patch-style). A fully unresolvable parent chain MUST error.
- * - `root` always resolves.
+ * - All selectors match only structure the target already declares. Overlays patch what
+ *   exists; they do not synthesize structure. This includes the generic `jsonPath` selector:
+ *   it MUST NOT create a missing target.
+ * - A `merge` or `update` whose selector matches nothing MUST error.
+ *   (`root` always resolves, so this cannot arise for `root`.)
+ * - This is a deliberate limitation of this version: there is no create-on-missing behavior.
+ *   Erroring surfaces selector typos and wrong assumptions about the target structure
+ *   instead of silently authoring unintended content. A future version MAY add a dedicated
+ *   create action if a concrete use case requires it.
  *
- * Tooling MAY offer a control to relax the concept-selector rule (e.g. warn or ignore instead
- * of error), but the default behavior is as stated so that identical overlays behave identically
+ * Tooling MAY offer a control to relax this to a warning or a skip (e.g. a `noMatchBehavior`
+ * option), but the default behavior is to error so that identical overlays behave identically
  * across implementations. See the `remove` action for the no-match rule specific to removal.
  */
 export type OverlaySelector =
