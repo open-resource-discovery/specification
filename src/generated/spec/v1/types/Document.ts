@@ -414,6 +414,18 @@ export interface ApiResource {
    */
   aiHint?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * This property is OPTIONAL. When omitted, the vendor is inherited from the resource's [Package](#package)
+   * (referenced via `partOfPackage`). Set it here only to override the package-level vendor for this resource.
+   *
+   * An ORD Aggregator SHOULD materialize the resolved (inherited) vendor onto this property, so that consumers can
+   * rely on `vendor` being present on the resource without resolving the package relationship themselves.
+   */
+  vendor?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -1378,6 +1390,18 @@ export interface EventResource {
    */
   aiHint?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * This property is OPTIONAL. When omitted, the vendor is inherited from the resource's [Package](#package)
+   * (referenced via `partOfPackage`). Set it here only to override the package-level vendor for this resource.
+   *
+   * An ORD Aggregator SHOULD materialize the resolved (inherited) vendor onto this property, so that consumers can
+   * rely on `vendor` being present on the resource without resolving the package relationship themselves.
+   */
+  vendor?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -1930,6 +1954,18 @@ export interface EntityType {
    */
   aiHint?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * This property is OPTIONAL. When omitted, the vendor is inherited from the resource's [Package](#package)
+   * (referenced via `partOfPackage`). Set it here only to override the package-level vendor for this resource.
+   *
+   * An ORD Aggregator SHOULD materialize the resolved (inherited) vendor onto this property, so that consumers can
+   * rely on `vendor` being present on the resource without resolving the package relationship themselves.
+   */
+  vendor?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -2279,6 +2315,18 @@ export interface Capability {
    */
   aiHint?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * This property is OPTIONAL. When omitted, the vendor is inherited from the resource's [Package](#package)
+   * (referenced via `partOfPackage`). Set it here only to override the package-level vendor for this resource.
+   *
+   * An ORD Aggregator SHOULD materialize the resolved (inherited) vendor onto this property, so that consumers can
+   * rely on `vendor` being present on the resource without resolving the package relationship themselves.
+   */
+  vendor?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -2595,6 +2643,18 @@ export interface DataProduct {
    * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
    */
   aiHint?: string;
+  /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * This property is OPTIONAL. When omitted, the vendor is inherited from the resource's [Package](#package)
+   * (referenced via `partOfPackage`). Set it here only to override the package-level vendor for this resource.
+   *
+   * An ORD Aggregator SHOULD materialize the resolved (inherited) vendor onto this property, so that consumers can
+   * rely on `vendor` being present on the resource without resolving the package relationship themselves.
+   */
+  vendor?: string;
   /**
    * Defines which Package the resource is part of.
    *
@@ -3036,6 +3096,18 @@ export interface Agent {
    * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
    */
   aiHint?: string;
+  /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * This property is OPTIONAL. When omitted, the vendor is inherited from the resource's [Package](#package)
+   * (referenced via `partOfPackage`). Set it here only to override the package-level vendor for this resource.
+   *
+   * An ORD Aggregator SHOULD materialize the resolved (inherited) vendor onto this property, so that consumers can
+   * rely on `vendor` being present on the resource without resolving the package relationship themselves.
+   */
+  vendor?: string;
   /**
    * Defines which Package the resource is part of.
    *
@@ -3558,6 +3630,18 @@ export interface IntegrationDependency {
    * Detailed documentation SHOULD be attached as (typed) links.
    */
   description?: string;
+  /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * This property is OPTIONAL. When omitted, the vendor is inherited from the resource's [Package](#package)
+   * (referenced via `partOfPackage`). Set it here only to override the package-level vendor for this resource.
+   *
+   * An ORD Aggregator SHOULD materialize the resolved (inherited) vendor onto this property, so that consumers can
+   * rely on `vendor` being present on the resource without resolving the package relationship themselves.
+   */
+  vendor?: string;
   /**
    * Defines which Package the resource is part of.
    *
@@ -4095,6 +4179,11 @@ export interface Package {
    * MUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.
    *
    * MUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party.
+   *
+   * `vendor` assigned to a `Package` is inherited by all ORD resources it contains.
+   * Resources whose vendor differs from their package can override this directly.
+   *
+   * Setting `vendor` on the package is the preferred approach, as it propagates automatically to all contained resources.
    */
   vendor: string;
   /**

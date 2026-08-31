@@ -613,6 +613,7 @@ The following rules need to be implemented by ORD aggregators:
   - `policyLevels` MUST be inherited to the resource / Package level, with the latter taking precedence.
 - The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
   - `vendor`, `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
+    - For `vendor`, the aggregator SHOULD materialize the resolved value onto the resource's optional `vendor` property, so that consumers can rely on `vendor` being present on the resource without resolving the `partOfPackage` relationship themselves. A `vendor` set directly on the resource takes precedence over the inherited package value.
   - `labels` MUST be merged without duplicated values.
     - Values of the same label key will be merged.
     - Duplicate values of the same label key will be removed.
