@@ -17,17 +17,18 @@
 			"automerge": true
 		},
 		{
-			"description": "Dev dependencies: same treatment, separate group",
+			"description": "Tooling (non-runtime): devDependencies (npm) grouped with GitHub Actions; build-time only, doesn't ship",
+			"matchManagers": ["npm"],
 			"matchDepTypes": ["devDependencies"],
 			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"groupName": "devDependencies (non-major)",
+			"groupName": "tooling (non-runtime)",
 			"minimumReleaseAge": "3 days",
 			"automerge": true
 		},
 		{
-			"description": "GitHub Actions: grouped, held 3 days, automerge",
 			"matchManagers": ["github-actions"],
-			"groupName": "github-actions",
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"groupName": "tooling (non-runtime)",
 			"minimumReleaseAge": "3 days",
 			"automerge": true
 		},
