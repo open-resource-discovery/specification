@@ -79,20 +79,18 @@ export type OverlayPatchAction = "update" | "remove" | "merge";
  * Prefer concept-level selectors over generic `jsonPath` where possible,
  * as they are resilient to structural changes in the target format.
  *
- * Behavior when a selector matches nothing, for `merge` and `update`:
- * - All selectors match only structure the target already declares. Overlays patch what
- *   exists; they do not synthesize structure. This includes the generic `jsonPath` selector:
- *   it MUST NOT create a missing target.
- * - A `merge` or `update` whose selector matches nothing MUST error.
+ * Selector behavior:
+ * - All selectors match only structure the target already declares.
+ *   Overlays patch what exists; they do not synthesize the selected element.
+ *   This includes `jsonPath`, which MUST NOT create a missing target.
+ * - A patch whose selector matches nothing MUST error for every action.
  *   (`root` always resolves, so this cannot arise for `root`.)
+ * - A `jsonPath` selector MAY match multiple elements.
+ *   The patch is applied to every matched element.
  * - This is a deliberate limitation of this version: there is no create-on-missing behavior.
  *   Erroring surfaces selector typos and wrong assumptions about the target structure
  *   instead of silently authoring unintended content. A future version MAY add a dedicated
  *   create action if a concrete use case requires it.
- *
- * Tooling MAY offer a control to relax this to a warning or a skip (e.g. a `noMatchBehavior`
- * option), but the default behavior is to error so that identical overlays behave identically
- * across implementations. See the `remove` action for the no-match rule specific to removal.
  */
 export type OverlaySelector =
   | OverlaySelectorByRoot
@@ -117,12 +115,21 @@ export type OverlaySelector =
  * and writes them as external targeting (`<Annotations Target="Qualified.Name/path">` blocks at
  * the schema level), reconciling with any annotations already present for the same target so that
  * a given target's annotations are never split across inline and external locations.
+ * Target identifiers use OData CSDL target syntax: `Namespace.Type` for types,
+ * `Namespace.Type/Member` for properties and enum members,
+ * `Namespace.Container/Member` for entity sets and FunctionImports,
+ * and `Namespace.Operation(Type,...)` for Actions and Functions.
+ * Operation targets always include every declared parameter type, including the binding parameter.
+ * Parameter and return-type targets append `/<parameter-name>` and `/$ReturnType`, respectively.
  * See: https://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html
  *
  * EDMX targets are annotation-only: overlays add, replace, or remove annotations on structure that
  * already exists in the source schema. They cannot create new structural elements (EntityType,
  * EntitySet, Property, Function/Action, EnumType, ComplexType), and `jsonPath` is not available for
  * EDMX. New structure belongs in the source CSDL/CDS, not in an overlay.
+ * For EDMX, `merge` replaces annotations with the same term-plus-qualifier identity and preserves
+ * all others; `update` replaces the selected target's complete annotation set; and `remove` with
+ * omitted `data` removes that complete annotation set while preserving the structural target.
  *
  * For CSDL JSON, enum-member annotations are carried as sibling keys on the enum type
  * (`"Read@Core.Description"`), because an enum member is a scalar value that cannot itself hold
@@ -419,13 +426,19 @@ export interface OverlaySelectorByOperation {
    * - A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.
    *   See: https://google.github.io/A2A/specification/#agentskill-object
    * - OData (`edmx`, `csdl-json`): maps to the Action or Function name at Schema level.
-   *   MUST use the namespace-qualified name (e.g. `OData.Demo.Approval`) to be unambiguous.
+   *   MUST use either the namespace-qualified name (e.g. `OData.Demo.Approval`) or its
+   *   namespace-qualified signature (e.g. `OData.Demo.Approval(Edm.Int32,Edm.String)`).
    *   For OData v2 `edmx` targets: also searches FunctionImport elements in EntityContainer
-   *   when no Schema-level Action/Function matches the name.
-   *   When the name alone is ambiguous (e.g. bound operations overloaded on multiple entity types),
-   *   the selector MUST use the fully qualified signature (incl. parameters, e.g.
-   *   `OData.Demo.Approval(Edm.Int32,Edm.String)`), or fall back to [`jsonPath`](#overlay-selector-by-jsonpath),
-   *   to target the specific overload. When the name is already unique, the plain name is sufficient.
+   *   when a selector without a signature matches no Schema-level Action or Function.
+   *   A signature selector MUST NOT match a FunctionImport.
+   *
+   *   A namespace-qualified name without a signature is sufficient only when it identifies
+   *   exactly one Action or Function.
+   *   Otherwise, the selector MUST use a signature containing every declared parameter type
+   *   in declaration order, including the binding parameter of a bound operation.
+   *   Signature matching uses exact parameter count, order, and types.
+   *   Empty parentheses select a zero-parameter operation, so `OData.Demo.Ping()` is distinct
+   *   from the name-only selector `OData.Demo.Ping`.
    *
    * When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.
    * When `definitionType` is absent, the implementation SHOULD infer the format from the target
@@ -573,7 +586,10 @@ export interface OverlaySelectorByParameter {
   parameter: string;
   /**
    * Required operation context for the selected parameter.
-   * - For OData: the namespace-qualified Action, Function, or FunctionImport name.
+   * - For OData: use the same namespace-qualified name or exact signature syntax as the
+   *   [`operation`](#overlay-selector-by-operation) selector.
+   *   When the operation is overloaded, the signature MUST identify one overload before
+   *   `parameter` is resolved.
    * - For OpenAPI: the `operationId` of the HTTP operation.
    */
   operation: string;
@@ -590,9 +606,11 @@ export interface OverlaySelectorByReturnType {
    */
   returnType: true;
   /**
-   * Namespace-qualified Action or Function name whose ReturnType is targeted.
-   * - For `edmx`: the namespace-qualified name of the Action or Function (e.g. `com.example.Svc.TerminateEmployee`).
-   * - For `csdl-json`: the namespace-qualified name looked up in the Namespace object.
+   * Namespace-qualified Action or Function whose return type is targeted.
+   * Use the same name or exact signature syntax as the
+   * [`operation`](#overlay-selector-by-operation) selector.
+   * When the operation is overloaded, the signature MUST identify one overload before
+   * its return type is resolved.
    */
   operation: string;
 }

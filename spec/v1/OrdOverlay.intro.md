@@ -119,17 +119,17 @@ Concept-level selectors are preferred over `jsonPath` because they are resilient
 (e.g. OpenAPI 3.0 → 3.1, OData CSDL XML → JSON).
 
 Available selectors:
-- [`root`](#overlay-selector-by-root) — document-level metadata and top-level sections
-- [`operation`](#overlay-selector-by-operation) — OpenAPI, MCP, A2A, OData Actions/Functions
-- [`entityType`](#overlay-selector-by-entity-type) — OData EntityTypes, CSN Interop entities
-- [`complexType`](#overlay-selector-by-complex-type) — OData ComplexTypes
-- [`enumType`](#overlay-selector-by-enum-type) — OData EnumTypes
-- [`entitySet`](#overlay-selector-by-entity-set) — OData EntitySets
-- [`namespace`](#overlay-selector-by-namespace) — OData Schema namespace
-- [`propertyType`](#overlay-selector-by-property-type) — OData/CSN properties (requires `entityType`, `complexType`, or `enumType`)
-- [`parameter`](#overlay-selector-by-parameter) — OData/OpenAPI parameters (requires `operation`)
-- [`returnType`](#overlay-selector-by-return-type) — OData return types (requires `operation`)
-- [`jsonPath`](#overlay-selector-by-jsonpath) — generic fallback for any JSON/YAML location
+- [`root`](#overlay-selector-by-root): document-level metadata and top-level sections
+- [`operation`](#overlay-selector-by-operation): OpenAPI, MCP, A2A, OData Actions/Functions
+- [`entityType`](#overlay-selector-by-entity-type): OData EntityTypes, CSN Interop entities
+- [`complexType`](#overlay-selector-by-complex-type): OData ComplexTypes
+- [`enumType`](#overlay-selector-by-enum-type): OData EnumTypes
+- [`entitySet`](#overlay-selector-by-entity-set): OData EntitySets
+- [`namespace`](#overlay-selector-by-namespace): OData Schema namespace
+- [`propertyType`](#overlay-selector-by-property-type): OData/CSN properties (requires `entityType`, `complexType`, or `enumType`)
+- [`parameter`](#overlay-selector-by-parameter): OData/OpenAPI parameters (requires `operation`)
+- [`returnType`](#overlay-selector-by-return-type): OData return types (requires `operation`)
+- [`jsonPath`](#overlay-selector-by-jsonpath): generic fallback for any JSON/YAML location
 
 Use `root` for document-level merges such as OpenAPI `info`, `components`, or ORD top-level properties.
 
@@ -146,14 +146,16 @@ Key points:
   - Omit `data` to remove the entire selected element.
     The document root cannot be removed: `root`, or `jsonPath: "$"`, with omitted `data` MUST error.
     Use `update` to replace the complete document explicitly.
+    For EDMX, the selected structural element is preserved and its complete annotation set is removed.
   - Provide `data` with `null`-valued properties to remove only those specific fields.
+    Missing fields in a matched element are ignored.
     A removal mask MAY target the document root because it preserves the document itself.
-  - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]` — these are invalid and will be rejected by conformant tooling.
-  - A `remove` whose selector matches nothing MUST error.
-    This surfaces selector typos, target drift, and repeated removal attempts instead of silently hiding them.
-- **`merge` behavior**: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array field with `data: { "arrayField": null }`, then `merge` the new value.
-- **No-match for `merge` / `update`**: a selector that matches nothing is an error.
+  - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]`; conformant tooling rejects these values.
+- **`merge` behavior**: arrays are appended, not replaced.
+  To replace an array, first `remove` it with `data: { "arrayField": null }`, then `merge` the new value.
+- **Selector matches**: a selector that matches nothing is an error for every action.
   All selectors, including the generic `jsonPath`, match only structure the target already declares; overlays do not create missing targets.
+  A `jsonPath` selector may match multiple elements, and the patch applies to each one.
   This is a deliberate limitation of this version because it surfaces selector typos rather than silently authoring content.
   A future version may add a dedicated create action.
   See [`selector`](#overlay-selector).
@@ -167,6 +169,9 @@ Key points:
 Overlays assume the target document is already valid for its native format.
 Overlay tooling does not fully re-validate target formats.
 After applying an overlay, validate the merged output with the corresponding format-specific tooling.
+Overlay output is defined semantically, not byte-for-byte.
+Tooling may change insignificant formatting, object-property order, or XML-attribute order.
+Consumers MUST compare parsed content rather than serialized bytes unless a separate canonicalization profile is applied.
 
 See [Compatibility Expectations](#compatibility-expectations) for rules on what overlays may and may not change.
 
