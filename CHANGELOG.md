@@ -12,6 +12,9 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
+- Clarified ORD Overlay patch semantics: `merge`, `update`, and `remove` MUST error when their selector matches nothing; omitted-data root removal MUST error, while root removal masks remain valid.
+- Defined OData annotation identity as term plus optional qualifier and required EDMX annotations to use reconciled external `<Annotations Target="...">` blocks.
+- Clarified that EDMX overlays annotate existing structure only and that CSDL JSON enum-member annotations use sibling keys on the enum type.
 - Clarified `OverlaySelectorByOperation` for OData targets: when the operation name alone is ambiguous (e.g. bound operations overloaded on multiple entity types), the selector MUST use the fully qualified signature (including parameters, e.g. `OData.Demo.Approval(Edm.Int32,Edm.String)`) or fall back to `jsonPath` to target the specific overload. When the name is already unique, the plain name remains sufficient. This makes explicit the pre-existing requirement that operation selectors resolve unambiguously.
 - Updated the ORD Overlay Tooling section to link the published reference implementation (`overlay-tools`), a set of React components for viewing Overlay documents (`overlay-editor`), and a reusable Go library (`overlay-golang`).
 
