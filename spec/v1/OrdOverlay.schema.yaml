@@ -994,10 +994,15 @@ definitions:
       For OData targets (`edmx`, `csdl-json`), the value MUST be expressed in CSDL JSON
       annotation format. Annotation keys use the `@TermName` convention:
       e.g. `{ "@Core.Description": "...", "@Core.Revisions": [...] }`.
-      When the target is EDMX XML, the merge implementation converts this to `<Annotation>` elements
+      For OData v4 EDMX XML, the merge implementation converts this to `<Annotation>` elements
       and writes them as external targeting (`<Annotations Target="Qualified.Name/path">` blocks at
       the schema level), reconciling with any annotations already present for the same target so that
       a given target's annotations are never split across inline and external locations.
+      OData v2 CSDL does not support OData v4 external annotation targeting.
+      For OData v2 EDMX XML, the merge implementation MUST instead write an equivalent annotation
+      inline on the selected element, using annotation syntax supported by the target document.
+      Tooling MUST report an error when the supplied annotation cannot be represented without changing
+      its meaning.
       Target identifiers use OData CSDL target syntax: `Namespace.Type` for types,
       the namespace name itself for namespace selectors,
       `Namespace.Type/Member` for properties and enum members,
