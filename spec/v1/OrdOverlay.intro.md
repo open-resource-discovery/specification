@@ -174,7 +174,8 @@ Key points:
 - **OData targets**: overlays carry annotations in CSDL JSON `@TermName` form.
   EDMX targets are annotation-only: existing structure is annotated, new structural elements cannot be created, and `jsonPath` is unavailable for EDMX.
   OData v4 EDMX annotations use reconciled external `<Annotations Target="...">` blocks.
-  OData v2 EDMX annotations are written inline using syntax supported by the target document, and tooling reports an error when no meaning-preserving representation exists.
+  Applying overlays to OData v2 EDMX is out of scope and produces an error.
+  An OData v4 EDMX document may describe the model of an OData v2 API and serve as the overlay target.
   For CSDL JSON, enum-member annotations are sibling keys on the enum type.
   Updating an enum member preserves its scalar value and replaces its sibling annotations.
   Removing an enum member without `data` removes both the member and its sibling annotations.

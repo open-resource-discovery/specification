@@ -120,11 +120,9 @@ export type OverlaySelector =
  * and writes them as external targeting (`<Annotations Target="Qualified.Name/path">` blocks at
  * the schema level), reconciling with any annotations already present for the same target so that
  * a given target's annotations are never split across inline and external locations.
- * OData v2 CSDL does not support OData v4 external annotation targeting.
- * For OData v2 EDMX XML, the merge implementation MUST instead write an equivalent annotation
- * inline on the selected element, using annotation syntax supported by the target document.
- * Tooling MUST report an error when the supplied annotation cannot be represented without changing
- * its meaning.
+ * Applying overlays to OData v2 EDMX XML is out of scope, and tooling MUST report an error.
+ * As a workaround, an OData v4 EDMX document MAY describe the model of an OData v2 API and serve
+ * as the overlay target.
  * Target identifiers use OData CSDL target syntax: `Namespace.Type` for types,
  * the namespace name itself for namespace selectors,
  * `Namespace.Type/Member` for properties and enum members,
