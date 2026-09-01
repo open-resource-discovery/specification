@@ -373,7 +373,8 @@ definitions:
                 This uses JSON Merge Patch-style delete semantics where `null` indicates deletion.
                 Nested `null` values remove nested fields as well.
                 A removal mask MAY target the document root because it preserves the document itself.
-              - When the selector matches nothing: the patch is a no-op (it MUST NOT error and MUST NOT create anything).
+              - When the selector matches nothing: the patch MUST error.
+                Erroring surfaces selector typos, target drift, and repeated removal attempts instead of silently hiding them.
           - const: merge
             description: |-
               Deep-merge `data` into the selected element.

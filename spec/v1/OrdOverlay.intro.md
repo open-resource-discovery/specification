@@ -149,7 +149,8 @@ Key points:
   - Provide `data` with `null`-valued properties to remove only those specific fields.
     A removal mask MAY target the document root because it preserves the document itself.
   - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]` — these are invalid and will be rejected by conformant tooling.
-  - A `remove` whose selector matches nothing is a no-op.
+  - A `remove` whose selector matches nothing MUST error.
+    This surfaces selector typos, target drift, and repeated removal attempts instead of silently hiding them.
 - **`merge` behavior**: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array field with `data: { "arrayField": null }`, then `merge` the new value.
 - **No-match for `merge` / `update`**: a selector that matches nothing is an error.
   All selectors, including the generic `jsonPath`, match only structure the target already declares; overlays do not create missing targets.
