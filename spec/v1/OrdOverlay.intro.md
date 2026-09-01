@@ -143,13 +143,21 @@ The full semantics of each action (`update`, `merge`, `remove`) are defined on t
 Key points:
 - **`data` is required for `merge` and `update`**: `remove` omits `data` when the selected element should be removed entirely.
 - **`remove` semantics**:
-  - Omit `data` to remove the entire selected element. Removing the document root (`root`, or `jsonPath: "$"`) yields an empty document (`{}`).
+  - Omit `data` to remove the entire selected element.
+    Removing the document root (`root`, or `jsonPath: "$"`) yields an empty document (`{}`).
   - Provide `data` with `null`-valued properties to remove only those specific fields.
   - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]` — these are invalid and will be rejected by conformant tooling.
   - A `remove` whose selector matches nothing is a no-op.
 - **`merge` behavior**: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array field with `data: { "arrayField": null }`, then `merge` the new value.
-- **No-match for `merge` / `update`**: a selector that matches nothing is an error. All selectors, including the generic `jsonPath`, match only structure the target already declares; overlays do not create missing targets. This is a deliberate limitation of this version (it surfaces selector typos rather than silently authoring content); a future version may add a dedicated create action. See [`selector`](#overlay-selector).
-- **OData targets**: overlays carry annotations in CSDL JSON `@TermName` form. EDMX targets are annotation-only (existing structure is annotated; new structural elements cannot be created, and `jsonPath` is unavailable for EDMX). For CSDL JSON, enum-member annotations are sibling keys on the enum type. See [`data`](#overlay-patch-value).
+- **No-match for `merge` / `update`**: a selector that matches nothing is an error.
+  All selectors, including the generic `jsonPath`, match only structure the target already declares; overlays do not create missing targets.
+  This is a deliberate limitation of this version because it surfaces selector typos rather than silently authoring content.
+  A future version may add a dedicated create action.
+  See [`selector`](#overlay-selector).
+- **OData targets**: overlays carry annotations in CSDL JSON `@TermName` form.
+  EDMX targets are annotation-only: existing structure is annotated, new structural elements cannot be created, and `jsonPath` is unavailable for EDMX.
+  For CSDL JSON, enum-member annotations are sibling keys on the enum type.
+  See [`data`](#overlay-patch-value).
 
 ## Validation
 
