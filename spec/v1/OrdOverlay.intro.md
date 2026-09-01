@@ -147,6 +147,7 @@ Key points:
     The document root cannot be removed: `root`, or `jsonPath: "$"`, with omitted `data` MUST error.
     Use `update` to replace the complete document explicitly.
   - Provide `data` with `null`-valued properties to remove only those specific fields.
+    A removal mask MAY target the document root because it preserves the document itself.
   - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]` — these are invalid and will be rejected by conformant tooling.
   - A `remove` whose selector matches nothing is a no-op.
 - **`merge` behavior**: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array field with `data: { "arrayField": null }`, then `merge` the new value.
