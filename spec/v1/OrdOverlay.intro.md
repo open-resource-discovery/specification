@@ -119,19 +119,23 @@ Concept-level selectors are preferred over `jsonPath` because they are resilient
 (e.g. OpenAPI 3.0 → 3.1, OData CSDL XML → JSON).
 
 Available selectors:
-- [`root`](#overlay-selector-by-root) — document-level metadata and top-level sections
-- [`operation`](#overlay-selector-by-operation) — OpenAPI, MCP, A2A, OData Actions/Functions
-- [`entityType`](#overlay-selector-by-entity-type) — OData EntityTypes, CSN Interop entities
-- [`complexType`](#overlay-selector-by-complex-type) — OData ComplexTypes
-- [`enumType`](#overlay-selector-by-enum-type) — OData EnumTypes
-- [`entitySet`](#overlay-selector-by-entity-set) — OData EntitySets
-- [`namespace`](#overlay-selector-by-namespace) — OData Schema namespace
-- [`propertyType`](#overlay-selector-by-property-type) — OData/CSN properties (requires `entityType`, `complexType`, or `enumType`)
-- [`parameter`](#overlay-selector-by-parameter) — OData/OpenAPI parameters (requires `operation`)
-- [`returnType`](#overlay-selector-by-return-type) — OData return types (requires `operation`)
-- [`jsonPath`](#overlay-selector-by-jsonpath) — generic fallback for any JSON/YAML location
+- [`root`](#overlay-selector-by-root): document-level metadata and top-level sections
+- [`operation`](#overlay-selector-by-operation): OpenAPI, MCP, A2A, OData Actions/Functions
+- [`entityType`](#overlay-selector-by-entity-type): OData EntityTypes, CSN Interop entities
+- [`complexType`](#overlay-selector-by-complex-type): OData ComplexTypes
+- [`enumType`](#overlay-selector-by-enum-type): OData EnumTypes
+- [`entitySet`](#overlay-selector-by-entity-set): OData EntitySets
+- [`namespace`](#overlay-selector-by-namespace): OData Schema namespace
+- [`propertyType`](#overlay-selector-by-property-type): OData/CSN properties (requires `entityType`, `complexType`, or `enumType`)
+- [`parameter`](#overlay-selector-by-parameter): OData/OpenAPI parameters (requires `operation`)
+- [`returnType`](#overlay-selector-by-return-type): OData return types (requires `operation`)
+- [`jsonPath`](#overlay-selector-by-jsonpath): generic fallback for any JSON/YAML location
 
 Use `root` for document-level merges such as OpenAPI `info`, `components`, or ORD top-level properties.
+
+`jsonPath` follows [RFC 9535](https://www.rfc-editor.org/rfc/rfc9535).
+The [`jsonPath` selector definition](#overlay-selector-by-jsonpath) specifies the portable subset that every toolkit must support and portable overlays must use.
+Toolkits may support additional features as non-portable extensions.
 
 See each selector's definition for detailed format mappings and usage.
 
@@ -143,16 +147,48 @@ The full semantics of each action (`update`, `merge`, `remove`) are defined on t
 Key points:
 - **`data` is required for `merge` and `update`**: `remove` omits `data` when the selected element should be removed entirely.
 - **`remove` semantics**:
+  - If the selector matches nothing, the action succeeds without changing the document because the requested absence already holds, and tooling should report a warning.
   - Omit `data` to remove the entire selected element.
+    The document root cannot be removed: `root`, or `jsonPath: "$"`, with omitted `data` MUST error.
+    Use `update` to replace the complete document explicitly.
+    For EDMX, the selected structural element is preserved and its complete annotation set is removed.
   - Provide `data` with `null`-valued properties to remove only those specific fields.
-  - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]` — these are invalid and will be rejected by conformant tooling.
-- **`merge` behavior**: arrays are appended, not replaced. To fully replace an array, use two ordered patches — first `remove` the array field with `data: { "arrayField": null }`, then `merge` the new value.
+    Missing fields in a matched element are ignored.
+    A removal mask MAY target the document root because it preserves the document itself.
+  - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]`; conformant tooling rejects these values.
+- **`merge` behavior**: arrays are appended, not replaced.
+  To replace an array, first `remove` it with `data: { "arrayField": null }`, then `merge` the new value.
+- **CSDL JSON concept selectors**: `merge`, `update`, and data-bearing `remove` operate on annotations while preserving structural CSDL content.
+  `update` replaces the selected target's complete annotation set.
+  This exception does not apply to `root` or `jsonPath`, which retain generic structural semantics.
+  Structural CSDL data supplied to an OData concept-level selector is an error.
+- **Selector matches**: a `merge` or `update` concept-level selector that matches nothing is an error.
+  An unmatched `remove` succeeds without changing the document, which makes removal idempotent, and tooling should report a warning.
+  All selectors, including the generic `jsonPath`, match only structure the target already declares; overlays do not create missing targets.
+  A `jsonPath` selector may match zero or more elements.
+  A zero-match `jsonPath` patch succeeds without changing the document and tooling should report a warning, regardless of the patch action.
+  The patch applies to every element when `jsonPath` matches one or more.
+  This is a deliberate limitation of this version because errors and warnings surface selector typos rather than silently authoring content.
+  A future version may add a dedicated create action.
+  See [`selector`](#overlay-selector).
+- **OData targets**: overlays carry annotations in CSDL JSON `@TermName` form.
+  EDMX targets are annotation-only: existing structure is annotated, new structural elements cannot be created, and `jsonPath` is unavailable for EDMX.
+  OData v4 EDMX annotations use reconciled external `<Annotations Target="...">` blocks.
+  Applying overlays to OData v2 EDMX is out of scope and produces an error.
+  An OData v4 EDMX document may describe the model of an OData v2 API and serve as the overlay target.
+  For CSDL JSON, enum-member annotations are sibling keys on the enum type.
+  Updating an enum member preserves its scalar value and replaces its sibling annotations.
+  Removing an enum member without `data` removes both the member and its sibling annotations.
+  See [`data`](#overlay-patch-value).
 
 ## Validation
 
 Overlays assume the target document is already valid for its native format.
 Overlay tooling does not fully re-validate target formats.
 After applying an overlay, validate the merged output with the corresponding format-specific tooling.
+Overlay output is defined semantically, not byte-for-byte.
+Tooling may change insignificant formatting, object-property order, or XML-attribute order.
+Consumers MUST compare parsed content rather than serialized bytes unless a separate canonicalization profile is applied.
 
 See [Compatibility Expectations](#compatibility-expectations) for rules on what overlays may and may not change.
 
