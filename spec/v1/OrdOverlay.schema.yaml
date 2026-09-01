@@ -367,6 +367,8 @@ definitions:
           - const: remove
             description: |-
               Remove the selected element or specific fields within it.
+              If the selector matches nothing, the action succeeds without changing the document because
+              the requested absence already holds.
 
               - When `data` is omitted: remove the selected element from the document entirely.
                 The document root cannot be removed: when the selector resolves to the root
@@ -463,7 +465,8 @@ definitions:
       - All selectors match only structure the target already declares.
         Overlays patch what exists; they do not synthesize the selected element.
         This includes `jsonPath`, which MUST NOT create a missing target.
-      - A patch whose selector matches nothing MUST error for every action.
+      - A `merge` or `update` patch whose selector matches nothing MUST error.
+        An unmatched `remove` patch succeeds without changing the document, which makes removal idempotent.
         (`root` always resolves, so this cannot arise for `root`.)
       - A `jsonPath` selector MAY match multiple elements.
         The patch is applied to every matched element.

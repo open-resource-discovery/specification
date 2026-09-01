@@ -83,7 +83,8 @@ export type OverlayPatchAction = "update" | "remove" | "merge";
  * - All selectors match only structure the target already declares.
  *   Overlays patch what exists; they do not synthesize the selected element.
  *   This includes `jsonPath`, which MUST NOT create a missing target.
- * - A patch whose selector matches nothing MUST error for every action.
+ * - A `merge` or `update` patch whose selector matches nothing MUST error.
+ *   An unmatched `remove` patch succeeds without changing the document, which makes removal idempotent.
  *   (`root` always resolves, so this cannot arise for `root`.)
  * - A `jsonPath` selector MAY match multiple elements.
  *   The patch is applied to every matched element.
