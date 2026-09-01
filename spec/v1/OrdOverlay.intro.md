@@ -158,6 +158,10 @@ Key points:
   - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]`; conformant tooling rejects these values.
 - **`merge` behavior**: arrays are appended, not replaced.
   To replace an array, first `remove` it with `data: { "arrayField": null }`, then `merge` the new value.
+- **CSDL JSON concept selectors**: `merge`, `update`, and data-bearing `remove` operate on annotations while preserving structural CSDL content.
+  `update` replaces the selected target's complete annotation set.
+  This exception does not apply to `root` or `jsonPath`, which retain generic structural semantics.
+  Structural CSDL data supplied to an OData concept-level selector is an error.
 - **Selector matches**: a `merge` or `update` concept-level selector that matches nothing is an error.
   An unmatched `remove` succeeds without changing the document, which makes removal idempotent, and tooling should report a warning.
   All selectors, including the generic `jsonPath`, match only structure the target already declares; overlays do not create missing targets.
@@ -170,6 +174,8 @@ Key points:
 - **OData targets**: overlays carry annotations in CSDL JSON `@TermName` form.
   EDMX targets are annotation-only: existing structure is annotated, new structural elements cannot be created, and `jsonPath` is unavailable for EDMX.
   For CSDL JSON, enum-member annotations are sibling keys on the enum type.
+  Updating an enum member preserves its scalar value and replaces its sibling annotations.
+  Removing an enum member without `data` removes both the member and its sibling annotations.
   See [`data`](#overlay-patch-value).
 
 ## Validation

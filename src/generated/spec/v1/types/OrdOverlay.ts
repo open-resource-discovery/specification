@@ -121,6 +121,7 @@ export type OverlaySelector =
  * the schema level), reconciling with any annotations already present for the same target so that
  * a given target's annotations are never split across inline and external locations.
  * Target identifiers use OData CSDL target syntax: `Namespace.Type` for types,
+ * the namespace name itself for namespace selectors,
  * `Namespace.Type/Member` for properties and enum members,
  * `Namespace.Container/Member` for entity sets and FunctionImports,
  * and `Namespace.Operation(Type,...)` for Actions and Functions.
@@ -139,6 +140,19 @@ export type OverlaySelector =
  * For CSDL JSON, enum-member annotations are carried as sibling keys on the enum type
  * (`"Read@Core.Description"`), because an enum member is a scalar value that cannot itself hold
  * annotation properties.
+ * `merge` adds or replaces the supplied sibling annotations while preserving the member value and
+ * other annotations. `update` preserves the member value and replaces that member's complete
+ * annotation set. `remove` with `data` removes the specified sibling annotations, while `remove`
+ * with omitted `data` removes the member and all of its sibling annotations.
+ *
+ * For CSDL JSON, `merge`, `update`, and data-bearing `remove` patches that use an OData
+ * concept-level selector (`operation`, `entityType`, `complexType`, `enumType`, `propertyType`,
+ * `entitySet`, `namespace`, `parameter`, or `returnType`) operate on annotations rather than
+ * structural CSDL content.
+ * Their data MAY use member names to nest annotation payloads for those members, but MUST NOT use
+ * `$`-prefixed control properties or other non-annotation values to replace structural content.
+ * Tooling MUST report such structural data as an error rather than silently ignoring it.
+ * `root` and `jsonPath` selectors retain the generic structural action semantics.
  *
  * For CSN Interop targets (`sap-csn-interop-effective-v1`), the value is plain CSN JSON
  * merged directly into the matched entity definition or element object.
