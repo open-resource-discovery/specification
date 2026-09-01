@@ -144,7 +144,8 @@ Key points:
 - **`data` is required for `merge` and `update`**: `remove` omits `data` when the selected element should be removed entirely.
 - **`remove` semantics**:
   - Omit `data` to remove the entire selected element.
-    Removing the document root (`root`, or `jsonPath: "$"`) yields an empty document (`{}`).
+    The document root cannot be removed: `root`, or `jsonPath: "$"`, with omitted `data` MUST error.
+    Use `update` to replace the complete document explicitly.
   - Provide `data` with `null`-valued properties to remove only those specific fields.
   - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]` — these are invalid and will be rejected by conformant tooling.
   - A `remove` whose selector matches nothing is a no-op.

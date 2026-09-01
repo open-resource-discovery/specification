@@ -365,8 +365,9 @@ definitions:
               Remove the selected element or specific fields within it.
 
               - When `data` is omitted: remove the selected element from the document entirely.
-                When the selector resolves to the document root (`root`, or `jsonPath: "$"`),
-                the result is an empty document (`{}`).
+                The document root cannot be removed: when the selector resolves to the root
+                (`root`, or `jsonPath: "$"`), the patch MUST error. Use `update` to replace the
+                complete document explicitly.
               - When `data` is provided: remove only the fields or array entries marked by the removal mask.
                 For object masks, properties with `null` values are removed recursively.
                 This uses JSON Merge Patch-style delete semantics where `null` indicates deletion.
