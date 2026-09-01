@@ -143,7 +143,7 @@ The full semantics of each action (`update`, `merge`, `remove`) are defined on t
 Key points:
 - **`data` is required for `merge` and `update`**: `remove` omits `data` when the selected element should be removed entirely.
 - **`remove` semantics**:
-  - If the selector matches nothing, the action succeeds without changing the document because the requested absence already holds.
+  - If the selector matches nothing, the action succeeds without changing the document because the requested absence already holds, and tooling should report a warning.
   - Omit `data` to remove the entire selected element.
     The document root cannot be removed: `root`, or `jsonPath: "$"`, with omitted `data` MUST error.
     Use `update` to replace the complete document explicitly.
@@ -154,11 +154,13 @@ Key points:
   - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]`; conformant tooling rejects these values.
 - **`merge` behavior**: arrays are appended, not replaced.
   To replace an array, first `remove` it with `data: { "arrayField": null }`, then `merge` the new value.
-- **Selector matches**: a `merge` or `update` selector that matches nothing is an error.
-  An unmatched `remove` succeeds without changing the document, which makes removal idempotent.
+- **Selector matches**: a `merge` or `update` concept-level selector that matches nothing is an error.
+  An unmatched `remove` succeeds without changing the document, which makes removal idempotent, and tooling should report a warning.
   All selectors, including the generic `jsonPath`, match only structure the target already declares; overlays do not create missing targets.
-  A `jsonPath` selector may match multiple elements, and the patch applies to each one.
-  This is a deliberate limitation of this version because it surfaces selector typos rather than silently authoring content.
+  A `jsonPath` selector may match zero or more elements.
+  A zero-match `jsonPath` patch succeeds without changing the document and tooling should report a warning, regardless of the patch action.
+  The patch applies to every element when `jsonPath` matches one or more.
+  This is a deliberate limitation of this version because errors and warnings surface selector typos rather than silently authoring content.
   A future version may add a dedicated create action.
   See [`selector`](#overlay-selector).
 - **OData targets**: overlays carry annotations in CSDL JSON `@TermName` form.
