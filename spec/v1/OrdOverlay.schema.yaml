@@ -472,7 +472,8 @@ definitions:
       - A `jsonPath` selector MAY match zero or more elements.
         When it matches nothing, the patch succeeds without changing the document and tooling SHOULD report
         a warning, regardless of the patch action.
-        When it matches one or more elements, the patch is applied to every matched element.
+        When it matches one or more elements, all locations are identified before mutation and the patch
+        is applied exactly once to every matched location.
       - This is a deliberate limitation of this version: there is no create-on-missing behavior.
         Errors and warnings surface selector typos and wrong assumptions about the target structure
         instead of silently authoring unintended content. A future version MAY add a dedicated create
@@ -557,12 +558,30 @@ definitions:
           - `csdl-json`: targets any node in the OData CSDL JSON document.
           - MCP (any Specification ID): targets any node in the MCP-compatible JSON/YAML tool metadata.
 
+          JSONPath syntax and evaluation follow [RFC 9535](https://www.rfc-editor.org/rfc/rfc9535).
+          Every conforming toolkit MUST support this portable subset:
+          - the root identifier `$`;
+          - child-name selectors in dot notation or single-quoted or double-quoted bracket notation;
+          - array selectors using non-negative indices;
+          - object and array wildcards;
+          - selector lists containing distinct member names or distinct non-negative array indices; and
+          - array slices whose bounds are omitted or non-negative and whose step is omitted or positive.
+
+          A portable ORD Overlay MUST NOT use JSONPath features outside this subset.
+          Toolkits MAY support additional RFC 9535 features or implementation-specific extensions,
+          but overlays using them are implementation-specific and not portable.
+          A toolkit that does not support an expression MUST report an error and MUST NOT treat the
+          expression as matching zero elements.
+
           Use concept-level selectors (`operation`, `entityType`, etc.) when available, as they are
           resilient to structural differences between format versions. Reserve `jsonPath` for cases
           where no concept-level selector covers the target location.
         examples:
           - "$.info.description"
           - "$.paths['/constellations'].get"
+          - "$.servers[*]"
+          - "$.tags[0,2]"
+          - "$.items[1:5:2]"
     examples:
       - jsonPath: "$.info.description"
       - jsonPath: "$.paths['/constellations'].get"

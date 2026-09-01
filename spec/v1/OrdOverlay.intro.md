@@ -133,6 +133,10 @@ Available selectors:
 
 Use `root` for document-level merges such as OpenAPI `info`, `components`, or ORD top-level properties.
 
+`jsonPath` follows [RFC 9535](https://www.rfc-editor.org/rfc/rfc9535).
+The [`jsonPath` selector definition](#overlay-selector-by-jsonpath) specifies the portable subset that every toolkit must support and portable overlays must use.
+Toolkits may support additional features as non-portable extensions.
+
 See each selector's definition for detailed format mappings and usage.
 
 ## Patch Actions

@@ -12,7 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
+- Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
 - Defined OData annotation identity as term plus optional qualifier and required EDMX annotations to use reconciled external `<Annotations Target="...">` blocks.
 - Clarified EDMX action semantics, its annotation-only restriction, and CSDL JSON enum-member annotation keys.
 - Clarified that overlay output is semantically, not byte, canonical.
