@@ -106,49 +106,32 @@ properties:
     x-introduced-in-version: "1.12.0"
     x-feature-status: beta
     description: |-
-      With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
+      Declares the static, dynamic, or system-independent scope represented by this ORD document.
+      If omitted, it defaults to the complete `system-instance` perspective.
 
-      It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
-
-      It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
-
-      If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
-
-      Please read the [article on perspectives](../concepts/perspectives) for more explanations.
+      See the [Perspectives concept page](../concepts/perspectives) for selection, completeness, fallback, and `system-instance-delta` composition rules.
     oneOf:
       - const: "system-type"
         description: |-
-          Describes a static [system-type](../index.md#system-type) perspective, which is version independent.
-
-          If a system is not versioned (continuous delivery) or resources are not tied to a system, the system-type perspective
-          implies that the information apply, no matter which system version or instance.
+          Complete, version-independent static metadata for a [system type](../index.md#system-type).
       - const: "system-version"
         description: |-
-          Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.
-
-          If chosen, `describedSystemVersion`.`version` MUST be provided, too.
-
-          This perspective describes how a system of a particular type and version generally look like.
-          If no explicit `system-type` perspective is available, the latest system-version SHOULD be interpreted as the [system-type](../index.md#system-type) perspective (see [static perspective resolution](../concepts/perspectives#static-perspective-resolution)).
+          Complete static metadata for a specific [system version](../index.md#system-version).
+          `describedSystemVersion.version` MUST be provided.
       - const: "system-instance"
         description: |-
-          Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
-          This allows to also reflect tenant specific extensions, customizations and runtime configuration.
-
-          If provided, it will completely override the static system-version perspective when metadata about system instances is requested.
-      # - const: "system-instance-delta"
-      #   description: |-
-      #     TODO: As future optimization we could also provide this perspective, which only describes the actual difference between the system-instance and system-version perspective.
-
-      #     If chosen, `describedSystemVersion`.`version` MUST be provided, too.
+          Complete dynamic metadata for one [system instance](../index.md#system-instance) (tenant).
+          It is a self-contained instance description, not a patch or delta.
+      - const: "system-instance-delta"
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          Dynamic metadata for one [system instance](../index.md#system-instance), expressed as complete ORD entries that differ from an applicable static baseline.
+          It is composed with that baseline by an ORD aggregator; entries themselves are never partial patches.
+          See the [System-Instance Delta](../concepts/perspectives#system-instance-delta) rules.
       - const: "system-independent"
         description: |-
-          Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).
-          This content is always static and has independent visibility and lifecycle from the systems in a particular landscape.
-          The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
-
-          Examples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems.
-          For the distinction between system-independent content and system-scoped shared publications, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).
+          Static content independent of [system versions](../index.md#system-version) and [system instances](../index.md#system-instance).
+          It MUST NOT be overridden by a system-scoped perspective.
     default: "system-instance"
     examples:
       - "system-instance"
@@ -352,9 +335,14 @@ properties:
       List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
       This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
 
-      A tombstone entry MAY be removed after a grace period of 31 days.
+      A tombstone entry MAY be removed after a grace period of 31 days, except in a `system-instance-delta` document.
+      A delta tombstone MUST remain published for as long as the identified baseline entry is absent from that system instance.
     items:
       $ref: "#/definitions/Tombstone"
+
+  definitions:
+    $ref: "#/definitions/InlineDefinitions"
+
 additionalProperties: false
 required:
   - openResourceDiscovery
@@ -1676,7 +1664,7 @@ definitions:
           An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
 
           This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-          All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+          All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
 
           For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
         default: false
@@ -4689,6 +4677,14 @@ definitions:
             description: |-
               The resource definitions are openly accessible and not protected via authentication or authorization.
               Please find a more detailed documentation [here](../../spec-extensions/access-strategies/open).
+          - const: embedded
+            description: |-
+              The resource definition content is provided inline within the ORD document's `definitions` property.
+              This is used for [push transport](../index.md#push-transport) where definitions are embedded rather than fetched.
+              The `url` field serves as the key to look up the content in the document's `definitions` dictionary.
+              Please find a more detailed documentation [here](../../spec-extensions/access-strategies/embedded).
+            x-introduced-in-version: "1.17.0"
+            x-feature-status: beta
           - const: basic-auth
             description: |-
               The resource definitions are protected via generic basic auth.
@@ -5641,10 +5637,11 @@ definitions:
       Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
 
       The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
+      In a `system-instance-delta` document, it instead MUST remain published for as long as the matching baseline entry is absent from that system instance.
     properties:
       ordId:
         <<: *ordId
-        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct|agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)?$
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct|agent|overlay):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*|)?$
         x-association-target:
           - "#/definitions/Package/ordId"
           - "#/definitions/ConsumptionBundle/ordId"
@@ -5657,6 +5654,7 @@ definitions:
           - "#/definitions/IntegrationDependency/ordId"
           - "#/definitions/DataProduct/ordId"
           - "#/definitions/Agent/ordId"
+          - "#/definitions/Overlay/ordId"
         description: |-
           [ORD ID](../index.md#ord-id) of the ORD resource/taxonomy that has been removed.
       groupId:
@@ -5872,3 +5870,34 @@ definitions:
       - releaseStatus
       - partOfPackage
     additionalProperties: true
+
+  InlineDefinitions:
+    type: object
+    title: Inline Definitions
+    x-introduced-in-version: "1.17.0"
+    x-feature-status: beta
+    x-ums-type: ignore
+    description: |-
+      A dictionary of inline [resource definitions](../index.md#resource-definition) for [push transport](../index.md#push-transport).
+
+      When using push transport, resource definitions can be provided inline within the ORD document
+      instead of being referenced via URLs and fetched separately.
+
+      The **key** MUST be the URL path as referenced by resources via `resourceDefinitions[].url`.
+      The **value** MUST be a string containing the raw content of the resource definition.
+
+      The content is treated as an opaque text blob, preserving original formatting and whitespace.
+      This works uniformly for all definition formats (OpenAPI JSON/YAML, AsyncAPI, WSDL, JSON Schema, etc.).
+
+      This enables the aggregator to correlate inline definitions with the resources that reference them.
+      The property makes the entries in this document self-contained with respect to their referenced definitions;
+      a `system-instance-delta` can still depend on entries and definitions from a separately published static baseline.
+
+      For pull transport, this property is typically not used as the aggregator fetches definitions via URLs.
+    additionalProperties:
+      type: string
+    examples:
+      - {
+          "/api/my-api/openapi.json": "{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"My API\",\"version\":\"1.0.0\"},\"paths\":{}}",
+          "/api/my-api/schema.wsdl": "<?xml version=\"1.0\"?>\n<definitions name=\"MyService\" ...>\n</definitions>"
+        }

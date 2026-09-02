@@ -70,17 +70,19 @@ export interface OrdDocument {
    */
   baseUrl?: string;
   /**
-   * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
+   * Declares the static, dynamic, or system-independent scope represented by this ORD document.
+   * If omitted, it defaults to the complete `system-instance` perspective.
    *
-   * It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
-   *
-   * It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
-   *
-   * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
-   *
-   * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
+   * See the [Perspectives concept page](../concepts/perspectives) for selection, completeness, fallback, and `system-instance-delta` composition rules.
    */
-  perspective?: ("system-type" | "system-version" | "system-instance" | "system-independent") & string;
+  perspective?: (
+    | "system-type"
+    | "system-version"
+    | "system-instance"
+    | "system-instance-delta"
+    | "system-independent"
+  ) &
+    string;
   describedSystemType?: SystemType;
   describedSystemVersion?: SystemVersion;
   describedSystemInstance?: SystemInstance;
@@ -175,9 +177,11 @@ export interface OrdDocument {
    * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
    * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
    *
-   * A tombstone entry MAY be removed after a grace period of 31 days.
+   * A tombstone entry MAY be removed after a grace period of 31 days, except in a `system-instance-delta` document.
+   * A delta tombstone MUST remain published for as long as the identified baseline entry is absent from that system instance.
    */
   tombstones?: Tombstone[];
+  definitions?: InlineDefinitions;
 }
 /**
  * Information on the [system type](../index.md#system-type) that this ORD document describes.
@@ -871,7 +875,7 @@ export interface ApiResource {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
@@ -1075,7 +1079,7 @@ export interface MetadataDefinitionAccessStrategy {
   /**
    * Defines the authentication/authorization strategy through which the referenced `resourceDefinitions` are accessible.
    */
-  type: (string | "open" | "basic-auth" | "custom") & string;
+  type: (string | "open" | "embedded" | "basic-auth" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -1769,7 +1773,7 @@ export interface EventResource {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
@@ -2118,7 +2122,7 @@ export interface EntityType {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
@@ -2440,7 +2444,7 @@ export interface Capability {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
@@ -2916,7 +2920,7 @@ export interface DataProduct {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
@@ -4559,6 +4563,7 @@ export interface GroupType {
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *
  * The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
+ * In a `system-instance-delta` document, it instead MUST remain published for as long as the matching baseline entry is absent from that system instance.
  */
 export interface Tombstone {
   /**
@@ -4587,4 +4592,25 @@ export interface Tombstone {
    */
   description?: string;
   [k: string]: unknown | undefined;
+}
+/**
+ * A dictionary of inline [resource definitions](../index.md#resource-definition) for [push transport](../index.md#push-transport).
+ *
+ * When using push transport, resource definitions can be provided inline within the ORD document
+ * instead of being referenced via URLs and fetched separately.
+ *
+ * The **key** MUST be the URL path as referenced by resources via `resourceDefinitions[].url`.
+ * The **value** MUST be a string containing the raw content of the resource definition.
+ *
+ * The content is treated as an opaque text blob, preserving original formatting and whitespace.
+ * This works uniformly for all definition formats (OpenAPI JSON/YAML, AsyncAPI, WSDL, JSON Schema, etc.).
+ *
+ * This enables the aggregator to correlate inline definitions with the resources that reference them.
+ * The property makes the entries in this document self-contained with respect to their referenced definitions;
+ * a `system-instance-delta` can still depend on entries and definitions from a separately published static baseline.
+ *
+ * For pull transport, this property is typically not used as the aggregator fetches definitions via URLs.
+ */
+export interface InlineDefinitions {
+  [k: string]: string | undefined;
 }

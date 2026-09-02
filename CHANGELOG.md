@@ -10,6 +10,18 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added **Push Transport** mode documentation and schema support
+  - Push transport allows ORD providers to push ORD documents directly to aggregators via HTTP POST
+  - Introduced `definitions` property on ORD Document for embedding resource definitions inline
+    - The key is the URL path (matching `resourceDefinitions[].url`), the value is the raw content as a string
+    - Content is treated as an opaque text blob, preserving original formatting for all formats (OpenAPI, AsyncAPI, WSDL, etc.)
+  - Added `embedded` access strategy type for resource definitions that are inline rather than fetched
+  - Added [embedded access strategy documentation](docs/spec-extensions/access-strategies/embedded.md)
+  - Added [static baseline](examples/documents/document-push-transport.json) and [system-instance delta](examples/documents/document-push-transport-delta.json) push examples
+- Added the `system-instance-delta` perspective for publishing complete tenant-specific ORD entries relative to a static baseline. Aggregators compose the delta with the baseline by stable entry identity and expose a complete effective system-instance view.
+
 ### Changed
 
 - Clarified `OverlaySelectorByOperation` for OData targets: when the operation name alone is ambiguous (e.g. bound operations overloaded on multiple entity types), the selector MUST use the fully qualified signature (including parameters, e.g. `OData.Demo.Approval(Edm.Int32,Edm.String)`) or fall back to `jsonPath` to target the specific overload. When the name is already unique, the plain name remains sufficient. This makes explicit the pre-existing requirement that operation selectors resolve unambiguously.

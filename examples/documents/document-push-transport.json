@@ -1,0 +1,48 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
+  "openResourceDiscovery": "1.16",
+  "description": "Static baseline pushed with an inline resource definition",
+  "baseUrl": "https://metadata.example.com",
+  "perspective": "system-type",
+  "describedSystemType": {
+    "systemNamespace": "sap.example"
+  },
+  "packages": [
+    {
+      "ordId": "sap.example:package:push-demo:v1",
+      "title": "Push Transport Demo",
+      "shortDescription": "Static baseline for the push transport examples",
+      "description": "This package supplies the static baseline used by the push transport examples.",
+      "version": "1.0.0",
+      "vendor": "sap:vendor:SAP:"
+    }
+  ],
+  "apiResources": [
+    {
+      "ordId": "sap.example:apiResource:hello-api:v1",
+      "title": "Hello API",
+      "shortDescription": "Simple greeting API",
+      "description": "A simple greeting API in the static system-type baseline.",
+      "version": "1.0.0",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "partOfPackage": "sap.example:package:push-demo:v1",
+      "apiProtocol": "rest",
+      "resourceDefinitions": [
+        {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "url": "/api/hello/openapi.json",
+          "accessStrategies": [
+            {
+              "type": "embedded"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": {
+    "/api/hello/openapi.json": "{\"openapi\":\"3.0.3\",\"info\":{\"title\":\"Hello API\",\"version\":\"1.0.0\"},\"paths\":{\"/hello\":{\"get\":{\"summary\":\"Get greeting\",\"responses\":{\"200\":{\"description\":\"A greeting message\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}}}}}}}}}"
+  }
+}
