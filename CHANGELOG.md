@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added the `system-instance-delta` perspective for publishing complete tenant-specific ORD entries relative to a static baseline. Aggregators compose the delta with the baseline by stable entry identity and expose a complete effective system-instance view.
+
 ### Changed
 
 - Clarified `OverlaySelectorByOperation` for OData targets: when the operation name alone is ambiguous (e.g. bound operations overloaded on multiple entity types), the selector MUST use the fully qualified signature (including parameters, e.g. `OData.Demo.Approval(Edm.Int32,Edm.String)`) or fall back to `jsonPath` to target the specific overload. When the name is already unique, the plain name remains sufficient. This makes explicit the pre-existing requirement that operation selectors resolve unambiguously.

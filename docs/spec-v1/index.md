@@ -112,9 +112,8 @@ In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-pe
 
 - the aggregator MUST support [system-instance-aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
-- In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
-  - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Discovery consumer should not need to understand whether the information is currently static or system-instance-aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
-- See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
+- In its ORD Discovery API, the aggregator MUST expose a complete effective system-instance view: use a complete `system-instance` perspective as-is; otherwise compose `system-instance-delta` with its static baseline; otherwise fall back to the static baseline.
+- See [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md#perspective-resolution) for the complete resolution and composition rules.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
 <div className="img-box" style={{aspectRatio: "3472/809"}}>
@@ -243,11 +242,11 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### Considerations on the ORD Content
 
-The ORD documents MUST describe the current state of a concrete, running [system instance](#system-instance).
+ORD documents MUST describe the scope declared by their [perspective](#perspectives). Dynamic documents describe the current state of a concrete, running [system instance](#system-instance); static documents describe a system type or version baseline.
 
-All resources that are described within one document MUST describe the same system instance.
+All resources within one document MUST belong to the same perspective and system context.
 
-The described information MUST not be duplicated within or across ORD documents of the same [system type](#system-type).
+The described information MUST not be duplicated within or across ORD documents of the same perspective and scope. Reusing a stable identity across a static baseline and a dynamic perspective is allowed and required for replacement semantics.
 If some information like Package or Consumption Bundle is needed across multiple documents they can either be put in one of the documents or be moved to a separate document for shared information.
 This also applies across ORD Providers of the same system type, which is ensured through the correct use of namespaces and namespace ownerships.
 Shared ORD information MAY be published by multiple system types when the ORD ID identifies the same governed definition.
@@ -257,13 +256,13 @@ See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 The [validation rules](#validation-rules) MUST be considered.
 
 If the [resources](#resource) that are described through ORD are [system-instance-aware](#system-instance-aware) (they differ between system instances), the ORD document MUST reflect this.
-In that case, one ORD document MUST be provided for each system instance.
+In that case, tenant-scoped ORD documents using either `system-instance` or `system-instance-delta` MUST be provided for each described system instance.
 Only if the information is [system-instance-unaware](#system-instance-unaware) (the system behaves the same for each instance), a single ORD document can represent the system as a whole.
 
 Differences between system instances are possible, for example, when the system has configuration or extensibility capabilities that result in resources being activated, deactivated, added, or modified.
 This might happen at config time, deploy time, or even at run-time.
 
-For example, a configuration could explicitly disable an API. In this case, the ORD document for this specific system instance MUST not describe the disabled API.
+For example, a tenant might not be entitled to an API. A complete `system-instance` perspective omits that API; a `system-instance-delta` suppresses the inherited API with a tombstone.
 Some systems are even extensible in a way that customers can add new APIs or alter existing APIs at run-time.
 Those changes MUST be documented via ORD.
 Please note that some changes only affect the referenced [resource definitions](#resource-definition) and not the ORD document itself.
@@ -628,6 +627,7 @@ The following rules need to be implemented by ORD aggregators:
 
 The removal of resources is indicated through setting a [Tombstone](./interfaces/Document.md#tombstone).
 The ORD Aggregator MUST remove unpublished information that has been tombstoned within a grace period of 31 days.
+In a `system-instance-delta`, a tombstone instead suppresses a matching entry from the static baseline for that tenant only. It MUST remain effective while the tombstone is present and MUST NOT remove the baseline entry itself. See [System-Instance Delta](./concepts/perspectives.md#system-instance-delta).
 
 ##### Hosting Resource Definitions
 
@@ -652,7 +652,7 @@ The following validation rules apply specifically for ORD aggregators:
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
   This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
-- The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times within the same [system type](#system-type) or [system version](#system-version) scope.
+- The same ORD information or resource (identical stable ID) MUST NOT be described multiple times within the same perspective and system type, system version, or system instance scope. Reusing an ID between a static baseline and a dynamic perspective follows the [perspective resolution rules](./concepts/perspectives.md#perspective-resolution) and is not a duplicate.
   Please be aware that this could happen within an ORD Document or within the same ORD Provider on different ORD Documents.
   For migration transitions this rule MAY be violated temporarily.
 - Shared ORD information MAY be published by multiple [system types](#system-type) when the ORD ID identifies the same governed definition.
@@ -688,7 +688,8 @@ There is a `perspective` attribute, which allows setting the following values:
 
 - `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the latest version or version agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version.
 - `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time).
-- `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system-instance-aware</a> information (only known at run-time).
+- `system-instance`: A complete <a href="#dynamic-perspective">dynamic perspective</a> for one <a href="#system-instance">system instance</a>.
+- `system-instance-delta`: A baseline-relative dynamic perspective containing complete ORD entries that differ, or can differ, for one system instance.
 - `system-independent`: Describes content that is independent of system versions or system instances and can be shared across multiple systems.
 
 ### Correct Use of Perspectives
@@ -698,14 +699,15 @@ There is a `perspective` attribute, which allows setting the following values:
   - The `system-version` perspective if the system has explicit versions
   - If this is categorized correctly, the ORD aggregators do not have to aggregate static, identical metadata per tenant.
   - In this case the same static metadata will be used to describe all system instances of the same version (or for `system-type`, all systems regardless of version)
-- Systems, which have dynamic metadata MUST use the `system-instance` perspective.
+- Systems, which have dynamic metadata MUST use either `system-instance` or `system-instance-delta`.
   - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
-  - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
+  - `system-instance` MUST describe the complete tenant view and does not merge with static metadata.
+  - `system-instance-delta` requires an applicable static baseline and contains complete entries, not partial-object patches.
+  - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the dynamic perspective.
     In this case, both perspectives MUST use the same ORD IDs for the same resources and MUST NOT describe those resources inconsistently.
-- If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
 
-> ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
+> ⏩ See the [perspectives concept page](./concepts/perspectives.md) for provider selection, instance fallback, delta composition, and static resolution rules.
 
 ## ID Concepts
 
@@ -1182,7 +1184,7 @@ The **static perspective** describes how a system generically looks like ("basel
 
 The **dynamic perspective** describes a [system instance](#system-instance) at **run-time** and can therefore reflect how it is currently configured, customized or extended. This is also referred to as [system-instance-aware](#system-instance-aware).
 
-- This can be explicitly set with `perspective`: `system-instance`
+- This can be represented as a complete `system-instance` perspective or a baseline-relative `system-instance-delta` perspective.
 - This is also referred to as [system-instance-aware](#system-instance-aware) information.
   system-instance-aware information is allowed to be different between system instances of the same [system type](#system-type).
 
