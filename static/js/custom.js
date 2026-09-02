@@ -1,22 +1,38 @@
 /* globals window, document */
 // Little script to highlight the links and definitions that were navigated to
-window.addEventListener("load", locationHashChanged, false);
-window.addEventListener("hashchange", locationHashChanged, false);
-function locationHashChanged() {
-  document.querySelectorAll(".highlight").forEach((dfn) => {
-    dfn.classList.remove("highlight");
+
+window.addEventListener("load", function() {
+  // Defer one frame so React finishes hydration before we mutate class names
+  requestAnimationFrame(function() {
+    locationHashChanged(true);
   });
-  const highlightedElementId = window.location.hash.split("#")[1];
-  console.debug("highlighting", highlightedElementId);
-  const highlightedElement = document.getElementById(highlightedElementId);
-  if (highlightedElement) {
-    highlightedElement.classList.add("highlight");
-    if (highlightedElement.getElementsByTagName("a")[0]) {
-      addAnchorTitle(highlightedElement.getElementsByTagName("a")[0].title);
-    } else {
-      addAnchorTitle(highlightedElement.textContent);
+}, false);
+
+window.addEventListener("hashchange", function() {
+  locationHashChanged(false);
+}, false);
+
+function locationHashChanged(checkDrift) {
+  var id = window.location.hash.substring(1);
+  var el = document.getElementById(id);
+  if (!el) return;
+
+  // Use data attribute (not class) so React reconciliation won't remove it
+  var prev = document.querySelector('[data-is-target]');
+  if (prev) prev.removeAttribute('data-is-target');
+  el.setAttribute('data-is-target', 'true');
+
+  if (checkDrift) {
+    var rect = el.getBoundingClientRect();
+    var headerOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--doc-header-offset')) || 72;
+    // Re-scroll only if element has drifted from where the browser placed it (e.g. mermaid still rendering)
+    if (Math.abs(rect.top - headerOffset) > 20) {
+      el.scrollIntoView();
     }
   }
+
+  var anchor = el.getElementsByTagName("a")[0];
+  addAnchorTitle(anchor ? anchor.title : el.textContent);
 }
 
 function addAnchorTitle(anchorTitle) {
@@ -201,6 +217,11 @@ function adjustLayoutForBanner() {
   var bannerHeight = banner.offsetHeight;
   var isDesktop = window.innerWidth > 996;
 
+  // Update CSS variable for scroll offset to account for banner
+  var baseOffset = isDesktop ? 72 : 84;
+  var extraBannerHeight = bannerHeight > 30 ? (bannerHeight - 30) : 0;
+  document.documentElement.style.setProperty('--doc-header-offset', (baseOffset + extraBannerHeight) + 'px');
+
   if (isDesktop) {
     // Desktop: reset mobile styles
     navbar.style.top = "";
@@ -213,20 +234,28 @@ function adjustLayoutForBanner() {
     } else if (docRoot) {
       docRoot.style.paddingTop = "";
     }
-    return;
-  }
-
-  // Mobile/tablet: adjust navbar and main-wrapper
-  if (bannerHeight > 0) {
-    navbar.style.top = bannerHeight + "px";
-    if (mainWrapper) {
-      var navbarHeight = navbar.offsetHeight || 60;
-      mainWrapper.style.paddingTop = bannerHeight + navbarHeight + "px";
+  } else {
+    // Mobile/tablet: adjust navbar and main-wrapper
+    if (bannerHeight > 0) {
+      navbar.style.top = bannerHeight + "px";
+      if (mainWrapper) {
+        var navbarHeight = navbar.offsetHeight || 60;
+        mainWrapper.style.paddingTop = bannerHeight + navbarHeight + "px";
+      }
+    }
+    // Reset docRoot padding on mobile
+    if (docRoot) {
+      docRoot.style.paddingTop = "";
     }
   }
-  // Reset docRoot padding on mobile
-  if (docRoot) {
-    docRoot.style.paddingTop = "";
+
+  // Re-scroll to anchor if present after layout adjustment
+  if (window.location.hash) {
+    var elementId = window.location.hash.substring(1);
+    var element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView();
+    }
   }
 }
 

@@ -121,6 +121,13 @@
   html[data-theme="light"] .navbar-sidebar__items .menu__link.header-github-pill {
     color: var(--c-text) !important;
   }
+  html[data-theme="light"] .navbar-sidebar__items .menu__link.header-notebooklm-pill {
+    color: var(--c-text) !important;
+  }
+  html[data-theme="light"] .navbar-sidebar__items .menu__link.header-github-pill svg,
+  html[data-theme="light"] .navbar-sidebar__items .menu__link.header-notebooklm-pill svg {
+    filter: invert(0) opacity(0.95) !important;
+  }
   html[data-theme="light"] .navbar-sidebar__items .menu__link:hover:not(.menu__link--active),
   html[data-theme="light"] .theme-doc-sidebar-menu .menu__link:hover:not(.menu__link--active) {
     color: var(--c-text-strong) !important;

@@ -29,7 +29,7 @@ properties:
     description: |-
       Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.
 
-      The `baseUrl` MUST NOT contain a leading slash.
+      The `baseUrl` MUST NOT contain a trailing slash.
 
       If you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.
       This implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.
@@ -99,54 +99,39 @@ definitions:
         x-introduced-in-version: "1.12.0"
         x-feature-status: beta
         description: |-
-          With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
+          Declares the static, dynamic, or system-independent scope represented by this ORD document.
+          If omitted, it defaults to the complete `system-instance` perspective.
 
-          It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
-
-          It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
-
-          If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
-
-          Please read the [article on perspectives](../concepts/perspectives) for more explanations.
+          See the [Perspectives concept page](../concepts/perspectives) for selection, completeness, fallback, and `system-instance-delta` composition rules.
         oneOf:
           - const: "system-type"
             description: |-
-              Describes a static [system-type](../index.md#def-system-type) perspective, which is version independent.
-
-              If a system is not versioned (continuous delivery) or resources are not tied to a system, the system-type perspective
-              implies that the information apply, no matter which system version or instance.
+              Complete, version-independent static metadata for a [system type](../index.md#system-type).
           - const: "system-version"
             description: |-
-              Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.
-
-              If chosen, `describedSystemVersion`.`version` MUST be provided, too.
-
-              This perspective describes how a system of a particular type and version generally look like.
-              The latest system-version MAY also be interpreted as the [system-type](../index.md#system-type) perspective.
+              Complete static metadata for a specific [system version](../index.md#system-version).
+              `describedSystemVersion.version` MUST be provided.
           - const: "system-instance"
             description: |-
-              Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
-              This allows to also reflect tenant specific extensions, customizations and runtime configuration.
-
-              If provided, it will completely override the static system-version perspective when metadata about system instances is requested.
-          # - const: "system-instance-delta"
-          #   description: |-
-          #     TODO: As future optimization we could also provide this perspective, which only describes the actual difference between the system-instance and system-version perspective.
-
-          #     If chosen, `describedSystemVersion`.`version` MUST be provided, too.
+              Complete dynamic metadata for one [system instance](../index.md#system-instance) (tenant).
+              It is a self-contained instance description, not a patch or delta.
+          - const: "system-instance-delta"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              Dynamic metadata for one [system instance](../index.md#system-instance), expressed as complete ORD entries that differ from an applicable static baseline.
+              It is composed with that baseline by an ORD aggregator; entries themselves are never partial patches.
+              See the [System-Instance Delta](../concepts/perspectives#system-instance-delta) rules.
           - const: "system-independent"
             description: |-
-              Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).
-              This content is always static and has independent visibility and lifecycle from the systems in a particular landscape.
-              The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
-
-              Examples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems.
+              Static content independent of [system versions](../index.md#system-version) and [system instances](../index.md#system-instance).
+              It MUST NOT be overridden by a system-scoped perspective.
         default: "system-instance"
         examples:
           - "system-instance"
 
       systemInstanceAware:
         type: boolean
+        x-hide: true
         description: |-
           Whether the information in the ORD document is **system-instance-aware**.
           This is the case when the provided ORD document potentially differs between **system instances** (e.g. due to multi-tenancy, configuration or extensibility).

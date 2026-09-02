@@ -4,7 +4,7 @@ description: "SAP Core v1 policy level"
 sidebar_position: 2
 ---
 
-# SAP Core Policy Level (v1.0)
+# SAP Core Policy Level
 
 ## Description
 
@@ -16,7 +16,7 @@ Exceptions are only allowed on a case by case basis.
 This policy level is based on various SAP guidelines and rules - most of them which are already established.
 It defines the core rules and guidelines that are shared across SAP, although more specific rules and guidelines MAY be applied on top.
 
-**All constraints of the ORD specification itself still apply (valid ORD document). The constraints described here come on top.**
+**All constraints of the ORD specification itself still apply (valid ORD document). The constraints described here come on top and may be stricter than the base spec where the base spec intentionally leaves room for exceptional use cases.**
 
 ## General Policies
 
@@ -41,10 +41,10 @@ IF the resources have already been published to the public [SAP Business Acceler
 - **Preferred Approach**:
   - Get in touch with the Business Hub colleagues, to clarify which existing packages need to be associated with the registered [namespace](../../spec-v1/index.md#namespaces) (from step above).
   - Keep the `<resourceId>` fragment of the [ORD ID](../../spec-v1/index.md#ord-id) identical to the ID that was previously published on the Business Accelerator Hub.
-  <!-- - Alternatively, add a [Correlation ID](../../spec-v1/index.md#correlation-id) to the resource:
+  - Alternatively, add a [Correlation ID](../../spec-v1/index.md#correlation-id) to the resource:
     - Add a `correlationIds` entry, that starts with `sap.businesshub` namespace and then the Business Accelerator Hub concept name (that is also part of the Old URL), e.g. `api` or `package`
     - Package Example: `{ "ordId": "sap.s4:package:SomeName:v1", "correlationIds": ["sap.businesshub:package:SAPS4HANACloud"] }`
-    - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }` -->
+    - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }`
 
 ### Title Constraints
 
@@ -178,6 +178,11 @@ The following constraints apply in addition to the constraints defined in the [O
       - Consequently, the producing application cannot describe how they are eventually consumed.
 - SAP Event Catalogs SHOULD be validated via the SAP API Metadata Validator, using `sap:core:v1` compliance level.
 
+### Entity Type
+
+- For [Entity Types](../../spec-v1/interfaces/Document.md#entity-type):
+  - Entity Type definitions MUST have `visibility` set to either `private` or `internal` (stricter than the base spec, which permits `public` for exceptional open-standardization cases).
+
 ### Extensible
 
 - If the mandatory [Extensible](../../spec-v1/interfaces/Document.md#extensible) object has a [description](../../spec-v1/interfaces/Document.md#extensible_description), it MUST follow the guidance and rules of the SAP Technology Guideline TG12.R2.
@@ -185,9 +190,13 @@ The following constraints apply in addition to the constraints defined in the [O
 ### Integration Dependencies
 
 - If an Integration Dependency is used to indicate Subscription Content for the [SAP Event Broker](https://help.sap.com/docs/event-broker/event-broker-service-guide/what-is):
-  - Each [EventResourceIntegrationAspect](../../spec-v1/interfaces/Document.md#eventresourceintegrationaspect) MUST provide exactly one `systemTypeRestriction` application namespace.
+  - Each [EventResourceIntegrationAspect](../../spec-v1/interfaces/Document.md#event-resource-integration-aspect) MUST provide exactly one `systemTypeRestriction` application namespace.
     The value of the `systemTypeRestriction` MUST always be the same within an integration dependency.
     These limitation MAY be reconsidered in the future.
+
+### ORD Overlays
+
+- [ORD Overlays](../../spec-v1/interfaces/OrdOverlay.md) MUST always provide a [`target.ordId`](../../spec-v1/interfaces/OrdOverlay.md#overlay-target_ordid) to identify the ORD resource being patched.
 
 ### Correlation IDs
 

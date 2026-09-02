@@ -53,6 +53,9 @@ spec:
       type: 'guid'
       array: true
       description: "A group (instance) can logically be part of another group, for example in hierarchical taxonomies or graph relationships.\nAssigning a group to be part of another group is a lightweight and flexible approach to express such relationships.\n\nThis relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios."
+    - name: 'visibility'
+      type: 'string'
+      description: "Defines who is allowed to discover and access this Group and its metadata.\nDefaults to `public` if not set.\nSee [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types)."
   customTypeDefinitions:
     - name: 'Labels'
       metadataProperties:

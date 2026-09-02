@@ -1,0 +1,42 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:airline-csn-interop:v1",
+  "description": "Enriches the CSN Interop Airline service with AI-facing descriptions and vocabulary annotations.\n\nFor CSN Interop targets (sap-csn-interop-effective-v1), patch data is plain CSN JSON merged\ndirectly into the matched definition or element object. Use 'doc' for human-readable descriptions\nand '@AnnotationName' keys for vocabulary annotations (e.g. @EndUserText.label).\nentityType selectors use the fully qualified definitions key (e.g. 'AirlineService.Airline').\nSee: https://sap.github.io/csn-interop-specification/",
+  "visibility": "internal",
+  "target": {
+    "ordId": "sap.foo:apiResource:AirlineService:v1",
+    "definitionType": "sap-csn-interop-effective-v1"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": { "entityType": "AirlineService.Airline" },
+      "data": {
+        "doc": "Represents an airline carrier identified by its IATA airline code. Contains the carrier name and default billing currency.",
+        "@EndUserText.label": "Airline"
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "propertyType": "AirlineID", "entityType": "AirlineService.Airline" },
+      "data": {
+        "doc": "Unique IATA airline code identifying the carrier (e.g. 'LH' for Lufthansa). This is the primary key of the entity."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "propertyType": "Name", "entityType": "AirlineService.Airline" },
+      "data": {
+        "doc": "Full commercial name of the airline as registered with IATA."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": { "entityType": "AirlineService.Airport" },
+      "data": {
+        "doc": "Represents an airport identified by its IATA airport code. Contains name, city, and country information."
+      }
+    }
+  ]
+}

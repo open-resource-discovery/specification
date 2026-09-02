@@ -13,3 +13,8 @@ All files in this folder will be used for example documentation and will also be
 
 All ORD Documents MUST start with `document-` and all ORD Configs with `configuration-`.
 The file extension must be `.json` or `.jsonc`, so they are considered for documentation and validation.
+
+## Overlay examples
+
+Overlay examples are available under `examples/overlay/`.
+Some of them are used in `src/overlay-merge` tests together with existing metadata examples.

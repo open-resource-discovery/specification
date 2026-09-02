@@ -4,6 +4,10 @@
  * Define from where the API resource can be used and accessed
  */
 export type Usage = "external" | "local";
+/**
+ * Defines whether and how the resource can be extended with custom fields.
+ */
+export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
 
 /**
  * The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
@@ -37,7 +41,9 @@ export interface OrdDocument {
     | "1.11"
     | "1.12"
     | "1.13"
-    | "1.14";
+    | "1.14"
+    | "1.15"
+    | "1.16";
   /**
    * Optional description of the ORD document itself.
    * Please note that this information is NOT further processed or considered by an ORD aggregator.
@@ -46,20 +52,40 @@ export interface OrdDocument {
    */
   description?: string;
   /**
-   * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
+   * Optional [base URL](../index.md#base-url) of the ORD provider system instance that serves this document.
    *
-   * It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+   * Used to resolve relative URLs to [resource definition](../index.md#resource-definition) files and resource definition metadata file
+   * references within this document (e.g., `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`).
+   * This differs from `describedSystemInstance.baseUrl`, which is used for entry point URLs.
    *
-   * It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+   * It may differ from `describedSystemInstance.baseUrl` when an ORD provider describes another system on its behalf.
+   * In the common case where the ORD provider and the described system are the same, both values are identical.
    *
-   * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
+   * The `baseUrl` MUST NOT contain a trailing slash.
    *
-   * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
+   * This property is particularly important in push, offline, and self-contained document scenarios,
+   * and REQUIRED when the provider and the described system differ.
+   *
+   * See [Relative URL Resolution](../index.md#relative-url-resolution) for the full resolution order including fallbacks and backward-compatibility rules.
    */
-  perspective?: ("system-type" | "system-version" | "system-instance" | "system-independent") & string;
-  describedSystemInstance?: SystemInstance;
+  baseUrl?: string;
+  /**
+   * Declares the static, dynamic, or system-independent scope represented by this ORD document.
+   * If omitted, it defaults to the complete `system-instance` perspective.
+   *
+   * See the [Perspectives concept page](../concepts/perspectives) for selection, completeness, fallback, and `system-instance-delta` composition rules.
+   */
+  perspective?: (
+    | "system-type"
+    | "system-version"
+    | "system-instance"
+    | "system-instance-delta"
+    | "system-independent"
+  ) &
+    string;
   describedSystemType?: SystemType;
   describedSystemVersion?: SystemVersion;
+  describedSystemInstance?: SystemInstance;
   /**
    * The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.
    * Depending on the chosen policy level, additional expectations and validations rules will be applied.
@@ -110,6 +136,16 @@ export interface OrdDocument {
    */
   agents?: Agent[];
   /**
+   * Array of all metadata overlays described in this ORD document.
+   *
+   * An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
+   * resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
+   *
+   * For overlays that are tightly coupled to a single API or Event resource, consider attaching them directly
+   * as a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.
+   */
+  overlays?: Overlay[];
+  /**
    * Array of all integration dependencies that are described in this ORD document.
    */
   integrationDependencies?: IntegrationDependency[];
@@ -141,97 +177,11 @@ export interface OrdDocument {
    * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
    * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
    *
-   * A tombstone entry MAY be removed after a grace period of 31 days.
+   * A tombstone entry MAY be removed after a grace period of 31 days, except in a `system-instance-delta` document.
+   * A delta tombstone MUST remain published for as long as the identified baseline entry is absent from that system instance.
    */
   tombstones?: Tombstone[];
   definitions?: InlineDefinitions;
-}
-/**
- * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
- *
- * Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
- */
-export interface SystemInstance {
-  /**
-   * Optional [base URL](../index.md#base-url) of the **system instance**.
-   * By providing the base URL, relative URLs in the document are resolved relative to it.
-   *
-   * The `baseUrl` MUST not contain a leading slash.
-   *
-   * MUST be provided if the base URL is not known to the ORD aggregators.
-   * MUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.
-   */
-  baseUrl?: string;
-  /**
-   * Optional local ID for the system instance, as known by the described system.
-   *
-   * In case of multi-tenant systems, it is equivalent to the local tenant id.
-   */
-  localId?: string;
-  /**
-   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
-   *
-   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
-   *
-   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
-   *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
-   */
-  correlationIds?: string[];
-  labels?: Labels;
-  documentationLabels?: DocumentationLabels;
-  /**
-   * List of free text style tags.
-   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
-   *
-   * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
-   */
-  tags?: string[];
-}
-/**
- * Generic labels that can be applied to most ORD information.
- * They are defined as an object that may have arbitrary keys.
- * The value of a key is an array of strings.
- *
- * Labels can be used to attach technical information that cannot be expressed natively in ORD.
- * An ORD aggregator should allow to categorize and query information based on the labels provided.
- *
- * If multiple parties rely on the existence of certain label information,
- * standardization through ORD SHOULD be preferred.
- *
- * All labels attached to a `Package` will be inherited to the resources they contain.
- * Duplicate labels will be merged by the ORD aggregator according to the following rules:
- * * Values of the same label key will be merged.
- * * Duplicate values of the same label key will be removed.
- */
-export interface Labels {
-  /**
-   * This interface was referenced by `Labels`'s JSON-Schema definition
-   * via the `patternProperty` "^[a-zA-Z0-9-_.]*$".
-   */
-  [k: string]: string[];
-}
-/**
- * Generic documentation labels that can be applied to most ORD information.
- * They are defined as an object that may have arbitrary keys.
- * The value of a key is an array of [CommonMark](https://spec.commonmark.org/) (Markdown) text.
- *
- * Documentation Labels can be used to attach human readable documentation that cannot be expressed natively in ORD.
- * A documentation tool (like an API Catalog) can use the documentation labels to provide generic documentation "snippets".
- * Due to the given structure they can be displayed e.g. as tables.
- *
- * The key of the documentation Label is plain-text (MUST not contain line breaks) and denotes the subject matter that is described.
- * The values (multiple can be provided for the same key) are [CommonMark](https://spec.commonmark.org/) (Markdown) text
- * which describes the subject matter or lists options for the key.
- *
- * In contrast to regular labels, documentation labels are not meant to be used to categorize or query information.
- */
-export interface DocumentationLabels {
-  /**
-   * This interface was referenced by `DocumentationLabels`'s JSON-Schema definition
-   * via the `patternProperty` "^.*$".
-   */
-  [k: string]: string[];
 }
 /**
  * Information on the [system type](../index.md#system-type) that this ORD document describes.
@@ -263,6 +213,56 @@ export interface SystemType {
   tags?: string[];
 }
 /**
+ * Generic key-value labels that can be applied to most ORD information.
+ * They are defined as an object that may have arbitrary keys.
+ * The value of a key is an array of strings.
+ *
+ * Labels can be used to attach technical information that cannot be expressed natively in ORD.
+ * An ORD aggregator should allow to categorize and query information based on the labels provided.
+ *
+ * To learn more about the concept, see [Labels](../concepts/grouping-and-bundling#labels).
+ *
+ * If multiple parties rely on the existence of certain label information,
+ * standardization through ORD SHOULD be preferred.
+ *
+ * All labels attached to a `Package` will be inherited to the resources they contain.
+ * Duplicate labels will be merged by the ORD aggregator according to the following rules:
+ * * Values of the same label key will be merged.
+ * * Duplicate values of the same label key will be removed.
+ *
+ * **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
+ * The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
+ */
+export interface Labels {
+  /**
+   * This interface was referenced by `Labels`'s JSON-Schema definition
+   * via the `patternProperty` "^[a-zA-Z0-9-_.:/]*$".
+   */
+  [k: string]: string[];
+}
+/**
+ * Generic documentation labels that can be applied to most ORD information.
+ * They are defined as an object that may have arbitrary keys.
+ * The value of a key is an array of [CommonMark](https://spec.commonmark.org/) (Markdown) text.
+ *
+ * Documentation Labels can be used to attach human readable documentation that cannot be expressed natively in ORD.
+ * A documentation tool (like an API Catalog) can use the documentation labels to provide generic documentation "snippets".
+ * Due to the given structure they can be displayed e.g. as tables.
+ *
+ * The key of the documentation Label is plain-text (MUST not contain line breaks) and denotes the subject matter that is described.
+ * The values (multiple can be provided for the same key) are [CommonMark](https://spec.commonmark.org/) (Markdown) text
+ * which describes the subject matter or lists options for the key.
+ *
+ * In contrast to regular labels, documentation labels are not meant to be used to categorize or query information.
+ */
+export interface DocumentationLabels {
+  /**
+   * This interface was referenced by `DocumentationLabels`'s JSON-Schema definition
+   * via the `patternProperty` "^.*$".
+   */
+  [k: string]: string[];
+}
+/**
  * Information on the [system version](../index.md#system-version) that this ORD document describes.
  */
 export interface SystemVersion {
@@ -280,6 +280,54 @@ export interface SystemVersion {
    * Human-readable title of the system version.
    */
   title?: string;
+  /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
+  labels?: Labels;
+  documentationLabels?: DocumentationLabels;
+  /**
+   * List of free text style tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  tags?: string[];
+}
+/**
+ * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.
+ *
+ * Whether this information is required or recommended to add, depends on the requirements of the ORD aggregator.
+ */
+export interface SystemInstance {
+  /**
+   * Optional [base URL](../index.md#base-url) of the **described system instance**.
+   *
+   * Used to resolve relative [entry point](../index.md#described-system-base-url-entry-points) URLs within this document.
+   * Relative URLs to metadata files (e.g., `resourceDefinitions[].url`) are resolved against
+   * the document root `baseUrl` instead — see [Relative URL Resolution](../index.md#relative-url-resolution).
+   *
+   * ORD aggregators that hold authoritative knowledge of the described system's base URL
+   * (e.g., from landscape configuration or service discovery) MAY prefer that over this value.
+   *
+   * The `baseUrl` MUST NOT contain a trailing slash.
+   *
+   * MUST be provided if the base URL is not known to the ORD aggregators.
+   * MUST be provided when the document needs to be fully self contained, e.g. when used for manual imports.
+   */
+  baseUrl?: string;
+  /**
+   * Optional local ID for the system instance, as known by the described system.
+   *
+   * In case of multi-tenant systems, it is equivalent to the local tenant id.
+   */
+  localId?: string;
   /**
    * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
    *
@@ -362,6 +410,14 @@ export interface ApiResource {
    */
   description: string;
   /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -379,6 +435,10 @@ export interface ApiResource {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -407,11 +467,15 @@ export interface ApiResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -423,13 +487,13 @@ export interface ApiResource {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
    *
-   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -452,18 +516,32 @@ export interface ApiResource {
    * Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
    *
    * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+   * Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
    *
    * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
    */
   abstract?: boolean;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -484,6 +562,18 @@ export interface ApiResource {
    * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    */
   minSystemVersion?: string;
+  /**
+   * Optional list of related API Resources.
+   *
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of related Event Resources.
+   *
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
+   */
+  relatedEventResources?: RelatedEventResource[];
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
@@ -526,11 +616,14 @@ export interface ApiResource {
    * If there is no match, the information in ORD takes precedence.
    *
    * **Provider View:**
-   * If the URL is relative to the system that describes the ORD information,
-   * it is RECOMMENDED to use relative references and (if known) to provide the `describedSystemInstance`.`baseUrl`.
+   * Relative entry point URLs are resolved against `describedSystemInstance`.`baseUrl` (the described system's base URL).
+   * It is RECOMMENDED to use relative references and (if known) to provide `describedSystemInstance`.`baseUrl`.
    * If the URL is not relative to the described system instance [base URL](../index.md#base-url), a full URL MUST be provided.
    * If the entry points are rewritten by middleware - incl. the special case of client/consumer specific entry points - it is RECOMMENDED to provide relative URLs, so only the `describedSystemInstance`.`baseUrl` has to be rewritten.
    * The provider should not have to describe all middleware or consumer specific entry points. If they are enriched later by the aggregator, it MAY omit the entry points.
+   *
+   * Note: this is distinct from relative resource definition URLs, which resolve against the document root `baseUrl`.
+   * See [Relative URL Resolution](../index.md#relative-url-resolution) for full rules including the aggregator-override behavior.
    *
    * **Consumer View**:
    * When fetching the information from an ORD Aggregator, the consumer MAY rely on receiving full URLs.
@@ -566,12 +659,21 @@ export interface ApiResource {
   ) &
     string;
   /**
-   * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
+   * representations (different formats) and complementary artifacts distinguished by `purpose`
+   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
+   * Model those as separate ORD resources instead.
+   *
+   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
+   * default per `(type, visibility)` combination.
+   *
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
+   * be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -602,6 +704,7 @@ export interface ApiResource {
   customImplementationStandardDescription?: string;
   /**
    * A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.
+   * It does not imply the same endpoints, security or tenant specific configuration is used.
    *
    * Serves as a declaration of compatible implementation of API contract, effectively functioning as an "implementationOf" relationship. The data that compatible APIs return follow the same schema, but itself can be different.
    * This means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.
@@ -772,7 +875,7 @@ export interface ApiResource {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
@@ -799,6 +902,42 @@ export interface ConsumptionBundleReference {
   defaultEntryPoint?: string;
 }
 /**
+ * Defines a relation to an API Resource (via its ORD ID).
+ */
+export interface RelatedAPIResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: (string | "ord:patches") & string;
+}
+/**
+ * Defines a relation to an Event Resource (via its ORD ID).
+ */
+export interface RelatedEventResource {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: (string | "ord:patches") & string;
+}
+/**
  * A changelog entry can be used to indicate changes.
  * Usually they lead to a change of the version number or the release status.
  */
@@ -811,9 +950,16 @@ export interface ChangelogEntry {
    */
   version: string;
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Date of change, without time or timezone information.
    *
@@ -858,6 +1004,7 @@ export interface ApiResourceDefinition {
     | "sap-rfc-metadata-v1"
     | "sap-sql-api-definition-v1"
     | "sap-csn-interop-effective-v1"
+    | "ord:overlay:v1"
     | "custom"
   ) &
     string;
@@ -878,11 +1025,12 @@ export interface ApiResourceDefinition {
    * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
    *
    */
-  mediaType: "application/json" | "application/xml" | "text/yaml" | "text/plain" | "application/octet-stream";
+  mediaType: string;
   /**
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
-   * It is RECOMMENDED to provide a relative URL (to base URL).
+   * It is RECOMMENDED to provide a relative URL.
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -909,6 +1057,20 @@ export interface ApiResourceDefinition {
    * @minItems 1
    */
   accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * Marks a resource definition as a *complementary* variant of the resource's default definition,
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in the definitions list, with or without `purpose`, MUST describe the same
+   * underlying resource; see the list property for the full modelling rules.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the definitions list.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * Defines the [access strategy](../../spec-extensions/access-strategies/) for accessing the resource definitions.
@@ -1115,7 +1277,7 @@ export interface ApiAndEventResourceLink {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the API or Event Resource Link.
    *
    * The link target SHOULD be absolute and SHOULD be openly accessible.
-   * If a relative link is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+   * If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
 }
@@ -1137,7 +1299,7 @@ export interface Link {
    */
   url: string;
   /**
-   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown)
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    */
   description?: string;
   [k: string]: unknown | undefined;
@@ -1148,14 +1310,7 @@ export interface Link {
  * If applicable, a description and further resources about extending this resource are provided.
  */
 export interface Extensible {
-  /**
-   * This property defines whether the resource is extensible.
-   *
-   * **Not extensible** means that the data model of the resource (i.e. API or event) cannot be extended with custom fields.
-   * **Manually extensible** means that in addition to defining a custom field, manual activities to include the field in the data model of the resource (i.e. API or event) are required. E.g. using a specific mapping tool or by selecting the resource in the data model extension tool.
-   * **Automatically extensible** means that after defining a custom field in the local domain model, the resource (i.e. API or event) is automatically extended as part of the default extension field definition.
-   */
-  supported: "no" | "manual" | "automatic";
+  supported: ExtensibilitySupportLevel;
   /**
    * A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
@@ -1219,6 +1374,14 @@ export interface EventResource {
    */
   description: string;
   /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -1236,6 +1399,10 @@ export interface EventResource {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -1264,11 +1431,15 @@ export interface EventResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -1280,13 +1451,13 @@ export interface EventResource {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
    *
-   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -1309,18 +1480,32 @@ export interface EventResource {
    * Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.
    *
    * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
+   * Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
    *
    * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
    */
   abstract?: boolean;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -1341,6 +1526,18 @@ export interface EventResource {
    * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    */
   minSystemVersion?: string;
+  /**
+   * Optional list of related API Resources.
+   *
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of related Event Resources.
+   *
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
+   */
+  relatedEventResources?: RelatedEventResource[];
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
@@ -1371,12 +1568,21 @@ export interface EventResource {
    */
   changelogEntries?: ChangelogEntry[];
   /**
-   * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
+   * representations (different formats) and complementary artifacts distinguished by `purpose`
+   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
+   * Model those as separate ORD resources instead.
+   *
+   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
+   * default per `(type, visibility)` combination.
+   *
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
+   * be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1567,7 +1773,7 @@ export interface EventResource {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
@@ -1581,7 +1787,7 @@ export interface EventResourceDefinition {
   /**
    * Type of the event resource definition
    */
-  type: (string | "asyncapi-v2" | "sap-csn-interop-effective-v1" | "custom") & string;
+  type: (string | "asyncapi-v2" | "sap-csn-interop-effective-v1" | "ord:overlay:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -1599,11 +1805,12 @@ export interface EventResourceDefinition {
    * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
    *
    */
-  mediaType: "application/json" | "application/xml" | "text/yaml" | "text/plain" | "application/octet-stream";
+  mediaType: string;
   /**
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
-   * It is RECOMMENDED to provide a relative URL (to base URL).
+   * It is RECOMMENDED to provide a relative URL.
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -1630,6 +1837,20 @@ export interface EventResourceDefinition {
    * in case that some metadata must only be made accessible to internal consumers.
    */
   visibility?: "public" | "internal" | "private";
+  /**
+   * Marks a resource definition as a *complementary* variant of the resource's default definition,
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in the definitions list, with or without `purpose`, MUST describe the same
+   * underlying resource; see the list property for the full modelling rules.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the definitions list.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * Describes the compatibility of the Event with other Events. This can be used to express that an Event is compatible with another Event version.
@@ -1653,8 +1874,8 @@ export interface EventCompatibility {
   maxVersion: string;
 }
 /**
- * An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model.
- * The same entity type can be exposed through one or multiple API and events resources.
+ * An [**Entity Type**](../concepts/grouping-and-bundling#entity-type) describes either a business concept / term or an underlying conceptual model (e.g. a business object / domain model).
+ * Entity Types can be related to API & Event resources, Data Products and other Entity Types, connecting exposed resources to business semantics.
  *
  * To learn more about the concept, see [Entity Type](../concepts/grouping-and-bundling#entity-type).
  */
@@ -1705,6 +1926,14 @@ export interface EntityType {
    */
   description?: string;
   /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -1722,14 +1951,22 @@ export interface EntityType {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -1741,13 +1978,13 @@ export interface EntityType {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
    *
-   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -1767,13 +2004,25 @@ export interface EntityType {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * The deprecation date defines when the resource has been set as deprecated.
    * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
@@ -1806,7 +2055,7 @@ export interface EntityType {
   /**
    * Defining the abstraction level of the entity type using the DDD terminology.
    *
-   * In Domain-Driven Design, there is a concept of entities and aggregates.
+   * In Domain-Driven Design, there is a concept of domain entities and aggregates.
    * There are root entities which may contain further sub entities by composition.
    * The complete "package" is then called an aggregate, which gets its name and identity from the root entity.
    * An aggregate is a cluster of domain objects that can be treated as a single unit.
@@ -1822,6 +2071,10 @@ export interface EntityType {
    * Usually this happens if there are similar conceptual entity types across different namespaces.
    */
   relatedEntityTypes?: RelatedEntityType[];
+  /**
+   * List of available machine-readable definitions that describe the entity type's internal model in detail.
+   */
+  definitions?: EntityTypeDefinition[];
   /**
    * Generic Links with arbitrary meaning and content.
    */
@@ -1869,7 +2122,7 @@ export interface EntityType {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
@@ -1889,8 +2142,72 @@ export interface RelatedEntityType {
    * Optional type of the relationship, which defines a stricter semantic what the relationship implies.
    *
    * If not provided, the relationship type has no semantics, it's "related somehow".
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id).
    */
-  relationType?: "part-of" | "can-share-identity";
+  relationType?: (string | "part-of" | "can-share-identity") & string;
+}
+/**
+ * Machine-readable definition that describes the entity type's internal model structure.
+ *
+ * Entity Type definitions represent an internal implementation detail - the underlying domain model of your application.
+ * This can be used to describe a shared internal model multiple APIs and Events are based on.
+ * However, interaction with the actual data happens through API Resources or Event Resources that expose these entity types with a defined interface and contract.
+ *
+ * Each definition is an alternative description format for the same entity type.
+ * The same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
+ *
+ * **Why Entity Types are private by default**: Since entity type definitions are internal implementation details, they SHOULD be marked as `private` visibility by default.
+ *
+ * **Finding related APIs**: To discover which APIs expose a particular Entity Type, check the API Resource's `relatedEntityTypes` property.
+ */
+export interface EntityTypeDefinition {
+  /**
+   * Type of the entity type resource definition.
+   *
+   * MUST be either:
+   * - any valid [Specification ID](../index.md#specification-id), or
+   * - one of the pre-defined values listed below.
+   */
+  type: (string | "sap-csn-interop-effective-v1") & string;
+  /**
+   * [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) that describes the format of the definition.
+   *
+   * Media Types under `application/*` and `text/*` are allowed.
+   * If no Media Type is registered for the referenced file,
+   * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   */
+  mediaType: string;
+  /**
+   * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
+   *
+   * It is RECOMMENDED to provide a relative URL (to base URL).
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving metadata from the ORD provider.
+   * An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
+   *
+   * The access strategies only apply to the metadata access and not the actual API access.
+   * The actual access to the APIs for clients is described via Consumption Bundles.
+   *
+   * If this property is not provided, the definition URL will be available through the same access strategy as this ORD document.
+   * It is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.
+   *
+   * @minItems 1
+   */
+  accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * Who is allowed to access the entity type definition. Defaults to `private`.
+   *
+   * Entity Type definitions are internal implementation details and SHOULD remain `private` by default.
+   * Consumers interact with the data through related API Resources, not the internal model directly.
+   *
+   * The visibility MUST be equal to or more restrictive than the Entity Type resource's visibility.
+   *
+   * Only use `public` visibility when the internal model definition itself needs open access for standardization or documentation purposes.
+   */
+  visibility: "public" | "internal" | "private";
 }
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
@@ -1958,6 +2275,14 @@ export interface Capability {
    */
   description?: string;
   /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -1975,6 +2300,10 @@ export interface Capability {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -1984,13 +2313,13 @@ export interface Capability {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
    *
-   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -2010,13 +2339,25 @@ export interface Capability {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -2043,12 +2384,39 @@ export interface Capability {
    */
   relatedEntityTypes?: string[];
   /**
-   * List of available machine-readable definitions, which describe the resource or capability in detail.
+   * Optional list of related API Resources.
+   *
+   * Use this to indicate which APIs implement, expose, or are otherwise related to this entity.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of related Event Resources.
+   *
+   * Use this to indicate which events are emitted, consumed, or otherwise related to this entity.
+   */
+  relatedEventResources?: RelatedEventResource[];
+  /**
+   * Optional list of related Capabilities.
+   *
+   * Use this to indicate dependencies, extensions, or other relationships between capabilities.
+   */
+  relatedCapabilities?: RelatedCapability[];
+  /**
+   * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Each definition is to be understood as an alternative description format, describing the same resource / capability.
-   * As a consequence the same definition type MUST NOT be provided more than once.
-   * The exception is when the same definition type is provided more than once, but with a different `visibility`.
+   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
+   * representations (different formats) and complementary artifacts distinguished by `purpose`
+   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
+   * Model those as separate ORD resources instead.
+   *
+   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
+   * default per `(type, visibility)` combination.
+   *
+   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
+   * be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -2076,11 +2444,29 @@ export interface Capability {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
+}
+/**
+ * Defines a relation to another Capability (via its ORD ID).
+ */
+export interface RelatedCapability {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
 }
 /**
  * Link and categorization of a machine-readable capability definition.
@@ -2107,11 +2493,12 @@ export interface CapabilityDefinition {
    * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
    *
    */
-  mediaType: "application/json" | "application/xml" | "text/yaml" | "text/plain" | "application/octet-stream";
+  mediaType: string;
   /**
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
    *
-   * It is RECOMMENDED to provide a relative URL (to base URL).
+   * It is RECOMMENDED to provide a relative URL.
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
   /**
@@ -2138,6 +2525,20 @@ export interface CapabilityDefinition {
    * in case that some metadata must only be made accessible to internal consumers.
    */
   visibility?: "public" | "internal" | "private";
+  /**
+   * Marks a resource definition as a *complementary* variant of the resource's default definition,
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in the definitions list, with or without `purpose`, MUST describe the same
+   * underlying resource; see the list property for the full modelling rules.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the definitions list.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
@@ -2191,6 +2592,14 @@ export interface DataProduct {
    */
   description: string;
   /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -2208,6 +2617,10 @@ export interface DataProduct {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -2215,7 +2628,11 @@ export interface DataProduct {
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -2227,13 +2644,13 @@ export interface DataProduct {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
    *
-   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -2261,7 +2678,7 @@ export interface DataProduct {
    * In the context of data products, it it covers only properties on the data product level.
    * APIs that are part of the input and output ports have their own independent `releaseStatus` and `version`.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -2503,7 +2920,7 @@ export interface DataProduct {
    * An ORD aggregator MUST then fetch the referenced resource definitions for _each_ **system instance** individually.
    *
    * This concept is now **deprecated** in favor of the more explicit `perspective` attribute.
-   * All resources that are system-instance-aware should ideally be put into a dedicated ORD document with `perspective`: `system-instance`.
+   * All resources that are system-instance-aware should be put into dedicated ORD documents using `perspective`: `system-instance` or `system-instance-delta`.
    *
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
@@ -2556,7 +2973,7 @@ export interface DataProductLink {
    * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the Data Product Link.
    *
    * The link target SHOULD be absolute and SHOULD be openly accessible.
-   * If a relative link is given, it is relative to the [`describedSystemInstance.baseUrl`](#system-instance_baseurl).
+   * If a relative link is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
    */
   url: string;
 }
@@ -2616,6 +3033,14 @@ export interface Agent {
    */
   description?: string;
   /**
+   * Hint for AI consumers (LLMs, agent orchestrators) on how to use or interpret this resource.
+   * Intentionally separate from human-facing `description` so both can evolve independently.
+   * SHOULD be written in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+   */
+  aiHint?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -2633,6 +3058,10 @@ export interface Agent {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -2642,13 +3071,13 @@ export interface Agent {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
    *
-   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -2668,13 +3097,25 @@ export interface Agent {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * Indicates that this resource is currently not available for consumption at runtime, but could be configured to be so.
    * This can happen either because it has not been setup for use or disabled by an admin / user.
@@ -2696,11 +3137,15 @@ export interface Agent {
    */
   minSystemVersion?: string;
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -2871,6 +3316,186 @@ export interface ExposedAPIResource {
   ordId: string;
 }
 /**
+ * An Overlay Resource is a standalone, versioned resource that references a metadata patch file.
+ * Overlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
+ *
+ * Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
+ * For producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+ */
+export interface Overlay {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Human-readable title.
+   *
+   * MUST NOT exceed 255 chars.
+   * MUST NOT contain line breaks.
+   */
+  title?: string;
+  /**
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
+   * Detailed documentation SHOULD be attached as (typed) links.
+   */
+  description?: string;
+  /**
+   * The complete [SemVer](https://semver.org/) version string.
+   *
+   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
+   * It SHOULD be changed if the ORD information or referenced resource definitions changed.
+   * It SHOULD express minor and patch changes that don't lead to incompatible changes.
+   *
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
+   *
+   * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
+   * The `version` MUST not be bumped for changes in extensions.
+   *
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
+   *
+   * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
+   * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
+   */
+  version: string;
+  /**
+   * Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   *
+   * When retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.
+   * Therefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.
+   *
+   * If the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.
+   *
+   * Together with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators.
+   */
+  lastUpdate?: string;
+  /**
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
+   */
+  visibility: "public" | "internal" | "private";
+  /**
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   */
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
+  /**
+   * Optional list of API Resources whose definition files this overlay patches.
+   *
+   * SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+   * as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+   * Use `relationType: ord:patches` to express the patching relationship.
+   *
+   * May be omitted when the target resource is not described in an accessible ORD document,
+   * or when the overlay is cross-cutting and patches resources from multiple providers.
+   */
+  relatedApiResources?: RelatedAPIResource[];
+  /**
+   * Optional list of Event Resources whose definition files this overlay patches.
+   *
+   * SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
+   * as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+   * Use `relationType: ord:patches` to express the patching relationship.
+   *
+   * May be omitted when the target resource is not described in an accessible ORD document,
+   * or when the overlay is cross-cutting and patches resources from multiple providers.
+   */
+  relatedEventResources?: RelatedEventResource[];
+  /**
+   * List of overlay definition files referenced by this ORD Overlay Resource.
+   * Each entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches.
+   */
+  definitions?: OverlayDefinition[];
+  /**
+   * List of free text style tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  tags?: string[];
+  labels?: Labels;
+}
+/**
+ * Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
+ */
+export interface OverlayDefinition {
+  /**
+   * Type of the overlay definition
+   */
+  type: ("ord:overlay:v1" | string) & string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   * For example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.
+   *
+   * If no Media Type is registered for the referenced file,
+   * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
+  /**
+   * [URL reference](https://tools.ietf.org/html/rfc3986#section-4.1) (URL or relative reference) to the resource definition file.
+   *
+   * It is RECOMMENDED to provide a relative URL.
+   * If relative, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
+   */
+  url: string;
+  /**
+   * List of supported access strategies for retrieving metadata from the ORD provider.
+   * An ORD Consumer/ORD Aggregator MAY choose any of the strategies.
+   *
+   * The access strategies only apply to the metadata access and not the actual API access.
+   * The actual access to the APIs for clients is described via Consumption Bundles.
+   *
+   * If this property is not provided, the definition URL will be available through the same access strategy as this ORD document.
+   * It is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process.
+   *
+   * @minItems 1
+   */
+  accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
+  /**
+   * The visibility states who is allowed to "see" and access the resource definition, in case it differs from the resource visibility.
+   *
+   * If not given, the resource definition has the same visibility as the resource it describes.
+   * The visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.
+   * E.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.
+   *
+   * This makes it also possible to provide both a public and an internal metadata description of the resource,
+   * in case that some metadata must only be made accessible to internal consumers.
+   */
+  visibility?: "public" | "internal" | "private";
+  /**
+   * Marks a resource definition as a *complementary* variant of the resource's default definition,
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in the definitions list, with or without `purpose`, MUST describe the same
+   * underlying resource; see the list property for the full modelling rules.
+   *
+   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
+   * key for entries in the definitions list.
+   *
+   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
+}
+/**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.
  * The purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.
  *
@@ -2955,6 +3580,10 @@ export interface IntegrationDependency {
    * If an "identity / equals" relationship needs to be expressed, use the `correlationIds` instead.
    *
    * All resources that share the same group ID assignment are effectively grouped together.
+   *
+   * **Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose
+   * group assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
   /**
@@ -2964,13 +3593,13 @@ export interface IntegrationDependency {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
    *
-   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -2990,13 +3619,25 @@ export interface IntegrationDependency {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility: "public" | "internal" | "private";
   /**
-   * The `releaseStatus` specifies the stability of the resource and its external contract.
+   * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
+   *
+   * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
+   * of depending on the resource and whether it's suitable for production use.
+   *
+   * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
+   *
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
    */
-  releaseStatus: "beta" | "active" | "deprecated" | "sunset";
+  releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
    * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
    *
@@ -3085,6 +3726,11 @@ export interface Aspect {
    * List of Event Resource Dependencies.
    */
   eventResources?: EventResourceIntegrationAspect[];
+  /**
+   * List of Capability Dependencies.
+   */
+  capabilities?: CapabilityIntegrationAspect[];
+  labels?: Labels;
 }
 /**
  * API resource related integration aspect
@@ -3102,15 +3748,24 @@ export interface ApiResourceIntegrationAspect {
    */
   minVersion?: string;
   /**
-   * List of individual API operations that are sufficient to achieve the aspect.
+   * Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.
+   *
+   * If `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.
+   * If `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.
+   *
+   * For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
    */
   subset?: APIResourceIntegrationAspectSubset[];
+  labels?: Labels;
 }
 /**
- * Defines that API Resource Integration Aspect only requires a subset of the referenced contract.
+ * Defines that the API Resource Integration Aspect only requires a subset of the referenced contract.
  *
  * For APIs, this is a list of the operations or tools that need to be available in order to make the integration work.
- * This information helps to narrow down what is really necessary and can help optimize the integration.
+ * Without a `subset`, the dependency implies access to the full resource.
+ * With a `subset`, only the listed operations are required, allowing consumers to understand /load only the minimal surface area needed.
+ *
+ * For more details and examples, see [Integration Dependency](../concepts/integration-dependency).
  */
 export interface APIResourceIntegrationAspectSubset {
   /**
@@ -3149,6 +3804,7 @@ export interface EventResourceIntegrationAspect {
    * @minItems 1
    */
   systemTypeRestriction?: [string, ...string[]];
+  labels?: Labels;
 }
 /**
  * Defines that Event Resource Integration Aspect only requires a subset of the referenced contract.
@@ -3164,6 +3820,23 @@ export interface EventResourceIntegrationAspectSubset {
    * E.g. for CloudEvents, the [type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#type) can be used.
    */
   eventType: string;
+}
+/**
+ * Capability related integration aspect
+ */
+export interface CapabilityIntegrationAspect {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Minimum version of the references resource that the integration requires.
+   *
+   */
+  minVersion?: string;
+  labels?: Labels;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.
@@ -3212,15 +3885,17 @@ export interface Vendor {
   documentationLabels?: DocumentationLabels;
 }
 /**
- * A **product** in ORD is understood as a commercial product or service.
+ * A [**Product**](../concepts/grouping-and-bundling#product) in ORD is understood as a software product or service offering (whether commercial or free).
  *
- * It is a high-level entity for structuring the software portfolio from a sales / software logistics perspective.
- * While **system type** is a technical concept, **product** covers the commercial and marketing view.
+ * It is a high-level entity for structuring the software portfolio from a portfolio / software logistics perspective.
+ * While **system type** is a technical concept, **product** covers the portfolio and marketing view.
  *
  * Please note that the ORD concept of a product is very simple on purpose.
  * There is no distinction between products and services and concepts like product versions, variants, etc.
  *
  * ORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.
+ *
+ * To learn more about the concept, see [Product](../concepts/grouping-and-bundling#product).
  */
 export interface Product {
   /**
@@ -3287,7 +3962,6 @@ export interface Product {
  *
  * The Package can also be used to indicate which products or vendors provided the packaged resources.
  * For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
- * In any case, the Package `ordID` namespace MUST reflect the namespace of the providing application (which hosts the resource), not the resource definition owner, which could be a customer or partner.
  *
  * A Package SHOULD contain at least one resource. Avoid empty Packages.
  *
@@ -3313,6 +3987,16 @@ export interface Package {
    * But since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID.
    */
   localId?: string;
+  /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   */
+  correlationIds?: string[];
   /**
    * Human-readable title.
    *
@@ -3341,13 +4025,13 @@ export interface Package {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
    *
-   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -3389,6 +4073,10 @@ export interface Package {
    */
   links?: Link[];
   /**
+   * Generic list of files with arbitrary meaning and content. Meant to be used for linking PDFs, Word or similar content. This option MUST NOT be used for linking the actual metadata files like OpenAPI, AsyncAPI, CSN, etc.
+   */
+  files?: File[];
+  /**
    * Standardized identifier for the license.
    * It MUST conform to the [SPDX License List](https://spdx.org/licenses).
    */
@@ -3414,11 +4102,15 @@ export interface Package {
    */
   vendor: string;
   /**
-   * List of products the resources of the Package are a part of.
+   * List of products this package and its resources are a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
-   * `partOfProducts` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
    *
    * @minItems 0
    */
@@ -3552,10 +4244,46 @@ export interface PackageLink {
   [k: string]: unknown | undefined;
 }
 /**
- * A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the credentials and auth mechanism.
- * Ideally it also includes instructions and details how to request access and credentials for resources.
+ * File that can be attached on ORD package level.
  *
- * For more documentation and guidance how to correctly this correctly, see [Consumption Bundle details](../concepts/grouping-and-bundling#consumption-bundle).
+ */
+export interface File {
+  /**
+   * Human readable title of the file.
+   *
+   * MUST be unique within the collection of files provided.
+   */
+  title: string;
+  /**
+   * [URL](https://tools.ietf.org/html/rfc3986) of the link.
+   *
+   * The file target MAY be relative or absolute.
+   * If a relative URL is given, it is resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl) (the ORD provider base URL).
+   * If an absolute URL is given, then it MUST be openly accessible.
+   */
+  url: string;
+  /**
+   * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   *
+   * The description SHOULD not be excessive in length and is not meant to provide full documentation.
+   * Detailed documentation SHOULD be attached as (typed) links.
+   */
+  description?: string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   *
+   * If no Media Type is registered for the referenced file, `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
+  [k: string]: unknown | undefined;
+}
+/**
+ * A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the same credentials and auth mechanism.
+ * Ideally it also includes instructions and details on how to request access and credentials for resources.
+ *
+ * For more documentation and guidance on how to use this correctly, see [Consumption Bundle](../concepts/grouping-and-bundling#consumption-bundle).
  *
  * A Consumption Bundle SHOULD have at least one association with a resource (0..n). Avoid empty Consumption Bundles.
  * A Consumption Bundle MUST NOT contain APIs and Events that are NOT defined in the ORD document(s) returned
@@ -3618,13 +4346,13 @@ export interface ConsumptionBundle {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment MUST be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * In case that a resource definition file also contains a version number (e.g. [OpenAPI `info`.`version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it MUST be equal with the resource `version` to avoid inconsistencies.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
    *
-   * The general [Version and Lifecycle](../index.md#version-and-lifecycle) flow MUST be followed.
+   * The general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.
    *
    * Note: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
@@ -3644,7 +4372,12 @@ export interface ConsumptionBundle {
    */
   lastUpdate?: string;
   /**
-   * The visibility states who is allowed to "see" the described resource or capability.
+   * Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.
+   *
+   * This controls who can see that the resource exists and retrieve its metadata level information.
+   * It does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.
+   *
+   * Use this to prevent exposing internal implementation details to inappropriate consumer audiences.
    */
   visibility?: "public" | "internal" | "private";
   /**
@@ -3764,15 +4497,22 @@ export interface Group {
    * This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
    */
   partOfGroups?: string[];
+  /**
+   * Defines who is allowed to discover and access this Group and its metadata.
+   * Defaults to `public` if not set.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
+   */
+  visibility?: "public" | "internal" | "private";
   [k: string]: unknown | undefined;
 }
 /**
  * A Group Type defines the semantics of [group assignments](#group).
  * What the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).
  *
- * Group Types can be defined centrally (ownership by authority namespace) or decentrally (defined by application / service itself).
+ * Group Types can be defined centrally (ownership by an authority namespace or another shared owning namespace) or decentrally (defined by the application / service itself).
  *
  * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
+ * For the distinction between system-scoped and system-independent shared taxonomy, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).
  */
 export interface GroupType {
   /**
@@ -3808,6 +4548,12 @@ export interface GroupType {
    * This relationship does not imply inheritance, but can be interpreted as such for specific group types and scenarios.
    */
   partOfGroupTypes?: string[];
+  /**
+   * Defines who is allowed to discover and access this Group Type and its metadata.
+   * Defaults to `public` if not set.
+   * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
+   */
+  visibility?: "public" | "internal" | "private";
   [k: string]: unknown | undefined;
 }
 /**
@@ -3817,6 +4563,7 @@ export interface GroupType {
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *
  * The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
+ * In a `system-instance-delta` document, it instead MUST remain published for as long as the matching baseline entry is absent from that system instance.
  */
 export interface Tombstone {
   /**
@@ -3858,8 +4605,9 @@ export interface Tombstone {
  * The content is treated as an opaque text blob, preserving original formatting and whitespace.
  * This works uniformly for all definition formats (OpenAPI JSON/YAML, AsyncAPI, WSDL, JSON Schema, etc.).
  *
- * This enables the aggregator to correlate inline definitions with the resources that reference them,
- * keeping all metadata self-contained in a single push request.
+ * This enables the aggregator to correlate inline definitions with the resources that reference them.
+ * The property makes the entries in this document self-contained with respect to their referenced definitions;
+ * a `system-instance-delta` can still depend on entries and definitions from a separately published static baseline.
  *
  * For pull transport, this property is typically not used as the aggregator fetches definitions via URLs.
  */

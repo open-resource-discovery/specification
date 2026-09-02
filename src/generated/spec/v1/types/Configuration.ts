@@ -18,7 +18,7 @@ export interface OrdConfiguration {
   /**
    * Optional [base URL](../index.md#base-url) that can be used to resolve the relative URLs to the ORD Documents.
    *
-   * The `baseUrl` MUST NOT contain a leading slash.
+   * The `baseUrl` MUST NOT contain a trailing slash.
    *
    * If you do not provide this property, the base URL is assumed to be the URL of the config endpoint without `/.well-known/open-resource-discovery` suffix.
    * This implies that either a `baseUrl` or only absolute URLs MUST be provided when no standardized well-known URI is used.
@@ -56,17 +56,12 @@ export interface OrdV1DocumentDescription {
    */
   url: string;
   /**
-   * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
+   * Declares the static, dynamic, or system-independent scope represented by this ORD document.
+   * If omitted, it defaults to the complete `system-instance` perspective.
    *
-   * It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
-   *
-   * It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
-   *
-   * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
-   *
-   * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
+   * See the [Perspectives concept page](../concepts/perspectives) for selection, completeness, fallback, and `system-instance-delta` composition rules.
    */
-  perspective?: "system-type" | "system-version" | "system-instance" | "system-independent";
+  perspective?: "system-type" | "system-version" | "system-instance" | "system-instance-delta" | "system-independent";
   /**
    * Whether the information in the ORD document is **system-instance-aware**.
    * This is the case when the provided ORD document potentially differs between **system instances** (e.g. due to multi-tenancy, configuration or extensibility).

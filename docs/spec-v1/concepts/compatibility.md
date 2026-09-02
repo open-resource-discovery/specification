@@ -29,11 +29,14 @@ When providers need to introduce breaking changes—such as removing fields, cha
 
 Abstract ORD resources serve as interfaces, allowing others to provide resources that implement the interface by declaring compatibility with the abstract resource's contract. This enables standardization across different implementations while maintaining flexibility in how the interface is realized. Abstract resources indicate that the resource serves as an interface only and cannot be called directly. This concept mirrors the abstract keyword in programming languages like Java, where abstract classes define contracts that concrete implementations must fulfill.
 
-The `abstract` property is available for API Resources, Event Resources, and Data Product Resources to indicate interface-only resources. When set to `true`, this boolean flag signifies that the resource is an abstract representation and cannot be instantiated or consumed directly. Instead, the abstract resource defines the contract that other concrete resources can implement through the [`compatibleWith`](#compatible-with-property) property.
+The `abstract` property is available for API Resources, Event Resources, and Data Product Resources to indicate interface-only resources. When set to `true`, this boolean flag signifies that the resource is an abstract representation and cannot be instantiated or consumed directly. Instead, the abstract resource defines the contract that other concrete resources can implement through the [`compatibleWith`](#compatible-with-concept-for-ord-resources) property.
 
 Abstract resources are particularly useful in scenarios where:
 - Multiple systems need to provide functionally equivalent resources following a common interface
 - A standardized contract needs to be defined across different implementation contexts
+
+An abstract resource can be system-owned, authority-owned or published as system-independent content, depending on who governs the interface contract.
+See [Shared Taxonomy, Resources and Contracts](./shared-resources.md#abstract-resources-and-compatiblewith) for how abstract resources relate to shared ORD IDs.
 
 ## Compatible With Concept for ORD Resources
 

@@ -3,6 +3,7 @@
     "documents": [
       {
         "url": "/metadata/document-1.json",
+        "perspective": "system-version",
         "accessStrategies": [
           {
             "type": "open"

@@ -1,16 +1,18 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.14",
-  "description": "Minimal example for push transport with inline resource definition",
-  "describedSystemInstance": {
-    "baseUrl": "https://example.com"
+  "openResourceDiscovery": "1.16",
+  "description": "Static baseline pushed with an inline resource definition",
+  "baseUrl": "https://metadata.example.com",
+  "perspective": "system-type",
+  "describedSystemType": {
+    "systemNamespace": "sap.example"
   },
   "packages": [
     {
       "ordId": "sap.example:package:push-demo:v1",
       "title": "Push Transport Demo",
-      "shortDescription": "Demonstrates push transport with inline definitions",
-      "description": "This package demonstrates push transport with inline resource definitions.",
+      "shortDescription": "Static baseline for the push transport examples",
+      "description": "This package supplies the static baseline used by the push transport examples.",
       "version": "1.0.0",
       "vendor": "sap:vendor:SAP:"
     }
@@ -20,7 +22,7 @@
       "ordId": "sap.example:apiResource:hello-api:v1",
       "title": "Hello API",
       "shortDescription": "Simple greeting API",
-      "description": "A simple greeting API that demonstrates push transport.",
+      "description": "A simple greeting API in the static system-type baseline.",
       "version": "1.0.0",
       "visibility": "public",
       "releaseStatus": "active",
@@ -37,8 +39,7 @@
             }
           ]
         }
-      ],
-      "entryPoints": ["/api/hello"]
+      ]
     }
   ],
   "definitions": {

@@ -107,6 +107,22 @@
           "oidc": []
         }
       ]
+    },
+    {
+      "id": "legacy-dispute-lookup",
+      "name": "Legacy Dispute Lookup (Deprecated)",
+      "description": "Deprecated: Use dispute-case-verification instead. Simple read-only lookup of dispute case data from the legacy FI-CA interface. This skill will be removed in a future version.",
+      "tags": ["legacy", "deprecated", "finance"],
+      "examples": [
+        "Look up dispute case 24240"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"],
+      "security": [
+        {
+          "oidc": []
+        }
+      ]
     }
   ],
   "supportsAuthenticatedExtendedCard": false

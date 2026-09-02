@@ -1,0 +1,65 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:astronomy-api-governance:v1",
+  "description": "Adds platform governance metadata to the Astronomy API: data classification labels, rate-limit documentation, and deprecation timeline for legacy operations. Managed by the platform team independently of the API owner.",
+  "describedSystemType": {
+    "systemNamespace": "sap.foo"
+  },
+  "visibility": "internal",
+  "target": {
+    "ordId": "sap.foo:apiResource:astronomy:v1",
+    "definitionType": "openapi-v3"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": {
+        "root": true
+      },
+      "data": {
+        "info": {
+          "x-governance": {
+            "dataClassification": "public",
+            "owner": "astronomy-team@example.com",
+            "platformTier": "gold",
+            "reviewedAt": "2025-03-15",
+            "nextReviewDue": "2025-09-15"
+          }
+        },
+        "x-rate-limits": {
+          "default": {
+            "requestsPerMinute": 120,
+            "burstLimit": 30
+          }
+        }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "operation": "getConstellationByAbbreviation"
+      },
+      "data": {
+        "deprecated": true,
+        "x-sunset": {
+          "date": "2026-01-01",
+          "replacement": "getConstellationByIAUCode",
+          "migrationGuide": "https://docs.example.com/astronomy/migration/constellation-lookup"
+        }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "operation": "getStarsByCatalogId"
+      },
+      "data": {
+        "x-governance": {
+          "dataClassification": "internal",
+          "rationale": "Catalog cross-referencing exposes licensed third-party dataset identifiers"
+        }
+      }
+    }
+  ]
+}

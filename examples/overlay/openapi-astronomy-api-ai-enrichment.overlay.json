@@ -1,0 +1,71 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
+  "ordOverlay": "0.1",
+  "ordId": "sap.foo:overlay:astronomy-api-ai-enrichment:v1",
+  "description": "Enriches the Astronomy API with AI-optimized descriptions, usage hints, and examples that help LLMs and AI agents understand and correctly invoke each operation.",
+  "describedSystemType": {
+    "systemNamespace": "sap.foo"
+  },
+  "visibility": "public",
+  "target": {
+    "ordId": "sap.foo:apiResource:astronomy:v1",
+    "definitionType": "openapi-v3"
+  },
+  "patches": [
+    {
+      "action": "merge",
+      "selector": {
+        "root": true
+      },
+      "data": {
+        "info": {
+          "description": "REST API for querying astronomical objects including stars, constellations, and planets. Designed for educational tools, planetarium software, and astronomy research applications. All coordinates use the J2000 epoch unless otherwise noted."
+        }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "operation": "getConstellationByAbbreviation"
+      },
+      "data": {
+        "summary": "Get constellation by IAU abbreviation",
+        "description": "Returns full details of a constellation by its three-letter IAU abbreviation (e.g. 'Ori' for Orion, 'UMa' for Ursa Major). Use this when you know the standard abbreviation. For name-based lookup, use searchConstellations instead.",
+        "x-ai-hints": {
+          "parameterExamples": {
+            "abbreviation": ["Ori", "UMa", "Cyg", "Cas", "Sgr"]
+          },
+          "typicalUsage": "Resolving a known constellation abbreviation to its full metadata including boundaries and brightest stars."
+        }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "operation": "searchConstellations"
+      },
+      "data": {
+        "description": "Search constellations by partial name, mythology origin, or visibility from a given latitude. Returns a paginated list. Use 'fields' parameter to limit response size when you only need names and abbreviations.",
+        "x-ai-hints": {
+          "typicalUsage": "Finding constellations when the user provides a partial or colloquial name rather than the official IAU abbreviation."
+        }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "operation": "getStarsByCatalogId"
+      },
+      "data": {
+        "description": "Retrieve a star by its catalog identifier (Hipparcos, Henry Draper, or Bayer designation). The catalogType parameter selects which catalog system to query.",
+        "x-ai-hints": {
+          "parameterExamples": {
+            "catalogType": ["hipparcos", "henry-draper", "bayer"],
+            "catalogId": ["HIP 32349", "HD 48915", "Alpha CMa"]
+          },
+          "typicalUsage": "Looking up a specific star when you have its catalog reference from a scientific source."
+        }
+      }
+    }
+  ]
+}

@@ -16,9 +16,11 @@ The `embedded` access strategy indicates that the resource definition content is
 
 This is specifically designed for [push transport](../../spec-v1/index.md#push-transport) scenarios where:
 
-- The ORD provider pushes the complete ORD document including all resource definitions to an aggregator
+- The ORD provider pushes an ORD document together with the resource definitions referenced by its entries
 - The aggregator does not need to make additional requests to fetch resource definitions
-- All metadata is self-contained in a single push request
+- Each pushed document is self-contained with respect to its own referenced definitions
+
+A `system-instance-delta` document can still depend on entries and definitions from a separately published static baseline.
 
 The `accessStrategy`.`type` value for it is: `embedded`.
 
@@ -91,5 +93,5 @@ Use the `embedded` access strategy when:
 |--------|--------|------------|
 | Content location | External URL | Inline in document |
 | Fetch required | Yes | No |
-| Transport mode | Pull | Push |
-| Self-contained | No | Yes |
+| Typical transport mode | Pull | Push or import |
+| Definition location | Separate response | Same ORD document |

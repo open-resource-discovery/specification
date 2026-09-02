@@ -11,5 +11,82 @@
     }
   ],
   "tags": [],
-  "paths": {}
+  "paths": {
+    "/constellations": {
+      "get": {
+        "operationId": "listConstellations",
+        "summary": "List all constellations",
+        "responses": {
+          "200": {
+            "description": "A list of constellations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Constellation" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/constellations/{iauCode}": {
+      "get": {
+        "operationId": "getConstellationByIAUCode",
+        "summary": "Get a constellation by IAU code",
+        "parameters": [
+          { "name": "iauCode", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested constellation.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Constellation" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/constellations/by-abbreviation/{abbreviation}": {
+      "get": {
+        "operationId": "getConstellationByAbbreviation",
+        "summary": "Get a constellation by its abbreviation",
+        "parameters": [
+          { "name": "abbreviation", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested constellation.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Constellation" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Constellation": {
+        "type": "object",
+        "properties": {
+          "iauCode": { "type": "string", "description": "IAU three-letter code." },
+          "name": { "type": "string", "description": "Full name of the constellation." },
+          "abbreviation": { "type": "string", "description": "Short abbreviation." }
+        }
+      },
+      "Star": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Common name of the star." },
+          "magnitude": { "type": "number", "description": "Apparent visual magnitude." }
+        }
+      }
+    }
+  }
 }

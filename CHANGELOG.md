@@ -19,8 +19,177 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
     - Content is treated as an opaque text blob, preserving original formatting for all formats (OpenAPI, AsyncAPI, WSDL, etc.)
   - Added `embedded` access strategy type for resource definitions that are inline rather than fetched
   - Added [embedded access strategy documentation](docs/spec-extensions/access-strategies/embedded.md)
-  - Added [push transport example document](examples/documents/document-push-transport.json)
-  - Added draft proposal for [Aggregator Configuration](docs/spec-v1/concepts/aggregator-configuration.md) including validation results endpoint concept
+  - Added [static baseline](examples/documents/document-push-transport.json) and [system-instance delta](examples/documents/document-push-transport-delta.json) push examples
+- Added the `system-instance-delta` perspective for publishing complete tenant-specific ORD entries relative to a static baseline. Aggregators compose the delta with the baseline by stable entry identity and expose a complete effective system-instance view.
+
+### Changed
+
+- Clarified `OverlaySelectorByOperation` for OData targets: when the operation name alone is ambiguous (e.g. bound operations overloaded on multiple entity types), the selector MUST use the fully qualified signature (including parameters, e.g. `OData.Demo.Approval(Edm.Int32,Edm.String)`) or fall back to `jsonPath` to target the specific overload. When the name is already unique, the plain name remains sufficient. This makes explicit the pre-existing requirement that operation selectors resolve unambiguously.
+- Updated the ORD Overlay Tooling section to link the published reference implementation (`overlay-tools`), a set of React components for viewing Overlay documents (`overlay-editor`), and a reusable Go library (`overlay-golang`).
+
+## [1.16.3]
+
+### Changed
+
+- Clarified `resourceDefinitions` and `purpose`: all entries on a single resource MUST describe the same underlying resource. Multiple distinct resources MUST be modelled as separate ORD resources. The entry without a `purpose` is the default for its `(type, visibility)`, and consumers that don't filter by `purpose` MUST fall back to it. The `ord:` namespace on `purpose` is reserved; custom values MUST use a vendor-specific prefix.
+
+## [1.16.2]
+
+### Added
+
+- Added new `purpose` value `ord:agent-security-permissions` for resource definitions that describe the security permissions an AI agent requires to access the resource.
+
+## [1.16.1]
+
+### Added
+
+- Added `labels` property to `IntegrationAspect`, `ApiResourceIntegrationAspect`, `EventResourceIntegrationAspect`, and `CapabilityIntegrationAspect`.
+
+## [1.16.0]
+
+### Added
+
+- Added `aiHint` as a dedicated, optional property on API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities. Provides guidance targeted at AI consumers (LLMs, orchestrators), kept intentionally separate from human-readable `description` fields so both can evolve independently. SHOULD be CommonMark Markdown. See [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
+- Added `definitions` property to `EntityType` resources to allow linking machine-readable entity type definitions
+  - Includes new `EntityTypeDefinition` object with `type`, `mediaType`, `url`, `accessStrategies`, and `visibility` properties
+  - The `type` field accepts any valid [Specification ID](https://open-resource-discovery.org/spec-v1/#specification-id)
+  - **Important**: Entity Type definitions SHOULD usually be marked as `private` since they represent conceptual domain models that cannot be accessed directly. Consumers should interact with the data through related API Resources instead. Use the API Resource's `relatedEntityTypes` property to discover which APIs expose a particular entity type.
+- Added `visibility` property to `Group` and `GroupType` to control who can discover and access group metadata.
+  If not set, both default to `public`.
+- Added optional root-level `baseUrl` property to ORD Documents (analogous to the existing root-level `baseUrl` in the ORD Configuration).
+  This property represents the base URL of the **ORD provider** and is used to resolve relative URLs to metadata files within the document (e.g., `resourceDefinitions[].url`).
+
+### Fixed
+
+- Fixed `Configuration.baseUrl` description: the property MUST NOT contain a **trailing** slash (was incorrectly documented as "leading slash").
+
+### Changed
+
+- Relaxed the rule that `<majorVersion>` in the ORD ID and the major of `version` MUST be identical to a SHOULD (recommended). Strict enforcement created an unresolvable conflict with the ORD ID stability requirement: when a provider bumps the semver major without creating a new resource — whether because no breaking change occurred, or because they simply didn't follow best practice — the old MUST rule would have required changing the published ORD ID of an existing resource, breaking every downstream consumer that references it. Even when a breaking change did happen, forcing an ID change compounds the provider's mistake rather than containing it. The `<majorVersion>` is now explicitly defined as tracking *breaking API changes*, with `version` major as a strong signal that should be kept in sync but does not override ID stability. Validators SHOULD warn on a mismatch but MUST NOT treat it as a hard failure.
+- Documented the three URL reference types used in ORD documents:
+  - **Absolute URLs** (`https://...`) — used as-is.
+  - **Base-URL-relative URLs** (leading slash, e.g., `/path/file.json`) — resolved by appending to the applicable base URL (`baseUrl + "/" + path`). Note: this is an ORD-specific convention; it differs from RFC 3986 root-relative resolution, which strips the base path.
+  - **Document-relative URLs** (`./`, `../`, or bare path without leading slash) — resolved relative to the current document's URL per [RFC 3986 §5](https://datatracker.ietf.org/doc/html/rfc3986#section-5).
+- Clarified that `path/file.json` (no leading slash, no dot prefix) is document-relative, equivalent to `./path/file.json`.
+- Clarified the two-level resolution for base-URL-relative URLs to remove ambiguity when the ORD provider and the described system differ:
+  - Base-URL-relative URLs to **metadata files** (resource definitions, API/Event/Data Product links) are resolved against the provider base URL.
+  - Base-URL-relative URLs to **entry points** are resolved against `describedSystemInstance.baseUrl` (described system base URL).
+  - In the common case where the ORD provider and the described system are the same, both values are identical and no behavioral change occurs.
+- Defined the resolution fallback order for the provider base URL (applied by ORD aggregators):
+  1. Document root `baseUrl` (if present) — takes precedence, including over the fetch context URL.
+  2. In pull scenarios: the URL the ORD document was fetched from (the provider request URL).
+  3. `describedSystemInstance.baseUrl` — backward-compatibility fallback for documents predating version 1.15 that do not provide a root `baseUrl`.
+  4. ORD configuration endpoint URL — the base URL is derived by stripping the `/.well-known/open-resource-discovery` suffix, consistent with how `Configuration.baseUrl` is implicitly computed when omitted.
+- Clarified the resolution order for the described system base URL (applied by ORD aggregators):
+  1. **Aggregator-authoritative URL** — aggregators that hold independent knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value.
+  2. **`describedSystemInstance.baseUrl`** — the value declared in the document; MUST be provided when the base URL is not otherwise known to the aggregator (e.g., push, offline, or self-contained document scenarios).
+- Improved `subset` documentation on `ApiResourceIntegrationAspect`: clarified that when `subset` is absent the dependency implies access to all operations of the referenced resource, and when present only the listed operations are required. Expanded the `ApiResourceIntegrationAspectSubset` description accordingly.
+- Strengthened `partOfProducts` guidance: every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package. Setting `partOfProducts` on the `Package` is the preferred approach as it propagates automatically to all contained resources.
+- Clarified `partOfGroups`: aggregators and consumers MUST NOT expose group assignments that reference `internal` or `private` Groups (or Group Types) to consumers whose visibility access level is more permissive than that of the referenced Group or Group Type.
+- Clarified the resource definition uniqueness rule: `customType` (for `type: "custom"`) is explicitly part of the composite key alongside `type`, `purpose`, and `visibility`; the `purpose` field description cross-references this constraint.
+- Aligned ORD Overlay docs to the general resource definition uniqueness rule: the combination of `purpose` and `visibility` MUST be unique across overlay entries (`type: "ord:overlay:v1"`) on the same resource (was SHOULD — the MUST was already stated in the schema, so this is a documentation fix, not a stricter requirement).
+- Moved the Versioning and Lifecycle content into a dedicated [Versioning and Lifecycle](https://open-resource-discovery.org/spec-v1/concepts/versioning-and-lifecycle) concept page with expanded guidance.
+
+## [1.15.0]
+
+### Added
+
+- Added **ORD Overlay** as an alpha spec extension model (`ord:overlay:v1`)
+  - Overlays allow patching referenced resource definition files (OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards) without modifying the originals.
+  - Overlays can be distributed as a standalone **ORD Overlay Resource** (`overlays` array in the ORD Document) or attached directly to an API/Event resource as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+  - Patches use concept-level selectors (`operation`, `entityType`, `complexType`, `enumType`, `propertyType`, `entitySet`, `namespace`, `parameter`, `returnType`, `root`) or a generic `jsonPath` fallback, with actions `merge`, `update`, and `remove`.
+  - A dedicated `ordId` selector for patching ORD document-level metadata is planned for a future version.
+  - Optional `target` object narrows a patch to a specific definition file or format (e.g. `definitionType: openapi-v3`).
+  - Optional top-level fields (`describedSystemType`, `describedSystemVersion`, `describedSystemInstance`, `visibility`) scope the overlay to a particular system context.
+- Added **ORD Overlay Resource** as a new first-class resource type in the ORD Document
+  - Standalone, versioned resource (`ordId`, `title`, `version`, `releaseStatus`, `visibility`) for overlays that are cross-cutting or independently managed
+  - References the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`
+  - Use `relatedApiResources` / `relatedEventResources` with `relationType: ord:patches` to declare which resources the overlay targets
+  - Use this for overlays managed by a different team than the resource provider, or for overlays that apply across multiple resources
+- Added `purpose` property to resource definitions (`ApiResourceDefinition`, `EventResourceDefinition`, `CapabilityDefinition`, `OverlayDefinition`)
+  - Describes the intended purpose or role of the definition (e.g., `ord:ai-enrichment` for AI-optimized definitions)
+  - Allows multiple definitions of the same `type` when they serve different purposes
+  - The combination of `type`, `purpose`, and `visibility` MUST be unique within a resource's definitions list
+- Added `ord:patches` as a standardized `relationType` value on `RelatedApiResource` and `RelatedEventResource`
+  - Indicates that the source resource patches one or more definition files of the target resource
+  - Used on Overlay Resources to declare which API or Event resources they patch
+- Documented `ord` as a reserved vendor namespace for ORD specification-defined values in extensible enums
+
+### Changed
+
+- Hidden deprecated properties from documentation using `x-hide: true`:
+  - `policyLevel` and `customPolicyLevel` (deprecated since v1.9.9) - use `policyLevels` instead
+  - `entityTypeMappings` (deprecated since v1.11.0) - use `exposedEntityTypes` instead
+  - `systemInstanceAware` (deprecated since v1.12.0) - use `perspective` instead
+  - Related definitions: `EntityTypeMapping`, `ApiModelSelectorOData`, `ApiModelSelectorJsonPointer`, `EntityTypeOrdIdTarget`, `EntityTypeCorrelationIdTarget`
+- Updated documentation to reference current concepts instead of deprecated ones:
+  - Changed `policyLevel`/`customPolicyLevel` references to `policyLevels` in spec index
+  - Changed `systemInstanceAware` references to `perspective` in access strategy docs and FAQ
+- Removed deprecated property usage from example files (`systemInstanceAware`, `policyLevel`, `customPolicyLevel`)
+
+## [1.14.5]
+
+### Added
+
+- Added `correlationIds` to package
+- Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/concepts/implementing-ord-natively) guide
+
+## [1.14.4]
+
+### Changed
+
+- Added recommendation to use [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts. The `labels` key validation pattern now also allows `:` and `/` characters accordingly.
+- Clarified the use of [authority namespaces](https://open-resource-discovery.org/spec-v1#authority-namespace) for resource ORD IDs: when multiple system types share the same resource contract under a shared authority namespace, the uniqueness and aggregation rules now explicitly address this. See [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
+- Added concept page on [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
+- Clarification: Consolidated and clarified the [static perspective resolution](https://open-resource-discovery.org/spec-v1/concepts/perspectives#static-perspective-resolution) algorithm for aggregators. When no specific version is requested, explicit `system-type` perspective data takes precedence; if unavailable, the aggregator SHOULD derive it from the latest `system-version`. Previously this behavior was scattered and only stated as MAY.
+
+## [1.14.3]
+
+### Added
+
+- Added relationship property to `ApiResource` for expressing relations to other ORD resources:
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link API resources to API resources
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link API resources to event resources
+
+- Added relationship property to `EventResource` for expressing relations to other ORD resources:
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link event resources to event resources
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link event resources to API resources
+
+### Changed
+
+- Improved the [Grouping and Bundling](https://open-resource-discovery.org/spec-v1/concepts/grouping-and-bundling) documentation page:
+  - Added missing **Product** section explaining the concept and its role in portfolio structuring.
+  - Added a "Choosing the Right Concept" comparison table to help decide which grouping mechanism to use.
+  - Improved descriptions for all grouping concepts (Package, Consumption Bundle, Entity Type, Tags, Labels, Groups).
+
+## [1.14.2]
+
+### Added
+
+- Added relationship properties to `Capability` for expressing relations to other ORD resources:
+  - `relatedApiResources`: Array of `RelatedApiResource` objects to link capabilities to API resources
+  - `relatedEventResources`: Array of `RelatedEventResource` objects to link capabilities to event resources
+  - `relatedCapabilities`: Array of `RelatedCapability` objects to link capabilities to other capabilities
+  - Each relationship object includes the ORD ID of the related resource and an extensible `relationType`
+- Existing `relatedEntityTypes` property on `EntityType` has been extended to include `relationType` as well, for consistency and extensibility.
+- Added `CapabilityIntegrationAspect` definition to support capability dependencies in integration aspects
+  - Capabilities can now be referenced as integration dependencies alongside API and Event Resources
+  - Includes `ordId` and `minVersion` properties for capability integration aspects
+- Added new `releaseStatus` value `development` for resources that are under active development and not yet released for consumption.
+- Added `x-deprecated-in-version` and `x-deprecation-text` information to the exported JSON Schema
+- Added a `files` property to Packages to allow linking of arbitrary files associated with packages, such as additional documentation in PDF format.
+
+### Changed
+
+- Made `RelatedEntityType.relationType` an extensible enum that now also accepts any valid [Concept ID](https://open-resource-discovery.org/spec-v1/#concept-id) in addition to the existing values (`part-of`, `can-share-identity`)
+
+## [1.14.1]
+
+### Changed
+
+- Clarification: ORD IDs MUST be interpreted case-insensitively when used for comparison, lookups or deduplication. This was previously left open and is now explicitly required.
+- Clarification: The `type` field on `ApiResourceDefinition` and `EventResourceDefinition` accepts not only the predefined enum values and `custom`, but also any valid [Specification ID](https://open-resource-discovery.org/spec-v1/#specification-id) as an extension point. All `apiProtocol` descriptions that listed allowed `type` values now consistently mention this option alongside `custom`.
+- Allow all media types under under `application/*` and `text/*` for resource definitions
 
 ## [1.14.0]
 
@@ -30,7 +199,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Agents provide high-level descriptions of systems that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals. This may be an AI agent or a rule-based agent.
   - Agents have `exposedApiResources` to describe their API interface, e.g. using the A2A protocol.
   - Agents have `integrationDependencies` to describe which external resources like APIs, MCP Servers etc. they depend on.
-  - Added [AI Agents and Protocols](docs/spec-v1/concepts/ai-agents-and-protocols.md) concept documentation
+  - Added [AI Agents and Protocols](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols) concept documentation
 - Introduced `abstract` property for API, Event and Data Product Resources to indicate interface-only resources.
 - Added `subset` property to `ApiResourceIntegrationAspect` with new `ApiResourceIntegrationAspectSubset` definition
   - This allows narrowing down API resource integration aspects to specific operations or tools
@@ -429,7 +598,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added [Data Product](../../spec-v1/interfaces/Document.md#data-product) concept.
+- Added [Data Product](https://open-resource-discovery.org/spec-v1/interfaces/Document#data-product) concept.
   - for the time being in **beta** status
 - Added `runtimeRestriction` to packages
 - Added `responsible` to APIs, events and data products

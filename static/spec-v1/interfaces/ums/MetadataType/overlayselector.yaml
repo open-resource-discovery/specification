@@ -1,0 +1,21 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlayselector'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlaySelector'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Identifies the element in the target to patch.\nExactly one selector type is used per patch.\n\nPrefer concept-level selectors over generic `jsonPath` where possible,\nas they are resilient to structural changes in the target format."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+  customTypeDefinitions: []
+  metadataRelations: []
