@@ -201,8 +201,7 @@ Push transport is particularly suitable for:
 #### Push Transport - Pros
 
 - No need to implement and host an ORD Provider API; static metadata can be published from CI/CD without a continuously running server
-- Can be integrated into CI/CD pipelines (design-time or deploy-time)
-- Configuration or extensibility changes are pushed immediately when they occur (no polling delay), which can reduce request volume compared with periodic polling
+- Configuration or extensibility changes can be pushed when they occur, avoiding polling delays and reducing request volume
 - Direct feedback for validation problems
 - Avoids repeated polling for system-instance-specific metadata when the provider knows when changes occur
 
@@ -224,7 +223,7 @@ The versioned `/v1` API paths are standardized.
 
 Push transport uses the standard [ORD Document](#ord-document).
 The document is an identity-less transport envelope, not an independently managed resource.
-The document endpoint has no path or query parameters:
+The document endpoint has no path parameters or query parameters:
 
 ```http
 POST /ord-push/v1/documents HTTP/1.1
@@ -245,6 +244,7 @@ Content-Type: application/json
 ```
 
 The aggregator derives the publication context from the publisher identified by the credentials and from the document content.
+The document MUST explicitly include `perspective`; the ORD Document schema's default does not apply to push.
 The request publishes the top-level ORD items identified in the document; it creates no document resource and assigns no document ID.
 Omitting an item from a later envelope does not remove it.
 Providers MUST use ORD tombstones to remove resources.
@@ -282,7 +282,7 @@ Request parameters identify the intended relationship but do not create it.
 Within one exact publication context, matching references to the same resolved URL denote the same definition bytes.
 An aggregator MAY reuse one upload for those references while retaining separate resource associations.
 References that require different bytes MUST use different URLs.
-Equal bytes MAY also be physically deduplicated through `Content-Digest`, but this MUST NOT merge associations, authorization, visibility, retention, or lifecycle.
+A verified `Content-Digest` MAY help identify equal bytes for physical deduplication, but this MUST NOT merge associations, authorization, visibility, retention, or lifecycle.
 
 ORD defines no size limit for resource-definition uploads because some definition formats cannot be divided across files.
 An aggregator MAY define an implementation-specific limit and MUST document it.
@@ -343,7 +343,7 @@ Each credential MUST identify exactly one publisher in authoritative aggregator 
 
 An aggregator MAY issue several credentials for the same publisher.
 A credential MUST NOT authorize several described system types or independent publishers.
-Credentials do not select an ORD perspective; the document or resource-definition request does.
+Credentials do not select an ORD perspective; the document or resource-definition request MUST explicitly supply it.
 For system-scoped documents, the aggregator MUST verify that the document's described system type matches the credential.
 For system-independent documents, it MUST verify the independent publisher.
 The aggregator MUST validate version and instance context, and all authorization-relevant claims, against authoritative state.

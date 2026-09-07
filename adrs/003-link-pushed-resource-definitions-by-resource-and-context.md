@@ -32,7 +32,7 @@ Chosen option: **identify each upload by its ORD resource, resolved URL, and pub
 - **Optional v1 optimizations:** an aggregator can reuse an upload for matching URLs and use `Content-Digest` or internal byte deduplication, without merging resource associations or authorization.
 - **Future extensions:** none are proposed by this decision; a container or publication manifest would require a separate protocol decision.
 
-The credentials identify the publisher as defined by [ADR 004](./004-authorize-pushes-by-credential-bound-publication-subject.md). Every request supplies `perspective`, `ordId`, and `url`, where `url` is the fully resolved absolute definition URL. The perspective determines the remaining context:
+The credentials identify the publisher as defined by [ADR 004](./004-authorize-pushes-using-publisher-credentials.md). Every request supplies `perspective`, `ordId`, and `url`, where `url` is the fully resolved absolute definition URL. The perspective determines the remaining context:
 
 - `system-type` and `system-independent` require no additional parameter;
 - `system-version` requires `systemVersion`, equal to `describedSystemVersion.version`; and
@@ -47,7 +47,7 @@ Within one exact publication context, matching references to the same resolved U
 
 Pushed documents MUST use absolute or base-URL-relative definition URLs, resolved through the existing ORD `baseUrl` rules. Document-relative URLs cannot be resolved because a pushed document has no retrieval URL.
 
-An aggregator MAY verify `Content-Digest` and physically store equal bytes once, including across publication contexts. Deduplication MUST NOT merge resource associations, authorization, visibility, retention, or lifecycle.
+An aggregator MAY use a verified `Content-Digest` to help identify equal bytes for physical deduplication, including across publication contexts. Deduplication MUST NOT merge resource associations, authorization, visibility, retention, or lifecycle.
 
 ### Consequences
 

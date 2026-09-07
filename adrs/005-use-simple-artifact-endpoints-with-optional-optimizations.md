@@ -5,7 +5,7 @@ depends-on:
   - ./001-add-push-transport-alongside-pull.md
   - ./002-use-eventually-consistent-resource-isolated-ingestion.md
   - ./003-link-pushed-resource-definitions-by-resource-and-context.md
-  - ./004-authorize-pushes-by-credential-bound-publication-subject.md
+  - ./004-authorize-pushes-using-publisher-credentials.md
 ---
 
 # Use simple versioned artifact endpoints
@@ -41,11 +41,11 @@ PUT    /v1/resource-definitions{?perspective,ordId,url,systemVersion,systemInsta
 
 The aggregator communicates its base URL during onboarding or through its own discovery mechanism. For example, it could use `https://aggregator.example.org/ord-push`; the `/v1` paths are standardized.
 
-`POST /v1/documents` accepts one standard ORD Document as an identity-less envelope. It has no path or query parameters and creates no document resource. Credentials and document content determine the publication context. Omitting an item from a later document does not remove it; providers use ORD tombstones instead. Retrying a request may repeat processing but does not create duplicate ORD resources.
+`POST /v1/documents` accepts one standard ORD Document as an identity-less envelope. It has no path parameters or query parameters and creates no document resource. The document MUST explicitly include its perspective. Credentials and document content determine the publication context. Omitting an item from a later document does not remove it; providers use ORD tombstones instead. Retrying a request may repeat processing but does not create duplicate ORD resources.
 
 The HTTP verbs reflect whether the target has an identity: a document does not, so it is submitted with `POST`; the definition association from [ADR 003](./003-link-pushed-resource-definitions-by-resource-and-context.md) does, so `PUT` can replace it idempotently.
 
-`PUT /v1/resource-definitions` stores native definition bytes. A provider replaces a definition by uploading new bytes to the same association. Implementations SHOULD support strong `ETag`, `If-None-Match: *`, and `If-Match`; `Content-Digest` MAY provide transfer integrity and aid deduplication.
+`PUT /v1/resource-definitions` stores native definition bytes. A provider replaces a definition by uploading new bytes to the same association. Implementations SHOULD support strong `ETag`, `If-None-Match: *`, and `If-Match`; a verified `Content-Digest` MAY provide transfer integrity and aid deduplication.
 
 The minimum contract has no operation to withdraw one definition. Providers replace its bytes or retire the resource and its definitions through ORD tombstones.
 
