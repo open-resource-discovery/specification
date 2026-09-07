@@ -10,6 +10,8 @@ info:
     Every operation requires authentication. Each credential identifies exactly one publisher:
     either one described system type or one system-independent publisher.
     The concrete security scheme and API base URL are chosen and communicated by the aggregator.
+    For each ORD item or definition association, the last accepted update wins; the API does not
+    infer chronological order from document content.
 
     This contract defines the mandatory v1 API.
   license:
@@ -44,9 +46,10 @@ paths:
         A `200 OK` response means that document-level and per-item validation against currently
         available content has completed. It reports the outcome of every top-level item.
 
-        A pushed document must not contain document-relative URLs (`./`, `../`, or bare relative
-        paths), because it has no retrieval URL. It can use absolute URLs or the existing ORD
-        base-URL-relative form when the document provides the required base URL context.
+        A definition URL can use any URI-reference form accepted by the ORD Document schema,
+        including a document-relative value. For a separately pushed definition, the value is an
+        opaque association key rather than a retrieval location. Other document-relative URLs
+        cannot be resolved because a pushed document has no retrieval URL.
 
         Providers should keep ORD documents within 2 MB (2,000,000 bytes). Implementations must
         accept documents up to and including that size and may support a larger documented limit.
@@ -95,12 +98,16 @@ paths:
         required when `perspective` is `system-instance`. These parameters must not be supplied for
         other perspectives.
 
-        The aggregator verifies that the ORD resource in that context references `url` and declares
-        a compatible media type. A definition-first upload can remain pending until this relationship
-        can be verified. The request is idempotent for the complete association.
+        After normal query-parameter decoding, the aggregator verifies that the ORD resource in that
+        context contains exactly the supplied `url` string and declares a compatible media type. It
+        does not resolve or normalize `url` for this comparison. A definition-first upload can remain
+        pending until this relationship can be verified. The request is idempotent for the complete
+        association.
 
         A newly stored association returns `201 Created` and a replacement of an existing association
         returns `200 OK`; both carry a processing result and should carry the current `ETag`.
+        A definition with any validation error returns `422 Unprocessable Content`, and previously
+        accepted bytes remain unchanged.
 
         ORD defines no size limit for resource definitions. An implementation may define and must
         document its own limit.
@@ -175,11 +182,12 @@ components:
       in: query
       required: true
       description: |-
-        Fully resolved absolute URL from the resource-definition reference. Clients apply normal
-        query-parameter percent encoding when constructing the request URI.
+        Exact URI-reference string from the resource-definition reference. Clients apply normal
+        query-parameter percent encoding when constructing the request URI. After decoding, the
+        server compares the value without URI resolution or normalization.
       schema:
         type: string
-        format: uri
+        format: uri-reference
         minLength: 1
     SystemVersion:
       name: systemVersion
@@ -235,7 +243,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ProcessingResult"
+            $ref: "#/components/schemas/DocumentProcessingResult"
     Created:
       description: Definition association created and processing completed.
       headers:
@@ -244,7 +252,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ProcessingResult"
+            $ref: "#/components/schemas/DefinitionProcessingResult"
     Updated:
       description: Definition association replaced and processing completed.
       headers:
@@ -253,7 +261,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ProcessingResult"
+            $ref: "#/components/schemas/DefinitionProcessingResult"
     BadRequest:
       description: Malformed request or invalid parameter combination.
       content:
@@ -292,9 +300,10 @@ components:
             $ref: "#/components/schemas/Problem"
     UnprocessableContent:
       description: |-
-        The request as a whole cannot be processed, or an individual definition is invalid.
-        Validation errors limited to individual items in an otherwise processable ORD Document
-        are returned in its processing result.
+        The request as a whole cannot be processed. For a resource-definition request, any validation
+        error rejects the definition and leaves previously accepted bytes unchanged. Validation errors
+        limited to individual items in an otherwise processable ORD Document are returned in its
+        processing result.
       content:
         application/problem+json:
           schema:
@@ -307,38 +316,72 @@ components:
             $ref: "#/components/schemas/Problem"
 
   schemas:
-    ProcessingResult:
+    DocumentProcessingResult:
       type: object
       description: |-
-        Final result of request processing. A document result contains one item for every top-level
-        ORD item. A resource-definition result contains one item for the definition association.
-        Warnings, including dangling references, can be reported on an applied item. Aggregators
-        can add extension members for validator-specific output. Clients must ignore extension
-        members they do not recognize.
+        Final result of document processing, with one result for every top-level ORD item. Warnings,
+        including dangling references, can be reported on an applied item. Aggregators can add
+        extension members for validator-specific output. Clients must ignore extension members they
+        do not recognize.
       required: [items]
       additionalProperties: true
       properties:
         items:
           type: array
           items:
-            $ref: "#/components/schemas/ItemResult"
+            $ref: "#/components/schemas/DocumentItemResult"
         issues:
           type: array
           items:
             $ref: "#/components/schemas/ValidationIssue"
-    ItemResult:
+    DefinitionProcessingResult:
       type: object
-      description: Publication outcome for one top-level ORD item or definition association.
+      description: |-
+        Final result for one accepted resource-definition association. A valid definition can remain
+        pending until its relationship to an ORD resource can be verified.
+      required: [items]
+      additionalProperties: true
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            $ref: "#/components/schemas/DefinitionItemResult"
+        issues:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationIssue"
+    DocumentItemResult:
+      type: object
+      description: Publication outcome for one top-level ORD item.
       required: [target, status]
       additionalProperties: true
       properties:
         target:
           type: string
-          description: ORD ID, JSON Pointer, or resolved definition URL identifying the item.
+          description: ORD ID or JSON Pointer identifying the item.
         status:
           type: string
-          description: The `pending` outcome applies when a definition cannot yet be linked to a referencing ORD resource.
-          enum: [applied, pending, stale, rejected]
+          description: The `stale` outcome means that a previous valid item was retained after an invalid update.
+          enum: [applied, stale, rejected]
+        issues:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationIssue"
+    DefinitionItemResult:
+      type: object
+      description: Publication outcome for one accepted resource-definition association.
+      required: [target, status]
+      additionalProperties: true
+      properties:
+        target:
+          type: string
+          description: Exact definition URL reference identifying the association in this request.
+        status:
+          type: string
+          description: The `pending` outcome means that the relationship to an ORD resource cannot yet be verified.
+          enum: [applied, pending]
         issues:
           type: array
           items:
@@ -361,7 +404,7 @@ components:
           type: string
         target:
           type: string
-          description: JSON Pointer, ORD ID, or resolved definition URL associated with the issue.
+          description: JSON Pointer, ORD ID, or definition URL reference associated with the issue.
     Problem:
       type: object
       description: |-

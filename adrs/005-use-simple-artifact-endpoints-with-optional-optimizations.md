@@ -49,7 +49,9 @@ The HTTP verbs reflect whether the target has an identity: a document does not, 
 
 The minimum contract has no operation to withdraw one definition. Providers replace its bytes or retire the resource and its definitions through ORD tombstones.
 
-A document request returns `200 OK` with an `applied`, `stale`, or `rejected` outcome for every top-level item. The aggregator MUST first validate against currently available content. A definition request returns `201 Created` for a new association or `200 OK` for a replacement, with an `applied`, `pending`, `stale`, or `rejected` result. HTTP status describes request processing, not each item's outcome.
+A document request returns `200 OK` with an `applied`, `stale`, or `rejected` outcome for every top-level item. The aggregator MUST first validate against currently available content. An accepted definition request returns `201 Created` for a new association or `200 OK` for a replacement, with an `applied` or `pending` result. A definition with any validation error is rejected as a whole with `422 Unprocessable Content`, and previously accepted bytes remain unchanged.
+
+For each ORD item or definition association, the last accepted update wins. Version 1 does not infer chronological order from document content. `stale` only describes a previous valid document item retained after an invalid update.
 
 Request-wide failures use RFC 9457 Problem Details (`application/problem+json`). An optional `issues` extension provides portable error, warning, and information fields. Aggregators MAY add validator-specific extension members; clients MUST ignore unknown extensions.
 

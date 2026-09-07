@@ -188,7 +188,7 @@ An aggregator that supports the standardized push transport MUST implement the r
 In push transport mode, an [ORD provider](#ord-provider) sends ORD documents and their referenced [resource definitions](#resource-definition) to an [ORD aggregator](#ord-aggregator).
 The provider does not need to host an ORD Provider API, but it needs the aggregator's push API base URL and credentials.
 Any [perspective](#perspectives) can be pushed.
-Push uses the standard ORD Document format and the same resource identities, URL resolution, validation, lifecycle, and visibility rules as pull.
+Push uses the standard ORD Document format and the same resource identities, validation, lifecycle, and visibility rules as pull.
 An ORD Document does not contain push-specific properties. It is independent of the transport mechanism.
 Aggregators SHOULD apply the same semantic processing regardless of transport.
 
@@ -251,13 +251,12 @@ Providers MUST use ORD tombstones to remove resources.
 Retrying the same document request MAY repeat processing, but resource identity and publication context prevent duplicate ORD resources.
 Providers SHOULD keep ORD documents within 2 MB (2,000,000 bytes). Aggregators MUST accept documents up to and including that size and MAY support a larger documented limit.
 
-A pushed document MUST NOT contain document-relative URLs (`./`, `../`, or bare relative paths), because the envelope has no retrieval URL.
-It MAY use absolute URLs or base-URL-relative URLs when the existing ORD properties provide the required base URL context.
+A definition URL MAY use any URI-reference form accepted by the ORD Document schema, including a document-relative value. For a separately pushed definition, it is an opaque association key rather than a retrieval location. This exception applies only to definition URLs; other document-relative URLs cannot be resolved because a pushed document has no retrieval URL.
 
 ##### Pushing Resource Definitions
 
 Resource definitions are uploaded separately in their native media type.
-Every request identifies the ORD resource and its publication context through `perspective`, `ordId`, and the fully resolved `url`.
+Every request identifies the ORD resource and its publication context through `perspective`, `ordId`, and the exact `url` string from the ORD Document.
 Together with the publisher identified by the credentials, these parameters identify the definition association.
 For `system-version`, `systemVersion` is also required and equals `describedSystemVersion.version`:
 
@@ -275,14 +274,15 @@ For `system-type` and `system-independent`, no additional perspective identifier
 `systemVersion` and `systemInstanceId` MUST NOT be supplied for other perspectives.
 
 The ORD Document is the source of truth for the relationship from an ORD resource to its definitions.
-The aggregator MUST verify that the identified resource in the requested context references `url` and declares a compatible `mediaType`.
+After normal query-parameter decoding, the aggregator MUST verify that the identified resource in the requested context contains exactly the supplied `url` string and declares a compatible `mediaType`. It MUST NOT resolve or normalize `url` for this comparison.
 A definition MAY arrive first and remain pending until the relationship can be verified.
 Request parameters identify the intended relationship but do not create it.
 
-Within one exact publication context, matching references to the same resolved URL denote the same definition bytes.
+Within one exact publication context, matching URL-reference strings denote the same definition bytes.
 An aggregator MAY reuse one upload for those references while retaining separate resource associations.
-References that require different bytes MUST use different URLs.
+References that require different bytes MUST use different URL-reference strings.
 A verified `Content-Digest` MAY help identify equal bytes for physical deduplication, but this MUST NOT merge associations, authorization, visibility, retention, or lifecycle.
+When serving aggregated ORD content, the aggregator MUST expose an accepted definition through a resolvable URL.
 
 ORD defines no size limit for resource-definition uploads because some definition formats cannot be divided across files.
 An aggregator MAY define an implementation-specific limit and MUST document it.
@@ -305,8 +305,12 @@ Before returning a success response, the aggregator MUST validate the upload aga
 A malformed body, unsupported ORD version, unauthorized publisher, or invalid document context is a request-wide failure.
 After a document can be parsed and assigned to its publication context, validation and publication SHOULD be isolated per top-level ORD item.
 One invalid resource or definition MUST NOT prevent otherwise valid, independent resources from being updated.
-An invalid resource or definition update SHOULD leave its last valid version available and marked stale.
-A resource or definition that has never been valid MUST NOT be presented as valid.
+An invalid resource update SHOULD leave its last valid version available and marked stale.
+A resource that has never been valid MUST NOT be presented as valid.
+
+A resource-definition request contains one definition. If the definition has any validation error, the aggregator MUST reject the request as a whole with `422 Unprocessable Content` and leave previously accepted bytes unchanged. Warnings do not require rejection. A valid definition MAY instead remain pending when its relationship to an ORD resource cannot yet be verified.
+
+For each ORD item or definition association, the last accepted update wins. Version 1 does not infer chronological order from document content. `stale` means that an aggregator retained a previous valid document item after an invalid update; it does not mean that an older update was detected.
 
 Package inheritance is a dependency across ORD items and is not specific to push transport.
 If a replacement Package is invalid, an aggregator MAY retain the last valid Package content for existing dependent resources, but it MUST report that fallback as stale.
@@ -319,7 +323,7 @@ Before returning `200 OK` for a document, the aggregator MUST complete document-
 The response reports an `applied`, `stale`, or `rejected` outcome for each item.
 Warnings, including dangling references, do not prevent an item from being applied.
 A document whose envelope or context cannot be processed is rejected as a request error instead.
-A created definition association returns `201 Created` with its processing result; a successful replacement returns `200 OK` with its processing result. A definition that cannot yet be linked to a referencing ORD resource has a `pending` outcome.
+An accepted definition association returns `201 Created` when first stored or `200 OK` when replaced, with an `applied` or `pending` outcome. A definition that cannot yet be linked to a referencing ORD resource has a `pending` outcome. An invalid definition returns `422 Unprocessable Content` with Problem Details instead of a processing result.
 
 HTTP status codes describe request processing, not the publication outcome of every item.
 `200 OK` means processing completed; it does not mean that every item was applied.
