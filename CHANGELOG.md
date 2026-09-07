@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added optional `describedSystemInstance.globalId` property: the globally unique ID of the system instance (tenant), assigned and owned by the ORD aggregator (unique within the connected aggregator). It records the same identity that can be passed as the `Global-Tenant-Id` header in the `open` and `basic-auth` access strategies. Cross-linked `localId`/`Local-Tenant-Id` and `globalId`/`Global-Tenant-Id` between the ORD Document interface and the access-strategy documentation.
+
 ### Changed
 
 - Clarified `OverlaySelectorByOperation` for OData targets: when the operation name alone is ambiguous (e.g. bound operations overloaded on multiple entity types), the selector MUST use the fully qualified signature (including parameters, e.g. `OData.Demo.Approval(Edm.Int32,Edm.String)`) or fall back to `jsonPath` to target the specific overload. When the name is already unique, the plain name remains sufficient. This makes explicit the pre-existing requirement that operation selectors resolve unambiguously.

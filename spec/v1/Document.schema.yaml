@@ -4563,8 +4563,29 @@ definitions:
           Optional local ID for the system instance, as known by the described system.
 
           In case of multi-tenant systems, it is equivalent to the local tenant id.
+          This is the same identity that can be passed as the `Local-Tenant-Id` header in the
+          [`open`](../../spec-extensions/access-strategies/open.md#local-tenant-id) and
+          [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#local-tenant-id) access strategies.
         examples:
           - "LocalTenantId123"
+
+      globalId:
+        type: string
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          Optional globally unique ID of the system instance (tenant), as assigned and decided by the ORD aggregator.
+          The scope of uniqueness is within the connected ORD aggregator.
+
+          Unlike `localId`, which is only unique within the described system, the `globalId` is created and owned by
+          the ORD aggregator, not by the provider. It is the same identity that can be passed as the `Global-Tenant-Id`
+          header in the [`open`](../../spec-extensions/access-strategies/open.md#global-tenant-id) and
+          [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#global-tenant-id) access strategies.
+
+          The provider does not decide this value; it MAY receive it from the aggregator (e.g. during onboarding) and
+          include it to correlate the described system instance with the aggregator's authoritative state.
+        maxLength: 255
+        examples:
+          - "c6c80b52-ecc1-47f8-9303-0d55fb67fd41"
 
       correlationIds:
         <<: *correlationIds
