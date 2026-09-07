@@ -80,13 +80,11 @@ Please note that you may need to [protect the API access](#protect-ord-provider-
 
 > 🔗 See [./implementation-examples/no-auth](https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/no-auth) for an example node.js implementation without authentication.
 
-#### Future Options
+#### Option 3: Push static metadata
 
-We are aware that publishing static metadata can be made even more convenient.
-Currently it is necessary to serve the metadata by a service at runtime.
-If the metadata is purely static, it would also be possible to publish it at design-time or deploy-time, e.g. via a CI/CD pipeline job or CLI utility.
-
-This is an option we're considering to standardize in ORD, as a [push transport](../../spec-v1/index.md#push-transport) mode. If this pattern is of practical use to you, please reach out to us.
+If an ORD aggregator supports [push transport](../../spec-v1/index.md#push-transport), a provider can publish metadata at design-time or deploy-time, for example from a CI/CD pipeline or CLI utility.
+This avoids hosting an ORD Provider API for metadata that does not need to be generated at runtime.
+The provider needs the aggregator's push API base URL and credentials.
 
 ### Dynamic Metadata
 

@@ -29,7 +29,7 @@ Chosen option: **post document envelopes and put individual definition associati
 ### Version-1 (MVP) scope
 
 - **Required:** the two endpoints below process requests synchronously and return validation results; document requests are identity-less, definition requests are idempotent, and request-wide errors use Problem Details.
-- **Optional v1 optimizations:** standard HTTP conditional requests and strong ETags, `Content-Digest`, and HTTP `Content-Encoding` are defined and can be used without changing the push protocol.
+- **Optional v1 optimizations:** standard HTTP conditional requests, strong ETags, and `Content-Digest` can be used without changing the push protocol.
 - **Future extension:** a submission resource could group uploads, expose asynchronous validation status, and define an explicit commit boundary. Version 1 defines no submission or operations endpoint.
 
 The minimum version-1 API has these paths relative to an implementation-defined base URL:
@@ -53,9 +53,7 @@ A document request returns `200 OK` with an `applied`, `stale`, or `rejected` ou
 
 Request-wide failures use RFC 9457 Problem Details (`application/problem+json`). An optional `issues` extension provides portable error, warning, and information fields. Aggregators MAY add validator-specific extension members; clients MUST ignore unknown extensions.
 
-ORD documents MUST NOT exceed 2 MB (2,000,000 bytes), and an aggregator MUST accept documents up to and including that limit. ORD defines no size limit for resource definitions because some formats cannot be divided across files. An aggregator MAY define an implementation-specific definition limit and MUST document it.
-
-HTTP streaming and chunked transfer coding are implementation details. `Content-Encoding`, such as `gzip`, MAY compress supported representations.
+Providers SHOULD keep ORD documents within 2 MB (2,000,000 bytes). An aggregator MUST accept documents up to and including that size and MAY support a larger documented limit. ORD defines no baseline size limit for resource definitions because some formats cannot be divided across files; an aggregator MAY set and MUST document its own limit.
 
 ### Consequences
 
