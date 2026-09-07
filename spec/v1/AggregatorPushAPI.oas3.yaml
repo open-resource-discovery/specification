@@ -38,6 +38,7 @@ paths:
         Accepts one complete standard ORD Document. The document is an identity-less transport
         envelope: this operation does not create or replace a document resource. The publisher
         identified by the credentials and the document content provide the publication context.
+        The document must explicitly include `perspective`; its schema default does not apply to push.
         Omission from a later envelope does not remove previously published resources; ORD
         tombstones express removal.
         A `200 OK` response means that document-level and per-item validation against currently
@@ -55,7 +56,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "./Document.schema.json"
+              allOf:
+                - $ref: "./Document.schema.json"
+                - type: object
+                  required: [perspective]
       responses:
         "200":
           $ref: "#/components/responses/Processed"
@@ -96,7 +100,7 @@ paths:
         can be verified. The request is idempotent for the complete association.
 
         A newly stored association returns `201 Created` and a replacement of an existing association
-        returns `200 OK`; both carry the current `ETag` and processing result.
+        returns `200 OK`; both carry a processing result and should carry the current `ETag`.
 
         ORD defines no size limit for resource definitions. An implementation may define and must
         document its own limit.

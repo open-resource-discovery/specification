@@ -35,7 +35,7 @@ For authorization, the publisher is one of:
 - one described system type, identified by its `describedSystemType.systemNamespace`; or
 - one system-independent publisher, identified by an authority or other owning ORD namespace.
 
-An aggregator MAY issue several credentials for the same publisher. A credential MUST NOT authorize several described system types or independent publishers. The credentials do not select a perspective; the ORD Document or resource-definition request supplies it.
+An aggregator MAY issue several credentials for the same publisher. A credential MUST NOT authorize several described system types or independent publishers. The credentials do not select a perspective; the ORD Document or resource-definition request MUST explicitly supply it.
 
 For a system-scoped ORD Document, the aggregator MUST verify that `describedSystemType.systemNamespace` matches the system type assigned to the credential. For a system-independent document, it MUST verify that the credential belongs to the independent publisher. It MUST also validate any version or instance context and all authorization-relevant claims against authoritative aggregator state.
 

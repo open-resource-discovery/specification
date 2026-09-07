@@ -40,7 +40,7 @@ The related decisions are:
 
 - [ADR 002](./002-use-eventually-consistent-resource-isolated-ingestion.md): consistency and failure isolation;
 - [ADR 003](./003-link-pushed-resource-definitions-by-resource-and-context.md): definition identity and linkage;
-- [ADR 004](./004-authorize-pushes-by-credential-bound-publication-subject.md): authorization context; and
+- [ADR 004](./004-authorize-pushes-using-publisher-credentials.md): authorization context; and
 - [ADR 005](./005-use-simple-artifact-endpoints-with-optional-optimizations.md): minimum versioned HTTP API.
 
 ### Consequences
