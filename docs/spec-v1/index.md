@@ -250,6 +250,7 @@ The request publishes the top-level ORD items identified in the document; it cre
 Omitting an item from a later envelope does not remove it.
 Providers MUST use ORD tombstones to remove resources.
 Retrying the same document request MAY repeat processing, but resource identity and publication context prevent duplicate ORD resources.
+To let an aggregator recognize and safely retry a document submission, a provider MAY send an `Idempotency-Key` request header (following the [IETF `Idempotency-Key` header field](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-06.html)). An aggregator that supports it SHOULD return the result of the original request for a repeated key without reprocessing. Support is optional, and resource identity remains the primary safeguard against duplicates.
 Providers SHOULD keep ORD documents within 2 MB (2,000,000 bytes). Aggregators MUST accept documents up to and including that size and MAY support a larger documented limit.
 
 A definition URL MAY use any URI-reference form accepted by the ORD Document schema, including a document-relative value. For a separately pushed definition, it is an opaque association key rather than a retrieval location. This exception applies only to definition URLs; other document-relative URLs cannot be resolved because a pushed document has no retrieval URL.
@@ -270,7 +271,7 @@ Content-Type: application/json
 ```
 
 For `system-instance`, the request MUST include an aggregator-issued `systemInstanceId`.
-How a provider obtains this identifier is implementation-specific.
+The aggregator creates and owns this identifier; how a provider obtains it is implementation-specific (for example, issued during onboarding or returned when the system instance is first registered). An aggregator MAY correlate it with provider-side instance identity such as `describedSystemInstance.localId` or `describedSystemInstance.correlationIds`, but the `systemInstanceId` itself remains aggregator-owned and is not an ORD Document property. It is the same aggregator-assigned tenant identity as the proposed `describedSystemInstance.globalId` property and the `Global-Tenant-Id` access-strategy header (see [PR #174](https://github.com/open-resource-discovery/specification/pull/174), WIP).
 For `system-type` and `system-independent`, no additional perspective identifier is used.
 `systemVersion` and `systemInstanceId` MUST NOT be supplied for other perspectives.
 
@@ -292,6 +293,7 @@ Version 1 does not define machine-readable discovery of that limit; a future agg
 Uploading a definition is idempotent for its exact association.
 To change a definition, a provider uploads new bytes to the same association, which replaces it in place.
 Aggregators SHOULD return a strong `ETag` and support `If-None-Match: *` and `If-Match` for definition uploads.
+These conditional requests are optional optimizations: `If-None-Match: *` makes an upload create-only, and `If-Match` guards a replacement against a known `ETag`. When such a precondition is not met, the aggregator returns `412 Precondition Failed` and leaves the stored association unchanged.
 The minimum contract has no operation to withdraw a single definition; providers retire a resource and its definitions through ORD tombstones.
 The `accessStrategies` property is not used to authorize push requests.
 If present, it continues to describe retrieval from an ORD provider.
@@ -329,6 +331,7 @@ An accepted definition association returns `201 Created` when first stored or `2
 HTTP status codes describe request processing, not the publication outcome of every item.
 `200 OK` means processing completed; it does not mean that every item was applied.
 Clients MUST inspect the per-item outcomes.
+A request that exceeds a documented size limit returns `413 Content Too Large`, and an unsupported request media type or content encoding returns `415 Unsupported Media Type`.
 Request-wide failures use [Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html) with media type `application/problem+json`.
 RFC 9457 replaces RFC 7807 and retains its extension-member mechanism.
 ORD defines an optional `issues` extension containing portable `severity`, `code`, `message`, and `target` fields.
@@ -373,10 +376,10 @@ sequenceDiagram
     participant Provider as ORD Provider
     participant Aggregator as ORD Aggregator
 
-    Provider->>Aggregator: POST /v1/documents
+    Provider->>Aggregator: POST /ord-push/v1/documents
     Aggregator->>Aggregator: Validate document items against available content
     Aggregator-->>Provider: 200 OK + per-item results
-    Provider->>Aggregator: PUT /v1/resource-definitions
+    Provider->>Aggregator: PUT /ord-push/v1/resource-definitions
     Aggregator->>Aggregator: Validate definition and resolve references
     Aggregator-->>Provider: 200 OK or 201 Created + result
 ```
