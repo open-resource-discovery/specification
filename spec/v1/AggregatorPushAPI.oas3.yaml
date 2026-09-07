@@ -315,71 +315,11 @@ components:
 
   schemas:
     PushDocumentEnvelope:
-      type: object
       description: |-
-        Admission schema for a pushed ORD Document. It validates document-level fields and array
-        framing only. Each array entry is validated independently against its corresponding ORD
-        Document schema definition during processing, allowing invalid items to be reported without
-        rejecting otherwise valid items.
-      required: [openResourceDiscovery, perspective]
-      additionalProperties: false
-      properties:
-        $schema:
-          $ref: "./Document.schema.json#/properties/$schema"
-        openResourceDiscovery:
-          $ref: "./Document.schema.json#/properties/openResourceDiscovery"
-        description:
-          $ref: "./Document.schema.json#/properties/description"
-        baseUrl:
-          $ref: "./Document.schema.json#/properties/baseUrl"
-        perspective:
-          $ref: "./Document.schema.json#/properties/perspective"
-        describedSystemType:
-          $ref: "./Document.schema.json#/properties/describedSystemType"
-        describedSystemVersion:
-          $ref: "./Document.schema.json#/properties/describedSystemVersion"
-        describedSystemInstance:
-          $ref: "./Document.schema.json#/properties/describedSystemInstance"
-        policyLevel:
-          $ref: "./Document.schema.json#/properties/policyLevel"
-        customPolicyLevel:
-          $ref: "./Document.schema.json#/properties/customPolicyLevel"
-        policyLevels:
-          $ref: "./Document.schema.json#/properties/policyLevels"
-        apiResources:
-          $ref: "#/components/schemas/TopLevelItems"
-        eventResources:
-          $ref: "#/components/schemas/TopLevelItems"
-        entityTypes:
-          $ref: "#/components/schemas/TopLevelItems"
-        capabilities:
-          $ref: "#/components/schemas/TopLevelItems"
-        dataProducts:
-          $ref: "#/components/schemas/TopLevelItems"
-        agents:
-          $ref: "#/components/schemas/TopLevelItems"
-        overlays:
-          $ref: "#/components/schemas/TopLevelItems"
-        integrationDependencies:
-          $ref: "#/components/schemas/TopLevelItems"
-        vendors:
-          $ref: "#/components/schemas/TopLevelItems"
-        products:
-          $ref: "#/components/schemas/TopLevelItems"
-        packages:
-          $ref: "#/components/schemas/TopLevelItems"
-        consumptionBundles:
-          $ref: "#/components/schemas/TopLevelItems"
-        groups:
-          $ref: "#/components/schemas/TopLevelItems"
-        groupTypes:
-          $ref: "#/components/schemas/TopLevelItems"
-        tombstones:
-          $ref: "#/components/schemas/TopLevelItems"
-    TopLevelItems:
-      type: array
-      description: Items are validated independently against the corresponding ORD Document schema definition.
-      items: {}
+        Generated from the ORD Document schema during `npm run generate`. Do not define properties
+        here: the generated admission schema retains document-level validation while allowing each
+        top-level ORD item to be validated independently during processing.
+      x-derived-from: "./Document.schema.json"
     DocumentProcessingResult:
       type: object
       description: |-

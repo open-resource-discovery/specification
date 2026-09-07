@@ -316,70 +316,117 @@ components:
   schemas:
     PushDocumentEnvelope:
       type: object
-      description: |-
-        Admission schema for a pushed ORD Document. It validates document-level fields and array
-        framing only. Each array entry is validated independently against its corresponding ORD
-        Document schema definition during processing, allowing invalid items to be reported without
-        rejecting otherwise valid items.
-      required: [openResourceDiscovery, perspective]
+      description: Admission schema for a pushed ORD Document. It validates document-level fields and array framing only. Each array entry is validated independently against its corresponding ORD Document schema definition during processing, allowing invalid items to be reported without rejecting otherwise valid items.
+      required:
+        - openResourceDiscovery
+        - perspective
       additionalProperties: false
+      x-recommended:
+        - policyLevels
       properties:
         $schema:
-          $ref: "./Document.schema.json#/properties/$schema"
+          $ref: ./Document.schema.json#/properties/$schema
         openResourceDiscovery:
-          $ref: "./Document.schema.json#/properties/openResourceDiscovery"
+          $ref: ./Document.schema.json#/properties/openResourceDiscovery
         description:
-          $ref: "./Document.schema.json#/properties/description"
+          $ref: ./Document.schema.json#/properties/description
         baseUrl:
-          $ref: "./Document.schema.json#/properties/baseUrl"
+          $ref: ./Document.schema.json#/properties/baseUrl
         perspective:
-          $ref: "./Document.schema.json#/properties/perspective"
+          $ref: ./Document.schema.json#/properties/perspective
         describedSystemType:
-          $ref: "./Document.schema.json#/properties/describedSystemType"
+          $ref: ./Document.schema.json#/properties/describedSystemType
         describedSystemVersion:
-          $ref: "./Document.schema.json#/properties/describedSystemVersion"
+          $ref: ./Document.schema.json#/properties/describedSystemVersion
         describedSystemInstance:
-          $ref: "./Document.schema.json#/properties/describedSystemInstance"
+          $ref: ./Document.schema.json#/properties/describedSystemInstance
         policyLevel:
-          $ref: "./Document.schema.json#/properties/policyLevel"
+          $ref: ./Document.schema.json#/properties/policyLevel
         customPolicyLevel:
-          $ref: "./Document.schema.json#/properties/customPolicyLevel"
+          $ref: ./Document.schema.json#/properties/customPolicyLevel
         policyLevels:
-          $ref: "./Document.schema.json#/properties/policyLevels"
+          $ref: ./Document.schema.json#/properties/policyLevels
         apiResources:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all API Resources that are described in this ORD document.
+          items: {}
         eventResources:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all event resources that are described in this ORD document.
+          items: {}
         entityTypes:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all entity types that are described in this ORD document.
+          x-introduced-in-version: 1.6.0
+          items: {}
         capabilities:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all capabilities that are described in this ORD document.
+          x-introduced-in-version: 1.4.0
+          items: {}
         dataProducts:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all data products that are described in this ORD document.
+          x-introduced-in-version: 1.8.0
+          items: {}
         agents:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all AI Agents that are described in this ORD document.
+          x-introduced-in-version: 1.14.0
+          x-feature-status: beta
+          items: {}
         overlays:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: |-
+            Array of all metadata overlays described in this ORD document.
+
+            An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
+            resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
+
+            For overlays that are tightly coupled to a single API or Event resource, consider attaching them directly
+            as a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.
+          x-introduced-in-version: 1.15.0
+          x-feature-status: alpha
+          items: {}
         integrationDependencies:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all integration dependencies that are described in this ORD document.
+          x-introduced-in-version: 1.7.0
+          items: {}
         vendors:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all Vendors that are described in this ORD document.
+          items: {}
         products:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all Products that are described in this ORD document.
+          items: {}
         packages:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all Packages that are described in this ORD document.
+          items: {}
         consumptionBundles:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all Consumption Bundles that are described in this ORD document.
+          items: {}
         groups:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all Groups that are described in this ORD document.
+          x-introduced-in-version: 1.9.0
+          items: {}
         groupTypes:
-          $ref: "#/components/schemas/TopLevelItems"
+          type: array
+          description: Array of all Group Types that are described in this ORD document.
+          x-introduced-in-version: 1.9.0
+          items: {}
         tombstones:
-          $ref: "#/components/schemas/TopLevelItems"
-    TopLevelItems:
-      type: array
-      description: Items are validated independently against the corresponding ORD Document schema definition.
-      items: {}
+          type: array
+          description: |-
+            List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
+            This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
+
+            A tombstone entry MAY be removed after a grace period of 31 days.
+          items: {}
     DocumentProcessingResult:
       type: object
       description: |-
