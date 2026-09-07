@@ -81,8 +81,9 @@ A **described system instance** is a system instance that is being described by 
 
 > ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance is not necessarily identical to the described system instances (see [`describedSystemInstance`](./interfaces/Document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
 
-An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
-An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
+An ORD provider exposes ORD information through one or more standardized [ORD transport modes](#ord-transport-modes).
+In pull mode it implements the [ORD Provider API](#ord-provider-api); in push mode it sends ORD documents and resource definitions to an aggregator.
+Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
@@ -178,31 +179,221 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 </div>
 
-### Other Modes of Transport
+### Push Transport
+
+Push transport is an optional alternative to [pull transport](#pull-transport).
+An ORD aggregator MAY support pull, push, or both.
+An aggregator that supports the standardized push transport MUST implement the requirements in this section and the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx).
+
+In push transport mode, an [ORD provider](#ord-provider) sends ORD documents and their referenced [resource definitions](#resource-definition) to an [ORD aggregator](#ord-aggregator).
+The provider does not need to host an ORD Provider API, but it needs the aggregator's push API base URL and credentials.
+Any [perspective](#perspectives) can be pushed.
+Push uses the standard ORD Document format and the same resource identities, URL resolution, validation, lifecycle, and visibility rules as pull.
+An ORD Document does not contain push-specific properties. It is independent of the transport mechanism.
+Aggregators SHOULD apply the same semantic processing regardless of transport.
+
+Push transport is particularly suitable for:
+
+- Static metadata that is known at design-time or deploy-time
+- CI/CD pipeline integration where metadata is pushed as part of the build/deployment process
+- Providers that cannot or prefer not to host a runtime ORD Provider API
+
+#### Push Transport - Pros
+
+- No need to implement and host an ORD Provider API; static metadata can be published from CI/CD without a continuously running server
+- Can be integrated into CI/CD pipelines (design-time or deploy-time)
+- Configuration or extensibility changes are pushed immediately when they occur (no polling delay), which can reduce request volume compared with periodic polling
+- Direct feedback for validation problems
+- Avoids repeated polling for system-instance-specific metadata when the provider knows when changes occur
+
+#### Push Transport - Cons
+
+- Every provider needs to know where to push (aggregator endpoint must be known)
+- Provider must actively push updates (compared to passive pull)
+- Additional authentication/authorization setup between provider and aggregator
+- Centralized approach (aggregator must be available to receive pushes)
+- Documents and definitions can temporarily be inconsistent and require providers to handle reported validation problems
+
+#### Push Transport Implementation
+
+The aggregator chooses the push API base URL and communicates it to providers, for example during onboarding.
+The examples below use `https://aggregator.example.org/ord-push` as the base URL.
+The versioned `/v1` API paths are standardized.
+
+##### Pushing ORD Documents
+
+Push transport uses the standard [ORD Document](#ord-document).
+The document is an identity-less transport envelope, not an independently managed resource.
+The document endpoint has no path or query parameters:
+
+```http
+POST /ord-push/v1/documents HTTP/1.1
+Host: aggregator.example.org
+Content-Type: application/json
+
+{
+  "openResourceDiscovery": "1.16",
+  "perspective": "system-version",
+  "describedSystemType": {
+    "systemNamespace": "example.orders"
+  },
+  "describedSystemVersion": {
+    "version": "1.2.3"
+  },
+  "apiResources": [ ... ]
+}
+```
+
+The aggregator derives the publication context from the publisher identified by the credentials and from the document content.
+The request publishes the top-level ORD items identified in the document; it creates no document resource and assigns no document ID.
+Omitting an item from a later envelope does not remove it.
+Providers MUST use ORD tombstones to remove resources.
+Retrying the same document request MAY repeat processing, but resource identity and publication context prevent duplicate ORD resources.
+ORD documents MUST NOT exceed 2 MB, and an aggregator MUST accept documents up to and including that limit.
+
+A pushed document MUST NOT contain document-relative URLs (`./`, `../`, or bare relative paths), because the envelope has no retrieval URL.
+It MAY use absolute URLs or base-URL-relative URLs when the existing ORD properties provide the required base URL context.
+
+##### Pushing Resource Definitions
+
+Resource definitions are uploaded separately in their native media type.
+Every request identifies the ORD resource and its publication context through `perspective`, `ordId`, and the fully resolved `url`.
+Together with the publisher identified by the credentials, these parameters identify the definition association.
+For `system-version`, `systemVersion` is also required and equals `describedSystemVersion.version`:
+
+```http
+PUT /ord-push/v1/resource-definitions?perspective=system-version&systemVersion=1.2.3&ordId=example.orders%3AapiResource%3AOrders%3Av1&url=https%3A%2F%2Fmetadata.example.org%2Fapis%2Forders.json HTTP/1.1
+Host: aggregator.example.org
+Content-Type: application/json
+
+{ "openapi": "3.1.0", ... }
+```
+
+For `system-instance`, the request MUST include an aggregator-issued `systemInstanceId`.
+How a provider obtains this identifier is implementation-specific.
+For `system-type` and `system-independent`, no additional perspective identifier is used.
+`systemVersion` and `systemInstanceId` MUST NOT be supplied for other perspectives.
+
+The ORD Document is the source of truth for the relationship from an ORD resource to its definitions.
+The aggregator MUST verify that the identified resource in the requested context references `url` and declares a compatible `mediaType`.
+A definition MAY arrive first and remain pending until the relationship can be verified.
+Request parameters identify the intended relationship but do not create it.
+
+Within one exact publication context, matching references to the same resolved URL denote the same definition bytes.
+An aggregator MAY reuse one upload for those references while retaining separate resource associations.
+References that require different bytes MUST use different URLs.
+Equal bytes MAY also be physically deduplicated through `Content-Digest`, but this MUST NOT merge associations, authorization, visibility, retention, or lifecycle.
+
+ORD defines no size limit for resource-definition uploads because some definition formats cannot be divided across files.
+An aggregator MAY define an implementation-specific limit and MUST document it.
+
+Uploading a definition is idempotent for its exact association.
+To change a definition, a provider uploads new bytes to the same association, which replaces it in place.
+Aggregators SHOULD return a strong `ETag` and support `If-None-Match: *` and `If-Match` for definition uploads.
+The minimum contract has no operation to withdraw a single definition; providers retire a resource and its definitions through ORD tombstones.
+The `accessStrategies` property is not used to authorize push requests.
+If present, it continues to describe retrieval from an ORD provider.
+
+##### Consistency and Validation
+
+Document and definition requests are independent.
+A definition MAY arrive before or after the document that references it.
+The aggregator MAY therefore temporarily retain dangling references, consistent with the general [validation rules](#validation-rules), and MUST re-evaluate them when related content changes.
+A valid resource MAY be published while a referenced definition is missing or invalid, but the aggregator MUST report the dangling link.
+
+Before returning a success response, the aggregator MUST validate the upload against the content currently available to it.
+A malformed body, unsupported ORD version, unauthorized publisher, or invalid document context is a request-wide failure.
+After a document can be parsed and assigned to its publication context, validation and publication SHOULD be isolated per top-level ORD item.
+One invalid resource or definition MUST NOT prevent otherwise valid, independent resources from being updated.
+An invalid resource or definition update SHOULD leave its last valid version available and marked stale.
+A resource or definition that has never been valid MUST NOT be presented as valid.
+
+Package inheritance is a dependency across ORD items and is not specific to push transport.
+If a replacement Package is invalid, an aggregator MAY retain the last valid Package content for existing dependent resources, but it MUST report that fallback as stale.
+A new dependent resource without a valid Package remains unresolved.
+
+##### Responses and Status
+
+The normative API contract is defined as an [OpenAPI 3 definition](./interfaces/aggregator-push-api.mdx).
+Before returning `200 OK` for a document, the aggregator MUST complete document-level validation and validation of each top-level item against the content currently available to it.
+The response reports an `applied`, `stale`, or `rejected` outcome for each item.
+Warnings, including dangling references, do not prevent an item from being applied.
+A document whose envelope or context cannot be processed is rejected as a request error instead.
+A created definition association returns `201 Created` with its processing result; a successful replacement returns `200 OK` with its processing result. A definition that cannot yet be linked to a referencing ORD resource has a `pending` outcome.
+
+HTTP status codes describe request processing, not the publication outcome of every item.
+`200 OK` means processing completed; it does not mean that every item was applied.
+Clients MUST inspect the per-item outcomes.
+Request-wide failures use [Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html) with media type `application/problem+json`.
+RFC 9457 replaces RFC 7807 and retains its extension-member mechanism.
+ORD defines an optional `issues` extension containing portable `severity`, `code`, `message`, and `target` fields.
+The same issue structure is used in successful processing results and Problem Details responses.
+An aggregator MAY add extension members to a problem, processing result, or issue to preserve output from its validators.
+Clients MUST ignore extension members they do not recognize.
+
+The version-1 push API processes each request synchronously. It does not define submissions, asynchronous operation resources, batching, or commit semantics. A future extension could combine those concerns in a submission resource, but that model is not part of this specification.
+
+##### Transfer Behavior
+
+HTTP `Content-Encoding`, such as `gzip`, MAY be used for compression.
+Streaming and HTTP chunked transfer coding are transport implementation details rather than ORD capabilities.
+
+##### Authentication and Authorization
+
+The push API MUST use HTTPS and authenticate every operation.
+Each credential MUST identify exactly one publisher in authoritative aggregator state:
+
+- one described system type, identified by `describedSystemType.systemNamespace`; or
+- one system-independent publisher, identified by an authority or other owning ORD namespace.
+
+An aggregator MAY issue several credentials for the same publisher.
+A credential MUST NOT authorize several described system types or independent publishers.
+Credentials do not select an ORD perspective; the document or resource-definition request does.
+For system-scoped documents, the aggregator MUST verify that the document's described system type matches the credential.
+For system-independent documents, it MUST verify the independent publisher.
+The aggregator MUST validate version and instance context, and all authorization-relevant claims, against authoritative state.
+
+Permission to use ORD ID namespaces is separate from the publisher identity.
+The namespace of an ORD ID can differ from the described system's namespace, for example when a system publishes a resource governed by an authority.
+The aggregator MUST validate both the publisher and the allowed ORD ID namespaces.
+It MUST NOT grant authority merely because an identifier or namespace occurs in the request.
+For definition requests, the publisher identified by the credentials combines with the explicit context parameters.
+The aggregator issues and owns the `systemInstanceId` required for system-instance definition uploads.
+
+The specification does not mandate one credential technology.
+Implementations SHOULD use an established machine-to-machine mechanism such as mutual TLS, OAuth 2.0 client credentials, or certificate-bound OAuth access tokens.
+Credential issuance, rotation, and onboarding remain aggregator-specific.
+Missing or invalid authentication returns `401 Unauthorized`; insufficient permissions return `403 Forbidden`.
+
+##### Push Transport Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant Provider as ORD Provider
+    participant Aggregator as ORD Aggregator
+
+    Provider->>Aggregator: POST /v1/documents
+    Aggregator->>Aggregator: Validate document items against available content
+    Aggregator-->>Provider: 200 OK + per-item results
+    Provider->>Aggregator: PUT /v1/resource-definitions
+    Aggregator->>Aggregator: Validate definition and resolve references
+    Aggregator-->>Provider: 200 OK or 201 Created + result
+```
+
+#### Other Modes of Transport
 
 Other modes of transport have not yet been standardized/specified.
 They are only listed here to outline potential modes that we anticipate.
 
-#### Import Transport
+##### Import Transport
 
 Manual import of the [ORD document](#ord-document) as a JSON file into an interested system or tool (offline mode):
 
 - The system instances do not need to know each other or be integrated in any way
 - The ORD document alone is sufficient for this type of consumption
-- All URLs in the document MUST be resolvable (e.g. through the document root `baseUrl`, `describedSystemInstance.baseUrl`, or as full absolute URLs — see [Relative URL Resolution](#relative-url-resolution))
+- All URLs in the document MUST be resolvable (e.g. through the document root `baseUrl`, `describedSystemInstance.baseUrl`, or as full absolute URLs; see [Relative URL Resolution](#relative-url-resolution))
 
-#### Push Transport
-
-> 🚧 The specification currently does not cover this mode.
-
-The Document can be pushed to the interested ORD aggregator, e.g. via a webhook, a known HTTP POST endpoint, or via file upload.
-
-- Every system instance needs to know where the ORD documents need to be pushed to.
-- An ORD aggregator might provide a dedicated HTTP POST endpoint for this.
-- Changes can be pushed faster and more efficiently compared to the [pull transport](#pull-transport).
-- The specification currently does not cover this mode.
-
-#### Event-Driven Transport
+##### Event-Driven Transport
 
 > 🚧 The specification currently does not cover this mode.
 
