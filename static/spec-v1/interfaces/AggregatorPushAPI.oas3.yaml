@@ -40,6 +40,10 @@ paths:
         transport envelope: this operation does not create or replace a document resource. The
         publisher identified by the credentials and the document content provide the publication context.
         The document must explicitly include `perspective`; its schema default does not apply to push.
+        A `system-instance` document can also supply the aggregator-issued `systemInstanceId` used
+        for definition uploads. If supplied, it must match the system instance described by the
+        document and authoritative aggregator state. If omitted, that information must identify
+        exactly one system instance. The parameter must not be supplied for another perspective.
         Omission from a later envelope does not remove previously published resources; ORD
         tombstones express removal.
         A `200 OK` response means that document-level and per-item validation against currently
@@ -53,6 +57,8 @@ paths:
         Providers should keep ORD documents within 2 MB (2,000,000 bytes). Implementations must
         accept documents up to and including that size and may support a larger documented limit.
       tags: [Documents]
+      parameters:
+        - $ref: "#/components/parameters/SystemInstanceId"
       requestBody:
         required: true
         content:
@@ -106,7 +112,7 @@ paths:
         accepted bytes remain unchanged.
 
         ORD defines no size limit for resource definitions. An implementation may define and must
-        document its own limit.
+        document its own limit. A future aggregator self-description could advertise this limit.
       tags: [ResourceDefinitions]
       parameters:
         - $ref: "#/components/parameters/IfMatch"
@@ -187,8 +193,10 @@ components:
       in: query
       required: false
       description: |-
-        Aggregator-issued identifier. Required for `system-instance` and must not be supplied for
-        other perspectives.
+        Aggregator-issued identifier for a system instance. It is required for a `system-instance`
+        resource-definition upload and optional for a `system-instance` document upload. For a
+        document, it must match the instance described by the content and authoritative aggregator
+        state. It must not be supplied for other perspectives.
       schema:
         type: string
         minLength: 1

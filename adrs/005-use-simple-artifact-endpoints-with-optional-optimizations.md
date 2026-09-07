@@ -28,20 +28,20 @@ Chosen option: **post document envelopes and put individual definition associati
 
 ### Version-1 (MVP) scope
 
-- **Required:** the two endpoints below process requests synchronously and return validation results; document requests are identity-less, definition requests are idempotent, and request-wide errors use Problem Details.
+- **Required:** the two endpoints below process requests synchronously and return validation results; document requests are identity-less, definition requests are idempotent, and request-wide errors use Problem Details. A system-instance document can optionally identify its aggregator context explicitly.
 - **Optional v1 optimizations:** standard HTTP conditional requests, strong ETags, and `Content-Digest` can be used without changing the push protocol.
-- **Future extension:** a submission resource could group uploads, expose asynchronous validation status, and define an explicit commit boundary. Version 1 defines no submission or operations endpoint.
+- **Future extensions:** a submission resource could group uploads, expose asynchronous validation status, and define an explicit commit boundary. Aggregator self-description could advertise the push endpoint, capabilities, and implementation limits. Version 1 defines neither extension.
 
 The minimum version-1 API has these paths relative to an implementation-defined base URL:
 
 ```text
-POST   /v1/documents
+POST   /v1/documents{?systemInstanceId}
 PUT    /v1/resource-definitions{?perspective,ordId,url,systemVersion,systemInstanceId}
 ```
 
 The aggregator communicates its base URL during onboarding or through its own discovery mechanism. For example, it could use `https://aggregator.example.org/ord-push`; the `/v1` paths are standardized.
 
-`POST /v1/documents` accepts one standard ORD Document as an identity-less envelope. It has no path parameters or query parameters and creates no document resource. The document MUST explicitly include its perspective. Credentials and document content determine the publication context. Omitting an item from a later document does not remove it; providers use ORD tombstones instead. Retrying a request may repeat processing but does not create duplicate ORD resources.
+`POST /v1/documents` accepts one standard ORD Document as an identity-less envelope and creates no document resource. The document MUST explicitly include its perspective. Credentials and document content determine the publication context. For `system-instance`, an optional aggregator-issued `systemInstanceId` can identify the same context used by definition uploads. If omitted, the remaining context MUST identify exactly one instance; the parameter MUST NOT be used for another perspective. Omitting an item from a later document does not remove it; providers use ORD tombstones instead. Retrying a request may repeat processing but does not create duplicate ORD resources.
 
 The HTTP verbs reflect whether the target has an identity: a document does not, so it is submitted with `POST`; the definition association from [ADR 003](./003-link-pushed-resource-definitions-by-resource-and-context.md) does, so `PUT` can replace it idempotently.
 
@@ -55,7 +55,7 @@ For each ORD item or definition association, the last accepted update wins. Vers
 
 Request-wide failures use RFC 9457 Problem Details (`application/problem+json`). An optional `issues` extension provides portable error, warning, and information fields. Aggregators MAY add validator-specific extension members; clients MUST ignore unknown extensions.
 
-Providers SHOULD keep ORD documents within 2 MB (2,000,000 bytes). An aggregator MUST accept documents up to and including that size and MAY support a larger documented limit. ORD defines no baseline size limit for resource definitions because some formats cannot be divided across files; an aggregator MAY set and MUST document its own limit.
+Providers SHOULD keep ORD documents within 2 MB (2,000,000 bytes). An aggregator MUST accept documents up to and including that size and MAY support a larger documented limit. ORD defines no baseline size limit for resource definitions because some formats cannot be divided across files; an aggregator MAY set and MUST document its own limit. A future aggregator self-description could advertise these limits.
 
 ### Consequences
 

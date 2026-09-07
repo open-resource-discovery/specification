@@ -223,7 +223,7 @@ The versioned `/v1` API paths are standardized.
 
 Push transport uses the standard [ORD Document](#ord-document).
 The document is an identity-less transport envelope, not an independently managed resource.
-The document endpoint has no path parameters or query parameters:
+The document endpoint has no path parameters and accepts only an optional `systemInstanceId` query parameter:
 
 ```http
 POST /ord-push/v1/documents HTTP/1.1
@@ -245,6 +245,7 @@ Content-Type: application/json
 
 The aggregator derives the publication context from the publisher identified by the credentials and from the document content.
 The document MUST explicitly include `perspective`; the ORD Document schema's default does not apply to push.
+For a `system-instance` document, the provider MAY also supply the aggregator-issued `systemInstanceId` used for definition uploads. If supplied, it MUST identify the same system instance as the document content and the aggregator's authoritative state. If omitted, the aggregator MUST be able to identify exactly one system instance from that information; otherwise, it MUST reject the document as unprocessable. `systemInstanceId` MUST NOT be supplied for another perspective.
 The request publishes the top-level ORD items identified in the document; it creates no document resource and assigns no document ID.
 Omitting an item from a later envelope does not remove it.
 Providers MUST use ORD tombstones to remove resources.
@@ -286,6 +287,7 @@ When serving aggregated ORD content, the aggregator MUST expose an accepted defi
 
 ORD defines no size limit for resource-definition uploads because some definition formats cannot be divided across files.
 An aggregator MAY define an implementation-specific limit and MUST document it.
+Version 1 does not define machine-readable discovery of that limit; a future aggregator self-description could advertise push capabilities and limits.
 
 Uploading a definition is idempotent for its exact association.
 To change a definition, a provider uploads new bytes to the same association, which replaces it in place.
@@ -355,6 +357,7 @@ Permission to use ORD ID namespaces is separate from the publisher identity.
 The namespace of an ORD ID can differ from the described system's namespace, for example when a system publishes a resource governed by an authority.
 The aggregator MUST validate both the publisher and the allowed ORD ID namespaces.
 It MUST NOT grant authority merely because an identifier or namespace occurs in the request.
+For document requests, an optional `systemInstanceId` can disambiguate the instance context without changing the ORD Document.
 For definition requests, the publisher identified by the credentials combines with the explicit context parameters.
 The aggregator issues and owns the `systemInstanceId` required for system-instance definition uploads.
 
