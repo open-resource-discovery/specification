@@ -38,7 +38,7 @@ The specification distinguishes three stages:
 2. **Validation** parses the artifact, establishes its publication context, checks document-level constraints, and validates each top-level item or uploaded definition against currently available content.
 3. **Resource publication** updates the discoverable state of each item with its available dependencies.
 
-A malformed body, unsupported ORD version, unauthorized publisher, or invalid document context is a request-wide failure. Once a document is parsed and assigned to its context, validation and publication SHOULD be isolated per top-level item. One invalid resource or definition MUST NOT prevent otherwise valid, independent resources from being updated.
+A malformed body, unsupported ORD version, unauthorized publisher, invalid document context, or invalid top-level array structure is a request-wide failure. Once the envelope is safe to process, the aggregator MUST validate each top-level item independently. An item-level schema or semantic error MUST NOT prevent otherwise valid, independent items from being updated.
 
 Before returning a success response, the aggregator MUST complete validation against currently available content. A document response MUST report whether each top-level item was applied, retained as stale, or rejected.
 

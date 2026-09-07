@@ -302,9 +302,8 @@ The aggregator MAY therefore temporarily retain dangling references, consistent 
 A valid resource MAY be published while a referenced definition is missing or invalid, but the aggregator MUST report the dangling link.
 
 Before returning a success response, the aggregator MUST validate the upload against the content currently available to it.
-A malformed body, unsupported ORD version, unauthorized publisher, or invalid document context is a request-wide failure.
-After a document can be parsed and assigned to its publication context, validation and publication SHOULD be isolated per top-level ORD item.
-One invalid resource or definition MUST NOT prevent otherwise valid, independent resources from being updated.
+Malformed JSON is a request-wide failure and returns `400 Bad Request`. An unsupported ORD version, invalid or missing perspective, invalid document context, unknown top-level property, or top-level item property that is not an array makes the document envelope unprocessable and returns `422 Unprocessable Content`.
+After the envelope is safe to process, the aggregator MUST validate each array entry independently against the corresponding ORD Document schema definition and semantic rules. An item-level schema or semantic error MUST NOT prevent otherwise valid, independent items from being updated. The aggregator MUST NOT use whole-document schema validation as an all-or-nothing admission check.
 An invalid resource update SHOULD leave its last valid version available and marked stale.
 A resource that has never been valid MUST NOT be presented as valid.
 
