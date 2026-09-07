@@ -28,7 +28,7 @@ Chosen option: **standardize optional push transport alongside pull**.
 
 - **Required when push is supported:** the aggregator implements the minimum push contract defined by the ORD specification and Aggregator Push API.
 - **Optional deployment choice:** a provider or aggregator can support pull, push, or both. Push does not change the ORD Document or ORD semantics.
-- **Future extension:** automatic discovery of the push API, for example through `.well-known/open-resource-discovery`, is not defined in version 1.
+- **Future extension:** automatic discovery of the push API and its capabilities or limits, for example through `.well-known/open-resource-discovery`, is not defined in version 1.
 
 An ORD provider MAY publish ORD documents and their referenced resource definitions to an ORD aggregator through the ORD Aggregator Push API. An aggregator MAY support push, pull, or both. Supporting push does not require removing or changing the existing ORD Provider API.
 
