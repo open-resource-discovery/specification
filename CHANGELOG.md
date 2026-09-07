@@ -14,7 +14,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added **Push Transport** documentation and an ORD Aggregator Push API
   - Push transport allows ORD providers to push ORD documents and resource definitions separately to aggregators
-  - ORD documents are submitted as identity-less envelopes; resource definitions are associated by perspective, ORD ID, and resolved URL
+  - ORD documents are submitted as identity-less envelopes; resource definitions are associated by perspective, ORD ID, and their exact URL-reference string
   - The versioned `/v1` API defines synchronous validation results, conditional definition updates, and Problem Details errors
   - The ORD Document interface is unchanged
 

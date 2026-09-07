@@ -24,15 +24,15 @@ An ORD resource links to a definition by URL, but the same ORD ID or URL can occ
 
 ## Decision Outcome
 
-Chosen option: **identify each upload by its ORD resource, resolved URL, and publication context**.
+Chosen option: **identify each upload by its ORD resource, URL reference, and publication context**.
 
 ### Version-1 (MVP) scope
 
-- **Required:** definitions stay in their native format; every upload identifies its perspective, ORD resource, resolved URL, and any required version or instance context.
+- **Required:** definitions stay in their native format; every upload identifies its perspective, ORD resource, exact URL reference, and any required version or instance context.
 - **Optional v1 optimizations:** an aggregator can reuse an upload for matching URLs and use `Content-Digest` or internal byte deduplication, without merging resource associations or authorization.
 - **Future extensions:** none are proposed by this decision; a container or publication manifest would require a separate protocol decision.
 
-The credentials identify the publisher as defined by [ADR 004](./004-authorize-pushes-using-publisher-credentials.md). Every request supplies `perspective`, `ordId`, and `url`, where `url` is the fully resolved absolute definition URL. The perspective determines the remaining context:
+The credentials identify the publisher as defined by [ADR 004](./004-authorize-pushes-using-publisher-credentials.md). Every request supplies `perspective`, `ordId`, and `url`, where `url` is the exact URI-reference string used in the ORD Document. The perspective determines the remaining context:
 
 - `system-type` and `system-independent` require no additional parameter;
 - `system-version` requires `systemVersion`, equal to `describedSystemVersion.version`; and
@@ -41,11 +41,11 @@ The credentials identify the publisher as defined by [ADR 004](./004-authorize-p
 `systemVersion` and `systemInstanceId` MUST NOT be supplied for other perspectives.
 Requiring `systemInstanceId` avoids inference from the aggregator's current state: a request that identifies one instance today could become ambiguous when another instance is added.
 
-The ORD Document remains the source of truth. The aggregator MUST verify that the identified resource in that context references the URL and declares a compatible media type. Request parameters express the intended relationship but do not create it, so a definition-first upload receives a `pending` result until the relationship can be verified against a document.
+The ORD Document remains the source of truth. After normal query-parameter decoding, the aggregator MUST verify that the identified resource in that context contains exactly the supplied `url` string and declares a compatible media type. It does not resolve or normalize the value for this comparison. Request parameters express the intended relationship but do not create it, so a definition-first upload receives a `pending` result until the relationship can be verified against a document.
 
-Within one exact publication context, matching references to the same resolved URL denote the same definition bytes. An aggregator MAY reuse one upload for all such references, but it retains a separate relationship for each ORD resource. References that require different bytes MUST use different URLs.
+Within one exact publication context, matching URL-reference strings denote the same definition bytes. An aggregator MAY reuse one upload for all such references, but it retains a separate relationship for each ORD resource. References that require different bytes MUST use different URL-reference strings.
 
-Pushed documents MUST use absolute or base-URL-relative definition URLs, resolved through the existing ORD `baseUrl` rules. Document-relative URLs cannot be resolved because a pushed document has no retrieval URL.
+Definition URLs are opaque association keys in push transport and MAY use any URI-reference form accepted by the ORD Document schema, including document-relative values. The aggregator MUST expose an accepted definition through a resolvable URL when serving aggregated ORD content. This exception does not make other document-relative URLs resolvable in a pushed document.
 
 An aggregator MAY use a verified `Content-Digest` to help identify equal bytes for physical deduplication, including across publication contexts. Deduplication MUST NOT merge resource associations, authorization, visibility, retention, or lifecycle.
 
@@ -57,7 +57,7 @@ An aggregator MAY use a verified `Content-Digest` to help identify equal bytes f
 - ➖ Definition-first uploads can remain pending until their relationship is known.
 - ⚠️ Providers must send relationship parameters in addition to the native definition bytes.
 - ⚠️ Providers need an aggregator-issued ID for system-instance uploads.
-- ⚠️ Document-relative definition URLs are unavailable in push transport.
+- ⚠️ A definition URL is matched as an exact string, so equivalent but differently written URI references identify different associations.
 
 ## Alternatives
 
@@ -68,7 +68,7 @@ An aggregator MAY use a verified `Content-Digest` to help identify equal bytes f
 - ⚠️ A document can contain several resources, so it still needs a per-item failure policy.
 - ⚠️ Changes the transport-neutral ORD Document interface, which [ADR 001](./001-add-push-transport-alongside-pull.md) requires to stay unchanged.
 
-### Resolved URL and context only
+### URL reference and context only
 
 - ✅ Uses the existing mandatory URL and permits one upload for shared URLs.
 - ⚠️ Cannot identify the intended resource when several resources share a URL or anchor a definition-first upload to a future resource.

@@ -27,7 +27,7 @@ Chosen option: **independently accept artifacts and publish valid items with par
 ### Version-1 (MVP) scope
 
 - **Required:** each request is processed synchronously against currently available content; failures are isolated per top-level item after request-wide checks; stored content is revalidated when related content changes.
-- **Optional v1 behavior:** an aggregator can retain a last valid resource, definition, or Package after an invalid update, but it must report that fallback as stale.
+- **Optional v1 behavior:** an aggregator can retain a last valid resource or Package after an invalid item update, but it must report that fallback as stale.
 - **Future extension:** a submission resource could group uploads, expose asynchronous status, and define an explicit commit boundary. Version 1 defines none of those semantics.
 
 After request-wide checks, the aggregator validates and reports each item independently. It applies valid items and rejects or retains stale versions of invalid ones. Resource publication is not atomic across a document, its items, and its definitions.
@@ -42,7 +42,11 @@ A malformed body, unsupported ORD version, unauthorized publisher, or invalid do
 
 Before returning a success response, the aggregator MUST complete validation against currently available content. A document response MUST report whether each top-level item was applied, retained as stale, or rejected.
 
-A valid resource MAY be published while a referenced definition is missing or invalid; the dangling link MUST be reported. The aggregator MUST revalidate stored content when related content changes. If a resource or definition update is invalid, the aggregator SHOULD retain its last valid version and mark it stale. A resource or definition that has never been valid MUST NOT be exposed as valid.
+A valid resource MAY be published while a referenced definition is missing or invalid; the dangling link MUST be reported. The aggregator MUST revalidate stored content when related content changes. If a resource update is invalid, the aggregator SHOULD retain its last valid version and mark it stale. A resource that has never been valid MUST NOT be exposed as valid.
+
+A resource-definition request contains one definition. If it has any validation error, the aggregator rejects the request as a whole and leaves previously accepted bytes unchanged. A valid definition can be accepted as pending when its relationship to an ORD resource cannot yet be verified.
+
+For each ORD item or definition association, the last accepted update wins. Version 1 does not infer chronological order from document content. `stale` means that a previous valid item was retained after an invalid update; it does not mean that an older update was detected.
 
 Package inheritance follows the same model but is not push-specific: an aggregator MAY use the last valid Package for existing dependent resources, but MUST report the stale fallback; a new dependent resource without a valid Package remains unresolved.
 

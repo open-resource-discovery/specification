@@ -32,7 +32,7 @@ Chosen option: **standardize optional push transport alongside pull**.
 
 An ORD provider MAY publish ORD documents and their referenced resource definitions to an ORD aggregator through the ORD Aggregator Push API. An aggregator MAY support push, pull, or both. Supporting push does not require removing or changing the existing ORD Provider API.
 
-Transport does not change ORD meaning. Push uses the standard ORD Document interface, existing perspectives, resource identities, URL-resolution rules, validation rules, lifecycle rules, and visibility rules. An ORD document MUST NOT carry push-only properties. Aggregators SHOULD use the same semantic processing pipeline regardless of whether content arrived through push or pull.
+Transport does not change ORD meaning. Push uses the standard ORD Document interface, existing perspectives, resource identities, validation rules, lifecycle rules, and visibility rules. An ORD document MUST NOT carry push-only properties. Separately pushed definition URLs are matched as described in [ADR 003](./003-link-pushed-resource-definitions-by-resource-and-context.md). Aggregators SHOULD use the same semantic processing pipeline regardless of whether content arrived through push or pull.
 
 The aggregator communicates its API base URL to providers, for example during onboarding.
 
