@@ -9,7 +9,8 @@ info:
 
     Every operation requires authentication. Each credential identifies exactly one publisher:
     either one described system type or one system-independent publisher.
-    The concrete security scheme and API base URL are chosen and communicated by the aggregator.
+    The concrete security scheme and API base URL are chosen and communicated by the aggregator;
+    they are therefore not defined by this generic API description.
     For each ORD item or definition association, the last accepted update wins; the API does not
     infer chronological order from document content.
 
@@ -23,9 +24,6 @@ externalDocs:
 servers:
   - url: https://aggregator.example.org/ord-push
     description: Example base URL; each aggregator communicates its actual base URL.
-security:
-  - OAuth2ClientCredentials: [ord.push]
-  - MutualTLS: []
 tags:
   - name: Documents
     description: Submit identity-less ORD Document envelopes.
@@ -144,19 +142,6 @@ paths:
           $ref: "#/components/responses/UnexpectedError"
 
 components:
-  securitySchemes:
-    OAuth2ClientCredentials:
-      type: oauth2
-      description: Example OAuth 2.0 client-credentials scheme.
-      flows:
-        clientCredentials:
-          tokenUrl: https://aggregator.example.org/oauth2/token
-          scopes:
-            ord.push: Publish ORD content.
-    MutualTLS:
-      type: mutualTLS
-      description: Example mutual TLS scheme.
-
   parameters:
     Perspective:
       name: perspective
