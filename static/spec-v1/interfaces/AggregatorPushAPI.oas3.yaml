@@ -56,9 +56,15 @@ paths:
 
         Providers should keep ORD documents within 2 MB (2,000,000 bytes). Implementations must
         accept documents up to and including that size and may support a larger documented limit.
+
+        A provider may send an optional `Idempotency-Key` header so an aggregator that supports it
+        can recognize and safely retry a submission. Reusing a key with a different request payload
+        returns `409 Conflict`. Support is optional; resource identity remains the primary safeguard
+        against duplicates.
       tags: [Documents]
       parameters:
         - $ref: "#/components/parameters/SystemInstanceId"
+        - $ref: "#/components/parameters/IdempotencyKey"
       requestBody:
         required: true
         content:
@@ -74,6 +80,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
         "413":
           $ref: "#/components/responses/ContentTooLarge"
         "415":
@@ -222,6 +230,18 @@ components:
       description: Use `*` for a create-only request.
       schema:
         type: string
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: |-
+        Optional client-generated key that lets an aggregator recognize and safely retry a document
+        submission, following the IETF `Idempotency-Key` header field. An aggregator that supports it
+        returns the original result for a repeated key without reprocessing. Reusing a key with a
+        different request payload returns `409 Conflict`.
+      schema:
+        type: string
+        minLength: 1
 
   headers:
     ETag:
@@ -273,6 +293,12 @@ components:
             $ref: "#/components/schemas/Problem"
     PreconditionFailed:
       description: An `If-Match` or `If-None-Match` precondition failed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    Conflict:
+      description: An `Idempotency-Key` was reused with a different request payload.
       content:
         application/problem+json:
           schema:

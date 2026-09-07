@@ -1,5 +1,4 @@
 ---
-status: proposed
 date: 2026-09-06
 depends-on:
   - ./001-add-push-transport-alongside-pull.md

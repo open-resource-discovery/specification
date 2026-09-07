@@ -1,5 +1,4 @@
 ---
-status: proposed
 date: 2026-09-06
 depends-on:
   - ./001-add-push-transport-alongside-pull.md
@@ -9,7 +8,7 @@ depends-on:
 
 ## Context and Problem Statement
 
-An ORD document can describe many related resources, and several sources may contribute to one application's metadata. Treating a whole document—or the document and all referenced definitions—as one transaction would let one failure block unrelated updates and would require coordination across requests. Partial publication is therefore a normal state, not merely an error condition.
+An ORD document can describe many related resources, and several sources may contribute to one application's metadata. Treating a whole document (or the document and all referenced definitions) as one transaction would let one failure block unrelated updates and would require coordination across requests. Partial publication is therefore a normal state, not merely an error condition.
 
 Pull already retrieves an ORD document and each definition separately, allowing temporary dangling references. Push should preserve this eventual consistency while defining interoperable failure isolation and reporting. What should succeed or fail together?
 
