@@ -48,6 +48,10 @@ export async function copyGeneratedToDestination(): Promise<void> {
 			"./spec/v1/DocumentAPI.oas3.yaml",
 			"static/spec-v1/interfaces/DocumentAPI.oas3.yaml",
 		);
+		await fs.copy(
+			"./spec/v1/AggregatorPushAPI.oas3.yaml",
+			"static/spec-v1/interfaces/AggregatorPushAPI.oas3.yaml",
+		);
 
 		// Create UMS directories and copy files
 		const umsDirectories = [
