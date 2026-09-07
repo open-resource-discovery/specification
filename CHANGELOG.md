@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added optional `describedSystemInstance.globalId` property: the globally unique ID of the system instance (tenant), assigned and owned by the ORD aggregator (unique within the connected aggregator). It records the same identity that can be passed as the `Global-Tenant-Id` header in the `open` and `basic-auth` access strategies. Cross-linked `localId`/`Local-Tenant-Id` and `globalId`/`Global-Tenant-Id` between the ORD Document interface and the access-strategy documentation.
+
 ### Changed
 
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
