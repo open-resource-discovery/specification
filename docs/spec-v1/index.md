@@ -249,7 +249,7 @@ The request publishes the top-level ORD items identified in the document; it cre
 Omitting an item from a later envelope does not remove it.
 Providers MUST use ORD tombstones to remove resources.
 Retrying the same document request MAY repeat processing, but resource identity and publication context prevent duplicate ORD resources.
-ORD documents MUST NOT exceed 2 MB, and an aggregator MUST accept documents up to and including that limit.
+Providers SHOULD keep ORD documents within 2 MB (2,000,000 bytes). Aggregators MUST accept documents up to and including that size and MAY support a larger documented limit.
 
 A pushed document MUST NOT contain document-relative URLs (`./`, `../`, or bare relative paths), because the envelope has no retrieval URL.
 It MAY use absolute URLs or base-URL-relative URLs when the existing ORD properties provide the required base URL context.
@@ -333,11 +333,6 @@ Clients MUST ignore extension members they do not recognize.
 
 The version-1 push API processes each request synchronously. It does not define submissions, asynchronous operation resources, batching, or commit semantics. A future extension could combine those concerns in a submission resource, but that model is not part of this specification.
 
-##### Transfer Behavior
-
-HTTP `Content-Encoding`, such as `gzip`, MAY be used for compression.
-Streaming and HTTP chunked transfer coding are transport implementation details rather than ORD capabilities.
-
 ##### Authentication and Authorization
 
 The push API MUST use HTTPS and authenticate every operation.
@@ -414,8 +409,8 @@ It is notated and distributed in the [JSON format](https://www.json.org/json-en.
 #### ORD Document Content
 
 The ORD document MUST be a valid [JSON](https://www.json.org/json-en.html) document with [UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoding.
-It MUST NOT exceed 2MB in size to ensure efficient transport and processing.
-If content exceeds this limit, split the information into multiple ORD documents.
+It SHOULD NOT exceed 2 MB (2,000,000 bytes) to ensure efficient transport and processing.
+Aggregators MUST support documents up to and including that size and MAY support a larger documented limit. Larger documents should otherwise be split into multiple ORD documents.
 
 The interfaces are described in [ORD document interface](./interfaces/Document.md), including [examples](spec-v1/examples/).
 
@@ -465,7 +460,7 @@ However, the change in the resource definition MUST be indicated through a versi
 - MUST be split if multiple [system namespaces](#system-namespace) or even system instances are described.
   At least one ORD document MUST be created for each, as the ORD document is scoped to describe a specific system type (static) or instance (dynamic).
 - MUST be split if different [perspectives](#perspectives) are described, as one document can only describe one perspective.
-- MUST be split when they become too big in size (MUST not exceed 2 MB).
+- SHOULD be split when they exceed 2 MB, unless the target aggregator supports a larger documented limit.
 - MAY be split according to lifecycle and ownership concerns (e.g. all customer or partner created resources together).
 - MAY be split according to team autonomy boundaries / bounded contexts / domains.
 - MAY be split to optimize retrieval and cache handling.

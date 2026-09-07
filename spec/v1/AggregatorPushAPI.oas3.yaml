@@ -47,8 +47,8 @@ paths:
         paths), because it has no retrieval URL. It can use absolute URLs or the existing ORD
         base-URL-relative form when the document provides the required base URL context.
 
-        ORD documents must not exceed 2 MB (2,000,000 bytes). Implementations must accept
-        documents up to and including that limit.
+        Providers should keep ORD documents within 2 MB (2,000,000 bytes). Implementations must
+        accept documents up to and including that size and may support a larger documented limit.
       tags: [Documents]
       requestBody:
         required: true
@@ -333,7 +333,7 @@ components:
           description: ORD ID, JSON Pointer, or resolved definition URL identifying the item.
         status:
           type: string
-          description: `pending` applies when a definition cannot yet be linked to a referencing ORD resource.
+          description: The `pending` outcome applies when a definition cannot yet be linked to a referencing ORD resource.
           enum: [applied, pending, stale, rejected]
         issues:
           type: array
