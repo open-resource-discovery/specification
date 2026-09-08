@@ -414,6 +414,17 @@ export interface ApiResource {
    */
   aiHint?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+   * referenced via `partOfPackage`.
+   * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+   * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   */
+  vendor?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -1378,6 +1389,17 @@ export interface EventResource {
    */
   aiHint?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+   * referenced via `partOfPackage`.
+   * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+   * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   */
+  vendor?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -1930,6 +1952,17 @@ export interface EntityType {
    */
   aiHint?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+   * referenced via `partOfPackage`.
+   * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+   * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   */
+  vendor?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -2279,6 +2312,17 @@ export interface Capability {
    */
   aiHint?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+   * referenced via `partOfPackage`.
+   * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+   * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   */
+  vendor?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -2595,6 +2639,17 @@ export interface DataProduct {
    * For guidance and best practices, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols#ai-hints-on-ord-resources).
    */
   aiHint?: string;
+  /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+   * referenced via `partOfPackage`.
+   * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+   * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   */
+  vendor?: string;
   /**
    * Defines which Package the resource is part of.
    *
@@ -3037,6 +3092,17 @@ export interface Agent {
    */
   aiHint?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+   * referenced via `partOfPackage`.
+   * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+   * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   */
+  vendor?: string;
+  /**
    * Defines which Package the resource is part of.
    *
    * MUST be a valid reference to a [Package](#package) ORD ID.
@@ -3340,6 +3406,17 @@ export interface Overlay {
    */
   description?: string;
   /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+   * referenced via `partOfPackage`.
+   * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+   * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   */
+  vendor?: string;
+  /**
    * The complete [SemVer](https://semver.org/) version string.
    *
    * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
@@ -3558,6 +3635,17 @@ export interface IntegrationDependency {
    * Detailed documentation SHOULD be attached as (typed) links.
    */
   description?: string;
+  /**
+   * Vendor / organization that is the creator (or responsible party) of this resource.
+   *
+   * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+   *
+   * When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+   * referenced via `partOfPackage`.
+   * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+   * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   */
+  vendor?: string;
   /**
    * Defines which Package the resource is part of.
    *
@@ -4095,6 +4183,13 @@ export interface Package {
    * MUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.
    *
    * MUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party.
+   *
+   * An ORD Aggregator SHOULD inherit `vendor` to every ORD resource contained in the Package
+   * when the resource does not declare `vendor` directly.
+   * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+   * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   *
+   * The Package assignment remains the shared source for inheritance to contained resources.
    */
   vendor: string;
   /**
