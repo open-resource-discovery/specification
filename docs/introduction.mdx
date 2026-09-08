@@ -51,7 +51,7 @@ Second, use a **central aggregator**, which can read metadata from all providers
 Open Resource Discovery (ORD) is a protocol that **enables applications and services to self-describe their exposed resources and capabilities**.
 It can be used to describe static documentation, but can also reflect tenant-specific configuration and extensions (at run-time).
 
-By adopting ORD, an application will implement a single-entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl the relevant information / metadata.
+An application publishes ORD information through a standardized transport. It can expose a read-only entry point for pull-based discovery or push its metadata to an ORD aggregator.
 
 <div className="img-box" style={{"maxWidth": "480px", aspectRatio: "1771/1422"}}>
 
@@ -251,7 +251,8 @@ One system can also have more than one role, e.g. an ORD Provider can also be an
 
 The [ORD Provider](./spec-v1/index.md#ord-provider) is a system that describes itself via ORD, so it's metadata becomes available to interested ORD Consumers.
 
-They have to implement one of the ORD transport modes (currently only a pull-based API is supported), so the ORD information and related metadata definitions can be discovered and fetched.
+They must implement at least one standardized ORD transport mode.
+With pull, they expose an ORD Provider API; with push, they send ORD documents and resource definitions to an ORD aggregator.
 
 <div className="img-box" style={{aspectRatio: "3144/972"}}>
 

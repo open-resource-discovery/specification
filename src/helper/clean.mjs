@@ -14,7 +14,12 @@ const config = {
 	cleanFoldersExcept: [
 		{
 			dir: "docs/spec-v1/interfaces",
-			keep: new Set(["index.mdx", "explorer.mdx", "document-api.mdx"]),
+			keep: new Set([
+				"index.mdx",
+				"explorer.mdx",
+				"document-api.mdx",
+				"aggregator-push-api.mdx",
+			]),
 		},
 		{
 			dir: "docs/spec-extensions/models",

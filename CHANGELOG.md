@@ -10,6 +10,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added **Push Transport** documentation and an ORD Aggregator Push API
+  - Push transport allows ORD providers to push ORD documents and resource definitions separately to aggregators
+  - ORD documents are submitted as identity-less envelopes; resource definitions are associated by perspective, ORD ID, and their exact URL-reference string
+  - The versioned `/v1` API defines synchronous validation results, conditional definition updates, and Problem Details errors
+  - The ORD Document interface is unchanged
+
 ### Changed
 
 - Clarified `OverlaySelectorByOperation` for OData targets: when the operation name alone is ambiguous (e.g. bound operations overloaded on multiple entity types), the selector MUST use the fully qualified signature (including parameters, e.g. `OData.Demo.Approval(Edm.Int32,Edm.String)`) or fall back to `jsonPath` to target the specific overload. When the name is already unique, the plain name remains sufficient. This makes explicit the pre-existing requirement that operation selectors resolve unambiguously.
