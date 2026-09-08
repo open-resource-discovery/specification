@@ -49,6 +49,12 @@ For each ORD item or definition association, the last accepted update wins. Vers
 
 Package inheritance follows the same model but is not push-specific: an aggregator MAY use the last valid Package for existing dependent resources, but MUST report the stale fallback; a new dependent resource without a valid Package remains unresolved.
 
+Because ingestion is per-item and no push carries a delta or a "complete set" marker, there is no operation that atomically replaces a whole perspective. A later document that omits an item does not retract it. To fully replace a perspective, a provider upserts the intended items and MUST tombstone every previously published item that should no longer exist; the aggregator does not treat absence from a push as removal. Reconciling against the prior published set is therefore the provider's responsibility.
+
+This places a standing synchronization burden on the provider for the entire lifetime of the publishing scope. When a resource disappears at the source (an API is disabled, a plugin is uninstalled, a feature is toggled off), the provider must independently detect that removal and emit the matching tombstone. A missed removal is not self-correcting: the aggregator has no way to know the item is gone and will serve stale content indefinitely, and the two states can drift further apart with every subsequent partial push. Getting this right requires the provider to durably track exactly what it has ever published and diff it against current reality on every change, which is precisely the reconciliation logic a full-replacement operation would otherwise absorb.
+
+A future submission resource could add an explicit "complete set" or commit boundary that expresses full replacement directly, for example *begin → declare the current set → commit*, where the aggregator derives removals by set difference and tombstones become unnecessary for this case. A companion "delete all content in a publishing scope" operation is only coherent inside such a transactional boundary (drop-then-add within one commit); offered as a bare stateless call it would create a window where the scope is empty and could leave it empty on a failed follow-up. This is a notable pull toward the transactional (submission) style and a real limitation of the per-item model chosen for v1.
+
 ### Consequences
 
 - ✅ Simple providers can upload documents and definitions independently.
@@ -56,6 +62,8 @@ Package inheritance follows the same model but is not push-specific: an aggregat
 - ✅ Every request receives its processing result directly.
 - ⚠️ Discovery can temporarily contain dangling links or valid versions from different upload times.
 - ⚠️ Aggregators must track item status, stale state, and cross-artifact revalidation.
+- ⚠️ Fully replacing a perspective requires the provider to tombstone removed items itself; absence from a push is never removal. An explicit full-replacement primitive is deferred to a future submission resource.
+- ⚠️ Tombstones must be emitted correctly for every removal over the whole lifetime of the publishing scope. A missed tombstone (a resource disabled or uninstalled without one) leaves stale content that never self-corrects, so providers carry standing reconciliation logic that a transactional replace-set operation would remove.
 
 ## Alternatives
 
@@ -66,8 +74,13 @@ Package inheritance follows the same model but is not push-specific: an aggregat
 
 ### Submission resource with explicit commit
 
+This is not only a later add-on: adopting it from the start is a genuine alternative to the chosen per-item model, making transactional submit-then-commit the v1 baseline instead of eventual consistency. A concrete sketch of the endpoints is in [ADR 005](./005-use-simple-artifact-endpoints-with-optional-optimizations.md#sketch-of-a-future-submission-extension-non-normative).
+
 - ✅ Could group several uploads, expose asynchronous validation status, and provide a multi-request consistency boundary.
-- ⚠️ Requires lifecycle, retention, commit, retry, failure, and cleanup semantics, so it belongs in a future extension rather than the version-1 API.
+- ✅ Makes full-perspective replacement a first-class operation: the provider declares the complete current set within one commit and the aggregator derives removals by set difference, so providers no longer maintain lifetime tombstone reconciliation. A scoped "delete all content" is coherent here as a drop-then-add inside the same commit, without a window where the scope is left empty.
+- ⚠️ Requires lifecycle, retention, commit, retry, failure, and cleanup semantics up front, so it is a larger v1 surface than the two artifact endpoints.
+- ⚠️ Diverges from pull, which is itself eventually consistent and per-artifact; the per-item model keeps push and pull aligned, so this was chosen as the v1 baseline and the submission model deferred rather than ruled out.
+- ➕ Not mutually exclusive with the chosen model: because a submission would stage the same document and definition uploads and only add a commit boundary, it can be layered on later as an additive option without changing the per-item endpoints. The baseline stays simple, and providers that need atomic replacement opt into submissions when the extension exists.
 
 ### Aggregator-specific behavior
 
