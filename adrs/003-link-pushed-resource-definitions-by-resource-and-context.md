@@ -62,9 +62,36 @@ An aggregator MAY use a verified `Content-Digest` to help identify equal bytes f
 
 ### Embedded definitions (previous proposal)
 
+An earlier iteration of this design carried the definitions inline in the ORD Document rather than as separate uploads. The document gained a top-level `definitions` map whose keys were the same `url` strings that resources already reference through `resourceDefinitions[].url`, and whose values held the definition content as a (escaped) string, so the document was self-contained:
+
+```jsonc
+{
+  "apiResources": [
+    {
+      "ordId": "sap.example:apiResource:Orders:v1",
+      "resourceDefinitions": [
+        {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "url": "/api/my-api/openapi.json"
+        }
+      ]
+    }
+  ],
+  // proposed addition: definition bytes keyed by the same url, as strings
+  "definitions": {
+    "/api/my-api/openapi.json": "{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"My API\",\"version\":\"1.0.0\"}}"
+  }
+}
+```
+
+The provider would `POST` this one enriched document and the aggregator would take each entry in `definitions` as stored bytes for the resource that references the matching `url`.
+
 - ✅ A provider can submit a document and its definitions in one request.
 - ⚠️ Definition bytes increase document size and are duplicated when several references share them.
-- ⚠️ A document can contain several resources, so it still needs a per-item failure policy.
+- ⚠️ Large or binary formats (for example EDMX or protobuf descriptors) inflate as escaped strings inside the JSON document and can push a single document past the 2 MB baseline, which some formats cannot be split to avoid.
+- ⚠️ A document can contain several resources, so it still needs a per-item failure policy; a single oversized or invalid entry in `definitions` makes the whole document expensive to retransmit.
+- ⚠️ Adds a `definitions` map that only exists for push, so the same document is no longer the transport-neutral artifact used for pull.
 - ⚠️ Changes the transport-neutral ORD Document interface, which [ADR 001](./001-add-push-transport-alongside-pull.md) requires to stay unchanged.
 
 ### URL reference and context only
