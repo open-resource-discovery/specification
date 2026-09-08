@@ -157,7 +157,8 @@ Key points:
     A removal mask MAY target the document root because it preserves the document itself.
   - `data` MUST NOT be `null`, an empty object `{}`, or an empty array `[]`; conformant tooling rejects these values.
 - **`merge` behavior**: arrays are appended, not replaced.
-  To replace an array, first `remove` it with `data: { "arrayField": null }`, then `merge` the new value.
+  To replace a selected array, use `update`.
+  To replace an array-valued field while preserving its containing object, first `remove` the field with `data: { "arrayField": null }`, then `merge` the new value.
 - **CSDL JSON concept selectors**: `merge`, `update`, and data-bearing `remove` operate on annotations while preserving structural CSDL content.
   `update` replaces the selected target's complete annotation set.
   This exception does not apply to `root` or `jsonPath`, which retain generic structural semantics.
