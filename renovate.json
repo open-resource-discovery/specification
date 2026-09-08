@@ -1,52 +1,52 @@
 {
-	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended"],
-	"timezone": "Europe/Berlin",
-	"schedule": ["before 6am on monday"],
-	"prConcurrentLimit": 5,
-	"prHourlyLimit": 2,
-	"addLabels": ["renovate"],
-	"lockFileMaintenance": { "enabled": true },
-	"packageRules": [
-		{
-			"description": "Prod dependencies: group non-major, hold new releases 3 days, automerge on green CI",
-			"matchDepTypes": ["dependencies"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"groupName": "prod dependencies (non-major)",
-			"minimumReleaseAge": "3 days",
-			"automerge": true
-		},
-		{
-			"description": "Tooling (non-runtime): devDependencies (npm) grouped with GitHub Actions; build-time only, doesn't ship",
-			"matchManagers": ["npm"],
-			"matchDepTypes": ["devDependencies"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"groupName": "tooling (non-runtime)",
-			"minimumReleaseAge": "3 days",
-			"automerge": true
-		},
-		{
-			"matchManagers": ["github-actions"],
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"groupName": "tooling (non-runtime)",
-			"minimumReleaseAge": "3 days",
-			"automerge": true
-		},
-		{
-			"description": "Major updates always need human review",
-			"matchUpdateTypes": ["major"],
-			"automerge": false,
-			"addLabels": ["needs-review"]
-		}
-	],
-	"vulnerabilityAlerts": {
-		"description": "Prod-dependency security fixes: no delay, immediate PR, automerge on green",
-		"matchDepTypes": ["dependencies"],
-		"groupName": "SECURITY (prod)",
-		"minimumReleaseAge": null,
-		"labels": ["security", "priority"],
-		"automerge": true,
-		"schedule": ["at any time"],
-		"prCreation": "immediate"
-	}
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Europe/Berlin",
+  "schedule": ["before 6am on monday"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "addLabels": ["renovate"],
+  "lockFileMaintenance": { "enabled": true },
+  "packageRules": [
+    {
+      "description": "Prod dependencies: group non-major, hold new releases 3 days, automerge on green CI",
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "prod dependencies (non-major)",
+      "minimumReleaseAge": "3 days",
+      "automerge": true
+    },
+    {
+      "description": "Tooling (non-runtime): devDependencies (npm) grouped with GitHub Actions; build-time only, doesn't ship",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "tooling (non-runtime)",
+      "minimumReleaseAge": "3 days",
+      "automerge": true
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "tooling (non-runtime)",
+      "minimumReleaseAge": "3 days",
+      "automerge": true
+    },
+    {
+      "description": "Major updates always need human review",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "addLabels": ["needs-review"]
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "description": "Prod-dependency security fixes: no delay, immediate PR, automerge on green",
+    "matchDepTypes": ["dependencies"],
+    "groupName": "SECURITY (prod)",
+    "minimumReleaseAge": null,
+    "labels": ["security", "priority"],
+    "automerge": true,
+    "schedule": ["at any time"],
+    "prCreation": "immediate"
+  }
 }
