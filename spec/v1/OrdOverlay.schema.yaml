@@ -646,7 +646,7 @@ definitions:
             A signature selector MUST NOT match a FunctionImport.
 
             A namespace-qualified name without a signature is sufficient only when it identifies
-            exactly one Action or Function.
+            exactly one Action, Function or Function Import.
             Otherwise, the selector MUST use a signature containing every declared parameter type
             in declaration order, including the binding parameter of a bound operation.
             Signature matching uses exact parameter count, order, and types.
