@@ -1,12 +1,16 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
-	"files": {
-		"ignoreUnknown": true,
-		"includes": [
-			"*.{json,js}",
-			"src/**",
-			"examples/implementation/no-auth/server.js",
-			"!src/generated"
-		]
-	}
+  "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "*.{json,js}",
+      "src/**",
+      "examples/implementation/no-auth/server.js",
+      "!src/generated"
+    ]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  }
 }
