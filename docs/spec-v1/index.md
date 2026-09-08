@@ -611,8 +611,9 @@ The following rules need to be implemented by ORD aggregators:
   - Ideally this situation doesn't happen and the ORD Providers update `lastUpdate`. Then the date can also better reflect the time when the change happened, not when it was detected.
 - The aggregator MUST apply all defined inheritances from root document properties to all the ORD information that it contains.
   - `policyLevels` MUST be inherited to the resource / Package level, with the latter taking precedence.
-- The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
-  - `vendor`, `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
+- The following inheritance rules from `Package` properties apply to all the ORD resources that the Package contains.
+  - If a resource does not declare `vendor` directly, the aggregator SHOULD inherit the Package `vendor` onto the resource.
+  - `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
   - `labels` MUST be merged without duplicated values.
     - Values of the same label key will be merged.
     - Duplicate values of the same label key will be removed.

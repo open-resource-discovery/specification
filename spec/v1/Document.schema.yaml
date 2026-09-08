@@ -548,6 +548,11 @@ definitions:
           MUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.
 
           MUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party.
+
+          An ORD Aggregator SHOULD inherit `vendor` to every ORD resource contained in the Package
+          when the resource does not declare `vendor` directly.
+
+          The Package assignment remains the shared source for inheritance to contained resources.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\-]+):()$
         maxLength: 256
         x-association-target:
@@ -997,6 +1002,18 @@ definitions:
           - "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools."
 
       ## Assignments to bundling concepts
+
+      vendor:
+        <<: *vendor
+        description: &resourceVendorDescription |-
+          Vendor / organization that is the creator (or responsible party) of this resource.
+
+          MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+
+          Providing `vendor` directly on the resource is RECOMMENDED.
+
+          When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+          referenced via `partOfPackage`.
 
       partOfPackage: &partOfPackage
         type: string
@@ -1696,6 +1713,8 @@ definitions:
       - apiProtocol
       - visibility
       - partOfPackage
+    x-recommended:
+      - vendor
     additionalProperties: false
 
   ############################################################################################################
@@ -1757,6 +1776,10 @@ definitions:
         examples: []
 
       ## Assignments to groupings
+
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
 
       partOfPackage:
         <<: *partOfPackage
@@ -1983,6 +2006,7 @@ definitions:
       - releaseStatus
     x-recommended:
       - lastUpdate
+      - vendor
 
   ############################################################################################################
 
@@ -2052,6 +2076,10 @@ definitions:
       aiHint:
         <<: *aiHint
         examples: []
+
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
 
       partOfPackage:
         <<: *partOfPackage
@@ -2209,6 +2237,7 @@ definitions:
       - releaseStatus
     x-recommended:
       - lastUpdate
+      - vendor
 
   ############################################################################################################
 
@@ -2378,6 +2407,10 @@ definitions:
           - "Use this data product to access **customer order** data. Filter by `customerId` and `orderDate` for targeted queries. Output port `customerOrderItems` provides line-item detail."
 
       ## Assignment to Bundles
+
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
 
       partOfPackage:
         <<: *partOfPackage
@@ -2703,6 +2736,7 @@ definitions:
       - outputPorts
     x-recommended:
       - lastUpdate
+      - vendor
 
   ############################################################################################################
 
@@ -3087,6 +3121,10 @@ definitions:
         examples:
           - "Invoke this agent to **resolve** open dispute cases. Provide the `caseId`; the agent autonomously gathers evidence, proposes resolution, and awaits approval before closing."
 
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -3238,6 +3276,7 @@ definitions:
       - partOfPackage
     x-recommended:
       - lastUpdate
+      - vendor
 
   ############################################################################################################
 
@@ -3270,6 +3309,10 @@ definitions:
         type: string
         minLength: 1
         description: *descriptionText
+
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
 
       version:
         <<: *version
@@ -3331,6 +3374,7 @@ definitions:
       - visibility
     x-recommended:
       - lastUpdate
+      - vendor
 
   ############################################################################################################
 
@@ -3529,6 +3573,10 @@ definitions:
         <<: *aiHint
         examples: []
 
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -3638,6 +3686,7 @@ definitions:
       - partOfPackage
     x-recommended:
       - lastUpdate
+      - vendor
 
   ############################################################################################################
 
@@ -3750,6 +3799,10 @@ definitions:
         minLength: 1
         description: *descriptionText
 
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -3842,6 +3895,8 @@ definitions:
       - visibility
       - partOfPackage
       - mandatory
+    x-recommended:
+      - vendor
 
   ############################################################################################################
 
@@ -5816,6 +5871,10 @@ definitions:
         description: *descriptionText
         examples: []
 
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
+
       partOfPackage:
         <<: *partOfPackage
         examples: []
@@ -5871,4 +5930,6 @@ definitions:
       - visibility
       - releaseStatus
       - partOfPackage
+    x-recommended:
+      - vendor
     additionalProperties: true
