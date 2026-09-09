@@ -548,6 +548,13 @@ definitions:
           MUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.
 
           MUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party.
+
+          An ORD Aggregator SHOULD inherit `vendor` to every ORD resource contained in the Package
+          when the resource does not declare `vendor` directly.
+          If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+          If they differ, the explicitly assigned resource value takes precedence during aggregation.
+
+          The Package assignment remains the shared source for inheritance to contained resources.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\-]+):()$
         maxLength: 256
         x-association-target:
@@ -997,6 +1004,18 @@ definitions:
           - "Use this API to **retrieve** and **manage** dispute cases. Prefer structured JSON payloads over free-text fields when invoking tools."
 
       ## Assignments to bundling concepts
+
+      vendor:
+        <<: *vendor
+        description: &resourceVendorDescription |-
+          Vendor / organization that is the creator (or responsible party) of this resource.
+
+          MUST be a valid reference to a [Vendor](#vendor) ORD ID.
+
+          When omitted, an ORD Aggregator SHOULD inherit `vendor` from the resource's [Package](#package)
+          referenced via `partOfPackage`.
+          If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
+          If they differ, the explicitly assigned resource value takes precedence during aggregation.
 
       partOfPackage: &partOfPackage
         type: string
@@ -1758,6 +1777,10 @@ definitions:
 
       ## Assignments to groupings
 
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -2052,6 +2075,10 @@ definitions:
       aiHint:
         <<: *aiHint
         examples: []
+
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
 
       partOfPackage:
         <<: *partOfPackage
@@ -2378,6 +2405,10 @@ definitions:
           - "Use this data product to access **customer order** data. Filter by `customerId` and `orderDate` for targeted queries. Output port `customerOrderItems` provides line-item detail."
 
       ## Assignment to Bundles
+
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
 
       partOfPackage:
         <<: *partOfPackage
@@ -3087,6 +3118,10 @@ definitions:
         examples:
           - "Invoke this agent to **resolve** open dispute cases. Provide the `caseId`; the agent autonomously gathers evidence, proposes resolution, and awaits approval before closing."
 
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -3270,6 +3305,10 @@ definitions:
         type: string
         minLength: 1
         description: *descriptionText
+
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
 
       version:
         <<: *version
@@ -3529,6 +3568,10 @@ definitions:
         <<: *aiHint
         examples: []
 
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
+
       partOfPackage:
         <<: *partOfPackage
         x-ums-reverse-relationship:
@@ -3749,6 +3792,10 @@ definitions:
         type: string
         minLength: 1
         description: *descriptionText
+
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
 
       partOfPackage:
         <<: *partOfPackage
@@ -5815,6 +5862,10 @@ definitions:
         minLength: 1
         description: *descriptionText
         examples: []
+
+      vendor:
+        <<: *vendor
+        description: *resourceVendorDescription
 
       partOfPackage:
         <<: *partOfPackage
