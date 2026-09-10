@@ -876,7 +876,7 @@ This is how consumers recognize customer-owned content, independent of which nam
 
 For cases where the [36-character namespace length limit](#namespace-constraints) is tight, a shorter alias `c` is also reserved and is equivalent to `customer`.
 Both `customer.*` and `c.*` map to the same customer vendor `customer:vendor:Customer:`.
-The `Vendor` entity lists the corresponding namespaces under its [`ord:namespace`](#vendor) label.
+A [`Vendor`](#vendor) MAY list the vendor namespaces that map to it under the reserved `ord:namespace` label, as done for the customer vendor.
 
 The limitation of using `customer.*` (or `c.*`) namespaces is that they are unique only within a tenant and once the resources are published and shared outside the local scope, the `customer` namespace will be insufficient.
 
