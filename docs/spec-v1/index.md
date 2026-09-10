@@ -788,6 +788,7 @@ A vendor namespace MUST be constructed according to the following rules:
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
   - There are reserved vendor namespaces:
     - `customer`: Used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources. This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+    - `c`: A shorter alias of `customer`, with identical semantics. Useful when the [namespace length limit](#namespace-constraints) is tight.
     - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
 - MUST match Regexp: `^[a-z0-9]+$`
 
@@ -870,7 +871,14 @@ To keep this situation simple, there is a reserved [vendor namespace](#vendor-na
 Everything within this namespace is owned by the customer, the owner of the tenant.
 In addition, there is one reserved authority namespace, specifically for customer in-app extensions: `customer.ext`.
 
-The limitation of using `customer.*` namespaces is that they are unique only within a tenant and once the resources are published and shared outside the local scope, the `customer` namespace will be insufficient.
+Resources that are created by the customer / user MUST be assigned to a [Package](#package) whose `vendor` is set to the reserved customer vendor `customer:vendor:Customer:`.
+This is how consumers recognize customer-owned content, independent of which namespace prefix the individual resource IDs use.
+
+For cases where the [36-character namespace length limit](#namespace-constraints) is tight, a shorter alias `c` is also reserved and is equivalent to `customer`.
+Both `customer.*` and `c.*` map to the same customer vendor `customer:vendor:Customer:`.
+The `Vendor` entity lists the corresponding namespaces under its [`ord:namespace`](#vendor) label.
+
+The limitation of using `customer.*` (or `c.*`) namespaces is that they are unique only within a tenant and once the resources are published and shared outside the local scope, the `customer` namespace will be insufficient.
 
 ### ORD ID
 
