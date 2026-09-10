@@ -3846,9 +3846,6 @@ export interface CapabilityIntegrationAspect {
  * The `Vendor` entity is giving more details on the vendor namespace.
  * For one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.
  *
- * A `Vendor` MAY declare the [vendor namespaces](../index.md#vendor-namespace) that map to it via the reserved `ord:namespace` [label](#labels).
- * This is used for the reserved customer vendor `customer:vendor:Customer:`, which maps to the `customer` namespace and its shorter alias `c`.
- *
  * For example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.
  */
 export interface Vendor {
