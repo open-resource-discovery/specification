@@ -22,7 +22,7 @@ spec:
       mandatory: true
     - name: 'operation'
       type: 'string'
-      description: "Namespace-qualified Action or Function name whose ReturnType is targeted.\n- For `edmx`: the namespace-qualified name of the Action or Function (e.g. `com.example.Svc.TerminateEmployee`).\n- For `csdl-json`: the namespace-qualified name looked up in the Namespace object."
+      description: "Namespace-qualified Action or Function whose return type is targeted.\nUse the same name or exact signature syntax as the\n[`operation`](#overlay-selector-by-operation) selector.\nWhen the operation is overloaded, the signature MUST identify one overload before\nits return type is resolved."
       mandatory: true
       constraints:
         minLength: 1
