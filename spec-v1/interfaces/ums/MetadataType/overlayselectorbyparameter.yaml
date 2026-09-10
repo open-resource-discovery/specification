@@ -24,7 +24,7 @@ spec:
         minLength: 1
     - name: 'operation'
       type: 'string'
-      description: "Required operation context for the selected parameter.\n- For OData: the namespace-qualified Action, Function, or FunctionImport name.\n- For OpenAPI: the `operationId` of the HTTP operation."
+      description: "Required operation context for the selected parameter.\n- For OData: use the same namespace-qualified name or exact signature syntax as the\n  [`operation`](#overlay-selector-by-operation) selector.\n  When the operation is overloaded, the signature MUST identify one overload before\n  `parameter` is resolved.\n- For OpenAPI: the `operationId` of the HTTP operation."
       mandatory: true
       constraints:
         minLength: 1
