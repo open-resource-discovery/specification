@@ -32,6 +32,8 @@ If the ORD Provider has metadata that is different per tenant and it understands
 The local tenant ID is the ID that the system instance itself created and uses to identify its tenants.
 It is passed along as a `Local-Tenant-Id` header.
 
+This is the same identity that can be recorded in an ORD document via the [`describedSystemInstance.localId`](../../spec-v1/interfaces/Document.md#system-instance_localid) property.
+
 ```http
 GET /.well-known/open-resource-discovery/document/1
 Content-Type: application/json
@@ -42,6 +44,8 @@ Local-Tenant-Id: 000023
 
 The global tenant ID is a globally unique ID for a system instance (tenant). The scope of uniqueness is within the connected aggregator.
 It is passed along as a `Global-Tenant-Id` header.
+
+This is the same identity that can be recorded in an ORD document via the [`describedSystemInstance.globalId`](../../spec-v1/interfaces/Document.md#system-instance_globalid) property.
 
 ```http
 GET /.well-known/open-resource-discovery/document/1
