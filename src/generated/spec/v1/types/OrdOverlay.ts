@@ -165,7 +165,7 @@ export type OverlaySelector =
  */
 export type OverlayPatchValue =
   | {
-      [k: string]: unknown | undefined;
+      [k: string]: unknown;
     }
   | unknown[]
   | string
@@ -661,7 +661,7 @@ export interface OverlaySelectorByReturnType {
  * This is an open/extensible object — any properties are allowed.
  */
 export interface OverlayMeta {
-  [k: string]: unknown | undefined;
+  [k: string]: unknown;
 }
 /**
  * Optional arbitrary metadata for use by overlay consumers, tooling, and registries.
@@ -673,5 +673,5 @@ export interface OverlayMeta {
  * This is an open/extensible object — any properties are allowed.
  */
 export interface OverlayMeta1 {
-  [k: string]: unknown | undefined;
+  [k: string]: unknown;
 }

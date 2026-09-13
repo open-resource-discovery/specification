@@ -1,7 +1,11 @@
-import type { SpecJsonSchemaRoot } from "@open-resource-discovery/spec-toolkit";
 import * as staticConfigurationSchema from "./generated/spec/v1/schemas/Configuration.schema.json";
 import * as staticDocumentSchema from "./generated/spec/v1/schemas/Document.schema.json";
 import * as staticOrdOverlaySchema from "./generated/spec/v1/schemas/OrdOverlay.schema.json";
+
+type SpecJsonSchemaRoot =
+  import("@open-resource-discovery/spec-toolkit", { with: {
+    "resolution-mode": "import",
+  }}).SpecJsonSchemaRoot;
 
 export * from "./generated/spec/v1/types";
 

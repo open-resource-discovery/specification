@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import { access, copyFile, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { log } from "./log";
 
@@ -125,8 +125,8 @@ export async function exportForNotebookLM(): Promise<void> {
     log.info("Starting NotebookLM export...");
 
     // Clean and recreate output directory
-    await fs.remove(outputDir);
-    await fs.ensureDir(outputDir);
+    await rm(outputDir, { recursive: true, force: true });
+    await mkdir(outputDir, { recursive: true });
     log.info(`Created output directory: ${outputDir}`);
 
     let successCount = 0;
@@ -138,7 +138,9 @@ export async function exportForNotebookLM(): Promise<void> {
       const srcPath = path.join(process.cwd(), doc.src);
 
       // Check if source file exists
-      if (!(await fs.pathExists(srcPath))) {
+      try {
+        await access(srcPath);
+      } catch {
         log.warn(`Skipping missing file: ${doc.src}`);
         skippedCount++;
         skippedFiles.push(doc.src);
@@ -151,7 +153,7 @@ export async function exportForNotebookLM(): Promise<void> {
       const destPath = path.join(outputDir, outputFilename);
 
       // Copy the file
-      await fs.copy(srcPath, destPath);
+      await copyFile(srcPath, destPath);
       successCount++;
     }
 

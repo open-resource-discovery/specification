@@ -9,20 +9,20 @@ spec:
   key:
     - 'id'
   visibility: 'public'
-  embedded: true
+  embedded: !!bool 'true'
   description: 'Defines the relation between Entity Types (via its ORD ID).'
   metadataProperties:
     - name: 'id'
       type: 'guid'
-      mandatory: true
-      unique: true
+      mandatory: !!bool 'true'
+      unique: !!bool 'true'
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId_ID'
       type: 'guid'
       description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
-      mandatory: true
+      mandatory: !!bool 'true'
       constraints:
-        maxLength: 255
+        maxLength: !!int '255'
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
     - name: 'relationType'
       type: 'string'
@@ -32,9 +32,9 @@ spec:
     - propertyName: 'ordId'
       relatedTypeName: 'EntityType'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      propertyBased: true
+      propertyBased: !!bool 'true'
       managedByProperty: 'ordId_ID'
       description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
-      mandatory: true
+      mandatory: !!bool 'true'
       reverseRelation:
         relationPropertyName: 'inverseRelatedEntityTypes'

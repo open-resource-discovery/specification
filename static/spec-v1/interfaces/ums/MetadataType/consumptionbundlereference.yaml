@@ -9,20 +9,20 @@ spec:
   key:
     - 'id'
   visibility: 'public'
-  embedded: true
+  embedded: !!bool 'true'
   description: "Reference to a Consumption Bundle.\n\nThis is a complex object to allow additional properties / selections to be attached."
   metadataProperties:
     - name: 'id'
       type: 'guid'
-      mandatory: true
-      unique: true
+      mandatory: !!bool 'true'
+      unique: !!bool 'true'
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId_ID'
       type: 'guid'
       description: 'The Consumption Bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.'
-      mandatory: true
+      mandatory: !!bool 'true'
       constraints:
-        maxLength: 255
+        maxLength: !!int '255'
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
     - name: 'defaultEntryPoint'
       type: 'string'
@@ -32,7 +32,7 @@ spec:
     - propertyName: 'ordId'
       relatedTypeName: 'ConsumptionBundle'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      propertyBased: true
+      propertyBased: !!bool 'true'
       managedByProperty: 'ordId_ID'
       description: 'The Consumption Bundle ORD ID (`ConsumptionBundle.ordId`) this reference points to.'
-      mandatory: true
+      mandatory: !!bool 'true'
