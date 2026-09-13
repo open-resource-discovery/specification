@@ -9,22 +9,22 @@ spec:
   key:
     - 'id'
   visibility: 'public'
-  embedded: true
+  embedded: !!bool 'true'
   metadataProperties:
     - name: 'id'
       type: 'guid'
-      mandatory: true
-      unique: true
+      mandatory: !!bool 'true'
+      unique: !!bool 'true'
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'returnType'
       type: 'boolean'
       description: "Flag indicating that the return type of the specified operation is the target.\nMUST be `true`. Use `operation` to identify the owning operation.\nSupported metadata formats:\n- `edmx` (OData v2/v4 CSDL XML): targets the `<ReturnType>` child element of the\n  matched Action or Function element.\n- `csdl-json` (OData v4 CSDL JSON): targets the `$ReturnType` object inside the matched\n  Action/Function overload array entry."
-      mandatory: true
+      mandatory: !!bool 'true'
     - name: 'operation'
       type: 'string'
       description: "Namespace-qualified Action or Function whose return type is targeted.\nUse the same name or exact signature syntax as the\n[`operation`](#overlay-selector-by-operation) selector.\nWhen the operation is overloaded, the signature MUST identify one overload before\nits return type is resolved."
-      mandatory: true
+      mandatory: !!bool 'true'
       constraints:
-        minLength: 1
+        minLength: !!int '1'
   customTypeDefinitions: []
   metadataRelations: []

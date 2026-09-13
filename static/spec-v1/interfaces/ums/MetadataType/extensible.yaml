@@ -9,22 +9,22 @@ spec:
   key:
     - 'id'
   visibility: 'public'
-  embedded: true
+  embedded: !!bool 'true'
   description: "Contains information about the extensibility of this resource.\n\nIf applicable, a description and further resources about extending this resource are provided."
   metadataProperties:
     - name: 'id'
       type: 'guid'
-      mandatory: true
-      unique: true
+      mandatory: !!bool 'true'
+      unique: !!bool 'true'
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'supported'
       type: 'string'
       description: 'Defines whether and how the resource can be extended with custom fields.'
-      mandatory: true
+      mandatory: !!bool 'true'
     - name: 'description'
       type: 'string'
       description: "A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThis description may contain detailed steps on how to extend the API.\nLinks to external resources can be provided within the description as markdown links.\n\nThis description MUST be provided if `supported` is set to `manual` or `automatic`."
       constraints:
-        minLength: 1
+        minLength: !!int '1'
   customTypeDefinitions: []
   metadataRelations: []

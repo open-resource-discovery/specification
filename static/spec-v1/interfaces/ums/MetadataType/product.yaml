@@ -9,50 +9,50 @@ spec:
   key:
     - 'id'
   visibility: 'public'
-  embedded: false
+  embedded: !!bool 'false'
   description: "A [**Product**](../concepts/grouping-and-bundling#product) in ORD is understood as a software product or service offering (whether commercial or free).\n\nIt is a high-level entity for structuring the software portfolio from a portfolio / software logistics perspective.\nWhile **system type** is a technical concept, **product** covers the portfolio and marketing view.\n\nPlease note that the ORD concept of a product is very simple on purpose.\nThere is no distinction between products and services and concepts like product versions, variants, etc.\n\nORD assumes that this is handled by specialized systems and that ORD only provides the means to correlate to them.\n\nTo learn more about the concept, see [Product](../concepts/grouping-and-bundling#product)."
   metadataProperties:
     - name: 'id'
       type: 'guid'
-      mandatory: true
-      unique: true
+      mandatory: !!bool 'true'
+      unique: !!bool 'true'
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId'
       type: 'string'
       description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
-      mandatory: true
+      mandatory: !!bool 'true'
       constraints:
-        maxLength: 255
+        maxLength: !!int '255'
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\-]+):()$'
     - name: 'correlationIds'
       type: 'string'
-      array: true
+      array: !!bool 'true'
       description: "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id)."
     - name: 'title'
       type: 'string'
       description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
-      mandatory: true
+      mandatory: !!bool 'true'
       constraints:
-        minLength: 1
-        maxLength: 255
+        minLength: !!int '1'
+        maxLength: !!int '255'
     - name: 'shortDescription'
       type: 'string'
       description: "Plain text short description.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
-      mandatory: true
+      mandatory: !!bool 'true'
       constraints:
-        minLength: 1
-        maxLength: 255
+        minLength: !!int '1'
+        maxLength: !!int '255'
     - name: 'description'
       type: 'string'
       description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
       constraints:
-        minLength: 1
+        minLength: !!int '1'
     - name: 'vendor_ID'
       type: 'guid'
       description: "Vendor / organization that is responsible for the Product.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID."
-      mandatory: true
+      mandatory: !!bool 'true'
       constraints:
-        maxLength: 256
+        maxLength: !!int '256'
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\-]+):()$'
     - name: 'parent_ID'
       type: 'guid'
@@ -61,7 +61,7 @@ spec:
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\-]+):()$'
     - name: 'tags'
       type: 'string'
-      array: true
+      array: !!bool 'true'
       description: "List of free text style tags.\nNo special characters are allowed except `-`, `_`, `.`, `/` and ` `.\n\nTags that are assigned to a `Package` are inherited to all of the ORD resources it contains."
     - name: 'labels'
       type: 'custom'
@@ -88,13 +88,13 @@ spec:
     - propertyName: 'vendor'
       relatedTypeName: 'Vendor'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      propertyBased: true
+      propertyBased: !!bool 'true'
       managedByProperty: 'vendor_ID'
       description: "Vendor / organization that is responsible for the Product.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID."
-      mandatory: true
+      mandatory: !!bool 'true'
     - propertyName: 'parent'
       relatedTypeName: 'Product'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      propertyBased: true
+      propertyBased: !!bool 'true'
       managedByProperty: 'parent_ID'
       description: "Optional product parent ORD ID, if a hierarchical product structure needs to be expressed.\n\nMUST be a valid reference to a [Product](#product) ORD ID."
