@@ -8,8 +8,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": ">=26.0.0",
-    "npm": ">=12.0.0"
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
   },
   "repository": {
     "type": "git",
@@ -48,7 +48,7 @@
     "@easyops-cn/docusaurus-search-local": "0.55.2",
     "@mdx-js/react": "3.1.1",
     "@open-resource-discovery/spec-toolkit": "0.9.1",
-    "@types/node": "26.5.1",
+    "@types/node": "24.13.4",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "clsx": "2.1.1",
