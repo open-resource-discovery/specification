@@ -3802,7 +3802,8 @@ definitions:
         description: |-
           List of integration aspects that make up the Integration Dependency.
 
-          Each aspect listed is a dedicated, constituent part (AND condition).
+          Each mandatory aspect is a dedicated, constituent part that needs to be fulfilled (AND condition).
+          System-type aspects can be combined with more detailed API-resource, event-resource or capability aspects.
         items:
           $ref: "#/definitions/IntegrationAspect"
 
@@ -3856,7 +3857,7 @@ definitions:
       Each aspect can list references to resources, which could be owned and defined by the integration target or by the described system itself.
       In case the reference links to own resources, it is implied that they are to be used by the integration target to fulfill the Integration Dependency.
 
-      If multiple resources are given within an aspect, they are considered alternatives to each other (OR condition).
+      If multiple dependencies are given within an aspect, including across `systemTypes`, `apiResources`, `eventResources` and `capabilities`, they are considered alternatives to each other (OR condition).
       In case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.
     properties:
       title:
@@ -3879,6 +3880,24 @@ definitions:
         description: |-
           If true, the references resources can be provided by multiple system instances.
           If not, only one integration target is supported.
+
+      systemTypes:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).
+
+          Each entry MUST be a valid [system namespace](../index.md#system-namespace).
+          Use separate aspects when multiple system types are required (AND condition).
+          System-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency.
+        items:
+          type: string
+          pattern: ^[a-z0-9]+(?:[.][a-z0-9]+){1}$
+          maxLength: 32
+        minItems: 1
+        uniqueItems: true
+        examples:
+          - ["sap.billing"]
 
       apiResources:
         type: array
@@ -3906,7 +3925,6 @@ definitions:
 
     additionalProperties: false
     required:
-      - title # TODO: Do we need a mandatory title?
       - mandatory
 
   ############################################################################################################

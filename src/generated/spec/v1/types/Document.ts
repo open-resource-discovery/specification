@@ -3659,7 +3659,8 @@ export interface IntegrationDependency {
   /**
    * List of integration aspects that make up the Integration Dependency.
    *
-   * Each aspect listed is a dedicated, constituent part (AND condition).
+   * Each mandatory aspect is a dedicated, constituent part that needs to be fulfilled (AND condition).
+   * System-type aspects can be combined with more detailed API-resource, event-resource or capability aspects.
    */
   aspects?: Aspect[];
   /**
@@ -3687,7 +3688,7 @@ export interface IntegrationDependency {
  * Each aspect can list references to resources, which could be owned and defined by the integration target or by the described system itself.
  * In case the reference links to own resources, it is implied that they are to be used by the integration target to fulfill the Integration Dependency.
  *
- * If multiple resources are given within an aspect, they are considered alternatives to each other (OR condition).
+ * If multiple dependencies are given within an aspect, including across `systemTypes`, `apiResources`, `eventResources` and `capabilities`, they are considered alternatives to each other (OR condition).
  * In case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.
  */
 export interface Aspect {
@@ -3697,7 +3698,7 @@ export interface Aspect {
    * MUST NOT exceed 255 chars.
    * MUST NOT contain line breaks.
    */
-  title: string;
+  title?: string;
   /**
    * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
@@ -3714,6 +3715,16 @@ export interface Aspect {
    * If not, only one integration target is supported.
    */
   supportMultipleProviders?: boolean;
+  /**
+   * List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).
+   *
+   * Each entry MUST be a valid [system namespace](../index.md#system-namespace).
+   * Use separate aspects when multiple system types are required (AND condition).
+   * System-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency.
+   *
+   * @minItems 1
+   */
+  systemTypes?: [string, ...string[]];
   /**
    * List of API Resource Dependencies.
    */
