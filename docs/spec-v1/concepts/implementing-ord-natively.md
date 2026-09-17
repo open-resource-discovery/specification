@@ -89,7 +89,7 @@ Most real applications, however, need to generate at least part of the response 
 
 An ORD provider can expose both static and dynamic metadata.
 The static document describes what a system type or version provides in general — it is fetched once.
-The dynamic document describes what a concrete system instance provides at runtime, including tenant-specific state — it is fetched per system instance.
+The dynamic representation describes what a concrete system instance provides at runtime, including tenant-specific state — it is fetched per system instance.
 Providers advertise these separately in the ORD configuration so that aggregators can handle them differently.
 
 The `system-version` document should be complete for that version of the application.
@@ -111,6 +111,8 @@ GET /open-resource-discovery/v1/documents/system-instance HTTP/1.1
 Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
 Global-Tenant-Id: c6c80b52-ecc1-47f8-9303-0d55fb67fd41
 ```
+
+As an alternative, a provider can publish `system-instance-delta`: a baseline-relative set of complete ORD entries that the aggregator composes with the static perspective. This is not a property-level patch. The example below intentionally uses the complete `system-instance` representation; see [System-Instance Delta](./perspectives.md#system-instance-delta) for the optimized form.
 
 Static and dynamic perspectives can be served by different implementations — for example, a static ORD Provider for the baseline and application code for the `system-instance` endpoint — as long as both use the same ORD IDs for the same resources.
 
@@ -299,7 +301,7 @@ For tenant-aware ORD, make sure the implementation clearly does these things:
 - advertise static and dynamic perspectives separately
 - resolve the tenant before generating `system-instance` metadata
 - map aggregator tenant IDs to local tenant IDs deliberately
-- generate a complete tenant-specific ORD document, not a delta
+- generate a complete tenant-specific ORD document when using `system-instance`; use the separate `system-instance-delta` semantics when publishing only baseline-relative entries
 - generate tenant-specific resource definitions with the same tenant context
 - update `lastUpdate` on affected resources when the tenant model changes between crawls, so aggregators re-fetch the resource definition — bumping `lastUpdate` is mandatory, bumping `version` is recommended only when the API itself changed
 

@@ -119,6 +119,8 @@ When a resource is decommissioned:
 - A [`Tombstone`](../interfaces/Document.md#ord-document_tombstones) MUST be added to the ORD document. Aggregators need this to distinguish an intentional removal from a temporary unavailability or publishing error.
 - The resource MAY be removed from the ORD document entirely, but keeping it with `releaseStatus: sunset` allows historical reference.
 
+In a [`system-instance-delta`](./perspectives.md#system-instance-delta), a tombstone has narrower semantics: it suppresses an entry inherited from the static baseline for that system instance. Such a tombstone MUST remain published while the entry is absent from the instance and does not decommission the static resource.
+
 ## Visual Overview
 
 ![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
