@@ -8,6 +8,18 @@ compatibility: Requires Git, Node.js, npm, GitHub CLI authentication, and networ
 
 Prepare releases through pull requests and publish them with the repository release workflow.
 
+## Golden rule
+
+A pull request that changes the published specification MUST NOT be merged unless a release will be created immediately afterward.
+
+The documentation site is built from main, while versioned consumers use the tagged and NPM-published specification.
+
+Delaying the release therefore makes the documentation describe a contract that consumers cannot obtain as a release.
+
+Batch related specification changes before merging them, not on main after the first contract-changing merge.
+
+Documentation corrections that do not change the contract do not require a release.
+
 ## Guardrails
 
 - Never commit, push, merge, tag, publish, or dispatch a workflow unless the user explicitly authorizes it.
