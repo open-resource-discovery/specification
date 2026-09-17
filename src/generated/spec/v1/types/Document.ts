@@ -5,7 +5,7 @@
  */
 export type Usage = "external" | "local";
 /**
- * Defines whether and how the resource can be extended with custom fields.
+ * Defines whether and how the resource can be extended.
  */
 export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
 
@@ -1308,9 +1308,9 @@ export interface Link {
 export interface Extensible {
   supported: ExtensibilitySupportLevel;
   /**
-   * A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   * A description about the extensibility capabilities of this resource, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
-   * This description may contain detailed steps on how to extend the API.
+   * This description may contain detailed steps on how to extend the resource.
    * Links to external resources can be provided within the description as markdown links.
    *
    * This description MUST be provided if `supported` is set to `manual` or `automatic`.
@@ -2423,6 +2423,7 @@ export interface Capability {
    * Generic Links with arbitrary meaning and content.
    */
   links?: Link[];
+  extensible?: Extensible;
   /**
    * List of free text style tags.
    * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
@@ -2796,6 +2797,7 @@ export interface DataProduct {
    * Generic Links with arbitrary meaning and content.
    */
   links?: Link[];
+  extensible?: Extensible;
   /**
    * List of industry tags.
    * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
@@ -3288,6 +3290,7 @@ export interface Agent {
    * Generic Links with arbitrary meaning and content.
    */
   links?: Link[];
+  extensible?: Extensible;
   /**
    * List of free text style tags.
    * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
