@@ -114,8 +114,8 @@ The [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) can stil
 Each system type MUST fully describe itself, including shared ORD information it exposes, publishes or relies on.
 There is no implicit inheritance between system types.
 
-- Shared ORD information MAY be published by multiple system types when the ORD ID identifies the same governed definition.
-- All publishers of the same ORD ID and same `version` MUST describe the shared definition consistently.
+- The same ORD ID MAY be published by *different* system types when it identifies the same ORD resource or taxonomy (a different scope, not a duplicate).
+- All publishers of the same ORD ID and same `version` MUST describe the same ORD resource or taxonomy consistently.
 - System-specific publication context MAY differ, such as product assignments, package inheritance, Consumption Bundle assignments, entry points or credentials.
 - The namespace owner is responsible for governing the shared definition and coordinating consistency.
 - [Packages](./grouping-and-bundling.md#package) that group only shared resources SHOULD normally use the same owning namespace as the grouped resources.
@@ -189,14 +189,11 @@ If ownership is cross-system or organizational rather than system-specific, use 
 
 ## Aggregator Rules
 
-Aggregators can receive the same shared ORD information from multiple system types.
-This duplication is valid when it represents the same governed definition, but the aggregator must not lose publication context.
+Aggregators can receive the same shared ORD ID from multiple system types.
+This is only expected when it identifies the same ORD resource or taxonomy reused across *different* system types (a different scope). The aggregator MUST keep these in their separate scopes so they do not collide; there is no merge of the descriptions across scopes. Each stored description MUST remain attributed to its publishing scope (system type, system version or system instance).
 
-- The uniqueness validation ("MUST NOT be described multiple times") applies within the same system type or system version scope, not globally across all system types.
-- The same shared ORD ID with the same `version` MUST describe the same definition across publishers.
-- The aggregator SHOULD validate that the shared definition is consistent across publishers and flag unexpected inconsistencies as validation warnings. Differences in publication context (such as product assignments, Consumption Bundles or entry points) are expected and not inconsistencies.
-- The aggregator MAY deduplicate the shared definition and associate it with all publishing system types and products.
-- The aggregator MAY instead store scoped records per system type/version if that is simpler.
+- Uniqueness applies within one perspective scope (the same system type, system version or system instance), not globally across all system types. A duplicate within one scope is a conflict and always an error.
+- The same shared ORD ID with the same `version` MUST describe the same ORD resource or taxonomy across publishers. Publication context (product assignments, Consumption Bundles, entry points) is not part of it and MAY differ per publisher.
 - If different system types publish different versions of the same shared ORD information, the catalog MUST preserve the system type/version context.
 
 For static catalogs using `system-type` or `system-version` perspectives, there are two valid strategies:
