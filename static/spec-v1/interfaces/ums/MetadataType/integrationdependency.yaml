@@ -94,7 +94,7 @@ spec:
       type: 'custom'
       customTypeName: 'IntegrationAspect'
       array: !!bool 'true'
-      description: "List of integration aspects that make up the Integration Dependency.\n\nEach aspect listed is a dedicated, constituent part (AND condition)."
+      description: "List of integration aspects that make up the Integration Dependency.\n\nEach mandatory aspect is a dedicated, constituent part that needs to be fulfilled (AND condition).\nSystem-type aspects can be combined with more detailed API-resource, event-resource or capability aspects."
     - name: 'relatedIntegrationDependencies_ID'
       type: 'guid'
       array: !!bool 'true'
@@ -122,7 +122,6 @@ spec:
         - name: 'title'
           type: 'string'
           description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
-          mandatory: !!bool 'true'
           constraints:
             minLength: !!int '1'
             maxLength: !!int '255'
@@ -138,6 +137,10 @@ spec:
         - name: 'supportMultipleProviders'
           type: 'boolean'
           description: "If true, the references resources can be provided by multiple system instances.\nIf not, only one integration target is supported."
+        - name: 'systemTypes'
+          type: 'string'
+          array: !!bool 'true'
+          description: "List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).\n\nEach entry MUST be a valid [system namespace](../index.md#system-namespace).\nUse separate aspects when multiple system types are required (AND condition).\nSystem-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency."
         - name: 'apiResources'
           type: 'custom'
           customTypeName: 'ApiResourceIntegrationAspect'

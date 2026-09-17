@@ -2,6 +2,27 @@
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
   "openResourceDiscovery": "1.16",
   "integrationDependencies": [
+    // This dependency requires sap.billing AND one of sap.s4pce OR sap.s4 OR sap.s4op.
+    // More detailed resource or capability aspects can be added as complementary requirements.
+    {
+      "ordId": "sap.example:integrationDependency:BillingAndERP:v1",
+      "version": "1.0.0",
+      "title": "Billing and ERP systems",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.xref:package:SomePackage:v1",
+      "mandatory": true,
+      "aspects": [
+        {
+          "mandatory": true,
+          "systemTypes": ["sap.billing"],
+        },
+        {
+          "mandatory": true,
+          "systemTypes": ["sap.s4pce", "sap.s4", "sap.s4op"],
+        },
+      ],
+    },
     // This is an example for a simple Integration Dependency
     // that only expresses that only declares that some events are needed together
     // This is needed for the SAP Event Broker to provide the "Subscription Content" related feature.
