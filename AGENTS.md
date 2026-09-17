@@ -31,4 +31,4 @@ Note: `npm run generate` runs automatically via pre-commit hook.
 
 ## Skills
 
-- `/release` - Release automation from `release/vX.Y.Z` branches
+- [release](.agents/skills/release/SKILL.md) - Prepare and publish releases from `release/vX.Y.Z` branches.
