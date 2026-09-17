@@ -109,7 +109,6 @@ graph TD
     classDef tech fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333;
     classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333;
     classDef skill fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#333;
-    classDef agent2 fill:#e1f5fe,stroke:#01579b,stroke-width:2px,stroke-dasharray:5 5,color:#333;
     classDef skill2 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,stroke-dasharray:5 5,color:#333;
 
     Agent["Agent<br/>(Product-like Concept)"]:::concept
@@ -124,13 +123,13 @@ graph TD
     Skill -- Requires --> Dep
 
     API -.->|Protocol: A2A| A2A[A2A Protocol]
-    Dep -.->|mcpResources| MCP["MCP Server"]
-    Dep -.->|agents| OtherAgent["Other Agent<br/>(Agent chaining)"]:::agent2
+    Dep -.->|apiResources| MCP["MCP Server API Resource"]
     Dep -.->|capabilities| OtherSkill["Other Capability / Skill"]:::skill2
     Dep -.->|apiResources / eventResources| Other["Other Resources<br/>(APIs, Events, etc.)"]
 ```
 
-Both Agents and Capabilities (notably `agent-skill` capabilities) can declare `integrationDependencies`, and they use the identical mechanism — each Integration Dependency groups one or more aspects referencing APIs, MCP tools, other agents, or other skills.
+Both Agents and Capabilities, notably `agent-skill` capabilities, can declare `integrationDependencies`, and they use the same mechanism.
+Each Integration Dependency groups one or more aspects referencing API Resources, Event Resources, or Capabilities.
 
 ### Exposing Capabilities (Interaction)
 
@@ -292,13 +291,13 @@ Given the rapidly evolving AI ecosystem, ORD takes a conservative approach to ad
 
 ### Agent Skills as Capabilities
 
-[Agent skills](https://agentskills.io/home) are discrete, reusable capabilities that agents can perform—packaged as folders of instructions, scripts, and resources.
+[Agent skills](https://agentskills.io/home) are discrete, reusable capabilities that agents can perform, packaged as folders of instructions, scripts, and resources.
 In ORD, these are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "agent-skill"`.
 
 This enables:
 - **Discovery:** Agents can discover and load skills on-demand through the catalog
 - **Reusability:** Skills can be shared across multiple agents and systems
-- **Dependency Management:** Both agents and skills can declare `integrationDependencies` on APIs, MCP tools, other agents, or other skills (see [Skill Dependencies](#skill-dependencies) below).
+- **Dependency Management:** Both agents and skills can declare `integrationDependencies` on API Resources, Event Resources, or Capabilities (see [Skill Dependencies](#skill-dependencies) below).
 
 **Example agent skill:**
 
@@ -350,7 +349,7 @@ Agents can depend on external skills through Integration Dependency aspects:
 
 ### Skill Dependencies
 
-A Capability of type `agent-skill` can itself declare `integrationDependencies` — the same mechanism Agents use, and the direct analogue of `inputPorts` on [Data Products](./data-product.md): the artifact itself declares what it needs to run.
+A Capability of type `agent-skill` can itself declare `integrationDependencies`, using the same mechanism as Agents and analogous to `inputPorts` on [Data Products](./data-product.md).
 
 ```json
 {
@@ -382,7 +381,7 @@ In ORD, plugins are modeled using the **[Capability](../interfaces/Document#capa
 This enables:
 - **Distribution:** A set of related skills and assets can be discovered, versioned, and installed as one unit.
 - **Reusability:** A plugin can be shared across multiple agents and systems, just like individual skills.
-- **Dependency Management:** Like `agent-skill`, an `agent-plugin` can declare `integrationDependencies` on APIs, MCP tools, other agents, or other skills (see [Skill Dependencies](#skill-dependencies) above).
+- **Dependency Management:** Like `agent-skill`, an `agent-plugin` can declare `integrationDependencies` on API Resources, Event Resources, or Capabilities (see [Skill Dependencies](#skill-dependencies) above).
 
 The bundle is referenced through a capability definition of type `agent-plugin-zip`, a ZIP archive (`mediaType: "application/zip"`) that packages the plugin's skills and assets together.
 Unlike an individual [agent skill](https://agentskills.io/home), the plugin bundle currently has no vendor-neutral packaging standard, so ORD does not prescribe the archive's internal layout: how the plugin declares and organizes its contained skills and resources is defined by the plugin format the consuming tool or harness expects.
