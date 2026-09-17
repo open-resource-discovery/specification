@@ -31,6 +31,20 @@ The following rule governs code contributions:
 - Contributions must be licensed under the [Apache 2.0 License](./LICENSE)
 - Due to legal reasons, contributors will be asked to accept a Developer Certificate of Origin (DCO) when they create the first pull request to this project. This happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
 
+## Specification Releases
+
+A pull request that changes the published specification MUST NOT be merged unless a release will be created immediately afterward.
+
+The documentation site is built from main, while versioned consumers use the tagged and NPM-published specification.
+
+Delaying the release makes the documentation describe a contract that consumers cannot obtain as a release.
+
+Batch related specification changes before merging them, not on main after the first contract-changing merge.
+
+Documentation corrections that do not change the contract do not require a release.
+
+Maintainers should follow the [release skill](.agents/skills/release/SKILL.md) for the complete procedure.
+
 ## Generated Artifacts and Review Process
 
 This repository checks in certain generated files (TypeScript types and UMS types). We intentionally commit these artifacts so pull requests clearly show the impact on those interfaces and downstream consumers during review.
