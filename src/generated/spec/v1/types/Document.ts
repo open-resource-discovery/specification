@@ -422,6 +422,7 @@ export interface ApiResource {
    * referenced via `partOfPackage`.
    * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
    * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   * For resource types that support `partOfPackage`, `vendor` MUST be provided directly when no Package is assigned.
    */
   vendor?: string;
   /**
@@ -474,15 +475,16 @@ export interface ApiResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products this package and its resources are a part of.
+   * List of products this Package or resource is a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
    * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
-   * Resources that belong to a different product than their package can override this directly.
+   * Direct resource assignments are complementary and are merged with the inherited Package assignments.
    *
-   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
-   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its Package.
+   * Setting `partOfProducts` on the Package is the preferred approach, as it propagates automatically to all contained resources.
+   * If a resource has no `partOfPackage` assignment, any product association MUST be provided directly on the resource.
    *
    * @minItems 0
    */
@@ -1397,6 +1399,7 @@ export interface EventResource {
    * referenced via `partOfPackage`.
    * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
    * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   * For resource types that support `partOfPackage`, `vendor` MUST be provided directly when no Package is assigned.
    */
   vendor?: string;
   /**
@@ -1449,15 +1452,16 @@ export interface EventResource {
    */
   defaultConsumptionBundle?: string;
   /**
-   * List of products this package and its resources are a part of.
+   * List of products this Package or resource is a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
    * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
-   * Resources that belong to a different product than their package can override this directly.
+   * Direct resource assignments are complementary and are merged with the inherited Package assignments.
    *
-   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
-   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its Package.
+   * Setting `partOfProducts` on the Package is the preferred approach, as it propagates automatically to all contained resources.
+   * If a resource has no `partOfPackage` assignment, any product association MUST be provided directly on the resource.
    *
    * @minItems 0
    */
@@ -1960,6 +1964,7 @@ export interface EntityType {
    * referenced via `partOfPackage`.
    * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
    * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   * For resource types that support `partOfPackage`, `vendor` MUST be provided directly when no Package is assigned.
    */
   vendor?: string;
   /**
@@ -1987,15 +1992,16 @@ export interface EntityType {
    */
   partOfGroups?: string[];
   /**
-   * List of products this package and its resources are a part of.
+   * List of products this Package or resource is a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
    * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
-   * Resources that belong to a different product than their package can override this directly.
+   * Direct resource assignments are complementary and are merged with the inherited Package assignments.
    *
-   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
-   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its Package.
+   * Setting `partOfProducts` on the Package is the preferred approach, as it propagates automatically to all contained resources.
+   * If a resource has no `partOfPackage` assignment, any product association MUST be provided directly on the resource.
    *
    * @minItems 0
    */
@@ -2320,8 +2326,24 @@ export interface Capability {
    * referenced via `partOfPackage`.
    * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
    * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   * For resource types that support `partOfPackage`, `vendor` MUST be provided directly when no Package is assigned.
    */
   vendor?: string;
+  /**
+   * List of products this Package or resource is a part of.
+   *
+   * MUST be a valid reference to a [Product](#product) ORD ID.
+   *
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Direct resource assignments are complementary and are merged with the inherited Package assignments.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its Package.
+   * Setting `partOfProducts` on the Package is the preferred approach, as it propagates automatically to all contained resources.
+   * If a resource has no `partOfPackage` assignment, any product association MUST be provided directly on the resource.
+   *
+   * @minItems 0
+   */
+  partOfProducts?: string[];
   /**
    * Defines which Package the resource is part of.
    *
@@ -2648,6 +2670,7 @@ export interface DataProduct {
    * referenced via `partOfPackage`.
    * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
    * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   * For resource types that support `partOfPackage`, `vendor` MUST be provided directly when no Package is assigned.
    */
   vendor?: string;
   /**
@@ -3100,6 +3123,7 @@ export interface Agent {
    * referenced via `partOfPackage`.
    * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
    * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   * For resource types that support `partOfPackage`, `vendor` MUST be provided directly when no Package is assigned.
    */
   vendor?: string;
   /**
@@ -3199,15 +3223,16 @@ export interface Agent {
    */
   minSystemVersion?: string;
   /**
-   * List of products this package and its resources are a part of.
+   * List of products this Package or resource is a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
    * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
-   * Resources that belong to a different product than their package can override this directly.
+   * Direct resource assignments are complementary and are merged with the inherited Package assignments.
    *
-   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
-   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its Package.
+   * Setting `partOfProducts` on the Package is the preferred approach, as it propagates automatically to all contained resources.
+   * If a resource has no `partOfPackage` assignment, any product association MUST be provided directly on the resource.
    *
    * @minItems 0
    */
@@ -3414,8 +3439,24 @@ export interface Overlay {
    * referenced via `partOfPackage`.
    * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
    * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   * For resource types that support `partOfPackage`, `vendor` MUST be provided directly when no Package is assigned.
    */
   vendor?: string;
+  /**
+   * List of products this Package or resource is a part of.
+   *
+   * MUST be a valid reference to a [Product](#product) ORD ID.
+   *
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Direct resource assignments are complementary and are merged with the inherited Package assignments.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its Package.
+   * Setting `partOfProducts` on the Package is the preferred approach, as it propagates automatically to all contained resources.
+   * If a resource has no `partOfPackage` assignment, any product association MUST be provided directly on the resource.
+   *
+   * @minItems 0
+   */
+  partOfProducts?: string[];
   /**
    * The complete [SemVer](https://semver.org/) version string.
    *
@@ -3644,8 +3685,24 @@ export interface IntegrationDependency {
    * referenced via `partOfPackage`.
    * If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
    * If they differ, the explicitly assigned resource value takes precedence during aggregation.
+   * For resource types that support `partOfPackage`, `vendor` MUST be provided directly when no Package is assigned.
    */
   vendor?: string;
+  /**
+   * List of products this Package or resource is a part of.
+   *
+   * MUST be a valid reference to a [Product](#product) ORD ID.
+   *
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Direct resource assignments are complementary and are merged with the inherited Package assignments.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its Package.
+   * Setting `partOfProducts` on the Package is the preferred approach, as it propagates automatically to all contained resources.
+   * If a resource has no `partOfPackage` assignment, any product association MUST be provided directly on the resource.
+   *
+   * @minItems 0
+   */
+  partOfProducts?: string[];
   /**
    * Defines which Package the resource is part of.
    *
@@ -4193,15 +4250,16 @@ export interface Package {
    */
   vendor: string;
   /**
-   * List of products this package and its resources are a part of.
+   * List of products this Package or resource is a part of.
    *
    * MUST be a valid reference to a [Product](#product) ORD ID.
    *
    * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
-   * Resources that belong to a different product than their package can override this directly.
+   * Direct resource assignments are complementary and are merged with the inherited Package assignments.
    *
-   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
-   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its Package.
+   * Setting `partOfProducts` on the Package is the preferred approach, as it propagates automatically to all contained resources.
+   * If a resource has no `partOfPackage` assignment, any product association MUST be provided directly on the resource.
    *
    * @minItems 0
    */

@@ -615,6 +615,8 @@ The following rules need to be implemented by ORD aggregators:
   - If a resource does not declare `vendor` directly, the aggregator SHOULD inherit the Package `vendor` onto the resource.
     If both are present, the resource-level `vendor` SHOULD match the Package `vendor`.
     If they differ, the explicitly assigned resource value takes precedence during aggregation.
+  - A resource without a `partOfPackage` assignment cannot inherit Package metadata and MUST directly provide every property required from its Package context.
+    In the current schema, this means that `vendor` MUST be provided directly on resource types that support `partOfPackage`.
   - `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
   - `labels` MUST be merged without duplicated values.
     - Values of the same label key will be merged.
