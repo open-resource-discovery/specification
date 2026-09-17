@@ -15,6 +15,6 @@ jobs:
 
     steps:
       - name: PR preview (worker)
-        uses: open-resource-discovery/pr-preview-action@main
+        uses: open-resource-discovery/pr-preview-action@2abf52396925f6bb4d0a82e27bd6f060260d09ae # main
         with:
           token: ${{ secrets.PR_PREVIEW_TOKEN }}

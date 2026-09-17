@@ -119,5 +119,5 @@ export interface OrdV1Capabilities {
    * Whether the ORD provider supports the optional `select` parameter ([select parameter](../index.md#select-parameter)) for retrieving the ORD config and ORD documents.
    */
   selector?: boolean;
-  [k: string]: unknown | undefined;
+  [k: string]: unknown;
 }

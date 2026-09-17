@@ -18,15 +18,15 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
       - name: Setup Node
         if: github.event.action != 'closed'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: "24"
+          node-version: "26"
 
       - name: Build preview
         if: github.event.action != 'closed'
@@ -42,7 +42,7 @@ jobs:
           npm run build:docusaurus
 
       - name: PR preview
-        uses: open-resource-discovery/pr-preview-action@main
+        uses: open-resource-discovery/pr-preview-action@2abf52396925f6bb4d0a82e27bd6f060260d09ae # main
         with:
           fork: true
           target-repo: open-resource-discovery/pr-preview

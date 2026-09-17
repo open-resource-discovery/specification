@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import { cp, mkdir } from "node:fs/promises";
 import { log } from "./log";
 
 export async function copyGeneratedToDestination(): Promise<void> {
@@ -6,45 +6,46 @@ export async function copyGeneratedToDestination(): Promise<void> {
     log.info("Starting file copy operations...");
 
     // Create docs/spec-v1/interfaces/ directory and copy individual files (excluding examples directory)
-    await fs.ensureDir("docs/spec-v1/interfaces/");
+    await mkdir("docs/spec-v1/interfaces/", { recursive: true });
 
     // Copy Configuration.md and Document.md files individually
-    await fs.copy(
+    await cp(
       "./src/generated/spec/v1/docs/Configuration.md",
       "docs/spec-v1/interfaces/Configuration.md",
     );
-    await fs.copy(
+    await cp(
       "./src/generated/spec/v1/docs/Document.md",
       "docs/spec-v1/interfaces/Document.md",
     );
-    await fs.copy(
+    await cp(
       "./src/generated/spec/v1/docs/OrdOverlay.md",
       "docs/spec-v1/interfaces/OrdOverlay.md",
     );
 
     // Create docs/spec-v1/examples/ directory and copy examples specifically
-    await fs.ensureDir("docs/spec-v1/examples/");
-    await fs.copy(
+    await mkdir("docs/spec-v1/examples/", { recursive: true });
+    await cp(
       "./src/generated/spec/v1/docs/examples",
       "docs/spec-v1/examples/",
+      { recursive: true },
     );
 
     // Create docs/spec-v1/diagrams/ directory and copy files
-    await fs.ensureDir("docs/spec-v1/diagrams/");
-    await fs.copy(
+    await mkdir("docs/spec-v1/diagrams/", { recursive: true });
+    await cp(
       "./src/generated/spec/v1/plugin/mermaidDiagram",
       "docs/spec-v1/diagrams/",
+      { recursive: true },
     );
 
     // Create static/spec-v1/interfaces/ directory and copy files
-    await fs.ensureDir("static/spec-v1/interfaces/");
-    await fs.copy(
-      "./src/generated/spec/v1/schemas",
-      "static/spec-v1/interfaces/",
-    );
+    await mkdir("static/spec-v1/interfaces/", { recursive: true });
+    await cp("./src/generated/spec/v1/schemas", "static/spec-v1/interfaces/", {
+      recursive: true,
+    });
 
     // Copy DocumentAPI.oas3.yaml file
-    await fs.copy(
+    await cp(
       "./spec/v1/DocumentAPI.oas3.yaml",
       "static/spec-v1/interfaces/DocumentAPI.oas3.yaml",
     );
@@ -57,20 +58,23 @@ export async function copyGeneratedToDestination(): Promise<void> {
     ];
 
     for (const dir of umsDirectories) {
-      await fs.ensureDir(dir);
+      await mkdir(dir, { recursive: true });
     }
 
-    await fs.copy(
+    await cp(
       "./src/generated/spec/v1/plugin/ums/AbstractMetadataType",
       "static/spec-v1/interfaces/ums/AbstractMetadataType/",
+      { recursive: true },
     );
-    await fs.copy(
+    await cp(
       "./src/generated/spec/v1/plugin/ums/AbstractTypeMapping",
       "static/spec-v1/interfaces/ums/AbstractTypeMapping/",
+      { recursive: true },
     );
-    await fs.copy(
+    await cp(
       "./src/generated/spec/v1/plugin/ums/MetadataType",
       "static/spec-v1/interfaces/ums/MetadataType/",
+      { recursive: true },
     );
 
     log.info("Files copied successfully.");

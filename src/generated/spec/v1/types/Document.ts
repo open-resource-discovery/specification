@@ -1298,7 +1298,7 @@ export interface Link {
    * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    */
   description?: string;
-  [k: string]: unknown | undefined;
+  [k: string]: unknown;
 }
 /**
  * Contains information about the extensibility of this resource.
@@ -3798,6 +3798,9 @@ export interface EventResourceIntegrationAspect {
    * If not given, there is no restriction which system type provides the events.
    *
    * @minItems 1
+   *
+   * Items: Valid [system namespace](../index.md#system-namespace).
+   *
    */
   systemTypeRestriction?: [string, ...string[]];
   labels?: Labels;
@@ -4237,7 +4240,7 @@ export interface PackageLink {
    * The link target MUST be absolute and SHOULD be openly accessible.
    */
   url: string;
-  [k: string]: unknown | undefined;
+  [k: string]: unknown;
 }
 /**
  * File that can be attached on ORD package level.
@@ -4273,7 +4276,7 @@ export interface File {
    *
    */
   mediaType: string;
-  [k: string]: unknown | undefined;
+  [k: string]: unknown;
 }
 /**
  * A [**Consumption Bundle**](../concepts/grouping-and-bundling#consumption-bundle) groups APIs and Events together that can be consumed with the same credentials and auth mechanism.
@@ -4499,7 +4502,7 @@ export interface Group {
    * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   visibility?: "public" | "internal" | "private";
-  [k: string]: unknown | undefined;
+  [k: string]: unknown;
 }
 /**
  * A Group Type defines the semantics of [group assignments](#group).
@@ -4550,7 +4553,7 @@ export interface GroupType {
    * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   visibility?: "public" | "internal" | "private";
-  [k: string]: unknown | undefined;
+  [k: string]: unknown;
 }
 /**
  * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
@@ -4586,5 +4589,5 @@ export interface Tombstone {
    * The description of a Tombstone MAY be added to the changelog of the removed resource by an ORD aggregator.
    */
   description?: string;
-  [k: string]: unknown | undefined;
+  [k: string]: unknown;
 }

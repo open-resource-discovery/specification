@@ -1,18 +1,15 @@
 {
   "compilerOptions": {
-    "lib": ["ES2021"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "ES2021",
+    "lib": ["ES2024"],
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "target": "ES2024",
     "outDir": "dist",
     "rootDir": "src",
-    "baseUrl": "src",
     "inlineSourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "paths": {
-      "src/*": ["src/*"]
-    },
+    "types": ["node"],
     "declaration": true,
     "skipLibCheck": true,
     "strict": true,
