@@ -80,7 +80,7 @@ The following example shows how an Agent is described in an ORD Document:
 
       // Extensible properties via labels
       "labels": {
-        "interactionMode": ["conversational", "system-triggered"]
+        "sap.ai:interactionMode": ["conversational", "system-triggered"]
       },
       "tags": ["finance", "billing", "dispute-resolution", "ai-agent"],
       // ...
