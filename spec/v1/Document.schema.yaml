@@ -2644,6 +2644,10 @@ definitions:
         description: |-
           Generic Links with arbitrary meaning and content.
 
+      extensible:
+        <<: *extensible
+        x-introduced-in-version: "1.17.0"
+
       ## Taxonomy
 
       industry: #used by DSP - needs coordinated deprecation with datasphere & UCL
@@ -3219,6 +3223,10 @@ definitions:
         description: |-
           Generic Links with arbitrary meaning and content.
 
+      extensible:
+        <<: *extensible
+        x-introduced-in-version: "1.17.0"
+
       tags:
         <<: *tags
 
@@ -3614,6 +3622,10 @@ definitions:
         <<: *links
         description: |-
           Generic Links with arbitrary meaning and content.
+
+      extensible:
+        <<: *extensible
+        x-introduced-in-version: "1.17.0"
 
       tags:
         <<: *tags
@@ -5041,34 +5053,32 @@ definitions:
         type: string
         title: Extensibility Support Level
         x-ums-type: "ignore"
-        description: Defines whether and how the resource can be extended with custom fields.
+        description: Defines whether and how the resource can be extended.
         oneOf:
           - const: "no"
             description: |-
               Not extensible.
 
-              The data model of the resource (API or event) cannot be extended with custom fields.
+              The resource cannot be extended with custom fields, entities, skills, or other resource-specific elements.
           - const: "manual"
             description: |-
               Manually extensible.
 
-              In addition to defining a custom field, manual activities are required to include the field
-              in the data model of the resource (API or event).
-              Examples: using a specific mapping tool or selecting the resource in a data model extension tool.
+              After defining an extension, manual activities are required to include it in the resource.
+              Examples include using a mapping tool, selecting the resource in a data model extension tool, or adding a skill to an agent.
           - const: "automatic"
             description: |-
               Automatically extensible.
 
-              After defining a custom field in the local domain model, the resource (API or event)
-              is automatically extended as part of the default extension field definition.
+              After defining an extension through the applicable extension mechanism, the resource is automatically extended.
 
       description:
         type: string
         minLength: 1
         description: |-
-          A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+          A description about the extensibility capabilities of this resource, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
 
-          This description may contain detailed steps on how to extend the API.
+          This description may contain detailed steps on how to extend the resource.
           Links to external resources can be provided within the description as markdown links.
 
           This description MUST be provided if `supported` is set to `manual` or `automatic`.
