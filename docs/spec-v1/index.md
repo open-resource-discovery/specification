@@ -871,14 +871,15 @@ To keep this situation simple, there is a reserved [vendor namespace](#vendor-na
 Everything within this namespace is owned by the customer, the owner of the tenant.
 In addition, there is one reserved authority namespace, specifically for customer in-app extensions: `customer.ext`.
 
-Resources that are created by the customer / user MUST be assigned to a [Package](#package) whose `vendor` is set to the reserved customer vendor `customer:vendor:Customer:`.
+Resources that are created by the customer / user MUST be assigned to a [Package](./interfaces/Document.md#package) whose `vendor` is set to the reserved customer vendor `customer:vendor:Customer:`.
 This is how consumers recognize customer-owned content, independent of which namespace prefix the individual resource IDs use.
 
 For cases where the [36-character namespace length limit](#namespace-constraints) is tight, a shorter alias `c` is also reserved and is equivalent to `customer`.
 Both `customer.*` and `c.*` map to the same customer vendor `customer:vendor:Customer:`.
-A [`Vendor`](#vendor) MAY list the vendor namespaces that map to it under the reserved `ord:namespace` label, as done for the customer vendor.
+A [`Vendor`](./interfaces/Document.md#vendor) MAY list the vendor namespaces that map to it under the reserved `ord:namespace` label, as done for the customer vendor.
 
-The limitation of using `customer.*` (or `c.*`) namespaces is that they are unique only within a tenant and once the resources are published and shared outside the local scope, the `customer` namespace will be insufficient.
+The limitation of using `customer.*` (or `c.*`) namespaces is that they are unique only within a tenant.
+They MUST NOT be used in `system-version` or `system-type` perspectives, where resources are published and shared outside the local tenant scope.
 
 ### ORD ID
 
