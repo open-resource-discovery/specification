@@ -27,18 +27,23 @@ Chosen option: **identify each upload by its ORD resource, URL reference, and pu
 
 ### Version-1 (MVP) scope
 
-- **Required:** definitions stay in their native format; every upload identifies its perspective, ORD resource, exact URL reference, and any required version or instance context.
+- **Required:** definitions stay in their native format; every upload identifies its ORD resource and exact URL reference, and the aggregator resolves one authorized publication context from credentials and any supplied context parameters.
 - **Optional v1 optimizations:** an aggregator can reuse an upload for matching URLs and use `Content-Digest` or internal byte deduplication, without merging resource associations or authorization.
 - **Future extensions:** none are proposed by this decision; a container or publication manifest would require a separate protocol decision.
 
-The credentials identify the publisher as defined by [ADR 004](./004-authorize-pushes-using-publisher-credentials.md). Every request supplies `perspective`, `ordId`, and `url`, where `url` is the exact URI-reference string used in the ORD Document. The perspective determines the remaining context:
+The credentials identify the publisher and can establish publication-context attributes as defined by [ADR 004](./004-authorize-pushes-using-publisher-credentials.md).
+Every request supplies `ordId` and `url`, where `url` is the exact URI-reference string used in the ORD Document.
+The aggregator MUST resolve exactly one authorized `perspective` and, depending on that perspective, the remaining context:
 
 - `system-type` and `system-independent` require no additional parameter;
-- `system-version` requires `systemVersion`, equal to `describedSystemVersion.version`; and
+- `system-version` requires a `systemVersion` equal to `describedSystemVersion.version`; and
 - `system-instance` requires an aggregator-issued `systemInstanceId`.
 
-`systemVersion` and `systemInstanceId` MUST NOT be supplied for other perspectives.
-Requiring `systemInstanceId` avoids inference from the aggregator's current state: a request that identifies one instance today could become ambiguous when another instance is added.
+The request MAY omit `perspective`, `systemVersion`, or `systemInstanceId` when the authenticated credential context determines exactly one applicable value.
+Otherwise, the request MUST supply the attributes needed to select one authorized context.
+Any supplied context value MUST match the credential's authorization and authoritative aggregator state; a value from the request alone does not establish authority.
+`systemVersion` and `systemInstanceId` MUST NOT be supplied for perspectives to which they do not apply.
+The aggregator MUST NOT infer context from the set of currently stored ORD resources because that set can change independently of the credential's authorization.
 
 The ORD Document remains the source of truth. After normal query-parameter decoding, the aggregator MUST verify that the identified resource in that context contains exactly the supplied `url` string and declares a compatible media type. It does not resolve or normalize the value for this comparison. Request parameters express the intended relationship but do not create it, so a definition-first upload receives a `pending` result until the relationship can be verified against a document.
 
@@ -54,8 +59,8 @@ An aggregator MAY use a verified `Content-Digest` to help identify equal bytes f
 - ✅ The aggregator can distinguish the same ORD ID and URL across perspectives.
 - ✅ One upload can serve resources that share a URL in the same publication context.
 - ➖ Definition-first uploads can remain pending until their relationship is known.
-- ⚠️ Providers must send relationship parameters in addition to the native definition bytes.
-- ⚠️ Providers need an aggregator-issued ID for system-instance uploads.
+- ➖ Providers send only those publication-context parameters that cannot be inferred safely from their authenticated credential context.
+- ⚠️ Providers need an aggregator-issued ID when a system-instance upload cannot be resolved uniquely from that context.
 - ⚠️ A definition URL is matched as an exact string, so equivalent but differently written URI references identify different associations.
 
 ## Alternatives

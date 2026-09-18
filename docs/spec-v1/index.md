@@ -243,9 +243,13 @@ Content-Type: application/json
 }
 ```
 
-The aggregator derives the publication context from the publisher identified by the credentials and from the document content.
+The aggregator derives the publication context from the publisher and context assignments associated with the credentials and from the document content.
 The document MUST explicitly include `perspective`; the ORD Document schema's default does not apply to push.
-For a `system-instance` document, the provider MAY also supply the aggregator-issued `systemInstanceId` used for definition uploads. If supplied, it MUST identify the same system instance as the document content and the aggregator's authoritative state. If omitted, the aggregator MUST be able to identify exactly one system instance from that information; otherwise, it MUST reject the document as unprocessable. `systemInstanceId` MUST NOT be supplied for another perspective.
+For a `system-instance` document, the aggregator SHOULD resolve the instance from the authenticated credential context when it identifies exactly one instance.
+The provider MAY supply the aggregator-issued `systemInstanceId` used for definition uploads when disambiguation is necessary.
+If supplied, it MUST identify the same system instance as the document content and the aggregator's authoritative state.
+If omitted, the authenticated context and document content MUST identify exactly one system instance; otherwise, the aggregator MUST reject the document as unprocessable.
+`systemInstanceId` MUST NOT be supplied for another perspective.
 The request publishes the top-level ORD items identified in the document; it creates no document resource and assigns no document ID.
 Omitting an item from a later envelope does not remove it.
 Providers MUST use ORD tombstones to remove resources.
@@ -258,9 +262,11 @@ A definition URL MAY use any URI-reference form accepted by the ORD Document sch
 ##### Pushing Resource Definitions
 
 Resource definitions are uploaded separately in their native media type.
-Every request identifies the ORD resource and its publication context through `perspective`, `ordId`, and the exact `url` string from the ORD Document.
-Together with the publisher identified by the credentials, these parameters identify the definition association.
-For `system-version`, `systemVersion` is also required and equals `describedSystemVersion.version`:
+Every request identifies the ORD resource through `ordId` and the exact `url` string from the ORD Document.
+The aggregator resolves its publication context from the publisher and context assignments associated with the credentials, together with any supplied `perspective`, `systemVersion`, or `systemInstanceId` parameters.
+The request MAY omit a context parameter when the authenticated credential context determines exactly one applicable value.
+Otherwise, it MUST supply enough context to select one authorized definition association.
+For `system-version`, the resolved `systemVersion` equals `describedSystemVersion.version`:
 
 ```http
 PUT /ord-push/v1/resource-definitions?perspective=system-version&systemVersion=1.2.3&ordId=example.orders%3AapiResource%3AOrders%3Av1&url=https%3A%2F%2Fmetadata.example.org%2Fapis%2Forders.json HTTP/1.1
@@ -270,10 +276,14 @@ Content-Type: application/json
 { "openapi": "3.1.0", ... }
 ```
 
-For `system-instance`, the request MUST include an aggregator-issued `systemInstanceId`.
-The aggregator creates and owns this identifier; how a provider obtains it is implementation-specific (for example, issued during onboarding or returned when the system instance is first registered). An aggregator MAY correlate it with provider-side instance identity such as `describedSystemInstance.localId` or `describedSystemInstance.correlationIds`, but the `systemInstanceId` itself remains aggregator-owned and is not an ORD Document property. It is the same aggregator-assigned tenant identity as the proposed `describedSystemInstance.globalId` property and the `Global-Tenant-Id` access-strategy header (see [PR #174](https://github.com/open-resource-discovery/specification/pull/174), WIP).
+For `system-instance`, the resolved context includes an aggregator-issued `systemInstanceId`.
+The aggregator SHOULD infer it from the authenticated credential context when that context identifies exactly one instance.
+The request MUST supply it only when needed to disambiguate a credential that covers several instances.
+The aggregator creates and owns this identifier; how a provider obtains it is implementation-specific, for example during onboarding or when the system instance is first registered.
+An aggregator MAY correlate it with provider-side instance identity such as `describedSystemInstance.localId` or `describedSystemInstance.correlationIds`, but `systemInstanceId` remains aggregator-owned and is not an ORD Document property.
 For `system-type` and `system-independent`, no additional perspective identifier is used.
-`systemVersion` and `systemInstanceId` MUST NOT be supplied for other perspectives.
+Any supplied context parameter MUST match the credential's authorization and authoritative aggregator state; request data alone does not establish authority.
+`systemVersion` and `systemInstanceId` MUST NOT be supplied for perspectives to which they do not apply.
 
 The ORD Document is the source of truth for the relationship from an ORD resource to its definitions.
 After normal query-parameter decoding, the aggregator MUST verify that the identified resource in the requested context contains exactly the supplied `url` string and declares a compatible `mediaType`. It MUST NOT resolve or normalize `url` for this comparison.
@@ -331,6 +341,10 @@ An accepted definition association returns `201 Created` when first stored or `2
 HTTP status codes describe request processing, not the publication outcome of every item.
 `200 OK` means processing completed; it does not mean that every item was applied.
 Clients MUST inspect the per-item outcomes.
+A client MUST treat every `rejected` or `stale` item as an unsuccessful update.
+It SHOULD retain or expose the returned diagnostics until the source metadata or publication configuration is corrected.
+It SHOULD retry transient transport and server failures with backoff, but SHOULD NOT retry an unchanged request that failed validation or authorization.
+How diagnostics reach a developer or operator is implementation-specific.
 A request that exceeds a documented size limit returns `413 Content Too Large`, and an unsupported request media type or content encoding returns `415 Unsupported Media Type`.
 Request-wide failures use [Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html) with media type `application/problem+json`.
 RFC 9457 replaces RFC 7807 and retains its extension-member mechanism.
@@ -351,7 +365,8 @@ Each credential MUST identify exactly one publisher in authoritative aggregator 
 
 An aggregator MAY issue several credentials for the same publisher.
 A credential MUST NOT authorize several described system types or independent publishers.
-Credentials do not select an ORD perspective; the document or resource-definition request MUST explicitly supply it.
+An aggregator MAY restrict a credential to particular perspectives, system versions, or system instances.
+ORD does not restrict a category of publisher to particular perspectives; such restrictions are authorization policy configured during onboarding.
 For system-scoped documents, the aggregator MUST verify that the document's described system type matches the credential.
 For system-independent documents, it MUST verify the independent publisher.
 The aggregator MUST validate version and instance context, and all authorization-relevant claims, against authoritative state.
@@ -361,8 +376,8 @@ The namespace of an ORD ID can differ from the described system's namespace, for
 The aggregator MUST validate both the publisher and the allowed ORD ID namespaces.
 It MUST NOT grant authority merely because an identifier or namespace occurs in the request.
 For document requests, an optional `systemInstanceId` can disambiguate the instance context without changing the ORD Document.
-For definition requests, the publisher identified by the credentials combines with the explicit context parameters.
-The aggregator issues and owns the `systemInstanceId` required for system-instance definition uploads.
+For definition requests, the publisher and publication-context assignments associated with the credentials combine with any supplied context parameters.
+The aggregator issues and owns `systemInstanceId`; a definition request supplies it only when the authenticated context cannot identify exactly one system instance.
 
 The specification does not mandate one credential technology.
 Implementations SHOULD use an established machine-to-machine mechanism such as mutual TLS, OAuth 2.0 client credentials, or certificate-bound OAuth access tokens.

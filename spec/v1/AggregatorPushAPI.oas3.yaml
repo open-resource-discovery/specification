@@ -8,7 +8,8 @@ info:
     available content, but referenced content can arrive later and trigger revalidation.
 
     Every operation requires authentication. Each credential identifies exactly one publisher:
-    either one described system type or one system-independent publisher.
+    either one described system type or one system-independent publisher. An aggregator may also
+    restrict a credential to particular perspectives, system versions, or system instances.
     The concrete security scheme and API base URL are chosen and communicated by the aggregator;
     they are therefore not defined by this generic API description.
     For each ORD item or definition association, the last accepted update wins; the API does not
@@ -40,10 +41,12 @@ paths:
         transport envelope: this operation does not create or replace a document resource. The
         publisher identified by the credentials and the document content provide the publication context.
         The document must explicitly include `perspective`; its schema default does not apply to push.
-        A `system-instance` document can also supply the aggregator-issued `systemInstanceId` used
-        for definition uploads. If supplied, it must match the system instance described by the
-        document and authoritative aggregator state. If omitted, that information must identify
-        exactly one system instance. The parameter must not be supplied for another perspective.
+        For a `system-instance` document, the aggregator should resolve the instance from the
+        authenticated credential context when it identifies exactly one instance. The document can
+        supply the aggregator-issued `systemInstanceId` when disambiguation is necessary. If supplied,
+        it must match the system instance described by the document and authoritative aggregator
+        state. If omitted, the authenticated context and document content must identify exactly one
+        system instance. The parameter must not be supplied for another perspective.
         Omission from a later envelope does not remove previously published resources; ORD
         tombstones express removal.
         A `200 OK` response means that document-level and per-item validation against currently
@@ -103,10 +106,11 @@ paths:
       summary: Create or replace a resource-definition association
       description: |-
         Stores native definition bytes for the identified ORD resource and publication context.
-        `systemVersion` is required when `perspective` is `system-version` and must equal the ORD
-        Document's `describedSystemVersion.version`. An aggregator-issued `systemInstanceId` is
-        required when `perspective` is `system-instance`. These parameters must not be supplied for
-        other perspectives.
+        The aggregator resolves `perspective`, `systemVersion`, and `systemInstanceId` from the
+        authenticated credential context and any supplied query parameters. A context parameter may
+        be omitted when the credential context determines exactly one applicable value. Otherwise,
+        the request must supply enough context to select one authorized association. Any supplied
+        value must match authoritative aggregator state.
 
         After normal query-parameter decoding, the aggregator verifies that the ORD resource in that
         context contains exactly the supplied `url` string and declares a compatible media type. It
@@ -160,8 +164,10 @@ components:
     Perspective:
       name: perspective
       in: query
-      required: true
-      description: Perspective of the ORD resource that declares the definition.
+      required: false
+      description: |-
+        Perspective of the ORD resource that declares the definition. Required when the authenticated
+        credential context does not determine exactly one perspective.
       schema:
         type: string
         enum: [system-type, system-version, system-instance, system-independent]
@@ -191,8 +197,9 @@ components:
       in: query
       required: false
       description: |-
-        System version from `describedSystemVersion.version`. Required for `system-version` and
-        must not be supplied for other perspectives.
+        System version from `describedSystemVersion.version`. Required for `system-version` when the
+        authenticated credential context does not determine exactly one system version. It must not
+        be supplied for other perspectives.
       schema:
         type: string
         minLength: 1
@@ -202,9 +209,9 @@ components:
       required: false
       description: |-
         Aggregator-issued identifier for a system instance. It is required for a `system-instance`
-        resource-definition upload and optional for a `system-instance` document upload. For a
-        document, it must match the instance described by the content and authoritative aggregator
-        state. It must not be supplied for other perspectives.
+        upload when the authenticated credential context does not determine exactly one instance.
+        When supplied, it must match the instance described by the content and authoritative
+        aggregator state. It must not be supplied for other perspectives.
       schema:
         type: string
         minLength: 1
@@ -250,7 +257,9 @@ components:
         type: string
   responses:
     Processed:
-      description: Document processing completed.
+      description: |-
+        Document processing completed. Clients must inspect every item outcome; a successful HTTP
+        status does not mean that every item was applied.
       content:
         application/json:
           schema:

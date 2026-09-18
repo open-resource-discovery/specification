@@ -27,7 +27,7 @@ Chosen option: **post document envelopes and put individual definition associati
 
 ### Version-1 (MVP) scope
 
-- **Required:** the two endpoints below process requests synchronously and return validation results; document requests are identity-less, definition requests are idempotent, and request-wide errors use Problem Details. A system-instance document can optionally identify its aggregator context explicitly.
+- **Required:** the two endpoints below process requests synchronously and return validation results; document requests are identity-less, definition requests are idempotent, and request-wide errors use Problem Details. Publication context is inferred from authenticated state where unambiguous and supplied explicitly only as needed.
 - **Optional v1 optimizations:** standard HTTP conditional requests, strong ETags, and `Content-Digest` can be used without changing the push protocol.
 - **Future extensions:** a submission resource could group uploads, expose asynchronous validation status, and define an explicit commit boundary. Aggregator self-description could advertise the push endpoint, capabilities, and implementation limits. Version 1 defines neither extension.
 
@@ -44,7 +44,10 @@ The aggregator communicates its base URL during onboarding or through its own di
 
 The HTTP verbs reflect whether the target has an identity: a document does not, so it is submitted with `POST`; the definition association from [ADR 003](./003-link-pushed-resource-definitions-by-resource-and-context.md) does, so `PUT` can replace it idempotently.
 
-`PUT /v1/resource-definitions` stores native definition bytes. A provider replaces a definition by uploading new bytes to the same association. Implementations SHOULD support strong `ETag`, `If-None-Match: *`, and `If-Match`; a verified `Content-Digest` MAY provide transfer integrity and aid deduplication.
+`PUT /v1/resource-definitions` stores native definition bytes.
+The request always identifies the resource and exact definition URL.
+It MAY omit `perspective`, `systemVersion`, or `systemInstanceId` when the authenticated credential context determines exactly one applicable value; otherwise, it MUST supply enough context to identify one authorized association.
+A provider replaces a definition by uploading new bytes to the same association. Implementations SHOULD support strong `ETag`, `If-None-Match: *`, and `If-Match`; a verified `Content-Digest` MAY provide transfer integrity and aid deduplication.
 
 The minimum contract has no operation to withdraw one definition. Providers replace its bytes or retire the resource and its definitions through ORD tombstones.
 
@@ -53,6 +56,10 @@ A document request returns `200 OK` with an `applied`, `stale`, or `rejected` ou
 For each ORD item or definition association, the last accepted update wins. Version 1 does not infer chronological order from document content. `stale` only describes a previous valid document item retained after an invalid update.
 
 Request-wide failures use RFC 9457 Problem Details (`application/problem+json`). An optional `issues` extension provides portable error, warning, and information fields. Aggregators MAY add validator-specific extension members; clients MUST ignore unknown extensions.
+Providers MUST inspect the response body even after a successful HTTP status and MUST treat every `rejected` or `stale` item as an unsuccessful update.
+They SHOULD retain or expose the returned diagnostics until the source metadata or publication configuration is corrected.
+Providers SHOULD retry transient transport and server failures with backoff, but SHOULD NOT retry unchanged requests that failed validation or authorization.
+How diagnostics reach a developer or operator is implementation-specific.
 
 Providers SHOULD keep ORD documents within 2 MB (2,000,000 bytes). An aggregator MUST accept documents up to and including that size and MAY support a larger documented limit. ORD defines no baseline size limit for resource definitions because some formats cannot be divided across files; an aggregator MAY set and MUST document its own limit. A future aggregator self-description could advertise these limits.
 
