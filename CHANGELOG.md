@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added [Arazzo Specification](https://www.openapis.org/arazzo-specification) support for describing multi-step API workflows.
+  - Added resource definition type `arazzo-v1` on API Resources for workflows scoped to a single API.
+  - Added standardized Capability type `workflow` with definition type `arazzo-v1` for multi-API workflows.
+  - Added `ord:orchestrates` as a `relatedApiResources.relationType` value for declaring that the source resource orchestrates the target API Resource.
+
 ### Changed
 
 - Standardized the agent examples on the `sap.ai:interactionMode` label.
