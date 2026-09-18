@@ -878,8 +878,13 @@ For cases where the [36-character namespace length limit](#namespace-constraints
 Both `customer.*` and `c.*` map to the same customer vendor `customer:vendor:Customer:`.
 A [`Vendor`](./interfaces/Document.md#vendor) MAY list the vendor namespaces that map to it under the reserved `ord:namespace` label, as done for the customer vendor.
 
-The limitation of using `customer.*` (or `c.*`) namespaces is that they are unique only within a tenant.
-They MUST NOT be used in `system-version` or `system-type` perspectives, where resources are published and shared outside the local tenant scope.
+The customer vendor namespace identifies customer ownership; it does not by itself define the scope in which resource IDs are unique.
+Customer-created resources whose IDs are only unique within a tenant MUST be published in the `system-instance` perspective.
+They MUST NOT be published in `system-version` or `system-type` perspectives, because those perspectives describe resources shared by all instances of a system version or type.
+
+An application that supports portable customer-created content MAY register a dedicated namespace below `customer` (or its alias `c`) and establish a conflict-free ID allocation scheme for that namespace.
+When the same logical resource is transported between system instances, it can retain its ORD ID and each deployment remains qualified by its system instance.
+Transport does not imply that the resource is valid for the `system-version` or `system-type` perspective.
 
 ### ORD ID
 
