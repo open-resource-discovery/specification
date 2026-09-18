@@ -8,7 +8,7 @@ sidebar_position: 4
 
 ## Description
 
-This policy level (aka compliance level) `sap:dp:v1`:
+This policy level `sap:dp:v1`:
 
 - is based on the [`sap:base:v1`](./sap-base-v1.md) policy level and inherits _all_ its expectations.
 - inherits _most_ of the [`sap:core:v1`](./sap-core-v1.md) policy level rules.

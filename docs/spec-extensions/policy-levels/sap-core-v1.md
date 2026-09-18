@@ -4,11 +4,11 @@ description: "SAP Core v1 policy level"
 sidebar_position: 2
 ---
 
-# SAP Core Policy Level
+# SAP Core Policy Level (v1.0)
 
 ## Description
 
-This policy level (aka compliance level) `sap:core:v1` is based on the [`sap:base:v1`](./sap-base-v1.md) policy level and inherits all its expectations.
+This policy level `sap:core:v1` is based on the [`sap:base:v1`](./sap-base-v1.md) policy level and inherits all its expectations.
 
 It MUST be fulfilled by all SAP applications and services.
 Exceptions are only allowed on a case by case basis.
