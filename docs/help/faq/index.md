@@ -34,9 +34,9 @@ ORD is [open source](https://github.com/open-resource-discovery/specification) u
 
 #### Q: How long does it take for metadata changes to reflect in the Aggregators?
 
-**A:** This depends on the configuration and implementation of an ORD aggregator.
-The aggregation can be fully automated, but currently ORD has only defined a [pull transport](../../spec-v1/index.md#pull-transport) mode, which relies on periodic fetching (similar as a search engine indexes the web). As a consequence, metadata changes need a while to be replicated.
-We're aware that some use-cases require faster metadata updates and the ORD spec is designed to support other transport modes (like push or event based), to make faster and more efficient replication possible.
+**A:** This depends on the transport and the ORD aggregator.
+[Pull transport](../../spec-v1/index.md#pull-transport) relies on periodic fetching, so propagation is bounded by the polling interval.
+With [push transport](../../spec-v1/index.md#push-transport), a provider can publish when metadata changes; propagation then depends on request and validation processing.
 
 #### Q: Does ORD work for On-Premises Software?
 
