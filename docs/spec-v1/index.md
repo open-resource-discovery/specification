@@ -686,24 +686,25 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 There is a `perspective` attribute, which allows setting the following values:
 
-- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the latest version or version agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version.
+- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the current, version-agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version.
 - `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time).
 - `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system-instance-aware</a> information (only known at run-time).
 - `system-independent`: Describes content that is independent of system versions or system instances and can be shared across multiple systems.
 
 ### Correct Use of Perspectives
 
-- Systems, which only have static metadata (system-instance-unaware) SHOULD choose either:
-  - The `system-type` perspective if the system is not versioned (continuous delivery) or resources do not relate to a specific system version
-  - The `system-version` perspective if the system has explicit versions
-  - If this is categorized correctly, the ORD aggregators do not have to aggregate static, identical metadata per tenant.
-  - In this case the same static metadata will be used to describe all system instances of the same version (or for `system-type`, all systems regardless of version)
+- For each system type, providers MUST choose one static publication model and MUST NOT publish both `system-type` and `system-version` perspectives at the same time:
+  - Use the `system-type` perspective if the system is not versioned (continuous delivery) or resources do not relate to a specific system version.
+  - Use the `system-version` perspective if the system has explicit versions.
+  - The same static metadata describes all system instances of the same version or, for `system-type`, all instances regardless of version.
 - Systems, which have dynamic metadata MUST use the `system-instance` perspective.
   - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
   - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
     In this case, both perspectives MUST use the same ORD IDs for the same resources and MUST NOT describe those resources inconsistently.
 - If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
+
+When no specific system version is requested, an aggregator SHOULD return the latest `system-version` perspective when available and otherwise the `system-type` perspective.
 
 > ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
 

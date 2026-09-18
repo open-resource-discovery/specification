@@ -22,7 +22,11 @@ The static perspective has two sub-levels:
 - **`system-version`**: Describes the metadata for a specific version of a [system type](../../spec-v1/index.md#system-type). Static metadata is known at design-time or deploy-time, when a new version of an application or service is developed or provisioned. Use this when the system has explicit versions.
 - **`system-type`**: Describes version-independent metadata that applies no matter which [system version](../../spec-v1/index.md#system-version) or [system instance](../../spec-v1/index.md#system-instance) is used. Use this when the system is not versioned (continuous delivery) or resources do not relate to a specific system version.
 
-For cloud software with continuous delivery, the version may not be explicit or of interest to the consumer, a fallback to a "latest" version may be needed.
+For a given system type, a provider MUST choose one of these static publication models and MUST NOT publish both `system-type` and `system-version` perspectives at the same time.
+When static metadata is versioned, a consumer that does not request a specific version SHOULD receive the latest `system-version`.
+For unversioned metadata, the `system-type` perspective itself represents the current view.
+
+For cloud software with continuous delivery, the version may not be explicit or of interest to the consumer.
 But consider that also cloud software that is going through phased deployments therefore can have multiple versions active at the same time.
 
 The static perspective describes the shared metadata of all system instances (tenants) of the same system version or version independent.
@@ -78,7 +82,7 @@ Such content is of a "singleton" quality for the whole ORD aggregator and SHOULD
 > System-independent content (Vendors, Products, global Entity Types, global Groups and Group Types) exists outside the system context entirely.
 > See [Shared Taxonomy, Resources and Contracts](./shared-resources.md) for the distinction.
 
-### How Perspectives relate to each other
+### How Perspectives Relate to Each Other
 
 The dynamic perspective is a more precise description of the system instance than the static perspective, as it can contain its customizations.
 If no dynamic perspective has been published for a system instance, the static perspective can be used as the fallback.
@@ -91,18 +95,83 @@ This is depicted in the following diagram:
 
 </div>
 
-The `system-instance` perspective is the most specific, because a consumer could ask how a particular system instance / tenant really looks like. If there is system-instance metadata for it, we can return it directly.
-If we don't have it, we need to fall back to the `system-version` layer and instead return the metadata for the version of the system instance.
+The `system-instance` perspective is the most specific because it describes how a particular system instance or tenant looks at run-time.
+All documents declared for the same perspective and scope are considered together.
+For example, all `system-instance` documents for one tenant collectively form that tenant's complete dynamic view.
 
-Note that perspectives do not merge: when a more specific perspective is available, it completely replaces the less specific one. For example, if `system-instance` metadata is published for a resource, it fully overrides the `system-version` description of that resource — the two are not combined.
+Perspectives do not merge.
+When a complete `system-instance` perspective is declared for a tenant, it replaces the static perspective for that tenant.
+A resource omitted from that complete tenant view is not available on the tenant and MUST NOT be filled in from `system-version` or `system-type` metadata.
+Only when no `system-instance` perspective is declared for the tenant may the aggregator fall back to a static perspective.
 
-If no explicit `system-type` perspective has been published, the aggregator SHOULD derive it from the latest `system-version` perspective (see [Static Perspective Resolution](#static-perspective-resolution) below).
+For a static request without a specific version, the aggregator SHOULD return the latest `system-version` when versioned metadata exists and the `system-type` perspective otherwise (see [Static Perspective Resolution](#static-perspective-resolution) below).
 
 A consumer can legitimately be interested in all three levels, but needs to provide a different context for each:
 
 - If `system-instance` metadata is requested, the tenant / system instance ID needs to be specified.
 - If `system-version` metadata is requested, the system type and system version must be specified.
 - If `system-type` metadata is requested, only the system type must be specified. The aggregator resolves what to return (see [Static Perspective Resolution](#static-perspective-resolution)).
+
+#### Effective System-Instance Resolution
+
+An aggregator that serves tenant-aware requests MUST select the applicable complete perspective before it filters for an individual ORD ID.
+It MUST NOT use the absence of a requested ORD ID as a reason to continue to a less specific perspective.
+An empty but successfully retrieved complete perspective is still a valid description of that scope.
+
+```mermaid
+flowchart TD
+    Request[Request effective metadata for a system instance]
+    Instance{System-instance perspective<br/>declared for this instance?}
+    UseInstance[Use the complete system-instance view]
+    VersionKnown{System version known?}
+    ExactVersion{Matching system-version<br/>perspective available?}
+    UseVersion[Use the matching system-version view]
+    TypeKnown{System-type<br/>perspective available?}
+    TypeUnknown{System-type<br/>perspective available?}
+    UseType[Use the system-type view]
+    AnyVersion{Any system-version<br/>perspective available?}
+    UseLatest[Use the latest system-version view]
+    Unavailable[No applicable system-scoped view]
+
+    Request --> Instance
+    Instance -- Yes --> UseInstance
+    Instance -- No --> VersionKnown
+    VersionKnown -- Yes --> ExactVersion
+    ExactVersion -- Yes --> UseVersion
+    ExactVersion -- No --> TypeKnown
+    TypeKnown -- Yes --> UseType
+    TypeKnown -- No --> Unavailable
+    VersionKnown -- No --> AnyVersion
+    AnyVersion -- Yes --> UseLatest
+    AnyVersion -- No --> TypeUnknown
+    TypeUnknown -- Yes --> UseType
+    TypeUnknown -- No --> Unavailable
+```
+
+The resolution works as follows:
+
+1. If a complete `system-instance` perspective is declared for the tenant, use it without merging static metadata.
+2. Otherwise, if the tenant's system version is known and the matching `system-version` perspective is available, use that exact version.
+3. If the provider uses the unversioned static publication model, use its `system-type` perspective.
+4. If the tenant's version is unknown and the provider uses versioned static metadata, use the latest `system-version`.
+5. If the tenant's version is known but neither its exact `system-version` nor a `system-type` perspective is available, report that no applicable view is available.
+   An aggregator MUST NOT silently substitute a different system version.
+
+After selecting the perspective, the aggregator may filter the complete view for a requested ORD ID.
+If the ORD ID is absent, the result is empty for that view and resolution stops.
+This ordering prevents a static resource from being incorrectly exposed for a tenant from which it was intentionally omitted.
+
+A declared `system-instance` perspective does not become absent merely because its latest retrieval fails validation, authorization, or transport.
+The aggregator SHOULD retain the last valid tenant view with suitable staleness information or report the tenant view as unavailable.
+It MUST NOT silently fall back to static metadata after such a failure because the static view may expose resources that are not available on the tenant.
+
+The `system-independent` perspective is outside this resolution chain.
+Consumers can retrieve that global content separately, but its presence does not indicate that a resource is available on a particular system or tenant.
+
+Until an ORD Discovery API exposes the resolved effective tenant view, a consumer that implements this algorithm itself MUST determine perspective availability independently of any ORD ID filter.
+A filtered query with no matching resources cannot distinguish an unavailable perspective from a complete perspective in which the resource is intentionally absent.
+If the Discovery API does not expose that distinction, the consumer cannot safely perform fallback and SHOULD request an aggregator-level resolution capability instead.
+The target Discovery API behavior is to return the complete effective tenant view so consumers do not need to understand provider-side perspective selection or future transport optimizations.
 
 ### Relation to System-Instance-Aware
 
@@ -138,7 +207,7 @@ The `version` becomes effectively the "join" criteria for how the dynamic metada
 
 #### Static Aggregators
 
-Static aggregators describe the static perspectives: `system-type` and/or `system-version`.
+Static aggregators describe either the `system-type` or the `system-version` perspective for a given system type.
 
 - If both static and dynamic perspectives are described, they MUST only pick the static perspectives (`system-type` or `system-version`).
 - If only `system-instance` (or unspecified) perspective is available, we assume this is a generic system instance which is meant to describe all system instances as a subsidiary.
@@ -148,20 +217,25 @@ Static aggregators describe the static perspectives: `system-type` and/or `syste
 
 If the aggregator supports both static and dynamic perspectives:
 
-- The ORD aggregator MUST be able to aggregate and store all perspectives (`system-type`, `system-version`, and `system-instance`) at the same time.
-- In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior:
-  - When `system-instance` is requested but not available, fall back to `system-version`, when this is not available fall back to `system-type`.
+- The ORD aggregator MUST be able to aggregate and store all perspectives (`system-type`, `system-version`, and `system-instance`) across system types at the same time.
+- In its ORD Discovery API for consumers, it needs to implement the [effective system-instance resolution](#effective-system-instance-resolution) behavior.
+  - When no `system-instance` perspective is declared, fall back to the matching `system-version` or the `system-type` perspective as applicable.
+  - Do not fall back merely because an ORD ID is absent from the selected complete perspective.
   - Static perspective resolution (when `system-type` or `system-version` is requested) SHOULD follow the algorithm described [below](#static-perspective-resolution).
 
 #### Static Perspective Resolution
 
 When a consumer requests static metadata (i.e. `system-type` or `system-version` perspective) for a given system type, the aggregator SHOULD resolve what to return as follows (see also the [perspective relation diagram](#how-perspectives-relate-to-each-other)):
 
-1. If a **specific system version is requested**, return the `system-version` perspective data for that version.
-2. If **no specific version is requested**, return the explicitly provided `system-type` perspective data, if available. The `system-type` perspective takes precedence because it is explicitly maintained and version-independent.
-3. If **no specific version is requested** and **no explicit `system-type` perspective is available**, the aggregator SHOULD derive the `system-type` representation from the **latest `system-version`** perspective.
+1. If a **specific system version is requested**, return the `system-version` perspective data for that exact version when available.
+2. If that exact version is unavailable, return no static view for the version-specific request.
+   Do not substitute another system version or the `system-type` perspective.
+3. If **no specific version is requested** and `system-version` metadata exists, return the **latest `system-version`** perspective.
+   It MUST determine the latest version using [Semantic Versioning 2.0.0](https://semver.org/) precedence, not lexical ordering, publication time, or `lastUpdate`.
+4. Otherwise, return the `system-type` perspective when available.
+5. If neither static publication model is available, return no static view.
 
-This resolution ensures that consumers can always retrieve a meaningful static description of a system type without having to know its versioning scheme or whether the provider chose `system-type` vs. `system-version`.
+This resolution lets consumers retrieve the current static description without having to know whether the provider uses versioned or unversioned static metadata.
 
 #### Tombstone Handling across Versions
 
