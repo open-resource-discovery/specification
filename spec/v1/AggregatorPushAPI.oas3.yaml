@@ -115,13 +115,17 @@ paths:
         After normal query-parameter decoding, the aggregator verifies that the ORD resource in that
         context contains exactly the supplied `url` string and declares a compatible media type. It
         does not resolve or normalize `url` for this comparison. A definition-first upload can remain
-        pending until this relationship can be verified. The request is idempotent for the complete
+        pending while the resource is unavailable and the relationship cannot be decided. If the
+        resource is available but does not declare the exact URL or a compatible media type, the
+        request returns `422 Unprocessable Content`. The request is idempotent for the complete
         association.
 
         A newly stored association returns `201 Created` and a replacement of an existing association
         returns `200 OK`; both carry a processing result and should carry the current `ETag`.
-        A definition with any validation error returns `422 Unprocessable Content`, and previously
-        accepted bytes remain unchanged.
+        The aggregator validates that the definition is technically valid for its declared format,
+        using an implementation-chosen and documented validation profile. A definition with any
+        validation error returns `422 Unprocessable Content`, and previously accepted bytes remain
+        unchanged.
 
         ORD defines no size limit for resource definitions. An implementation may define and must
         document its own limit. A future aggregator self-description could advertise this limit.
@@ -327,9 +331,10 @@ components:
     UnprocessableContent:
       description: |-
         The request as a whole cannot be processed. For a resource-definition request, any validation
-        error rejects the definition and leaves previously accepted bytes unchanged. Validation errors
-        limited to individual items in an otherwise processable ORD Document are returned in its
-        processing result.
+        error, incompatible declared media type, or exact-URL association mismatch against an available
+        resource rejects the definition and leaves previously accepted bytes unchanged. Validation
+        errors limited to individual items in an otherwise processable ORD Document are returned in
+        its processing result.
       content:
         application/problem+json:
           schema:

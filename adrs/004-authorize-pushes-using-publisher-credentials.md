@@ -49,6 +49,9 @@ If supplied, the identifier MUST resolve to the same instance as the document co
 If omitted, the remaining authenticated context and document content MUST identify exactly one instance.
 
 Authorization for ORD ID namespaces is separate. A described system type can publish resources whose ORD IDs use another system namespace, an authority namespace, or an authorized customer namespace. The aggregator MUST maintain and enforce the namespaces that each publisher may use. It MUST NOT assume that every ORD ID starts with the described system's namespace.
+The aggregator also retains the provenance of each accepted contribution.
+Namespace authorization does not by itself establish which publisher owns stored content: several authorized publishers or delegators may contribute metadata for the same described system, publication context, or namespace.
+Any future operation that replaces or removes a publisher's complete current state MUST restrict its effect to contributions attributed to that authenticated publisher and MUST preserve contributions attributed to every other publisher or delegator.
 
 For definition requests, the publisher and any publication-context assignments associated with the credential combine with the optional context parameters defined by [ADR 003](./003-link-pushed-resource-definitions-by-resource-and-context.md).
 The aggregator issues and owns `systemInstanceId`.

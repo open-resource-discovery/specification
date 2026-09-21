@@ -251,11 +251,22 @@ If supplied, it MUST identify the same system instance as the document content a
 If omitted, the authenticated context and document content MUST identify exactly one system instance; otherwise, the aggregator MUST reject the document as unprocessable.
 `systemInstanceId` MUST NOT be supplied for another perspective.
 The request publishes the top-level ORD items identified in the document; it creates no document resource and assigns no document ID.
+Submitting a later representation of the same ORD item updates that item directly, so an update does not require reading or deleting an earlier ORD Document.
 Omitting an item from a later envelope does not remove it.
 Providers MUST use ORD tombstones to remove resources.
 Retrying the same document request MAY repeat processing, but resource identity and publication context prevent duplicate ORD resources.
 To let an aggregator recognize and safely retry a document submission, a provider MAY send an `Idempotency-Key` request header (following the [IETF `Idempotency-Key` header field](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-06.html)). An aggregator that supports it SHOULD return the result of the original request for a repeated key without reprocessing. Support is optional, and resource identity remains the primary safeguard against duplicates.
 Providers SHOULD keep ORD documents within 2 MB (2,000,000 bytes). Aggregators MUST accept documents up to and including that size and MAY support a larger documented limit.
+
+Some providers can calculate their complete current state but cannot reliably retain the set of resources published previously.
+For those providers, a future scoped current-state replacement operation could let the aggregator derive removals by comparing the supplied set with the contributions attributed to the same authenticated publisher in exactly one publication context.
+The replacement boundary cannot be inferred from an ORD ID namespace alone.
+Namespace authorization and contribution provenance are separate concerns, and metadata contributed by another publisher or delegator must remain untouched even when it describes the same system or uses a namespace that the replacing publisher is also authorized to use.
+Because a complete state can span several ORD Documents, a replacement extension based on the existing `POST /v1/documents` operation would need to associate several requests with one publication cycle and receive an explicit signal that all documents in that cycle have arrived.
+Only then could the aggregator remove contributions from the same replacement scope that were not observed during the cycle.
+The transactional submission alternative discussed in the repository's push-ingestion ADR provides a clearer staging and commit boundary and can additionally make the replacement atomic.
+Version 1 does not define such an operation.
+A projected inventory of stored ORD IDs is a concern of the [ORD Discovery API](#ord-discovery-api), whose contract is not standardized, and does not change the push API's update or removal semantics.
 
 A definition URL MAY use any URI-reference form accepted by the ORD Document schema, including a document-relative value. For a separately pushed definition, it is an opaque association key rather than a retrieval location. This exception applies only to definition URLs; other document-relative URLs cannot be resolved because a pushed document has no retrieval URL.
 
@@ -287,7 +298,8 @@ Any supplied context parameter MUST match the credential's authorization and aut
 
 The ORD Document is the source of truth for the relationship from an ORD resource to its definitions.
 After normal query-parameter decoding, the aggregator MUST verify that the identified resource in the requested context contains exactly the supplied `url` string and declares a compatible `mediaType`. It MUST NOT resolve or normalize `url` for this comparison.
-A definition MAY arrive first and remain pending until the relationship can be verified.
+A definition MAY arrive first and remain pending while the identified ORD resource is unavailable and the relationship therefore cannot be decided.
+If the identified resource is available but does not declare the exact supplied `url`, or declares it with an incompatible `mediaType`, the aggregator MUST reject the definition request with `422 Unprocessable Content`.
 Request parameters identify the intended relationship but do not create it.
 
 Within one exact publication context, matching URL-reference strings denote the same definition bytes.
@@ -321,7 +333,12 @@ After the envelope is safe to process, the aggregator MUST validate each array e
 An invalid resource update SHOULD leave its last valid version available and marked stale.
 A resource that has never been valid MUST NOT be presented as valid.
 
-A resource-definition request contains one definition. If the definition has any validation error, the aggregator MUST reject the request as a whole with `422 Unprocessable Content` and leave previously accepted bytes unchanged. Warnings do not require rejection. A valid definition MAY instead remain pending when its relationship to an ORD resource cannot yet be verified.
+A resource-definition request contains one definition.
+The aggregator MUST at least validate that an ORD document is technically valid ORD and that a resource definition is technically valid for its declared format.
+When a definition arrives before its ORD resource, the aggregator MUST perform the validation possible from its media type and MUST revalidate it against the declared definition type when the relationship becomes available.
+The aggregator chooses the concrete validation profile, MAY enforce additional policy or quality rules, and SHOULD document that profile for providers.
+For example, an SAP aggregator can require the [`sap:base:v1`](../spec-extensions/policy-levels/sap-base-v1.md) policy level for ORD content published by SAP applications and services.
+If the definition has any validation error, the aggregator MUST reject the request as a whole with `422 Unprocessable Content` and leave previously accepted bytes unchanged. Warnings do not require rejection. A valid definition MAY instead remain pending when its relationship to an ORD resource cannot yet be verified.
 
 For each ORD item or definition association, the last accepted update wins. Version 1 does not infer chronological order from document content. `stale` means that an aggregator retained a previous valid document item after an invalid update; it does not mean that an older update was detected.
 
@@ -337,6 +354,26 @@ The response reports an `applied`, `stale`, or `rejected` outcome for each item.
 Warnings, including dangling references, do not prevent an item from being applied.
 A document whose envelope or context cannot be processed is rejected as a request error instead.
 An accepted definition association returns `201 Created` when first stored or `200 OK` when replaced, with an `applied` or `pending` outcome. A definition that cannot yet be linked to a referencing ORD resource has a `pending` outcome. An invalid definition returns `422 Unprocessable Content` with Problem Details instead of a processing result.
+
+| Endpoint | Condition | Status |
+|---|---|---|
+| Document | Malformed JSON or an invalid parameter combination | `400 Bad Request` |
+| Document | Invalid envelope, ORD version, perspective, or publication context | `422 Unprocessable Content` |
+| Document | Processing completed, including any `rejected` or `stale` item outcomes | `200 OK` |
+| Document | When supported, an `Idempotency-Key` is reused with a different request payload | `409 Conflict` |
+| Definition | Missing, malformed, or ambiguous parameters | `400 Bad Request` |
+| Definition | A new association is accepted as `applied` or `pending` | `201 Created` |
+| Definition | An existing association is replaced | `200 OK` |
+| Definition | The known resource does not declare the exact URL or a compatible media type | `422 Unprocessable Content` |
+| Definition | The definition is invalid for its declared format | `422 Unprocessable Content` |
+| Definition | An optional conditional-request precondition fails | `412 Precondition Failed` |
+| Both | Authentication is missing or invalid | `401 Unauthorized` |
+| Both | The publisher, context, or ORD ID namespace is not authorized | `403 Forbidden` |
+| Both | A documented implementation size limit is exceeded | `413 Content Too Large` |
+| Both | The media type or content encoding is unsupported | `415 Unsupported Media Type` |
+
+An unknown ORD resource does not produce `404 Not Found` for a definition-first upload; the aggregator accepts a technically valid new association with `201 Created` and reports it as `pending`.
+Other operational failures use the applicable HTTP status code and the same Problem Details representation.
 
 HTTP status codes describe request processing, not the publication outcome of every item.
 `200 OK` means processing completed; it does not mean that every item was applied.
