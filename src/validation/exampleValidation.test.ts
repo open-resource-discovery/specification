@@ -174,4 +174,50 @@ describe("Example Validation", async () => {
       }
     }
   });
+
+  await describe("System version aliases", async () => {
+    const schema = await readJsonFile(
+      "./src/generated/spec/v1/schemas/Document.schema.json",
+    );
+    const example = (await readJsonFile(
+      "./examples/documents/document-1.json",
+    )) as Record<string, unknown>;
+    const validate = createValidator().compile(schema as object);
+
+    await it("accepts the latest alias", () => {
+      assert.equal(validate(example), true);
+    });
+
+    await it("rejects unknown aliases", () => {
+      const document = structuredClone(example) as {
+        describedSystemVersion: { aliases: string[] };
+      };
+      document.describedSystemVersion.aliases = ["preview"];
+
+      assert.equal(validate(document), false);
+    });
+
+    await it("rejects duplicate aliases", () => {
+      const document = structuredClone(example) as {
+        describedSystemVersion: { aliases: string[] };
+      };
+      document.describedSystemVersion.aliases = ["latest", "latest"];
+
+      assert.equal(validate(document), false);
+    });
+
+    await it("rejects aliases outside the system-version perspective", () => {
+      const document = structuredClone(example) as { perspective: string };
+      document.perspective = "system-instance";
+
+      assert.equal(validate(document), false);
+    });
+
+    await it("requires an explicit system-version perspective for aliases", () => {
+      const document = structuredClone(example) as { perspective?: string };
+      delete document.perspective;
+
+      assert.equal(validate(document), false);
+    });
+  });
 });

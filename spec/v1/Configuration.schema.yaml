@@ -101,20 +101,23 @@ definitions:
         description: |-
           With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
 
-          It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+          All new static ORD documents SHOULD use perspective `system-version`, including for continuously delivered systems.
 
-          It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+          The `system-type` perspective is deprecated and retained for backward compatibility.
+
+          It is RECOMMENDED to describe dynamic metadata in both the static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
 
           If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
 
           Please read the [article on perspectives](../concepts/perspectives) for more explanations.
         oneOf:
           - const: "system-type"
+            x-deprecation-text: Use `system-version` with a concrete `describedSystemVersion.version` and optionally the `latest` alias instead.
             description: |-
-              Describes a static [system-type](../index.md#system-type) perspective, which is version independent.
+              Deprecated static [system-type](../index.md#system-type) perspective, which is version independent.
 
-              If a system is not versioned (continuous delivery) or resources are not tied to a system, the system-type perspective
-              implies that the information apply, no matter which system version or instance.
+              This value is retained for backward compatibility.
+              New documents SHOULD use `system-version` with a concrete version and optionally assign the `latest` alias.
           - const: "system-version"
             description: |-
               Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.
@@ -122,7 +125,7 @@ definitions:
               If chosen, `describedSystemVersion`.`version` MUST be provided, too.
 
               This perspective describes how a system of a particular type and version generally look like.
-              If no explicit `system-type` perspective is available, the latest system-version SHOULD be interpreted as the [system-type](../index.md#system-type) perspective (see [static perspective resolution](../concepts/perspectives#static-perspective-resolution)).
+              An unversioned static request resolves to the system version with the `latest` alias or, if no alias is published, to the greatest available Semantic Version (see [static perspective resolution](../concepts/perspectives#static-perspective-resolution)).
           - const: "system-instance"
             description: |-
               Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.

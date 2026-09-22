@@ -58,9 +58,11 @@ export interface OrdV1DocumentDescription {
   /**
    * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
    *
-   * It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+   * All new static ORD documents SHOULD use perspective `system-version`, including for continuously delivered systems.
    *
-   * It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+   * The `system-type` perspective is deprecated and retained for backward compatibility.
+   *
+   * It is RECOMMENDED to describe dynamic metadata in both the static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
    *
    * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
    *

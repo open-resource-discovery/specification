@@ -17,15 +17,17 @@ The static perspective describes how an application or service looks like _in ge
 This perspective is especially useful for customers, who haven't purchased a product yet and need to understand what technical capabilities they would get.
 It also helps to understand the common baseline of what all systems of the same type provide and how it changes over time.
 
-The static perspective has two sub-levels:
+The static perspective has the following sub-levels:
 
-- **`system-version`**: Describes the metadata for a specific version of a [system type](../../spec-v1/index.md#system-type). Static metadata is known at design-time or deploy-time, when a new version of an application or service is developed or provisioned. Use this when the system has explicit versions.
-- **`system-type`**: Describes version-independent metadata that applies no matter which [system version](../../spec-v1/index.md#system-version) or [system instance](../../spec-v1/index.md#system-instance) is used. Use this when the system is not versioned (continuous delivery) or resources do not relate to a specific system version.
+- **`system-version`**: Describes the metadata for a concrete version of a [system type](../../spec-v1/index.md#system-type). Static metadata is known at design-time or deploy-time, when a new version of an application or service is developed or provisioned. This is the recommended static perspective for all new publications.
+- **`system-type`**: A deprecated perspective for static metadata without a concrete system version. It is retained for backward compatibility and represents the legacy current view of the system type.
 
-For cloud software with continuous delivery, the version may not be explicit or of interest to the consumer, a fallback to a "latest" version may be needed.
+Every new static publication should identify a concrete system version, even when that version identifies an ORD publication or deployment state rather than a commercial product release.
+The `latest` alias identifies the default concrete version for consumers that do not request a version.
+The provider can assign the alias explicitly, or the aggregator can derive it from the greatest available version according to Semantic Versioning precedence.
 But consider that also cloud software that is going through phased deployments therefore can have multiple versions active at the same time.
 
-The static perspective describes the shared metadata of all system instances (tenants) of the same system version or version independent.
+The static perspective describes the shared metadata of all system instances (tenants) of the same system version.
 Either the metadata is always the same or it explicitly ignores the tenant-specific extensibility, configuration and any feature toggles - describing what's generic and shared.
 The advantage of static metadata is that it is always available, there is no need to first provision tenants to get it. It is also a good integration contract for everything that is meant to work potentially with _any_ tenant.
 
@@ -40,9 +42,9 @@ Here are some guidelines how to choose the correct version for the `system-versi
 - If the system does not use SemVer, it has to be converted so that SemVer conventions apply (conservatively).
   - E.g. if the system uses simple incremental versions like "1", "2" or "2404, convert these to "1.0.0", "2.0.0", "2404.0.0" respectively.
   - E.g. if the system uses date-based versions like "2024-01-15", convert these to "2024.1.15".
-- If the system is continuously delivered and does not have explicit versions at all, use the `system-type` perspective instead.
-  - However, consider that you may still have different releases rolled out over time and on different stages. If this causes a problem, use `system-version` with below conventions.
-  - Alternatively, use a fixed `1.0.0` version and overwrite it with every new release.
+- If the system is continuously delivered and has no commercial release version, assign a concrete SemVer to each immutable publication or deployment state.
+  - Mark the current default version with the `latest` alias, or let the aggregator derive the alias.
+  - Do not use `latest` as the value of `describedSystemVersion.version`, because tenant resolution requires a concrete version.
 
 For the normative rules on choosing between `system-type` and `system-version`, see [Correct Use of Perspectives](../../spec-v1/index.md#correct-use-of-perspectives).
 
@@ -96,13 +98,13 @@ If we don't have it, we need to fall back to the `system-version` layer and inst
 
 Note that perspectives do not merge: when a more specific perspective is available, it completely replaces the less specific one. For example, if `system-instance` metadata is published for a resource, it fully overrides the `system-version` description of that resource — the two are not combined.
 
-If no explicit `system-type` perspective has been published, the aggregator SHOULD derive it from the latest `system-version` perspective (see [Static Perspective Resolution](#static-perspective-resolution) below).
+If no concrete system version is requested, the aggregator SHOULD resolve the `latest` system version (see [Static Perspective Resolution](#static-perspective-resolution) below).
 
 A consumer can legitimately be interested in all three levels, but needs to provide a different context for each:
 
 - If `system-instance` metadata is requested, the tenant / system instance ID needs to be specified.
 - If `system-version` metadata is requested, the system type and system version must be specified.
-- If `system-type` metadata is requested, only the system type must be specified. The aggregator resolves what to return (see [Static Perspective Resolution](#static-perspective-resolution)).
+- If static metadata without a concrete version is requested, only the system type must be specified. The aggregator resolves the `latest` version (see [Static Perspective Resolution](#static-perspective-resolution)).
 
 ### Relation to System-Instance-Aware
 
@@ -123,14 +125,21 @@ The following diagram gives an overview which perspectives need to be described 
 
 </div>
 
-If the system has only static metadata, it should explicitly use the `system-version` perspective and state its version (`describedSystemVersion`).
+If the system has static metadata, it should explicitly use the `system-version` perspective and state its version (`describedSystemVersion`).
 If the system has dynamic metadata, it should describe both perspectives completely, if possible.
 
 If the `system-version` perspective is used, the described version MUST be provided via the ORD `describedSystemVersion`.`version` property.
-For the `system-type` perspective, the version property is NOT required as this perspective is version-independent.
+The provider MAY assign the `latest` alias through `describedSystemVersion`.`aliases`.
+At most one version of a system type MUST carry the `latest` alias.
+All documents from the provider that describe the same system version MUST assign aliases consistently.
+The `system-type` perspective is deprecated, and its version property remains optional for backward compatibility.
 Ideally, ORD providers SHOULD define the `describedSystemVersion`.`version` property on both the `system-version` and `system-instance` perspectives.
 
 The `version` becomes effectively the "join" criteria for how the dynamic metadata is associated to the version-specific static metadata.
+
+If an aggregator supports delegated publication, the ORD Provider responsible for onboarding the described system type determines its static publication model.
+An ORD Provider publishing metadata on behalf of that system type MUST use the same static perspective and concrete system versions.
+Only the provider responsible for the system identity SHOULD assign the `latest` alias.
 
 > ⏩ See also: [Correct Use of Perspectives](../../spec-v1/index.md#correct-use-of-perspectives).
 
@@ -138,7 +147,8 @@ The `version` becomes effectively the "join" criteria for how the dynamic metada
 
 #### Static Aggregators
 
-Static aggregators describe the static perspectives: `system-type` and/or `system-version`.
+Static aggregators primarily describe the `system-version` perspective.
+They MAY continue to accept the deprecated `system-type` perspective for backward compatibility.
 
 - If both static and dynamic perspectives are described, they MUST only pick the static perspectives (`system-type` or `system-version`).
 - If only `system-instance` (or unspecified) perspective is available, we assume this is a generic system instance which is meant to describe all system instances as a subsidiary.
@@ -150,18 +160,23 @@ If the aggregator supports both static and dynamic perspectives:
 
 - The ORD aggregator MUST be able to aggregate and store all perspectives (`system-type`, `system-version`, and `system-instance`) at the same time.
 - In its ORD Discovery API for consumers, it needs to implement the inheritance / fallback behavior:
-  - When `system-instance` is requested but not available, fall back to `system-version`, when this is not available fall back to `system-type`.
+  - When `system-instance` is requested but not available, fall back to the matching `system-version`.
+  - Fall back to the deprecated `system-type` perspective only when no `system-version` metadata is published for that system type.
   - Static perspective resolution (when `system-type` or `system-version` is requested) SHOULD follow the algorithm described [below](#static-perspective-resolution).
 
 #### Static Perspective Resolution
 
-When a consumer requests static metadata (i.e. `system-type` or `system-version` perspective) for a given system type, the aggregator SHOULD resolve what to return as follows (see also the [perspective relation diagram](#how-perspectives-relate-to-each-other)):
+When a consumer requests static metadata for a given system type, the aggregator SHOULD resolve what to return as follows (see also the [perspective relation diagram](#how-perspectives-relate-to-each-other)):
 
-1. If a **specific system version is requested**, return the `system-version` perspective data for that version.
-2. If **no specific version is requested**, return the explicitly provided `system-type` perspective data, if available. The `system-type` perspective takes precedence because it is explicitly maintained and version-independent.
-3. If **no specific version is requested** and **no explicit `system-type` perspective is available**, the aggregator SHOULD derive the `system-type` representation from the **latest `system-version`** perspective.
+1. If a **specific system version is requested**, return the `system-version` perspective data for that exact version.
+   If it is unavailable, return no static view and do not substitute another version.
+2. If **no specific version is requested**, return the `system-version` perspective carrying the `latest` alias, if exactly one is available.
+3. If no explicit `latest` alias is available, return the greatest available `system-version` according to [Semantic Versioning 2.0.0](https://semver.org/) precedence.
+4. If no `system-version` metadata exists for the system type, return the deprecated `system-type` perspective as the legacy equivalent of `latest`, when available.
+5. If multiple versions carry the `latest` alias, report a validation error and do not resolve the ambiguity silently.
 
-This resolution ensures that consumers can always retrieve a meaningful static description of a system type without having to know its versioning scheme or whether the provider chose `system-type` vs. `system-version`.
+The `latest` alias affects only unversioned static requests.
+It MUST NOT affect a request for a concrete version or the resolution of a system instance whose concrete version is known.
 
 #### Tombstone Handling across Versions
 

@@ -686,24 +686,30 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 There is a `perspective` attribute, which allows setting the following values:
 
-- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the latest version or version agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version.
-- `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time).
+- `system-type`: A deprecated <a href="#static-perspective">static perspective</a> without a concrete system version (`"perspective": "system-type"`). It is retained for backward compatibility as the legacy current view of a <a href="#system-type">system type</a>.
+- `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time). New static publications SHOULD use this perspective.
 - `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system-instance-aware</a> information (only known at run-time).
 - `system-independent`: Describes content that is independent of system versions or system instances and can be shared across multiple systems.
 
 ### Correct Use of Perspectives
 
-- Systems, which only have static metadata (system-instance-unaware) SHOULD choose either:
-  - The `system-type` perspective if the system is not versioned (continuous delivery) or resources do not relate to a specific system version
-  - The `system-version` perspective if the system has explicit versions
-  - If this is categorized correctly, the ORD aggregators do not have to aggregate static, identical metadata per tenant.
-  - In this case the same static metadata will be used to describe all system instances of the same version (or for `system-type`, all systems regardless of version)
+- Systems that only have static metadata (system-instance-unaware) SHOULD use the `system-version` perspective with a concrete SemVer.
+  - Continuously delivered systems SHOULD assign a version to each immutable publication or deployment state even when they have no commercial release version.
+  - A provider MAY assign the `latest` alias to the default concrete system version.
+  - The `system-type` perspective is deprecated and SHOULD only be used for backward compatibility.
+- If an aggregator supports delegated publication, the ORD Provider responsible for onboarding the described system type determines its static publication model.
+  - A delegated ORD Provider publishing metadata on behalf of that system type MUST use the same static perspective and concrete system versions.
+  - Only the provider responsible for the system identity SHOULD assign the `latest` alias.
 - Systems, which have dynamic metadata MUST use the `system-instance` perspective.
   - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
   - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
     In this case, both perspectives MUST use the same ORD IDs for the same resources and MUST NOT describe those resources inconsistently.
 - If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
+
+For an unversioned static request, an aggregator SHOULD return the concrete system version carrying the `latest` alias.
+If no alias is published, it SHOULD derive `latest` from the greatest available version according to Semantic Versioning precedence.
+Only when no `system-version` metadata exists may it treat the deprecated `system-type` perspective as the legacy equivalent of `latest`.
 
 > ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
 
@@ -1169,10 +1175,11 @@ ORD information can have different [perspectives](#perspectives):
 
 #### Static Perspective
 
-The **static perspective** describes how a system generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. They can be used to describe a [system type](#system-type) and [system version](#system-version). This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
+The **static perspective** describes how a system version generically looks like ("baseline"), without any customizations or extensions but with all pre-delivered capabilities fully described. Such static perspectives can be described at **design-time** or **deploy-time**. This is useful, e.g. to describe potential resources users / customers _could_ use before they actually provision systems.
 
-- This can be explicitly set with `perspective`: `system-type` (version independent) or `system-version` (for specific versions)
-- This is also referred to as [system-instance-unaware](#system-instance-unaware) information. They are identical across all [system instance](#system-instance) of the described [system type](#system-type) (and [system version](#system-version) when using `system-version` perspective).
+- This SHOULD be explicitly set with `perspective`: `system-version` for a concrete system version.
+- The deprecated `system-type` value remains available for legacy version-independent publications.
+- This is also referred to as [system-instance-unaware](#system-instance-unaware) information. It is identical across all [system instances](#system-instance) of the described [system version](#system-version).
 
 ##### system-instance-unaware
 
@@ -1234,7 +1241,7 @@ A single system type can have multiple deployments, for example one per region o
 
 #### System Version
 
-A **system version** is a particular software version of a [system type](#system-type). It states the design-time version or release of a system and provides versioning for operational purposes. A [system deployment](#system-deployment) always runs a specific system version. All system instances of the same system version could have the same static metadata description.
+A **system version** is a particular software, publication, or deployment version of a [system type](#system-type). It states the design-time version or release of a system and provides versioning for operational purposes. A [system deployment](#system-deployment) always runs a specific system version. All system instances of the same system version could have the same static metadata description. A system version can carry the movable `latest` alias used for unversioned static requests.
 
 #### System Instance
 

@@ -80,7 +80,7 @@ For a production implementation, still consider:
 - validation of ORD documents and referenced resource definitions during build or startup
 - [`ETag` support](../index.md#ord-provider-cache-handling), so aggregators can efficiently detect unchanged metadata
 - access protection, if the metadata is not public
-- using the correct static [perspective](./perspectives.md), usually `system-version` or `system-type`
+- using the `system-version` static [perspective](./perspectives.md) with a concrete version and, where applicable, the `latest` alias
 
 A static implementation is a good starting point because it proves the transport and schema model.
 Most real applications, however, need to generate at least part of the response from application metadata.
@@ -94,8 +94,8 @@ Providers advertise these separately in the ORD configuration so that aggregator
 
 The `system-version` document should be complete for that version of the application.
 It must not require tenant context and should not contain tenant-specific customizations.
-It should include `describedSystemVersion.version` when the application has a meaningful version.
-If the application is not versioned, consider using `system-type` perspective instead.
+It should include a concrete `describedSystemVersion.version`.
+For a continuously delivered application without a commercial release version, assign a SemVer to each immutable publication or deployment state and optionally mark the default version with the `latest` alias.
 
 ```http
 GET /open-resource-discovery/v1/documents/system-version HTTP/1.1
@@ -130,7 +130,7 @@ The following snippets are simplified from the [ORD Reference Application](https
 ```mermaid
 flowchart LR
     Shared["Shared application metadata<br/>version, APIs, events,<br/>entities, packages"]
-    Baseline["Static ORD baseline<br/>system-version or system-type"]
+    Baseline["Static ORD baseline<br/>system-version"]
     TenantState["Tenant state<br/>configuration, entitlements,<br/>extensions, custom model"]
     Projection["Tenant projection"]
     Dynamic["Tenant ORD view<br/>system-instance"]

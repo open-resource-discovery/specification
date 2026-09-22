@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `describedSystemVersion.aliases` with the `latest` alias for selecting the default concrete system version.
+
 ### Changed
 
 - Standardized the agent examples on the `sap.ai:interactionMode` label.
@@ -19,6 +23,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified that overlay output is semantically, not byte, canonical.
 - Clarified OData operation selectors: a namespace-qualified name may omit its signature only when unique; overloaded operations require an exact signature with all parameters in declaration order; `Name()` selects a zero-parameter operation; and signature selectors never fall back to a FunctionImport.
 - Updated the ORD Overlay Tooling section to link the published reference implementation (`overlay-tools`), a set of React components for viewing Overlay documents (`overlay-editor`), and a reusable Go library (`overlay-golang`).
+
+### Deprecated
+
+- Deprecated the `system-type` perspective in favor of concrete `system-version` publications and the `latest` alias.
 
 ## [1.16.3]
 

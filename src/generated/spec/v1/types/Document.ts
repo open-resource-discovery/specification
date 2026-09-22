@@ -72,9 +72,11 @@ export interface OrdDocument {
   /**
    * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
    *
-   * It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+   * All new static ORD documents SHOULD use perspective `system-version`, including for continuously delivered systems.
    *
-   * It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+   * The `system-type` perspective is deprecated and retained for backward compatibility.
+   *
+   * It is RECOMMENDED to describe dynamic metadata in both the static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
    *
    * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
    *
@@ -272,6 +274,18 @@ export interface SystemVersion {
    * For continuous-delivery systems, the version MAY be fixed to the same value, e.g. `1.0.0`, but be aware that phased rollouts may benefit from a more precise versioning like adding a build number.
    */
   version?: string;
+  /**
+   * Optional movable aliases assigned to this concrete system version.
+   *
+   * The `latest` alias identifies the default system version for an unversioned static request.
+   * At most one version of a system type MUST carry the `latest` alias at a time.
+   * If no version carries it, an ORD aggregator SHOULD derive `latest` from the greatest available version according to Semantic Versioning precedence.
+   * Aliases MUST only be published for the `system-version` perspective by the ORD Provider responsible for the described system identity.
+   * The alias does not affect requests for a concrete version or resolution of a system instance with a known version.
+   *
+   * @minItems 1
+   */
+  aliases?: ["latest", ..."latest"[]];
   /**
    * Human-readable title of the system version.
    */
