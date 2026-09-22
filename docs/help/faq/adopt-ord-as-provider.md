@@ -34,7 +34,7 @@ So it needs to be clarified first, which information needs to be exposed via ORD
 ### ORD Support by Framework
 
 The simplest scenario is that ORD support is already built into an opinionated framework.
-This is the case for the [SAP ABAP Platform](https://developers.sap.com/topics/abap-platform.platform.html) already and in the future, also the [SAP CAP framework](https://cap.cloud.sap/docs/about/).
+This is the case for the [SAP ABAP Platform](https://developers.sap.com/topics/abap-platform.platform.html) already and in the future, also the [SAP CAP framework](https://cap.cloud.sap/docs/).
 
 In these cases, ORD support only needs to be activated and configured. Any additional information that is needed for ORD may need to be provided. But there is no need to write extra code.
 
@@ -78,7 +78,7 @@ The API itself consists just of three different types of API GET operations:
 
 Please note that you may need to [protect the API access](#protect-ord-provider-api-access).
 
-> 🔗 See [./implementation-examples/no-auth](https://github.com/open-resource-discovery/specification/tree/main/implementation-examples/no-auth) for an example node.js implementation without authentication.
+> 🔗 See [./examples/implementation/no-auth](https://github.com/open-resource-discovery/specification/tree/main/examples/implementation/no-auth) for an example node.js implementation without authentication.
 
 #### Future Options
 

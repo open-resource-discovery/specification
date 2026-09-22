@@ -53,7 +53,7 @@ hide_table_of_contents: true
       <div className="lp-overview-text">
         <p>Open Resource Discovery (ORD) is a protocol that enables applications and services to self-describe their exposed resources and capabilities, standardizing metadata publishing and discovery. It serves as a foundation for <strong>metadata catalogs and marketplaces</strong> while improving integration automation and quality.</p>
         <p>ORD is designed to be <strong>general-purpose</strong> and to work with a wide variety of industry-standard protocols and metadata standards. It can be used for <strong>static documentation</strong> or to describe the <strong>run-time system landscape</strong>, reflecting tenant-specific configuration and extensions.</p>
-        <p>Technically, ORD allows applications to implement a read-only entry point (<a href="https://en.wikipedia.org/wiki/Service_provider_interface">Service Provider Interface</a>) that can be used to discover and crawl relevant metadata. The ORD standard is governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/projects/open-resource-discovery-ord/">NeoNephos</a>.</p>
+      <p>Technically, ORD allows applications to implement a read-only entry point (<a href="https://en.wikipedia.org/wiki/Service_provider_interface">Service Provider Interface</a>) that can be used to discover and crawl relevant metadata. The ORD standard is governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/">NeoNephos</a>.</p>
       </div>
       <div className="lp-overview-diagram">
         ![ORD Provider Overview](/img/ord-provider-overview.svg 'ORD Provider Overview')
@@ -139,7 +139,6 @@ hide_table_of_contents: true
       <li>Read the <a href="./introduction">ORD Introduction</a> and watch the <a href="./help/videos">ORD Videos</a></li>
       <li>Read blog post: <a href="https://community.sap.com/t5/technology-blog-posts-by-sap/why-we-created-open-resource-discovery/ba-p/14172057">Why we created Open Resource Discovery</a> and listen to <a href="https://podcast.opensap.info/open-source-way/2024/06/14/open-resource-discovery-ord/">podcast on ORD</a></li>
       <li>The npm package <a href="https://www.npmjs.com/package/@open-resource-discovery/specification"><code>@open-resource-discovery/specification</code></a> provides the JSON Schema and TypeScript types</li>
-      <li>Have questions? <a href="https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382">Ask AI about ORD</a> (NotebookLM)</li>
     </ul>
     <div className="videoContainer">
       <iframe className="videoIframe" src="https://www.youtube.com/embed/7Z818CdoZJg" title="Introducing the Open Resource Discovery protocol" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>

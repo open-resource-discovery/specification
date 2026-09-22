@@ -10,7 +10,7 @@ title: AI Agents and Protocols
 
 ## Agents
 
-> An [Agent](../interfaces/Document#agent) is an **autonomous software entity** capable of task execution, described through high quality **metadata** that can be accessed through a central catalog ([ORD Aggregator](../#ord-aggregator)).
+> An [Agent](../interfaces/Document#agent) is an **autonomous software entity** capable of task execution, described through high quality **metadata** that can be accessed through a central catalog ([ORD Aggregator](../index.md#ord-aggregator)).
 
 To understand how Agents fit into the ORD landscape, it is helpful to distinguish between their abstract definition and their technical realization.
 

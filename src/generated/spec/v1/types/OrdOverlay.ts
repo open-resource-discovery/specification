@@ -461,7 +461,7 @@ export interface OverlaySelectorByOperation {
    * - MCP (any Specification ID other than `a2a-agent-card`): maps to `tools[].name`.
    *   See: https://modelcontextprotocol.io/specification/2025-11-25/schema#tool-name
    * - A2A Agent Card (`a2a-agent-card`): maps to `skills[].id`.
-   *   See: https://google.github.io/A2A/specification/#agentskill-object
+   *   See: https://a2a-protocol.org/latest/specification/#445-agentskill
    * - OData (`edmx`, `csdl-json`): maps to the Action or Function name at Schema level.
    *   MUST use either the namespace-qualified name (e.g. `OData.Demo.Approval`) or its
    *   namespace-qualified signature (e.g. `OData.Demo.Approval(Edm.Int32,Edm.String)`).

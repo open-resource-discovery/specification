@@ -2332,7 +2332,7 @@ definitions:
     x-introduced-in-version: "1.8.0"
     x-ums-implements: "#/definitions/OrdResource"
     description: |-
-      A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
+      A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/index.md#ord-aggregator).
 
       Please note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).
     properties:
@@ -2795,7 +2795,7 @@ definitions:
           - const: edmx
             description: |-
               [OData](https://www.odata.org/documentation/) APIs can be described via edmx XML files.
-              For OData V2 APIs, this is standardized through the [Common Schema Definition Language (CSDL) V2](https://www.odata.org/documentation/odata-version-2-0/overview/#ServiceMetadataDocument).
+              For OData V2 APIs, this is standardized through the [Common Schema Definition Language (CSDL) V2](https://www.odata.org/documentation/odata-version-2-0/overview/).
               For OData V4 APIs, this is standardized through the [CSDL XML Representation](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html)
               The `mediaType` MUST be be set to `application/xml`.
               The `apiProtocol` MUST be set to `odata-v2` or `odata-v4`.
@@ -2823,7 +2823,7 @@ definitions:
               The `apiProtocol` MUST be set to `soap-inbound` or `soap-outbound`.
           - const: a2a-agent-card
             description: |-
-              [A2A Agent Card](https://a2a-protocol.org/topics/agent-discovery/) is a machine-readable description of an A2A Agent.
+              [A2A Agent Card](https://a2a-protocol.org/latest/specification/#8-agent-discovery-the-agent-card) is a machine-readable description of an A2A Agent.
               The `mediaType` MUST be be set to `application/json`.
               The `apiProtocol` MUST be set to `a2a`.
             x-introduced-in-version: "1.12.2"
@@ -2986,7 +2986,7 @@ definitions:
               Any valid [Specification ID](../index.md#specification-id).
           - const: asyncapi-v2
             description: |-
-              [AsyncAPI 2](https://www.asyncapi.com/docs/specifications/2.0.0) API definition for events.
+              [AsyncAPI 2](https://www.asyncapi.com/docs/reference/specification/v2.0.0) API definition for events.
               The SAP Event Catalog Specification also falls under this category, as it is a valid AsyncAPI definition.
           - const: sap-csn-interop-effective-v1
             description: |-
@@ -4397,10 +4397,10 @@ definitions:
       If a generic [Link](#link) can also be expressed via an API / Event Resource Link, the latter MUST be chosen.
     properties:
       type:
-        # Inspiration: https://webapi-discovery.github.io/rfcs/rfc0001.html#webapiactions
+        # Inspiration: https://webapi-discovery.github.io/rfcs/rfc0001.html
         type: string
         description: |-
-          See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html#webapiactions)
+          See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html)
         anyOf:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$

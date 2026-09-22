@@ -30,7 +30,7 @@ That leaves the main challenge to create the ORD documents correctly. Two things
 
 **A:** Not that we are aware of, but it is designed to support this.
 
-ORD is [open source](https://github.com/open-resource-discovery/specification) under the Apache 2 license (see [public announcement](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/)) and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/). We are in discussion with other companies to form a broader community around the standard.
+ORD is [open source](https://github.com/open-resource-discovery/specification) under the Apache 2 license (see [public announcement](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/)) and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/). We are in discussion with other companies to form a broader community around the standard.
 
 #### Q: How long does it take for metadata changes to reflect in the Aggregators?
 
@@ -50,7 +50,7 @@ In SAP context, we support on-premises software through [Cloud Connectors](https
 **A:** The "Open" in ORD refers to the protocol itself being published publicly under a permissive license (Apache 2.0).
 It can be freely implemented by SAP partners and customers.
 
-The standard is published at https://open-resource-discovery.org and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/projects/open-resource-discovery-ord/).
+The standard is published at https://open-resource-discovery.org and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/).
 
 Please note that ORD being an open protocol does not imply that the resources and information described through it is "open".
 They can be categorized explicitly, for example through the `visibility` attribute.

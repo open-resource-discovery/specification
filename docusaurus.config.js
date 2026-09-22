@@ -4,6 +4,33 @@
 import { themes as prismThemes } from "prism-react-renderer";
 
 const baseUrl = process.env.BASE_URL ?? "/";
+const editUrlBase =
+  "https://github.com/open-resource-discovery/specification/tree/main/";
+/** @type {Record<string, string>} */
+const generatedDocSources = {
+  "spec-v1/interfaces/Configuration.md": "spec/v1/Configuration.schema.yaml",
+  "spec-v1/interfaces/Document.md": "spec/v1/Document.schema.yaml",
+  "spec-v1/interfaces/OrdOverlay.md": "spec/v1/OrdOverlay.schema.yaml",
+  "spec-v1/examples/configuration-1.md":
+    "examples/configuration/configuration-1.json",
+  "spec-v1/examples/document-1.md": "examples/documents/document-1.json",
+  "spec-v1/examples/document-agents.md":
+    "examples/documents/document-agents.json",
+  "spec-v1/examples/document-data-product.md":
+    "examples/documents/document-data-product.json",
+  "spec-v1/examples/document-entity-types.md":
+    "examples/documents/document-entity-types.json",
+  "spec-v1/examples/document-integration-dependencies.md":
+    "examples/documents/document-integration-dependencies.jsonc",
+  "spec-v1/examples/document-overlays.md":
+    "examples/documents/document-overlays.json",
+  "spec-v1/examples/document-poc.md": "examples/documents/document-poc.jsonc",
+  "spec-v1/examples/document-special-protocols.md":
+    "examples/documents/document-special-protocols.json",
+  "spec-v1/diagrams/ord-configuration.md": "spec/v1/Configuration.schema.yaml",
+  "spec-v1/diagrams/ord-document.md": "spec/v1/Document.schema.yaml",
+  "spec-v1/diagrams/ord-overlay.md": "spec/v1/OrdOverlay.schema.yaml",
+};
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -52,10 +79,8 @@ const config = {
           sidebarCollapsible: true,
           sidebarCollapsed: true,
           routeBasePath: "/", // Serve the docs at the site's root
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            "https://github.com/open-resource-discovery/specification/tree/main/",
+          editUrl: ({ docPath }) =>
+            editUrlBase + (generatedDocSources[docPath] ?? `docs/${docPath}`),
         },
         blog: false, // disable the blog plugin
         theme: {
@@ -238,17 +263,7 @@ const config = {
                 label: "FAQ",
                 to: "help/faq/",
               },
-              {
-                label: "Ask AI (NotebookLM)",
-                href: "https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382",
-              },
             ],
-          },
-          {
-            href: "https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382",
-            label: "Ask AI",
-            position: "right",
-            className: "header-notebooklm-pill",
           },
           {
             href: "https://github.com/open-resource-discovery/specification",
