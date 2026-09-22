@@ -275,11 +275,11 @@ export interface SystemVersion {
    */
   version?: string;
   /**
-   * Optional movable aliases assigned to this concrete system version.
+   * Optional explicit aliases assigned to this concrete system version.
    *
-   * The `latest` alias identifies the default system version for an unversioned static request.
+   * Providers normally omit this property, in which case an ORD aggregator SHOULD automatically select the greatest available version according to Semantic Versioning precedence.
+   * The `latest` alias explicitly overrides that default for an unversioned static request.
    * At most one version of a system type MUST carry the `latest` alias at a time.
-   * If no version carries it, an ORD aggregator SHOULD derive `latest` from the greatest available version according to Semantic Versioning precedence.
    * Aliases MUST only be published for the `system-version` perspective by the ORD Provider responsible for the described system identity.
    * The alias does not affect requests for a concrete version or resolution of a system instance with a known version.
    *

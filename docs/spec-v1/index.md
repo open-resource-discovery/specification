@@ -695,7 +695,8 @@ There is a `perspective` attribute, which allows setting the following values:
 
 - Systems that only have static metadata (system-instance-unaware) SHOULD use the `system-version` perspective with a concrete SemVer.
   - Continuously delivered systems SHOULD assign a version to each immutable publication or deployment state even when they have no commercial release version.
-  - A provider MAY assign the `latest` alias to the default concrete system version.
+  - Providers normally omit aliases so that the aggregator automatically selects the greatest available version according to Semantic Versioning precedence.
+  - A provider MAY explicitly assign the `latest` alias when the default should be a different concrete system version.
   - The `system-type` perspective is deprecated and SHOULD only be used for backward compatibility.
 - If an aggregator supports delegated publication, the ORD Provider responsible for onboarding the described system type determines its static publication model.
   - A delegated ORD Provider publishing metadata on behalf of that system type MUST use the same static perspective and concrete system versions.

@@ -66,14 +66,15 @@ Phased deployments therefore publish every concurrently running version rather t
 The `latest` alias identifies the default concrete system version for consumers that request static metadata without specifying a version.
 It does not mean that the aliased version is the version of every running tenant.
 
-The provider responsible for the described system identity MAY assign the alias by adding `latest` to `describedSystemVersion.aliases`.
+The `aliases` property is optional.
+Providers normally omit it, in which case the aggregator selects the greatest available version according to SemVer precedence.
+The provider responsible for the described system identity MAY explicitly assign `latest` when the default should be a different version, for example during a rollback or staged release.
 At most one version of a system type MUST carry the alias at a time.
-All documents from that provider for the same version MUST assign aliases consistently.
 
 An explicit alias selects the concrete version as a whole.
 It therefore also selects metadata contributed for that same concrete version by delegated providers, even though those providers do not assign the alias themselves.
 
-If no version has an explicit `latest` alias, an aggregator SHOULD select the greatest available version according to SemVer precedence.
+If no version has an explicit `latest` alias, an aggregator SHOULD automatically select the greatest available version according to SemVer precedence.
 When two available versions have equal SemVer precedence, for example because they differ only in build metadata, the provider should assign `latest` explicitly to avoid an ambiguous default.
 
 Moving `latest` changes only the result of future unversioned static requests.
