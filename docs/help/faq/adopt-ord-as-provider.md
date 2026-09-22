@@ -113,7 +113,7 @@ Usually metadata specification come with a schema that can be used for validatio
 
 Industry standard metadata formats usually come with validators, too. Consider for example [spectral](https://stoplight.io/open-source/spectral).
 
-> 🚧 At SAP we have built a metadata validator for this [TODO: link], that we consider open-sourcing in the future, too.
+> 🚧 At SAP we have built the [API Metadata Validator](https://www.npmjs.com/package/@sap/api-metadata-validator) for this.
 > It can not only validate ORD documents and configs but also other metadata standards for technical correctness and guideline compliance.
 
 ### Protect ORD Provider API Access

@@ -85,7 +85,7 @@ hide_table_of_contents: true
   <div className="container lp-quickstart-container">
     <h2>Quick Start</h2>
     <ol>
-      <li><strong>Understand</strong> — Read the <a href="./introduction.mdx">5-minute primer</a> to grasp the core concepts</li>
+      <li><strong>Understand</strong> — Read the <a href="./introduction">5-minute primer</a> to grasp the core concepts</li>
       <li><strong>Explore</strong> — Check the <a href="./spec-v1/examples">example files</a> to see ORD in action</li>
       <li><strong>Implement</strong> — Follow the <a href="./spec-v1/interfaces/Configuration">ORD Configuration Interface</a> to add ORD to your application</li>
       <li><strong>Validate</strong> — Use the <a href="https://www.npmjs.com/package/@open-resource-discovery/specification">JSON Schema</a> to validate your ORD documents</li>
@@ -136,7 +136,7 @@ hide_table_of_contents: true
   <div className="container lp-learnmore-container">
     <h2>Learn More</h2>
     <ul>
-      <li>Read the <a href="./introduction.mdx">ORD Introduction</a> and watch the <a href="./help/videos">ORD Videos</a></li>
+      <li>Read the <a href="./introduction">ORD Introduction</a> and watch the <a href="./help/videos">ORD Videos</a></li>
       <li>Read blog post: <a href="https://community.sap.com/t5/technology-blog-posts-by-sap/why-we-created-open-resource-discovery/ba-p/14172057">Why we created Open Resource Discovery</a> and listen to <a href="https://podcast.opensap.info/open-source-way/2024/06/14/open-resource-discovery-ord/">podcast on ORD</a></li>
       <li>The npm package <a href="https://www.npmjs.com/package/@open-resource-discovery/specification"><code>@open-resource-discovery/specification</code></a> provides the JSON Schema and TypeScript types</li>
       <li>Have questions? <a href="https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382">Ask AI about ORD</a> (NotebookLM)</li>
