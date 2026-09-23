@@ -81,8 +81,8 @@ A **described system instance** is a system instance that is being described by 
 
 > ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance is not necessarily identical to the described system instances (see [`describedSystemInstance`](./interfaces/Document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
 
-An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
-An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
+An ORD provider MUST use at least one standardized [ORD transport mode](#ord-transport-modes).
+For pull transport it implements the [ORD Provider API](#ord-provider-api), while for push transport it publishes to an [ORD aggregator](#ord-aggregator).
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
@@ -178,6 +178,89 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 </div>
 
+### Push Transport
+
+In push transport mode, an [ORD provider](#ord-provider) publishes ORD information to an [ORD aggregator](#ord-aggregator) through the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx).
+Push is optional for providers and aggregators.
+It is useful when a provider can publish on change or from a CI/CD pipeline but cannot or does not want to operate a continuously reachable ORD Provider API.
+
+Push uses the standard [ORD Document](#ord-document) without transport-specific properties.
+Resource definitions are uploaded separately in their native media types.
+Their `url` values identify their associations within the submission and are not fetched from the provider.
+
+#### Transactional Submission
+
+A push publication is assembled as a stateful submission:
+
+1. The provider opens a submission for one publication context and chooses `replace` or `merge` publication.
+2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
+3. The provider commits the submission.
+4. The aggregator validates the complete staged set asynchronously.
+5. The provider polls the submission and its issues until validation finishes.
+
+Staged content MUST NOT be discoverable.
+Commit validation is strict.
+If any staged content or relationship has an error, the aggregator MUST publish nothing and MUST retain the previous published state unchanged.
+Warnings and information messages MUST NOT prevent publication.
+A failed submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
+If validation succeeds, the aggregator MUST publish all staged changes atomically.
+
+The aggregator returns an expiry time when it creates a submission.
+It MUST automatically discard the staged content of an `open` or `failed` submission that has not committed successfully by that time.
+A provider MAY discard such a submission explicitly.
+
+#### Publication Scope and Removal
+
+Each submission belongs to the publisher established by its authenticated credential and exactly one publication context.
+The publication context contains one [perspective](#perspectives) and any required system version or aggregator-issued system instance identifier.
+The aggregator MUST verify that the staged ORD Documents describe the same authorized context.
+
+In `replace` mode, the staged set is the publisher's complete current contribution in that context.
+After successful validation, the aggregator MUST remove prior contributions in that scope that are absent from the submission.
+In `merge` mode, omission does not remove prior contributions.
+Both modes are atomic.
+
+The replacement boundary is the stable publisher and publication context recorded by the aggregator.
+It is not an ORD Document, credential, or ORD ID namespace.
+The aggregator MUST retain contribution provenance and MUST NOT remove content attributed to another publisher or delegator.
+
+#### Status and Diagnostics
+
+A submission has one of the following states:
+
+- `open`: artifacts can be staged, replaced, or removed.
+- `validating`: the committed revision is immutable while validation runs.
+- `failed`: validation found at least one error and the staged artifacts can be corrected.
+- `published`: validation succeeded and the atomic update is complete.
+
+```mermaid
+stateDiagram-v2
+    [*] --> open: create
+    open --> validating: commit
+    validating --> published: no errors
+    validating --> failed: errors
+    failed --> open: change staged artifact
+    open --> [*]: discard or expire
+    failed --> [*]: discard or expire
+```
+
+The status endpoint reports the state, artifact counts, diagnostic counts, and expiry time.
+The issues endpoint reports all errors, warnings, and information messages for the current staged revision.
+Each issue SHOULD identify the staged artifact and target to which it applies.
+
+#### Authentication and API Location
+
+The push API MUST use HTTPS and authenticate every operation.
+Each credential MUST identify exactly one described system type or one system-independent publisher in authoritative aggregator state.
+An aggregator MAY restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
+Identifiers supplied by a request MUST NOT establish authority by themselves.
+
+ORD does not mandate one credential technology.
+The aggregator communicates its API base URL, authentication mechanism, credentials, and implementation limits during onboarding.
+The relative `/v1` paths and behavior are standardized by the [OpenAPI definition](./interfaces/aggregator-push-api.mdx).
+
+The rationale and rejected stateless design are recorded in [ADR 001](https://github.com/open-resource-discovery/specification/blob/main/adrs/001-use-transactional-submissions-for-push-transport.md).
+
 ### Other Modes of Transport
 
 Other modes of transport have not yet been standardized/specified.
@@ -190,17 +273,6 @@ Manual import of the [ORD document](#ord-document) as a JSON file into an intere
 - The system instances do not need to know each other or be integrated in any way
 - The ORD document alone is sufficient for this type of consumption
 - All URLs in the document MUST be resolvable (e.g. through the document root `baseUrl`, `describedSystemInstance.baseUrl`, or as full absolute URLs — see [Relative URL Resolution](#relative-url-resolution))
-
-#### Push Transport
-
-> 🚧 The specification currently does not cover this mode.
-
-The Document can be pushed to the interested ORD aggregator, e.g. via a webhook, a known HTTP POST endpoint, or via file upload.
-
-- Every system instance needs to know where the ORD documents need to be pushed to.
-- An ORD aggregator might provide a dedicated HTTP POST endpoint for this.
-- Changes can be pushed faster and more efficiently compared to the [pull transport](#pull-transport).
-- The specification currently does not cover this mode.
 
 #### Event-Driven Transport
 

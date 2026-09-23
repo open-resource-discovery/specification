@@ -80,20 +80,18 @@ Please note that you may need to [protect the API access](#protect-ord-provider-
 
 > 🔗 See [./examples/implementation/no-auth](https://github.com/open-resource-discovery/specification/tree/main/examples/implementation/no-auth) for an example node.js implementation without authentication.
 
-#### Future Options
+#### Option 3: Push metadata
 
-We are aware that publishing static metadata can be made even more convenient.
-Currently it is necessary to serve the metadata by a service at runtime.
-If the metadata is purely static, it would also be possible to publish it at design-time or deploy-time, e.g. via a CI/CD pipeline job or CLI utility.
-
-This is an option we're considering to standardize in ORD, as a [push transport](../../spec-v1/index.md#push-transport) mode. If this pattern is of practical use to you, please reach out to us.
+If an ORD aggregator supports [push transport](../../spec-v1/index.md#push-transport), a provider can publish metadata at design-time or deploy-time, for example from a CI/CD pipeline or CLI utility.
+The transactional submission API stages several ORD Documents and resource definitions and publishes them atomically after validation.
+The provider needs the aggregator's push API base URL and credentials.
 
 ### Dynamic Metadata
 
 If some of the metadata is dynamic (changes at run-time or different per tenant), the static solutions will not be sufficient.
 
-Now becomes a necessity to implement ORD as a REST API, where the GET operations return metadata dynamically.
-The response (of at least some requests) will depend on tenant context, customizations and extensions.
+A run-time implementation must then generate ORD metadata dynamically and either expose it through pull transport or submit it through push transport.
+At least some generated documents will depend on tenant context, customizations, and extensions.
 
 In practice it's more realistic that such an implementation will be a mix between static and dynamic metadata.
 Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to split metadata into separate ORD documents with different [perspectives](../../spec-v1/concepts/perspectives.md) (e.g. `system-version` for static and `system-instance` for dynamic metadata).
