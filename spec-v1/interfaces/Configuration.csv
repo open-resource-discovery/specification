@@ -1,0 +1,11 @@
+Entity Name,Property Name,Mandatory,Property Type
+Ord V1 Support,documents,false,array<V1DocumentDescription>
+Ord V1 Support,capabilities,false,V1Capabilities
+Ord V1 Document Description,url,true,string
+Ord V1 Document Description,perspective,false,string
+Ord V1 Document Description,systemInstanceAware,false,boolean
+Ord V1 Document Description,accessStrategies,true,array<AccessStrategy>
+Ord V1 Capabilities,selector,false,boolean
+Ord V1 Document Access Strategy,type,true,string
+Ord V1 Document Access Strategy,customType,false,string
+Ord V1 Document Access Strategy,customDescription,false,string

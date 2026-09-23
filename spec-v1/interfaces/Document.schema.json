@@ -3005,7 +3005,7 @@
       "title": "Data Product",
       "x-ums-type": "root",
       "x-introduced-in-version": "1.8.0",
-      "description": "A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).\n\nPlease note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).",
+      "description": "A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/index.md#ord-aggregator).\n\nPlease note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).",
       "properties": {
         "ordId": {
           "type": "string",
@@ -3820,7 +3820,7 @@
             },
             {
               "const": "edmx",
-              "description": "[OData](https://www.odata.org/documentation/) APIs can be described via edmx XML files.\nFor OData V2 APIs, this is standardized through the [Common Schema Definition Language (CSDL) V2](https://www.odata.org/documentation/odata-version-2-0/overview/#ServiceMetadataDocument).\nFor OData V4 APIs, this is standardized through the [CSDL XML Representation](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html)\nThe `mediaType` MUST be be set to `application/xml`.\nThe `apiProtocol` MUST be set to `odata-v2` or `odata-v4`."
+              "description": "[OData](https://www.odata.org/documentation/) APIs can be described via edmx XML files.\nFor OData V2 APIs, this is standardized through the [Common Schema Definition Language (CSDL) V2](https://www.odata.org/documentation/odata-version-2-0/overview/).\nFor OData V4 APIs, this is standardized through the [CSDL XML Representation](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html)\nThe `mediaType` MUST be be set to `application/xml`.\nThe `apiProtocol` MUST be set to `odata-v2` or `odata-v4`."
             },
             {
               "const": "csdl-json",
@@ -3840,7 +3840,7 @@
             },
             {
               "const": "a2a-agent-card",
-              "description": "[A2A Agent Card](https://a2a-protocol.org/topics/agent-discovery/) is a machine-readable description of an A2A Agent.\nThe `mediaType` MUST be be set to `application/json`.\nThe `apiProtocol` MUST be set to `a2a`.",
+              "description": "[A2A Agent Card](https://a2a-protocol.org/latest/specification/#8-agent-discovery-the-agent-card) is a machine-readable description of an A2A Agent.\nThe `mediaType` MUST be be set to `application/json`.\nThe `apiProtocol` MUST be set to `a2a`.",
               "x-introduced-in-version": "1.12.2"
             },
             {
@@ -3984,7 +3984,7 @@
             },
             {
               "const": "asyncapi-v2",
-              "description": "[AsyncAPI 2](https://www.asyncapi.com/docs/specifications/2.0.0) API definition for events.\nThe SAP Event Catalog Specification also falls under this category, as it is a valid AsyncAPI definition."
+              "description": "[AsyncAPI 2](https://www.asyncapi.com/docs/reference/specification/v2.0.0) API definition for events.\nThe SAP Event Catalog Specification also falls under this category, as it is a valid AsyncAPI definition."
             },
             {
               "const": "sap-csn-interop-effective-v1",
@@ -6291,7 +6291,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "description": "See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html#webapiactions)",
+          "description": "See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html)",
           "anyOf": [
             {
               "type": "string",
