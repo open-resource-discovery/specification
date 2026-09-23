@@ -1247,7 +1247,7 @@ export interface ExposedEntityType {
  */
 export interface ApiAndEventResourceLink {
   /**
-   * See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html#webapiactions)
+   * See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html)
    */
   type: (
     | string
@@ -2537,7 +2537,7 @@ export interface CapabilityDefinition {
   purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
- * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/#ord-aggregator).
+ * A [Data Product](../concepts/data-product) is a data set exposed for consumption outside the boundaries of the producing application via APIs and described by high quality metadata that can be accessed through the [ORD Aggregator](../../spec-v1/index.md#ord-aggregator).
  *
  * Please note that this concept is in beta, see [Data Product - Current Status](../concepts/data-product#current-status).
  */

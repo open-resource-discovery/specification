@@ -138,4 +138,4 @@ Similar to the complexity on the provider's side, we can again reduce the integr
 
 If a consumer needs information that we don't have today, they can consider aligning it through the ORD standard. With this, they don't need to invent their own Service Provider Interface and convince all of their information providers to create new integrations to them.
 
-ORD even offers the concept of [Generic Capabilities](https://sap.sharepoint.com/:w:/r/teams/CPAIntegration/_layouts/15/Doc.aspx?sourcedoc=%7B9AFD0C50-1234-43E9-9E04-C881FAA3614B%7D&file=CPA_APIs_and-Events_ADR_ORD_Generic_Capabilities.docx&wdOrigin=OFFICECOM-WEB.MAIN.SEARCH&ct=1661765177310&action=default&mobileredirect=true) (agreed upon, but not yet rolled out) to further reduce the effort to introduce new capability / metadata discovery scenarios with less efforts for all parties involved.
+ORD even offers the concept of [generic capabilities](../../spec-v1/interfaces/Document.md#capability) to further reduce the effort to introduce new capability and metadata discovery scenarios for all parties involved.

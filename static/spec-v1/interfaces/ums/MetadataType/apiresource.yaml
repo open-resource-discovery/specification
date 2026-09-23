@@ -339,7 +339,7 @@ spec:
       metadataProperties:
         - name: 'type'
           type: 'string'
-          description: 'See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html#webapiactions)'
+          description: 'See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html)'
           mandatory: !!bool 'true'
         - name: 'customType'
           type: 'string'

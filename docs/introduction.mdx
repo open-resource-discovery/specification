@@ -136,7 +136,7 @@ The flow to crawl the application for relevant metadata is the following:
 
 - Execute an HTTP GET request on the [.well-known/open-resource-discovery](https://ord-reference-application.cfapps.sap.hana.ondemand.com/.well-known/open-resource-discovery) entry point.
   - With a successful response we now know that ORD is supported, where to find the actual information (`documents.url`) and how to access it (`documents.accessStrategies`)
-- Execute an HTTP GET request on the [first ORD document](https://ord-reference-application.cfapps.sap.hana.ondemand.com/open-resource-discovery/v1/documents/1), we discovered from the previous step.
+- Execute an HTTP GET request on the [first ORD document](https://ord-reference-application.cfapps.sap.hana.ondemand.com/open-resource-discovery/v1/documents/system-version), we discovered from the previous step.
   - Here we now find the actual information, like the APIs and Events the application exposes, but also taxonomy like information like what product it is or how the information is structured into packages.
 - For a particular API, we find out that it's a plain REST API, described with OpenAPI v3 in JSON format. We also learn how and where to download its [OpenAPI resource definition](https://ord-reference-application.cfapps.sap.hana.ondemand.com/astronomy/v1/openapi/oas3.json).
 
@@ -184,14 +184,6 @@ Systems that are in the same formation usually need to get information about eac
 
 In the UI screenshot, the most notable concept is the [ORD System Instance](./spec-v1/index.md#system-instance), which is usually a tenant.
 If ORD information is provided, the detail view can show them and they will be made available to other systems in the same formation or account context.
-
-### API Metadata Validator
-
-We believe that standards and policies can only realistically be ensured if we can automatically verify for correctness and compliance.
-
-This is why we have a complementary project, called the API Metadata Validator [TODO: link].
-It can validate ORD documents, but also other metadata formats that we usually pass along via the ORD protocol, like OpenAPI documents.
-We use this also to not just test for technical correctness, but also to adhere to certain compliance levels.
 
 ## ORD in More Detail
 

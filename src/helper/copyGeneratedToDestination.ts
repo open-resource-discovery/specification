@@ -43,6 +43,30 @@ export async function copyGeneratedToDestination(): Promise<void> {
     await cp("./src/generated/spec/v1/schemas", "static/spec-v1/interfaces/", {
       recursive: true,
     });
+    await cp(
+      "./src/generated/spec/v1/types/Configuration.ts",
+      "static/spec-v1/interfaces/Configuration.ts.txt",
+    );
+    await cp(
+      "./src/generated/spec/v1/types/Document.ts",
+      "static/spec-v1/interfaces/Document.ts.txt",
+    );
+    await cp(
+      "./src/generated/spec/v1/plugin/tabular/Ord Configuration.csv",
+      "static/spec-v1/interfaces/Configuration.csv",
+    );
+    await cp(
+      "./src/generated/spec/v1/plugin/tabular/Ord Configuration.xlsx",
+      "static/spec-v1/interfaces/Configuration.xlsx",
+    );
+    await cp(
+      "./src/generated/spec/v1/plugin/tabular/Ord Document.csv",
+      "static/spec-v1/interfaces/Document.csv",
+    );
+    await cp(
+      "./src/generated/spec/v1/plugin/tabular/Ord Document.xlsx",
+      "static/spec-v1/interfaces/Document.xlsx",
+    );
 
     // Copy DocumentAPI.oas3.yaml file
     await cp(

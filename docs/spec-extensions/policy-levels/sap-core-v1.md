@@ -48,7 +48,7 @@ IF the resources have already been published to the public [SAP Business Acceler
 
 ### Title Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.org/spec-v1/interfaces/Document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](../../spec-v1/interfaces/Document.md).
 
 - All `title` values (except link titles) MUST NOT exceed 120 characters, as per SAP API Style Guide and SAP Business Accelerator Hub guideline recommendations.
 - All `title` values (except link titles) MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
@@ -86,7 +86,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.org/spec-v1/interfaces/Document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](../../spec-v1/interfaces/Document.md).
 
 - All `description` values MUST NOT contain the short description.
   They are complementary to the short description and should not just be a longer replacement.
@@ -95,7 +95,7 @@ The following constraints apply in addition to the constraints defined in the [O
 
 ### Short Description Constraints
 
-The following constraints apply in addition to the constraints defined in the [ORD Document](https://open-resource-discovery.org/spec-v1/interfaces/Document/).
+The following constraints apply in addition to the constraints defined in the [ORD Document](../../spec-v1/interfaces/Document.md).
 
 - All `shortDescription` values SHOULD NOT exceed 180 characters.
 - All `shortDescription` values MUST NOT repeat or start with the object name.
@@ -170,7 +170,7 @@ The following constraints apply in addition to the constraints defined in the [O
 - The `extensible` property MUST be provided.
 - For Event Resources with `visibility`: "public" or "internal":
   - Resource definitions MUST be provided.
-  - CloudEvents MUST have a resource definition of `"type": "asyncapi-v2"` (see [AsyncAPI specification 2.0](https://www.asyncapi.com/docs/specifications/2.0.0)).
+  - CloudEvents MUST have a resource definition of `"type": "asyncapi-v2"` (see [AsyncAPI specification 2.0](https://www.asyncapi.com/docs/reference/specification/v2.0.0)).
   - SAP Business Events (that conform to the SAP Event Specification:
     - MUST use the SAP Event Catalog standard, which is compatible to AsyncAPI 2.0 (`"type": "asyncapi-v2"`).
     - MUST NOT be part of a Consumption Bundle.
