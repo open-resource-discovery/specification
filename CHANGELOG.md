@@ -11,6 +11,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added transactional push transport and the ORD Aggregator Push API.
+  Providers can stage several ORD Documents and resource definitions for asynchronous validation and atomic publication in `replace` or `merge` mode.
+
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added
