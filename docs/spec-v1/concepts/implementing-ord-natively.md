@@ -92,11 +92,10 @@ The static document describes what a system type or version provides in general 
 The dynamic document describes what a concrete system instance provides at runtime, including tenant-specific state — it is fetched per system instance.
 Providers advertise these separately in the ORD configuration so that aggregators can handle them differently.
 
-Each resource representation in a `system-version` document should be complete for that version of the application.
 The document must not require tenant context and should not contain tenant-specific customizations.
 It must include `describedSystemVersion.version`.
 Version-independent resources can be published separately in `system-type` and inherited into the effective static view.
-When the same ORD ID appears in both static perspectives, the complete `system-version` representation takes precedence.
+When the same ORD ID appears in both static perspectives, the `system-version` representation takes precedence.
 
 ```http
 GET /open-resource-discovery/v1/documents/system-version HTTP/1.1

@@ -99,6 +99,8 @@ It reflects the combined information on the ORD providers that it aggregates.
 The aggregator itself MAY represent a [static perspective](#static-perspective) or a [dynamic perspective](#dynamic-perspective), or both.
 
 The ORD information MUST be made available to [ORD Consumers](#ord-consumer) through a higher-quality API, for example via an [ORD Discovery API](#ord-discovery-api) that allows for more advanced consumption patterns.
+Consumers MUST NOT be required to understand how an ORD provider distributes metadata across perspectives.
+The aggregator MUST expose an effective view by selecting the applicable `system-instance` or static perspective and resolving `system-version` over `system-type` where applicable.
 
 An ORD aggregator MUST ensure that information that has `visibility` of `private` or `internal` is not made available to consumers that don't have the corresponding permissions to get such information (e.g. external consumers). If ORD consumers get private or internal information, they inherit the responsibility of protecting it.
 
@@ -115,7 +117,7 @@ In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-pe
 - In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST determine whether a complete tenant perspective is declared before filtering for an ORD ID.
   - When a complete `system-instance` perspective is declared, it replaces the static view and an omitted resource MUST NOT be inherited from static metadata.
   - Only when no `system-instance` perspective is declared may the aggregator fall back to the effective static view.
-  - Consumers should not have to query and compose perspectives themselves.
+  - The aggregator performs this resolution so consumers do not have to query and compose perspectives themselves.
 - See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
@@ -698,7 +700,7 @@ There is a `perspective` attribute, which allows setting the following values:
 - Providers MUST use the `system-type` perspective for resources that apply independently of a system version.
 - Providers MUST use the `system-version` perspective for resources that depend on a specific system version.
 - A system type MAY publish both static perspectives when it has version-independent as well as version-specific resources.
-- When the same ORD ID is described in both static perspectives, the `system-version` perspective replaces the complete `system-type` representation in the effective static view.
+- When the same ORD ID is described in both static perspectives, the `system-version` representation takes precedence in the effective static view.
   Properties from different representations are not merged.
 - A resource absent from the selected `system-version` is inherited from `system-type`.
   A provider MUST publish a `Tombstone` in `system-version` when an inherited resource is not available in that version.
@@ -711,7 +713,8 @@ There is a `perspective` attribute, which allows setting the following values:
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
   It is outside the system-scoped fallback chain.
 
-For a static request, an aggregator MUST resolve each ORD ID from the requested `system-version`, or the latest `system-version` when no version was requested, and then fall through to `system-type`.
+For a static request, an aggregator MUST select the requested `system-version`, or the latest `system-version` when no version was requested, and then resolve each ORD ID from `system-version` before falling through to `system-type`.
+If an explicitly requested `system-version` does not exist, the aggregator MUST NOT substitute `system-type` or another system version.
 
 > ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
 
