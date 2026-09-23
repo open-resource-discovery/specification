@@ -72,10 +72,10 @@ export interface OrdDocument {
   /**
    * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
    *
-   * For a given system type, static ORD documents MUST use either the `system-version` perspective for versioned metadata or the `system-type` perspective for unversioned metadata.
-   * Providers MUST NOT publish both static perspectives for the same system type at the same time.
+   * Static ORD documents MUST use the `system-version` perspective for version-specific metadata and the `system-type` perspective for version-independent metadata.
+   * A system type MAY publish both static perspectives when it has resources with different version applicability.
    *
-   * It is RECOMMENDED to describe systems with dynamic metadata in the chosen static perspective and additionally in the system-instance perspective.
+   * It is RECOMMENDED to describe systems with dynamic metadata in the applicable static perspectives and additionally in the system-instance perspective.
    *
    * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
    *
@@ -176,7 +176,8 @@ export interface OrdDocument {
    * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
    * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
    *
-   * A tombstone entry MAY be removed after a grace period of 31 days.
+   * A tombstone entry MAY be removed after a grace period of 31 days, unless it suppresses an ORD ID inherited from a less-specific static perspective.
+   * A tombstone used for static perspective composition MUST remain published for as long as the less-specific perspective continues to publish that ORD ID.
    */
   tombstones?: Tombstone[];
 }
@@ -4563,6 +4564,7 @@ export interface GroupType {
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *
  * The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
+ * If it suppresses an ORD ID inherited from a less-specific static perspective, it MUST remain published for as long as that perspective continues to publish the ORD ID.
  */
 export interface Tombstone {
   /**
