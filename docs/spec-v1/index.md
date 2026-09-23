@@ -99,6 +99,8 @@ It reflects the combined information on the ORD providers that it aggregates.
 The aggregator itself MAY represent a [static perspective](#static-perspective) or a [dynamic perspective](#dynamic-perspective), or both.
 
 The ORD information MUST be made available to [ORD Consumers](#ord-consumer) through a higher-quality API, for example via an [ORD Discovery API](#ord-discovery-api) that allows for more advanced consumption patterns.
+Consumers MUST NOT be required to understand how an ORD provider distributes metadata across perspectives.
+The aggregator MUST expose an effective view by selecting the applicable `system-instance` or static perspective and resolving `system-version` over `system-type` where applicable.
 
 An ORD aggregator MUST ensure that information that has `visibility` of `private` or `internal` is not made available to consumers that don't have the corresponding permissions to get such information (e.g. external consumers). If ORD consumers get private or internal information, they inherit the responsibility of protecting it.
 
@@ -112,8 +114,10 @@ In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-pe
 
 - the aggregator MUST support [system-instance-aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
-- In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST implement a fallback to the static perspective.
-  - Concretely: If an ORD Provider describes an ORD resource only via perspective: `system-version` and not via `system-instance`, the aggregator still needs to return the static ORD resource description, even when the request was to learn about the state of a specific system instance. The reason is that the ORD Discovery consumer should not need to understand whether the information is currently static or system-instance-aware. Consumers should also not have to consult two APIs and ask for both the static and dynamic perspective and be forced to merge both together.
+- In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST determine whether a complete tenant perspective is declared before filtering for an ORD ID.
+  - When a complete `system-instance` perspective is declared, it replaces the static view and an omitted resource MUST NOT be inherited from static metadata.
+  - Only when no `system-instance` perspective is declared may the aggregator fall back to the effective static view.
+  - The aggregator performs this resolution so consumers do not have to query and compose perspectives themselves.
 - See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
@@ -686,24 +690,31 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 There is a `perspective` attribute, which allows setting the following values:
 
-- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the latest version or version agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version.
+- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the current, version-agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version.
 - `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time).
 - `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system-instance-aware</a> information (only known at run-time).
 - `system-independent`: Describes content that is independent of system versions or system instances and can be shared across multiple systems.
 
 ### Correct Use of Perspectives
 
-- Systems, which only have static metadata (system-instance-unaware) SHOULD choose either:
-  - The `system-type` perspective if the system is not versioned (continuous delivery) or resources do not relate to a specific system version
-  - The `system-version` perspective if the system has explicit versions
-  - If this is categorized correctly, the ORD aggregators do not have to aggregate static, identical metadata per tenant.
-  - In this case the same static metadata will be used to describe all system instances of the same version (or for `system-type`, all systems regardless of version)
+- Providers MUST use the `system-type` perspective for resources that apply independently of a system version.
+- Providers MUST use the `system-version` perspective for resources that depend on a specific system version.
+- A system type MAY publish both static perspectives when it has version-independent as well as version-specific resources.
+- When the same ORD ID is described in both static perspectives, the `system-version` representation takes precedence in the effective static view.
+  Properties from different representations are not merged.
+- A resource absent from the selected `system-version` is inherited from `system-type`.
+  A provider MUST publish a `Tombstone` in `system-version` when an inherited resource is not available in that version.
 - Systems, which have dynamic metadata MUST use the `system-instance` perspective.
-  - They SHOULD also provide a complete static perspective (`system-type` or `system-version`) if possible, as static metadata is equally useful.
+  - They SHOULD also provide the applicable static perspectives, as static metadata is equally useful.
   - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
-    In this case, both perspectives MUST use the same ORD IDs for the same resources and MUST NOT describe those resources inconsistently.
-- If both perspectives are provided, each MUST be described completely, until we introduce a more optimized `system-instance-delta` perspective.
+    In this case, both perspectives MUST use the same ORD IDs for the same logical resources, and any differences MUST reflect perspective-specific state.
+- A declared `system-instance` perspective is a complete tenant view and MUST NOT inherit resources from static perspectives.
+  Only when no `system-instance` perspective is declared may an aggregator fall back to the effective static view.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
+  It is outside the system-scoped fallback chain.
+
+For a static request, an aggregator MUST select the requested `system-version`, or the latest `system-version` when no version was requested, and then resolve each ORD ID from `system-version` before falling through to `system-type`.
+If an explicitly requested `system-version` does not exist, the aggregator MUST NOT substitute `system-type` or another system version.
 
 > ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
 
