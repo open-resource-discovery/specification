@@ -83,7 +83,8 @@ It is not an ORD namespace, because a namespace expresses identifier authority a
 The aggregator must authorize the credential for the selected scope independently of ORD ID namespace permissions.
 It must attribute every published item and resource definition to its publisher, publication context, and either its scope ID or the unscoped contribution set.
 
-A submission declares a publication mode when it is opened.
+A submission can declare a publication mode when it is opened and defaults to `merge` when the mode is omitted.
+`replace` must be selected explicitly because it gives omission destructive meaning.
 For `replace` with a `scopeId`, the staged set is the complete current contribution of that scope in the publication context.
 For `replace` without a `scopeId`, the staged set is the complete current contribution of the publisher across all of its scopes in the publication context.
 The aggregator must permit an unscoped replacement only when the credential is authorized to replace the publisher's complete contribution.
@@ -92,6 +93,8 @@ Omission therefore expresses removal and the provider does not need to track rem
 `merge` atomically upserts the staged set without interpreting omission as removal.
 When `merge` includes a `scopeId`, the aggregator records that scope as contribution provenance so a later scoped replacement can remove the contribution safely.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
+The effect of a tombstone is limited to the same replacement boundary as the submission.
+An unscoped tombstone therefore requires the same provider-wide authorization as an unscoped replacement.
 The replacement boundary is the stable publisher, publication context, and optional scope ID recorded by the aggregator.
 It is not an ORD Document, credential, or ORD namespace.
 Scoped replacement never removes content attributed to another scope, publisher, or delegator.
@@ -101,6 +104,8 @@ Commit validation is strict in every publication mode.
 If any staged document, resource, definition, relationship, or authorization check has an error, the entire commit fails and the previously published state remains unchanged.
 The failed submission remains available for correction until it expires.
 Replacing or removing a staged artifact makes it eligible for another commit attempt.
+The provider retains the submission ID and its submission-local artifact IDs while a submission is editable.
+If it loses that state, it discards the submission and starts a new one rather than risking publication of obsolete staged artifacts.
 
 The submission state is `open`, `validating`, `failed`, or `published`.
 The aggregator returns an expiry time when the submission is created.
