@@ -111,8 +111,11 @@ The provider retains the submission ID and its submission-local artifact IDs whi
 If it loses that state, it discards the submission and starts a new one rather than risking publication of obsolete staged artifacts.
 
 The submission state is `open`, `validating`, `failed`, or `published`.
-The aggregator returns an expiry time when the submission is created.
-It automatically discards staged content if an `open` or `failed` submission is not committed successfully before that time.
+The aggregator defines and communicates an inactivity timeout and returns the current expiry time with the submission.
+The recommended default is 15 minutes, extended whenever a successful staging operation changes the submission content.
+Expiry is suspended during validation, and failed validation starts a new inactivity period so the provider has time to inspect and repair the submission.
+The aggregator automatically discards staged content when an `open` or `failed` submission remains inactive until that time.
+Operations on an expired submission return `410 Gone` while an expiry marker exists and `404 Not Found` after that marker is removed.
 The status endpoint reports counts and lifecycle state.
 The issues endpoint reports all errors, warnings, and information messages and identifies the affected staged artifact and target when available.
 
