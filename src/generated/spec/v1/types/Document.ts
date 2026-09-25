@@ -2761,6 +2761,13 @@ export interface DataProduct {
    */
   entityTypes?: string[];
   /**
+   * Optional list of related Data Products.
+   *
+   * Use this to indicate which other Data Products are associated with this Data Product.
+   * The optional `relationType` on each reference can express the semantics of the relationship.
+   */
+  relatedDataProducts?: RelatedDataProduct[];
+  /**
    * The input ports of a data product indicate the data inputs for lineage purposes.
    *
    * It is a list of Integration Dependencies, whose aspects will form the actual input ports.
@@ -2921,6 +2928,24 @@ export interface DataProduct {
    * For more details, see [perspectives concept page](../concepts/perspectives.md) or the [specification section](../index.md#perspectives).
    */
   systemInstanceAware?: boolean;
+}
+/**
+ * Defines a relation to another Data Product (via its ORD ID).
+ */
+export interface RelatedDataProduct {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: string;
 }
 /**
  * An input port of a data product states where it retrieves its data inputs from.
