@@ -57,11 +57,11 @@
   </g>
   <g id="pill-taxonomy">
    <rect id="svg_22" fill="#000000" rx="28.6" height="57.3" width="169.3" y="141.6" x="80.6"/>
-   <text id="svg_23" fill="#FFFFFF" font-weight="700" font-size="1.3rem" text-anchor="middle" y="181" x="165.3">Taxonomy</text>
+   <text id="svg_23" fill="#FFFFFF" font-weight="400" font-size="1rem" text-anchor="middle" y="181" x="165.3">Taxonomy</text>
   </g>
   <g id="pill-apis">
    <rect id="svg_24" fill="#000000" rx="28.6" height="57.3" width="98.6" y="66.3" x="1114.2"/>
-   <text id="svg_25" fill="#FFFFFF" font-weight="700" font-size="1.3rem" text-anchor="middle" y="105" x="1163.5">APIs</text>
+   <text id="svg_25" fill="#FFFFFF" font-weight="400" font-size="1rem" text-anchor="middle" y="105" x="1163.5">APIs</text>
   </g>
   <g id="brackets">
    <path id="svg_26" stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="#000000" fill="none" d="m211.25,326.82001l10.38,0c5.56999,0 10.45999,3.66 12.03,9c1.56999,5.32999 6.47,8.98999 12.03,8.98999l4.20999,0"/>
@@ -85,27 +85,27 @@
    <text font-weight="700" font-size="1.15rem" y="270" x="94.5" id="lbl-odm">ODM</text>
    <text font-size="0.85rem" y="308" x="94.3" id="lbl-bizcap1">Business</text>
    <text font-size="0.85rem" y="330" x="94.3" id="lbl-bizcap2">Capabilities</text>
-   <text font-weight="700" font-size="1.3rem" text-anchor="end" y="243" x="415" id="lbl-packages">Packages</text>
+   <text font-weight="400" font-size="1rem" text-anchor="end" y="243" x="415" id="lbl-packages">Packages</text>
    <text font-weight="700" font-size="1.15rem" text-anchor="end" y="301" x="384" id="lbl-entity-types">Entity Types</text>
-   <text font-weight="700" font-size="1.3rem" text-anchor="end" y="355" x="357" id="lbl-groups">Groups</text>
-   <text font-weight="700" font-size="1.3rem" y="470" x="132" id="lbl-data-products">Data Products</text>
-   <text font-weight="700" font-size="1.3rem" y="519" x="213.4" id="lbl-integration1">Integration</text>
-   <text font-weight="700" font-size="1.3rem" y="553" x="164.4" id="lbl-integration2">Dependencies</text>
-   <text font-weight="700" font-size="1.3rem" text-anchor="middle" y="120" x="573.7" id="lbl-capability">Capability</text>
-   <text font-weight="700" font-size="1.3rem" y="127" x="862" id="lbl-odata">OData API</text>
+   <text font-weight="400" font-size="1rem" text-anchor="end" y="355" x="357" id="lbl-groups">Groups</text>
+   <text font-weight="400" font-size="1rem" y="470" x="132" id="lbl-data-products">Data Products</text>
+   <text font-weight="400" font-size="1rem" y="519" x="213.4" id="lbl-integration1">Integration</text>
+   <text font-weight="400" font-size="1rem" y="553" x="164.4" id="lbl-integration2">Dependencies</text>
+   <text font-weight="400" font-size="1rem" text-anchor="middle" y="120" x="573.7" id="lbl-capability">Capability</text>
+   <text font-weight="400" font-size="1rem" y="127" x="862" id="lbl-odata">OData API</text>
    <text font-size="0.85rem" y="152" x="900" id="lbl-edmx">EDMX</text>
-   <text font-weight="700" font-size="1.3rem" y="209" x="904.9" id="lbl-mcp">MCP</text>
+   <text font-weight="400" font-size="1rem" y="209" x="904.9" id="lbl-mcp">MCP</text>
    <text font-size="0.85rem" y="232" x="937.7" id="lbl-mcp-sub">Model context protocol</text>
-   <text font-weight="700" font-size="1.3rem" y="282" x="950.9" id="lbl-rest">Rest API</text>
+   <text font-weight="400" font-size="1rem" y="282" x="950.9" id="lbl-rest">Rest API</text>
    <text font-size="0.85rem" y="309" x="981.3" id="lbl-openapi">OpenAPI</text>
-   <text font-weight="700" font-size="1.3rem" y="358" x="978.5" id="lbl-a2a-protocol">A2A Protocol</text>
+   <text font-weight="400" font-size="1rem" y="358" x="978.5" id="lbl-a2a-protocol">A2A Protocol</text>
    <text x="11" font-size="0.85rem" y="384" id="lbl-agent-cards">
     <tspan id="svg_29" font-weight="700" x="980.5">A2A</tspan>
     <tspan id="svg_30" x="1021">Agent Cards</tspan>
    </text>
-   <text font-weight="700" font-size="1.3rem" y="443" x="949.6" id="lbl-delta">Delta Sharing</text>
+   <text font-weight="400" font-size="1rem" y="443" x="949.6" id="lbl-delta">Delta Sharing</text>
    <text font-family="monospace" font-size="0.85rem" y="474" x="991.6" id="lbl-csn">{CSN:interop}</text>
-   <text font-weight="700" font-size="1.3rem" y="643" x="763.7" id="lbl-events">Events</text>
+   <text font-weight="400" font-size="1rem" y="643" x="763.7" id="lbl-events">Events</text>
    <text font-size="0.85rem" y="673" x="789.7" id="lbl-async">Async API</text>
    <circle r="3.6" cy="361.1" cx="97" id="dot-odm1"/>
    <circle r="3.6" cy="361.1" cx="109.7" id="dot-odm2"/>
