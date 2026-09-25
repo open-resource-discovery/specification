@@ -27,6 +27,8 @@ spec:
     - name: 'relationType'
       type: 'string'
       description: "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\")."
+      constraints:
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$'
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'ordId'
