@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `relatedDataProducts` to Data Products for expressing typed relationships to other Data Products through extensible reference objects.
+
 ### Changed
 
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
