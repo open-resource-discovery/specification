@@ -192,7 +192,7 @@ Their `url` values identify their associations within the submission and are not
 
 A push publication is assembled as a stateful submission:
 
-1. The provider opens a submission for one publication context, optionally selects an authorized scope ID, and chooses `replace` or `merge` publication.
+1. The provider opens a submission for one publication context, optionally selects an authorized scope ID, and can choose `replace` publication instead of the default `merge` mode.
 2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
 3. The provider commits the submission.
 4. The aggregator validates the complete staged set asynchronously.
@@ -204,6 +204,12 @@ If any staged content or relationship has an error, the aggregator MUST publish 
 Warnings and information messages MUST NOT prevent publication.
 A failed submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
 If validation succeeds, the aggregator MUST publish all staged changes atomically.
+The provider MUST retain the submission ID and its submission-local artifact IDs while a submission is editable.
+If that state is lost, the provider MUST discard the submission and start a new one rather than risk publishing obsolete staged artifacts.
+
+Every resource-definition entry declared by a staged ORD resource MUST have exactly one matching staged resource-definition artifact in the same submission.
+Every staged resource-definition artifact MUST match exactly one staged resource by ORD ID and the exact declared `url` value.
+The aggregator MUST NOT fetch the declared URL to complete a push submission.
 
 The aggregator returns an expiry time when it creates a submission.
 It MUST automatically discard the staged content of an `open` or `failed` submission that has not committed successfully by that time.
@@ -220,6 +226,7 @@ The scope ID is a stable, opaque identifier for one contribution set registered 
 It MUST NOT be interpreted as an ORD ID namespace.
 The aggregator MUST authorize the credential for the selected scope separately from ORD ID namespace permissions.
 
+`merge` is the default publication mode when no mode is specified.
 In `replace` mode with a `scopeId`, the staged set is the complete current contribution of that scope in the publication context.
 Without a `scopeId`, the staged set is the complete current contribution of the publisher across all of its scopes in that publication context.
 The aggregator MUST permit an unscoped replacement only when the credential is authorized to replace the publisher's complete contribution.
@@ -228,6 +235,8 @@ The provider does not need tombstones for omitted content inside that boundary.
 In `merge` mode, omission does not remove prior contributions.
 If a merge submission includes a `scopeId`, the aggregator MUST retain that scope as contribution provenance.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
+In push transport, a tombstone MUST affect only matching contributions inside the submission's replacement boundary.
+An unscoped tombstone MUST require the same provider-wide authorization as an unscoped replacement.
 Both modes are atomic.
 
 The replacement boundary is the stable publisher, publication context, and optional scope ID recorded by the aggregator.
