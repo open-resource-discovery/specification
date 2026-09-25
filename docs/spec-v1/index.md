@@ -268,6 +268,24 @@ The status endpoint reports the state, artifact counts, diagnostic counts, and e
 The issues endpoint reports all errors, warnings, and information messages for the current staged revision.
 Each issue SHOULD identify the staged artifact and target to which it applies.
 
+#### Timeouts, Retries, and Rate Limiting
+
+An aggregator MAY rate limit any push API operation and MAY apply different limits by publisher, operation, submission, or service capacity.
+A rate-limited operation MUST return `429 Too Many Requests` with a `Retry-After` header.
+The aggregator SHOULD communicate relevant request-rate, concurrency, and active-submission limits during onboarding, but it MAY change limits dynamically and a provider MUST NOT assume that documented limits guarantee acceptance.
+
+A provider is not required to retry a rate-limited or temporarily failed operation.
+If it retries a `429` response, it MUST NOT send that retry before the time indicated by `Retry-After`.
+If a retriable response does not include `Retry-After`, the provider SHOULD use bounded exponential backoff with jitter.
+The provider SHOULD also respect `Retry-After` on a successful submission status response while its state is `validating`.
+Providers SHOULD bound their number of retries and maximum delay so that prolonged failures are surfaced to their operators.
+
+Providers SHOULD set a finite timeout for every request and treat a timeout or network failure as an indeterminate outcome.
+They MAY safely retry artifact `PUT` and `DELETE` operations because those operations are idempotent.
+They MAY safely retry commit because repeating commit for the same staged revision returns its current state.
+To retry submission creation safely, a provider MUST send the same `Idempotency-Key` value on every attempt.
+An aggregator MUST return the original submission for a repeated key with the same authenticated publisher and request content, and MUST reject reuse of that key with different request content.
+
 #### Authentication and API Location
 
 The push API MUST use HTTPS and authenticate every operation.
