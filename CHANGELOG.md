@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `relatedDataProducts` to Data Products for expressing typed relationships to other Data Products through extensible reference objects.
+
 ### Changed
 
 - Promoted the ORD concept pages to visible children of the ORD Specification and added an Applying the Specification table that links guides by adopter goal.
