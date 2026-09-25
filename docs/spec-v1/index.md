@@ -221,9 +221,16 @@ When present, the header MUST contain exactly one `sha-256` digest.
 The aggregator MUST verify it and reject a malformed or mismatching digest with `400 Bad Request`.
 `Content-Digest` provides integrity for one HTTP message and MUST NOT be interpreted as a persistent artifact identifier or as permission to reuse stored content.
 
-The aggregator returns an expiry time when it creates a submission.
-It MUST automatically discard the staged content of an `open` or `failed` submission that has not committed successfully by that time.
+The aggregator defines and communicates an inactivity timeout for editable submissions and returns the current expiry time when it creates or retrieves a submission.
+The recommended default timeout is 15 minutes.
+The expiry time starts when the submission is created and is extended whenever a successful staging operation changes its content.
+Status and issue retrieval MUST NOT extend it.
+Expiry is suspended while a submission is `validating`.
+If validation fails, the aggregator MUST communicate a new expiry time for the resulting `failed` submission.
+The aggregator MUST automatically discard the staged content of an `open` or `failed` submission that remains inactive until its expiry time.
 A provider MAY discard such a submission explicitly.
+While the aggregator retains an expiry marker, every operation targeting the expired submission MUST return `410 Gone`.
+If the aggregator later removes that marker completely, subsequent requests return `404 Not Found`, as they do for any unknown or inaccessible submission identifier.
 
 #### Publication Scope and Removal
 

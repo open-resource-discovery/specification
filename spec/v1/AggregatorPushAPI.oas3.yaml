@@ -46,7 +46,7 @@ paths:
         An optional scope ID narrows replacement to one contribution set registered during
         onboarding.
         Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly.
-        The response identifies when an uncommitted submission expires.
+        The response identifies when the submission expires unless its staged content changes.
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
       requestBody:
@@ -92,6 +92,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "409":
           $ref: "#/components/responses/Conflict"
+        "410":
+          $ref: "#/components/responses/Gone"
         "429":
           $ref: "#/components/responses/RateLimited"
         default:
@@ -501,7 +503,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     NotFound:
-      description: The submission does not exist or is not visible to this publisher.
+      description: The submission identifier is unknown or is not visible to this publisher. This also applies after the aggregator removes an expired submission's marker.
       content:
         application/problem+json:
           schema:
@@ -513,7 +515,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     Gone:
-      description: The submission expired and its staged content is no longer available.
+      description: The submission expired and its staged content is no longer available. The aggregator returns this while it retains an expiry marker for the submission.
       content:
         application/problem+json:
           schema:
@@ -625,7 +627,7 @@ components:
         expiresAt:
           type: string
           format: date-time
-          description: Time after which an `open` or `failed` submission and its staged artifacts are discarded.
+          description: Current inactivity deadline after which an `open` or `failed` submission and its staged artifacts are discarded. Successful staging changes extend this value; status and issue retrieval do not. Expiry is suspended during validation, and a failed validation receives a new inactivity deadline. Aggregators define and communicate the timeout, with 15 minutes as the recommended default.
         artifactCounts:
           $ref: "#/components/schemas/ArtifactCounts"
         issueCounts:
