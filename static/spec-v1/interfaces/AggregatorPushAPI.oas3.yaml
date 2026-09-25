@@ -10,6 +10,8 @@ info:
     Commit validation is asynchronous and strict.
     A commit with any validation or authorization error publishes nothing and leaves the
     submission available for correction until it expires.
+    An optional scope ID lets independently operated providers replace only their own
+    contribution set within one publication context.
 
     Every operation requires authentication.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
@@ -39,6 +41,8 @@ paths:
       description: |-
         Opens an isolated staging area for one authenticated publisher and one publication
         context.
+        An optional scope ID narrows replacement to one contribution set registered during
+        onboarding.
         The response identifies when an uncommitted submission expires.
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -48,6 +52,20 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateSubmissionRequest"
+            examples:
+              scopedReplace:
+                summary: Replace one onboarded contribution scope
+                value:
+                  publicationMode: replace
+                  scopeId: provider-component-a
+                  context:
+                    perspective: system-type
+              providerWideReplace:
+                summary: Replace all contributions from the publisher in this context
+                value:
+                  publicationMode: replace
+                  context:
+                    perspective: system-type
       responses:
         "201":
           description: Submission created.
@@ -427,7 +445,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     Forbidden:
-      description: The publisher is not authorized for the operation or publication context.
+      description: The publisher is not authorized for the operation, publication context, or replacement scope.
       content:
         application/problem+json:
           schema:
@@ -482,10 +500,21 @@ components:
       properties:
         publicationMode:
           type: string
-          description: Whether omission removes prior contributions in this publisher and publication context.
+          description: Whether omission removes prior contributions inside the selected replacement boundary.
           enum: [replace, merge]
         context:
           $ref: "#/components/schemas/PublicationContext"
+        scopeId:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: |-
+            Stable opaque identifier for a contribution set registered by the aggregator during onboarding.
+            It is not an ORD namespace.
+            For `replace`, supplying it limits removal to that scope in the publication context.
+            Omitting it selects all contributions of the publisher across its scopes in the context and
+            requires provider-wide replacement authorization.
+            For `merge`, it records provenance for a later scoped replacement.
     PublicationContext:
       type: object
       description: |-
@@ -528,6 +557,11 @@ components:
           enum: [replace, merge]
         context:
           $ref: "#/components/schemas/PublicationContext"
+        scopeId:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Selected contribution scope, or absent for a provider-wide submission in this context.
         expiresAt:
           type: string
           format: date-time

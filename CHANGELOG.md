@@ -13,7 +13,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Added
 
 - Added transactional push transport and the ORD Aggregator Push API.
-  Providers can stage several ORD Documents and resource definitions for asynchronous validation and atomic publication in `replace` or `merge` mode.
+  Providers can stage several ORD Documents and resource definitions for asynchronous validation and atomic publication in `replace` or `merge` mode, with optional scopes for safe complete-state replacement without tombstones.
 
 ### Changed
 

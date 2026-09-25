@@ -11,6 +11,7 @@ Some providers can publish metadata when it changes but cannot or do not want to
 A standardized push transport must carry ORD Documents and heterogeneous resource definitions without changing the transport-neutral ORD Document format.
 It must also let a provider publish a complete current state that can span several documents and definition uploads.
 Publishing every upload immediately would expose incomplete combinations and would require providers to track and tombstone every resource they had published previously.
+Several independently operated ORD Providers can contribute metadata for the same application, so complete-state replacement also needs an explicit ownership boundary.
 
 ## Decision Drivers
 
@@ -18,7 +19,7 @@ Publishing every upload immediately would expose incomplete combinations and wou
 - Let providers stage several documents and definitions through separate requests.
 - Validate the staged set as a whole and never expose a partially accepted update.
 - Let providers repair and retry a failed submission.
-- Support complete-state replacement without removing contributions from another publisher.
+- Support complete-state replacement without removing contributions from another publisher or provider scope.
 - Provide asynchronous status and complete validation diagnostics.
 - Bound the lifetime of abandoned server-side state.
 - Keep authentication technology and onboarding implementation-specific.
@@ -57,13 +58,25 @@ The context consists of one perspective and any required system version or aggre
 The aggregator validates the submitted context and document claims against authoritative state.
 Permission to publish particular ORD ID namespaces is checked separately from publisher identity.
 
+A submission can identify an optional `scopeId`.
+The scope ID is a stable, opaque identifier for one contribution set registered by the aggregator during onboarding.
+It is not an ORD namespace, because a namespace expresses identifier authority and can be used by several authorized publishers or delegators.
+The aggregator must authorize the credential for the selected scope independently of ORD ID namespace permissions.
+It must attribute every published item and resource definition to its publisher, publication context, and either its scope ID or the unscoped contribution set.
+
 A submission declares a publication mode when it is opened.
-`replace` treats the staged set as the publisher's complete current contribution in that publication context.
-On a successful `replace` commit, the aggregator removes prior contributions in that scope that are absent from the staged set.
+For `replace` with a `scopeId`, the staged set is the complete current contribution of that scope in the publication context.
+For `replace` without a `scopeId`, the staged set is the complete current contribution of the publisher across all of its scopes in the publication context.
+The aggregator must permit an unscoped replacement only when the credential is authorized to replace the publisher's complete contribution.
+On a successful `replace` commit, the aggregator removes prior contributions inside the selected replacement boundary that are absent from the staged set.
+Omission therefore expresses removal and the provider does not need to track removed resources or publish tombstones inside that boundary.
 `merge` atomically upserts the staged set without interpreting omission as removal.
-In both modes, the replacement boundary is the stable publisher and publication context recorded by the aggregator.
-It is not an ORD Document, credential, or namespace.
-Content attributed to another publisher or delegator is never removed.
+When `merge` includes a `scopeId`, the aggregator records that scope as contribution provenance so a later scoped replacement can remove the contribution safely.
+Tombstones remain available for explicit removals in `merge` mode and other transport modes.
+The replacement boundary is the stable publisher, publication context, and optional scope ID recorded by the aggregator.
+It is not an ORD Document, credential, or ORD namespace.
+Scoped replacement never removes content attributed to another scope, publisher, or delegator.
+Scopes partition provenance but do not change ORD identity, uniqueness, or merging rules.
 
 Commit validation is strict in every publication mode.
 If any staged document, resource, definition, relationship, or authorization check has an error, the entire commit fails and the previously published state remains unchanged.
@@ -78,7 +91,8 @@ The issues endpoint reports all errors, warnings, and information messages and i
 
 Every operation uses HTTPS and authentication.
 Each credential identifies exactly one described system type or one system-independent publisher in authoritative aggregator state.
-An aggregator can further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
+An aggregator can further restrict a credential to particular perspectives, system versions, system instances, scope IDs, or ORD ID namespaces.
+Provider-wide unscoped replacement is a separate authorization from replacement within one scope ID.
 The concrete machine-to-machine authentication mechanism, credential issuance, and API base URL are communicated by the aggregator during onboarding.
 
 ### Consequences
@@ -86,10 +100,12 @@ The concrete machine-to-machine authentication mechanism, credential issuance, a
 - ✅ ORD Documents remain transport-neutral and definitions remain in their native media types.
 - ✅ Several requests can form one atomic publication.
 - ✅ Providers can correct a failed submission and commit it again.
-- ✅ `replace` lets the aggregator derive removals from a complete current state.
+- ✅ `replace` lets the aggregator derive removals from a complete current state without tombstones.
+- ✅ Scope IDs let independent ORD Providers replace only their own contributions to the same application.
 - ✅ Asynchronous validation does not keep an upload request open while a large submission is processed.
 - ✅ Status, diagnostics, expiry, and discard behavior are interoperable.
 - ⚠️ Aggregators must operate temporary storage and a submission lifecycle.
+- ⚠️ Aggregators must retain scope provenance for every published contribution.
 - ⚠️ One error blocks publication of otherwise valid staged content.
 - ⚠️ Providers must poll for the terminal commit result.
 
