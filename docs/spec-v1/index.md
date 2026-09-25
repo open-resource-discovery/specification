@@ -209,7 +209,17 @@ If that state is lost, the provider MUST discard the submission and start a new 
 
 Every resource-definition entry declared by a staged ORD resource MUST have exactly one matching staged resource-definition artifact in the same submission.
 Every staged resource-definition artifact MUST match exactly one staged resource by ORD ID and the exact declared `url` value.
+These requirements make an ORD resource together with all resource definitions it declares the unit of publication in both modes.
+If the resource or one of its definitions changes, the provider MUST stage the resource and all of its declared definitions, including unchanged definitions.
+In `merge` mode, unrelated ORD resources MAY be omitted and remain published.
+Previously published artifacts MUST NOT be used to satisfy the completeness requirements for a staged resource.
 The aggregator MUST NOT fetch the declared URL to complete a push submission.
+
+A provider MAY include `Content-Digest` when uploading a resource definition.
+As defined by RFC 9530, it covers the HTTP message content after applying any content coding, such as gzip, and before the aggregator decodes that content coding.
+When present, the header MUST contain exactly one `sha-256` digest.
+The aggregator MUST verify it and reject a malformed or mismatching digest with `400 Bad Request`.
+`Content-Digest` provides integrity for one HTTP message and MUST NOT be interpreted as a persistent artifact identifier or as permission to reuse stored content.
 
 The aggregator returns an expiry time when it creates a submission.
 It MUST automatically discard the staged content of an `open` or `failed` submission that has not committed successfully by that time.

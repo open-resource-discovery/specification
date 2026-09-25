@@ -340,6 +340,9 @@ paths:
         Every definition declared by a staged ORD resource must have exactly one matching staged
         definition artifact, and every staged definition must match exactly one staged resource by
         ORD ID and the exact declared URL.
+        These completeness requirements apply in both publication modes.
+        A merge may omit unrelated resources, but a staged resource and all definitions it declares
+        form one complete publication unit and cannot be completed from previously published artifacts.
         Tombstones apply only inside the submission's replacement boundary, and unscoped
         tombstones require provider-wide replacement authorization.
         Repeating this request while the same revision is validating returns its current state.
@@ -424,7 +427,12 @@ components:
       name: Content-Digest
       in: header
       required: false
-      description: Representation digest as defined by RFC 9530.
+      description: |-
+        Digest of the HTTP message content as defined by RFC 9530.
+        It covers the request content after applying any Content-Encoding and before the aggregator
+        decodes that content coding. When present, it must contain exactly one sha-256 digest; a
+        malformed or mismatching value is rejected with 400 Bad Request. It provides integrity for
+        this request and is not a persistent artifact identifier or permission to reuse stored content.
       schema:
         type: string
     IdempotencyKey:
