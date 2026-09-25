@@ -43,6 +43,7 @@ paths:
         context.
         An optional scope ID narrows replacement to one contribution set registered during
         onboarding.
+        Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly.
         The response identifies when an uncommitted submission expires.
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -53,6 +54,11 @@ paths:
             schema:
               $ref: "#/components/schemas/CreateSubmissionRequest"
             examples:
+              merge:
+                summary: Merge into the publisher's contribution
+                value:
+                  context:
+                    perspective: system-type
               scopedReplace:
                 summary: Replace one onboarded contribution scope
                 value:
@@ -310,6 +316,11 @@ paths:
       summary: Validate and publish a submission
       description: |-
         Freezes the current staged revision and starts asynchronous validation.
+        Every definition declared by a staged ORD resource must have exactly one matching staged
+        definition artifact, and every staged definition must match exactly one staged resource by
+        ORD ID and the exact declared URL.
+        Tombstones apply only inside the submission's replacement boundary, and unscoped
+        tombstones require provider-wide replacement authorization.
         Repeating this request while the same revision is validating returns its current state.
         Publication is atomic and strict.
         Any error moves the submission to `failed`, publishes nothing, and preserves the staged
@@ -495,13 +506,14 @@ components:
   schemas:
     CreateSubmissionRequest:
       type: object
-      required: [publicationMode, context]
+      required: [context]
       additionalProperties: false
       properties:
         publicationMode:
           type: string
-          description: Whether omission removes prior contributions inside the selected replacement boundary.
+          description: Whether omission removes prior contributions inside the selected replacement boundary. Defaults to the non-destructive `merge` mode.
           enum: [replace, merge]
+          default: merge
         context:
           $ref: "#/components/schemas/PublicationContext"
         scopeId:
