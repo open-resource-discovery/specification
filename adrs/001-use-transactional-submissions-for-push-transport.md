@@ -24,6 +24,25 @@ Several independently operated ORD Providers can contribute metadata for the sam
 - Bound the lifetime of abandoned server-side state.
 - Keep authentication technology and onboarding implementation-specific.
 
+## Options Considered
+
+| Option | Transaction boundary | Definition and path handling | Main trade-offs |
+| --- | --- | --- | --- |
+| Embed definitions in the ORD Document | One ORD Document | Extend the ORD Document to carry native or encoded definition content | One request and HTTP compression are sufficient, but the ORD Document format and accepted size limit must change, and several documents cannot form one atomic publication |
+| Upload one ZIP archive | One archive containing one or more ORD Documents and definitions | Preserve the directory structure addressed by relative `resourceDefinitions[].url` values | Keeps definitions out of the ORD Document, but introduces an archive format, archive-specific security limits, and whole-bundle retries |
+| **Stage a submission and commit it** | All artifacts staged in one submission | Upload unchanged ORD Documents and native definitions separately and associate definitions with their declaring URLs | Supports several idempotent uploads and atomic publication without a new container format, but requires temporary server-side state and lifecycle operations |
+
+The embedded option makes the ORD Document itself the upload envelope.
+Request compression is already provided by HTTP content coding, so a separate compression feature would not be needed, but aggregators would have to accept substantially larger ORD Documents.
+Its transaction boundary cannot cover metadata split across several ORD Documents.
+
+The ZIP option makes the archive the upload envelope.
+Relative definition URLs resolve to entries in the archive's folder structure.
+Providers must rebuild and resend the archive to repair one artifact, while aggregators must define limits and protections for archive expansion, entry paths, duplicate entries, and compressed payloads.
+
+The submission option makes an explicit commit the transaction boundary.
+It preserves the ORD Document and native resource-definition formats, allows individual artifacts to be retried, and can atomically publish a complete state spanning several requests.
+
 ## Decision Outcome
 
 Chosen option: **standardize optional push transport as a transactional submission resource**.
@@ -108,28 +127,6 @@ The concrete machine-to-machine authentication mechanism, credential issuance, a
 - ⚠️ Aggregators must retain scope provenance for every published contribution.
 - ⚠️ One error blocks publication of otherwise valid staged content.
 - ⚠️ Providers must poll for the terminal commit result.
-
-## Alternatives
-
-### Stateless document and definition endpoints
-
-This model would process `POST /v1/documents` and `PUT /v1/resource-definitions` independently.
-
-- ✅ Each request can return immediate validation feedback.
-- ⚠️ Related artifacts become visible at different times.
-- ⚠️ A provider must retain publication history and emit every required tombstone because omission cannot mean removal.
-- ⚠️ Adding an atomic complete-state boundary later would introduce a second ingestion model.
-
-### Embed or package definitions with an ORD Document
-
-- ✅ One request can carry related artifacts.
-- ⚠️ Inline definitions change the ORD Document and encode heterogeneous or binary formats poorly.
-- ⚠️ ZIP or multipart containers add another format and still do not naturally represent a complete state spanning several requests.
-
-### Pull transport only
-
-- ✅ Preserves one transport and keeps aggregators in control of retrieval timing.
-- ⚠️ Every provider must expose a reachable ORD Provider API, including providers that only publish static metadata from CI/CD.
 
 ## More Information
 
