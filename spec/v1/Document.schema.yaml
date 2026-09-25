@@ -2591,6 +2591,19 @@ definitions:
         examples:
           - ["sap.odm:entityType:CustomerOrder:v1", "sap.odm:entityType:BusinessPartner:v1"]
 
+      relatedDataProducts:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          Optional list of related Data Products.
+
+          Use this to indicate which other Data Products are associated with this Data Product.
+          The optional `relationType` on each reference can express the semantics of the relationship.
+        items:
+          $ref: "#/definitions/RelatedDataProduct"
+        examples:
+          - [{ "ordId": "sap.foo.bar:dataProduct:Product:v1", "relationType": "foo.bar:relationName" }]
+
       inputPorts:
         x-feature-status: beta
         type: array
@@ -5559,6 +5572,43 @@ definitions:
             description: |-
               The source resource patches one or more definition files of the target resource.
               Used on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch.
+        examples:
+          - "foo.bar:relationName"
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
+  RelatedDataProduct:
+    title: Related Data Product
+    x-introduced-in-version: "1.17.0"
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines a relation to another Data Product (via its ORD ID).
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/DataProduct/ordId"
+        x-ums-reverse-relationship:
+          propertyName: inverseRelatedDataProducts
+          description: |-
+            Data Products that declared a relationship to this Data Product.
+          min: 0
+          max: "*"
+        examples:
+          - "sap.foo.bar:dataProduct:Product:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+
+          Defines the semantic meaning of the relationship.
+          If not provided, the relationship has no specific semantics ("related somehow").
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
         examples:
           - "foo.bar:relationName"
     required:
