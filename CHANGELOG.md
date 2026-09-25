@@ -13,6 +13,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Added
 
 - Added `relatedDataProducts` to Data Products for expressing typed relationships to other Data Products through extensible reference objects.
+  Includes `ord:references` for stating that data in the source Data Product refers to data in the target Data Product.
 
 ### Changed
 
