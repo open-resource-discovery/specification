@@ -91,6 +91,9 @@ The aggregator must permit an unscoped replacement only when the credential is a
 On a successful `replace` commit, the aggregator removes prior contributions inside the selected replacement boundary that are absent from the staged set.
 Omission therefore expresses removal and the provider does not need to track removed resources or publish tombstones inside that boundary.
 `merge` atomically upserts the staged set without interpreting omission as removal.
+The unit of a merge upsert is one ORD resource together with every resource definition it declares.
+If that resource or one definition changes, the provider resubmits the resource and all of its definitions, while unrelated resources can remain omitted.
+Previously published definitions do not complete a partially staged resource.
 When `merge` includes a `scopeId`, the aggregator records that scope as contribution provenance so a later scoped replacement can remove the contribution safely.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
 The effect of a tombstone is limited to the same replacement boundary as the submission.
@@ -138,4 +141,5 @@ The concrete machine-to-machine authentication mechanism, credential issuance, a
 - [ORD Aggregator Push API](../spec/v1/AggregatorPushAPI.oas3.yaml)
 - [PR #79 review discussion](https://github.com/open-resource-discovery/specification/pull/79)
 - [HTTP Semantics, RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [Digest Fields, RFC 9530](https://www.rfc-editor.org/rfc/rfc9530.html)
 - [Problem Details for HTTP APIs, RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html)
