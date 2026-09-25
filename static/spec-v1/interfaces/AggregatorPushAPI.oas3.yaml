@@ -16,6 +16,8 @@ info:
     Every operation requires authentication.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
     its API base URL and credentials during onboarding.
+    An aggregator may rate limit any operation.
+    A rate-limited response includes Retry-After so a client that chooses to retry can do so efficiently.
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -90,6 +92,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "409":
           $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/RateLimited"
         default:
           $ref: "#/components/responses/UnexpectedError"
 
@@ -103,6 +107,9 @@ paths:
       responses:
         "200":
           description: Current submission state and diagnostic summary.
+          headers:
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
           content:
             application/json:
               schema:
@@ -115,6 +122,8 @@ paths:
           $ref: "#/components/responses/NotFound"
         "410":
           $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
         default:
           $ref: "#/components/responses/UnexpectedError"
     delete:
@@ -137,6 +146,8 @@ paths:
           $ref: "#/components/responses/Conflict"
         "410":
           $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
         default:
           $ref: "#/components/responses/UnexpectedError"
 
@@ -170,6 +181,8 @@ paths:
           $ref: "#/components/responses/NotFound"
         "410":
           $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
         default:
           $ref: "#/components/responses/UnexpectedError"
 
@@ -215,6 +228,8 @@ paths:
           $ref: "#/components/responses/UnsupportedMediaType"
         "422":
           $ref: "#/components/responses/UnprocessableContent"
+        "429":
+          $ref: "#/components/responses/RateLimited"
         default:
           $ref: "#/components/responses/UnexpectedError"
     delete:
@@ -234,6 +249,8 @@ paths:
           $ref: "#/components/responses/Conflict"
         "410":
           $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
         default:
           $ref: "#/components/responses/UnexpectedError"
 
@@ -285,6 +302,8 @@ paths:
           $ref: "#/components/responses/UnsupportedMediaType"
         "422":
           $ref: "#/components/responses/UnprocessableContent"
+        "429":
+          $ref: "#/components/responses/RateLimited"
         default:
           $ref: "#/components/responses/UnexpectedError"
     delete:
@@ -304,6 +323,8 @@ paths:
           $ref: "#/components/responses/Conflict"
         "410":
           $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
         default:
           $ref: "#/components/responses/UnexpectedError"
 
@@ -355,6 +376,8 @@ paths:
           $ref: "#/components/responses/Gone"
         "422":
           $ref: "#/components/responses/UnprocessableContent"
+        "429":
+          $ref: "#/components/responses/RateLimited"
         default:
           $ref: "#/components/responses/UnexpectedError"
 
@@ -408,7 +431,7 @@ components:
       name: Idempotency-Key
       in: header
       required: false
-      description: Client-generated key for safely retrying submission creation.
+      description: Client-generated key for safely retrying submission creation. A client that retries creation must reuse the same key for every attempt.
       schema:
         type: string
         minLength: 1
@@ -438,10 +461,18 @@ components:
         type: string
         format: uri-reference
     RetryAfter:
-      description: Suggested delay in seconds before polling the submission again.
+      description: |-
+        Earliest time at which the client should make a follow-up request, using either delay-seconds
+        or an HTTP-date as defined by RFC 9110. On a 429 response, a client that retries must not do
+        so before this time. On a successful response for a validating submission, it guides polling.
       schema:
-        type: integer
-        minimum: 1
+        type: string
+        minLength: 1
+      examples:
+        delaySeconds:
+          value: "5"
+        httpDate:
+          value: Fri, 25 Sep 2026 12:00:00 GMT
   responses:
     BadRequest:
       description: The request is malformed or has an invalid parameter combination.
@@ -493,6 +524,15 @@ components:
             $ref: "#/components/schemas/Problem"
     UnprocessableContent:
       description: The artifact cannot be admitted or the submission has no staged ORD Documents.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    RateLimited:
+      description: The publisher exceeded a rate or concurrency limit and may retry later.
+      headers:
+        Retry-After:
+          $ref: "#/components/headers/RetryAfter"
       content:
         application/problem+json:
           schema:
