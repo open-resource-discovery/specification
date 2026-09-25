@@ -2602,7 +2602,7 @@ definitions:
         items:
           $ref: "#/definitions/RelatedDataProduct"
         examples:
-          - [{ "ordId": "sap.foo.bar:dataProduct:Product:v1", "relationType": "ord:references" }]
+          - [{ "ordId": "sap.foo.bar:dataProduct:Product:v1", "relationType": "foo.bar:relationName" }]
 
       inputPorts:
         x-feature-status: beta
@@ -5608,18 +5608,9 @@ definitions:
 
           Defines the semantic meaning of the relationship.
           If not provided, the relationship has no specific semantics ("related somehow").
-        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
-          - type: string
-            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
-            description: |-
-              Any valid [Concept ID](../index.md#concept-id).
-          - const: "ord:references"
-            x-introduced-in-version: "1.17.0"
-            description: |-
-              Data represented by the source Data Product contains references to data represented by the target Data Product.
-              This relationship is directional.
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
         examples:
-          - "ord:references"
+          - "foo.bar:relationName"
     required:
       - ordId
     additionalProperties: false

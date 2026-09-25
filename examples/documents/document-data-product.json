@@ -136,12 +136,6 @@
       "type": "derived",
       "category": "business-object",
       "entityTypes": ["sap.odm:entityType:CustomerOrder:v1", "sap.odm:entityType:RetailTransaction:v1"],
-      "relatedDataProducts": [
-        {
-          "ordId": "sap.xref:dataProduct:Customer:v2",
-          "relationType": "ord:references"
-        }
-      ],
       "inputPorts": [
         {
           "ordId": "sap.xref:integrationDependency:CustomerOrder:v1"
