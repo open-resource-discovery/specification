@@ -103,6 +103,9 @@ The replacement boundary is the stable publisher, publication context, and optio
 It is not an ORD Document, credential, or ORD namespace.
 Scoped replacement never removes content attributed to another scope, publisher, or delegator.
 Scopes partition provenance but do not change ORD identity, uniqueness, or merging rules.
+Providers normally use `replace` for upgrades and periodic full reconciliation, `merge` for hot fixes and transports, and `merge` plus tombstones for removals they track explicitly.
+A provider that does not keep deletion bookkeeping uses scoped `replace` so the aggregator can derive removals from its complete current inventory.
+A complete replacement cannot be split into sequential partial replacement submissions because each successful commit would remove contributions omitted from that submission.
 
 Commit validation is strict in every publication mode.
 If any staged document, resource, definition, relationship, or authorization check has an error, the entire commit fails and the previously published state remains unchanged.
@@ -125,6 +128,8 @@ Each credential identifies exactly one described system type or one system-indep
 An aggregator can further restrict a credential to particular perspectives, system versions, system instances, scope IDs, or ORD ID namespaces.
 Provider-wide unscoped replacement is a separate authorization from replacement within one scope ID.
 The concrete machine-to-machine authentication mechanism, credential issuance, and API base URL are communicated by the aggregator during onboarding.
+The onboarding information also states supported request content encodings, maximum encoded and decoded artifact sizes, aggregate decoded submission size, artifact counts, active submissions per publisher, concurrency, rate limits, and decompression limits.
+These limits must allow an onboarded provider to publish the complete contribution of each authorized replacement scope in one submission.
 
 ### Consequences
 
