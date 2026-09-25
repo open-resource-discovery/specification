@@ -90,6 +90,7 @@ For `replace` without a `scopeId`, the staged set is the complete current contri
 The aggregator must permit an unscoped replacement only when the credential is authorized to replace the publisher's complete contribution.
 On a successful `replace` commit, the aggregator removes prior contributions inside the selected replacement boundary that are absent from the staged set.
 Omission therefore expresses removal and the provider does not need to track removed resources or publish tombstones inside that boundary.
+A provider can remove every prior contribution in the boundary by staging at least one valid ORD Document that contains no ORD information to retain and committing it in `replace` mode.
 `merge` atomically upserts the staged set without interpreting omission as removal.
 The unit of a merge upsert is one ORD resource together with every resource definition it declares.
 If that resource or one definition changes, the provider resubmits the resource and all of its definitions, while unrelated resources can remain omitted.
@@ -135,6 +136,7 @@ The concrete machine-to-machine authentication mechanism, credential issuance, a
 - ✅ Asynchronous validation does not keep an upload request open while a large submission is processed.
 - ✅ Status, diagnostics, expiry, and discard behavior are interoperable.
 - ⚠️ Aggregators must operate temporary storage and a submission lifecycle.
+- ⚠️ Aggregators must document supported content encodings and capacity limits so providers can plan submissions that fit.
 - ⚠️ Aggregators must retain scope provenance for every published contribution.
 - ⚠️ One error blocks publication of otherwise valid staged content.
 - ⚠️ Providers must poll for the terminal commit result.

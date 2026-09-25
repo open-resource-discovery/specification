@@ -187,6 +187,7 @@ It is useful when a provider can publish on change or from a CI/CD pipeline but 
 Push uses the standard [ORD Document](#ord-document) without transport-specific properties.
 Resource definitions are uploaded separately in their native media types.
 Their `url` values identify their associations within the submission and are not fetched from the provider.
+See [Push Transport Guidance](./concepts/push-transport.md) for operational examples, complete removal, and capacity planning.
 
 #### Transactional Submission
 
@@ -249,6 +250,8 @@ Without a `scopeId`, the staged set is the complete current contribution of the 
 The aggregator MUST permit an unscoped replacement only when the credential is authorized to replace the publisher's complete contribution.
 After successful validation, the aggregator MUST remove prior contributions inside the selected replacement boundary that are absent from the submission.
 The provider does not need tombstones for omitted content inside that boundary.
+To remove every prior contribution in a replacement boundary, the provider stages at least one valid ORD Document for the publication context that contains no ORD information to retain and commits it in `replace` mode.
+An empty replacement still affects only the selected replacement boundary and MUST NOT remove contributions from another publisher or scope.
 In `merge` mode, omission does not remove prior contributions.
 If a merge submission includes a `scopeId`, the aggregator MUST retain that scope as contribution provenance.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
@@ -285,11 +288,20 @@ The status endpoint reports the state, artifact counts, diagnostic counts, and e
 The issues endpoint reports all errors, warnings, and information messages for the current staged revision.
 Each issue SHOULD identify the staged artifact and target to which it applies.
 
-#### Timeouts, Retries, and Rate Limiting
+#### Operational Limits, Timeouts, Retries, and Rate Limiting
 
 An aggregator MAY rate limit any push API operation and MAY apply different limits by publisher, operation, submission, or service capacity.
 A rate-limited operation MUST return `429 Too Many Requests` with a `Retry-After` header.
-The aggregator SHOULD communicate relevant request-rate, concurrency, and active-submission limits during onboarding, but it MAY change limits dynamically and a provider MUST NOT assume that documented limits guarantee acceptance.
+The aggregator MUST document the supported request `Content-Encoding` values and the following limits during onboarding:
+
+- maximum encoded request-body size
+- maximum decoded size of one ORD Document or resource definition
+- maximum aggregate decoded size of all staged content in one submission
+- maximum number of ORD Documents and resource definitions in one submission
+- maximum number of active submissions per publisher
+- request-rate and concurrent-request limits
+
+The aggregator MAY change capacity-dependent limits dynamically, and a provider MUST NOT assume that documented limits guarantee acceptance.
 
 A provider is not required to retry a rate-limited or temporarily failed operation.
 If it retries a `429` response, it MUST NOT send that retry before the time indicated by `Retry-After`.

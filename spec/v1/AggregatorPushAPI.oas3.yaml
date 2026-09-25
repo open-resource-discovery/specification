@@ -18,6 +18,9 @@ info:
     its API base URL and credentials during onboarding.
     An aggregator may rate limit any operation.
     A rate-limited response includes Retry-After so a client that chooses to retry can do so efficiently.
+    During onboarding, the aggregator documents supported request Content-Encoding values and limits
+    for encoded requests, decoded artifacts, aggregate staged content, artifact counts, active
+    submissions, request rate, and concurrency.
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -345,6 +348,8 @@ paths:
         These completeness requirements apply in both publication modes.
         A merge may omit unrelated resources, but a staged resource and all definitions it declares
         form one complete publication unit and cannot be completed from previously published artifacts.
+        A replace submission can remove every prior contribution in its replacement boundary by
+        staging at least one valid ORD Document that contains no ORD information to retain.
         Tombstones apply only inside the submission's replacement boundary, and unscoped
         tombstones require provider-wide replacement authorization.
         Repeating this request while the same revision is validating returns its current state.
@@ -521,7 +526,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     ContentTooLarge:
-      description: The artifact exceeds a limit documented by the aggregator.
+      description: The encoded request body, decoded artifact, or aggregate staged content exceeds a limit documented by the aggregator.
       content:
         application/problem+json:
           schema:
@@ -533,7 +538,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     UnprocessableContent:
-      description: The artifact cannot be admitted or the submission has no staged ORD Documents.
+      description: The artifact cannot be admitted, a documented per-submission artifact-count limit would be exceeded, or the submission has no staged ORD Documents.
       content:
         application/problem+json:
           schema:
