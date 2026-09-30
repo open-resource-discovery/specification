@@ -12,7 +12,8 @@ This page provides non-normative guidance for applying that protocol to common p
 ## Choosing a Publication Mode
 
 The publication mode determines whether omission means removal.
-It does not change validation strictness or atomicity.
+It is independent of the submission's `strict` validation setting.
+Accepted changes are applied atomically in both publication modes.
 
 ### Routine Changes, Hot Fixes, and Transports
 
@@ -72,3 +73,13 @@ Routine changes can be divided into several independent `merge` submissions when
 A `replace` submission represents the complete state of its replacement boundary and cannot be divided into sequential partial replacements without changing its meaning.
 Providers should choose scope boundaries that make complete replacement practical within the aggregator's documented limits.
 The provider and aggregator should resolve an insufficient replacement limit during onboarding rather than silently splitting the replacement.
+
+## Choosing Validation Behavior
+
+The default `strict: false` behavior publishes valid ORD information while reporting and skipping invalid publication units.
+Use this mode when one invalid resource should not delay independent valid resources from the same ORD Document or submission.
+An ORD resource and all resource definitions it declares are one publication unit, so they are always accepted or skipped together.
+
+Set `strict: true` when all staged information must advance together.
+Any validation error then fails the complete commit and leaves the submission editable for correction.
+Errors that prevent the aggregator from safely isolating publication units fail the complete commit regardless of the `strict` setting.

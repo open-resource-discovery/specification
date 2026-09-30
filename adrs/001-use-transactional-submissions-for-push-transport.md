@@ -17,7 +17,9 @@ Several independently operated ORD Providers can contribute metadata for the sam
 
 - Keep the ORD Document and resource-definition formats unchanged.
 - Let providers stage several documents and definitions through separate requests.
-- Validate the staged set as a whole and never expose a partially accepted update.
+- Preserve one ORD information object and all resource definitions it declares as one consistent publication unit.
+- Let independent valid publication units succeed when another unit is invalid.
+- Support opt-in all-or-nothing validation when several units must advance together.
 - Let providers repair and retry a failed submission.
 - Support complete-state replacement without removing contributions from another publisher or provider scope.
 - Provide asynchronous status and complete validation diagnostics.
@@ -30,7 +32,7 @@ Several independently operated ORD Providers can contribute metadata for the sam
 | --- | --- | --- | --- |
 | Embed definitions in the ORD Document | One ORD Document | Extend the ORD Document to carry native or encoded definition content | One request and HTTP compression are sufficient, but the ORD Document format and accepted size limit must change, and several documents cannot form one atomic publication |
 | Upload one ZIP archive | One archive containing one or more ORD Documents and definitions | Preserve the directory structure addressed by relative `resourceDefinitions[].url` values | Keeps definitions out of the ORD Document, but introduces an archive format, archive-specific security limits, and whole-bundle retries |
-| **Stage a submission and commit it** | All artifacts staged in one submission | Upload unchanged ORD Documents and native definitions separately and associate definitions with their declaring URLs | Supports several idempotent uploads and atomic publication without a new container format, but requires temporary server-side state and lifecycle operations |
+| **Stage a submission and commit it** | One ORD information object and its definitions by default, or the complete submission in strict mode | Upload unchanged ORD Documents and native definitions separately and associate definitions with their declaring URLs | Supports several idempotent uploads, resource-level fault isolation, and opt-in all-or-nothing publication without a new container format, but requires temporary server-side state and lifecycle operations |
 
 The embedded option makes the ORD Document itself the upload envelope.
 Request compression is already provided by HTTP content coding, so a separate compression feature would not be needed, but aggregators would have to accept substantially larger ORD Documents.
@@ -40,8 +42,9 @@ The ZIP option makes the archive the upload envelope.
 Relative definition URLs resolve to entries in the archive's folder structure.
 Providers must rebuild and resend the archive to repair one artifact, while aggregators must define limits and protections for archive expansion, entry paths, duplicate entries, and compressed payloads.
 
-The submission option makes an explicit commit the transaction boundary.
-It preserves the ORD Document and native resource-definition formats, allows individual artifacts to be retried, and can atomically publish a complete state spanning several requests.
+The submission option makes an explicit commit the publication trigger.
+It preserves the ORD Document and native resource-definition formats, allows individual artifacts to be retried, and validates a complete staged set spanning several requests.
+The aggregator can isolate invalid publication units by default or enforce one all-or-nothing transaction when the provider opts into strict validation.
 
 ## Decision Outcome
 
@@ -50,7 +53,10 @@ Chosen option: **standardize optional push transport as a transactional submissi
 An aggregator that supports push implements the versioned ORD Aggregator Push API.
 A provider opens a submission, stages one or more standard ORD Documents and native resource definitions, and then commits the submission.
 Staged content is not discoverable.
-The aggregator validates the complete staged set asynchronously after commit and publishes it atomically only when it contains no validation errors.
+The aggregator validates the complete staged set asynchronously after commit.
+By default, it publishes valid publication units and skips units with errors.
+The provider can opt into strict validation, in which the aggregator publishes nothing when any error occurs.
+All accepted changes from one commit become discoverable atomically.
 Warnings and information messages do not prevent publication.
 
 The minimum workflow is:
@@ -63,7 +69,7 @@ PUT    /v1/submissions/{submissionId}/documents/{artifactId} stage or replace on
 DELETE /v1/submissions/{submissionId}/documents/{artifactId} remove one staged ORD Document
 PUT    /v1/submissions/{submissionId}/resource-definitions/{artifactId} stage or replace one definition
 DELETE /v1/submissions/{submissionId}/resource-definitions/{artifactId} remove one staged definition
-POST   /v1/submissions/{submissionId}/commit                validate and publish atomically
+POST   /v1/submissions/{submissionId}/commit                validate and publish accepted units atomically
 DELETE /v1/submissions/{submissionId}                       discard a submission
 ```
 
@@ -95,8 +101,9 @@ For `replace`, the staged set is the complete current contribution of the select
 On a successful `replace` commit, the aggregator removes prior contributions inside the selected replacement boundary that are absent from the staged set.
 Omission therefore expresses removal and the provider does not need to track removed resources or publish tombstones inside that boundary.
 A provider can remove every prior contribution in the boundary by staging at least one valid ORD Document that contains no ORD information to retain and committing it in `replace` mode.
-`merge` atomically upserts the staged set without interpreting omission as removal.
-The unit of a merge upsert is one ORD resource together with every resource definition it declares.
+`merge` upserts the accepted staged set without interpreting omission as removal.
+Each top-level ORD information object is one publication unit.
+For an ORD resource that declares resource definitions, the unit also contains every definition it declares.
 If that resource or one definition changes, the provider resubmits the resource and all of its definitions, while unrelated resources can remain omitted.
 Previously published definitions do not complete a partially staged resource.
 When `merge` includes a `scopeId`, the aggregator records that scope as contribution provenance so a later scoped replacement can remove the contribution safely.
@@ -110,11 +117,17 @@ Scoped replacement never removes content attributed to another scope, publisher,
 Scopes partition provenance but do not change ORD identity, uniqueness, or merging rules.
 Providers normally use `replace` for upgrades and periodic full reconciliation, `merge` for hot fixes and transports, and `merge` plus tombstones for removals they track explicitly.
 A provider that does not keep deletion bookkeeping uses scoped `replace` so the aggregator can derive removals from its complete current inventory.
+A staged publication unit that is skipped because of an error is not considered omitted by `replace`, so its previously published contribution remains unchanged.
 A complete replacement cannot be split into sequential partial replacement submissions because each successful commit would remove contributions omitted from that submission.
 
-Commit validation is strict in every publication mode.
-If any staged document, resource, definition, relationship, or authorization check has an error, the entire commit fails and the previously published state remains unchanged.
-The failed submission remains available for correction until it expires.
+Validation defaults to partial acceptance independently of the publication mode.
+An error attributable to one publication unit skips that complete unit, including all definitions declared by an invalid resource.
+The aggregator publishes all remaining valid units together and reports every issue.
+A document-envelope, authorization, or other error that prevents publication units from being isolated safely fails the complete commit.
+The provider can set `strict` to `true` when opening a submission.
+In strict mode, any error fails the complete commit and the previously published state remains unchanged.
+A failed submission remains available for correction until it expires.
+A default-mode commit with only unit-local errors becomes terminal after it publishes the accepted units, so correcting skipped units requires a new submission.
 Replacing or removing a staged artifact makes it eligible for another commit attempt.
 The provider retains the submission ID and its submission-local artifact IDs while a submission is editable.
 If it loses that state, it discards the submission and starts a new one rather than risking publication of obsolete staged artifacts.
@@ -139,7 +152,9 @@ These limits must allow an onboarded provider to publish the complete contributi
 ### Consequences
 
 - ✅ ORD Documents remain transport-neutral and definitions remain in their native media types.
-- ✅ Several requests can form one atomic publication.
+- ✅ Independent valid resources are not blocked by an invalid resource in the same ORD Document or submission.
+- ✅ A resource and every definition it declares are always accepted or skipped together.
+- ✅ Strict submissions can make several requests form one all-or-nothing publication.
 - ✅ Providers can correct a failed submission and commit it again.
 - ✅ `replace` lets the aggregator derive removals from a complete current state without tombstones.
 - ✅ Scope IDs let independent ORD Providers replace only their own contributions to the same application.
@@ -148,7 +163,7 @@ These limits must allow an onboarded provider to publish the complete contributi
 - ⚠️ Aggregators must operate temporary storage and a submission lifecycle.
 - ⚠️ Aggregators must document supported content encodings and capacity limits so providers can plan submissions that fit.
 - ⚠️ Aggregators must retain scope provenance for every published contribution.
-- ⚠️ One error blocks publication of otherwise valid staged content.
+- ⚠️ Providers that require dependent resources to advance together must opt into strict validation.
 - ⚠️ Providers must poll for the terminal commit result.
 
 ## More Information
