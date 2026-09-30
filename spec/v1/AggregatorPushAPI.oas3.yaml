@@ -10,8 +10,11 @@ info:
     Commit validation is asynchronous and strict.
     A commit with any validation or authorization error publishes nothing and leaves the
     submission available for correction until it expires.
-    An optional scope ID lets independently operated providers replace only their own
-    contribution set within one publication context.
+    A scope ID lets independently operated providers replace only their own contribution set
+    within one publication context and is required for every replacement.
+    Providers should register scope IDs with the aggregator during onboarding before using them.
+    The aggregator authorizes the authenticated push client for both the publication context and
+    the selected scope when a submission is opened and before it is published.
 
     Every operation requires authentication.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
@@ -46,8 +49,11 @@ paths:
       description: |-
         Opens an isolated staging area for one authenticated publisher and one publication
         context.
-        An optional scope ID narrows replacement to one contribution set registered during
-        onboarding.
+        A scope ID is required for `replace` and limits removal to one contribution set that
+        should already be registered with the aggregator.
+        It remains optional for `merge`.
+        When a scope ID is supplied, the aggregator verifies that it is registered and that the
+        authenticated push client is authorized for both the publication context and the scope.
         Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly.
         The response identifies when the submission expires unless its staged content changes.
       parameters:
@@ -68,13 +74,7 @@ paths:
                 summary: Replace one onboarded contribution scope
                 value:
                   publicationMode: replace
-                  scopeId: provider-component-a
-                  context:
-                    perspective: system-type
-              providerWideReplace:
-                summary: Replace all contributions from the publisher in this context
-                value:
-                  publicationMode: replace
+                  scopeId: sap.s4.beh
                   context:
                     perspective: system-type
       responses:
@@ -350,8 +350,10 @@ paths:
         form one complete publication unit and cannot be completed from previously published artifacts.
         A replace submission can remove every prior contribution in its replacement boundary by
         staging at least one valid ORD Document that contains no ORD information to retain.
-        Tombstones apply only inside the submission's replacement boundary, and unscoped
-        tombstones require provider-wide replacement authorization.
+        Tombstones apply only inside the submission's contribution boundary, and unscoped
+        tombstones require provider-wide removal authorization.
+        Before publishing, the aggregator verifies again that the authenticated push client is
+        authorized for the publication context and any selected scope.
         Repeating this request while the same revision is validating returns its current state.
         Publication is atomic and strict.
         Any error moves the submission to `failed`, publishes nothing, and preserves the staged
@@ -502,7 +504,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     Forbidden:
-      description: The publisher is not authorized for the operation, publication context, or replacement scope.
+      description: The selected scope is not registered, or the publisher is not authorized for the operation, publication context, or selected scope.
       content:
         application/problem+json:
           schema:
@@ -563,6 +565,14 @@ components:
       type: object
       required: [context]
       additionalProperties: false
+      allOf:
+        - if:
+            required: [publicationMode]
+            properties:
+              publicationMode:
+                const: replace
+          then:
+            required: [scopeId]
       properties:
         publicationMode:
           type: string
@@ -576,11 +586,12 @@ components:
           minLength: 1
           maxLength: 255
           description: |-
-            Stable opaque identifier for a contribution set registered by the aggregator during onboarding.
-            It is not an ORD namespace.
-            For `replace`, supplying it limits removal to that scope in the publication context.
-            Omitting it selects all contributions of the publisher across its scopes in the context and
-            requires provider-wide replacement authorization.
+            Stable identifier for a contribution set that should be registered with the aggregator
+            during onboarding before use.
+            It should be a registered ORD namespace that reflects the component or team responsible
+            for the publishing scope.
+            Using a namespace as the scope ID does not grant authority to publish ORD IDs in that namespace.
+            It is required for `replace` and limits removal to that scope in the publication context.
             For `merge`, it records provenance for a later scoped replacement.
     PublicationContext:
       type: object
@@ -614,6 +625,13 @@ components:
         - artifactCounts
         - issueCounts
       additionalProperties: true
+      allOf:
+        - if:
+            properties:
+              publicationMode:
+                const: replace
+          then:
+            required: [scopeId]
       properties:
         id:
           type: string
@@ -628,7 +646,7 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-          description: Selected contribution scope, or absent for a provider-wide submission in this context.
+          description: Selected contribution scope. Required for `replace` and optional for `merge`.
         expiresAt:
           type: string
           format: date-time
