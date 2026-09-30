@@ -583,30 +583,52 @@ When information from many different system instances comes together, some situa
 
 ##### ORD ID Uniqueness and Aggregation
 
-An [ORD ID](#ord-id) is [globally unique](#ord-id) and identifies exactly one [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) instance.
-The isolation unit for uniqueness is the [perspective](#perspectives) scope: an ORD ID MUST be unique within one [system type](#system-type), [system version](#system-version) or [system instance](#system-instance).
-Two descriptions sharing the same ORD ID within the same scope are a conflict, and a conflict is always an error (see [validation rules](#validation-rules)); there is no defined operation for combining them. For robustness an aggregator MAY deduplicate as a recovery step, but deduplication is not a modeling mechanism and MUST NOT be relied upon by providers.
+An [ORD ID](#ord-id) is [globally unique](#ord-id) and identifies exactly one [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) entity.
+That entity can have a description in more than one publication scope.
+The publication scope is determined by the document [perspective](#perspectives) and its corresponding context.
 
-The same ORD ID appearing in *different* scopes is not a conflict, because each publishes within its own perspective scope: a shared or governed [ORD resource](#ord-resource) or [taxonomy](#ord-taxonomy) reused across [system types](#system-type) (see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md)), or the same design-time resource exposed by different [system instances](#system-instance).
+| Perspective | Publication scope |
+| --- | --- |
+| `system-independent` | The global system-independent scope |
+| `system-type` | The described system type |
+| `system-version` | The described system type and exact described system version |
+| `system-instance` | The described system instance |
 
-Whether the aggregator stores an instance once or per [system instance](#system-instance) depends on whether the information is [system-instance-aware](#system-instance-aware), as described below.
+These aggregation rules do not introduce a global registry requirement.
+[Namespace](#namespaces) ownership and collision avoidance continue to apply independently of publication scope.
+
+Within one publication scope, an ORD ID MUST be described at most once across all ORD Documents and ORD Providers.
+Two descriptions with the same ORD ID in the same publication scope are a conflict and always produce a validation error.
+There is no defined operation for combining their properties or selecting one based on its resource version, publication time or retrieval time.
+If the descriptions are equivalent, an aggregator MAY retain one as a recovery step, but it MUST still report the duplicate.
+Providers MUST NOT rely on this recovery behavior as a modeling mechanism.
+
+The same ORD ID appearing in different publication scopes is not a duplicate.
+Examples include a shared or governed [ORD resource](#ord-resource) or [taxonomy](#ord-taxonomy) reused across [system types](#system-type), or the same design-time resource exposed by different [system instances](#system-instance).
+The aggregator MUST preserve the publishing scope of each description and MUST NOT combine their properties.
+The selection of an effective description across scopes follows the [perspective resolution](./concepts/perspectives.md#how-perspectives-relate-to-each-other) rules.
 
 ###### Aggregating ORD Taxonomy
 
 This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
 
-`Package` and `Product` are independent of specific [products](#product) or [system types](#system-type). They are [system-instance-unaware](#system-instance-unaware) and therefore MUST NOT be stored for each [system instance](#system-instance); such a taxonomy instance is stored once, regardless of how many systems reference it.
+`Package` and `Product` describe [system-instance-unaware](#system-instance-unaware) taxonomy.
+Providers MAY include them in a `system-instance` ORD Document.
+Doing so does not create a different taxonomy entity for that system instance.
+An aggregator MUST preserve the publication scope and system associations, but it MAY normalize equivalent taxonomy descriptions internally.
+This specification does not mandate a physical storage model.
 For modeling taxonomy that is shared or reused across systems, see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 ###### Aggregating ORD Resources
 
 This applies currently to the `APIResource` and `EventResource` [ORD resource](#ord-resource) interfaces.
 
-The information MAY be [system-instance-aware](#system-instance-aware) and therefore MUST be retrieved and stored for each [system instance](#system-instance) individually, qualified by a system instance ID.
-The same ORD ID appearing on *different* system instances is expected and MUST NOT be combined; it describes the same design-time resource as exposed by each instance.
+The information MAY be [system-instance-aware](#system-instance-aware) and therefore can have a separate description for each [system instance](#system-instance), qualified by the system instance ID.
+The same ORD ID appearing on different system instances is expected and MUST NOT be combined across their publication scopes.
+It describes the same design-time resource as exposed by each instance.
 If a [system landscape](#system-landscape) view needs to be supported, the landscape assignment/zone information MUST be enriched and considered by the aggregator.
 
-If the aggregator knows for sure that the information is [system-instance-unaware](#system-instance-unaware) it MAY store some of the information only once for optimization, but it MUST still store which system instances the resource is available on.
+An aggregator MAY normalize system-instance-unaware information internally, but it MUST preserve which system instances expose the resource and any scope-specific publication context.
 
 ##### Content Enrichment and Preservation
 
@@ -664,12 +686,18 @@ The following validation rules apply specifically for ORD aggregators:
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
   This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
-- The same ORD information or resource (identical ORD ID) MUST NOT be described more than once within the same [system type](#system-type) or [system version](#system-version) scope.
-  This includes duplicates within one ORD Document, across different ORD Documents of the same ORD Provider, and across multiple ORD Providers publishing for the same system. Such a duplicate is a conflict and always an error.
-  The aggregator MUST detect it and MAY deduplicate as a recovery step, but MUST NOT treat duplication as a valid way to model information.
-  For migration transitions this rule MAY be violated temporarily.
-- The same ORD ID MAY be published by *different* [system types](#system-type) when it identifies the same shared or governed [ORD resource](#ord-resource) or [taxonomy](#ord-taxonomy). This is not a duplicate: a different system type is a different scope, and the system type provides the additional context for uniqueness (see [ORD ID](#ord-id)).
-  In this case all publishers MUST describe the same ORD resource or taxonomy for the same `version`; differences in publication context (product assignments, Consumption Bundles, entry points) are expected.
+- An ORD ID MUST NOT be described more than once within the same publication scope.
+  This applies to `system-independent`, `system-type`, `system-version` and `system-instance` scopes.
+  It includes duplicates within one ORD Document, across different ORD Documents of the same ORD Provider, and across multiple ORD Providers publishing within the same scope.
+  The aggregator MUST detect and report the duplicate.
+  If the descriptions are equivalent, it MAY retain one as a recovery step, but it MUST NOT combine differing descriptions or treat duplication as a valid way to model information.
+  During a migration, an aggregator MAY accept duplicates temporarily, but it MUST continue to report them as validation errors.
+- The same ORD ID MAY be published by *different* [system types](#system-type) when it identifies the same shared or governed [ORD resource](#ord-resource) or [taxonomy](#ord-taxonomy).
+  This is not a duplicate because a different system type is a different publication scope.
+  Every publisher using the ORD ID MUST refer to the same underlying ORD resource or taxonomy.
+  For entity types that have a `version`, publishers MAY publish different versions and are not required to update them in lockstep.
+  Descriptions with the same exact `version` MUST be consistent except for publication context such as product assignments, Consumption Bundles and entry points.
+  Descriptions of unversioned taxonomy MUST likewise be consistent except for publication context.
   This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
   See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
 

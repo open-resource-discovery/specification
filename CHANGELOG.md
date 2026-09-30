@@ -31,7 +31,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   The Package `vendor` remains authoritative for current ownership attribution independently of the ORD ID namespace, and the SAP policy levels now allow registered partner Vendors.
 - Defined the uniqueness scope of customer-namespaced ORD IDs and required catalogs and consumers to retain that scope when comparing, resolving, or deduplicating these IDs.
 - Updated the ORD Overlay Tooling section to link the published reference implementation (`overlay-tools`), a set of React components for viewing Overlay documents (`overlay-editor`), and a reusable Go library (`overlay-golang`).
-- Clarified ORD ID uniqueness and aggregation: an ORD ID MUST be unique within one perspective scope (system type, system version or system instance). Two definitions of the same ORD ID within the same scope are a conflict and always an error; there is no operation to combine them, and aggregator deduplication is only optional recovery, not a modeling mechanism. The same ORD ID appearing in different scopes (a shared definition reused across system types, or the same resource exposed by different system instances) is not a conflict but MUST be described consistently for the same `version`. Replaces the previous "merge instances with the same ORD ID" wording, which left field-level merging undefined and conflicted with the per-perspective isolation rule.
+- Clarified ORD ID uniqueness and aggregation within `system-independent`, system type, system version and system instance publication scopes.
+  A duplicate within one scope is always a validation error, and only equivalent descriptions may be deduplicated as a recovery step.
+  Descriptions in different scopes remain attributed to those scopes and are not combined property by property.
+  Publishers may publish different resource versions independently, while descriptions of the same exact version and descriptions of unversioned taxonomy must remain consistent apart from publication context.
 
 ## [1.16.3]
 
