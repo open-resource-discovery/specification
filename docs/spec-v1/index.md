@@ -193,24 +193,33 @@ See [Push Transport Guidance](./concepts/push-transport.md) for operational exam
 
 A push publication is assembled as a stateful submission:
 
-1. The provider opens a submission for one publication context and can choose `replace` publication with an authorized scope ID instead of the default `merge` mode, for which a scope ID is optional.
+1. The provider opens a submission for one publication context, chooses whether strict validation is required, and can choose `replace` publication with an authorized scope ID instead of the default `merge` mode, for which a scope ID is optional.
 2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
 3. The provider commits the submission.
-4. The aggregator validates the complete staged set asynchronously.
+4. The aggregator validates the staged set asynchronously and determines which publication units can be accepted.
 5. The provider polls the submission and its issues until validation finishes.
 
 Staged content MUST NOT be discoverable.
-Commit validation is strict.
-If any staged content or relationship has an error, the aggregator MUST publish nothing and MUST retain the previous published state unchanged.
+By default, commit validation MUST accept every valid publication unit and skip each unit that has an error.
+The provider MAY set `strict` to `true` when opening the submission to require all-or-nothing validation.
+In strict mode, any error MUST fail the entire commit, publish nothing, and retain the previous published state unchanged.
 Warnings and information messages MUST NOT prevent publication.
+A default-mode commit with only unit-local errors MUST publish the accepted units and report the skipped units through diagnostics.
+All accepted units from one commit MUST become discoverable atomically, so consumers cannot observe an intermediate state.
+A validation or authorization error that cannot be confined safely to one publication unit MUST fail the entire commit in both modes.
+This includes an error in the ORD Document envelope that prevents its contained units from being isolated reliably.
 A failed submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
-If validation succeeds, the aggregator MUST publish all staged changes atomically.
+A default-mode submission that publishes with skipped units is terminal, and the provider MUST use a new submission to correct those units.
 The provider MUST retain the submission ID and its submission-local artifact IDs while a submission is editable.
 If that state is lost, the provider MUST discard the submission and start a new one rather than risk publishing obsolete staged artifacts.
 
+Each top-level ORD information object in a staged ORD Document is one publication unit.
+Document-level properties inherited by that object are part of its validation.
+For an ORD resource that declares resource definitions, its publication unit also contains all of those definitions.
 Every resource-definition entry declared by a staged ORD resource MUST have exactly one matching staged resource-definition artifact in the same submission.
 Every staged resource-definition artifact MUST match exactly one staged resource by ORD ID and the exact declared `url` value.
-These requirements make an ORD resource together with all resource definitions it declares the unit of publication in both modes.
+If the resource or any declared definition has an error, the aggregator MUST skip the complete publication unit in the default mode.
+The aggregator MUST NOT publish the resource, any of its definitions, or an update to either independently.
 If the resource or one of its definitions changes, the provider MUST stage the resource and all of its declared definitions, including unchanged definitions.
 In `merge` mode, unrelated ORD resources MAY be omitted and remain published.
 Previously published artifacts MUST NOT be used to satisfy the completeness requirements for a staged resource.
@@ -262,7 +271,8 @@ If a merge submission includes a `scopeId`, the aggregator MUST retain that scop
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
 In push transport, a tombstone MUST affect only matching contributions inside the submission's contribution boundary.
 An unscoped tombstone MUST require separate provider-wide removal authorization.
-Both modes are atomic.
+In partial `replace` processing, a staged publication unit that is skipped because of an error MUST NOT be treated as omitted and MUST NOT remove its previously published contribution.
+The accepted changes and removals in either publication mode MUST be applied atomically.
 
 The contribution boundary is the stable publisher, publication context, and optional scope ID recorded by the aggregator.
 In `replace` mode, the replacement boundary always includes a scope ID.
@@ -276,15 +286,15 @@ A submission has one of the following states:
 
 - `open`: artifacts can be staged, replaced, or removed.
 - `validating`: the committed revision is immutable while validation runs.
-- `failed`: validation found at least one error and the staged artifacts can be corrected.
-- `published`: validation succeeded and the atomic update is complete.
+- `failed`: a submission-wide error occurred, or strict validation found at least one error, and the staged artifacts can be corrected.
+- `published`: commit processing completed and the accepted publication units were applied atomically. A non-strict published submission can contain errors for skipped units.
 
 ```mermaid
 stateDiagram-v2
     [*] --> open: create
     open --> validating: commit
-    validating --> published: no errors
-    validating --> failed: errors
+    validating --> published: accepted units applied
+    validating --> failed: fatal or strict-mode error
     failed --> open: change staged artifact
     open --> [*]: discard or expire
     failed --> [*]: discard or expire

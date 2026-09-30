@@ -83,7 +83,9 @@ Please note that you may need to [protect the API access](#protect-ord-provider-
 #### Option 3: Push metadata
 
 If an ORD aggregator supports [push transport](../../spec-v1/index.md#push-transport), a provider can publish metadata at design-time or deploy-time, for example from a CI/CD pipeline or CLI utility.
-The transactional submission API stages several ORD Documents and resource definitions and publishes them atomically after validation.
+The transactional submission API stages several ORD Documents and resource definitions before validation.
+By default, the aggregator atomically publishes the valid resource bundles and skips invalid bundles while reporting diagnostics.
+Providers can opt into strict validation when every staged item must be published together or not at all.
 The provider needs the aggregator's push API base URL and credentials.
 
 ### Dynamic Metadata
