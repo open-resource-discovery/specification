@@ -26,7 +26,7 @@ The provider needs durable bookkeeping of successfully published resource bundle
 ### Known Removals
 
 Use `merge` with tombstones when the provider knows which previously published ORD IDs were removed.
-The tombstones remove matching contributions only inside the submission's replacement boundary.
+The tombstones remove matching contributions only inside the submission's contribution boundary.
 
 This pattern is appropriate when a source system or publishing pipeline records deletions explicitly.
 
@@ -36,8 +36,12 @@ Use `replace` when the provider publishes a complete current inventory for a rep
 This is useful after a major upgrade, for periodic reconciliation, or when many resources changed together.
 The aggregator derives removals by comparing the successfully validated submission with prior contributions inside that boundary.
 
-Use a `scopeId` when several independently operated providers contribute to the same application or when one provider partitions its publication into independently replaceable sets.
-An unscoped replacement affects all contributions from that publisher in the publication context and requires separate authorization.
+Every `replace` submission requires a `scopeId`.
+The scope ensures that replacement affects only one onboarded contribution set when several independently operated providers contribute to the same application or one provider partitions its publication into independently replaceable sets.
+Providers should register each scope ID with the aggregator during onboarding before using it.
+The aggregator checks that the authenticated push client is authorized to publish both for the application or other publication context and for the selected scope.
+Prefer a registered [ORD namespace](../index.md#namespaces) that reflects the component or team responsible for the publishing scope.
+A component within one system will normally use a registered sub-context namespace, while a cross-system organizational owner can use an authority namespace.
 
 ### Providers Without Deletion Bookkeeping
 
@@ -51,8 +55,7 @@ The protocol requires every committed submission to contain at least one valid O
 To remove everything previously published inside a replacement boundary, stage a valid ORD Document for the publication context that contains no ORD information to retain and commit it in `replace` mode.
 
 A scoped empty replacement removes only contributions attributed to that publisher, publication context, and scope.
-An unscoped empty replacement removes all contributions from that publisher across its scopes in the publication context and requires provider-wide replacement authorization.
-Neither form removes contributions owned by another publisher or delegator.
+It does not remove contributions owned by another publisher or delegator.
 
 This operation removes published ORD contributions.
 It does not delete an aggregator's authoritative system-version or system-instance record, which is outside the ORD push protocol.

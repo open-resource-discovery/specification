@@ -77,17 +77,21 @@ The context consists of one perspective and any required system version or aggre
 The aggregator validates the submitted context and document claims against authoritative state.
 Permission to publish particular ORD ID namespaces is checked separately from publisher identity.
 
-A submission can identify an optional `scopeId`.
-The scope ID is a stable, opaque identifier for one contribution set registered by the aggregator during onboarding.
-It is not an ORD namespace, because a namespace expresses identifier authority and can be used by several authorized publishers or delegators.
-The aggregator must authorize the credential for the selected scope independently of ORD ID namespace permissions.
+A `replace` submission must identify a `scopeId`, while a `merge` submission can omit it.
+The scope ID is a stable identifier for one contribution set.
+The provider should register each scope ID with the aggregator during onboarding before using it.
+The registration mechanism is implementation-specific.
+It should be a registered [ORD namespace](../docs/spec-v1/index.md#namespaces) that reflects the component or team responsible for the publishing scope.
+Using a namespace as the scope ID does not grant authority to publish ORD IDs in that namespace.
+When a submission includes a scope ID, the aggregator must verify that it is registered and that the authenticated push client is authorized to publish both for the publication context and for that scope.
+It performs this check when the submission is opened and again before publishing a successful commit.
+An unregistered or unauthorized scope causes the operation to fail with `403 Forbidden`.
+Scope authorization is independent of ORD ID namespace permissions.
 It must attribute every published item and resource definition to its publisher, publication context, and either its scope ID or the unscoped contribution set.
 
 A submission can declare a publication mode when it is opened and defaults to `merge` when the mode is omitted.
 `replace` must be selected explicitly because it gives omission destructive meaning.
-For `replace` with a `scopeId`, the staged set is the complete current contribution of that scope in the publication context.
-For `replace` without a `scopeId`, the staged set is the complete current contribution of the publisher across all of its scopes in the publication context.
-The aggregator must permit an unscoped replacement only when the credential is authorized to replace the publisher's complete contribution.
+For `replace`, the staged set is the complete current contribution of the selected scope in the publication context.
 On a successful `replace` commit, the aggregator removes prior contributions inside the selected replacement boundary that are absent from the staged set.
 Omission therefore expresses removal and the provider does not need to track removed resources or publish tombstones inside that boundary.
 A provider can remove every prior contribution in the boundary by staging at least one valid ORD Document that contains no ORD information to retain and committing it in `replace` mode.
@@ -97,9 +101,10 @@ If that resource or one definition changes, the provider resubmits the resource 
 Previously published definitions do not complete a partially staged resource.
 When `merge` includes a `scopeId`, the aggregator records that scope as contribution provenance so a later scoped replacement can remove the contribution safely.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
-The effect of a tombstone is limited to the same replacement boundary as the submission.
-An unscoped tombstone therefore requires the same provider-wide authorization as an unscoped replacement.
-The replacement boundary is the stable publisher, publication context, and optional scope ID recorded by the aggregator.
+The effect of a tombstone is limited to the same contribution boundary as the submission.
+An unscoped tombstone therefore requires separate provider-wide removal authorization.
+The contribution boundary is the stable publisher, publication context, and optional scope ID recorded by the aggregator.
+In `replace` mode, the replacement boundary always includes a scope ID.
 It is not an ORD Document, credential, or ORD namespace.
 Scoped replacement never removes content attributed to another scope, publisher, or delegator.
 Scopes partition provenance but do not change ORD identity, uniqueness, or merging rules.
@@ -125,8 +130,8 @@ The issues endpoint reports all errors, warnings, and information messages and i
 
 Every operation uses HTTPS and authentication.
 Each credential identifies exactly one described system type or one system-independent publisher in authoritative aggregator state.
-An aggregator can further restrict a credential to particular perspectives, system versions, system instances, scope IDs, or ORD ID namespaces.
-Provider-wide unscoped replacement is a separate authorization from replacement within one scope ID.
+An aggregator can further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
+Each registered scope and any provider-wide unscoped tombstone operation requires separate authorization.
 The concrete machine-to-machine authentication mechanism, credential issuance, and API base URL are communicated by the aggregator during onboarding.
 The onboarding information also states supported request content encodings, maximum encoded and decoded artifact sizes, aggregate decoded submission size, artifact counts, active submissions per publisher, concurrency, rate limits, and decompression limits.
 These limits must allow an onboarded provider to publish the complete contribution of each authorized replacement scope in one submission.
