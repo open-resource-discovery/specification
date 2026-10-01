@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added standardized `same-as` relation type for `relatedEntityTypes`, `relatedApiResources`, `relatedEventResources`, and `relatedCapabilities`, indicating that the source and target resource are the same or equivalent.
+
 ### Changed
 
 - Promoted the ORD concept pages to visible children of the ORD Specification and added an Applying the Specification table that links guides by adopter goal.
