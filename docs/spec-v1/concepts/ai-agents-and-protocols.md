@@ -108,20 +108,28 @@ graph TD
     classDef concept fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#333;
     classDef tech fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333;
     classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333;
+    classDef skill fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#333;
+    classDef skill2 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,stroke-dasharray:5 5,color:#333;
 
     Agent["Agent<br/>(Product-like Concept)"]:::concept
     System["System / Application"]:::tech
     API["API Resource<br/>(Interaction Contract)"]:::tech
+    Skill["Capability<br/>(type: agent-skill)"]:::skill
     Dep["Integration Dependency<br/>(Required External Data/Tools)"]:::dep
 
     System -- Hosts --> Agent
     Agent -- Exposes --> API
     Agent -- Requires --> Dep
+    Skill -- Requires --> Dep
 
     API -.->|Protocol: A2A| A2A[A2A Protocol]
-    Dep -.->|Protocol: MCP| MCP[MCP Server]
-    Dep -.->|Generic| Other["Other Resources (APIs, Events, etc.)"]
+    Dep -.->|apiResources| MCP["MCP Server API Resource"]
+    Dep -.->|capabilities| OtherSkill["Other Capability / Skill"]:::skill2
+    Dep -.->|apiResources / eventResources| Other["Other Resources<br/>(APIs, Events, etc.)"]
 ```
+
+Both Agents and Capabilities, notably `agent-skill` capabilities, can declare `integrationDependencies`, and they use the same mechanism.
+Each Integration Dependency groups one or more aspects referencing API Resources, Event Resources, or Capabilities.
 
 ### Exposing Capabilities (Interaction)
 
@@ -165,16 +173,17 @@ The `resourceDefinitions` with type `a2a-agent-card` points to the full A2A Agen
 ### Consuming Capabilities (Dependencies)
 
 Agents rarely work in isolation.
-They often need to access real-world data or invoke business functions.
-This is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**.
+They often need to access real-world data, invoke business functions, or load reusable skills.
+All of this is modeled using **[Integration Dependencies](../interfaces/Document#integration-dependency)**, which declare what external resources an agent requires to function.
 
 -   **MCP (Model Context Protocol):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
     The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections to data sources and tools.
     When only a subset of tools is needed, the `subset` field narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
     This matters for agents specifically: it keeps LLM context lean by loading only the relevant tool descriptions, and it scopes permission grants to the minimal required surface area.
+-   **Skills (`capabilities`):** Agents can depend on [Agent Skills](../interfaces/Document#capability) represented as Capabilities with `type: "agent-skill"`.
+    Declaring the skill dependency allows a runtime to load it on demand and makes the dependency discoverable in the catalog.
 -   **Other Resources:** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
--   **Agent Chaining:** Agents can also have dependencies on other Agents, forming complex workflows.
 
 Here's an example of an Integration Dependency for an agent that depends on a specific set of MCP tools.
 Without `subset`, the dependency would imply access to all operations of the referenced resource:
@@ -200,6 +209,14 @@ Without `subset`, the dependency would imply access to all operations of the ref
                 { "operationId": "updateDisputeStatus" }
               ]
             }
+          ]
+        },
+        {
+          "title": "Document Processing Skill",
+          "description": "Reusable skill for extracting structured data from uploaded documents",
+          "mandatory": false,
+          "capabilities": [
+            { "ordId": "sap.bar:capability:documentProcessing:v1" }
           ]
         }
       ]
@@ -272,8 +289,157 @@ Given the rapidly evolving AI ecosystem, ORD takes a conservative approach to ad
     This allows for experimentation without committing to a stable schema.
 -   **Tags:** Free-form tags for folksonomy-style categorization (e.g., `["finance", "billing", "ai-agent"]`).
 
-### Examples
+### Agent Skills as Capabilities
 
-Example implementations are available in the ORD specification repository:
-- `examples/documents/document-agents.json` — Complete ORD document with agent definitions
-- `examples/definitions/DisputeResolutionAgentcard.json` — A2A Agent Card example
+[Agent skills](https://agentskills.io/home) are discrete, reusable capabilities that agents can perform, packaged as folders of instructions, scripts, and resources.
+In ORD, these are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "agent-skill"`.
+
+This enables:
+- **Discovery:** Agents can discover and load skills on-demand through the catalog
+- **Reusability:** Skills can be shared across multiple agents and systems
+- **Dependency Management:** Both agents and skills can declare `integrationDependencies` on API Resources, Event Resources, or Capabilities (see [Skill Dependencies](#skill-dependencies) below).
+
+**Example agent skill:**
+
+```json
+{
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:disputeSummarization:v1",
+      "title": "Dispute Summarization Skill",
+      "shortDescription": "Summarizes dispute cases and their resolution history",
+      "version": "1.0.0",
+      "type": "agent-skill",
+      "definitions": [
+        {
+          "type": "agent-skill-zip",
+          "mediaType": "application/zip",
+          "url": "/capabilities/disputeSummarization/skill.zip",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Consuming agent skills:**
+
+Agents can depend on external skills through Integration Dependency aspects:
+
+```json
+{
+  "integrationDependencies": [
+    {
+      "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
+      "aspects": [
+        {
+          "title": "Document Processing Skill Access",
+          "description": "Uses an external agent skill for processing documents",
+          "mandatory": false,
+          "capabilities": [
+            { "ordId": "sap.bar:capability:documentProcessing:v1" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Skill Dependencies
+
+A Capability of type `agent-skill` can itself declare `integrationDependencies`, using the same mechanism as Agents and analogous to `inputPorts` on [Data Products](./data-product.md).
+
+```json
+{
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:disputeSummarization:v1",
+      "type": "agent-skill",
+      "title": "Dispute Summarization Skill",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      // The skill itself depends on external resources to function
+      "integrationDependencies": [
+        "sap.foo:integrationDependency:DisputeCaseManagement:v1"
+      ]
+    }
+  ]
+}
+```
+
+The referenced Integration Dependency is structured exactly like the [example above](#consuming-capabilities-dependencies), and the [Connectivity & Protocols diagram](#connectivity--protocols) shows skills participating in the same dependency graph as agents.
+
+### Agent Plugins as Capabilities
+
+Where an `agent-skill` describes a single discrete capability, an **agent plugin** bundles multiple agent resources (such as one or more agent skills) into a single, distributable package.
+In ORD, plugins are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "agent-plugin"`.
+
+This enables:
+- **Distribution:** A set of related skills and assets can be discovered, versioned, and installed as one unit.
+- **Reusability:** A plugin can be shared across multiple agents and systems, just like individual skills.
+- **Dependency Management:** Like `agent-skill`, an `agent-plugin` can declare `integrationDependencies` on API Resources, Event Resources, or Capabilities (see [Skill Dependencies](#skill-dependencies) above).
+
+The bundle is referenced through a capability definition of type `agent-plugin-zip`, a ZIP archive (`mediaType: "application/zip"`) that packages the plugin's skills and assets together.
+Unlike an individual [agent skill](https://agentskills.io/home), the plugin bundle currently has no vendor-neutral packaging standard, so ORD does not prescribe the archive's internal layout: how the plugin declares and organizes its contained skills and resources is defined by the plugin format the consuming tool or harness expects.
+
+**Depending on a plugin:**
+
+Like any capability, an `agent-plugin` can be referenced from an Integration Dependency aspect (via `capabilities`). By default such a dependency is **coarse-grained**: it targets the plugin as a whole, so the consuming agent installs the entire plugin.
+
+To narrow this down, a capability reference MAY carry a `subset` listing the specific skills within the plugin that are actually required (analogous to `subset` on `apiResources`/`eventResources`). Only the listed skills then need to be loaded into the harness / context, rather than the whole bundle:
+
+```json
+{
+  "integrationDependencies": [
+    {
+      "ordId": "sap.foo:integrationDependency:DisputeHandling:v1",
+      "aspects": [
+        {
+          "title": "Dispute Summarization",
+          "mandatory": false,
+          "capabilities": [
+            {
+              "ordId": "sap.foo:capability:disputeManagementPlugin:v1",
+              "subset": [{ "skillName": "disputeSummarization" }]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+The `skillName` values are names understood within the plugin bundle itself; ORD does not prescribe the bundle's internal layout (see above).
+
+**Example agent plugin:**
+
+```json
+{
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:disputeManagementPlugin:v1",
+      "title": "Dispute Management Plugin",
+      "shortDescription": "Bundles the dispute summarization and resolution skills",
+      "version": "1.0.0",
+      "type": "agent-plugin",
+      "definitions": [
+        {
+          "type": "agent-plugin-zip",
+          "mediaType": "application/zip",
+          "url": "/capabilities/disputeManagementPlugin/plugin.zip",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Example
+
+A complete example with agent and capability definitions is available at [document-agents.json](../examples/document-agents).

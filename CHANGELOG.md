@@ -10,11 +10,21 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added capability type `agent-skill` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
+- Added capability definition type `agent-skill-zip` for ZIP archive definitions of agent skills with media type `application/zip`.
+- Added capability type `agent-plugin` for bundling multiple agent resources (such as one or more agent skills) into a single, distributable package.
+- Added capability definition type `agent-plugin-zip` for ZIP archive definitions of agent plugins with media type `application/zip`.
+- Added `integrationDependencies` to `Capability`, mirroring the property on `Agent` and allowing a capability to declare the API Resources, Event Resources, or other Capabilities it requires. See [AI Agents and Protocols: Skill Dependencies](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#skill-dependencies).
+- Added `subset` property to `CapabilityIntegrationAspect` (new `CapabilityIntegrationAspectSubset` object with `skillName`). Lets a dependency on a bundling capability such as `agent-plugin` be narrowed to specific contained skills, so consumers load only the minimal surface into the harness / context instead of the whole bundle.
+
 ### Changed
 
 - Promoted the ORD concept pages to visible children of the ORD Specification and added an Applying the Specification table that links guides by adopter goal.
 - Replaced the generated Class Diagrams section with the full-screen Schema Explorer, which now covers the ORD Document, ORD Configuration, and ORD Overlay schemas and improves mobile layout, browser navigation, zero-depth URLs, and keyboard access.
 - Standardized the agent examples on the `sap.ai:interactionMode` label.
+- Clarified that `ord` is a reserved vendor namespace owned by the ORD specification and used for well-known, cross-vendor Specification IDs.
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
 - Defined OData annotation identity as term plus optional qualifier, required OData v4 EDMX annotations to use reconciled external `<Annotations Target="...">` blocks, and made OData v2 EDMX overlay application explicitly unsupported.
 - Clarified EDMX action semantics, its annotation-only restriction, CSDL JSON annotation-set updates for concept-level selectors, and CSDL JSON enum-member actions.
