@@ -12,7 +12,9 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added optional `describedSystemInstance.globalId` property: the globally unique ID of the system instance (tenant), assigned and owned by the ORD aggregator (unique within the connected aggregator). It records the same identity that can be passed as the `Global-Tenant-Id` header in the `open` and `basic-auth` access strategies. Cross-linked `localId`/`Local-Tenant-Id` and `globalId`/`Global-Tenant-Id` between the ORD Document interface and the access-strategy documentation.
+- Added optional `describedSystemInstance.globalId` property for a globally unique and stable tenant identifier assigned by the responsible tenant authority.
+  It records the same identity that can be passed as the `Global-Tenant-Id` header in the `open` and `basic-auth` access strategies.
+  Cross-linked `localId`/`Local-Tenant-Id` and `globalId`/`Global-Tenant-Id` between the ORD Document interface and the access-strategy documentation.
 
 ### Changed
 
