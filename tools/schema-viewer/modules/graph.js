@@ -426,6 +426,9 @@ export function updateGraph() {
     .enter()
     .append('g')
     .attr('class', 'node')
+    .attr('role', 'button')
+    .attr('tabindex', 0)
+    .attr('aria-label', (d) => `View ${d.name}`)
     .call(
       d3
         .drag()
@@ -439,6 +442,16 @@ export function updateGraph() {
         expandAllNeighbors(d.id);
       } else {
         if (state.onNodeSelect) state.onNodeSelect(d.id);
+      }
+    })
+    .on('keydown', (event, d) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (state.selectedNode === d.id) {
+        expandAllNeighbors(d.id);
+      } else if (state.onNodeSelect) {
+        state.onNodeSelect(d.id);
       }
     })
     .on('mouseenter', (_event, d) => {

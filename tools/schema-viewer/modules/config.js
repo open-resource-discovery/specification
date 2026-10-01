@@ -7,6 +7,7 @@ export const SCHEMA_BASE_URL = '../../spec-v1/interfaces/';
 export const SCHEMAS = {
   Document: 'Document.schema.json',
   Configuration: 'Configuration.schema.json',
+  OrdOverlay: 'OrdOverlay.schema.json',
 };
 
 // Simulation configs for different density levels
