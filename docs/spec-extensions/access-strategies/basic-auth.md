@@ -42,7 +42,8 @@ Local-Tenant-Id: 000023
 
 ### Global-Tenant-Id
 
-The global tenant ID is a globally unique ID for a system instance (tenant). The scope of uniqueness is within the connected aggregator.
+The global tenant ID is a globally unique and stable ID for a system instance (tenant), assigned by the authority responsible for that tenant identity.
+It is intended for correlation across participating systems.
 It is passed along as a `Global-Tenant-Id` header.
 
 This is the same identity that can be recorded in an ORD document via the [`describedSystemInstance.globalId`](../../spec-v1/interfaces/Document.md#system-instance_globalid) property.
