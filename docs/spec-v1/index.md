@@ -590,7 +590,7 @@ ORD taxonomy is independent of specific <a href="#product">products</a> or <a hr
 
 ###### Merging ORD Taxonomy
 
-This applies to all [ORD taxonomy](#ord-taxonomy) interfaces.
+This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
 
 The information is [system-instance-unaware](#system-instance-unaware) and therefore MUST not be stored for each [system instance](#system-instance).
 If multiple systems/system instances describe the same ORD taxonomy instance, the following merging rules MUST be followed:
@@ -604,13 +604,12 @@ If multiple systems/system instances describe the same ORD taxonomy instance, th
 
 ###### Merging ORD Resources
 
-This applies to all [ORD resource](#ord-resource) interfaces.
+This applies currently to the `APIResource` and `EventResource` [ORD resource](#ord-resource) interfaces.
 
 The information MAY be [system-instance-aware](#system-instance-aware).
 Therefore, the information MUST be retrieved and stored for each [system instance](#system-instance) individually.
 In this case, an ORD resource with the same [ORD ID](#ord-id) will exist exactly once for each system instance.
 Therefore, the ORD ID MUST be further qualified by a system instance ID when stored by the aggregator.
-This isolation MUST also be applied to any HTTP cache entries during crawling — see [ORD Consumer Cache Handling](#ord-consumer-cache-handling).
 If a [system landscape](#system-landscape) view needs to be supported, the information about the landscape assignment/zone information MUST be enriched and considered by the aggregator.
 
 If the same system instances describe the same ORD resource, the following merging rules MUST be followed:
@@ -1135,7 +1134,7 @@ It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and
 
 The version SHOULD be changed when the resource or the resource definition changed in any way relevant to consumers.
 If (potentially runtime) customization/extension leads to changes in the resource definition, the `lastUpdate` MUST be updated.
-Optionally, a build number MAY be added or incremented to the `version` indicate that this change happened.
+Optionally, a build number MAY be added or incremented in the `version` to indicate that this change happened.
 
 When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
 If the resource definition also contains a version number, it SHOULD be in sync with the resource `version` (if possible).
