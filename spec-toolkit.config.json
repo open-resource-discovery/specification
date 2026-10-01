@@ -58,9 +58,6 @@
       }
     },
     {
-      "packageName": "./node_modules/@open-resource-discovery/spec-toolkit/dist/plugin/mermaidDiagram/index.js"
-    },
-    {
       "packageName": "./node_modules/@open-resource-discovery/spec-toolkit/dist/plugin/tabular/index.js"
     }
   ]

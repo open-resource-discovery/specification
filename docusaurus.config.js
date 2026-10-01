@@ -27,9 +27,6 @@ const generatedDocSources = {
   "spec-v1/examples/document-poc.md": "examples/documents/document-poc.jsonc",
   "spec-v1/examples/document-special-protocols.md":
     "examples/documents/document-special-protocols.json",
-  "spec-v1/diagrams/ord-configuration.md": "spec/v1/Configuration.schema.yaml",
-  "spec-v1/diagrams/ord-document.md": "spec/v1/Document.schema.yaml",
-  "spec-v1/diagrams/ord-overlay.md": "spec/v1/OrdOverlay.schema.yaml",
 };
 
 /** @type {import('@docusaurus/types').Config} */
@@ -121,6 +118,70 @@ const config = {
             from: "/overview",
             to: "/",
           },
+          {
+            from: "/details",
+            to: "/spec-v1",
+          },
+          {
+            from: "/details/articles",
+            to: "/spec-v1",
+          },
+          {
+            from: "/details/articles/data-product",
+            to: "/spec-v1/concepts/data-product",
+          },
+          {
+            from: "/details/articles/grouping-and-bundling",
+            to: "/spec-v1/concepts/grouping-and-bundling",
+          },
+          {
+            from: "/details/articles/integration-dependency",
+            to: "/spec-v1/concepts/integration-dependency",
+          },
+          {
+            from: "/details/articles/system-landscape-model",
+            to: "/spec-v1/concepts/system-landscape-model",
+          },
+          {
+            from: "/details/articles/adopt-ord-as-provider",
+            to: "/help/faq/adopt-ord-as-provider",
+          },
+          {
+            from: "/details/articles/why-ord",
+            to: "/help/faq/why-ord",
+          },
+          {
+            from: "/details/faq",
+            to: "/help/faq",
+          },
+          {
+            from: "/details/videos",
+            to: "/help/videos",
+          },
+          {
+            from: "/details/videos/introduction",
+            to: "/help/videos/introduction",
+          },
+          {
+            from: "/spec-v1/diagrams",
+            to: "https://open-resource-discovery.org/tools/schema-viewer/index.html?schema=Document",
+          },
+          {
+            from: "/spec-v1/diagrams/ord-configuration",
+            to: "https://open-resource-discovery.org/tools/schema-viewer/index.html?schema=Configuration",
+          },
+          {
+            from: "/spec-v1/diagrams/ord-document",
+            to: "https://open-resource-discovery.org/tools/schema-viewer/index.html?schema=Document",
+          },
+          {
+            from: "/spec-v1/diagrams/ord-overlay",
+            to: "https://open-resource-discovery.org/tools/schema-viewer/index.html?schema=OrdOverlay",
+          },
+          {
+            from: "/spec-v1/interfaces/explorer",
+            to: "https://open-resource-discovery.org/tools/schema-viewer/index.html?schema=Document",
+          },
         ],
       },
     ],
@@ -179,20 +240,16 @@ const config = {
                 to: "/spec-v1/",
               },
               {
-                label: "ORD Configuration",
+                label: "ORD Configuration Interface",
                 to: "spec-v1/interfaces/Configuration",
               },
               {
-                label: "ORD Document",
+                label: "ORD Document Interface",
                 to: "spec-v1/interfaces/Document",
               },
               {
-                label: "ORD Overlay",
+                label: "ORD Overlay Interface",
                 to: "spec-v1/interfaces/OrdOverlay",
-              },
-              {
-                label: "ORD Concepts / Details",
-                to: "spec-v1/concepts",
               },
               {
                 type: "html",

@@ -4,7 +4,7 @@ import path from "node:path";
 // Config: what gets cleaned
 const config = {
   // Directories to remove entirely
-  removeDirs: ["dist", "build", "src/generated"],
+  removeDirs: ["dist", "build", "src/generated", "docs/spec-v1/diagrams"],
   // Generated files to remove (absolute or workspace-relative)
   removeGeneratedFiles: [
     "docs/spec-v1/interfaces/Configuration.md",
@@ -22,10 +22,6 @@ const config = {
     },
     {
       dir: "docs/spec-v1/examples",
-      keep: new Set(["index.mdx"]),
-    },
-    {
-      dir: "docs/spec-v1/diagrams",
       keep: new Set(["index.mdx"]),
     },
     {

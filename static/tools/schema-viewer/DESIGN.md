@@ -10,7 +10,7 @@ The explorer is designed to integrate seamlessly with the main ORD Docusaurus si
 ## 2. Core Requirements & Implementation
 
 ### 2.1 Schema Parsing
-The application parses `Document.schema.json` and `Configuration.schema.json` and extracts:
+The application parses `Document.schema.json`, `Configuration.schema.json`, and `OrdOverlay.schema.json` and extracts:
 - **Nodes**: Each definition in the schema becomes a node.
 - **Relationships**:
     - **Composition**: Defined by `$ref` in JSON Schema. Represented as solid teal-blue lines (`#1e8f95`).
@@ -33,7 +33,7 @@ The application parses `Document.schema.json` and `Configuration.schema.json` an
 ### 2.3 User Interface
 - **Docusaurus Branding**: Features the official ORD logo, teal color accents, and Inter-based typography.
 - **Top Controls**:
-    - **Schema Selection**: Switch between Document and Configuration schemas.
+    - **Schema Selection**: Switch among Document, Configuration, and Overlay schemas.
     - **Depth Slider**: Sets the initial explosion level of the graph.
     - **Density Selector**: Toggles simulation forces between **Compact**, **Normal**, and **Sparse** to manage graph sprawl.
     - **Labels Toggle**: Show/hide property names on edges.

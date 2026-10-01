@@ -30,14 +30,6 @@ export async function copyGeneratedToDestination(): Promise<void> {
       { recursive: true },
     );
 
-    // Create docs/spec-v1/diagrams/ directory and copy files
-    await mkdir("docs/spec-v1/diagrams/", { recursive: true });
-    await cp(
-      "./src/generated/spec/v1/plugin/mermaidDiagram",
-      "docs/spec-v1/diagrams/",
-      { recursive: true },
-    );
-
     // Create static/spec-v1/interfaces/ directory and copy files
     await mkdir("static/spec-v1/interfaces/", { recursive: true });
     await cp("./src/generated/spec/v1/schemas", "static/spec-v1/interfaces/", {
