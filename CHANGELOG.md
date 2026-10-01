@@ -16,6 +16,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
 - Defined OData annotation identity as term plus optional qualifier, required OData v4 EDMX annotations to use reconciled external `<Annotations Target="...">` blocks, and made OData v2 EDMX overlay application explicitly unsupported.
 - Clarified EDMX action semantics, its annotation-only restriction, CSDL JSON annotation-set updates for concept-level selectors, and CSDL JSON enum-member actions.
+- Fixed the NotebookLM export so Markdown/MDX source pages are emitted with the supported `.md` extension.
+- Modernized the Node.js toolchain and workflows with Node.js 24 and npm 11 compatibility, Node.js 26 CI, pinned action revisions, TypeScript 7 helper compilation, and deterministic spec-toolkit 0.9.1 output.
+- Aligned policy-level sidebar titles, page headings, versions, and terminology.
+- Fixed broken or stale public documentation routes and targets, published the advertised generated downloads, mapped generated-page edit links to source files, and removed links to non-public tools.
 - Clarified that overlay output is semantically, not byte, canonical.
 - Clarified OData operation selectors: a namespace-qualified name may omit its signature only when unique; overloaded operations require an exact signature with all parameters in declaration order; `Name()` selects a zero-parameter operation; and signature selectors never fall back to a FunctionImport.
 - Updated the ORD Overlay Tooling section to link the published reference implementation (`overlay-tools`), a set of React components for viewing Overlay documents (`overlay-editor`), and a reusable Go library (`overlay-golang`).
