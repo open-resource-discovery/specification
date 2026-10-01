@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="440" viewBox="0 0 1160 440" role="img" aria-labelledby="title description">
+  <title id="title">Provider perspective selection</title>
+  <desc id="description">Decision flow for ORD providers. Use system-instance for tenant-specific metadata. Otherwise, use system-version when multiple application versions are deployed simultaneously in one environment tier, and prefer system-type when they are not.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0 8 4 0 8z" class="arrow-head"/>
+    </marker>
+    <style>
+      svg { color-scheme: light dark; font-family: Arial, Helvetica, sans-serif; }
+      .entry { fill: light-dark(#dae8fc, #1e3a5f); stroke: light-dark(#6c8ebf, #8ab4f8); stroke-width: 2; }
+      .decision { fill: light-dark(#f5f5f5, #2b2d31); stroke: light-dark(#666, #c5c7ca); stroke-width: 1.5; }
+      .recommended { fill: light-dark(#d5e8d4, #1f4328); stroke: light-dark(#82b366, #88cf8c); stroke-width: 2; }
+      .option { fill: light-dark(#fff2cc, #4d411c); stroke: light-dark(#d6b656, #e0c66d); stroke-width: 2; }
+      .edge { fill: none; stroke: light-dark(#4d4d4d, #d4d4d4); stroke-width: 1.5; marker-end: url(#arrow); }
+      .arrow-head { fill: context-stroke; }
+      text { fill: light-dark(#1f2328, #f2f3f5); font-size: 14px; text-anchor: middle; dominant-baseline: middle; }
+      .compact { font-size: 12px; }
+      .label { font-size: 12px; paint-order: stroke; stroke: light-dark(#fff, #1b1b1b); stroke-width: 4px; stroke-linejoin: round; }
+      .note { font-size: 12px; font-style: italic; }
+    </style>
+  </defs>
+
+  <rect class="entry" x="10" y="150" width="160" height="56" rx="7"/>
+  <text x="90" y="169"><tspan x="90">ORD metadata</tspan><tspan x="90" dy="17">to publish</tspan></text>
+
+  <polygon class="decision" points="280,105 380,178 280,251 180,178"/>
+  <text x="280" y="169"><tspan x="280">Is the metadata</tspan><tspan x="280" dy="17">tenant-specific?</tspan></text>
+  <path class="edge" d="M170 178h10"/>
+
+  <rect class="option" x="420" y="10" width="380" height="70" rx="7"/>
+  <text x="610" y="28"><tspan x="610">Publish a complete system-instance</tspan><tspan x="610" dy="17">perspective for each tenant</tspan><tspan x="610" dy="17">Also apply the static decision below</tspan></text>
+  <path class="edge" d="M280 105V45h140"/>
+  <text class="label" x="295" y="94">Yes</text>
+
+  <polygon class="decision" points="610,90 800,178 610,266 420,178"/>
+  <text class="compact" x="610" y="146"><tspan x="610">Are multiple versions of the same</tspan><tspan x="610" dy="16">application deployed at the same time</tspan><tspan x="610" dy="16">in one environment tier</tspan><tspan x="610" dy="16">(for example, production)?</tspan></text>
+  <path class="edge" d="M380 178h40"/>
+  <text class="label" x="400" y="168">No</text>
+
+  <rect class="option" x="830" y="133" width="320" height="90" rx="7"/>
+  <text x="990" y="153"><tspan x="990">Publish a complete system-version</tspan><tspan x="990" dy="17">perspective for each relevant version</tspan><tspan x="990" dy="17">Enables exact lookup</tspan><tspan x="990" dy="17">and metadata history</tspan></text>
+  <path class="edge" d="M800 178h30"/>
+  <text class="label" x="815" y="168">Yes</text>
+
+  <rect class="recommended" x="440" y="330" width="340" height="80" rx="7"/>
+  <text x="610" y="345"><tspan x="610">Publish a complete system-type perspective</tspan><tspan x="610" dy="17">Recommended default:</tspan><tspan x="610" dy="17">simpler lookup, less metadata</tspan></text>
+  <path class="edge" d="M610 266v64"/>
+  <text class="label" x="624" y="290">No</text>
+
+  <text class="note" x="985" y="349"><tspan x="985">Outside this tree: use system-independent</tspan><tspan x="985" dy="17">for content with no system context.</tspan></text>
+</svg>
