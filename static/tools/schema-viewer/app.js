@@ -42,7 +42,13 @@ if (!SCHEMAS[currentSchemaName]) {
   currentSchemaName = 'Document';
 }
 
-const initialDepth = parseInt(urlParams.get('depth'), 10) || 1;
+function parseDepth(value) {
+  const parsedDepth = Number.parseInt(value, 10);
+  if (Number.isNaN(parsedDepth)) return 1;
+  return Math.min(5, Math.max(0, parsedDepth));
+}
+
+const initialDepth = parseDepth(urlParams.get('depth'));
 
 /**
  * Global callback bundle for sidebar and graph interactions
@@ -58,6 +64,7 @@ state.currentSchemaName = currentSchemaName;
 
 async function loadSchema(schemaName) {
   currentSchemaName = schemaName;
+  state.currentSchemaName = schemaName;
   const url = SCHEMA_BASE_URL + SCHEMAS[schemaName];
 
   try {
@@ -69,7 +76,7 @@ async function loadSchema(schemaName) {
     state.nodes = parseSchema(schemaData, schemaName);
 
     const depthSlider = document.getElementById('depth-slider');
-    const depth = parseInt(depthSlider?.value || 1, 10);
+    const depth = parseDepth(depthSlider?.value);
 
     const urlParams = new URLSearchParams(window.location.search);
     const nodeParam = urlParams.get('node');
@@ -177,7 +184,7 @@ function setupEventListeners() {
     });
 
     depthSlider.addEventListener('change', () => {
-      const newDepth = parseInt(depthSlider.value, 10);
+      const newDepth = parseDepth(depthSlider.value);
       initializeGraph(newDepth);
       const newUrl = new URL(window.location);
       newUrl.searchParams.set('depth', newDepth);
@@ -228,21 +235,43 @@ function setupEventListeners() {
       const newSchemaName = e.target.value;
       state.selectedNode = null;
       state.selectedLink = null;
-      state.currentSchemaName = newSchemaName;
-      loadSchema(newSchemaName);
       const newUrl = new URL(window.location);
       newUrl.searchParams.set('schema', newSchemaName);
       newUrl.searchParams.delete('node');
       newUrl.searchParams.delete('link');
-      window.history.pushState({ schema: newSchemaName }, '', newUrl);
+      window.history.pushState(null, '', newUrl);
+      loadSchema(newSchemaName);
     });
   }
 
-  window.addEventListener('popstate', (e) => {
-    if (e.state?.schema) {
-      schemaSelect.value = e.state.schema;
-      loadSchema(e.state.schema);
-    }
+  window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(window.location.search);
+    const schemaName = SCHEMAS[params.get('schema')]
+      ? params.get('schema')
+      : 'Document';
+    const depth = parseDepth(params.get('depth'));
+    const requestedDensity = params.get('density') || 'normal';
+    const showLabelsParam = params.get('labels');
+
+    schemaSelect.value = schemaName;
+    depthSlider.value = depth;
+    depthValue.textContent = depth;
+
+    const density = densitySelect.querySelector(
+      `option[value="${requestedDensity}"]`,
+    )
+      ? requestedDensity
+      : 'normal';
+    state.density = density;
+    densitySelect.value = density;
+
+    state.showLabels =
+      showLabelsParam === null ? true : showLabelsParam === 'true';
+    labelBtn.classList.toggle('active', state.showLabels);
+
+    state.selectedNode = null;
+    state.selectedLink = null;
+    loadSchema(schemaName);
   });
 
   // Reset button

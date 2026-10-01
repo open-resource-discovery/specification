@@ -163,14 +163,14 @@ function renderResults(results) {
     searchResults.innerHTML = '<div class="search-result-item" style="cursor: default; background: transparent;"><div class="result-info"><div class="result-name">No results found</div></div></div>';
   } else {
     searchResults.innerHTML = results.map(result => `
-      <div class="search-result-item" data-type="${result.type}" data-id="${result.id}" data-node-id="${result.nodeId || ''}">
-        <div class="result-type-icon ${result.type}" style="${result.type === 'entity' ? `background: ${result.color}; box-shadow: 0 0 5px ${result.color};` : ''}"></div>
-        <div class="result-info">
-          <div class="result-name">${highlightMatch(result.name, query)}</div>
-          <div class="result-meta">${result.meta}</div>
-        </div>
-        <div class="result-tag">${result.type}</div>
-      </div>
+      <button type="button" class="search-result-item" data-type="${result.type}" data-id="${result.id}" data-node-id="${result.nodeId || ''}">
+        <span class="result-type-icon ${result.type}" style="${result.type === 'entity' ? `background: ${result.color}; box-shadow: 0 0 5px ${result.color};` : ''}"></span>
+        <span class="result-info">
+          <span class="result-name">${highlightMatch(result.name, query)}</span>
+          <span class="result-meta">${result.meta}</span>
+        </span>
+        <span class="result-tag">${result.type}</span>
+      </button>
     `).join('');
 
     searchResults.querySelectorAll('.search-result-item').forEach(item => {

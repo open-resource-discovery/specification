@@ -62,6 +62,18 @@ flowchart TB
 
 </div>
 
+## Applying the Specification
+
+The specification defines the normative ORD model and protocol.
+The following guides explain how its concepts fit together and how to apply them in practice.
+
+| Goal | Guides |
+| --- | --- |
+| Understand the system context | [System Landscape Model](./concepts/system-landscape-model.md)<br />[Perspectives](./concepts/perspectives.md)<br />[Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) |
+| Organize and connect metadata | [Grouping and Bundling](./concepts/grouping-and-bundling.md)<br />[Data Product](./concepts/data-product.md)<br />[Integration Dependency](./concepts/integration-dependency.md)<br />[AI Agents and Protocols](./concepts/ai-agents-and-protocols.md) |
+| Evolve contracts safely | [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md)<br />[Compatibility](./concepts/compatibility.md) |
+| Implement an ORD provider | [Implementing ORD Natively](./concepts/implementing-ord-natively.md) |
+
 ## ORD Roles
 
 The ORD specification consists of several [parts](#ord-parts).
