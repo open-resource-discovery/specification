@@ -93,6 +93,10 @@
       ],
       "exposedApiResources": [{"ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1"}],
       "integrationDependencies": ["sap.foo:integrationDependency:DisputeCaseManagement:v1"],
+      "extensible": {
+        "supported": "manual",
+        "description": "Additional skills can be installed through the agent administration interface."
+      },
       "labels": {
         "sap.ai:interactionMode": ["conversational", "system-triggered"]
       },

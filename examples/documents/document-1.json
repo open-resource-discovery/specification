@@ -209,7 +209,11 @@
           ]
         }
       ],
-      "relatedEntityTypes": ["sap.foo:entityType:Constellation:v1"]
+      "relatedEntityTypes": ["sap.foo:entityType:Constellation:v1"],
+      "extensible": {
+        "supported": "manual",
+        "description": "Additional capability content can be added through the capability administration interface."
+      }
     }
   ],
   "entityTypes": [
