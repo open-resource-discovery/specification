@@ -34,7 +34,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified ORD ID uniqueness and aggregation within `system-independent`, system type, system version and system instance publication scopes.
   A duplicate within one scope is always a validation error, and only equivalent descriptions may be deduplicated as a recovery step.
   Descriptions in different scopes remain attributed to those scopes and are not combined property by property.
-  Publishers may publish different resource versions independently, while descriptions of the same exact version and descriptions of unversioned taxonomy must remain consistent apart from publication context.
+  Perspective scopes apply uniformly to ORD resources and taxonomy, and scoped descriptions may differ according to their perspective, versioning and publication context.
 
 ## [1.16.3]
 

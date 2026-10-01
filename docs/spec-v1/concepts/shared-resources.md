@@ -118,10 +118,9 @@ There is no implicit inheritance between system types.
   Each system type is a different publication scope, so these descriptions are not duplicates.
 - Every publisher using the ORD ID MUST refer to the same underlying ORD resource or taxonomy.
 - For entity types that have a `version`, publishers MAY publish different versions and are not required to update them in lockstep.
-- Descriptions with the same exact `version` MUST be consistent except for system-specific publication context.
-- Descriptions of unversioned taxonomy MUST likewise be consistent except for system-specific publication context.
+- Scoped descriptions MAY differ as allowed by their perspective, versioning and system-specific publication context.
 - System-specific publication context MAY differ, such as product assignments, package inheritance, Consumption Bundle assignments, entry points or credentials.
-- The namespace owner is responsible for governing the shared definition and coordinating consistency.
+- The namespace owner is responsible for governing the semantic identity of the shared ORD resource or taxonomy.
 - [Packages](./grouping-and-bundling.md#package) that group only shared resources SHOULD normally use the same owning namespace as the grouped resources.
 - Each system type MUST use `partOfProducts` where needed to associate shared resources with the relevant [Product](./grouping-and-bundling.md#product).
 
@@ -198,23 +197,18 @@ This is expected when it identifies the same ORD resource or taxonomy reused acr
 The aggregator MUST preserve the publication scope of every description so that they do not collide.
 It MUST NOT merge properties from descriptions in different scopes.
 
-- Uniqueness applies within one publication scope, including the global `system-independent` scope and each system type, system version or system instance scope.
+- Uniqueness applies within one publication scope, including the aggregator-wide `system-independent` scope and each system type, system version or system instance scope.
   A duplicate within one scope is a conflict and always produces a validation error.
 - Every publisher using the shared ORD ID MUST refer to the same underlying ORD resource or taxonomy.
 - For entity types that have a `version`, publishers MAY publish different versions and are not required to update them in lockstep.
-- Descriptions with the same exact `version` MUST be consistent except for publication context such as product assignments, Consumption Bundles and entry points.
-- Descriptions of unversioned taxonomy MUST likewise be consistent except for publication context.
+- Scoped descriptions MAY differ as allowed by their perspective, versioning and publication context.
 - If different system types publish different versions of the same shared ORD information, the catalog MUST preserve the system type/version context.
 
 The specification does not mandate a physical storage model.
-For static catalogs using `system-type` or `system-version` perspectives, there are two valid implementation strategies:
-
-1. **Scope per system type:** Store the shared information separately for each publishing system type.
-2. **Combine intelligently:** Present the shared information once, while preserving all system types, system versions and products that published it.
+An aggregator MAY normalize information internally only if it preserves each complete scoped description and its publication context.
 
 ## Consumer Rules
 
-- Consumers MUST be prepared to receive either one combined result or multiple scoped results for a shared ORD ID, depending on the aggregator.
 - A dependency on a shared ORD ID is satisfied by any system type that publishes that definition, unless the dependency further restricts the provider.
 - To connect to a concrete system, the consumer still needs the applicable [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle), system instance context, entry points and authentication details.
 - Consumers can narrow search and resolution by system type, system version, system instance or product when they need a specific provider context.

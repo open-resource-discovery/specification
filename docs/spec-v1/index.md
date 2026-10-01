@@ -589,11 +589,14 @@ The publication scope is determined by the document [perspective](#perspectives)
 
 | Perspective | Publication scope |
 | --- | --- |
-| `system-independent` | The global system-independent scope |
+| `system-independent` | The aggregator-wide system-independent scope |
 | `system-type` | The described system type |
 | `system-version` | The described system type and exact described system version |
-| `system-instance` | The described system instance |
+| `system-instance` | The authoritative system instance known to the aggregator |
 
+The perspective scopes every ORD entry in the document, regardless of whether the entry is an ORD resource or taxonomy.
+The provider MUST choose the perspective whose semantics match the published content and MUST NOT use another perspective merely to avoid a duplicate within the applicable scope.
+The scope context can come from the ORD Document or from authoritative context known to the aggregator, such as onboarding, landscape or authenticated publisher information.
 These aggregation rules do not introduce a global registry requirement.
 [Namespace](#namespaces) ownership and collision avoidance continue to apply independently of publication scope.
 
@@ -606,29 +609,11 @@ Providers MUST NOT rely on this recovery behavior as a modeling mechanism.
 The same ORD ID appearing in different publication scopes is not a duplicate.
 Examples include a shared or governed [ORD resource](#ord-resource) or [taxonomy](#ord-taxonomy) reused across [system types](#system-type), or the same design-time resource exposed by different [system instances](#system-instance).
 The aggregator MUST preserve the publishing scope of each description and MUST NOT combine their properties.
-The selection of an effective description across scopes follows the [perspective resolution](./concepts/perspectives.md#how-perspectives-relate-to-each-other) rules.
-
-###### Aggregating ORD Taxonomy
-
-This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
-
-`Package` and `Product` describe [system-instance-unaware](#system-instance-unaware) taxonomy.
-Providers MAY include them in a `system-instance` ORD Document.
-Doing so does not create a different taxonomy entity for that system instance.
-An aggregator MUST preserve the publication scope and system associations, but it MAY normalize equivalent taxonomy descriptions internally.
+For system-scoped perspectives, the selection of an effective description follows the [perspective resolution](./concepts/perspectives.md#how-perspectives-relate-to-each-other) rules and replaces complete descriptions without merging their properties.
+The `system-independent` perspective remains outside this resolution chain and MUST NOT be overridden by a system-scoped description.
 This specification does not mandate a physical storage model.
-For modeling taxonomy that is shared or reused across systems, see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
-
-###### Aggregating ORD Resources
-
-This applies currently to the `APIResource` and `EventResource` [ORD resource](#ord-resource) interfaces.
-
-The information MAY be [system-instance-aware](#system-instance-aware) and therefore can have a separate description for each [system instance](#system-instance), qualified by the system instance ID.
-The same ORD ID appearing on different system instances is expected and MUST NOT be combined across their publication scopes.
-It describes the same design-time resource as exposed by each instance.
-If a [system landscape](#system-landscape) view needs to be supported, the landscape assignment/zone information MUST be enriched and considered by the aggregator.
-
-An aggregator MAY normalize system-instance-unaware information internally, but it MUST preserve which system instances expose the resource and any scope-specific publication context.
+An aggregator MAY normalize information internally only if it preserves every publication scope, the applicable complete descriptions and the system contexts in which each entry is available.
+For modeling taxonomy or resources that are shared or reused across systems, see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 ##### Content Enrichment and Preservation
 
@@ -696,8 +681,8 @@ The following validation rules apply specifically for ORD aggregators:
   This is not a duplicate because a different system type is a different publication scope.
   Every publisher using the ORD ID MUST refer to the same underlying ORD resource or taxonomy.
   For entity types that have a `version`, publishers MAY publish different versions and are not required to update them in lockstep.
-  Descriptions with the same exact `version` MUST be consistent except for publication context such as product assignments, Consumption Bundles and entry points.
-  Descriptions of unversioned taxonomy MUST likewise be consistent except for publication context.
+  Scoped descriptions MAY differ as allowed by their perspective, versioning and publication context.
+  Such a difference is not by itself a duplicate or a reason to merge the descriptions.
   This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
   See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
 
