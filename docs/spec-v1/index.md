@@ -535,32 +535,39 @@ The most important rules are:
 
 ##### ORD Provider Cache Handling
 
-It is RECOMMENDED to provide a [`Cache-Control`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) HTTP header on all GET endpoints.
-For ORD metadata endpoints, the RECOMMENDED value is `Cache-Control: no-cache`, which allows caching but requires revalidation with the origin server before serving a cached response.
+It is RECOMMENDED to provide a [`Cache-Control`](https://www.rfc-editor.org/rfc/rfc9111.html#name-cache-control) HTTP header on all GET endpoints.
+For public, context-independent ORD metadata, the RECOMMENDED value is `Cache-Control: no-cache`, which allows a response to be stored but requires successful validation with the origin server before reuse.
 
-It is RECOMMENDED to also provide an [`ETag`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) HTTP header and to handle conditional requests via [`If-None-Match`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match), returning [`304 Not Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304) when the content has not changed.
-`Cache-Control: no-cache` combined with ETags is the RECOMMENDED approach: it enables efficient revalidation without the risk of serving stale metadata.
+It is RECOMMENDED to also provide an [`ETag`](https://www.rfc-editor.org/rfc/rfc9110.html#name-etag) HTTP header and to handle conditional requests via [`If-None-Match`](https://www.rfc-editor.org/rfc/rfc9110.html#name-if-none-match), returning [`304 Not Modified`](https://www.rfc-editor.org/rfc/rfc9110.html#name-304-not-modified) when the selected representation has not changed.
+`Cache-Control: no-cache` combined with ETags is the RECOMMENDED approach for efficient revalidation.
 
-If the server implements cache handing and serves different content per tenant or user (perspective: `system-instance`), it MUST set a [`Vary: Authorization`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary) response header to prevent shared caches from serving one tenant's response to another.
+For a response intended for only one user or tenant, the provider SHOULD use `Cache-Control: private, no-cache` so that a shared cache cannot store it.
+If sensitive metadata must not be stored by any cache, the provider SHOULD use `Cache-Control: no-store`.
+If shared caching of context-dependent responses is deliberately enabled, the provider MUST list every request header that selects the representation in [`Vary`](https://www.rfc-editor.org/rfc/rfc9111.html#name-calculating-cache-keys-with), such as `Authorization`, `Global-Tenant-Id`, or `Local-Tenant-Id`.
+`Vary: Authorization` alone is insufficient when another header, a cookie, or other request context selects the tenant.
 
 When an ORD resource or any of its referenced resource definitions changes, either the `version` or the `lastUpdate` of the affected resource MUST be updated to let the ORD aggregator know that the resource definitions need to be re-fetched (see [Versioning](#versioning)).
-When ETags are derived from the response body, any change to the document content will cause the ETag to change as a natural consequence — including changes to `version` or `lastUpdate`.
+An ETag MUST identify the selected representation and change whenever that representation changes.
+When ETags are derived from the response body, changes to `version` or `lastUpdate` change the ETag as a natural consequence.
 
 ##### ORD Consumer Cache Handling
 
 An arbitrary [ORD consumer](#ord-consumer) MAY implement the following cache handling rules to optimize frequent access.
 An [ORD aggregator](#ord-aggregator) SHOULD implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
 
-If the provider supplies an [`ETag`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) header, the aggregator SHOULD send the stored ETag value in the [`If-None-Match`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) header on subsequent requests and SHOULD treat a [`304 Not Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304) response as confirmation that the previously fetched document is still current.
+If the provider supplies an `ETag` header, the aggregator SHOULD send the stored ETag value in the `If-None-Match` header on subsequent requests and SHOULD treat a `304 Not Modified` response as confirmation that the selected representation is still current.
 
 If the provider supplies a `lastUpdate` property on resources, the aggregator SHOULD use it to detect whether a resource has changed since the last crawl, and MAY skip re-processing resources whose `lastUpdate` has not changed.
 
-Referenced definition files MUST only be fetched if they have not been retrieved yet or either the `version` or `lastUpdate` of the resource has changed since the last retrieval.
+Referenced definition files MUST be fetched if they have not been retrieved yet or either the `version` or `lastUpdate` of the resource has changed since the last retrieval.
+An aggregator MAY otherwise skip fetching them, or MAY revalidate them independently when the definition endpoint provides an HTTP validator.
 
 ORD documents and ORD resources that have been marked as [system-instance-aware](#system-instance-aware) MUST each be fetched per tenant.
 If they are [system-instance-unaware](#system-instance-unaware) they SHOULD only be fetched once per system.
 
-When caching [system-instance-aware](#system-instance-aware) resources, the aggregator MUST scope its cache entries by system instance to prevent cross-tenant data leakage. Keying the cache by URL alone is insufficient — the same URL returns different content per tenant.
+When caching [system-instance-aware](#system-instance-aware) documents or resources, the aggregator MUST scope its cache entries by the authoritative system instance and by every part of the request context that selects the representation.
+Keying the cache by URL alone is insufficient when the same URL can return content for different tenants.
+The aggregator MUST honor the response's `Vary` fields when constructing its cache key.
 
 ### ORD Aggregation
 
