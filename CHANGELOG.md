@@ -10,6 +10,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added optional `describedSystemInstance.globalId` property for a globally unique and stable tenant identifier assigned by the responsible tenant authority.
+  It records the same identity that can be passed as the `Global-Tenant-Id` header in the `open` and `basic-auth` access strategies.
+  Cross-linked `localId`/`Local-Tenant-Id` and `globalId`/`Global-Tenant-Id` between the ORD Document interface and the access-strategy documentation.
+
 ### Changed
 
 - Promoted the ORD concept pages to visible children of the ORD Specification and added an Applying the Specification table that links guides by adopter goal.
