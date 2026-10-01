@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `entityTypes` to API and Event Resource integration-aspect subsets, allowing dependencies to be narrowed by entity type alone or together with an operation or event type.
+
 ### Changed
 
 - Promoted the ORD concept pages to visible children of the ORD Specification and added an Applying the Specification table that links guides by adopter goal.
