@@ -60,12 +60,13 @@ export interface OrdV1DocumentDescription {
    *
    * An ORD provider that describes a system MUST publish static metadata using `system-type`, `system-version`, or both.
    * Static ORD documents MUST NOT contain tenant context or tenant-specific customizations.
-   * Providers SHOULD prefer `system-type` unless consumers need version-accurate lookup or a history of versioned metadata.
+   * Providers SHOULD publish version-independent metadata through `system-type` and metadata that differs between versions through `system-version`.
    * Distinct `system-version` values MUST be used when multiple versions of the same application are deployed at the same time in one environment tier, such as production.
    * A continuously delivered system MAY instead publish all static metadata through `system-type` or through `system-version` with a fixed `describedSystemVersion.version`.
    * When using the fixed-version approach, the version MUST remain unchanged so each release replaces the previously published view.
-   * Each published static perspective MUST completely describe its scope.
-   * A resource omitted from a selected `system-version` perspective MUST NOT be inherited from `system-type` or another system version.
+   * Each ORD ID published in a static perspective MUST have a complete representation.
+   * The effective static view looks up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
+   * If both contain the ORD ID, the complete `system-version` representation takes precedence and properties MUST NOT be merged across the layers.
    *
    * Systems with dynamic metadata MUST be described in at least one static perspective and additionally in the system-instance perspective.
    *

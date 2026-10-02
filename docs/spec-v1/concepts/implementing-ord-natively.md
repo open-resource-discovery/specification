@@ -95,7 +95,7 @@ Providers advertise these separately in the ORD configuration so that aggregator
 Static documents MUST NOT require tenant context or contain tenant-specific customizations.
 A `system-version` document MUST include `describedSystemVersion.version`.
 A `system-type` document is version-independent and does not require `describedSystemVersion`.
-Version-independent resources can be published separately in `system-type` and inherited into the effective static view.
+Version-independent resources can be published separately in `system-type` and included in the effective static view.
 When the same ORD ID appears in both static perspectives, the `system-version` representation takes precedence.
 
 ```http

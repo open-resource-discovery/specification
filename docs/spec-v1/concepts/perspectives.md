@@ -14,7 +14,8 @@ An application or service can be described both from a [static](../../spec-v1/in
 > **Consumer principle:** Consumers request an effective view of a tenant or system without needing to know how an ORD provider publishes the underlying metadata.
 > For a tenant, the effective view describes that tenant or uses the applicable static fallback when no tenant perspective is published.
 > For static metadata, a consumer can request a specific system version or the latest effective static view.
-> The aggregator selects one applicable complete perspective; it does not combine resources from different static perspectives.
+> The aggregator composes the static view by looking up each ORD ID in the selected `system-version` layer first and then in the `system-type` layer.
+> It selects one complete representation for each ORD ID and never merges properties from the two layers.
 
 ### Static Perspective
 
@@ -26,13 +27,14 @@ Static ORD documents MUST NOT contain tenant context or tenant-specific customiz
 The static perspective has two publication options:
 
 - **`system-version`**: Describes static metadata associated with a specific version of a [system type](../../spec-v1/index.md#system-type).
-  Use distinct versions when consumers need to distinguish system releases.
+  Use this for metadata that can differ between system versions.
 - **`system-type`**: Describes version-independent static metadata for a system type without distinguishing [system versions](../../spec-v1/index.md#system-version).
-  It may also serve as the complete current static view when treating every system instance as running the latest view is sufficient.
+  Use this for metadata that applies to every system version.
 
 A system type MAY publish static metadata through either perspective or both.
-Each published perspective is a complete view of its scope.
-When a `system-version` perspective is selected, a resource omitted from it is not available in that version and MUST NOT be filled in from `system-type`.
+Each ORD ID in either perspective MUST have a complete resource or taxonomy representation.
+The effective static view is the union of the applicable `system-version` and `system-type` layers by ORD ID.
+When the same ORD ID appears in both layers, the complete `system-version` representation takes precedence and its properties MUST NOT be merged with the `system-type` representation.
 See [ORD Provider Considerations](#ord-provider-considerations) for the complete selection guidance.
 
 The static perspective describes the shared metadata of all system instances (tenants) of the same system version or version independent.
@@ -97,7 +99,7 @@ If no dynamic perspective has been published for a system instance, the static p
 
 The following diagram shows how an aggregator resolves a request:
 
-<div className="img-box" style={{aspectRatio: "1260/1360"}}>
+<div className="img-box" style={{aspectRatio: "1200/820"}}>
 
 ![Perspective resolution](/img/perspective-resolution.svg "Perspective resolution")
 
@@ -122,16 +124,16 @@ When a complete `system-instance` perspective is published for a tenant, it repl
 A requested ORD ID omitted from that complete tenant view represents a resource that is not available on the tenant and MUST NOT be filled in from static metadata.
 Only when no `system-instance` perspective is published for the tenant may the aggregator fall back to the effective static view.
 
-The two static perspectives are alternative complete views.
-The `system-type` perspective provides a version-independent view, while each `system-version` perspective describes one complete version-specific view.
-When a `system-version` perspective is selected, the aggregator uses only that view.
-A missing ORD ID is not found in that version, even if it is present in `system-type` or another system version.
+The two static perspectives are ordered layers of one effective static view.
+The `system-type` perspective provides version-independent resources, while each `system-version` perspective provides resources for one specific system version.
+For each requested ORD ID, the aggregator looks in the applicable `system-version` layer first and then in `system-type`.
+If both layers contain the ORD ID, the aggregator selects the complete `system-version` representation and MUST NOT merge properties from the `system-type` representation.
+If the ORD ID is absent from the applicable `system-version` layer, the `system-type` representation is used when present.
 
-When a specific version is requested, that `system-version` perspective MUST exist before the requested ORD ID is looked up.
-If it does not exist, the aggregator reports the view as unavailable instead of substituting `system-type` or another version.
-When resolving a tenant fallback for a known tenant system version, the exact `system-version` perspective MUST be available before the requested ORD ID is looked up.
-If it does not exist or is unavailable, the aggregator reports the static view as unavailable instead of substituting `system-type` or another system version.
-For a static request without a specific version, the aggregator selects the latest stable `system-version` when available; if no stable `system-version` exists, it uses `system-type` alone (see [Static Perspective Resolution](#static-perspective-resolution) below).
+When a specific version is requested, only the matching `system-version` layer is eligible before the `system-type` lookup.
+Another system version MUST NOT be substituted.
+When resolving a tenant fallback for a known tenant system version, the same rule applies to that exact version.
+For a static request without a specific version, the aggregator selects the greatest published stable `system-version` layer and then applies the `system-type` layer (see [Static Perspective Resolution](#static-perspective-resolution) below).
 
 A consumer can legitimately be interested in all three system-scoped levels, but needs to provide a different context for each:
 
@@ -152,13 +154,9 @@ The resolution works as follows:
 2. If a complete `system-instance` perspective is published but unavailable because of validation, authorization, transport, or another retrieval failure, report the tenant view as unavailable.
    Do not fall back to static metadata.
 3. Only when no `system-instance` perspective is published, resolve the applicable static view.
-4. If the tenant's system version is known, select that exact `system-version` perspective.
-   If it does not exist or is unavailable, report the static view as unavailable and MUST NOT substitute `system-type` or another system version.
-   If it exists but omits the requested ORD ID, return not found.
-5. If the tenant's system version is unknown, select the latest stable `system-version` perspective when available.
-6. If a `system-version` perspective is selected, use only that complete view and return not found when the requested ORD ID is absent.
-7. If the tenant's system version is unknown and no stable `system-version` perspective exists, use the complete `system-type` view when available.
-   Return not found when the ORD ID is absent from that view.
+4. If the tenant's system version is known, resolve the effective static view using that exact `system-version` layer first and the `system-type` layer second.
+5. If the tenant's system version is unknown, resolve the effective static view using the greatest published stable `system-version` layer first and the `system-type` layer second.
+6. Never substitute another system version and never merge properties from representations in the two static layers.
 
 After selecting the complete tenant view or the applicable static view, the aggregator may filter it for a requested ORD ID.
 Filtering earlier is a valid optimization only when it produces the same result.
@@ -187,7 +185,7 @@ To migrate: replace `systemInstanceAware: true` with `perspective: "system-insta
 ## ORD Provider Considerations
 
 An ORD provider that describes a system MUST publish static metadata using `system-type`, `system-version`, or both.
-For static metadata, providers SHOULD prefer `system-type` unless consumers need version-accurate lookup or a history of versioned metadata.
+Providers SHOULD publish version-independent metadata through `system-type` and metadata that differs between versions through `system-version`.
 The provider can choose perspectives as follows:
 
 <div className="img-box" style={{aspectRatio: "1160/440"}}>
@@ -196,19 +194,21 @@ The provider can choose perspectives as follows:
 
 </div>
 
-Using `system-type` gives consumers one current static view, simplifies lookup, and avoids persisting a complete metadata snapshot for every system version.
-Use `system-version` when multiple versions of the same application are deployed at the same time in one environment tier and consumers must resolve the metadata of the particular deployed release.
+Using `system-type` for version-independent metadata avoids repeating unchanged resources for every system version.
+Use `system-version` when a resource representation differs between versions or consumers need metadata history for that resource.
 Queryable metadata history is an additional reason to choose `system-version`, even when only one version is deployed at a time.
 Choose the static perspective as follows:
 
 1. If metadata differs per tenant, additionally publish a complete `system-instance` perspective for each tenant.
-2. If multiple versions of the same application are deployed at the same time in one environment tier, publish a `system-version` perspective for each distinguishable release.
-3. A provider MAY also choose `system-version` when consumers need to query historical metadata by system version.
-4. Otherwise, publish the complete current static view through `system-type`.
-5. A continuously delivered system MAY alternatively publish all static metadata through `system-version` with a fixed `describedSystemVersion.version`.
+2. Publish metadata that applies unchanged to every system version through `system-type`.
+3. Publish metadata that differs between versions through a `system-version` perspective for each distinguishable release.
+4. A provider MAY also use `system-version` when consumers need to query historical metadata by system version.
+5. A continuously delivered system MAY publish all static metadata through `system-type` or through `system-version` with a fixed `describedSystemVersion.version`.
    When using the fixed-version approach, the version MUST remain unchanged so each release replaces the previously published view.
 6. A provider MAY use both static perspectives.
-   Each perspective MUST completely describe its scope; a `system-version` perspective cannot rely on resources from `system-type`.
+   Every published ORD ID MUST be completely described in its layer.
+   The `system-version` layer MAY omit version-independent ORD IDs that are published through `system-type`.
+   When the same ORD ID is published in both layers, its `system-version` representation MUST be complete and takes precedence without property merging.
 
 Content that is independent of systems, rather than only independent of system versions, SHOULD use the `system-independent` perspective.
 If the system has dynamic metadata, the provider MUST additionally publish a complete `system-instance` perspective.
@@ -250,26 +250,29 @@ If the aggregator supports both static and dynamic perspectives:
 
 When a consumer requests static metadata (i.e. `system-type` or `system-version` perspective) for a given system type, the aggregator MUST resolve what to return as follows (see also the [perspective resolution diagram](#how-perspectives-relate-to-each-other)):
 
-1. If a **specific system version is requested**, select that exact `system-version` perspective.
-   If it is unavailable, return no static view and MUST NOT substitute `system-type` or another system version.
-2. If **no specific version is requested**, select the **latest stable `system-version`** perspective when available.
+1. If a **specific system version is requested**, use only that exact `system-version` layer for the version-specific lookup.
+   Do not substitute another system version.
+2. If **no specific version is requested**, select the greatest published stable `system-version` layer.
    The aggregator MUST exclude versions with a Semantic Versioning prerelease identifier and determine the greatest remaining version using [Semantic Versioning 2.0.0](https://semver.org/) precedence, not lexical ordering, publication time, or `lastUpdate`.
    A prerelease system version may be selected only when explicitly requested.
    A provider MUST NOT publish multiple available system-version perspectives whose versions have equal Semantic Versioning precedence and differ only in build metadata.
    If an aggregator encounters that ambiguity, it MUST report that no unambiguous latest static view is available instead of selecting one arbitrarily.
-3. If a `system-version` perspective is selected, use only that complete view.
-   Return the requested resource when present and return not found when the ORD ID is absent.
-   Do not fall through to `system-type` or another system version.
-4. If no specific version was requested and no stable `system-version` perspective exists, use the complete `system-type` view when available.
-   Return the requested resource when present and return not found when the ORD ID is absent.
-5. If neither an applicable `system-version` nor `system-type` perspective is available, return no static view.
+3. If an applicable `system-version` layer is published but unavailable, report the effective static view as unavailable.
+   Do not select an older version or continue to `system-type`, because an unavailable version-specific representation could override the same ORD ID.
+4. Look up the requested ORD ID in the applicable available `system-version` layer first.
+   If the layer contains the ORD ID, return that complete representation and do not merge any properties from `system-type`.
+   If the layer contains a tombstone for the ORD ID, return not found and do not continue to `system-type`.
+5. If the ORD ID is absent from the applicable `system-version` layer, or no applicable `system-version` layer is published, look it up in `system-type`.
+6. If the `system-type` layer is published but unavailable, report the effective static view as unavailable.
+7. Return the complete `system-type` representation when present.
+   Otherwise, return not found.
 
 This resolution ensures that resources introduced in newer versions are not incorrectly reported as available in older versions.
 
 #### Tombstone Handling across Versions
 
 An older version of an application / service can have a resource which has been decommissioned (via a `Tombstone`) in a newer version.
-Static resolution MUST NOT select an older system version to resurrect a resource that is tombstoned in the selected view.
+Static resolution MUST NOT select an older system version or fall through to `system-type` to resurrect a resource that is tombstoned in the selected version layer.
 
 The `system-independent` perspective is outside static resolution.
 Consumers can retrieve global content separately, but it does not serve as fallback evidence that a resource belongs to a system type or version.
