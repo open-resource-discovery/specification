@@ -59,6 +59,12 @@ jobs:
       !contains(needs.*.result, 'failure') &&
       inputs.githubRelease
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Push changelog branch, create tags and releases
+      pull-requests: write # Open the changelog PR
+      actions: write # Dispatch CI workflows for the changelog PR
+      checks: write # Mirror CI job results as Check Runs on the changelog PR
+      statuses: write # Mirror CI job results as Commit Statuses on the changelog PR
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -66,4 +72,4 @@ jobs:
           fetch-depth: 0
 
       - name: Create GitHub Release
-        uses: open-resource-discovery/github-release@118c29af2b3bc2d2d9311adc46cefc33843d7e13 # main
+        uses: open-resource-discovery/github-release@v0.1.0
