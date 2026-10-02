@@ -888,13 +888,15 @@ It is NOT RECOMMENDED to use sub-context namespaces for grouping purposes only, 
 
 ### Customer Namespace
 
-Some systems allow ORD content to be created and governed within a customer scope.
-ORD content whose identity is governed within such a scope MUST use a namespace below the reserved [vendor namespace](#vendor-namespace) `customer` or its shorter alias `c`.
+Some systems allow ORD content to be created or governed within a customer scope.
+Such content SHOULD use a namespace below the reserved [vendor namespace](#vendor-namespace) `customer` or its shorter alias `c`.
+If a provider cannot reliably distinguish customer-created content from the described system's standard content, it MAY publish the customer-created content under the system's regular namespace instead.
 These namespaces identify the customer-scoped ID space and MUST NOT be interpreted as vendor ownership.
 The reserved authority namespace `customer.ext` can be used for customer in-app extensions.
 
-For ORD resource types that use `partOfPackage`, the referenced [Package](./interfaces/Document.md#package) `vendor` MUST record the current vendor attribution rather than deriving it from the namespace.
-A Package for customer-owned content MUST use the reserved customer vendor `customer:vendor:Customer:`, while a Package for content attributed to a partner MAY use the corresponding partner Vendor even when its ORD IDs use a `customer.*` or `c.*` namespace.
+For ORD resource types that use `partOfPackage`, the referenced [Package](./interfaces/Document.md#package) `vendor` is authoritative for current ownership attribution.
+It MUST NOT be derived from the namespace of the resource ORD IDs.
+A Package whose content is currently attributed to the customer MUST use the reserved customer vendor `customer:vendor:Customer:`, while a Package whose content is attributed to a partner MUST use the corresponding registered partner Vendor even when its ORD IDs use a `customer.*` or `c.*` namespace.
 An ORD ID MUST NOT be changed solely because its current vendor attribution changes, for example due to a reorganization, acquisition, or other commercial change.
 
 For cases where the [36-character namespace length limit](#namespace-constraints) is tight, a shorter alias `c` is also reserved and is equivalent to `customer`.

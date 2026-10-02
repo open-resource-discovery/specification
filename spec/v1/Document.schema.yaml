@@ -541,13 +541,15 @@ definitions:
       vendor: &vendor
         type: string
         description: |-
-          Vendor / organization that is the creator (or responsible party) of the resources that are part of the `Package`.
+          Vendor / organization to which ownership of the resources in the `Package` is currently attributed.
+          This value is authoritative for current ownership attribution and is independent of the namespaces of the resource ORD IDs.
+          It MUST NOT be derived from those namespaces.
 
           MUST be a valid reference to a [Vendor](#vendor) ORD ID.
 
-          MUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.
+          MUST be set to `customer:vendor:Customer:` if ownership of the Package contents is attributed to the customer / user.
 
-          MUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party.
+          MUST be set to a registered partner vendor if ownership of the Package contents is attributed to a partner / third party.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\-]+):()$
         maxLength: 256
         x-association-target:
@@ -4104,10 +4106,11 @@ definitions:
     description: |-
       The vendor of a product or a package, usually a corporation or a customer / user.
 
-      The vendor of a `Package` is the owner or creator of the content of the package.
+      The vendor of a `Package` is the authoritative statement of the current ownership attribution for the content of the Package.
+      It is independent of the namespaces of the resource ORD IDs and MUST NOT be derived from them.
       The vendor of a `Product` is the owner of the product.
 
-      If the resources are created by the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.
+      If ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.
 
       Both have already a [vendor namespace](../index.md#vendor-namespace) within their ORD ID.
       The `Vendor` entity is giving more details on the vendor namespace.

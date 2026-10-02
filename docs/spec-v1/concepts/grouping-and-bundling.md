@@ -98,6 +98,7 @@ The Package is primarily motivated by publishing and API catalog presentation co
 It can also express information about the resource providers, terms of use of the APIs, pricing for the usage of the packages, APIs, Events, etc.
 
 Several Package properties — such as `vendor`, `partOfProducts`, `tags`, `labels` and `policyLevels` — are **inherited** by all resources within the Package. This makes the Package a convenient place to define shared metadata once, rather than repeating it on every resource.
+The Package `vendor` is authoritative for current ownership attribution and MUST NOT be inferred from the namespaces of the resource ORD IDs.
 
 The granularity of Packages is driven by all of the following concerns:
 
@@ -112,11 +113,11 @@ See [Namespace Ownership](./shared-resources.md#namespace-ownership) for guidanc
 All resources that are not created by the described systems vendor MUST be put into separate packages.
 This is the case, when:
 
-- The resources are created by the customer (user) of the system.
-  All such resources MUST be assigned to a dedicated Package, where `vendor` is set to `customer:vendor:Customer:`.
-- The resources are created by partners or third parties.
+- Ownership of the resources is attributed to the customer (user) of the system.
+  All such resources MUST be assigned to a dedicated Package where `vendor` is set to `customer:vendor:Customer:`.
+- Ownership of the resources is attributed to partners or third parties.
   All such resources MUST be assigned to a dedicated Package for each partner / third party.
-  The `vendor` MUST be set to a registered, matching Vendor ID (implies also a registered namespace).
+  The `vendor` MUST be set to a registered, matching Vendor ID.
 
 > ℹ At SAP, the [Business Accelerator Hub](https://api.sap.com/) defines how the Package concept is to be used to fit its publishing flow and Catalog UI/UX.
 > See [sap:core:v1 policy level](../../spec-extensions/policy-levels/sap-core-v1.md) for additional SAP specific constraints.
