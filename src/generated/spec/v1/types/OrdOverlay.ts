@@ -174,7 +174,7 @@ export type OverlayPatchValue =
   | null;
 
 /**
- * ⚠️ ALPHA: This specification is in alpha and subject to change.
+ * ⚠️ BETA: This specification is in beta and subject to change.
  *
  * The ORD Overlay is an optional ORD model extension that allows patching referenced resource definition files
  * (e.g. OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards) without modifying the original source files.
