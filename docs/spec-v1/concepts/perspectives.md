@@ -10,7 +10,7 @@ description: Metadata can be described from static or dynamic perspectives. This
 ## Overview
 
 An application or service can be described both from a [static](../../spec-v1/index.md#static-perspective) or a [dynamic](../../spec-v1/index.md#dynamic-perspective) perspective. The configuration endpoint can point to different ORD documents that represent the information from the different perspectives.
-In this article, a **perspective** is a provider-published ORD scope identified by the `perspective` property.
+In this article, a **perspective** groups provider-published ORD documents as described under [Identifying a Perspective](#identifying-a-perspective).
 An effective **view** is the result that an aggregator exposes after selecting a `system-instance` perspective or composing the applicable static perspectives by ORD ID.
 The selected `system-version` and `system-type` perspectives are called layers when explaining that static composition.
 
@@ -113,12 +113,23 @@ Green results mean that the resource was found, yellow results mean that the sel
 If a published `system-instance` perspective omits the requested ORD ID, the resource is not available on that system instance and MUST NOT be filled in from static metadata.
 
 The `system-instance` perspective is the most specific because it describes how a particular system instance / tenant looks at run-time.
-All documents published for the same perspective and scope are considered together.
+
+#### Identifying a Perspective
+
+ORD documents belong to the same perspective when they use the same `perspective` value and describe the same target:
+
+- `system-type`: the same system type.
+- `system-version`: the same system type and exact system version.
+- `system-instance`: the same system instance / tenant.
+- `system-independent`: all documents within one aggregator belong to the same aggregator-wide perspective because they do not describe a system.
+
+The target may be identified by the ORD Document or by authoritative information known to the aggregator, such as onboarding, landscape or authenticated publisher information.
+All documents that belong to the same perspective are considered together.
 All `system-instance` documents published for one tenant MUST collectively form that tenant's complete `system-instance` perspective.
 Whether a complete `system-instance` perspective is published MUST be determined independently for each tenant.
 A `system-instance` perspective published for one tenant says nothing about another tenant.
 
-In this context, a perspective is **published** for a scope when the aggregator can process a complete valid result from the applicable documents for that perspective and scope.
+A perspective is **published** when the aggregator can process a complete valid result from the applicable documents that belong to it.
 A published perspective may be **empty**, meaning that it contains no resources.
 Publication applies to the complete perspective and is distinct from whether a particular ORD ID is present in it.
 
@@ -138,11 +149,8 @@ Once the matching perspective is established, an ORD ID that is absent from its 
 When resolving a tenant fallback for a known tenant system version, the same rule applies to that exact version.
 For a static request without a specific version, the aggregator selects the greatest published stable `system-version` layer and then applies the `system-type` layer (see [Static Perspective Resolution](#static-perspective-resolution) below).
 
-A consumer can legitimately be interested in all three system-scoped levels, but needs to provide a different context for each:
-
-- If `system-instance` metadata is requested, the system instance / tenant ID needs to be specified.
-- If `system-version` metadata is requested, the system type and system version must be specified.
-- If `system-type` metadata is requested, only the system type must be specified. The aggregator resolves what to return (see [Static Perspective Resolution](#static-perspective-resolution)).
+Consumers use the same identifiers when requesting a perspective.
+For a `system-type` request, the aggregator resolves what to return according to [Static Perspective Resolution](#static-perspective-resolution).
 
 #### Effective System-Instance Resolution
 

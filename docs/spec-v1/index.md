@@ -264,8 +264,8 @@ The ORD documents MUST describe the current state of a concrete, running [system
 
 All resources that are described within one document MUST describe the same system instance.
 
-An ORD ID MUST NOT be described more than once within or across ORD documents for the same [perspective](./concepts/perspectives.md) and corresponding context, including documents exposed by different ORD Providers.
-See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for content reused across perspectives or system contexts.
+An ORD ID MUST NOT be described more than once within or across ORD documents that belong to the same [perspective](./concepts/perspectives.md#identifying-a-perspective), including documents exposed by different ORD Providers.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for content reused across perspectives or systems.
 
 The [validation rules](#validation-rules) MUST be considered.
 
@@ -581,20 +581,18 @@ When information from many different system instances comes together, some situa
 
 An [ORD ID](#ord-id) identifies the same underlying [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) wherever it is published.
 The document [perspective](./concepts/perspectives.md) applies to every ORD entry, regardless of whether the entry is an ORD resource or taxonomy.
-Its corresponding context is the described system type for `system-type`, the described system type and exact version for `system-version`, and the authoritative system instance for `system-instance`.
-The `system-independent` perspective has no system context and applies aggregator-wide.
-The relevant context can come from the ORD Document or from authoritative information known to the aggregator, such as onboarding, landscape or authenticated publisher information.
+ORD documents [belong to the same perspective](./concepts/perspectives.md#identifying-a-perspective) according to their `perspective` value and the system type, exact system version, or system instance that they describe.
 
-Within the same perspective and corresponding context, an ORD ID MUST be described at most once across all ORD Documents and ORD Providers.
+Within the same perspective, an ORD ID MUST be described at most once across all ORD Documents and ORD Providers.
 A duplicate is a validation error and MUST NOT be resolved by combining properties or selecting a description based on its resource version, publication time or retrieval time.
 If the descriptions are equivalent, an aggregator MAY retain one as a recovery step, but it MUST still report the duplicate.
 
-The same ORD ID appearing in different perspectives or contexts is not a duplicate.
-Complete descriptions in different perspectives or contexts MAY differ.
-The aggregator MUST preserve each description's perspective and context and MUST NOT combine their properties.
+The same ORD ID appearing in different perspectives is not a duplicate.
+Complete descriptions in different perspectives MAY differ.
+The aggregator MUST preserve each complete description as part of its perspective and MUST NOT combine properties from different perspectives.
 For system-scoped perspectives, the selection of an effective description follows the [perspective resolution](./concepts/perspectives.md#how-perspectives-relate-to-each-other) rules and replaces complete descriptions without merging their properties.
 This specification does not mandate a physical storage model.
-An aggregator MAY normalize information internally only if it preserves every perspective, complete description and applicable context.
+An aggregator MAY normalize information internally only if it preserves every perspective and complete description.
 For modeling taxonomy or resources that are shared or reused across systems, see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 ##### Content Enrichment and Preservation
@@ -653,7 +651,7 @@ The following validation rules apply specifically for ORD aggregators:
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
   This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
-- Aggregators MUST enforce [ORD ID uniqueness within each perspective and corresponding context](#ord-id-uniqueness-and-aggregation).
+- Aggregators MUST enforce [ORD ID uniqueness within each perspective](#ord-id-uniqueness-and-aggregation).
   During a migration, duplicates MAY be accepted temporarily but MUST still be reported as validation errors.
 
 ### ORD Discovery API
