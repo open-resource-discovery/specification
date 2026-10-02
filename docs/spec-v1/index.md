@@ -579,7 +579,6 @@ When information from many different system instances comes together, some situa
 
 ##### ORD ID Uniqueness and Aggregation
 
-An [ORD ID](#ord-id) identifies the same underlying [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) wherever it is published.
 The document [perspective](./concepts/perspectives.md) applies to every ORD entry, regardless of whether the entry is an ORD resource or taxonomy.
 ORD documents [belong to the same perspective](./concepts/perspectives.md#identifying-a-perspective) according to their `perspective` value and the system type, exact system version, or system instance that they describe.
 
