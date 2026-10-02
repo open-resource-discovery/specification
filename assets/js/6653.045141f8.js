@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([["6653"],{6236(e,c,s){s.d(c,{createCynefinServices:()=>i.t});var i=s(9760);s(184)}}]);

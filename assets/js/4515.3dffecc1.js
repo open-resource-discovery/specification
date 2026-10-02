@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([["4515"],{8478(e,c,s){s.d(c,{createWardleyServices:()=>r.J});var r=s(1318);s(1400)}}]);

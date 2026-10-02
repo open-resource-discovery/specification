@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([["3536"],{2579(e,c,s){s.d(c,{diagram:()=>i.AC});var i=s(2703);s(4918),s(6755),s(9337),s(1818),s(6923),s(2389),s(1778),s(5999),s(3665),s(1865),s(3868),s(3375),s(7245),s(2595),s(6149),s(1293),s(6827)}}]);

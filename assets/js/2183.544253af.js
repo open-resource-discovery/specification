@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_open_resource_discovery_specification=self.webpackChunk_open_resource_discovery_specification||[]).push([["2183"],{8122(e,c,s){s.d(c,{createPacketServices:()=>i.$});var i=s(8484);s(184)}}]);
