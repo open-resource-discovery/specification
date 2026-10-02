@@ -114,8 +114,8 @@ The [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) can stil
 Each system type MUST fully describe itself, including shared ORD information it exposes, publishes or relies on.
 There is no implicit inheritance between system types.
 
-- The same ORD ID MAY be published in different system type scopes when it identifies the same underlying ORD resource or taxonomy.
-  These descriptions are not duplicates and MAY differ according to their perspective and system-specific publication context, such as product assignments, package inheritance, Consumption Bundle assignments, entry points or credentials.
+- The same ORD ID MAY be published by different system types when it identifies the same underlying ORD resource or taxonomy.
+  These descriptions are not duplicates and MAY differ according to their perspective and system-specific context, such as product assignments, package inheritance, Consumption Bundle assignments, entry points or credentials.
 - The namespace owner is responsible for governing the semantic identity of the shared ORD resource or taxonomy.
 - [Packages](./grouping-and-bundling.md#package) that group only shared resources SHOULD normally use the same owning namespace as the grouped resources.
 - Each system type MUST use `partOfProducts` where needed to associate shared resources with the relevant [Product](./grouping-and-bundling.md#product).
@@ -189,10 +189,10 @@ If ownership is cross-system or organizational rather than system-specific, use 
 ## Aggregator Rules
 
 The [ORD ID uniqueness and aggregation rules](../index.md#ord-id-uniqueness-and-aggregation) apply equally to shared ORD resources and taxonomy.
-Descriptions in different publication scopes are not duplicates.
-The aggregator MUST preserve each complete scoped description and MUST NOT merge properties from different scopes.
+Descriptions published for different perspectives or system contexts are not duplicates.
+The aggregator MUST preserve each complete description with its perspective and context and MUST NOT merge their properties.
 The specification does not mandate a physical storage model.
-An aggregator MAY normalize information internally only if it preserves every publication scope, complete description and applicable system context.
+An aggregator MAY normalize information internally only if it preserves every perspective, complete description and applicable context.
 
 ## Consumer Rules
 
