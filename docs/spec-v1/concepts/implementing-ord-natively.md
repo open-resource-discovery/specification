@@ -88,21 +88,22 @@ Most real applications, however, need to generate at least part of the response 
 ## Static and Dynamic Perspectives
 
 An ORD provider can expose both static and dynamic metadata.
-The static document describes what a system type or version provides in general — it is fetched once.
-The dynamic document describes what a concrete system instance provides at runtime, including tenant-specific state — it is fetched per system instance.
+The static document describes what a system type or version provides in general, and it is fetched once.
+The dynamic document describes what a concrete system instance provides at runtime, including tenant-specific state, and it is fetched per system instance.
 Providers advertise these separately in the ORD configuration so that aggregators can handle them differently.
 
-The `system-version` document should be complete for that version of the application.
-It must not require tenant context and should not contain tenant-specific customizations.
-It should include `describedSystemVersion.version` when the application has a meaningful version.
-If the application is not versioned, consider using `system-type` perspective instead.
+Static documents MUST NOT contain tenant context or tenant-specific customizations.
+A `system-version` document MUST include `describedSystemVersion.version`.
+A `system-type` document is version-independent and does not require `describedSystemVersion`.
+Version-independent resources can be published separately in `system-type` and included in the effective static view.
+When the same ORD ID appears in both static perspectives, the `system-version` representation takes precedence.
 
 ```http
 GET /open-resource-discovery/v1/documents/system-version HTTP/1.1
 ```
 
-The `system-instance` document should be complete for the selected system instance.
-Even when it is generated from the static baseline, it is not returned as a patch or diff.
+The documents published for `system-instance` MUST collectively form the complete perspective for the selected system instance.
+Even when this perspective is generated from the static baseline, it is not returned as a patch or diff.
 If the CRM API is not enabled for tenant `T2`, the tenant-specific document for `T2` should not describe the CRM API.
 If tenant `T1` extends the Customer model with additional fields, the tenant-specific resource definition for `T1` should expose those fields.
 
@@ -112,7 +113,7 @@ Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
 Global-Tenant-Id: c6c80b52-ecc1-47f8-9303-0d55fb67fd41
 ```
 
-Static and dynamic perspectives can be served by different implementations — for example, a static ORD Provider for the baseline and application code for the `system-instance` endpoint — as long as both use the same ORD IDs for the same resources.
+Static and dynamic perspectives can be served by different implementations, for example, a static ORD Provider for the baseline and application code for the `system-instance` endpoint, as long as both use the same ORD IDs for the same resources.
 
 See [Perspectives](./perspectives.md) and [Correct Use of Perspectives](../index.md#correct-use-of-perspectives) for the detailed semantics and aggregator fallback behavior.
 The next section shows one way to implement this in code.
@@ -133,7 +134,7 @@ flowchart LR
     Baseline["Static ORD baseline<br/>system-version or system-type"]
     TenantState["Tenant state<br/>configuration, entitlements,<br/>extensions, custom model"]
     Projection["Tenant projection"]
-    Dynamic["Tenant ORD view<br/>system-instance"]
+    Dynamic["System-instance perspective"]
     Aggregator["ORD Aggregator"]
 
     Shared --> Baseline
@@ -215,7 +216,7 @@ function resolveLocalTenantId(headers) {
 
 ### Project the static baseline into a tenant document
 
-The static document is the baseline for the tenant-aware view.
+The static document is the baseline used to construct the `system-instance` perspective.
 The tenant projection then applies tenant configuration, entitlements, extensions, or tenant-specific model data.
 The `system-instance` response must still be a complete document for the tenant, not a delta.
 

@@ -108,9 +108,17 @@ properties:
     description: |-
       With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
 
-      It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+      An ORD provider that describes a system SHOULD publish static metadata using `system-type`, `system-version`, or both.
+      Static ORD documents MUST NOT contain tenant context or tenant-specific customizations.
+      Providers SHOULD publish version-independent metadata through `system-type` and metadata that differs between versions through `system-version`.
+      Distinct `system-version` values MUST be used when multiple versions of the same application are deployed at the same time in one environment tier, such as production.
+      A continuously delivered system MAY instead publish all static metadata through `system-type` or through `system-version` with a fixed `describedSystemVersion.version`.
+      When using the fixed-version approach, the version MUST remain unchanged so each release replaces the previously published `system-version` perspective.
+      Each ORD ID published in a static perspective MUST have a complete representation.
+      The effective static view looks up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
+      If both contain the ORD ID, the complete `system-version` representation takes precedence and properties MUST NOT be merged across the layers.
 
-      It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+      Systems with dynamic metadata MUST be described in a complete system-instance perspective and SHOULD additionally be described in at least one static perspective.
 
       If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
 
@@ -120,8 +128,8 @@ properties:
         description: |-
           Describes a static [system-type](../index.md#system-type) perspective, which is version independent.
 
-          If a system is not versioned (continuous delivery) or resources are not tied to a system, the system-type perspective
-          implies that the information apply, no matter which system version or instance.
+          If a system is not versioned (continuous delivery) or resources are not tied to a system version, the system-type perspective
+          implies that the information applies, no matter which system version or instance.
       - const: "system-version"
         description: |-
           Describes the static [system-version](../index.md#system-version) perspective, usually known at deploy-time.
@@ -129,13 +137,21 @@ properties:
           If chosen, `describedSystemVersion`.`version` MUST be provided, too.
 
           This perspective describes how a system of a particular type and version generally look like.
-          If no explicit `system-type` perspective is available, the latest system-version SHOULD be interpreted as the [system-type](../index.md#system-type) perspective (see [static perspective resolution](../concepts/perspectives#static-perspective-resolution)).
+          When no specific version is requested, the greatest published stable system-version MUST be selected (see [static perspective resolution](../concepts/perspectives#static-perspective-resolution)).
+          The selected system-version is the first lookup layer.
+          If it omits an ORD ID, the version-independent `system-type` layer MUST be looked up next.
+          If both contain the ORD ID, the complete system-version representation takes precedence without property merging.
+          Automatic latest selection MUST exclude Semantic Versioning prereleases, which may still be selected for an exact-version lookup, including when it is the known version of a tenant.
+          Providers MUST NOT publish multiple system-version perspectives whose versions have equal Semantic Versioning precedence and differ only in build metadata.
       - const: "system-instance"
         description: |-
           Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
           This allows to also reflect tenant specific extensions, customizations and runtime configuration.
 
-          If provided, it will completely override the static system-version perspective when metadata about system instances is requested.
+          All documents published for one tenant MUST collectively form that tenant's complete `system-instance` perspective.
+          If published for a tenant, it completely replaces the effective static view when metadata about that system instance is requested.
+          Whether a complete valid perspective is published MUST be determined independently for each tenant.
+          A resource omitted from the complete `system-instance` perspective MUST NOT be inherited from a static perspective.
       # - const: "system-instance-delta"
       #   description: |-
       #     TODO: As future optimization we could also provide this perspective, which only describes the actual difference between the system-instance and system-version perspective.
@@ -145,6 +161,7 @@ properties:
         description: |-
           Describes content that is independent of [system-versions](../index.md#system-version) or [system-instances](../index.md#system-instance).
           This content is always static and has independent visibility and lifecycle from the systems in a particular landscape.
+          It MUST NOT contain system or tenant context or system-specific or tenant-specific customizations.
           The "system-independent" content MUST NOT be overridden via system-version or system-instance perspective metadata.
 
           Examples are: Vendors, products, globally aligned entity types, groups and group types (taxonomy), which are usually shared by multiple systems.

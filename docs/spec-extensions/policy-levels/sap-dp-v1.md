@@ -16,3 +16,7 @@ This policy level `sap:dp:v1`:
 
 > TODO: This is a <span className="feature-status-draft" title="This feature is in DRAFT status and subject to potential changes.">DRAFT</span> proposal and subject to changes and additions.
 > There may be additional, complementary policy levels in the future.
+
+## General Policies
+
+- SAP applications and services publishing Data Products under this policy MUST publish at least one applicable static perspective (`system-type`, `system-version`, or both).
