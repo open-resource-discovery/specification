@@ -17,7 +17,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Standardized the agent examples on the `sap.ai:interactionMode` label.
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
 - Defined OData annotation identity as term plus optional qualifier, required OData v4 EDMX annotations to use reconciled external `<Annotations Target="...">` blocks, and made OData v2 EDMX overlay application explicitly unsupported.
-- Updated the ORD provider overview diagram.
+- Improved the ORD provider overview diagram with current resource and protocol examples and more readable labels.
 - Clarified EDMX action semantics, its annotation-only restriction, CSDL JSON annotation-set updates for concept-level selectors, and CSDL JSON enum-member actions.
 - Clarified that overlay output is semantically, not byte, canonical.
 - Clarified OData operation selectors: a namespace-qualified name may omit its signature only when unique; overloaded operations require an exact signature with all parameters in declaration order; `Name()` selects a zero-parameter operation; and signature selectors never fall back to a FunctionImport.
