@@ -893,10 +893,14 @@ Such content SHOULD use a namespace below the reserved [vendor namespace](#vendo
 If a provider cannot reliably distinguish customer-created content from the described system's standard content, it MAY publish the customer-created content under the system's regular namespace instead.
 These namespaces identify the customer-scoped ID space and MUST NOT be interpreted as vendor ownership, which is defined via `partOfPackage.vendor`.
 The reserved authority namespace `customer.ext` can be used for customer in-app extensions.
+Customer namespaces MUST NOT be used for content published in a global marketplace or otherwise shared globally.
+Partner content MAY be developed under a customer namespace while it remains within a customer scope.
+Before that content is offered in a global marketplace or otherwise shared globally, it MUST be exported with ORD IDs under the registered vendor namespace of the partner.
+This export creates the globally published identity and does not rename the customer-scoped ORD IDs.
 
 For ORD resource types that use `partOfPackage`, the referenced [Package](./interfaces/Document.md#package) `vendor` is authoritative for current ownership attribution.
 It MUST NOT be derived from the namespace of the resource ORD IDs.
-An ORD ID has the general requirementent to be stable, so it MUST NOT be changed solely because its current vendor attribution changes, for example due to a reorganization, acquisition, or other commercial change.
+An ORD ID has the general requirement to be stable, so it MUST NOT be changed solely because its current vendor attribution changes, for example due to a reorganization, acquisition, or other commercial change.
 
 For cases where the [36-character namespace length limit](#namespace-constraints) is tight, a shorter alias `c` is also reserved and is equivalent to `customer`.
 
