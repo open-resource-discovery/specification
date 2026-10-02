@@ -899,7 +899,7 @@ Before that content is offered in a global marketplace or otherwise shared globa
 This export creates the globally published identity and does not rename the customer-scoped ORD IDs.
 The uniqueness scope of a `customer.*` or `c.*` ORD ID is the applicable customer scope.
 This scope is often one [system instance / tenant](#system-instance), but it MAY be a platform-managed customer context spanning multiple system instances / tenants.
-The namespace owner MUST keep the namespace conflict-free throughout that scope.
+The namespace owner MUST ensure conflict-free ID allocation throughout that scope.
 Catalogs and consumers MUST retain the customer scope when comparing, resolving, or deduplicating these ORD IDs.
 The same ORD ID string in different customer scopes MUST NOT be treated as the same resource solely because the strings match.
 
