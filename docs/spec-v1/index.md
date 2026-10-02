@@ -545,9 +545,12 @@ For a response intended for only one user or tenant, the provider SHOULD use `Ca
 If sensitive metadata must not be stored by any cache, the provider SHOULD use `Cache-Control: no-store`.
 If shared caching of context-dependent responses is deliberately enabled, the provider MUST list every request header that selects the representation in [`Vary`](https://www.rfc-editor.org/rfc/rfc9111.html#name-calculating-cache-keys-with), such as `Authorization`, `Global-Tenant-Id`, or `Local-Tenant-Id`.
 `Vary: Authorization` alone is insufficient when another header, a cookie, or other request context selects the tenant.
+If the tenant-selecting context cannot be represented completely in the shared cache key, the provider MUST NOT enable shared caching for that response.
+When a request contains `Authorization`, a response intended for shared caching MUST also include a response directive that explicitly permits shared-cache storage as defined by [RFC 9111 section 3.2](https://www.rfc-editor.org/rfc/rfc9111.html#name-storing-responses-to-authent).
 
 When an ORD resource or any of its referenced resource definitions changes, either the `version` or the `lastUpdate` of the affected resource MUST be updated to let the ORD aggregator know that the resource definitions need to be re-fetched (see [Versioning](#versioning)).
-An ETag MUST identify the selected representation and change whenever that representation changes.
+An ETag MUST be a valid validator for the selected representation and follow the strong or weak validator semantics defined by [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-validators).
+It MUST change whenever a change to the selected representation would make reuse under those validator semantics invalid.
 When ETags are derived from the response body, changes to `version` or `lastUpdate` change the ETag as a natural consequence.
 
 ##### ORD Consumer Cache Handling
@@ -557,7 +560,9 @@ An [ORD aggregator](#ord-aggregator) SHOULD implement the cache handling rules i
 
 If the provider supplies an `ETag` header, the aggregator SHOULD send the stored ETag value in the `If-None-Match` header on subsequent requests and SHOULD treat a `304 Not Modified` response as confirmation that the selected representation is still current.
 
-If the provider supplies a `lastUpdate` property on resources, the aggregator SHOULD use it to detect whether a resource has changed since the last crawl, and MAY skip re-processing resources whose `lastUpdate` has not changed.
+When determining whether a resource changed, the aggregator SHOULD compare every available change signal, including both `version` and `lastUpdate`.
+It MAY skip re-processing only when none of the available change signals changed.
+An unchanged `lastUpdate` MUST NOT hide a changed `version`.
 
 Referenced definition files MUST be fetched if they have not been retrieved yet or either the `version` or `lastUpdate` of the resource has changed since the last retrieval.
 An aggregator MAY otherwise skip fetching them, or MAY revalidate them independently when the definition endpoint provides an HTTP validator.
