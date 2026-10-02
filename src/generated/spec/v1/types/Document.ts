@@ -72,9 +72,17 @@ export interface OrdDocument {
   /**
    * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
    *
-   * It is strongly RECOMMENDED to mark all static ORD documents with perspective `system-version`.
+   * An ORD provider that describes a system SHOULD publish static metadata using `system-type`, `system-version`, or both.
+   * Static ORD documents MUST NOT contain tenant context or tenant-specific customizations.
+   * Providers SHOULD publish version-independent metadata through `system-type` and metadata that differs between versions through `system-version`.
+   * Distinct `system-version` values MUST be used when multiple versions of the same application are deployed at the same time in one environment tier, such as production.
+   * A continuously delivered system MAY instead publish all static metadata through `system-type` or through `system-version` with a fixed `describedSystemVersion.version`.
+   * When using the fixed-version approach, the version MUST remain unchanged so each release replaces the previously published `system-version` perspective.
+   * Each ORD ID published in a static perspective MUST have a complete representation.
+   * The effective static view looks up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
+   * If both contain the ORD ID, the complete `system-version` representation takes precedence and properties MUST NOT be merged across the layers.
    *
-   * It is RECOMMENDED to describe dynamic metadata in both static system-version perspective and additionally describe the system-instance perspective where it diverges from the static metadata.
+   * Systems with dynamic metadata MUST be described in a complete system-instance perspective and SHOULD additionally be described in at least one static perspective.
    *
    * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
    *

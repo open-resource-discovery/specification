@@ -34,6 +34,10 @@ It defines the core rules and guidelines that are shared across SAP, although mo
 - All SAP [namespaces](../../spec-v1/index.md#namespaces) MUST be registered in the SAP namespace-registry.
   - All SAP applications MUST use the `sap` vendor namespace.
 
+### Perspectives
+
+- SAP applications and services MUST publish at least one applicable static perspective (`system-type`, `system-version`, or both).
+
 ### ID Constraints
 
 IF the resources have already been published to the public [SAP Business Accelerator Hub](https://api.sap.com/) we MUST somehow keep a correlation between their ORD ID and already existing Business Hub ID. This is necessary to keep existing URLs stable and to ensure we update the existing entries, not create new ones.

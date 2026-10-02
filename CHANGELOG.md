@@ -18,6 +18,9 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Standardized the agent examples on the `sap.ai:interactionMode` label.
 - Clarified HTTP cache validation and isolation for ORD providers and aggregators, including safe caching per system instance / tenant and the use of `version` and `lastUpdate` as ORD change signals.
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
+- Clarified static perspective composition: an aggregator looks up each ORD ID in the applicable `system-version` layer first and then in the version-independent `system-type` layer; the version-specific representation wins as a whole without property merging.
+  Latest-version selection is deterministic under Semantic Versioning, while a complete `system-instance` perspective still replaces the effective static view for its tenant.
+  Publishing a static perspective is recommended by the base ORD specification and required by the `sap:core:v1` and `sap:dp:v1` policy levels.
 - Defined OData annotation identity as term plus optional qualifier, required OData v4 EDMX annotations to use reconciled external `<Annotations Target="...">` blocks, and made OData v2 EDMX overlay application explicitly unsupported.
 - Updated the ORD provider overview diagram.
 - Clarified EDMX action semantics, its annotation-only restriction, CSDL JSON annotation-set updates for concept-level selectors, and CSDL JSON enum-member actions.
