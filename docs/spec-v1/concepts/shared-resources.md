@@ -114,10 +114,9 @@ The [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) can stil
 Each system type MUST fully describe itself, including shared ORD information it exposes, publishes or relies on.
 There is no implicit inheritance between system types.
 
-- Shared ORD information MAY be published by multiple system types when the ORD ID identifies the same governed definition.
-- All publishers of the same ORD ID and same `version` MUST describe the shared definition consistently.
-- System-specific publication context MAY differ, such as product assignments, package inheritance, Consumption Bundle assignments, entry points or credentials.
-- The namespace owner is responsible for governing the shared definition and coordinating consistency.
+- The same ORD ID MAY be published by different system types when it identifies the same underlying ORD resource or taxonomy.
+  These descriptions are not duplicates and MAY differ according to their perspective and system-specific properties, such as product assignments, package inheritance, Consumption Bundle assignments, entry points or credentials.
+- The namespace owner is responsible for governing the semantic identity of the shared ORD resource or taxonomy.
 - [Packages](./grouping-and-bundling.md#package) that group only shared resources SHOULD normally use the same owning namespace as the grouped resources.
 - Each system type MUST use `partOfProducts` where needed to associate shared resources with the relevant [Product](./grouping-and-bundling.md#product).
 
@@ -189,24 +188,14 @@ If ownership is cross-system or organizational rather than system-specific, use 
 
 ## Aggregator Rules
 
-Aggregators can receive the same shared ORD information from multiple system types.
-This duplication is valid when it represents the same governed definition, but the aggregator must not lose publication context.
-
-- The uniqueness validation ("MUST NOT be described multiple times") applies within the same system type or system version scope, not globally across all system types.
-- The same shared ORD ID with the same `version` MUST describe the same definition across publishers.
-- The aggregator SHOULD validate that the shared definition is consistent across publishers and flag unexpected inconsistencies as validation warnings. Differences in publication context (such as product assignments, Consumption Bundles or entry points) are expected and not inconsistencies.
-- The aggregator MAY deduplicate the shared definition and associate it with all publishing system types and products.
-- The aggregator MAY instead store scoped records per system type/version if that is simpler.
-- If different system types publish different versions of the same shared ORD information, the catalog MUST preserve the system type/version context.
-
-For static catalogs using `system-type` or `system-version` perspectives, there are two valid strategies:
-
-1. **Scope per system type:** Store the shared information separately for each publishing system type.
-2. **Combine intelligently:** Present the shared information once, while preserving all system types, system versions and products that published it.
+The [ORD ID uniqueness and aggregation rules](../index.md#ord-id-uniqueness-and-aggregation) apply equally to shared ORD resources and taxonomy.
+Descriptions published in different perspectives are not duplicates.
+The aggregator MUST preserve each complete description as part of its perspective and MUST NOT merge properties from different perspectives.
+The specification does not mandate a physical storage model.
+An aggregator MAY normalize information internally only if it preserves every perspective and complete description.
 
 ## Consumer Rules
 
-- Consumers MUST be prepared to receive either one combined result or multiple scoped results for a shared ORD ID, depending on the aggregator.
 - A dependency on a shared ORD ID is satisfied by any system type that publishes that definition, unless the dependency further restricts the provider.
 - To connect to a concrete system, the consumer still needs the applicable [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle), system instance context, entry points and authentication details.
 - Consumers can narrow search and resolution by system type, system version, system instance or product when they need a specific provider context.

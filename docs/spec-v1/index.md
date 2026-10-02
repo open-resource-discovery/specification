@@ -264,12 +264,8 @@ The ORD documents MUST describe the current state of a concrete, running [system
 
 All resources that are described within one document MUST describe the same system instance.
 
-The described information MUST not be duplicated within or across ORD documents of the same [system type](#system-type).
-If some information like Package or Consumption Bundle is needed across multiple documents they can either be put in one of the documents or be moved to a separate document for shared information.
-This also applies across ORD Providers of the same system type, which is ensured through the correct use of namespaces and namespace ownerships.
-Shared ORD information MAY be published by multiple system types when the ORD ID identifies the same governed definition.
-This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
-See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
+An ORD ID MUST NOT be described more than once within or across ORD documents that belong to the same [perspective](./concepts/perspectives.md#identifying-a-perspective), including documents exposed by different ORD Providers.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for content reused across perspectives or systems.
 
 The [validation rules](#validation-rules) MUST be considered.
 
@@ -581,49 +577,22 @@ This section covers the aggregation rules and validations for [ORD aggregators](
 One of the responsibilities of an [ORD aggregator](#ord-aggregator) is to combine the ORD information from multiple system instances.
 When information from many different system instances comes together, some situations may arise that need to be resolved through clearly defined rules.
 
-##### Merging ORD information
+##### ORD ID Uniqueness and Aggregation
 
-This section outlines the rules of how ORD information is merged and - if conflicts arise - how they are resolved.
+The document [perspective](./concepts/perspectives.md) applies to every ORD entry, regardless of whether the entry is an ORD resource or taxonomy.
+ORD documents [belong to the same perspective](./concepts/perspectives.md#identifying-a-perspective) according to their `perspective` value and the system type, exact system version, or system instance that they describe.
 
-First, the distinction between [ORD taxonomy](#ord-taxonomy) and [ORD resource](#ord-resource) information must be understood.
+Within the same perspective, an ORD ID MUST be described at most once across all ORD Documents and ORD Providers.
+A duplicate is a validation error and MUST NOT be resolved by combining properties or selecting a description based on its resource version, publication time or retrieval time.
+If the descriptions are equivalent, an aggregator MAY retain one as a recovery step, but it MUST still report the duplicate.
 
-ORD taxonomy is independent of specific <a href="#product">products</a> or <a href="#system-type">system types</a>. In contrast, [ORD resources](#ord-resource) may be either [system-instance-aware](#system-instance-aware) (varying per instance) or [system-instance-unaware](#system-instance-unaware) (static across instances).
-
-###### Merging ORD Taxonomy
-
-This applies currently to the `Package` and `Product` [ORD taxonomy](#ord-taxonomy) interfaces.
-
-The information is [system-instance-unaware](#system-instance-unaware) and therefore MUST not be stored for each [system instance](#system-instance).
-If multiple systems/system instances describe the same ORD taxonomy instance, the following merging rules MUST be followed:
-
-- Instances with the same [ORD ID](#ord-id) are considered to be the same and MUST be merged.
-- If there is a conflict, the instance with the higher `version` according to the [Semantic Versioning](https://semver.org/) rules takes precedence.
-- If both instances have the same version but different content, the most recent information takes precedence.
-  This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
-- If a breaking change was introduced to a taxonomy entity (e.g. the meaning changed), a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
-
-###### Merging ORD Resources
-
-This applies currently to the `APIResource` and `EventResource` [ORD resource](#ord-resource) interfaces.
-
-The information MAY be [system-instance-aware](#system-instance-aware).
-Therefore, the information MUST be retrieved and stored for each [system instance](#system-instance) individually.
-In this case, an ORD resource with the same [ORD ID](#ord-id) will exist exactly once for each system instance.
-Therefore, the ORD ID MUST be further qualified by a system instance ID when stored by the aggregator.
-If a [system landscape](#system-landscape) view needs to be supported, the information about the landscape assignment/zone information MUST be enriched and considered by the aggregator.
-
-If the same system instances describe the same ORD resource, the following merging rules MUST be followed:
-
-- Instances with the same ORD ID from the same system instance are considered to be the same and MUST be merged.
-- Instances with the same ORD ID from different system instances MUST not be merged.
-  If the aggregator knows for sure that the information is [system-instance-unaware](#system-instance-unaware) it MAY only retrieve and store some of the information once for optimization purposes.
-  However, the aggregator MUST store the information about which system instances (system instance IDs) the resource is available on.
-- If there is a conflict, the instance with the higher `version` according to [Semantic Versioning](https://semver.org/) rules takes precedence.
-- If both instances have the same version but different content, the most recent information takes precedence.
-  This case SHOULD be avoided and the aggregator MUST indicate this problem as part of the [validation rules](#validation-rules).
-- If a breaking change was introduced to an ORD resource, a new major version of it MUST be introduced.
-  See [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md).
+The same ORD ID appearing in different perspectives is not a duplicate.
+Complete descriptions in different perspectives MAY differ.
+The aggregator MUST preserve each complete description as part of its perspective and MUST NOT combine properties from different perspectives.
+For system-scoped perspectives, the selection of an effective description follows the [perspective resolution](./concepts/perspectives.md#how-perspectives-relate-to-each-other) rules and replaces complete descriptions without merging their properties.
+This specification does not mandate a physical storage model.
+An aggregator MAY normalize information internally only if it preserves every perspective and complete description.
+For modeling taxonomy or resources that are shared or reused across systems, see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 ##### Content Enrichment and Preservation
 
@@ -681,13 +650,8 @@ The following validation rules apply specifically for ORD aggregators:
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
   This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
-- The same ORD information or resource (identical ORD ID) MUST NOT be described multiple times within the same [system type](#system-type) or [system version](#system-version) scope.
-  Please be aware that this could happen within an ORD Document or within the same ORD Provider on different ORD Documents.
-  For migration transitions this rule MAY be violated temporarily.
-- Shared ORD information MAY be published by multiple [system types](#system-type) when the ORD ID identifies the same governed definition.
-  In this case, all publishers MUST describe the ORD information consistently for the same `version`. The aggregator MUST validate consistency.
-  This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
-  See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
+- Aggregators MUST enforce [ORD ID uniqueness within each perspective](#ord-id-uniqueness-and-aggregation).
+  During a migration, duplicates MAY be accepted temporarily but MUST still be reported as validation errors.
 
 ### ORD Discovery API
 
