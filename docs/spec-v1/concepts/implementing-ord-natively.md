@@ -92,7 +92,7 @@ The static document describes what a system type or version provides in general 
 The dynamic document describes what a concrete system instance provides at runtime, including tenant-specific state — it is fetched per system instance.
 Providers advertise these separately in the ORD configuration so that aggregators can handle them differently.
 
-Static documents MUST NOT require tenant context or contain tenant-specific customizations.
+Static documents MUST NOT contain tenant context or tenant-specific customizations.
 A `system-version` document MUST include `describedSystemVersion.version`.
 A `system-type` document is version-independent and does not require `describedSystemVersion`.
 Version-independent resources can be published separately in `system-type` and included in the effective static view.
