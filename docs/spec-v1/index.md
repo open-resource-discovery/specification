@@ -811,7 +811,7 @@ A vendor namespace MUST be constructed according to the following rules:
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
   - There are reserved vendor namespaces:
-    - `customer`: Used when the customer / end-user of an application creates their own ORD resources. This avoids requiring each customer to register a vendor namespace.
+    - `customer`: Used for ORD content whose identity is governed within a customer scope. This avoids requiring each customer to register a vendor namespace.
     - `c`: A shorter alias of `customer`, with identical semantics. Useful when the [namespace length limit](#namespace-constraints) is tight.
     - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
 - MUST match Regexp: `^[a-z0-9]+$`
@@ -888,15 +888,16 @@ It is NOT RECOMMENDED to use sub-context namespaces for grouping purposes only, 
 
 ### Customer Namespace
 
-Some systems allow their customers / end-users to create their own resources.
-The reserved [vendor namespace](#vendor-namespace) `customer` identifies such customer-owned resources without requiring each customer to register a vendor namespace.
+Some systems allow ORD content to be created and governed within a customer scope.
+ORD content whose identity is governed within such a scope MUST use a namespace below the reserved [vendor namespace](#vendor-namespace) `customer` or its shorter alias `c`.
+These namespaces identify the customer-scoped ID space and MUST NOT be interpreted as vendor ownership.
 The reserved authority namespace `customer.ext` can be used for customer in-app extensions.
 
-Resources that are created by the customer / user MUST be assigned to a [Package](./interfaces/Document.md#package) whose `vendor` is set to the reserved customer vendor `customer:vendor:Customer:`.
-Consumers use this vendor assignment to recognize customer-owned content.
+For ORD resource types that use `partOfPackage`, the referenced [Package](./interfaces/Document.md#package) `vendor` MUST record the current vendor attribution rather than deriving it from the namespace.
+A Package for customer-owned content MUST use the reserved customer vendor `customer:vendor:Customer:`, while a Package for content attributed to a partner MAY use the corresponding partner Vendor even when its ORD IDs use a `customer.*` or `c.*` namespace.
+An ORD ID MUST NOT be changed solely because its current vendor attribution changes, for example due to a reorganization, acquisition, or other commercial change.
 
 For cases where the [36-character namespace length limit](#namespace-constraints) is tight, a shorter alias `c` is also reserved and is equivalent to `customer`.
-Resources in both `customer.*` and `c.*` namespaces use the same customer vendor `customer:vendor:Customer:`.
 
 ### ORD ID
 

@@ -23,7 +23,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified EDMX action semantics, its annotation-only restriction, CSDL JSON annotation-set updates for concept-level selectors, and CSDL JSON enum-member actions.
 - Clarified that overlay output is semantically, not byte, canonical.
 - Clarified OData operation selectors: a namespace-qualified name may omit its signature only when unique; overloaded operations require an exact signature with all parameters in declaration order; `Name()` selects a zero-parameter operation; and signature selectors never fall back to a FunctionImport.
-- Clarified the [Customer Namespace](./docs/spec-v1/index.md#customer-namespace): customer-created resources MUST be assigned to a Package whose `vendor` is `customer:vendor:Customer:`. Reserved `c` as a shorter alias for the `customer` vendor namespace.
+- Clarified the [Customer Namespace](./docs/spec-v1/index.md#customer-namespace): customer-scoped ORD IDs MUST use `customer.*` or `c.*`, while current vendor attribution comes from the Package and does not change the ORD ID.
 - Updated the ORD Overlay Tooling section to link the published reference implementation (`overlay-tools`), a set of React components for viewing Overlay documents (`overlay-editor`), and a reusable Go library (`overlay-golang`).
 
 ## [1.16.3]
