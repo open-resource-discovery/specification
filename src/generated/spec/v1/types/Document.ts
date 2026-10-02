@@ -72,7 +72,7 @@ export interface OrdDocument {
   /**
    * With ORD it's possible to describe a system from a static or a dynamic [perspective](../index.md#perspectives) (for more details, follow the link).
    *
-   * An ORD provider that describes a system MUST publish static metadata using `system-type`, `system-version`, or both.
+   * An ORD provider that describes a system SHOULD publish static metadata using `system-type`, `system-version`, or both.
    * Static ORD documents MUST NOT contain tenant context or tenant-specific customizations.
    * Providers SHOULD publish version-independent metadata through `system-type` and metadata that differs between versions through `system-version`.
    * Distinct `system-version` values MUST be used when multiple versions of the same application are deployed at the same time in one environment tier, such as production.
@@ -82,7 +82,7 @@ export interface OrdDocument {
    * The effective static view looks up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
    * If both contain the ORD ID, the complete `system-version` representation takes precedence and properties MUST NOT be merged across the layers.
    *
-   * Systems with dynamic metadata MUST be described in at least one static perspective and additionally in the system-instance perspective.
+   * Systems with dynamic metadata MUST be described in a complete system-instance perspective and SHOULD additionally be described in at least one static perspective.
    *
    * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
    *

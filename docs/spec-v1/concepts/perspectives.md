@@ -114,7 +114,7 @@ If a published `system-instance` perspective omits the requested ORD ID, the res
 
 The `system-instance` perspective is the most specific because it describes how a particular system instance / tenant looks at run-time.
 All documents published for the same perspective and scope are considered together.
-For example, all `system-instance` documents for one tenant collectively form that tenant's complete `system-instance` perspective.
+All `system-instance` documents published for one tenant MUST collectively form that tenant's complete `system-instance` perspective.
 Whether a complete `system-instance` perspective is published MUST be determined independently for each tenant.
 A `system-instance` perspective published for one tenant says nothing about another tenant.
 
@@ -181,7 +181,7 @@ To migrate: replace `systemInstanceAware: true` with `perspective: "system-insta
 
 ## ORD Provider Considerations
 
-An ORD provider that describes a system MUST publish static metadata using `system-type`, `system-version`, or both.
+An ORD provider that describes a system SHOULD publish static metadata using `system-type`, `system-version`, or both.
 Providers SHOULD publish version-independent metadata through `system-type` and metadata that differs between versions through `system-version`.
 The provider can choose perspectives as follows:
 
@@ -196,7 +196,7 @@ Use `system-version` when a resource representation differs between versions or 
 Queryable metadata history is an additional reason to choose `system-version`, even when only one version is deployed at a time.
 Choose the static perspective as follows:
 
-1. If metadata differs per tenant, additionally publish a complete `system-instance` perspective for each tenant.
+1. If metadata differs per tenant, publish a complete `system-instance` perspective for each tenant.
 2. Publish metadata that applies unchanged to every system version through `system-type`.
 3. Publish metadata that differs between versions through a `system-version` perspective for each distinguishable release.
 4. A provider MAY also use `system-version` when consumers need to query historical metadata by system version.
@@ -208,7 +208,7 @@ Choose the static perspective as follows:
    When the same ORD ID is published in both layers, its `system-version` representation MUST be complete and takes precedence without property merging.
 
 Content that is independent of systems, rather than only independent of system versions, SHOULD use the `system-independent` perspective.
-If the system has dynamic metadata, the provider MUST additionally publish a complete `system-instance` perspective.
+If the system has dynamic metadata, the provider MUST publish a complete `system-instance` perspective.
 
 If the `system-version` perspective is used, the described version MUST be provided via the ORD `describedSystemVersion`.`version` property.
 For the `system-type` perspective, the version property is NOT required as this perspective is version-independent.
@@ -252,7 +252,7 @@ When a consumer requests static metadata (i.e. `system-type` or `system-version`
    Do not continue to `system-type` and do not substitute another system version.
 2. If **no specific version is requested**, select the greatest published stable `system-version` layer.
    The aggregator MUST exclude versions with a Semantic Versioning prerelease identifier and determine the greatest remaining version using [Semantic Versioning 2.0.0](https://semver.org/) precedence, not lexical ordering, publication time, or `lastUpdate`.
-   A prerelease system version may be selected only when explicitly requested.
+   A prerelease system version may be selected for an exact-version lookup, including when it is the known version of a tenant.
    A provider MUST NOT publish multiple system-version perspectives whose versions have equal Semantic Versioning precedence and differ only in build metadata.
    If an aggregator encounters that ambiguity, it MUST report that no unambiguous latest effective static view can be resolved instead of selecting one arbitrarily.
 3. If an applicable `system-version` layer was selected, look up the requested ORD ID in that layer first.

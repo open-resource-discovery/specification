@@ -723,7 +723,7 @@ There is a `perspective` attribute, which allows setting the following values:
 ### Correct Use of Perspectives
 
 - Static ORD documents (`system-type` and `system-version`) MUST NOT contain tenant context or tenant-specific customizations.
-- An ORD provider that describes a system MUST publish static metadata using `system-type`, `system-version`, or both.
+- An ORD provider that describes a system SHOULD publish static metadata using `system-type`, `system-version`, or both.
 - Providers SHOULD publish version-independent metadata through `system-type` and metadata that differs between versions through `system-version`.
 - Providers MUST use distinct `system-version` values when multiple versions of the same application are deployed at the same time in one environment tier, such as production.
 - A continuously delivered system MAY publish all static metadata through `system-type` when treating every system instance as running the latest effective static view is sufficient.
@@ -733,8 +733,8 @@ There is a `perspective` attribute, which allows setting the following values:
 - Each ORD ID published in a static perspective MUST have a complete representation.
 - The effective static view MUST look up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
   If both layers contain the ORD ID, the complete `system-version` representation takes precedence and its properties MUST NOT be merged with the `system-type` representation.
-- Systems, which have dynamic metadata MUST use the `system-instance` perspective.
-  - They MUST also provide at least one applicable static perspective.
+- Systems, which have dynamic metadata MUST use a complete `system-instance` perspective.
+  - They SHOULD also provide at least one applicable static perspective.
   - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
     In this case, both perspectives MUST use the same ORD IDs for the same logical resources, and any differences MUST reflect perspective-specific state.
 - Whether a complete `system-instance` perspective is published MUST be determined independently for each tenant.
@@ -751,7 +751,7 @@ If the requested version exists but the ORD ID is absent from its layer, the agg
 When no version was requested and no stable `system-version` layer has been published, the aggregator MUST also look up the ORD ID in `system-type`.
 The aggregator MUST select one complete representation and MUST NOT merge properties across the two layers.
 Automatic latest selection MUST exclude Semantic Versioning prereleases.
-A prerelease system version may be selected only when explicitly requested.
+A prerelease system version may be selected for an exact-version lookup, including when it is the known version of a tenant.
 When resolving a static fallback for a tenant with a known system version, the aggregator MUST select that exact `system-version` perspective.
 If it has not been published, the aggregator MUST report that the system version does not exist and MUST NOT continue to `system-type` or substitute another system version.
 

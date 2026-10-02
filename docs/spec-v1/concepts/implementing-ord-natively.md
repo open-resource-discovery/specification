@@ -102,7 +102,7 @@ When the same ORD ID appears in both static perspectives, the `system-version` r
 GET /open-resource-discovery/v1/documents/system-version HTTP/1.1
 ```
 
-The documents published for `system-instance` should collectively form the complete perspective for the selected system instance.
+The documents published for `system-instance` MUST collectively form the complete perspective for the selected system instance.
 Even when this perspective is generated from the static baseline, it is not returned as a patch or diff.
 If the CRM API is not enabled for tenant `T2`, the tenant-specific document for `T2` should not describe the CRM API.
 If tenant `T1` extends the Customer model with additional fields, the tenant-specific resource definition for `T1` should expose those fields.
