@@ -114,7 +114,6 @@ All resources that are not created by the described systems vendor MUST be put i
 This is the case, when:
 
 - Ownership of the resources is attributed to the customer (user) of the system.
-  All such resources MUST be assigned to a dedicated Package where `vendor` is set to `customer:vendor:Customer:`.
 - Ownership of the resources is attributed to partners or third parties.
   All such resources MUST be assigned to a dedicated Package for each partner / third party.
   The `vendor` MUST be set to a registered, matching Vendor ID.
