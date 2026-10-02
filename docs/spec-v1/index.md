@@ -923,6 +923,11 @@ Customer namespaces MUST NOT be used for content published in a global marketpla
 Partner content MAY be developed under a customer namespace while it remains within a customer scope.
 Before that content is offered in a global marketplace or otherwise shared globally, it MUST be exported with ORD IDs under the registered vendor namespace of the partner.
 This export creates the globally published identity and does not rename the customer-scoped ORD IDs.
+The uniqueness scope of a `customer.*` or `c.*` ORD ID is the applicable customer scope.
+This scope is often one [system instance / tenant](#system-instance), but it MAY be a platform-managed customer context spanning multiple system instances / tenants.
+The namespace owner MUST ensure conflict-free ID allocation throughout that scope.
+Catalogs and consumers MUST retain the customer scope when comparing, resolving, or deduplicating these ORD IDs.
+The same ORD ID string in different customer scopes MUST NOT be treated as the same resource solely because the strings match.
 
 For ORD resource types that use `partOfPackage`, the referenced [Package](./interfaces/Document.md#package) `vendor` is authoritative for current ownership attribution.
 It MUST NOT be derived from the namespace of the resource ORD IDs.
@@ -932,14 +937,15 @@ For cases where the [36-character namespace length limit](#namespace-constraints
 
 ### ORD ID
 
-An <dfn id="def-ord-id">ORD ID</dfn> is a stable and globally unique identifier (at design-time) for [ORD resources](#ord-resource) and [ORD taxonomies](#ord-taxonomy).
+An <dfn id="def-ord-id">ORD ID</dfn> is a stable identifier for [ORD resources](#ord-resource) and [ORD taxonomies](#ord-taxonomy).
+It is globally unique at design-time unless it uses a `customer.*` or `c.*` namespace, in which case it is unique within the applicable [customer scope](#customer-namespace).
 
 It serves two purposes:
 
 - Use as an identifier for ORD information.
 - Refer to an ORD resources/taxonomy.
 
-The ORD ID is a globally unique identifier from a [system type](#system-type) perspective and is [system-instance-unaware](#system-instance-unaware).
+Except for the customer-scoped case, the ORD ID is a globally unique identifier from a [system type](#system-type) perspective and is [system-instance-unaware](#system-instance-unaware).
 This means that the ORD ID will not include information about system instances (e.g. tenant IDs) and is therefore only unique at design-time.
 Therefore an ORD ID is not unique from a [system instance](#system-instance) perspective.
 The same resource (with the same ORD ID) can be exposed in different variations (e.g. customizations, extensions) by multiple system instances at run-time.

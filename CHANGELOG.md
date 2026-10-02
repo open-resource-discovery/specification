@@ -29,6 +29,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified the [Customer Namespace](./docs/spec-v1/index.md#customer-namespace): customer-created or customer-governed content SHOULD use `customer.*` or `c.*`, while providers that cannot distinguish it from standard content may use the system's regular namespace.
   Customer namespaces MUST NOT be used for globally shared content, and partner content MUST be exported under the partner's registered vendor namespace before global publication.
   The Package `vendor` remains authoritative for current ownership attribution independently of the ORD ID namespace, and the SAP policy levels now allow registered partner Vendors.
+- Defined the uniqueness scope of customer-namespaced ORD IDs and required catalogs and consumers to retain that scope when comparing, resolving, or deduplicating these IDs.
 - Updated the ORD Overlay Tooling section to link the published reference implementation (`overlay-tools`), a set of React components for viewing Overlay documents (`overlay-editor`), and a reusable Go library (`overlay-golang`).
 
 ## [1.16.3]
