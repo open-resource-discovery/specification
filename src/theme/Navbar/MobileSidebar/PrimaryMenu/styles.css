@@ -1,0 +1,7 @@
+@media (max-width: 996px) {
+  .navbar-sidebar,
+  .navbar-sidebar__backdrop,
+  .navbar-sidebar__items {
+    transition: none;
+  }
+}
