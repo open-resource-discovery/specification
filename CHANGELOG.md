@@ -16,6 +16,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Replaced the generated Class Diagrams section with the full-screen Schema Explorer, which now covers the ORD Document, ORD Configuration, and ORD Overlay schemas and improves mobile layout, browser navigation, zero-depth URLs, and keyboard access.
 - Promoted the ORD Overlay specification from alpha to beta.
 - Standardized the agent examples on the `sap.ai:interactionMode` label.
+- Clarified that the `ord:` and root `sap:` prefixes are reserved for centrally aligned values in namespace-prefixed extensible enums under the `sap:base:v1` policy level.
 - Clarified HTTP cache validation and isolation for ORD providers and aggregators, including safe caching per system instance / tenant and the use of `version` and `lastUpdate` as ORD change signals.
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
 - Clarified static perspective composition: an aggregator looks up each ORD ID in the applicable `system-version` layer first and then in the version-independent `system-type` layer; the version-specific representation wins as a whole without property merging.
@@ -26,6 +27,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified EDMX action semantics, its annotation-only restriction, CSDL JSON annotation-set updates for concept-level selectors, and CSDL JSON enum-member actions.
 - Clarified that overlay output is semantically, not byte, canonical.
 - Clarified OData operation selectors: a namespace-qualified name may omit its signature only when unique; overloaded operations require an exact signature with all parameters in declaration order; `Name()` selects a zero-parameter operation; and signature selectors never fall back to a FunctionImport.
+- Clarified OData entity-set selectors: an unqualified name may be used only when unique; otherwise a fully qualified name is required.
 - Clarified the [Customer Namespace](./docs/spec-v1/index.md#customer-namespace): customer-created or customer-governed content SHOULD use `customer.*` or `c.*`, while providers that cannot distinguish it from standard content may use the system's regular namespace.
   Customer namespaces MUST NOT be used for globally shared content, and partner content MUST be exported under the partner's registered vendor namespace before global publication.
   The Package `vendor` remains authoritative for current ownership attribution independently of the ORD ID namespace, and the SAP policy levels now allow registered partner Vendors.
