@@ -716,7 +716,7 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 There is a `perspective` attribute, which allows setting the following values:
 
-- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the current, version-agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version.
+- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the current, version-agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version. Exclusively publishing `system-type` perspective is adequate when treating every system instance as running the latest static view.
 - `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time).
 - `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system-instance-aware</a> information (only known at run-time).
 - `system-independent`: Describes content that is independent of system versions or system instances and can be shared across multiple systems.
