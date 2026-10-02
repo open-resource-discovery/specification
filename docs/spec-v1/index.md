@@ -128,7 +128,7 @@ In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-pe
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
 - In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST determine whether a complete tenant perspective is published before filtering for an ORD ID.
   - When a complete `system-instance` perspective is published, it replaces the static view and an omitted resource MUST NOT be inherited from static metadata.
-  - If the complete tenant view is available but omits the requested ORD ID, the resource is not available on that tenant.
+  - If the tenant view is available but omits the requested ORD ID, it expected to be complete and the resource is not available on that tenant.
   - If a published tenant view cannot be processed, the aggregator cannot determine resource availability and MUST NOT fall back to static metadata.
   - Only when no `system-instance` perspective is published may the aggregator fall back to the effective static view.
   - The aggregator performs this resolution so consumers do not have to query and compose perspectives themselves.
