@@ -1,0 +1,42 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'relateddataproduct'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'RelatedDataProduct'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: !!bool 'true'
+  description: 'Defines a relation to another Data Product (via its ORD ID).'
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: !!bool 'true'
+      unique: !!bool 'true'
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'ordId_ID'
+      type: 'guid'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: !!bool 'true'
+      constraints:
+        maxLength: !!int '255'
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(dataProduct):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
+    - name: 'relationType'
+      type: 'string'
+      description: "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\")."
+      constraints:
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$'
+  customTypeDefinitions: []
+  metadataRelations:
+    - propertyName: 'ordId'
+      relatedTypeName: 'DataProduct'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: !!bool 'true'
+      managedByProperty: 'ordId_ID'
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      mandatory: !!bool 'true'
+      reverseRelation:
+        relationPropertyName: 'inverseRelatedDataProducts'
