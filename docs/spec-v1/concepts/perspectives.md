@@ -149,8 +149,6 @@ Once the matching perspective is established, an ORD ID that is absent from its 
 When resolving a tenant fallback for a known tenant system version, the same rule applies to that exact version.
 For a static request without a specific version, the aggregator selects the greatest published stable `system-version` layer and then applies the `system-type` layer (see [Static Perspective Resolution](#static-perspective-resolution) below).
 
-Consumers use the same identifiers when requesting a perspective.
-For a `system-type` request, the aggregator resolves what to return according to [Static Perspective Resolution](#static-perspective-resolution).
 
 #### Effective System-Instance Resolution
 
