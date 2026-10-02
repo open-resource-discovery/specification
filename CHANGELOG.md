@@ -16,6 +16,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Replaced the generated Class Diagrams section with the full-screen Schema Explorer, which now covers the ORD Document, ORD Configuration, and ORD Overlay schemas and improves mobile layout, browser navigation, zero-depth URLs, and keyboard access.
 - Promoted the ORD Overlay specification from alpha to beta.
 - Standardized the agent examples on the `sap.ai:interactionMode` label.
+- Clarified HTTP cache validation and isolation for ORD providers and aggregators, including safe caching per system instance / tenant and the use of `version` and `lastUpdate` as ORD change signals.
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
 - Defined OData annotation identity as term plus optional qualifier, required OData v4 EDMX annotations to use reconciled external `<Annotations Target="...">` blocks, and made OData v2 EDMX overlay application explicitly unsupported.
 - Updated the ORD provider overview diagram.

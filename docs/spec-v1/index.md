@@ -535,23 +535,35 @@ The most important rules are:
 
 ##### ORD Provider Cache Handling
 
-The GET endpoints MUST provide a [`Cache-Control`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) HTTP header defining the caching behavior.
-It is RECOMMENDED to also provide an [`ETag`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) HTTP header with the corresponding [`304`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304) (Not Modified) response behavior.
+ORD providers SHOULD use the HTTP caching and conditional request mechanisms defined by [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111.html) and [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-conditional-requests).
+They SHOULD provide a [`Cache-Control`](https://www.rfc-editor.org/rfc/rfc9111.html#name-cache-control) header and an HTTP validator such as [`ETag`](https://www.rfc-editor.org/rfc/rfc9110.html#name-etag) when caching or revalidation is useful.
+When ORD metadata may be stored but must be revalidated before reuse, providers SHOULD use `Cache-Control: no-cache` together with an HTTP validator such as an ETag.
 
-If an ORD resource, or any of its referenced resource definitions, has changed, the `version` of the affected resource MUST be updated/incremented.
-The `ETag` header value on the document REST response will implicitly be updated as a consequence.
+If a response depends on the user, system instance / tenant, or other request context, the provider MUST prevent a shared cache from reusing it in a different context.
+The provider can prohibit shared storage, for example with `Cache-Control: private`, or deliberately allow it by following the authenticated-response and [`Vary`](https://www.rfc-editor.org/rfc/rfc9111.html#name-calculating-cache-keys-with) requirements of RFC 9111.
+In the latter case, `Vary` MUST list every request header that selects the representation.
+If the selection context cannot be represented completely in the shared cache key, the provider MUST prohibit shared caching for that response.
+`Vary: *` indicates that a stored response cannot be reused for a subsequent request.
+
+When an ORD resource or any of its referenced resource definitions changes, either the `version` or the `lastUpdate` of the affected resource MUST be updated to let the ORD aggregator know that the resource definitions need to be re-fetched (see [Versioning](#versioning)).
+HTTP validators apply to the complete selected representation and are independent of these ORD-level change signals.
 
 ##### ORD Consumer Cache Handling
 
 An arbitrary [ORD consumer](#ord-consumer) MAY implement the following cache handling rules to optimize frequent access.
-An [ORD aggregator](#ord-aggregator) MUST implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
+An [ORD aggregator](#ord-aggregator) SHOULD implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
 
-The `Cache-Control` and `ETag` headers (as described in [ORD Provider Cache Handling](#ord-provider-cache-handling)) MUST be respected and correctly implemented from the client's side.
+If a provider supplies HTTP caching metadata or validators, the consumer SHOULD process them according to RFC 9110 and RFC 9111.
 
-Referenced definition files MUST only be fetched if they have not been retrieved yet or the `version` has been incremented since the last retrieval.
+When determining whether a resource changed, the aggregator SHOULD compare every available change signal, including both `version` and `lastUpdate`.
+Referenced definition files MUST be fetched or revalidated if they have not been retrieved yet or if either signal changed since the last retrieval.
+The aggregator MAY skip reprocessing and refetching only when none of the available signals changed, but MAY revalidate a definition independently at any time.
 
-ORD documents and ORD resources that have been marked as [system-instance-aware](#system-instance-aware) MUST each be fetched per tenant.
-If they are [system-instance-unaware](#system-instance-unaware) they SHOULD only be fetched once per system.
+Documents and resources published through a `system-instance` perspective MUST be fetched and cached separately for each system instance / tenant.
+Documents and resources from static perspectives SHOULD be fetched once per applicable system type or system version scope, while `system-independent` information SHOULD be fetched once globally.
+
+For its own metadata cache, an aggregator MUST scope entries by the document or resource identity, the authoritative perspective scope, and every part of the request context that selects the representation.
+For its HTTP cache, it MUST also honor `Vary`; a response with `Vary: *` cannot satisfy a subsequent request.
 
 ### ORD Aggregation
 
@@ -1117,7 +1129,8 @@ The `version` expresses the complete/full resource version number of an [ORD res
 It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard and therefore express minor and patch changes that don't lead to incompatible changes.
 
 The version SHOULD be changed when the resource or the resource definition changed in any way relevant to consumers.
-If (potentially runtime) customization/extension leads to changes in the resource definition, a build number SHOULD be added or incremented to indicate that this change happened.
+If (potentially runtime) customization/extension leads to changes in the resource definition, the `lastUpdate` MUST be updated.
+Optionally, a build number MAY be added or incremented in the `version` to indicate that this change happened.
 
 When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
 If the resource definition also contains a version number, it SHOULD be in sync with the resource `version` (if possible).
