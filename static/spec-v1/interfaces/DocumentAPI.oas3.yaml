@@ -35,9 +35,18 @@ paths:
       operationId: getConfiguration
       tags:
         - OpenResourceDiscovery
+      parameters:
+        - $ref: "#/components/parameters/IfNoneMatch"
       responses:
         "200":
           description: Open Resource Discovery .well-known Configuration
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            ETag:
+              $ref: "#/components/headers/ETag"
+            Vary:
+              $ref: "#/components/headers/Vary"
           content:
             application/json:
               schema:
@@ -73,9 +82,17 @@ paths:
             type: string
           required: true
           description: The ORD Document ID / name
+        - $ref: "#/components/parameters/IfNoneMatch"
       responses:
         "200":
           description: Open Resource Discovery Document
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+            ETag:
+              $ref: "#/components/headers/ETag"
+            Vary:
+              $ref: "#/components/headers/Vary"
           content:
             application/json:
               schema:
@@ -92,9 +109,39 @@ paths:
         "500":
           $ref: "#/components/responses/500"
 components:
+  parameters:
+    IfNoneMatch:
+      name: If-None-Match
+      in: header
+      required: false
+      description: |-
+        Conditional request validator defined by [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-if-none-match).
+        A provider that supplies ETags SHOULD support this header.
+      schema:
+        type: string
+  headers:
+    CacheControl:
+      description: Cache directives defined by [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111.html#name-cache-control).
+      schema:
+        type: string
+    ETag:
+      description: Representation validator defined by [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-etag).
+      schema:
+        type: string
+    Vary:
+      description: Request headers that select the representation, as defined by [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111.html#name-calculating-cache-keys-with).
+      schema:
+        type: string
   responses:
     "304":
       description: Not Modified
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+        ETag:
+          $ref: "#/components/headers/ETag"
+        Vary:
+          $ref: "#/components/headers/Vary"
     "401":
       description: Unauthorized - Action requires user authentication.
       content:

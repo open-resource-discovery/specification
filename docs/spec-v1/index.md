@@ -535,44 +535,35 @@ The most important rules are:
 
 ##### ORD Provider Cache Handling
 
-It is RECOMMENDED to provide a [`Cache-Control`](https://www.rfc-editor.org/rfc/rfc9111.html#name-cache-control) HTTP header on all GET endpoints.
-For public, context-independent ORD metadata, the RECOMMENDED value is `Cache-Control: no-cache`, which allows a response to be stored but requires successful validation with the origin server before reuse.
+ORD providers SHOULD use the HTTP caching and conditional request mechanisms defined by [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111.html) and [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-conditional-requests).
+They SHOULD provide a [`Cache-Control`](https://www.rfc-editor.org/rfc/rfc9111.html#name-cache-control) header and an HTTP validator such as [`ETag`](https://www.rfc-editor.org/rfc/rfc9110.html#name-etag) when caching or revalidation is useful.
+When ORD metadata may be stored but must be revalidated before reuse, providers SHOULD use `Cache-Control: no-cache` together with an HTTP validator such as an ETag.
 
-It is RECOMMENDED to also provide an [`ETag`](https://www.rfc-editor.org/rfc/rfc9110.html#name-etag) HTTP header and to handle conditional requests via [`If-None-Match`](https://www.rfc-editor.org/rfc/rfc9110.html#name-if-none-match), returning [`304 Not Modified`](https://www.rfc-editor.org/rfc/rfc9110.html#name-304-not-modified) when the selected representation has not changed.
-`Cache-Control: no-cache` combined with ETags is the RECOMMENDED approach for efficient revalidation.
-
-For a response intended for only one user or tenant, the provider SHOULD use `Cache-Control: private, no-cache` so that a shared cache cannot store it.
-If sensitive metadata must not be stored by any cache, the provider SHOULD use `Cache-Control: no-store`.
-If shared caching of context-dependent responses is deliberately enabled, the provider MUST list every request header that selects the representation in [`Vary`](https://www.rfc-editor.org/rfc/rfc9111.html#name-calculating-cache-keys-with), such as `Authorization`, `Global-Tenant-Id`, or `Local-Tenant-Id`.
-`Vary: Authorization` alone is insufficient when another header, a cookie, or other request context selects the tenant.
-If the tenant-selecting context cannot be represented completely in the shared cache key, the provider MUST NOT enable shared caching for that response.
-When a request contains `Authorization`, a response intended for shared caching MUST also include a response directive that explicitly permits shared-cache storage as defined by [RFC 9111 section 3.2](https://www.rfc-editor.org/rfc/rfc9111.html#name-storing-responses-to-authent).
+If a response depends on the user, system instance / tenant, or other request context, the provider MUST prevent a shared cache from reusing it in a different context.
+The provider can prohibit shared storage, for example with `Cache-Control: private`, or deliberately allow it by following the authenticated-response and [`Vary`](https://www.rfc-editor.org/rfc/rfc9111.html#name-calculating-cache-keys-with) requirements of RFC 9111.
+In the latter case, `Vary` MUST list every request header that selects the representation.
+If the selection context cannot be represented completely in the shared cache key, the provider MUST prohibit shared caching for that response.
+`Vary: *` indicates that a stored response cannot be reused for a subsequent request.
 
 When an ORD resource or any of its referenced resource definitions changes, either the `version` or the `lastUpdate` of the affected resource MUST be updated to let the ORD aggregator know that the resource definitions need to be re-fetched (see [Versioning](#versioning)).
-An ETag MUST be a valid validator for the selected representation and follow the strong or weak validator semantics defined by [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-validators).
-It MUST change whenever a change to the selected representation would make reuse under those validator semantics invalid.
-When ETags are derived from the response body, changes to `version` or `lastUpdate` change the ETag as a natural consequence.
+HTTP validators apply to the complete selected representation and are independent of these ORD-level change signals.
 
 ##### ORD Consumer Cache Handling
 
 An arbitrary [ORD consumer](#ord-consumer) MAY implement the following cache handling rules to optimize frequent access.
 An [ORD aggregator](#ord-aggregator) SHOULD implement the cache handling rules in order to reduce unnecessary load on the ORD providers.
 
-If the provider supplies an `ETag` header, the aggregator SHOULD send the stored ETag value in the `If-None-Match` header on subsequent requests and SHOULD treat a `304 Not Modified` response as confirmation that the selected representation is still current.
+If a provider supplies HTTP caching metadata or validators, the consumer SHOULD process them according to RFC 9110 and RFC 9111.
 
 When determining whether a resource changed, the aggregator SHOULD compare every available change signal, including both `version` and `lastUpdate`.
-It MAY skip re-processing only when none of the available change signals changed.
-An unchanged `lastUpdate` MUST NOT hide a changed `version`.
+Referenced definition files MUST be fetched or revalidated if they have not been retrieved yet or if either signal changed since the last retrieval.
+The aggregator MAY skip reprocessing and refetching only when none of the available signals changed, but MAY revalidate a definition independently at any time.
 
-Referenced definition files MUST be fetched if they have not been retrieved yet or either the `version` or `lastUpdate` of the resource has changed since the last retrieval.
-An aggregator MAY otherwise skip fetching them, or MAY revalidate them independently when the definition endpoint provides an HTTP validator.
+Documents and resources published through a `system-instance` perspective MUST be fetched and cached separately for each system instance / tenant.
+Documents and resources from static perspectives SHOULD be fetched once per applicable system type or system version scope, while `system-independent` information SHOULD be fetched once globally.
 
-ORD documents and ORD resources that have been marked as [system-instance-aware](#system-instance-aware) MUST each be fetched per tenant.
-If they are [system-instance-unaware](#system-instance-unaware) they SHOULD only be fetched once per system.
-
-When caching [system-instance-aware](#system-instance-aware) documents or resources, the aggregator MUST scope its cache entries by the authoritative system instance and by every part of the request context that selects the representation.
-Keying the cache by URL alone is insufficient when the same URL can return content for different tenants.
-The aggregator MUST honor the response's `Vary` fields when constructing its cache key.
+For its own metadata cache, an aggregator MUST scope entries by the document or resource identity, the authoritative perspective scope, and every part of the request context that selects the representation.
+For its HTTP cache, it MUST also honor `Vary`; a response with `Vary: *` cannot satisfy a subsequent request.
 
 ### ORD Aggregation
 
