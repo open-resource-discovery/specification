@@ -264,12 +264,8 @@ The ORD documents MUST describe the current state of a concrete, running [system
 
 All resources that are described within one document MUST describe the same system instance.
 
-The described information MUST not be duplicated within or across ORD documents of the same [system type](#system-type).
-If some information like Package or Consumption Bundle is needed across multiple documents they can either be put in one of the documents or be moved to a separate document for shared information.
-This also applies across ORD Providers of the same system type, which is ensured through the correct use of namespaces and namespace ownerships.
-Shared ORD information MAY be published by multiple system types when the ORD ID identifies the same governed definition.
-This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
-See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
+An ORD ID MUST NOT be described more than once within or across ORD documents of the same [publication scope](#ord-id-uniqueness-and-aggregation), including documents exposed by different ORD Providers.
+See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for content reused across publication scopes.
 
 The [validation rules](#validation-rules) MUST be considered.
 
@@ -583,9 +579,9 @@ When information from many different system instances comes together, some situa
 
 ##### ORD ID Uniqueness and Aggregation
 
-An [ORD ID](#ord-id) is [globally unique](#ord-id) and identifies exactly one [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) entity.
-That entity can have a description in more than one publication scope.
-The publication scope is determined by the document [perspective](#perspectives) and its corresponding context.
+An [ORD ID](#ord-id) identifies the same underlying [ORD resource](#ord-resource) or [ORD taxonomy](#ord-taxonomy) wherever it is published.
+Each publication scope can contain one complete description of that entity.
+The document [perspective](#perspectives) and its corresponding context determine the publication scope.
 
 | Perspective | Publication scope |
 | --- | --- |
@@ -594,25 +590,19 @@ The publication scope is determined by the document [perspective](#perspectives)
 | `system-version` | The described system type and exact described system version |
 | `system-instance` | The authoritative system instance known to the aggregator |
 
-The perspective scopes every ORD entry in the document, regardless of whether the entry is an ORD resource or taxonomy.
-The provider MUST choose the perspective whose semantics match the published content and MUST NOT use another perspective merely to avoid a duplicate within the applicable scope.
+The publication scope applies to every ORD entry in the document, regardless of whether the entry is an ORD resource or taxonomy.
 The scope context can come from the ORD Document or from authoritative context known to the aggregator, such as onboarding, landscape or authenticated publisher information.
-These aggregation rules do not introduce a global registry requirement.
-[Namespace](#namespaces) ownership and collision avoidance continue to apply independently of publication scope.
 
 Within one publication scope, an ORD ID MUST be described at most once across all ORD Documents and ORD Providers.
-Two descriptions with the same ORD ID in the same publication scope are a conflict and always produce a validation error.
-There is no defined operation for combining their properties or selecting one based on its resource version, publication time or retrieval time.
+A duplicate is a validation error and MUST NOT be resolved by combining properties or selecting a description based on its resource version, publication time or retrieval time.
 If the descriptions are equivalent, an aggregator MAY retain one as a recovery step, but it MUST still report the duplicate.
-Providers MUST NOT rely on this recovery behavior as a modeling mechanism.
 
 The same ORD ID appearing in different publication scopes is not a duplicate.
-Examples include a shared or governed [ORD resource](#ord-resource) or [taxonomy](#ord-taxonomy) reused across [system types](#system-type), or the same design-time resource exposed by different [system instances](#system-instance).
-The aggregator MUST preserve the publishing scope of each description and MUST NOT combine their properties.
+Complete descriptions in different scopes MAY differ according to their perspective and publication context.
+The aggregator MUST preserve each description's publication scope and MUST NOT combine properties from different scopes.
 For system-scoped perspectives, the selection of an effective description follows the [perspective resolution](./concepts/perspectives.md#how-perspectives-relate-to-each-other) rules and replaces complete descriptions without merging their properties.
-The `system-independent` perspective remains outside this resolution chain and MUST NOT be overridden by a system-scoped description.
 This specification does not mandate a physical storage model.
-An aggregator MAY normalize information internally only if it preserves every publication scope, the applicable complete descriptions and the system contexts in which each entry is available.
+An aggregator MAY normalize information internally only if it preserves every publication scope, complete description and applicable system context.
 For modeling taxonomy or resources that are shared or reused across systems, see [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
 
 ##### Content Enrichment and Preservation
@@ -671,20 +661,8 @@ The following validation rules apply specifically for ORD aggregators:
 - References SHOULD be checked to not be broken, but MAY be temporally allowed to be "dangling".
   This happens if the [ORD ID](#ord-id) points to an ORD resource or ORD taxonomy that is not (yet) known to the ORD aggregator.
   - As resources can be added or removed later, this SHOULD be continually checked. For example, one reference could point to an ORD resource that has been removed lately. Now the reference that was valid when it was created, becomes invalid and the relevant ORD Provider(s) SHOULD be notified.
-- An ORD ID MUST NOT be described more than once within the same publication scope.
-  This applies to `system-independent`, `system-type`, `system-version` and `system-instance` scopes.
-  It includes duplicates within one ORD Document, across different ORD Documents of the same ORD Provider, and across multiple ORD Providers publishing within the same scope.
-  The aggregator MUST detect and report the duplicate.
-  If the descriptions are equivalent, it MAY retain one as a recovery step, but it MUST NOT combine differing descriptions or treat duplication as a valid way to model information.
-  During a migration, an aggregator MAY accept duplicates temporarily, but it MUST continue to report them as validation errors.
-- The same ORD ID MAY be published by *different* [system types](#system-type) when it identifies the same shared or governed [ORD resource](#ord-resource) or [taxonomy](#ord-taxonomy).
-  This is not a duplicate because a different system type is a different publication scope.
-  Every publisher using the ORD ID MUST refer to the same underlying ORD resource or taxonomy.
-  For entity types that have a `version`, publishers MAY publish different versions and are not required to update them in lockstep.
-  Scoped descriptions MAY differ as allowed by their perspective, versioning and publication context.
-  Such a difference is not by itself a duplicate or a reason to merge the descriptions.
-  This commonly uses an [authority namespace](#authority-namespace), but can also reuse another system type's namespace when that system type owns the definition.
-  See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for details.
+- Aggregators MUST enforce [ORD ID uniqueness within each publication scope](#ord-id-uniqueness-and-aggregation).
+  During a migration, duplicates MAY be accepted temporarily but MUST still be reported as validation errors.
 
 ### ORD Discovery API
 

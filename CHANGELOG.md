@@ -31,10 +31,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   The Package `vendor` remains authoritative for current ownership attribution independently of the ORD ID namespace, and the SAP policy levels now allow registered partner Vendors.
 - Defined the uniqueness scope of customer-namespaced ORD IDs and required catalogs and consumers to retain that scope when comparing, resolving, or deduplicating these IDs.
 - Updated the ORD Overlay Tooling section to link the published reference implementation (`overlay-tools`), a set of React components for viewing Overlay documents (`overlay-editor`), and a reusable Go library (`overlay-golang`).
-- Clarified ORD ID uniqueness and aggregation within `system-independent`, system type, system version and system instance publication scopes.
-  A duplicate within one scope is always a validation error, and only equivalent descriptions may be deduplicated as a recovery step.
-  Descriptions in different scopes remain attributed to those scopes and are not combined property by property.
-  Perspective scopes apply uniformly to ORD resources and taxonomy, and scoped descriptions may differ according to their perspective, versioning and publication context.
+- Clarified that ORD ID uniqueness and duplicate handling apply uniformly to resources and taxonomy within each perspective's publication scope.
+  Descriptions in different scopes remain separate and are selected through perspective resolution without property merging.
 
 ## [1.16.3]
 
