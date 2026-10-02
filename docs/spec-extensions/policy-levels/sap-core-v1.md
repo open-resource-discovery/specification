@@ -142,7 +142,7 @@ The following constraints apply in addition to the constraints defined in the [O
     - Packages MUST NOT be shared by multiple provider (source) systems
     - Packages MUST NOT contain mixed resource types. E.g., a Package must only contain either APIs or Events, but never both together.
     - Packages MUST NOT contain content of mixed `visibility`
-- The vendor of a Package MUST be set and be equal to one of the allowed values: `sap:vendor:SAP:`, `customer:vendor:Customer:`.
+- The vendor of a Package MUST be set to `sap:vendor:SAP:`, `customer:vendor:Customer:`, or the registered Vendor of the partner to which ownership is attributed.
 
 ### Consumption Bundle
 

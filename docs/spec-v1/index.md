@@ -811,7 +811,8 @@ A vendor namespace MUST be constructed according to the following rules:
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
   - There are reserved vendor namespaces:
-    - `customer`: Used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources. This avoids that customers need to register their own namespaces (which could still be done as an alternative).
+    - `customer`: Used for ORD content whose identity is governed within a customer scope. This avoids requiring each customer to register a vendor namespace.
+    - `c`: A shorter alias of `customer`, with identical semantics. Useful when the [namespace length limit](#namespace-constraints) is tight.
     - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
 - MUST match Regexp: `^[a-z0-9]+$`
 
@@ -887,14 +888,21 @@ It is NOT RECOMMENDED to use sub-context namespaces for grouping purposes only, 
 
 ### Customer Namespace
 
-Some systems allow their customers / end-users to create their own resources (in-app extensions).
-In most cases these resources are local to the tenant, so we don't need to force the customer to register a namespace.
+Some systems allow ORD content to be created or governed within a customer scope.
+Such content SHOULD use a namespace below the reserved [vendor namespace](#vendor-namespace) `customer` or its shorter alias `c`.
+If a provider cannot reliably distinguish customer-created content from the described system's standard content, it MAY publish the customer-created content under the system's regular namespace instead.
+These namespaces identify the customer-scoped ID space and MUST NOT be interpreted as vendor ownership, which is defined via `partOfPackage.vendor`.
+The reserved authority namespace `customer.ext` can be used for customer in-app extensions.
+Customer namespaces MUST NOT be used for content published in a global marketplace or otherwise shared globally.
+Partner content MAY be developed under a customer namespace while it remains within a customer scope.
+Before that content is offered in a global marketplace or otherwise shared globally, it MUST be exported with ORD IDs under the registered vendor namespace of the partner.
+This export creates the globally published identity and does not rename the customer-scoped ORD IDs.
 
-To keep this situation simple, there is a reserved [vendor namespace](#vendor-namespace): `customer`.
-Everything within this namespace is owned by the customer, the owner of the tenant.
-In addition, there is one reserved authority namespace, specifically for customer in-app extensions: `customer.ext`.
+For ORD resource types that use `partOfPackage`, the referenced [Package](./interfaces/Document.md#package) `vendor` is authoritative for current ownership attribution.
+It MUST NOT be derived from the namespace of the resource ORD IDs.
+An ORD ID has the general requirement to be stable, so it MUST NOT be changed solely because its current vendor attribution changes, for example due to a reorganization, acquisition, or other commercial change.
 
-The limitation of using `customer.*` namespaces is that they are unique only within a tenant and once the resources are published and shared outside the local scope, the `customer` namespace will be insufficient.
+For cases where the [36-character namespace length limit](#namespace-constraints) is tight, a shorter alias `c` is also reserved and is equivalent to `customer`.
 
 ### ORD ID
 

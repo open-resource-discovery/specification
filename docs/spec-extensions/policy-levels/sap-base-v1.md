@@ -24,7 +24,9 @@ Usually SAP applications and services will use the more complete and opinionated
 
 - All SAP [namespaces](../../spec-v1/index.md#namespaces) MUST be registered in the SAP namespace-registry.
   - All ORD resources owned by SAP MUST use the `sap` vendor namespace
-  - ORD resources / extensions created by the customer MAY use the `customer` vendor namespace or MUST use their own vendor namespace.
+  - ORD resources or extensions created or governed within a customer scope SHOULD use the `customer` vendor namespace or its shorter alias `c`.
+  - The `customer` and `c` namespaces MUST NOT be used for content published in a global marketplace or otherwise shared globally.
+  - Before partner content is offered globally, it MUST be exported with ORD IDs under the partner's registered vendor namespace.
 
 ### Extensible Enums
 
@@ -35,7 +37,7 @@ Usually SAP applications and services will use the more complete and opinionated
 
 ### Packages
 
-- The vendor of a Package MUST be set and be equal to one of the allowed values: `sap:vendor:SAP:`, `customer:vendor:Customer:`.
+- The vendor of a Package MUST be set to `sap:vendor:SAP:`, `customer:vendor:Customer:`, or the registered Vendor of the partner to which ownership is attributed.
 
 ### Misc Constraints
 
