@@ -14,6 +14,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Promoted the ORD concept pages to visible children of the ORD Specification and added an Applying the Specification table that links guides by adopter goal.
 - Replaced the generated Class Diagrams section with the full-screen Schema Explorer, which now covers the ORD Document, ORD Configuration, and ORD Overlay schemas and improves mobile layout, browser navigation, zero-depth URLs, and keyboard access.
+- Promoted the ORD Overlay specification from alpha to beta.
 - Standardized the agent examples on the `sap.ai:interactionMode` label.
 - Clarified HTTP cache handling guidance for ORD providers:
   - Downgraded `Cache-Control` and `ETag` headers from MUST and RECOMMENDED to both RECOMMENDED because neither is universally required across all deployment topologies.
@@ -30,6 +31,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   - Required cache entries for system-instance-aware resources to be scoped by system instance and every request-context selector to prevent cross-tenant data leakage.
 - Clarified ORD Overlay patch semantics: unmatched concept-level `merge` and `update` MUST error; unmatched `remove` and zero-match `jsonPath` patches are warning-producing no-ops; `jsonPath` applies to every match and has a portable RFC 9535 subset; missing removal-mask entries are ignored; and omitted-data root removal MUST error while root removal masks remain valid.
 - Defined OData annotation identity as term plus optional qualifier, required OData v4 EDMX annotations to use reconciled external `<Annotations Target="...">` blocks, and made OData v2 EDMX overlay application explicitly unsupported.
+- Updated the ORD provider overview diagram.
 - Clarified EDMX action semantics, its annotation-only restriction, CSDL JSON annotation-set updates for concept-level selectors, and CSDL JSON enum-member actions.
 - Clarified that overlay output is semantically, not byte, canonical.
 - Clarified OData operation selectors: a namespace-qualified name may omit its signature only when unique; overloaded operations require an exact signature with all parameters in declaration order; `Name()` selects a zero-parameter operation; and signature selectors never fall back to a FunctionImport.
