@@ -99,7 +99,7 @@ spec:
         minLength: !!int '1'
     - name: 'vendor_ID'
       type: 'guid'
-      description: "Vendor / organization that is the creator (or responsible party) of the resources that are part of the `Package`.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.\n\nMUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.\n\nMUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party."
+      description: "Vendor / organization to which ownership of the resources in the `Package` is currently attributed.\nThis value is authoritative for current ownership attribution and is independent of the namespaces of the resource ORD IDs.\nIt MUST NOT be derived from those namespaces.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.\n\nMUST be set to `customer:vendor:Customer:` if ownership of the Package contents is attributed to the customer / user.\n\nMUST be set to a registered partner vendor if ownership of the Package contents is attributed to a partner / third party."
       mandatory: !!bool 'true'
       constraints:
         maxLength: !!int '256'
@@ -211,7 +211,7 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: !!bool 'true'
       managedByProperty: 'vendor_ID'
-      description: "Vendor / organization that is the creator (or responsible party) of the resources that are part of the `Package`.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.\n\nMUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.\n\nMUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party."
+      description: "Vendor / organization to which ownership of the resources in the `Package` is currently attributed.\nThis value is authoritative for current ownership attribution and is independent of the namespaces of the resource ORD IDs.\nIt MUST NOT be derived from those namespaces.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.\n\nMUST be set to `customer:vendor:Customer:` if ownership of the Package contents is attributed to the customer / user.\n\nMUST be set to a registered partner vendor if ownership of the Package contents is attributed to a partner / third party."
       mandatory: !!bool 'true'
     - propertyName: 'partOfProducts'
       relatedTypeName: 'Product'

@@ -443,7 +443,7 @@
         },
         "vendor": {
           "type": "string",
-          "description": "Vendor / organization that is the creator (or responsible party) of the resources that are part of the `Package`.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.\n\nMUST be set to `customer:vendor:Customer:` if the contents of the Package are created by the customer / user.\n\nMUST be set to a registered partner vendor, if the contents of the Package are created by a partner / third party.",
+          "description": "Vendor / organization to which ownership of the resources in the `Package` is currently attributed.\nThis value is authoritative for current ownership attribution and is independent of the namespaces of the resource ORD IDs.\nIt MUST NOT be derived from those namespaces.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.\n\nMUST be set to `customer:vendor:Customer:` if ownership of the Package contents is attributed to the customer / user.\n\nMUST be set to a registered partner vendor if ownership of the Package contents is attributed to a partner / third party.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\\-]+):()$",
           "maxLength": 256,
           "x-association-target": [
@@ -5965,7 +5965,7 @@
       "type": "object",
       "title": "Vendor",
       "x-ums-type": "root",
-      "description": "The vendor of a product or a package, usually a corporation or a customer / user.\n\nThe vendor of a `Package` is the owner or creator of the content of the package.\nThe vendor of a `Product` is the owner of the product.\n\nIf the resources are created by the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.\n\nBoth have already a [vendor namespace](../index.md#vendor-namespace) within their ORD ID.\nThe `Vendor` entity is giving more details on the vendor namespace.\nFor one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.\n\nFor example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.",
+      "description": "The vendor of a product or a package, usually a corporation or a customer / user.\n\nThe vendor of a `Package` is the authoritative statement of the current ownership attribution for the content of the Package.\nIt is independent of the namespaces of the resource ORD IDs and MUST NOT be derived from them.\nThe vendor of a `Product` is the owner of the product.\n\nIf ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.\n\nBoth have already a [vendor namespace](../index.md#vendor-namespace) within their ORD ID.\nThe `Vendor` entity is giving more details on the vendor namespace.\nFor one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.\n\nFor example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.",
       "properties": {
         "ordId": {
           "type": "string",
