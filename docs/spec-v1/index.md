@@ -126,10 +126,9 @@ In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-pe
 
 - the aggregator MUST support [system-instance-aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
-- In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST determine whether a tenant perspective is published before filtering for an ORD ID.
-  - When a complete `system-instance` perspective is published, it replaces the static view and an omitted resource MUST NOT be inherited from static metadata.
-  - If the tenant view is available but omits the requested ORD ID, it expected to be complete and the resource is not available on that tenant.
-  - If a published tenant view cannot be processed, the aggregator cannot determine resource availability and MUST NOT fall back to static metadata.
+- In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST determine whether a `system-instance` perspective is published for the tenant before filtering for an ORD ID.
+  - When a complete `system-instance` perspective is published, it replaces the effective static view and an omitted resource MUST NOT be inherited from static metadata.
+  - If the `system-instance` perspective omits the requested ORD ID, the resource is not available on that tenant.
   - Only when no `system-instance` perspective is published may the aggregator fall back to the effective static view.
   - The aggregator performs this resolution so consumers do not have to query and compose perspectives themselves.
 - See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
@@ -716,7 +715,7 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 There is a `perspective` attribute, which allows setting the following values:
 
-- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the current, version-agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version. Exclusively publishing `system-type` perspective is adequate when treating every system instance as running the latest static view.
+- `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the current, version-agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version. Exclusively publishing a `system-type` perspective is adequate when treating every system instance as running the latest effective static view.
 - `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time).
 - `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system-instance-aware</a> information (only known at run-time).
 - `system-independent`: Describes content that is independent of system versions or system instances and can be shared across multiple systems.
@@ -727,9 +726,9 @@ There is a `perspective` attribute, which allows setting the following values:
 - An ORD provider that describes a system MUST publish static metadata using `system-type`, `system-version`, or both.
 - Providers SHOULD publish version-independent metadata through `system-type` and metadata that differs between versions through `system-version`.
 - Providers MUST use distinct `system-version` values when multiple versions of the same application are deployed at the same time in one environment tier, such as production.
-- A continuously delivered system MAY publish all static metadata through `system-type` when treating every system instance as running the latest static view is sufficient.
+- A continuously delivered system MAY publish all static metadata through `system-type` when treating every system instance as running the latest effective static view is sufficient.
 - Alternatively, a continuously delivered system MAY publish all static metadata through `system-version` with a fixed `describedSystemVersion.version`.
-  When using the fixed-version approach, the version MUST remain unchanged so each release replaces the previously published view.
+  When using the fixed-version approach, the version MUST remain unchanged so each release replaces the previously published `system-version` perspective.
 - A system type MAY publish both static perspectives.
 - Each ORD ID published in a static perspective MUST have a complete representation.
 - The effective static view MUST look up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
@@ -738,21 +737,23 @@ There is a `perspective` attribute, which allows setting the following values:
   - They MUST also provide at least one applicable static perspective.
   - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
     In this case, both perspectives MUST use the same ORD IDs for the same logical resources, and any differences MUST reflect perspective-specific state.
-- Whether a complete `system-instance` perspective is published and available MUST be determined independently for each tenant.
-- A published `system-instance` perspective is a complete view of that tenant and MUST NOT inherit resources from static perspectives.
+- Whether a complete `system-instance` perspective is published MUST be determined independently for each tenant.
+- A published `system-instance` perspective fully describes that tenant and MUST NOT inherit resources from static perspectives.
   Only when no `system-instance` perspective is published may an aggregator fall back to the effective static view.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
   A `system-independent` document MUST NOT contain system or tenant context or system-specific or tenant-specific customizations.
   It is outside the system-scoped fallback chain.
 
 For a static request, an aggregator MUST first look up the ORD ID in the requested `system-version`, or in the greatest published stable `system-version` when no version was requested.
-If the ORD ID is absent from that layer, or no applicable `system-version` layer is published, the aggregator MUST look it up in `system-type`.
+If a specifically requested `system-version` perspective has not been published, the aggregator MUST report that the requested system version does not exist.
+It MUST NOT continue to `system-type` or substitute another system version in this case.
+If the requested version exists but the ORD ID is absent from its layer, the aggregator MUST look it up in `system-type`.
+When no version was requested and no stable `system-version` layer has been published, the aggregator MUST also look up the ORD ID in `system-type`.
 The aggregator MUST select one complete representation and MUST NOT merge properties across the two layers.
 Automatic latest selection MUST exclude Semantic Versioning prereleases.
 A prerelease system version may be selected only when explicitly requested.
-If an explicitly requested `system-version` does not exist, the aggregator MUST NOT substitute another system version, but version-independent `system-type` content remains applicable.
 When resolving a static fallback for a tenant with a known system version, the aggregator MUST select that exact `system-version` perspective.
-If it does not exist, version-independent `system-type` content remains applicable, but the aggregator MUST NOT substitute another system version.
+If it has not been published, the aggregator MUST report that the system version does not exist and MUST NOT continue to `system-type` or substitute another system version.
 
 > ⏩ For how aggregators resolve static perspective requests (e.g. which data to return when no version is specified), see the [static perspective resolution](./concepts/perspectives.md#static-perspective-resolution) algorithm on the perspectives concept page.
 

@@ -77,7 +77,7 @@ export interface OrdDocument {
    * Providers SHOULD publish version-independent metadata through `system-type` and metadata that differs between versions through `system-version`.
    * Distinct `system-version` values MUST be used when multiple versions of the same application are deployed at the same time in one environment tier, such as production.
    * A continuously delivered system MAY instead publish all static metadata through `system-type` or through `system-version` with a fixed `describedSystemVersion.version`.
-   * When using the fixed-version approach, the version MUST remain unchanged so each release replaces the previously published view.
+   * When using the fixed-version approach, the version MUST remain unchanged so each release replaces the previously published `system-version` perspective.
    * Each ORD ID published in a static perspective MUST have a complete representation.
    * The effective static view looks up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
    * If both contain the ORD ID, the complete `system-version` representation takes precedence and properties MUST NOT be merged across the layers.
