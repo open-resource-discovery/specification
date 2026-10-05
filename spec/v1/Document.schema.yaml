@@ -4068,10 +4068,12 @@ definitions:
           maxLength: 255
           x-association-target:
             - "#/definitions/EntityType/ordId"
+        minItems: 1
         examples:
           - ["sap.odm:entityType:BusinessPartner:v1", "sap.odm:entityType:Order:v1"]
 
     additionalProperties: false
+    minProperties: 1
 
   ############################################################################################################
 
@@ -4113,10 +4115,12 @@ definitions:
           maxLength: 255
           x-association-target:
             - "#/definitions/EntityType/ordId"
+        minItems: 1
         examples:
           - ["sap.odm:entityType:BusinessPartner:v1", "sap.odm:entityType:Order:v1"]
 
     additionalProperties: false
+    minProperties: 1
 
   ############################################################################################################
 

@@ -3783,8 +3783,10 @@ export interface APIResourceIntegrationAspectSubset {
    * List of entity type ORD IDs that narrow down the scope of the integration dependency.
    *
    * When provided together with `operationId`, both conditions must be satisfied (AND condition).
+   *
+   * @minItems 1
    */
-  entityTypes?: string[];
+  entityTypes?: [string, ...string[]];
 }
 /**
  * Event resource related integration aspect
@@ -3839,8 +3841,10 @@ export interface EventResourceIntegrationAspectSubset {
    * List of entity type ORD IDs that narrow down the scope of the integration dependency.
    *
    * When provided together with `eventType`, both conditions must be satisfied (AND condition).
+   *
+   * @minItems 1
    */
-  entityTypes?: string[];
+  entityTypes?: [string, ...string[]];
 }
 /**
  * Capability related integration aspect
