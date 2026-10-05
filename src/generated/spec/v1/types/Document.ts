@@ -1010,7 +1010,6 @@ export interface ApiResourceDefinition {
     | "sap-sql-api-definition-v1"
     | "sap-csn-interop-effective-v1"
     | "ord:overlay:v1"
-    | "arazzo-v1"
     | "custom"
   ) &
     string;
