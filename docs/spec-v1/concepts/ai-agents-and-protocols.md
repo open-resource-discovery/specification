@@ -366,7 +366,8 @@ This enables:
 - **Dependency Management:** Like `agent-skill`, an `agent-plugin` can declare `integrationDependencies` on API Resources, Event Resources, or Capabilities (see [Skill Dependencies](#skill-dependencies) above).
 
 The bundle is referenced through a capability definition of type `agent-plugin-zip`, a ZIP archive (`mediaType: "application/zip"`) that packages the plugin's skills and assets together.
-Unlike an individual [agent skill](https://agentskills.io/home), the plugin bundle currently has no vendor-neutral packaging standard, so ORD does not prescribe the archive's internal layout: how the plugin declares and organizes its contained skills and resources is defined by the plugin format the consuming tool or harness expects.
+ORD intentionally remains format-neutral for plugin bundles.
+It treats the archive as opaque and does not prescribe its internal layout or format version; package-format identification, versioning, and interpretation remain the responsibility of the producer and consumer.
 
 **Depending on a plugin:**
 

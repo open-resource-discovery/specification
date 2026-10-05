@@ -3721,6 +3721,8 @@ definitions:
             description: |-
               A ZIP archive that bundles multiple agent resources (such as one or more agent skills) into a single agent plugin package,
               including all relevant assets such as configuration and schema files.
+              ORD treats the archive as opaque and does not prescribe its internal layout or format version.
+              Package-format identification and versioning remain outside this definition type.
 
               The `mediaType` SHOULD be set to `application/zip`.
               The capability `type` SHOULD be set to `agent-plugin`.
