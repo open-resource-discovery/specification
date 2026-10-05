@@ -273,8 +273,9 @@ Given the rapidly evolving AI ecosystem, ORD takes a conservative approach to ad
 
 ### Agent Skills as Capabilities
 
-[Agent skills](https://agentskills.io/home) are discrete, reusable capabilities that agents can perform, packaged as folders of instructions, scripts, and resources.
+Agent skills are discrete, reusable capabilities that agents can perform and may package instructions, scripts, and resources.
 In ORD, these are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "agent-skill"`.
+ORD treats skill and plugin archives as opaque, format-neutral artifacts and does not prescribe their internal layout or format version.
 
 This enables:
 - **Discovery:** Agents can discover and load skills on-demand through the catalog
