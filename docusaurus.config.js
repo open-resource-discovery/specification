@@ -252,7 +252,7 @@ const config = {
                 to: "spec-v1/interfaces/OrdOverlay",
               },
               {
-                label: "ORD Concepts / Details",
+                label: "ORD Detail Pages",
                 to: "spec-v1/concepts",
               },
               {
