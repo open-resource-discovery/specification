@@ -5525,7 +5525,7 @@ definitions:
           - "sap.s4:apiResource:API_BUSINESS_PARTNER:v1"
       relationType:
         type: string
-        x-introduced-in-version: "1.14.3"
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional type of the relationship as a [Concept ID](../index.md#concept-id).
 
@@ -5579,7 +5579,7 @@ definitions:
           - "sap.s4:eventResource:BusinessPartnerEvents:v1"
       relationType:
         type: string
-        x-introduced-in-version: "1.14.3"
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional type of the relationship as a [Concept ID](../index.md#concept-id).
 
@@ -5633,7 +5633,7 @@ definitions:
           - "sap.foo:capability:fieldExtensibility:v1"
       relationType:
         type: string
-        x-introduced-in-version: "1.14.3"
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional type of the relationship as a [Concept ID](../index.md#concept-id).
 
