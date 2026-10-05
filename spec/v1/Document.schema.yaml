@@ -5487,7 +5487,7 @@ definitions:
 
               E.g. a `BusinessPartner` can share the same identity as a `NaturalPerson`.
           - const: same-as
-            x-introduced-in-version: "1.14.3"
+            x-introduced-in-version: "1.17.0"
             description: |-
               The source and target resource are the same or equivalent.
               This is useful when the same resource is described by different ORD providers or in different contexts,
@@ -5645,7 +5645,7 @@ definitions:
             description: |-
               Any valid [Concept ID](../index.md#concept-id).
           - const: same-as
-            x-introduced-in-version: "1.14.3"
+            x-introduced-in-version: "1.17.0"
             description: |-
               The source and target resource are the same or equivalent.
               This is useful when the same resource is described by different ORD providers or in different contexts,
