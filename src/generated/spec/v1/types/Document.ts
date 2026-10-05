@@ -3432,7 +3432,7 @@ export interface Overlay {
   relatedEventResources?: RelatedEventResource[];
   /**
    * List of overlay definition files referenced by this ORD Overlay Resource.
-   * Each entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches.
+   * Each entry points to an overlay document that contains the actual patches.
    */
   definitions?: OverlayDefinition[];
   /**
@@ -3451,7 +3451,7 @@ export interface OverlayDefinition {
   /**
    * Type of the overlay definition
    */
-  type: ("ord:overlay:v1" | string) & string;
+  type: ("ord:overlay:v1" | "oas-overlay-v1" | string) & string;
   /**
    * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
    * A consuming application can use this information to know which file format parser it needs to use.
