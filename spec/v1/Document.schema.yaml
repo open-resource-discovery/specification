@@ -683,7 +683,7 @@ definitions:
             - const: Professional Services
             - const: Public Sector
             - const: Public Services
-            - const: Real Estat
+            - const: Real Estate
             - const: Retail
             - const: Service Industries
             - const: Sports and Entertainment
