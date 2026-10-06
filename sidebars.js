@@ -11,7 +11,7 @@ const sidebars = {
       items: [
         {
           type: "category",
-          label: "ORD Detail Pages",
+          label: "Detail Pages",
           link: { type: "doc", id: "spec-v1/concepts/index" },
           collapsed: false,
           items: [
