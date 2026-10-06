@@ -6,7 +6,7 @@ Load order (top → bottom):
 
 1. `foundation/index.css` — tokens, base styles, and theme variables (light/dark)
 2. `components/index.css` — component styles (navbar, mobile, markdown)
-3. `pages/index.css` — page-level styles (Landing Page included)
+3. `pages/index.css` and `pages/help.css` — page-level styles
 
 Bundles
 
@@ -21,6 +21,7 @@ Bundles
 
 - pages/
   - index.css — Landing Page styles
+  - help.css — Help hub styles
 
 Notes
 
