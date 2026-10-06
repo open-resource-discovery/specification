@@ -2,6 +2,16 @@
 toc_max_heading_level: 3
 ---
 
+import {
+  AlignmentDiagram,
+  DataModelDiagram,
+  DiscoveryFlowDiagram,
+  ProviderDiagram,
+  RolesDiagram,
+  SapArchitectureDiagram,
+  UnifiedMetadataDiagram,
+} from "@site/src/components/OrdDiagrams";
+
 # ORD Introduction
 
 > 🎦 There is also an [ORD Introduction video](./help/videos/introduction.md), based on this article.
@@ -13,36 +23,16 @@ toc_max_heading_level: 3
 - Need to provide **more automation and a better development experience** for integrating SAP products with each other, the BTP SAP ecosystem and side-by-side extensions.
 - Many AI and Analytics use-cases **rely on consistent and standardized metadata** to deliver value or scale well.
 
-<details>
-<summary>Metadata integration without alignment</summary>
-
 Without alignment on metadata standards and how they are discovered, all metadata integration between providers and consumers happens on a point-to-point basis.
 This not only means a lot of integrations, but also that the integrations may need to be implemented differently.
 
 This is a similar situation when there was no standardization on charging cable adapters.
 It was difficult or sometimes impossible to connect various devices and led to high efforts and waste for everyone.
 
-<div className="img-box" style={{aspectRatio: "3869/1690"}}>
-
-![ORD Provider Overview](/img/no-aligned-standards.svg "Metadata Integration without alignment")
-
-</div>
-
-</details>
-
-<details>
-<summary>Metadata integration with ORD alignment</summary>
-
 We can tackle this problem by introducing two concepts: First, use **aligned standards for metadata description and discovery**.
 Second, use a **central aggregator**, which can read metadata from all providers and can serve the information to all consumers.
 
-<div className="img-box" style={{aspectRatio: "3716/1714"}}>
-
-![ORD Provider Overview](/img/aligned-standards.svg "Metadata Integration with ORD")
-
-</div>
-
-</details>
+<AlignmentDiagram />
 
 > ℹ Read the [Why ORD?](./help/faq/why-ord.md) article for more background.
 
@@ -53,11 +43,7 @@ It can be used to describe static documentation, but can also reflect tenant-spe
 
 By adopting ORD, an application will implement a single-entry point ([Service Provider Interface](https://en.wikipedia.org/wiki/Service_provider_interface)) that can be used to discover and crawl the relevant information / metadata.
 
-<div className="img-box" style={{"maxWidth": "480px", aspectRatio: "1771/1422"}}>
-
-![ORD Provider Overview](/img/ord-provider-overview.svg "ORD Provider Overview")
-
-</div>
+<ProviderDiagram />
 
 In the picture above, the center is an application or service describing itself.
 They typically have multiple resources and capabilities that are outward facing and are of interest for external consumers.
@@ -91,26 +77,18 @@ In case that the standardized concepts or attributes are not sufficient, there a
 The mentioned concepts can be grouped by different concerns via [Packages](./spec-v1/interfaces/Document.md#package) and [Consumption Bundles](./spec-v1/interfaces/Document.md#consumption-bundle) and various taxonomy attributes.
 Additionally, relations between the concepts can be expressed (e.g., which APIs and Events share the same Entity Types?).
 
-<div className="img-box" style={{aspectRatio: "862/537"}}>
-
-![ORD Data Model Overview](/img/ord-high-level-data-model.drawio.svg "ORD Data Model Overview")
-
-</div>
+<DataModelDiagram />
 
 ## ORD Architecture at SAP
 
 Below is a simplified overview of how ORD has been adopted at SAP:
 
-<div className="img-box" style={{aspectRatio: "2757/1652"}}>
-
-![ORD Provider Overview](/img/ord-sap-architecture-overview.svg "SAP ORD Architecture Overview")
-
-</div>
+<SapArchitectureDiagram />
 
 We need to make a distinction between describing and understanding:
 
 - **Customer System Landscape**: Describes a real system landscape as it actually exists, e.g. for a customer ("as-is view").
-  - SAP uses the [Unified Customer Landscape](#unified-customer-landscape) (UCL) as central aggregator, that will discover and combine ORD information and re-expose it as a (customer specific) system landscape metadata view.
+  - SAP uses the [Unified Metadata Service](#unified-customer-landscape) (UMS) as a central aggregator that discovers and combines ORD information and re-exposes it as a customer-specific system landscape metadata view.
 - **Reference Landscape**: Describes a static, generic catalog of what is offered ("could-be view").
   - SAP publishes static documentation to the [SAP Business Accelerator Hub](#sap-business-accelerator-hub)
 
@@ -161,8 +139,8 @@ This perspective is very important, as it describes technical aspects of product
 
 ### Unified Customer Landscape
 
-Unified Customer Landscape (UCL) is a set of technical services that also offers the system landscape metadata (incl. ORD information) to other applications and services.
-While the [SAP Business Accelerator Hub](#sap-business-accelerator-hub) focuses on the static perspective of a product, the UCL can provide the actual system tenant metadata - including possible customer extensions and customizations.
+Unified Metadata Service (UMS), previously referred to here as Unified Customer Landscape (UCL), offers system landscape metadata, including ORD information, to other applications and services.
+While the [SAP Business Accelerator Hub](#sap-business-accelerator-hub) focuses on the static perspective of a product, UMS can provide actual system-instance metadata, including possible customer extensions and customizations.
 
 <div className="img-box" style={{aspectRatio: "2265/1290"}}>
 
@@ -170,11 +148,11 @@ While the [SAP Business Accelerator Hub](#sap-business-accelerator-hub) focuses 
 
 </div>
 
-The UCL offers information about the customer system landscape and managing integrations, as can be seen in the [SAP BTP](https://www.sap.com/products/technology-platform.html) Cockpit in the System Landscape UI.
+UMS offers information about the customer system landscape and integration management, as illustrated by the [SAP BTP](https://www.sap.com/products/technology-platform.html) Cockpit System Landscape UI.
 Here customers can see their own systems and manage them e.g. grouping them via formations that enable trust and automatic integration between them for specific scenarios.
 Systems that are in the same formation usually need to get information about each other, some of which may be provided via ORD.
 
-- The UCL automatically aggregates and consolidates all the information about the customer’s IT landscape into one unified machine-readable extensible graph-like landscape model.
+- UMS automatically aggregates and consolidates information about the customer’s IT landscape into one unified, machine-readable, extensible, graph-like landscape model.
   This model includes information about the customers SAP, Partner 3rd party and on-premise application (service) tenants as well as metadata about their API, event and connectivity-related requirements, existing integrations and their state.
   This includes amongst other things, also the ORD metadata of the systems.
 - The automatically aggregated landscape model is then _re-exposed for discovery and introspection_ to various SAP and Partner UIs and tools that customers use to oversee, manage and monitor their IT landscape.
@@ -201,11 +179,7 @@ Typical questions that are addressed on ORD level are:
 - How the resources fit into a global taxonomy
 - How resources relate to each other (e.g. for navigation)
 
-<div className="img-box" style={{aspectRatio: "3180/1390"}}>
-
-![ORD Information Overview](/img/ord-information-overview.svg "ORD Information Overview")
-
-</div>
+<UnifiedMetadataDiagram />
 
 </details>
 
@@ -215,11 +189,7 @@ Typical questions that are addressed on ORD level are:
 ORD can enable fully automated metadata discovery and exchange (after initial onboarding).
 by also standardizing how the information is discovered, transported and accessed. See [ORD Transport Modes](./spec-v1/index.md#ord-transport-modes) for an example.
 
-<div className="img-box" style={{aspectRatio: "3941/1370"}}>
-
-![ORD Behavior Overview](/img/ord-behavior-overview.svg "ORD Behavior Overview")
-
-</div>
+<DiscoveryFlowDiagram />
 
 </details>
 
@@ -230,11 +200,7 @@ In ORD there are three roles that systems can have.
 Depending on the role, only some parts of the specification are relevant and need to be implemented.
 One system can also have more than one role, e.g. an ORD Provider can also be an ORD Consumer.
 
-<div className="img-box" style={{aspectRatio: "3979/1214"}}>
-
-![ORD Roles Overview](/img/ord-roles-overview.svg "ORD Roles Overview")
-
-</div>
+<RolesDiagram />
 
 </details>
 
@@ -244,12 +210,6 @@ One system can also have more than one role, e.g. an ORD Provider can also be an
 The [ORD Provider](./spec-v1/index.md#ord-provider) is a system that describes itself via ORD, so it's metadata becomes available to interested ORD Consumers.
 
 They have to implement one of the ORD transport modes (currently only a pull-based API is supported), so the ORD information and related metadata definitions can be discovered and fetched.
-
-<div className="img-box" style={{aspectRatio: "3144/972"}}>
-
-![ORD Provider Role](/img/ord-role-provider.svg "ORD Provider Role")
-
-</div>
 
 </details>
 
@@ -264,12 +224,6 @@ Since it builds an aggregated overview, here the decentralized information from 
 It's most notable feature is that it offers an [ORD Discovery API](./spec-v1/index.md#ord-discovery-api), which offers a high-quality API to ORD consumers.
 The information offered represent an aggregated, connected and consolidated metadata overview.
 
-<div className="img-box" style={{aspectRatio: "3472/809"}}>
-
-![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
-
-</div>
-
 </details>
 
 <details>
@@ -278,12 +232,6 @@ The information offered represent an aggregated, connected and consolidated meta
 The [ORD Consumer](./spec-v1/index.md#ord-consumer) is interested in learning about the resources and capabilities of other systems.
 
 An ORD consumer should get their information from an ORD Aggregator, where a complete overview is offered with a more consumer friendly [ORD Discovery API](./spec-v1/index.md#ord-discovery-api) API
-
-<div className="img-box" style={{aspectRatio: "2740/1181"}}>
-
-![ORD Consumer Role](/img/ord-role-consumer.svg "ORD Consumer Role")
-
-</div>
 
 </details>
 
