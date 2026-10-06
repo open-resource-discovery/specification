@@ -35,6 +35,10 @@ Check out the [ORD Reference Application](https://ord-reference-application.cfap
 
 - Within this repository: [examples/](./examples/).
 
+#### Diagrams
+
+See [diagram sources and synchronization](./diagrams/README.md) for the shared graph data and the matching React and Vue diagrams in the specification site and presentation.
+
 ## History
 
 For detailed and recent changes, please refer to the [CHANGELOG.md](CHANGELOG.md).
