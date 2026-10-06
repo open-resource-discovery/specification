@@ -5,7 +5,10 @@ title: ORD Specification
 
 import {
   DataModelDiagram,
+  DiscoveryFlowDiagram,
   NamespaceDiagram,
+  PerspectivesDiagram,
+  ProviderDiagram,
   PullSequenceDiagram,
   RolesDiagram,
 } from "@site/src/components/OrdDiagrams";
@@ -107,6 +110,8 @@ An ORD provider MUST use one of the standardized [ORD transport modes](#ord-tran
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
+<ProviderDiagram />
+
 ### ORD Aggregator
 
 An **ORD aggregator** is a system that collects, aggregates, and proxies the ORD information from multiple [ORD providers](#ord-provider).
@@ -164,6 +169,8 @@ If the ORD information is [system-instance-aware](#system-instance-aware), the i
 In pull transport mode, [ORD information](#ord-information) is made available through a simple REST API that exposes [ORD documents](#ord-document) via `GET` endpoints.
 
 This is implemented by providing an [ORD Provider API](#ord-provider-api).
+
+<DiscoveryFlowDiagram />
 
 ##### Pull Transport - Pros
 
@@ -659,6 +666,8 @@ For a definition, please refer to the [terminology](#terminology) section.
 > It is explained in more detail in the [perspectives concept page](./concepts/perspectives.md).
 
 > This concept deprecates the use of `systemInstanceAware`
+
+<PerspectivesDiagram />
 
 There is a `perspective` attribute, which allows setting the following values:
 

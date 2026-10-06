@@ -6,9 +6,12 @@ import {
   AlignmentDiagram,
   DataModelDiagram,
   DiscoveryFlowDiagram,
+  LandscapeDiagram,
+  PerspectivesDiagram,
   ProviderDiagram,
   RolesDiagram,
   SapArchitectureDiagram,
+  SilosDiagram,
   UnifiedMetadataDiagram,
 } from "@site/src/components/OrdDiagrams";
 
@@ -28,6 +31,8 @@ This not only means a lot of integrations, but also that the integrations may ne
 
 This is a similar situation when there was no standardization on charging cable adapters.
 It was difficult or sometimes impossible to connect various devices and led to high efforts and waste for everyone.
+
+<SilosDiagram />
 
 We can tackle this problem by introducing two concepts: First, use **aligned standards for metadata description and discovery**.
 Second, use a **central aggregator**, which can read metadata from all providers and can serve the information to all consumers.
@@ -79,9 +84,17 @@ Additionally, relations between the concepts can be expressed (e.g., which APIs 
 
 <DataModelDiagram />
 
+The following example illustrates how resources, declared dependencies, and shared Entity Types form a connected landscape view.
+
+<LandscapeDiagram />
+
 ## ORD Architecture at SAP
 
-Below is a simplified overview of how ORD has been adopted at SAP:
+ORD distinguishes reusable static metadata from the complete metadata of a running system instance.
+
+<PerspectivesDiagram />
+
+The following diagram shows how SAP applies those perspectives through shared providers and connected metadata services.
 
 <SapArchitectureDiagram />
 

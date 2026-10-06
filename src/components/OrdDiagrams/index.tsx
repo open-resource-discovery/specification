@@ -4,8 +4,46 @@ const consumers = [
   "SAP BTP",
   "SAP Business Data Cloud",
   "SAP Event Hub",
-  "Other consumers",
+  "…",
 ];
+
+export function SilosDiagram() {
+  const silos = [
+    ["inventory", "Inventory", "Systems / Services", ["a", "b", "c"]],
+    ["api", "Catalog", "APIs", ["a", "b", "c"]],
+    ["event", "Catalog", "Events", ["a", "b"]],
+    ["data", "Catalog", "Data", ["a", "b", "c"]],
+    ["agent", "Catalog", "Agents", ["a", "b"]],
+  ] as const;
+
+  return (
+    <figure
+      className="ord-diagram ord-silos"
+      aria-label="System inventory and resource metadata split across separate inventories and catalogs"
+    >
+      <div className="ord-silos__formats">
+        <span>Service discovery</span>
+        <span>OpenAPI</span>
+        <span>AsyncAPI</span>
+        <span>A2A</span>
+        <span>MCP</span>
+      </div>
+      <div className="ord-silos__grid">
+        {silos.map(([type, kind, label, items]) => (
+          <section className={`ord-silo ord-silo--${type}`} key={type}>
+            <small>{kind}</small>
+            <strong>{label}</strong>
+            {items.map((item) => <i key={item} />)}
+          </section>
+        ))}
+      </div>
+      <div className="ord-silos__gap">
+        <strong>No shared landscape view</strong>
+        <span>inventory · context · relationships · runtime state</span>
+      </div>
+    </figure>
+  );
+}
 
 export function AlignmentDiagram() {
   return (
@@ -381,6 +419,220 @@ export function DataModelDiagram() {
   );
 }
 
+export function PerspectivesDiagram() {
+  return (
+    <figure
+      className="ord-diagram ord-perspectives"
+      aria-label="ORD static, dynamic, and system-independent perspectives"
+    >
+      <div className="ord-perspectives__global">
+        <span>System-independent</span>
+        <strong>Shared taxonomy</strong>
+        <small>Products · Vendors · global Entity Types and Groups</small>
+      </div>
+      <div className="ord-perspectives__grid">
+        <section className="ord-perspective ord-perspective--static">
+          <span>Static</span>
+          <h3>System type / version</h3>
+          <p>Reusable design-time baseline.</p>
+          <div>
+            <b>offered APIs</b>
+            <b>versions</b>
+            <b>design-time contracts</b>
+          </div>
+        </section>
+        <section className="ord-perspective ord-perspective--dynamic">
+          <span>Dynamic</span>
+          <h3>System instance</h3>
+          <p>Complete view of one running tenant.</p>
+          <div>
+            <b>active APIs</b>
+            <b>extensions</b>
+            <b>endpoints</b>
+          </div>
+        </section>
+      </div>
+      <div className="ord-perspectives__effective">
+        <span>Aggregator responsibility</span>
+        <strong>Resolve the effective view for consumers</strong>
+      </div>
+    </figure>
+  );
+}
+
+export function LandscapeDiagram() {
+  const relationMarker = "ord-landscape-entity-type";
+  const dependencyMarker = "ord-landscape-dependency";
+
+  return (
+    <figure
+      className="ord-diagram ord-landscape"
+      aria-label="Order fulfillment resource graph across Orders, Fulfillment, and Shipping providers"
+    >
+      <svg viewBox="0 0 1184 430" role="img">
+        <title>A connected ORD resource graph</title>
+        <desc>
+          A Fulfillment Agent declares dependencies on an Order Created Event,
+          the Orders API, and the Shipment API. Order and Shipment Entity Types
+          provide shared business context.
+        </desc>
+        <defs>
+          <marker
+            id={relationMarker}
+            viewBox="0 0 10 10"
+            refX="10"
+            refY="5"
+            markerUnits="userSpaceOnUse"
+            markerWidth="10"
+            markerHeight="10"
+            orient="auto"
+          >
+            <path className="relation-head" d="M0 0L10 5L0 10Z" />
+          </marker>
+          <marker
+            id={dependencyMarker}
+            viewBox="0 0 10 10"
+            refX="10"
+            refY="5"
+            markerUnits="userSpaceOnUse"
+            markerWidth="10"
+            markerHeight="10"
+            orient="auto"
+          >
+            <path className="dependency-head" d="M0 0L10 5L0 10Z" />
+          </marker>
+        </defs>
+
+        <path
+          className="dependency"
+          d="M440 75H176V170"
+          markerEnd={`url(#${dependencyMarker})`}
+        />
+        <path
+          className="dependency"
+          d="M744 108H800V359H856"
+          markerEnd={`url(#${dependencyMarker})`}
+        />
+        <path
+          className="dependency"
+          d="M744 75H856"
+          markerEnd={`url(#${dependencyMarker})`}
+        />
+        <text className="dependency-label" x="308" y="61" textAnchor="middle">
+          triggered by
+        </text>
+        <text className="dependency-label" x="810" y="283">
+          read order
+        </text>
+        <text className="dependency-label" x="800" y="40" textAnchor="middle">
+          <tspan x="800">create</tspan>
+          <tspan x="800" dy="19">
+            shipment
+          </tspan>
+        </text>
+
+        <path
+          className="relation"
+          d="M592 126V304"
+          markerEnd={`url(#${relationMarker})`}
+        />
+        <path
+          className="relation"
+          d="M328 246L440 340"
+          markerEnd={`url(#${relationMarker})`}
+        />
+        <path
+          className="relation"
+          d="M856 384H744"
+          markerEnd={`url(#${relationMarker})`}
+        />
+        <path
+          className="relation"
+          d="M1008 126V170"
+          markerEnd={`url(#${relationMarker})`}
+        />
+        <text className="relation-label" x="606" y="236">
+          works with
+        </text>
+
+        <g className="resource-node agent-node" transform="translate(440 20)">
+          <rect width="304" height="106" rx="8" />
+          <text className="kind" x="20" y="27">
+            Agent
+          </text>
+          <text className="name" x="20" y="59">
+            Fulfillment Agent
+          </text>
+          <text className="provider" x="20" y="86">
+            Fulfillment · Provider
+          </text>
+        </g>
+        <g className="resource-node event-node" transform="translate(24 170)">
+          <rect width="304" height="106" rx="8" />
+          <text className="kind" x="20" y="27">
+            Event Resource
+          </text>
+          <text className="name" x="20" y="59">
+            Order Created
+          </text>
+          <text className="provider" x="20" y="86">
+            Orders · Provider
+          </text>
+        </g>
+        <g className="resource-node api-node" transform="translate(856 306)">
+          <rect width="304" height="106" rx="8" />
+          <text className="kind" x="20" y="27">
+            API Resource
+          </text>
+          <text className="name" x="20" y="59">
+            Orders API
+          </text>
+          <text className="provider" x="20" y="86">
+            Orders · Provider
+          </text>
+        </g>
+        <g className="resource-node api-node" transform="translate(856 20)">
+          <rect width="304" height="106" rx="8" />
+          <text className="kind" x="20" y="27">
+            API Resource
+          </text>
+          <text className="name" x="20" y="59">
+            Shipment API
+          </text>
+          <text className="provider" x="20" y="86">
+            Shipping · Provider
+          </text>
+        </g>
+        <g className="taxonomy-node" transform="translate(440 304)">
+          <rect width="304" height="108" rx="8" />
+          <text className="kind" x="152" y="28" textAnchor="middle">
+            Shared Entity Type
+          </text>
+          <text className="entity-name" x="152" y="63" textAnchor="middle">
+            Order
+          </text>
+          <text className="detail" x="152" y="89" textAnchor="middle">
+            Common business semantics
+          </text>
+        </g>
+        <g className="taxonomy-node" transform="translate(856 170)">
+          <rect width="304" height="82" rx="8" />
+          <text className="kind" x="152" y="28" textAnchor="middle">
+            Entity Type
+          </text>
+          <text className="entity-name" x="152" y="61" textAnchor="middle">
+            Shipment
+          </text>
+        </g>
+      </svg>
+      <figcaption>
+        ORD describes the resource relationships and declared dependencies, not
+        the runtime data flow.
+      </figcaption>
+    </figure>
+  );
+}
+
 export function UnifiedMetadataDiagram() {
   return (
     <figure
@@ -654,65 +906,229 @@ export function PullSequenceDiagram() {
 }
 
 export function SapArchitectureDiagram() {
+  const marker = (kind: string) => `ord-sap-${kind}-arrow`;
+  const position = (x: number, y: number, width: number, height: number) => ({
+    left: `${(x / 1136) * 100}%`,
+    top: `${(y / 416) * 100}%`,
+    width: `${(width / 1136) * 100}%`,
+    height: `${(height / 416) * 100}%`,
+  });
+
   return (
     <figure
       className="ord-diagram ord-sap-architecture"
-      aria-label="SAP metadata architecture with shared providers, aggregators, knowledge integration, and consumers"
+      aria-label="Shared SAP applications publish static and dynamic metadata. UMS receives both perspectives and other landscape metadata. SAP Business Accelerator Hub receives only static metadata. Knowledge Graph receives UMS metadata and other metadata sources, and feeds consumer tools."
     >
-      <section className="ord-sap-column ord-sap-column--providers">
-        <span>Shared providers</span>
-        <div>
-          <small>ORD Providers</small>
-          <h3>Applications / services</h3>
-          <b>
-            Dynamic<em>System-instance metadata</em>
-          </b>
-          <b>
-            Static<em>System type / version</em>
-          </b>
+      <div className="ord-sap-architecture__scroll">
+        <div className="ord-sap-architecture__canvas">
+          <div
+            className="ord-sap-label ord-sap-label--provider"
+            style={position(0, 0, 244, 20)}
+          >
+            Shared providers
+          </div>
+          <div
+            className="ord-sap-label ord-sap-label--aggregator"
+            style={position(307, 0, 266, 20)}
+          >
+            Aggregators
+          </div>
+          <div
+            className="ord-sap-label ord-sap-label--knowledge"
+            style={position(637, 0, 208, 20)}
+          >
+            Knowledge integration
+          </div>
+          <div
+            className="ord-sap-label ord-sap-label--consumer"
+            style={position(908, 0, 228, 20)}
+          >
+            Consumers
+          </div>
+
+          <svg
+            className="ord-sap-connectors"
+            viewBox="0 0 1136 416"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <marker
+                id={marker("provider")}
+                viewBox="0 0 10 10"
+                refX="10"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto"
+              >
+                <path d="M0 0 10 5 0 10Z" />
+              </marker>
+              <marker
+                id={marker("aggregator")}
+                viewBox="0 0 10 10"
+                refX="10"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto"
+              >
+                <path d="M0 0 10 5 0 10Z" />
+              </marker>
+              <marker
+                id={marker("other")}
+                viewBox="0 0 10 10"
+                refX="10"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto"
+              >
+                <path d="M0 0 10 5 0 10Z" />
+              </marker>
+              <marker
+                id={marker("knowledge")}
+                viewBox="0 0 10 10"
+                refX="10"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto"
+              >
+                <path d="M0 0 10 5 0 10Z" />
+              </marker>
+            </defs>
+            <path
+              className="provider-edge"
+              d="M230 237H264V164H307"
+              markerEnd={`url(#${marker("provider")})`}
+            />
+            <path
+              className="provider-edge"
+              d="M230 375H283V204H307"
+              markerEnd={`url(#${marker("provider")})`}
+            />
+            <path
+              className="provider-edge"
+              d="M283 375H307"
+              markerEnd={`url(#${marker("provider")})`}
+            />
+            <path
+              className="other-edge"
+              d="M440 74V110"
+              markerEnd={`url(#${marker("other")})`}
+            />
+            <path
+              className="aggregator-edge"
+              d="M573 164H637"
+              markerEnd={`url(#${marker("aggregator")})`}
+            />
+            <path
+              className="other-edge"
+              d="M741 74V110"
+              markerEnd={`url(#${marker("other")})`}
+            />
+            <path className="aggregator-edge" d="M573 210H609V270H880" />
+            <path className="aggregator-edge" d="M573 375H880M880 270V375" />
+            <path
+              className="aggregator-edge"
+              d="M880 322H908"
+              markerEnd={`url(#${marker("aggregator")})`}
+            />
+            <path
+              className="knowledge-edge"
+              d="M845 188H880V222H908"
+              markerEnd={`url(#${marker("knowledge")})`}
+            />
+            <circle cx="283" cy="375" r="3" />
+          </svg>
+
+          <section
+            className="ord-sap-provider"
+            style={position(0, 110, 244, 306)}
+          >
+            <span className="ord-sap-node-role">ORD Providers</span>
+            <h3>Applications / services</h3>
+            <div className="ord-sap-provider__output ord-sap-provider__output--dynamic">
+              <strong>Dynamic</strong>
+              <span>System-instance metadata</span>
+            </div>
+            <div className="ord-sap-provider__output ord-sap-provider__output--static">
+              <strong>Static</strong>
+              <span>System type / version</span>
+            </div>
+          </section>
+
+          <aside
+            className="ord-sap-other-source"
+            style={position(307, 30, 266, 44)}
+          >
+            <strong>Other landscape metadata</strong>
+            <span>BTP destinations / registries</span>
+          </aside>
+          <aside
+            className="ord-sap-other-source"
+            style={position(637, 30, 208, 44)}
+          >
+            <strong>Other metadata sources</strong>
+          </aside>
+          <section
+            className="ord-sap-node ord-sap-node--ums"
+            style={position(307, 110, 266, 124)}
+          >
+            <span className="ord-sap-node-role">ORD Aggregator</span>
+            <h3>
+              Unified Metadata
+              <br />
+              Service (UMS)
+            </h3>
+            <p>Static + dynamic metadata</p>
+          </section>
+          <section
+            className="ord-sap-node ord-sap-node--bah"
+            style={position(307, 314, 266, 102)}
+          >
+            <span className="ord-sap-node-role">ORD Aggregator</span>
+            <h3>
+              SAP Business
+              <br />
+              Accelerator Hub
+            </h3>
+            <p>Static catalog only</p>
+          </section>
+          <section
+            className="ord-sap-node ord-sap-node--knowledge"
+            style={position(637, 110, 208, 124)}
+          >
+            <span className="ord-sap-node-role">Combine metadata</span>
+            <h3>Knowledge Graph</h3>
+            <p>UMS + other sources</p>
+          </section>
+          <section
+            className="ord-sap-consumers"
+            style={position(908, 110, 228, 306)}
+          >
+            <h3>Consumers</h3>
+            <ul>
+              {consumers.map((consumer) => (
+                <li
+                  key={consumer}
+                  aria-label={consumer === "…" ? "Other consumers" : undefined}
+                >
+                  {consumer}
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
-      </section>
-      <i className="ord-flow-arrow" aria-hidden="true" />
-      <section className="ord-sap-column ord-sap-column--aggregators">
-        <span>Aggregators</span>
-        <div>
-          <small>ORD Aggregator</small>
-          <h3>Unified Metadata Service (UMS)</h3>
-          <span className="ord-sap-column__detail">
-            Static + dynamic metadata
-          </span>
-        </div>
-        <div>
-          <small>ORD Aggregator</small>
-          <h3>SAP Business Accelerator Hub</h3>
-          <span className="ord-sap-column__detail">Static catalog only</span>
-        </div>
-      </section>
-      <i className="ord-flow-arrow" aria-hidden="true" />
-      <section className="ord-sap-column ord-sap-column--knowledge">
-        <span>Knowledge integration</span>
-        <div>
-          <small>Combine metadata</small>
-          <h3>Knowledge Graph</h3>
-          <span className="ord-sap-column__detail">UMS + other sources</span>
-        </div>
-      </section>
-      <i className="ord-flow-arrow" aria-hidden="true" />
-      <section className="ord-sap-column ord-sap-column--consumers">
-        <span>Consumers</span>
-        <div>
-          {consumers.map((consumer) => (
-            <b key={consumer}>{consumer}</b>
-          ))}
-        </div>
-      </section>
+      </div>
       <figcaption>
         <strong>
-          UMS combines both perspectives; SAP Business Accelerator Hub takes the
-          static catalog.
+          UMS combines both perspectives; BAH takes the static catalog.
         </strong>
         <span>
-          Arrows summarize metadata delivery to connected consumer experiences.
+          Arrows show metadata delivery. Knowledge Graph also integrates other
+          metadata sources.
         </span>
       </figcaption>
     </figure>
