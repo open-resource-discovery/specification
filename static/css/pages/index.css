@@ -15,7 +15,7 @@
   background-color: var(--lp-c-bg);
   border-top: 1px solid var(--lp-c-divider);
   box-shadow: 0 -2px 12px rgba(4, 13, 18, 0.06);
-  padding: 16px 0 0;
+  padding: 16px 0 12px;
   margin-top: 16px;
 }
 .footer--dark .footer__copyright {
