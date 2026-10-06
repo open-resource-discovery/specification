@@ -36,16 +36,10 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
         [Specification](./spec-v1/index.md)
       </div>
       <div className="action medium alt">
-        [Extensions](./spec-extensions/index.md)
-      </div>
-      <div className="action medium alt">
         [Ecosystem](./ecosystem/index.mdx)
       </div>
       <div className="action medium alt">
-        [FAQ](./help/faq/index.md)
-      </div>
-      <div className="action medium alt">
-        [Videos](./help/videos/index.mdx)
+        [Help](./help/index.mdx)
       </div>
     </div>
   </div>
@@ -85,23 +79,21 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
   <div className="container lp-quickstart-container">
     <h2>Quick Start</h2>
     <ol>
-      <li><strong>Understand</strong> — Read the <a href="./introduction">ORD introduction</a> to grasp the core concepts</li>
-      <li><strong>Explore</strong> — Check the <a href="./spec-v1/examples">example files</a> to see ORD in action</li>
-      <li><strong>Implement</strong> — Follow the <a href="./spec-v1/interfaces/Configuration">ORD Configuration Interface</a> to add ORD to your application</li>
-      <li><strong>Validate</strong> — Use the <a href="https://www.npmjs.com/package/@open-resource-discovery/specification">JSON Schema</a> to validate your ORD documents</li>
+      <li><strong>Understand:</strong> Read the <a href="./introduction">ORD introduction</a> to grasp the core concepts.</li>
+      <li><strong>Explore:</strong> Check the <a href="./spec-v1/examples">example files</a> to see ORD in action.</li>
+      <li><strong>Implement:</strong> Follow the <a href="./spec-v1/interfaces/Configuration">ORD Configuration Interface</a> to add ORD to your application.</li>
+      <li><strong>Validate:</strong> Use the <a href="https://www.npmjs.com/package/@open-resource-discovery/specification">JSON Schema</a> to validate your ORD documents.</li>
     </ol>
   </div>
 
   <div className="container lp-usecases-container">
-    <h2>Use Cases</h2>
-    <p>Information expressed or discovered through ORD can be used to build static <strong>metadata catalogs</strong> or do detailed <strong>runtime inspection of actual system landscapes</strong>:</p>
+    <h2>What You Can Build</h2>
+    <p>ORD metadata supports both static catalogs and detailed inspection of actual system landscapes:</p>
     <ul>
-      <li>API and event catalog</li>
-      <li>Data product directory/catalog</li>
-      <li>Landscape specific API/event discovery for development platforms, platform engineering and low-code/no-code development</li>
-      <li>Support admins in configuring services (discovery &amp; automation)</li>
-      <li>AI grounding &amp; training</li>
-      <li>Generic channel to describe, discover and exchange system capabilities between providers and consumers (even across vendors)</li>
+      <li>Unified catalogs for APIs, events, data products, agents, and capabilities.</li>
+      <li>Landscape-aware discovery of resources available in a specific tenant.</li>
+      <li>Integration and platform automation based on machine-readable metadata.</li>
+      <li>Developer tools and AI agents grounded in current resource capabilities and relationships.</li>
     </ul>
   </div>
 
@@ -111,11 +103,11 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
         <h3>Design Goals</h3>
       </div><div className="card__body">
         <ul>
-          <li>Systems to <strong>describe themselves</strong> with a single entry-point to crawl all relevant metadata</li>
-          <li>Achieve a combined, machine-readable <strong>system landscape metadata view</strong></li>
-          <li>Enable <strong>fully automatic publication and discovery</strong> of metadata</li>
-          <li>Having <strong>one aligned standard</strong> for description of different resource types, static and runtime perspectives, and many metadata-driven use-cases</li>
-          <li>ORD is an <strong>open standard</strong> — <a href="https://github.com/open-resource-discovery/specification">open source</a> and extensible via labels, custom types, and spec extensions</li>
+          <li>Let systems <strong>describe themselves</strong> through one crawlable entry point.</li>
+          <li>Support both static product metadata and the <strong>runtime system landscape</strong>.</li>
+          <li>Enable <strong>automated publication and discovery</strong> across tools and vendors.</li>
+          <li>Add common context and relationships while preserving established definition formats.</li>
+          <li>Remain <a href="https://github.com/open-resource-discovery/specification">open source</a> and extensible.</li>
         </ul>
       </div></div>
     </div>
@@ -124,10 +116,10 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
         <h3>Non-Goals</h3>
       </div><div className="card__body">
         <ul>
-          <li>Replace industry-standard resource definition formats like OpenAPI</li>
-          <li>Describing resources or capabilities in extensive detail</li>
-          <li>Fast-changing information (current pull-based transport is not suited for time-critical updates)</li>
-          <li>Describing resources not owned and exposed directly by the system (self-description only)</li>
+          <li>Replace industry-standard resource definition formats such as OpenAPI.</li>
+          <li>Describe resources or capabilities in exhaustive technical detail.</li>
+          <li>Transport fast-changing operational information.</li>
+          <li>Describe resources that are not owned and exposed directly by the system.</li>
         </ul>
       </div></div>
     </div></div>
@@ -135,13 +127,14 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
 
   <div className="container lp-learnmore-container">
     <h2>Learn More</h2>
-    <ul>
-      <li>Read the <a href="./introduction">ORD Introduction</a> and watch the <a href="./help/videos">ORD Videos</a></li>
-      <li>Read blog post: <a href="https://community.sap.com/t5/technology-blog-posts-by-sap/why-we-created-open-resource-discovery/ba-p/14172057">Why we created Open Resource Discovery</a> and listen to <a href="https://podcast.opensap.info/open-source-way/2024/06/14/open-resource-discovery-ord/">podcast on ORD</a></li>
-      <li>The npm package <a href="https://www.npmjs.com/package/@open-resource-discovery/specification"><code>@open-resource-discovery/specification</code></a> provides the JSON Schema and TypeScript types</li>
-    </ul>
-    <div className="videoContainer">
-      <iframe className="videoIframe" src="https://www.youtube.com/embed/7Z818CdoZJg" title="Introducing the Open Resource Discovery protocol" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+    <p>Explore ORD through the interactive presentation, or visit the Help hub for videos, implementation guidance, examples, and answers to common questions.</p>
+    <div className="lp-learnmore-actions">
+      <div className="action medium brand">
+        [Explore the Presentation ↗](https://open-resource-discovery.github.io/presentation/)
+      </div>
+      <div className="action medium alt">
+        [Browse Help](./help/index.mdx)
+      </div>
     </div>
   </div>
 

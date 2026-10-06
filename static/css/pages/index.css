@@ -580,6 +580,18 @@ html[data-theme="light"] .neonephos-logo--light {
   padding-left: 1.4rem;
   margin: 0 0 16px;
 }
+.lp-learnmore-container > p {
+  max-width: 760px;
+  margin: 0 0 20px;
+  color: var(--lp-c-text-2);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.lp-learnmore-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 .lp-home .lp-quickstart-container,
 .lp-home .lp-usecases-container,
 .lp-home .lp-learnmore-container {
