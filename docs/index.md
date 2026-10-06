@@ -6,7 +6,7 @@ hide_title: true
 hide_table_of_contents: true
 ---
 
-import { UnifiedMetadataDiagram } from "@site/src/components/OrdDiagrams";
+import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
 
 <div className="ord-home-flag" hidden />
 
@@ -36,16 +36,10 @@ import { UnifiedMetadataDiagram } from "@site/src/components/OrdDiagrams";
         [Specification](./spec-v1/index.md)
       </div>
       <div className="action medium alt">
-        [Extensions](./spec-extensions/index.md)
-      </div>
-      <div className="action medium alt">
         [Ecosystem](./ecosystem/index.mdx)
       </div>
       <div className="action medium alt">
-        [FAQ](./help/faq/index.md)
-      </div>
-      <div className="action medium alt">
-        [Videos](./help/videos/index.mdx)
+        [Help](./help/index.mdx)
       </div>
     </div>
   </div>
@@ -53,31 +47,37 @@ import { UnifiedMetadataDiagram } from "@site/src/components/OrdDiagrams";
   <div className="container">
     <div className="lp-overview-grid">
       <div className="lp-overview-text">
-        <p>Open Resource Discovery (ORD) is a protocol that enables applications and services to self-describe their exposed resources and capabilities, standardizing metadata publishing and discovery. It serves as a foundation for <strong>metadata catalogs and marketplaces</strong> while improving integration automation and quality.</p>
-        <p>ORD is designed to be <strong>general-purpose</strong> and to work with a wide variety of industry-standard protocols and metadata standards. It can be used for <strong>static documentation</strong> or to describe the <strong>run-time system landscape</strong>, reflecting tenant-specific configuration and extensions.</p>
-      <p>Technically, ORD allows applications to implement a read-only entry point (<a href="https://en.wikipedia.org/wiki/Service_provider_interface">Service Provider Interface</a>) that can be used to discover and crawl relevant metadata. The ORD standard is governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/">NeoNephos</a>.</p>
+        <h2>Publish and discover connected metadata</h2>
+        <p>Open Resource Discovery (ORD) standardizes how applications and services publish metadata about the resources and capabilities they expose, and how consumers discover it.</p>
+        <p>
+          <span>Providers can describe and connect APIs, events, data products, AI agents, and other capabilities with shared business context and relationships.</span>{" "}
+          <span>Consumers can use this standardized metadata to build catalogs and marketplaces, automate integration workflows, or inspect what is actually available in a tenant-specific runtime landscape.</span>
+        </p>
+        <p>ORD complements established standards such as OpenAPI and AsyncAPI rather than replacing them, so teams can keep their existing definitions as the source of truth while adding consistent discovery, business context, and cross-resource relationships.</p>
+        <p>It is an open standard governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/">NeoNephos</a>.</p>
       </div>
+      <ProviderDiagram />
     </div>
-    <UnifiedMetadataDiagram />
   </div>
 
-  <div className="container">
+  <div className="container lp-benefits-container">
+    <h2>Why ORD?</h2>
     <div className="lp-features">
       <div className="lp-feature-card">
-        <h3>Unify and Connect</h3>
-        <p>Foundation for unified, well-connected metadata catalogs and marketplaces.</p>
+        <h3>Automated Discovery</h3>
+        <p>Publish metadata at the source so catalogs and tools can find and refresh it without manual registration.</p>
       </div>
       <div className="lp-feature-card">
-        <h3>Multi-purpose</h3>
-        <p>Covers different technologies and domains, designed to be general-purpose and extensible.</p>
+        <h3>The Actual Runtime Landscape</h3>
+        <p>Reveal tenant-specific configuration, extensions, and endpoints, not only static product documentation.</p>
       </div>
       <div className="lp-feature-card">
-        <h3>Standardized</h3>
-        <p>Works with a wide variety of existing industry-standard protocols and metadata standards.</p>
+        <h3>Existing Standards, Connected</h3>
+        <p>Keep OpenAPI, AsyncAPI, and other definitions as the source of truth while ORD adds shared context and relationships.</p>
       </div>
       <div className="lp-feature-card">
-        <h3>Multiple scenarios</h3>
-        <p>Use it for static documentation of your offerings or runtime system landscape introspection.</p>
+        <h3>Extensible Where Needed</h3>
+        <p>Use labels, custom types, and specification extensions for domain-specific needs while retaining a common core.</p>
       </div>
     </div>
   </div>
@@ -85,23 +85,21 @@ import { UnifiedMetadataDiagram } from "@site/src/components/OrdDiagrams";
   <div className="container lp-quickstart-container">
     <h2>Quick Start</h2>
     <ol>
-      <li><strong>Understand</strong> — Read the <a href="./introduction">ORD introduction</a> to grasp the core concepts</li>
-      <li><strong>Explore</strong> — Check the <a href="./spec-v1/examples">example files</a> to see ORD in action</li>
-      <li><strong>Implement</strong> — Follow the <a href="./spec-v1/interfaces/Configuration">ORD Configuration Interface</a> to add ORD to your application</li>
-      <li><strong>Validate</strong> — Use the <a href="https://www.npmjs.com/package/@open-resource-discovery/specification">JSON Schema</a> to validate your ORD documents</li>
+      <li><strong>Understand:</strong> Read the <a href="./introduction">ORD introduction</a> to grasp the core concepts.</li>
+      <li><strong>Explore:</strong> Check the <a href="./spec-v1/examples">example files</a> to see ORD in action.</li>
+      <li><strong>Implement:</strong> Follow the <a href="./spec-v1/#ord-provider">ORD Provider</a> section to publish ORD Documents and expose the ORD Configuration Interface.</li>
+      <li><strong>Validate:</strong> Use the <a href="https://www.npmjs.com/package/@open-resource-discovery/specification">JSON Schema</a> to validate your ORD documents.</li>
     </ol>
   </div>
 
   <div className="container lp-usecases-container">
-    <h2>Use Cases</h2>
-    <p>Information expressed or discovered through ORD can be used to build static <strong>metadata catalogs</strong> or do detailed <strong>runtime inspection of actual system landscapes</strong>:</p>
+    <h2>What You Can Build</h2>
+    <p>ORD metadata supports both static catalogs and detailed inspection of actual system landscapes:</p>
     <ul>
-      <li>API and event catalog</li>
-      <li>Data product directory/catalog</li>
-      <li>Landscape specific API/event discovery for development platforms, platform engineering and low-code/no-code development</li>
-      <li>Support admins in configuring services (discovery &amp; automation)</li>
-      <li>AI grounding &amp; training</li>
-      <li>Generic channel to describe, discover and exchange system capabilities between providers and consumers (even across vendors)</li>
+      <li>Unified catalogs for APIs, events, data products, agents, and capabilities.</li>
+      <li>Landscape-aware discovery of resources available in a specific tenant.</li>
+      <li>Integration and platform automation based on machine-readable metadata.</li>
+      <li>Developer tools and AI agents grounded in current resource capabilities and relationships.</li>
     </ul>
   </div>
 
@@ -111,11 +109,11 @@ import { UnifiedMetadataDiagram } from "@site/src/components/OrdDiagrams";
         <h3>Design Goals</h3>
       </div><div className="card__body">
         <ul>
-          <li>Systems to <strong>describe themselves</strong> with a single entry-point to crawl all relevant metadata</li>
-          <li>Achieve a combined, machine-readable <strong>system landscape metadata view</strong></li>
-          <li>Enable <strong>fully automatic publication and discovery</strong> of metadata</li>
-          <li>Having <strong>one aligned standard</strong> for description of different resource types, static and runtime perspectives, and many metadata-driven use-cases</li>
-          <li>ORD is an <strong>open standard</strong> — <a href="https://github.com/open-resource-discovery/specification">open source</a> and extensible via labels, custom types, and spec extensions</li>
+          <li>Standardize how providers <strong>publish connected metadata</strong> and how consumers discover it.</li>
+          <li>Represent both product-level capabilities and the <strong>actual, tenant-specific runtime landscape</strong>.</li>
+          <li>Enable <strong>automated metadata exchange</strong> across tools, aggregators, and vendors.</li>
+          <li>Add shared identity, business context, taxonomy, and relationships while preserving established definition formats.</li>
+          <li>Evolve as an <a href="https://github.com/open-resource-discovery/specification">open, vendor-neutral, and extensible standard</a>.</li>
         </ul>
       </div></div>
     </div>
@@ -124,10 +122,11 @@ import { UnifiedMetadataDiagram } from "@site/src/components/OrdDiagrams";
         <h3>Non-Goals</h3>
       </div><div className="card__body">
         <ul>
-          <li>Replace industry-standard resource definition formats like OpenAPI</li>
-          <li>Describing resources or capabilities in extensive detail</li>
-          <li>Fast-changing information (current pull-based transport is not suited for time-critical updates)</li>
-          <li>Describing resources not owned and exposed directly by the system (self-description only)</li>
+          <li>Replace established resource definition formats such as OpenAPI and AsyncAPI.</li>
+          <li>Repeat every technical detail already captured in linked resource definitions.</li>
+          <li>Transport fast-changing operational data such as logs, metrics, or business payloads.</li>
+          <li>Grant access to discovered resources or replace their runtime protocols.</li>
+          <li>Mandate a single aggregator, catalog experience, or consumer-facing Discovery API.</li>
         </ul>
       </div></div>
     </div></div>
@@ -135,13 +134,14 @@ import { UnifiedMetadataDiagram } from "@site/src/components/OrdDiagrams";
 
   <div className="container lp-learnmore-container">
     <h2>Learn More</h2>
-    <ul>
-      <li>Read the <a href="./introduction">ORD Introduction</a> and watch the <a href="./help/videos">ORD Videos</a></li>
-      <li>Read blog post: <a href="https://community.sap.com/t5/technology-blog-posts-by-sap/why-we-created-open-resource-discovery/ba-p/14172057">Why we created Open Resource Discovery</a> and listen to <a href="https://podcast.opensap.info/open-source-way/2024/06/14/open-resource-discovery-ord/">podcast on ORD</a></li>
-      <li>The npm package <a href="https://www.npmjs.com/package/@open-resource-discovery/specification"><code>@open-resource-discovery/specification</code></a> provides the JSON Schema and TypeScript types</li>
-    </ul>
-    <div className="videoContainer">
-      <iframe className="videoIframe" src="https://www.youtube.com/embed/7Z818CdoZJg" title="Introducing the Open Resource Discovery protocol" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+    <p>Explore ORD through the <a href="https://open-resource-discovery.github.io/presentation/">interactive presentation</a>, or visit the <a href="./help">Help hub</a> for videos, implementation guidance, examples, and answers to common questions.</p>
+    <div className="lp-learnmore-actions">
+      <div className="action medium brand">
+        [Explore the Presentation ↗](https://open-resource-discovery.github.io/presentation/)
+      </div>
+      <div className="action medium alt">
+        [Browse Help](./help/index.mdx)
+      </div>
     </div>
   </div>
 

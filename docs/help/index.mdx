@@ -4,8 +4,43 @@ id: help
 sidebar_position: 0
 ---
 
+import Link from "@docusaurus/Link";
+
 # Help
 
-In this section you can find additional material to help you understand and use ORD.
+Choose the path that best matches what you want to do with ORD.
 
-The [Primer](../introduction.mdx) is a good starting point.
+<div className="help-paths">
+  <Link className="help-path" to="/introduction">
+    <span className="help-path__eyebrow">Start here</span>
+    <h2>Understand ORD</h2>
+    <p>Learn why ORD exists, how publishing and discovery work, and what the protocol enables.</p>
+    <strong>Read the introduction →</strong>
+  </Link>
+  <Link className="help-path help-path--presentation" to="https://open-resource-discovery.github.io/presentation/">
+    <span className="help-path__eyebrow">Visual walkthrough</span>
+    <h2>Explore the presentation</h2>
+    <p>Follow the ORD story as an interactive slide deck and open focused deep dives when you need more detail.</p>
+    <strong>Open the presentation ↗</strong>
+  </Link>
+  <Link className="help-path" to="/help/faq/adopt-ord-as-provider">
+    <span className="help-path__eyebrow">Build</span>
+    <h2>Adopt ORD as a provider</h2>
+    <p>Choose an implementation approach, expose ORD documents, validate the metadata, and connect an aggregator.</p>
+    <strong>Read the adoption guide →</strong>
+  </Link>
+  <Link className="help-path" to="/help/faq/">
+    <span className="help-path__eyebrow">Answers</span>
+    <h2>Browse common questions</h2>
+    <p>Find practical guidance about related standards, libraries, deployment models, and metadata updates.</p>
+    <strong>Open the FAQ →</strong>
+  </Link>
+</div>
+
+## Tools and examples
+
+- Browse the [example ORD files](../spec-v1/examples/index.mdx) or inspect a running provider in the [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/).
+- Use the [schema explorer](https://open-resource-discovery.org/tools/schema-viewer/index.html?schema=Document) and the [`@open-resource-discovery/specification`](https://www.npmjs.com/package/@open-resource-discovery/specification) package when implementing or validating documents.
+- Read the [complete specification](../spec-v1/index.md) when you need normative requirements and detailed concept guidance.
+- Watch the [introduction videos](./videos/index.mdx) or [ask the ORD NotebookLM](https://notebooklm.google.com/notebook/f57d6c36-a0b0-4baa-898b-efede2521382) for another way into the material.
+- Report documentation or specification problems in the [GitHub repository](https://github.com/open-resource-discovery/specification/issues).
