@@ -6,7 +6,7 @@ hide_title: true
 hide_table_of_contents: true
 ---
 
-import { UnifiedMetadataDiagram } from "@site/src/components/OrdDiagrams";
+import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
 
 <div className="ord-home-flag" hidden />
 
@@ -55,10 +55,10 @@ import { UnifiedMetadataDiagram } from "@site/src/components/OrdDiagrams";
       <div className="lp-overview-text">
         <p>Open Resource Discovery (ORD) is a protocol that enables applications and services to self-describe their exposed resources and capabilities, standardizing metadata publishing and discovery. It serves as a foundation for <strong>metadata catalogs and marketplaces</strong> while improving integration automation and quality.</p>
         <p>ORD is designed to be <strong>general-purpose</strong> and to work with a wide variety of industry-standard protocols and metadata standards. It can be used for <strong>static documentation</strong> or to describe the <strong>run-time system landscape</strong>, reflecting tenant-specific configuration and extensions.</p>
-      <p>Technically, ORD allows applications to implement a read-only entry point (<a href="https://en.wikipedia.org/wiki/Service_provider_interface">Service Provider Interface</a>) that can be used to discover and crawl relevant metadata. The ORD standard is governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/">NeoNephos</a>.</p>
+        <p>Technically, ORD allows applications to implement a read-only entry point (<a href="https://en.wikipedia.org/wiki/Service_provider_interface">Service Provider Interface</a>) that can be used to discover and crawl relevant metadata. The ORD standard is governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/">NeoNephos</a>.</p>
       </div>
+      <ProviderDiagram />
     </div>
-    <UnifiedMetadataDiagram />
   </div>
 
   <div className="container">

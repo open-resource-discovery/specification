@@ -8,7 +8,7 @@ The specification site uses React and the [presentation](https://github.com/open
 
 Both renderers draw SVG lines between these coordinates and place HTML labels at the same coordinates. Keep SVG `preserveAspectRatio="none"` and `vector-effect: non-scaling-stroke` so lines follow the responsive HTML positions without stretching their stroke widths. Keep opaque node backgrounds above the lines.
 
-The introduction and front page use the **same React component**. The presentation vendors the JSON under `data/diagrams/`; builds do not depend on a sibling checkout or a network request. After changing this file, run in the presentation checkout:
+The introduction uses the React component, while the front page uses the provider diagram. The presentation vendors the JSON under `data/diagrams/`; builds do not depend on a sibling checkout or a network request. After changing this file, run in the presentation checkout:
 
 ```sh
 npm run sync:diagrams
