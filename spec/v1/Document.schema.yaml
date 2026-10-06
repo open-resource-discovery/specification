@@ -3338,8 +3338,8 @@ definitions:
           $ref: "#/definitions/OverlayDefinition"
 
       tags:
-        <<: *tags 
-        
+        <<: *tags
+
       labels:
         <<: *labels
 
@@ -3394,11 +3394,110 @@ definitions:
       purpose:
         <<: *resourceDefinitionPurpose
 
+      target:
+        description: |-
+          Optional target context identifying the resource or definition file being patched.
+          See [Overlay Target](#overlay-target) for details on identifier requirements and disambiguation.
+        $ref: "#/definitions/OverlayTarget"
+
     additionalProperties: false
     required:
       - type
       - mediaType
       - url
+
+  ############################################################################################################
+
+  OverlayTarget:
+    type: object
+    title: Overlay Target
+    x-ums-type: "embedded"
+    description: |-
+      Optional context about the target being patched.
+      The target can refer to a resource definition file by its URL, correlation IDs, or definition type.
+
+      When this object is present, at least one of `url`, `correlationIds`, or `definitionType`
+      MUST be provided so that consumers can identify what is being patched.
+      Use `url` and/or `definitionType` to disambiguate which definition file to target.
+
+      Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
+      In such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.
+
+      Multiple identifiers, if provided, are treated as all pointing to the same resource.
+    additionalProperties: false
+    properties:
+      url:
+        type: string
+        format: uri-reference
+        description: |-
+          URL or URI pointing directly to the file being patched.
+          This is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),
+          but can also point to any JSON/YAML-based target document.
+        examples:
+          - "https://example.com/api/openapi.json"
+          - "./openapi.yaml"
+      correlationIds:
+        type: array
+        minItems: 1
+        description: |-
+          Correlation IDs referencing the target resource in external registries or systems of record.
+          Reuses the ORD correlation ID format: `namespace:type:localId`.
+          All listed IDs are treated as pointing to the same resource.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
+          maxLength: 255
+        examples:
+          - ["sap.s4:communicationScenario:SAP_COM_0008"]
+      definitionType:
+        description: |-
+          Optional, but RECOMMENDED type of the target definition being patched.
+          If provided, this SHOULD match the `type` of the referenced metadata definition
+          (as used in API/Event/Capability resource definitions).
+          This is especially useful when a resource has multiple attached definitions.
+
+          This can be used to disambiguate how selectors are interpreted for the target.
+
+          MUST be either:
+          - any valid [Specification ID](../../spec-v1/index.md#specification-id), or
+          - one of the pre-defined values reused from:
+            - API Resource Definition `type`
+            - Event Resource Definition `type`
+            - Capability Definition `type`
+
+          The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
+          In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
+        type: string
+        title: Overlay Definition Type
+        x-ums-type: "ignore"
+        anyOf:
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            description: |-
+              Any valid [Specification ID](../../spec-v1/index.md#specification-id).
+          - const: openapi-v2
+          - const: openapi-v3
+          - const: openapi-v3.1+
+          - const: raml-v1
+          - const: edmx
+          - const: csdl-json
+          - const: graphql-sdl
+          - const: wsdl-v1
+          - const: wsdl-v2
+          - const: a2a-agent-card
+          - const: sap-rfc-metadata-v1
+          - const: sap-sql-api-definition-v1
+          - const: sap-csn-interop-effective-v1
+          - const: asyncapi-v2
+          - const: sap.mdo:mdi-capability-definition:v1
+        examples:
+          - "openapi-v3"
+          - "asyncapi-v2"
+          - "sap.mdo:mdi-capability-definition:v1"
+
+      # TODO: Future enhancement — add `definitionPurpose` and `definitionVisibility` fields here to allow
+      # unambiguous targeting when a resource has multiple definitions of the same type that differ only
+      # by `purpose` or `visibility` (the full uniqueness key per the resource definition uniqueness rule).
 
   ############################################################################################################
 

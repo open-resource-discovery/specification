@@ -15,7 +15,6 @@ For a guided visual walkthrough, see [ORD Overlays in the presentation](https://
 ```json
 {
   "ordOverlay": "0.1",
-  "target": { "ordId": "sap.foo:apiResource:astronomy:v1", "definitionType": "openapi-v3" },
   "patches": [
     {
       "action": "merge",
@@ -90,7 +89,11 @@ and references the actual overlay file via a `definitions` entry with `type: ord
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
           "url": "/ord/overlays/ai-enrichment.overlay.json",
-          "purpose": "ord:ai-enrichment"
+          "purpose": "ord:ai-enrichment",
+          "target": {
+            "definitionType": "openapi-v3",
+            "url": "/ord/metadata/my-api.oas3.json"
+          }
         }
       ]
     }
@@ -100,22 +103,27 @@ and references the actual overlay file via a `definitions` entry with `type: ord
 
 ## Target Resolution
 
-The optional [`target`](#overlay-target) object narrows which document the overlay applies to.
-When omitted, all patches in the file are context-free and each patch's [`selector`](#overlay-selector) alone identifies the element.
-Omitting `target` is only appropriate when the association between the overlay and its target definition file
-is established by external convention (e.g. a pipeline that always merges a fixed overlay into a fixed file).
-For all other cases, specifying `target.ordId` is strongly recommended to make patch resolution unambiguous.
+The root [`OrdOverlay`](#ord-overlay) file contains only the patch instructions; it does not identify its target.
+When an overlay is published as an attached resource definition, its containing API or Event resource establishes
+the resource being patched. When it is published as a standalone `OrdOverlayResource`,
+[`relatedApiResources`](../../spec-v1/interfaces/Document.md#overlay_relatedapiresources) and
+[`relatedEventResources`](../../spec-v1/interfaces/Document.md#overlay_relatedeventresources) entries
+with `relationType: ord:patches` identify the ORD resources being patched.
+
+Standalone overlay definitions can additionally use the optional [`target`](../../spec-v1/interfaces/Document.md#overlay-definition_target)
+object to narrow the concrete definition file within those related resources. If `target` is omitted, the association
+must be clear from the related resource and publication context.
 
 Key fields on `target`:
 
 | Field | Purpose |
 |---|---|
-| `ordId` | Identifies the ORD resource whose attached definition file is being patched. Used together with `url` or `definitionType` to disambiguate. |
 | `url` | Direct URL to the specific metadata definition file (e.g. an OpenAPI JSON file). |
-| `definitionType` | Declares the format of the file (e.g. `openapi-v3`, `a2a-agent-card`). Disambiguates when a resource has multiple definitions attached. |
+| `correlationIds` | Identifies the target definition through one or more correlation IDs. |
+| `definitionType` | Declares the format of the file (e.g. `openapi-v3`, `a2a-agent-card`). Disambiguates when a resource has multiple definitions. |
 
 Example of ambiguity: an OData API resource may expose both `edmx` and `openapi-v3` definitions.
-Provide `definitionType` and/or `url` to make the concrete patch target explicit.
+Provide `definitionType`, `url`, and/or `correlationIds` on the standalone overlay definition to make the concrete patch target explicit.
 
 
 ## Selectors
