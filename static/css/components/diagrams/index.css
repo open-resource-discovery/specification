@@ -83,7 +83,6 @@ html[data-theme="dark"] .ord-diagram {
 .ord-silos__formats { display: flex; justify-content: center; gap: 0.45rem; }
 .ord-silos__formats span { border: 1px solid var(--ord-border); border-radius: 999px; background: var(--ord-panel); color: var(--ord-muted); font-size: 0.72rem; font-weight: 700; padding: 0.5rem 0.55rem; }
 .ord-silos__grid { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.5rem; }
-.ord-silos__grid::before { position: absolute; top: -1.6rem; left: 10%; width: 80%; height: 1.6rem; border-right: 1px dashed var(--ord-border); border-bottom: 1px dashed var(--ord-border); border-left: 1px dashed var(--ord-border); content: ""; }
 .ord-silo { display: flex; min-height: 190px; flex-direction: column; gap: 0.5rem; border: 1px solid var(--ord-sep); border-top: 4px solid var(--ord-sky); border-radius: 8px; background: var(--ord-sky-soft); padding: 1.1rem 0.65rem; }
 .ord-silo--inventory { border-top-color: var(--ord-lime); background: var(--ord-lime-soft); }
 .ord-silo--event { border-top-color: var(--ord-teal); background: var(--ord-teal-soft); }
@@ -247,6 +246,8 @@ html[data-theme="dark"] .ord-diagram {
 .ord-landscape figcaption { min-width: 760px; color: var(--ord-muted); font-size: 0.75rem; padding-top: 0.5rem; text-align: center; }
 
 /* Connected metadata */
+.theme-doc-markdown:has(> .ord-unified-metadata),
+.lp-home .container:has(> .ord-unified-metadata) { container: ord-diagrams / inline-size; }
 .ord-unified-metadata { display: grid; grid-template-columns: minmax(140px, 0.9fr) 34px minmax(220px, 1.5fr) 34px minmax(140px, 0.8fr); grid-template-rows: 1fr auto; gap: 0.7rem; align-items: stretch; }
 .ord-unified-metadata > section { min-width: 0; border: 1px solid var(--ord-sep); border-radius: 8px; background: var(--ord-card); padding: 1rem; }
 .ord-unified-metadata header span { color: var(--ord-muted); font-size: 0.62rem; font-weight: 700; text-transform: uppercase; }
@@ -259,14 +260,23 @@ html[data-theme="dark"] .ord-diagram {
 .ord-unified-metadata__sources b:nth-child(5) { border-left-color: var(--ord-coral); }
 .ord-unified-metadata__sources small { color: var(--ord-muted); font-size: 0.58rem; font-weight: 400; }
 .ord-unified-metadata > .ord-flow-arrow { align-self: center; }
-.ord-unified-metadata__graph { border-top: 5px solid var(--ord-aggregator) !important; background: var(--ord-aggregator-soft) !important; }
+.ord-unified-metadata__graph { display: flex; flex-direction: column; border-top: 5px solid var(--ord-aggregator) !important; background: var(--ord-aggregator-soft) !important; }
 .ord-unified-metadata__graph header span { color: var(--ord-aggregator); }
-.ord-graph { position: relative; min-height: 245px; margin-top: 0.6rem; }
-.ord-graph > i { position: absolute; top: 50%; left: 50%; width: 44%; height: 1px; transform-origin: left; background: var(--ord-brand); opacity: 0.5; }
-.ord-graph > i:nth-child(2) { transform: rotate(50deg); } .ord-graph > i:nth-child(3) { transform: rotate(105deg); } .ord-graph > i:nth-child(4) { transform: rotate(155deg); } .ord-graph > i:nth-child(5) { transform: rotate(210deg); } .ord-graph > i:nth-child(6) { transform: rotate(265deg); }
-.ord-graph b { position: absolute; display: flex; width: 72px; min-height: 38px; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--ord-border); border-radius: 999px; background: var(--ord-panel); font-size: 0.65rem; text-align: center; transform: translate(-50%, -50%); }
+.ord-graph { position: relative; flex: 1; min-height: 250px; margin: 0.6rem 0; }
+.ord-graph > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ord-graph line { stroke-width: 1.8; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.ord-graph .system-link { stroke: var(--ord-muted); opacity: 0.42; }
+.ord-graph .semantic-link { stroke: var(--ord-brand); opacity: 0.65; }
+.ord-graph .context-link { stroke: var(--ord-violet); opacity: 0.8; }
+.ord-graph b { position: absolute; z-index: 1; display: flex; min-height: 38px; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--ord-border); border-radius: 999px; background: var(--ord-panel); font-size: 0.65rem; line-height: 1.2; padding: 0.25rem 0.1rem; text-align: center; transform: translate(-50%, -50%); }
 .ord-graph b small { color: var(--ord-muted); font-size: 0.5rem; font-weight: 400; }
-.ord-graph .system { top: 12%; left: 28%; } .ord-graph .data { top: 12%; left: 74%; } .ord-graph .api { top: 50%; left: 12%; } .ord-graph .entity { top: 50%; left: 50%; width: 100px; border: 2px solid var(--ord-brand); background: var(--ord-teal-soft); } .ord-graph .agents { top: 50%; left: 88%; } .ord-graph .events { top: 88%; left: 28%; } .ord-graph .taxonomy { top: 88%; left: 72%; width: 95px; border: 2px solid var(--ord-violet); }
+.ord-graph .system { border-color: var(--ord-lime); }
+.ord-graph .api { border-color: var(--ord-sky); }
+.ord-graph .event { border-color: var(--ord-teal); }
+.ord-graph .data { border-color: var(--ord-violet); }
+.ord-graph .agent { border-color: var(--ord-coral); }
+.ord-graph .entity { border: 2px solid var(--ord-brand); background: var(--ord-teal-soft); }
+.ord-graph .taxonomy { border: 2px solid var(--ord-violet); }
 .ord-unified-metadata__caption { color: var(--ord-muted); font-size: 0.62rem; text-align: center; }
 .ord-unified-metadata__consumers { border-top: 5px solid var(--ord-consumer) !important; }
 .ord-unified-metadata__consumers > strong { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; margin-top: 0.8rem; border: 1px solid var(--ord-aggregator); border-radius: 6px; background: var(--ord-aggregator-soft); font-size: 0.72rem; padding: 0.8rem 0.4rem; text-align: center; }
@@ -355,6 +365,14 @@ html[data-theme="dark"] .ord-diagram {
 .ord-sap-architecture figcaption { display: flex; flex-direction: column; gap: 0.25rem; color: var(--ord-muted); font-size: 0.75rem; }
 .ord-sap-architecture figcaption strong { color: var(--ord-text); font-size: 0.9rem; }
 
+/* A document column can be narrow even on a desktop with both sidebars. */
+@container ord-diagrams (max-width: 660px) {
+  .ord-unified-metadata { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .ord-unified-metadata > .ord-flow-arrow { width: 2px; height: 34px; margin: 0 auto; }
+  .ord-unified-metadata > .ord-flow-arrow::after { top: auto; right: -5px; bottom: -1px; transform: rotate(90deg); }
+  .ord-unified-metadata figcaption { grid-column: 1; }
+}
+
 @media (max-width: 760px) {
   .ord-alignment, .ord-namespace, .ord-data-model, .ord-perspectives__grid { grid-template-columns: 1fr; }
   .ord-alignment__mode { min-height: 330px; }
@@ -380,6 +398,6 @@ html[data-theme="dark"] .ord-diagram {
   .ord-perspective { min-height: 0; }
   .ord-silos { min-height: 0; padding: 1rem; }
   .ord-silos__formats { flex-wrap: wrap; }
-  .ord-silos__grid { overflow-x: auto; grid-template-columns: repeat(5, minmax(94px, 1fr)); padding-top: 1.6rem; }
-  .ord-silos__grid::before { top: 0; }
+  .ord-silos__grid { grid-template-columns: repeat(auto-fit, minmax(94px, 1fr)); }
+  .ord-silo { min-height: 150px; }
 }

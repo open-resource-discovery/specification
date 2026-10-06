@@ -1,14 +1,12 @@
 ---
 toc_max_heading_level: 3
+description: Why Open Resource Discovery is needed, how it works, and how to start using it.
 ---
 
 import {
-  AlignmentDiagram,
-  DataModelDiagram,
   DiscoveryFlowDiagram,
   LandscapeDiagram,
   PerspectivesDiagram,
-  ProviderDiagram,
   RolesDiagram,
   SapArchitectureDiagram,
   SilosDiagram,
@@ -17,9 +15,11 @@ import {
 
 # ORD Introduction
 
-This introduction explains why ORD is needed, how it works, what it enables, and how SAP applies it.
+Open Resource Discovery (ORD) is an open protocol that **enables applications and services to self-describe their exposed resources and capabilities**.
+It gives catalogs, developer tools, and automation a common way to discover that metadata, including the configuration and extensions of a running system.
 
-> 🎦 There is also an [ORD Introduction video](./help/videos/introduction.md), based on this article.
+This primer follows the [ORD presentation](https://open-resource-discovery.github.io/presentation/): why ORD, how it works, what it enables, and how SAP applies it.
+The [introduction videos](./help/videos/introduction.md) offer another way to get started; they cover an earlier version of the introduction.
 
 ## Why ORD?
 
@@ -27,189 +27,213 @@ This introduction explains why ORD is needed, how it works, what it enables, and
 
 Specialized standards describe individual resources well, but they do not provide a shared inventory of an application, service, or system landscape.
 System inventories, API catalogs, event catalogs, data catalogs, and agent registries often expose different formats and models.
-High-level context and relationships are expressed inconsistently, and static documentation can drift from what a running system actually exposes.
+Consumers need custom adapters to combine them, relationships are expressed inconsistently, and static documentation can drift from what a running system exposes.
 
 <SilosDiagram />
 
-### Shared provider metadata reduces custom adapters
-
-Without alignment on metadata description and discovery, consumers integrate separately with every provider and source format.
-The number of point-to-point integrations grows quickly, and each integration can require different implementation logic.
-
-ORD addresses this through two ideas.
-Applications and services publish metadata through a shared protocol, and aggregators collect that metadata into views designed for discovery.
-
-<AlignmentDiagram />
-
 ### One Discovery API based on a connected metadata graph
 
-An ORD aggregator can combine provider metadata with information from other inventories and catalogs.
-It can connect resources through shared semantics and taxonomy, then expose the result through a discovery-oriented API.
-Consumers can use this connected view instead of implementing every source-specific adapter themselves.
+ORD aligns **metadata description and discovery**.
+Providers publish a common self-description, and an aggregator combines these descriptions with other metadata sources into a connected view.
+Stable identifiers, shared semantics, and taxonomy connect resources across providers.
+Consumers can query this view through the aggregator's Discovery API rather than implement every source-specific adapter themselves.
 
 <UnifiedMetadataDiagram />
 
-An ecosystem can contain multiple aggregators, and a consumer may also read directly from a provider when that is appropriate.
+The shared protocol keeps publishing simple for providers while aggregators can offer search, filtering, and other discovery features.
+**Each aggregator defines its own Discovery API contract**; ORD currently standardizes the provider interfaces and aggregation responsibilities, rather than a single consumer-facing API contract.
+An ecosystem can have multiple aggregators, and consumers can also read directly from a provider.
 
-> ℹ Read the [Why ORD?](./help/faq/why-ord.md) article for more background.
+Read [Why ORD?](./help/faq/why-ord.md) for more background on metadata alignment.
 
 <a id="ord-in-more-detail"></a>
 <a id="metadata-discovery-protocol"></a>
 
 ## How ORD works
 
-The protocol can be understood as a path from self-description and discovery to a connected, perspective-aware metadata view.
+### Publish a self-description and connect it for consumers
 
-### A protocol for self-description
-
-Open Resource Discovery (ORD) enables applications and services to publish a standard, machine-readable description of their resources and capabilities.
-This description can cover reusable static metadata as well as the complete metadata of a running system instance.
-
-<ProviderDiagram />
-
-An ORD provider publishes ORD documents through its ORD Provider API.
-Those documents provide stable identity, lifecycle, visibility, taxonomy, and relationships, and they link to detailed resource definitions such as OpenAPI, AsyncAPI, OData CSDL, and A2A Agent Cards.
-Providers can also declare their use of external APIs, Events, or Capabilities through Integration Dependencies.
-
-### Three roles, clear responsibilities
-
-ORD distinguishes three roles, although one system can implement more than one role.
+An **ORD Provider** describes an application or service through ORD documents and linked resource definitions.
+An **ORD Aggregator** collects, validates, resolves, and connects metadata from multiple providers.
+An **ORD Consumer** uses that metadata in a catalog, developer tool, or other experience.
+One system can implement more than one role.
 
 <RolesDiagram />
 
-- An **ORD Provider** publishes a self-description of an application or service.
-- An **ORD Aggregator** collects, validates, resolves, connects, and serves metadata from multiple providers.
-- An **ORD Consumer** retrieves metadata from an aggregator or directly from a provider.
+<a id="data-model-overview"></a>
 
-### ORD standardizes discovery, not everything
+ORD documents provide a common information model:
 
-ORD describes and connects resources.
-It inventories exposed resources and capabilities, links detailed definitions, adds shared identity and context, and standardizes publishing and discovery behavior.
+| Concern | What ORD describes |
+| --- | --- |
+| Resources and requirements | [APIs](./spec-v1/interfaces/Document.md#api-resource), [Events](./spec-v1/interfaces/Document.md#event-resource), [Data Products](./spec-v1/interfaces/Document.md#data-product), [Agents](./spec-v1/interfaces/Document.md#agent), [Capabilities](./spec-v1/interfaces/Document.md#capability), and [Integration Dependencies](./spec-v1/interfaces/Document.md#integration-dependency). |
+| Organization and shared meaning | Packages, Products, Vendors, Entity Types, Groups, Group Types, and Consumption Bundles. |
+| Identity and context | Stable ORD IDs, versions, lifecycle, visibility, documentation links, and relationships to other resources. |
 
-ORD does not replace specialized resource-definition standards such as OpenAPI or AsyncAPI.
-It does not transport business data, configure runtime integrations, or discover a system before its location is known.
+Detailed contracts remain in their native standards, such as OpenAPI, AsyncAPI, OData CSDL, and A2A Agent Cards.
+ORD links to those definitions and adds the context needed to find and understand them.
+The [specification overview](./spec-v1/index.md#ord-information) explains the full model.
+Data Products, Agents, Perspectives, and ORD Overlays have beta status in ORD 1.16.4.
 
-### Discovery follows links from one known entry point
+### Discover metadata from a known entry point
 
-An aggregator or direct consumer starts with a known system, reads its well-known ORD configuration, fetches the referenced ORD documents, and follows links to detailed definitions.
+An aggregator or direct consumer starts with a known system URL.
+It reads the well-known ORD configuration, fetches the referenced ORD documents, and follows links to detailed definitions.
+The supported transport is **pull-based discovery using HTTP GET**; the [push transport](./spec-v1/index.md#push-transport) remains a proposal.
 
 <DiscoveryFlowDiagram />
 
-### Try ORD with the reference application
+ORD describes systems whose location is already known, for example through service discovery or aggregator onboarding.
+It exchanges metadata; API calls, event subscriptions, and business processes use their own runtime protocols.
+Metadata retrieval follows the advertised access strategies, and aggregators preserve `public`, `internal`, and `private` visibility boundaries.
+Discovering a resource does not grant permission to call it.
 
-The [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) provides a live example of this discovery flow.
-Its configuration points to ORD documents, and those documents describe APIs and Events together with taxonomy and links to their detailed definitions.
+<details>
+<summary>Follow the links in the Orders teaching example</summary>
 
-<iframe src="https://ord-reference-application.cfapps.sap.hana.ondemand.com/" width="100%" height="500px"></iframe>
+The presentation's fictional Orders provider illustrates the three metadata requests.
+The URLs below are examples; the [complete example files](https://github.com/open-resource-discovery/presentation/tree/main/data/orders) can be inspected without a running service.
 
-<a id="data-model-overview"></a>
+1. **Read the configuration:** `GET https://orders.example.com/.well-known/open-resource-discovery` reveals the document location and its access strategy.
 
-### Resources become connected metadata
+```json
+{
+  "baseUrl": "https://orders.example.com",
+  "openResourceDiscoveryV1": {
+    "documents": [{
+      "url": "/ord/v1/orders",
+      "perspective": "system-type",
+      "accessStrategies": [{ "type": "open" }]
+    }]
+  }
+}
+```
 
-ORD can describe APIs, Events, Data Products, Agents, Capabilities, and Integration Dependencies.
-Packages, Products, Vendors, Entity Types, Groups, Group Types, and Consumption Bundles provide organization, ownership, and shared context.
-Stable identifiers and explicit relationships connect these concepts.
+2. **Fetch the ORD document:** `GET https://orders.example.com/ord/v1/orders` describes the Orders API, its Package and Order Entity Type. The API's `resourceDefinitions` links to `/orders/openapi.json` with type `openapi-v3`.
+3. **Follow the definition:** `GET https://orders.example.com/orders/openapi.json` provides the operations, schemas, and responses. This is the OpenAPI contract, separate from the ORD description.
 
-<DataModelDiagram />
+The configuration tells you where the metadata is. ORD explains how the resource fits into its context. OpenAPI explains how to use the API.
+
+</details>
+
+<a id="try-ord-with-the-reference-application"></a>
+<a id="ord-reference-application"></a>
+
+**Try a live provider:** open the [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/).
+Find an API or Event in its explorer, inspect its ORD metadata and relationships, then follow a resource-definition link to the native contract.
+For the underlying HTTP flow, start at its [well-known configuration](https://ord-reference-application.cfapps.sap.hana.ondemand.com/.well-known/open-resource-discovery) and follow the document URLs it advertises.
+The [source code and setup instructions](https://github.com/open-resource-discovery/reference-application) show how the provider is implemented.
 
 ### Describe what is offered and what is running
 
-ORD uses perspectives to separate reusable design-time metadata from the complete metadata of a running system instance.
-
-- The **static perspectives**, `system-type` and `system-version`, describe a reusable baseline without tenant-specific context.
-- The **dynamic perspective**, `system-instance`, describes one complete running tenant, including relevant configuration, extensions, and endpoints.
-- The **system-independent perspective** describes shared taxonomy that exists outside a particular system context.
+A product catalog answers **“What could I use?”**; a customer landscape answers **“What is available in this tenant?”**
+ORD supports both through perspectives:
 
 <PerspectivesDiagram />
 
-For a tenant, an aggregator uses a published `system-instance` perspective as the complete view.
-Only when that perspective has not been published may the aggregator resolve an effective static view.
-The [perspectives concept page](./spec-v1/concepts/perspectives.md) explains the complete resolution rules.
+- **Static:** `system-type` and `system-version` describe a reusable baseline without tenant-specific context.
+- **Dynamic:** `system-instance` describes one complete running tenant, including relevant configuration, extensions, and endpoints.
+- **System-independent:** shared taxonomy can be published outside a particular system context.
 
-### A connected resource graph
-
-The following example shows how resources from different providers can be connected through declared dependencies and shared Entity Types.
-The dependency arrows describe metadata relationships, not runtime message or business-data flow.
-
-<LandscapeDiagram />
+The aggregator resolves the effective view for consumers.
+A published `system-instance` perspective is the **complete tenant view**: an omitted resource is unavailable on that tenant and is not inherited from static metadata.
+Only when no `system-instance` perspective has been published may the aggregator fall back to an effective static view.
+The [perspectives guide](./spec-v1/concepts/perspectives.md) explains the resolution rules.
 
 ## What ORD enables
 
-The same connected metadata foundation can support many experiences.
+The same connected metadata can support several experiences:
 
-- **Catalogs** can build searchable inventories across resource types and providers.
-- **Developer tools** can locate contracts, documentation, and access context programmatically.
-- **Landscape tools** can reveal capabilities and declared dependencies across systems.
-- **Automation and AI** can use structured, discoverable metadata as grounding and integration context.
+- **Catalogs:** searchable inventories across resource types and providers.
+- **Developer tools:** programmatic discovery of contracts, documentation, and access context.
+- **Landscape insight:** understanding capabilities and declared dependencies across systems.
+- **Automation and AI:** structured metadata that helps tools and agents find resources and understand their context.
+
+### Example: discover the resources for order fulfillment
+
+Consider an Orders service, a Shipping service, and a Fulfillment Agent.
+An Order Created event triggers the agent to read an order and create a shipment.
+Each provider describes its own resources; the agent declares dependencies on the event, the Orders API, and the Shipment API.
+Shared Entity Types give the resources their business context.
+
+<LandscapeDiagram />
+
+A developer tool can use the connected view to find the resources and their contracts; a landscape tool can show what the agent depends on.
+When selecting resources for a particular tenant, those tools use the effective view resolved by the aggregator.
+The arrows above represent metadata references. Event handling, subscriptions, and agent execution implement the business workflow separately.
+
+Explore [Integration Dependencies](./spec-v1/concepts/integration-dependency.md) and [AI Agents and Protocols](./spec-v1/concepts/ai-agents-and-protocols.md) for more detail.
 
 <a id="ord-by-examples"></a>
 <a id="ord-architecture-at-sap"></a>
 
 ## SAP: shared metadata, connected views
 
-At SAP, the same applications and services can publish static metadata about what they offer and dynamic metadata about what is running.
-The two perspectives serve different discovery needs while using the same ORD protocol and resource identities.
+SAP illustrates how the same providers can serve both a reference catalog and a customer landscape through ORD.
 
 <SapArchitectureDiagram />
 
-- **Reference landscape:** SAP Business Accelerator Hub aggregates static metadata to describe what products offer without requiring a provisioned tenant.
-- **Customer landscape:** Unified Metadata Service aggregates dynamic system-instance metadata and other landscape information to describe what is actually present for a customer.
-
-The consumer names in the diagram are representative examples.
-The connections show metadata delivery and do not imply that every consumer uses every source.
+**SAP Business Accelerator Hub** takes the static catalog.
+**Unified Metadata Service (UMS)** combines static and dynamic metadata with other landscape information.
+The Knowledge Graph integrates UMS metadata and other sources for consumer tools.
+Arrows show metadata delivery; the consumer names are representative examples, and the connections do not imply that every consumer uses every source.
 
 <a id="sap-business-accelerator-hub"></a>
 
 ### Static view: SAP Business Accelerator Hub
 
-The [SAP Business Accelerator Hub](https://api.sap.com/) presents generic product documentation from the static perspective.
-It allows consumers to discover technical capabilities before they own or provision a system.
-
-<div className="img-box" style={{aspectRatio: "2293/1078"}}>
-
-![SAP Business Accelerator Hub Example 1](/img/business-accelerator-hub-example1.png "SAP Business Accelerator Hub Example 1")
-
-</div>
-
-<div className="img-box" style={{aspectRatio: "1814/902"}}>
-
-![SAP Business Accelerator Hub Example 2](/img/business-accelerator-hub-example2.png "SAP Business Accelerator Hub Example 2")
-
-</div>
+The [SAP Business Accelerator Hub](https://api.sap.com/) presents generic product documentation.
+Developers can explore APIs, Events, and Packages before they own or provision a system.
 
 <a id="unified-customer-landscape"></a>
 
 ### Dynamic view: Unified Metadata Service
 
 Unified Metadata Service (UMS), previously referred to here as Unified Customer Landscape (UCL), combines ORD information with other customer landscape metadata.
-Unlike the static product view, UMS can represent system-instance metadata, including customer-specific configuration, extensions, and endpoints.
+It can represent system-instance metadata, including customer-specific configuration, extensions, and endpoints, and re-exposes that landscape model to consumer tools.
+The SAP BTP Cockpit System Landscape UI illustrates how customers inspect their systems and organize them into formations for supported integration scenarios.
+These tools can use the metadata to support development and integration lifecycle automation.
 
-<div className="img-box" style={{aspectRatio: "2265/1290"}}>
+<details>
+<summary>See the two views in SAP product UIs</summary>
 
-![BTP Cockpit System Landscape via UCL](/img/btp-cockpit-ucl-example.png "BTP Cockpit System Landscape via UCL")
+These illustrative screenshots show the two discovery needs; they are not captures of today's product UI.
+
+**Reference catalog — SAP Business Accelerator Hub:** product documentation with APIs, Events, and Packages.
+
+<div className="img-box" style={{aspectRatio: "2293/1078"}}>
+
+![SAP Business Accelerator Hub product catalog](/img/business-accelerator-hub-example1.png)
 
 </div>
 
-The SAP BTP Cockpit System Landscape UI illustrates how customers can inspect systems and organize them into formations for supported integration scenarios.
+[See a resource detail view](/img/business-accelerator-hub-example2.png).
 
-UMS aggregates information about SAP, partner, third-party, and on-premise systems into a machine-readable landscape model.
-It re-exposes that model to tools that help customers understand, develop against, and manage their landscape.
-The metadata can also support automation of integration lifecycle tasks, including operational tasks such as credential rotation.
+**Customer landscape — SAP BTP Cockpit:** system instances and their available metadata.
+
+<div className="img-box" style={{aspectRatio: "2265/1290"}}>
+
+![SAP BTP Cockpit System Landscape](/img/btp-cockpit-ucl-example.png)
+
+</div>
+
+</details>
 
 ## Start with one API and one useful consumer
 
-A focused pilot makes the value of ORD visible without requiring a complete landscape rollout.
+A focused pilot makes the value visible without requiring a complete landscape rollout.
+Choose an existing API and a catalog or developer tool that needs to discover it.
 
-1. **Provider:** Publish a Package and one API Resource, link the existing OpenAPI definition, and expose the ORD configuration.
-2. **Aggregator:** Crawl and validate the metadata, resolve the effective view, and preserve metadata access boundaries.
-3. **Consumer:** Make the API discoverable in one catalog or developer tool through an aggregator or directly from its provider.
+1. **Describe:** publish a Package and one API Resource, link its existing OpenAPI definition, and expose the ORD configuration. Most advanced concepts are optional; start with metadata the consumer needs.
+2. **Validate and connect:** validate the ORD document and its native definition locally, then onboard the provider to an aggregator. The aggregator crawls the metadata, resolves the effective view, and preserves access boundaries.
+3. **Discover:** make the API findable in the chosen consumer and verify that its contract can be retrieved. A direct consumer can also follow the provider links for a small pilot.
 
-Start with **describe → validate → discover**, then add Entity Types, dependencies, and other metadata as the use case grows.
+Add Entity Types, dependencies, and further resource types as the use case grows.
+Follow [How to Adopt ORD as a Provider](./help/faq/adopt-ord-as-provider.md) for implementation choices, and browse the [ecosystem](./ecosystem/index.mdx) for publishing and exploration tools.
 
 ## Where to go next
 
 - Read the [specification overview](./spec-v1/index.md) for the normative model and protocol.
-- Follow [How to Adopt ORD as a Provider](./help/faq/adopt-ord-as-provider.md) when planning an implementation.
-- Explore the [concept guides](./spec-v1/concepts/) for perspectives, lifecycle, grouping, dependencies, and other topics.
-- Browse the [examples](./spec-v1/examples/) for concrete ORD documents.
-- Watch the [introduction videos](./help/videos/) for additional walkthroughs.
+- Explore the [concept guides](./spec-v1/concepts/) for identity, grouping, lifecycle, perspectives, dependencies, and extensibility.
+- Browse the [examples](./spec-v1/examples/) for complete ORD documents.
+- Use the [presentation's deep dives](https://open-resource-discovery.github.io/presentation/deep-dives) for visual walkthroughs of individual concepts.

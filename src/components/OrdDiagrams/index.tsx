@@ -1,3 +1,5 @@
+import unifiedMetadata from "../../../diagrams/unified-metadata.json";
+
 const consumers = [
   "Joule",
   "Joule Studio",
@@ -33,7 +35,9 @@ export function SilosDiagram() {
           <section className={`ord-silo ord-silo--${type}`} key={type}>
             <small>{kind}</small>
             <strong>{label}</strong>
-            {items.map((item) => <i key={item} />)}
+            {items.map((item) => (
+              <i key={item} />
+            ))}
           </section>
         ))}
       </div>
@@ -634,6 +638,7 @@ export function LandscapeDiagram() {
 }
 
 export function UnifiedMetadataDiagram() {
+  const nodes = new Map(unifiedMetadata.nodes.map((node) => [node.id, node]));
   return (
     <figure
       className="ord-diagram ord-unified-metadata"
@@ -669,23 +674,42 @@ export function UnifiedMetadataDiagram() {
           <h3>Connected metadata graph</h3>
         </header>
         <div className="ord-graph">
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <b className="system">Systems</b>
-          <b className="api">APIs</b>
-          <b className="events">Events</b>
-          <b className="entity">
-            Entity Types<small>shared semantics</small>
-          </b>
-          <b className="data">Data</b>
-          <b className="agents">Agents</b>
-          <b className="taxonomy">
-            Taxonomy<small>groups · products</small>
-          </b>
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            {unifiedMetadata.links.map((link) => {
+              const from = nodes.get(link.from);
+              const to = nodes.get(link.to);
+              if (!from || !to)
+                throw new Error("Unresolved metadata graph link");
+              return (
+                <line
+                  key={`${link.from}-${link.to}`}
+                  x1={from.x}
+                  y1={from.y}
+                  x2={to.x}
+                  y2={to.y}
+                  className={`${link.kind}-link`}
+                />
+              );
+            })}
+          </svg>
+          {unifiedMetadata.nodes.map((node) => (
+            <b
+              key={node.id}
+              className={node.id}
+              style={{
+                left: `${node.x}%`,
+                top: `${node.y}%`,
+                width: `${(node.width / unifiedMetadata.layoutWidth) * 100}%`,
+              }}
+            >
+              {node.label}
+              {node.detail && <small>{node.detail}</small>}
+            </b>
+          ))}
         </div>
         <span className="ord-unified-metadata__caption">
           Resources · shared semantics · taxonomy
