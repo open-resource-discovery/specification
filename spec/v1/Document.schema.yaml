@@ -3565,6 +3565,11 @@ definitions:
           description: |-
             The Capabilities that are part the given Group.
 
+      partOfProducts:
+        <<: *partOfProducts
+        x-introduced-in-version: "1.17.0"
+        minItems: 0
+
       version:
         <<: *version
 
@@ -3582,6 +3587,34 @@ definitions:
 
       minSystemVersion:
         <<: *minSystemVersion
+
+      responsible:
+        <<: *responsible
+        x-introduced-in-version: "1.17.0"
+
+      deprecationDate:
+        <<: *deprecationDate
+        x-introduced-in-version: "1.17.0"
+
+      sunsetDate:
+        <<: *sunsetDate
+        x-introduced-in-version: "1.17.0"
+
+      successors:
+        <<: *successors
+        x-introduced-in-version: "1.17.0"
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          x-association-target:
+            - "#/definitions/Capability/ordId"
+          maxLength: 255
+        examples:
+          - ["sap.foo.bar:capability:fieldExtensibility:v2"]
+
+      changelogEntries:
+        <<: *changelogEntries
+        x-introduced-in-version: "1.17.0"
 
       relatedEntityTypes:
         # NOTE: It would have been better for consistency and evolution to use the `RelatedEntityType` object
@@ -3635,6 +3668,18 @@ definitions:
         description: |-
           Generic Links with arbitrary meaning and content.
 
+      countries:
+        <<: *countries
+        x-introduced-in-version: "1.17.0"
+
+      lineOfBusiness:
+        <<: *lineOfBusiness
+        x-introduced-in-version: "1.17.0"
+
+      industry:
+        <<: *industry
+        x-introduced-in-version: "1.17.0"
+
       tags:
         <<: *tags
 
@@ -3643,6 +3688,10 @@ definitions:
 
       documentationLabels:
         <<: *documentationLabels
+
+      policyLevels:
+        <<: *policyLevels
+        x-introduced-in-version: "1.17.0"
 
       systemInstanceAware:
         <<: *systemInstanceAware
@@ -5876,7 +5925,7 @@ definitions:
       documentationLabels:
         <<: *documentationLabels
 
-      # Currently not available in Capability:
+      # Currently not available in Overlay:
       # deprecationDate:
       #   <<: *deprecationDate
       # sunsetDate:

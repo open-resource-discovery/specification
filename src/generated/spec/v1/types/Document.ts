@@ -2314,6 +2314,20 @@ export interface Capability {
    */
   partOfGroups?: string[];
   /**
+   * List of products this package and its resources are a part of.
+   *
+   * MUST be a valid reference to a [Product](#product) ORD ID.
+   *
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
+   *
+   * @minItems 0
+   */
+  partOfProducts?: string[];
+  /**
    * The complete [SemVer](https://semver.org/) version string.
    *
    * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
@@ -2387,6 +2401,39 @@ export interface Capability {
    */
   minSystemVersion?: string;
   /**
+   * Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.
+   */
+  responsible?: string;
+  /**
+   * The deprecation date defines when the resource has been set as deprecated.
+   * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   */
+  deprecationDate?: string;
+  /**
+   * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
+   *
+   * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
+   * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   */
+  sunsetDate?: string;
+  /**
+   * The successor resource(s).
+   *
+   * MUST be a valid reference to an ORD ID.
+   *
+   * If the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.
+   * If `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`.
+   */
+  successors?: string[];
+  /**
+   * Contains changelog entries that summarize changes with special regards to version and releaseStatus
+   */
+  changelogEntries?: ChangelogEntry[];
+  /**
    * Optional list of related EntityType Resources.
    * MUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.
    */
@@ -2436,6 +2483,84 @@ export interface Capability {
    */
   links?: Link[];
   /**
+   * List of countries that the Package resources are applicable to.
+   *
+   * MUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+   *
+   * `countries` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  countries?: string[];
+  /**
+   * List of line of business tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * `lineOfBusiness` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  lineOfBusiness?: ((
+    | string
+    | "Asset Management"
+    | "Commerce"
+    | "Finance"
+    | "Human Resources"
+    | "Manufacturing"
+    | "Marketing"
+    | "R&D Engineering"
+    | "Sales"
+    | "Service"
+    | "Sourcing and Procurement"
+    | "Strategy, Compliance, and Governance"
+    | "Supply Chain"
+    | "Sustainability"
+    | "Metering"
+    | "Grid Operations and Maintenance"
+    | "Plant Operations and Maintenance"
+    | "Maintenance and Engineering"
+  ) &
+    string)[];
+  /**
+   * List of industry tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * `industry` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  industry?: ((
+    | string
+    | "Aerospace and Defense"
+    | "Agribusiness"
+    | "Automotive"
+    | "Banking"
+    | "Chemicals"
+    | "Consumer Industries"
+    | "Consumer Products"
+    | "Defense and Security"
+    | "Discrete Industries"
+    | "Energy and Natural Resources"
+    | "Engineering Construction and Operations"
+    | "Financial Services"
+    | "Future Cities"
+    | "Healthcare"
+    | "High Tech"
+    | "Higher Education and Research"
+    | "Industrial Machinery and Components"
+    | "Insurance"
+    | "Life Sciences"
+    | "Media"
+    | "Mill Products"
+    | "Mining"
+    | "Oil and Gas"
+    | "Professional Services"
+    | "Public Sector"
+    | "Public Services"
+    | "Retail"
+    | "Service Industries"
+    | "Sports and Entertainment"
+    | "Telecommunications"
+    | "Travel and Transportation"
+    | "Utilities"
+    | "Wholesale Distribution"
+  ) &
+    string)[];
+  /**
    * List of free text style tags.
    * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
    *
@@ -2444,6 +2569,15 @@ export interface Capability {
   tags?: string[];
   labels?: Labels;
   documentationLabels?: DocumentationLabels;
+  /**
+   * A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.
+   * For each chosen policy level, additional expectations and validations rules will be applied.
+   *
+   * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
+   *
+   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   */
+  policyLevels?: string[];
   /**
    * Defines whether this ORD resource is **system-instance-aware**.
    * This is the case when the referenced resource definitions are potentially different between **system instances**.
