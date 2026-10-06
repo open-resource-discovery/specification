@@ -116,6 +116,9 @@ Each standalone overlay definition can additionally use its optional [`target`](
 to narrow the concrete definition file within those related resources.
 Relative `url` values in this definition-level target are resolved against the ORD Document's root `baseUrl`.
 If either target is omitted, the association must be clear from the remaining target metadata and publication context.
+If both targets are present, they MUST identify the same target, and shared identifiers MUST match after relative URLs are resolved.
+An ORD Aggregator SHOULD validate this consistency when it retrieves the overlay document.
+If the aggregator detects a mismatch, it MUST reject the overlay definition and MUST NOT apply the overlay.
 
 Key fields shared by both target objects:
 

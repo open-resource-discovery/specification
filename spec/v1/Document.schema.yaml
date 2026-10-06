@@ -3398,6 +3398,10 @@ definitions:
         x-introduced-in-version: "1.17.0"
         description: |-
           Optional target context identifying the resource or definition file being patched.
+          If the referenced ORD Overlay document also contains a `target`, both targets MUST identify the same target.
+          Values for identifiers present in both targets MUST match after relative URLs are resolved.
+          An ORD Aggregator SHOULD validate this consistency when it retrieves the overlay document.
+          If the aggregator detects a mismatch, it MUST reject the overlay definition and MUST NOT apply the overlay.
           See [Overlay Definition Target](#overlay-definition-target) for details on identifier requirements and disambiguation.
         $ref: "#/definitions/OverlayDefinitionTarget"
 
