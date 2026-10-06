@@ -1794,8 +1794,7 @@ export interface EventResourceDefinition {
   /**
    * Type of the event resource definition
    */
-  type: (string | "asyncapi-v2" | "sap-csn-interop-effective-v1" | "ord:overlay:v1" | "oas-overlay-v1" | "custom") &
-    string;
+  type: (string | "asyncapi-v2" | "sap-csn-interop-effective-v1" | "ord:overlay:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
