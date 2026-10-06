@@ -457,8 +457,9 @@ html[data-theme="light"] .neonephos-logo--light {
 }
 .lp-features {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 14px;
+  width: 100%;
   max-width: 1152px;
   margin-left: auto;
   margin-right: auto;
@@ -484,17 +485,10 @@ html[data-theme="light"] .neonephos-logo--light {
   line-height: 1.6;
   font-size: 14px;
 }
-@media (min-width: 481px) and (max-width: 767px) {
+@media (min-width: 481px) and (max-width: 959px) {
   .lp-features {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    width: 100%;
-  }
-}
-@media (min-width: 768px) and (max-width: 959px) {
-  .lp-features {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
     width: 100%;
   }
 }

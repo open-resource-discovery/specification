@@ -50,10 +50,10 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
         <h2>Publish and discover metadata consistently</h2>
         <p>Open Resource Discovery (ORD) standardizes how applications and services publish metadata about the resources and capabilities they expose, and how consumers discover it.</p>
         <p>
-          <span>Providers can connect API and event definitions, data products, AI agents, and other capabilities with shared business context and relationships.</span>{" "}
-          <span>Consumers can use this standardized metadata to build catalogs and marketplaces, automate integration workflows, or inspect what is actually available in a tenant-specific runtime landscape.</span>{" "}
-          <span>ORD complements established standards such as OpenAPI and AsyncAPI, allowing teams to reuse existing definitions while adding consistent discovery and context.</span>
+          <span>Providers can describe and connect APIs, events, data products, AI agents, and other capabilities with shared business context and relationships.</span>{" "}
+          <span>Consumers can use this standardized metadata to build catalogs and marketplaces, automate integration workflows, or inspect what is actually available in a tenant-specific runtime landscape.</span>
         </p>
+        <p>ORD complements established standards such as OpenAPI and AsyncAPI rather than replacing them, so teams can keep their existing definitions as the source of truth while adding consistent discovery, business context, and cross-resource relationships.</p>
         <p>It is an open standard governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/">NeoNephos</a>.</p>
       </div>
       <ProviderDiagram />
@@ -74,6 +74,10 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
       <div className="lp-feature-card">
         <h3>Existing Standards, Connected</h3>
         <p>Keep OpenAPI, AsyncAPI, and other definitions as the source of truth while ORD adds shared context and relationships.</p>
+      </div>
+      <div className="lp-feature-card">
+        <h3>Extensible Where Needed</h3>
+        <p>Use labels, custom types, and specification extensions for domain-specific needs while retaining a common core.</p>
       </div>
     </div>
   </div>
