@@ -47,31 +47,31 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
   <div className="container">
     <div className="lp-overview-grid">
       <div className="lp-overview-text">
-        <p>Open Resource Discovery (ORD) is a protocol that enables applications and services to self-describe their exposed resources and capabilities, standardizing metadata publishing and discovery. It serves as a foundation for <strong>metadata catalogs and marketplaces</strong> while improving integration automation and quality.</p>
-        <p>ORD is designed to be <strong>general-purpose</strong> and to work with a wide variety of industry-standard protocols and metadata standards. It can be used for <strong>static documentation</strong> or to describe the <strong>run-time system landscape</strong>, reflecting tenant-specific configuration and extensions.</p>
-        <p>Technically, ORD allows applications to implement a read-only entry point (<a href="https://en.wikipedia.org/wiki/Service_provider_interface">Service Provider Interface</a>) that can be used to discover and crawl relevant metadata. The ORD standard is governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/">NeoNephos</a>.</p>
+        <h2>Discover metadata where it lives</h2>
+        <p>Open Resource Discovery (ORD) lets applications and services describe the resources and capabilities they actually expose through one crawlable, read-only entry point.</p>
+        <p>Providers can link API and event definitions, data products, AI agents, and other capabilities with shared business context and relationships.</p>
+        <p>Consumers can build catalogs or inspect a tenant-specific runtime landscape.</p>
+        <p>ORD complements standards such as OpenAPI rather than replacing them.</p>
+        <p>It is an open standard governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/">NeoNephos</a>.</p>
       </div>
       <ProviderDiagram />
     </div>
   </div>
 
-  <div className="container">
+  <div className="container lp-benefits-container">
+    <h2>Why ORD?</h2>
     <div className="lp-features">
       <div className="lp-feature-card">
-        <h3>Unify and Connect</h3>
-        <p>Foundation for unified, well-connected metadata catalogs and marketplaces.</p>
+        <h3>Automated Discovery</h3>
+        <p>Publish metadata at the source so catalogs and tools can find and refresh it without manual registration.</p>
       </div>
       <div className="lp-feature-card">
-        <h3>Multi-purpose</h3>
-        <p>Covers different technologies and domains, designed to be general-purpose and extensible.</p>
+        <h3>The Actual Runtime Landscape</h3>
+        <p>Reveal tenant-specific configuration, extensions, and endpoints, not only static product documentation.</p>
       </div>
       <div className="lp-feature-card">
-        <h3>Standardized</h3>
-        <p>Works with a wide variety of existing industry-standard protocols and metadata standards.</p>
-      </div>
-      <div className="lp-feature-card">
-        <h3>Multiple scenarios</h3>
-        <p>Use it for static documentation of your offerings or runtime system landscape introspection.</p>
+        <h3>Existing Standards, Connected</h3>
+        <p>Keep OpenAPI, AsyncAPI, and other definitions as the source of truth while ORD adds shared context and relationships.</p>
       </div>
     </div>
   </div>
@@ -127,7 +127,7 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
 
   <div className="container lp-learnmore-container">
     <h2>Learn More</h2>
-    <p>Explore ORD through the interactive presentation, or visit the Help hub for videos, implementation guidance, examples, and answers to common questions.</p>
+    <p>Explore ORD through the <a href="https://open-resource-discovery.github.io/presentation/">interactive presentation</a>, or visit the <a href="./help">Help hub</a> for videos, implementation guidance, examples, and answers to common questions.</p>
     <div className="lp-learnmore-actions">
       <div className="action medium brand">
         [Explore the Presentation ↗](https://open-resource-discovery.github.io/presentation/)
