@@ -3,7 +3,21 @@ sidebar_position: 0
 title: ORD Specification
 ---
 
+import {
+  DataModelDiagram,
+  DiscoveryFlowDiagram,
+  NamespaceDiagram,
+  PerspectivesDiagram,
+  ProviderDiagram,
+  PullSequenceDiagram,
+  RolesDiagram,
+} from "@site/src/components/OrdDiagrams";
+
 # Open Resource Discovery Specification 1.16
+
+New to ORD?
+Start with the [ORD Introduction](../introduction.mdx) for a concise primer or explore the [ORD presentation](https://open-resource-discovery.github.io/presentation/) for a visual walkthrough of the specification and ecosystem.
+The [presentation source](https://github.com/open-resource-discovery/presentation) is available on GitHub.
 
 ## Notational Conventions
 
@@ -82,6 +96,8 @@ Depending on the role of the adopter, only some parts of the specification are r
 Please note that ORD roles are not exclusive.
 A [system type](#system-type) can implement multiple roles, e.g. an ORD Consumer MAY also be an ORD Provider.
 
+<RolesDiagram />
+
 ### ORD Provider
 
 An **ORD provider** is a system instance (of an application or service) that exposes ORD information for self-description.
@@ -98,11 +114,7 @@ An ORD provider MUST use one of the standardized [ORD transport modes](#ord-tran
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
-<div className="img-box" style={{aspectRatio: "3144/972"}}>
-
-![ORD Provider Role](/img/ord-role-provider.svg "ORD Provider Role")
-
-</div>
+<ProviderDiagram />
 
 ### ORD Aggregator
 
@@ -134,12 +146,6 @@ In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-pe
 - See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
 
-<div className="img-box" style={{aspectRatio: "3472/809"}}>
-
-![ORD Aggregator Role](/img/ord-role-aggregator.svg "ORD Aggregator Role")
-
-</div>
-
 ### ORD Consumer
 
 An **ORD consumer** is an actor or a system that needs to retrieve ORD information.
@@ -155,12 +161,6 @@ An ORD consumer that receives information with a `visibility` of `private` or `i
 The ORD consumer MUST ensure that private and internal information is not exposed to consumers without the corresponding permissions.
 If the ORD consumer only needs public information, it SHOULD only request those from the ORD aggregator in the first place.
 
-<div className="img-box" style={{aspectRatio: "2740/1181"}}>
-
-![ORD Consumer Role](/img/ord-role-consumer.svg "ORD Consumer Role")
-
-</div>
-
 ## ORD Transport Modes
 
 The specification makes a distinction between how [ORD information](#ord-information) is expressed (say, as an [ORD document](#ord-document)) and how it is transported.
@@ -173,6 +173,8 @@ If the ORD information is [system-instance-aware](#system-instance-aware), the i
 In pull transport mode, [ORD information](#ord-information) is made available through a simple REST API that exposes [ORD documents](#ord-document) via `GET` endpoints.
 
 This is implemented by providing an [ORD Provider API](#ord-provider-api).
+
+<DiscoveryFlowDiagram />
 
 ##### Pull Transport - Pros
 
@@ -189,11 +191,7 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 ##### Pull Transport Sequence Diagram
 
-<div className="img-box" style={{aspectRatio: "872/596"}}>
-
-![Pull Transport Sequence](/img/ord-pull-transport-sequence.svg "Pull Transport Sequence")
-
-</div>
+<PullSequenceDiagram />
 
 ### Other Modes of Transport
 
@@ -252,11 +250,7 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### ORD Document Data Model (Simplified)
 
-<div className="img-box" style={{aspectRatio: "862/537"}}>
-
-![High-Level ORD Entities (simplified)](/img/ord-high-level-data-model.drawio.svg "High-Level ORD Entities (simplified)")
-
-</div>
+<DataModelDiagram />
 
 #### Considerations on the ORD Content
 
@@ -677,6 +671,8 @@ For a definition, please refer to the [terminology](#terminology) section.
 
 > This concept deprecates the use of `systemInstanceAware`
 
+<PerspectivesDiagram />
+
 There is a `perspective` attribute, which allows setting the following values:
 
 - `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the current, version-agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version. Exclusively publishing a `system-type` perspective is adequate when treating every system instance as running the latest effective static view.
@@ -752,11 +748,7 @@ A complete namespace MUST match the following [regular expression](https://en.wi
 
 #### Structure of Namespaces
 
-<div className="img-box" style={{aspectRatio: "3045/1013"}}>
-
-![Namespace Concept Overview](/img/namespace-concept.svg "Namespace Concept Overview")
-
-</div>
+<NamespaceDiagram />
 
 Namespaces MUST follow the below structure:
 

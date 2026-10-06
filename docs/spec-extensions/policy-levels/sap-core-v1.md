@@ -8,7 +8,7 @@ sidebar_position: 2
 
 ## Description
 
-This policy level `sap:core:v1` is based on the [`sap:base:v1`](./sap-base-v1.md) policy level and inherits all its expectations.
+This policy level `sap:core:v1` is based on the [`sap:base:v1`](./sap-base-v1.md) and [`sap:documentation:v1`](./sap-documentation-v1.md) policy levels and inherits all its expectations.
 
 It MUST be fulfilled by all SAP applications and services.
 Exceptions are only allowed on a case by case basis.
@@ -49,82 +49,6 @@ IF the resources have already been published to the public [SAP Business Acceler
     - Add a `correlationIds` entry, that starts with `sap.businesshub` namespace and then the Business Accelerator Hub concept name (that is also part of the Old URL), e.g. `api` or `package`
     - Package Example: `{ "ordId": "sap.s4:package:SomeName:v1", "correlationIds": ["sap.businesshub:package:SAPS4HANACloud"] }`
     - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }`
-
-### Title Constraints
-
-The following constraints apply in addition to the constraints defined in the [ORD Document](../../spec-v1/interfaces/Document.md).
-
-- All `title` values (except link titles) MUST NOT exceed 120 characters, as per SAP API Style Guide and SAP Business Accelerator Hub guideline recommendations.
-- All `title` values (except link titles) MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
-- All `title` values (except link titles) SHOULD use the following charset:
-
-  | Chars        | Description       |
-  | ------------ | ----------------- |
-  | `A-Z`, `a-z` | Latin letters     |
-  | `0-9`        | Numbers           |
-  | ` `          | Space             |
-  | `-` `—` `–`  | Different hyphens |
-  | `,`          | Comma             |
-  | `(` `)`      | Parentheses       |
-
-- **package** `title` values MAY use the following additional characters:
-
-  | Char | Description   |
-  | ---- | ------------- |
-  | `/`  | Forward slash |
-
-- All `title` values (except link titles) SHOULD NOT contain the following terms:
-
-  | Term                                          | Description     |
-  | --------------------------------------------- | --------------- |
-  | `create`<br/>`read`<br/>`delete`<br/>`update` | Operation words |
-  | `v1`, `v2`, etc.                              | Versions        |
-
-- All `title` values (except link titles) MAY use the following specially approved terms:
-
-  | Approved Term                         | Description                            |
-  | ------------------------------------- | -------------------------------------- |
-  | `S/4HANA`                             | Approved product name                  |
-  | `country/region`<br/>`Country/Region` | Approved name                          |
-  | `G/L`                                 | General ledger. Approved abbreviation. |
-
-### Description Constraints
-
-The following constraints apply in addition to the constraints defined in the [ORD Document](../../spec-v1/interfaces/Document.md).
-
-- All `description` values MUST NOT contain the short description.
-  They are complementary to the short description and should not just be a longer replacement.
-- The `description` MUST NOT exceed 4000 characters.
-  In general, more extensive documentation SHOULD NOT be put into the `description` but instead be added as (typed) links.
-
-### Short Description Constraints
-
-The following constraints apply in addition to the constraints defined in the [ORD Document](../../spec-v1/interfaces/Document.md).
-
-- All `shortDescription` values SHOULD NOT exceed 180 characters.
-- All `shortDescription` values MUST NOT repeat or start with the object name.
-- All `shortDescription` values SHOULD use the following charset:
-
-  | Chars        | Description                                                            |
-  | ------------ | ---------------------------------------------------------------------- |
-  | `A-Z`, `a-z` | Latin letters                                                          |
-  | `0-9`        | Numbers                                                                |
-  | ` `          | Space                                                                  |
-  | `_`          | Underscores                                                            |
-  | `-` `—` `–`  | Different hyphens                                                      |
-  | `.`          | Fullstop (Period)                                                      |
-  | `,`          | Comma                                                                  |
-  | `(` `)`      | Parentheses                                                            |
-  | `'s`         | Possessive apostrophe for nouns                                        |
-  | `s'`         | Possessive apostrophe is added to plural proper nouns that ends in `s` |
-
-- All `shortDescription` values MAY use the following specially approved terms:
-
-  | Approved Name                         | Description                            |
-  | ------------------------------------- | -------------------------------------- |
-  | `S/4HANA`                             | Approved product name                  |
-  | `country/region`<br/>`Country/Region` | Approved name                          |
-  | `G/L`                                 | General ledger. Approved abbreviation. |
 
 ### Misc Constraints
 
