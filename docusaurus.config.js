@@ -252,6 +252,10 @@ const config = {
                 to: "spec-v1/interfaces/OrdOverlay",
               },
               {
+                label: "ORD Detail Pages",
+                to: "spec-v1/concepts",
+              },
+              {
                 type: "html",
                 value:
                   '<hr style="margin: 0.1rem 0.1rem; border: none; border-top: 1px solid var(--ifm-color-emphasis-300);">',
