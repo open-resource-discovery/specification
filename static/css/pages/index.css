@@ -14,6 +14,7 @@
   --ifm-footer-background-color: var(--lp-c-bg);
   background-color: var(--lp-c-bg);
   border-top: 1px solid var(--lp-c-divider);
+  box-shadow: 0 -2px 12px rgba(4, 13, 18, 0.06);
   padding: 16px 0 0;
   margin-top: 16px;
 }
@@ -28,21 +29,76 @@
 .footer--dark svg {
   display: none;
 }
-.footer-funding {
+.footer-partners {
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
   align-items: center;
-  gap: 24px;
-  padding: 0;
+  justify-content: center;
+  gap: clamp(24px, 5vw, 64px);
+  min-height: 136px;
+  padding: 4px 0 24px;
+  border-bottom: 1px solid var(--lp-c-divider);
 }
-.footer-funding__image img {
-  max-width: min(300px, 100%);
+.footer-partner-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  opacity: 0.82;
+  transition: opacity 0.2s ease;
+}
+.footer-partner-link:hover {
+  opacity: 1;
+}
+.footer-partner-link--funding {
+  width: 230px;
+}
+.footer-partner-link:focus-visible {
+  outline: 2px solid var(--lp-c-brand-1);
+  outline-offset: 6px;
+}
+.footer-partner-logo {
   height: auto;
   display: block;
 }
+.footer-partner-logo--funding {
+  width: min(230px, 100%);
+}
+.footer-partner-logo--neonephos {
+  width: auto;
+  height: 22px;
+}
+.footer-partner-logo--linux-foundation {
+  width: auto;
+  height: 28px;
+}
+.footer-partner-logo--apeirora {
+  width: auto;
+  height: 24px;
+}
+html[data-theme="light"] .footer-partner-logo--linux-foundation {
+  filter: invert(1);
+}
+.footer-partners__divider {
+  align-self: stretch;
+  width: 1px;
+  background: var(--lp-c-divider);
+}
+.footer-governance {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.footer-governance__divider {
+  width: 1px;
+  height: 22px;
+  background: var(--lp-c-divider);
+}
+.footer-copy {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
 .footer-funding__text {
-  flex: 1;
   min-width: 0;
   font-size: 12px;
   color: var(--lp-c-text-2);
@@ -68,34 +124,12 @@
   text-decoration: underline;
 }
 .footer-copyright {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid var(--lp-c-divider);
+  min-width: 0;
 }
 .footer-container {
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-.neonephos-logos {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0;
-}
-.neonephos-link {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-}
-.neonephos-logo {
-  height: 60px;
-  width: auto;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-}
-.neonephos-link:hover .neonephos-logo {
-  opacity: 1;
 }
 .neonephos-logo--light {
   display: none;
@@ -130,26 +164,35 @@ html[data-theme="light"] .neonephos-logo--light {
   color: var(--lp-c-text-3);
   opacity: 0.5;
 }
-@media (max-width: 649px) {
-  .footer-funding {
+@media (max-width: 759px) {
+  .footer-partners {
     flex-direction: column;
-    gap: 24px;
-    width: 100%;
+    gap: 16px;
+    min-height: 0;
   }
-  .footer-funding__image {
-    align-self: flex-start;
+  .footer-partners__divider {
+    align-self: auto;
+    width: min(420px, 100%);
+    height: 1px;
+  }
+  .footer-governance {
+    gap: 10px;
+  }
+  .footer-partner-logo--linux-foundation {
+    height: 18px;
+  }
+  .footer-partner-logo--neonephos {
+    height: 16px;
+  }
+  .footer-partner-logo--apeirora {
+    height: 17px;
+  }
+  .footer-copy {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }
 @media (min-width: 650px) and (max-width: 768px) {
-  .footer-funding {
-    flex-direction: row;
-    gap: 24px;
-    width: 100%;
-    flex-wrap: unset;
-  }
-  .footer-funding__image img {
-    max-height: 200px;
-  }
   .footer-legal-links {
     flex-wrap: wrap;
     justify-content: center;
@@ -158,18 +201,6 @@ html[data-theme="light"] .neonephos-logo--light {
     margin: 0 8px;
   }
 }
-@media (min-width: 769px) {
-  .footer-funding {
-    flex-direction: row;
-    gap: 24px;
-    width: 100%;
-    flex-wrap: wrap;
-  }
-  .footer-funding__image {
-    align-self: flex-start;
-  }
-}
-
 /* Hero area and layout */
 .lp-home {
   display: grid;
@@ -454,6 +485,8 @@ html[data-theme="light"] .neonephos-logo--light {
 }
 .lp-features h3 {
   font-size: 16px;
+  line-height: 1.35;
+  margin: 0;
 }
 .lp-features {
   display: grid;
@@ -485,11 +518,21 @@ html[data-theme="light"] .neonephos-logo--light {
   line-height: 1.6;
   font-size: 14px;
 }
-@media (min-width: 481px) and (max-width: 959px) {
+@media (min-width: 481px) and (max-width: 639px) {
+  .lp-features {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+@media (min-width: 640px) and (max-width: 959px) {
   .lp-features {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    width: 100%;
+  }
+}
+@media (min-width: 640px) {
+  .lp-feature-card h3 {
+    min-height: 2.7em;
   }
 }
 @media (max-width: 480px) {

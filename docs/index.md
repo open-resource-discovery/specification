@@ -47,7 +47,7 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
   <div className="container">
     <div className="lp-overview-grid">
       <div className="lp-overview-text">
-        <h2>Publish and discover metadata consistently</h2>
+        <h2>Publish and discover connected metadata</h2>
         <p>Open Resource Discovery (ORD) standardizes how applications and services publish metadata about the resources and capabilities they expose, and how consumers discover it.</p>
         <p>
           <span>Providers can describe and connect APIs, events, data products, AI agents, and other capabilities with shared business context and relationships.</span>{" "}
@@ -87,7 +87,7 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
     <ol>
       <li><strong>Understand:</strong> Read the <a href="./introduction">ORD introduction</a> to grasp the core concepts.</li>
       <li><strong>Explore:</strong> Check the <a href="./spec-v1/examples">example files</a> to see ORD in action.</li>
-      <li><strong>Implement:</strong> Follow the <a href="./spec-v1/interfaces/Configuration">ORD Configuration Interface</a> to add ORD to your application.</li>
+      <li><strong>Implement:</strong> Follow the <a href="./spec-v1/#ord-provider">ORD Provider</a> section to publish ORD Documents and expose the ORD Configuration Interface.</li>
       <li><strong>Validate:</strong> Use the <a href="https://www.npmjs.com/package/@open-resource-discovery/specification">JSON Schema</a> to validate your ORD documents.</li>
     </ol>
   </div>
@@ -109,11 +109,11 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
         <h3>Design Goals</h3>
       </div><div className="card__body">
         <ul>
-          <li>Let systems <strong>describe themselves</strong> through one crawlable entry point.</li>
-          <li>Support both static product metadata and the <strong>runtime system landscape</strong>.</li>
-          <li>Enable <strong>automated publication and discovery</strong> across tools and vendors.</li>
-          <li>Add common context and relationships while preserving established definition formats.</li>
-          <li>Remain <a href="https://github.com/open-resource-discovery/specification">open source</a> and extensible.</li>
+          <li>Standardize how providers <strong>publish connected metadata</strong> and how consumers discover it.</li>
+          <li>Represent both product-level capabilities and the <strong>actual, tenant-specific runtime landscape</strong>.</li>
+          <li>Enable <strong>automated metadata exchange</strong> across tools, aggregators, and vendors.</li>
+          <li>Add shared identity, business context, taxonomy, and relationships while preserving established definition formats.</li>
+          <li>Evolve as an <a href="https://github.com/open-resource-discovery/specification">open, vendor-neutral, and extensible standard</a>.</li>
         </ul>
       </div></div>
     </div>
@@ -122,10 +122,11 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
         <h3>Non-Goals</h3>
       </div><div className="card__body">
         <ul>
-          <li>Replace industry-standard resource definition formats such as OpenAPI.</li>
-          <li>Describe resources or capabilities in exhaustive technical detail.</li>
-          <li>Transport fast-changing operational information.</li>
-          <li>Describe resources that are not owned and exposed directly by the system.</li>
+          <li>Replace established resource definition formats such as OpenAPI and AsyncAPI.</li>
+          <li>Repeat every technical detail already captured in linked resource definitions.</li>
+          <li>Transport fast-changing operational data such as logs, metrics, or business payloads.</li>
+          <li>Grant access to discovered resources or replace their runtime protocols.</li>
+          <li>Mandate a single aggregator, catalog experience, or consumer-facing Discovery API.</li>
         </ul>
       </div></div>
     </div></div>

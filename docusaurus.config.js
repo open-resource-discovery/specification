@@ -352,33 +352,56 @@ const config = {
         style: "dark",
         copyright: `
           <div class="footer-container">
-            <div class="footer-funding">
-              <div class="footer-funding__image">
-                <img src="${`${baseUrl}img/ord-footer-bmwe.png`}" alt="EU and German government funding logos" />
-              </div>
+            <div class="footer-partners" aria-label="Project affiliation and funding">
+              <a href="https://commission.europa.eu/strategy-and-policy/recovery-plan-europe_en" target="_blank" rel="noopener noreferrer" class="footer-partner-link footer-partner-link--funding">
+                <img
+                  src="${`${baseUrl}img/ord-footer-bmwe.png`}"
+                  alt="Funded by the European Union NextGenerationEU and supported by the German Federal Ministry for Economic Affairs and Energy"
+                  class="footer-partner-logo footer-partner-logo--funding"
+                />
+              </a>
+              <span class="footer-partners__divider" aria-hidden="true"></span>
+              <nav class="footer-governance" aria-label="Project and governance organizations">
+                <a href="https://linuxfoundation.eu/" target="_blank" rel="noopener noreferrer" class="footer-partner-link">
+                  <img
+                    src="${`${baseUrl}img/linux-foundation-europe-white.svg`}"
+                    alt="Linux Foundation Europe"
+                    class="footer-partner-logo footer-partner-logo--linux-foundation"
+                  />
+                </a>
+                <span class="footer-governance__divider" aria-hidden="true"></span>
+                <a href="https://neonephos.org/" target="_blank" rel="noopener noreferrer" class="footer-partner-link">
+                  <img
+                    src="${`${baseUrl}img/ord-footer-neonephos.svg`}"
+                    alt="NeoNephos Foundation"
+                    class="footer-partner-logo footer-partner-logo--neonephos neonephos-logo--dark"
+                  />
+                  <img
+                    src="${`${baseUrl}img/ord-footer-neonephos-light.svg`}"
+                    alt=""
+                    aria-hidden="true"
+                    class="footer-partner-logo footer-partner-logo--neonephos neonephos-logo--light"
+                  />
+                </a>
+                <span class="footer-governance__divider" aria-hidden="true"></span>
+                <a href="https://apeirora.eu/" target="_blank" rel="noopener noreferrer" class="footer-partner-link">
+                  <img
+                    src="${`${baseUrl}img/apeirora.svg`}"
+                    alt="ApeiroRA"
+                    class="footer-partner-logo footer-partner-logo--apeirora"
+                  />
+                </a>
+              </nav>
+            </div>
+            <div class="footer-copy">
               <div class="footer-funding__text">
                 <p><strong>Funded by the European Union – NextGenerationEU.</strong></p>
                 <p>The views and opinions expressed are solely those of the author(s) and do not necessarily reflect the views of the European Union or the European Commission. Neither the European Union nor the European Commission can be held responsible for them.</p>
-                <div class="footer-copyright">
-                  <p><strong>Copyright © Linux Foundation Europe.</strong></p>
-                  <p>Open Resource Discovery is a project of NeoNephos Foundation. For applicable policies including privacy policy, terms of use and trademark usage guidelines, please see <a href="https://linuxfoundation.eu">https://linuxfoundation.eu</a>. Linux is a registered trademark of Linus Torvalds. </p>
-                </div>
               </div>
-            </div>
-            <div class="neonephos-logos">
-              <a href="https://neonephos.org/" target="_blank" rel="noopener noreferrer" class="neonephos-link">
-                <img
-                  src="${`${baseUrl}img/ord-footer-neonephos.svg`}"
-                  alt="Neonephos Logo"
-                  class="neonephos-logo neonephos-logo--dark"
-                />
-                <img
-                  src="${`${baseUrl}img/ord-footer-neonephos-light.svg`}"
-                  alt=""
-                  aria-hidden="true"
-                  class="neonephos-logo neonephos-logo--light"
-                />
-              </a>
+              <div class="footer-copyright">
+                <p><strong>Copyright © Linux Foundation Europe.</strong></p>
+                <p>Open Resource Discovery is a project of NeoNephos Foundation and part of ApeiroRA. For applicable policies including privacy policy, terms of use and trademark usage guidelines, please see <a href="https://linuxfoundation.eu">https://linuxfoundation.eu</a>. Linux is a registered trademark of Linus Torvalds.</p>
+              </div>
             </div>
             <!--
             <div class="footer-legal-links">
