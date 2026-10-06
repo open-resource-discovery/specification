@@ -121,7 +121,7 @@ The configuration tells you where the metadata is. ORD explains how the resource
 
 **Try a live provider:** open the [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/).
 Find an API or Event in its explorer, inspect its ORD metadata and relationships, then follow a resource-definition link to the native contract.
-For the underlying HTTP flow, start at its [well-known configuration](https://ord-reference-application.cfapps.sap.hana.ondemand.com/.well-known/open-resource-discovery) and follow the document URLs it advertises.
+For the underlying HTTP flow, start at its [well-known configuration](https://ord-reference-application.cfapps.sap.hana.ondemand.com/.well-known/open-resource-discovery) and follow it to the public [`system-version` ORD document](https://ord-reference-application.cfapps.sap.hana.ondemand.com/open-resource-discovery/v1/documents/system-version).
 The [source code and setup instructions](https://github.com/open-resource-discovery/reference-application) show how the provider is implemented.
 
 ### Describe what is offered and what is running

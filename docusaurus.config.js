@@ -312,6 +312,10 @@ const config = {
             label: "Help",
             to: "help/",
             items: [
+              {
+                label: "ORD Presentation",
+                href: "https://open-resource-discovery.github.io/presentation/",
+              },
               // {
               //   label: "Overview",
               //   to: "help/",
