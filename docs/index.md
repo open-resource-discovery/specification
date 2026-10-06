@@ -47,11 +47,13 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
   <div className="container">
     <div className="lp-overview-grid">
       <div className="lp-overview-text">
-        <h2>Discover metadata where it lives</h2>
-        <p>Open Resource Discovery (ORD) lets applications and services describe the resources and capabilities they actually expose through one crawlable, read-only entry point.</p>
-        <p>Providers can link API and event definitions, data products, AI agents, and other capabilities with shared business context and relationships.</p>
-        <p>Consumers can build catalogs or inspect a tenant-specific runtime landscape.</p>
-        <p>ORD complements standards such as OpenAPI rather than replacing them.</p>
+        <h2>Publish and discover metadata consistently</h2>
+        <p>Open Resource Discovery (ORD) standardizes how applications and services publish metadata about the resources and capabilities they expose, and how consumers discover it.</p>
+        <p>
+          <span>Providers can connect API and event definitions, data products, AI agents, and other capabilities with shared business context and relationships.</span>{" "}
+          <span>Consumers can use this standardized metadata to build catalogs and marketplaces, automate integration workflows, or inspect what is actually available in a tenant-specific runtime landscape.</span>{" "}
+          <span>ORD complements established standards such as OpenAPI and AsyncAPI, allowing teams to reuse existing definitions while adding consistent discovery and context.</span>
+        </p>
         <p>It is an open standard governed by the <a href="https://www.linuxfoundation.org/">Linux Foundation</a> / <a href="https://neonephos.org/">NeoNephos</a>.</p>
       </div>
       <ProviderDiagram />
