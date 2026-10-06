@@ -37,13 +37,13 @@
   padding: 0;
 }
 .footer-funding__image img {
-  max-width: 300px;
+  max-width: min(300px, 100%);
   height: auto;
   display: block;
 }
 .footer-funding__text {
   flex: 1;
-  min-width: 280px;
+  min-width: 0;
   font-size: 12px;
   color: var(--lp-c-text-2);
   line-height: 1.6;
@@ -173,6 +173,7 @@ html[data-theme="light"] .neonephos-logo--light {
 /* Hero area and layout */
 .lp-home {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   background: var(--lp-c-bg);
   min-height: 100vh;
   gap: 24px;
@@ -180,6 +181,8 @@ html[data-theme="light"] .neonephos-logo--light {
 }
 .lp-home .container {
   display: flex;
+  min-width: 0;
+  width: 100%;
   margin: 0 auto;
   max-width: 1152px;
   flex-direction: column;
@@ -298,7 +301,7 @@ html[data-theme="light"] .neonephos-logo--light {
   }
   .lp-home .actions {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
     width: 100%;
   }
@@ -492,7 +495,7 @@ html[data-theme="light"] .neonephos-logo--light {
 /* Overview grid (diagram + text) */
 .lp-overview-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 36px;
   align-items: start;
   max-width: 1152px;
@@ -509,6 +512,13 @@ html[data-theme="light"] .neonephos-logo--light {
 }
 .lp-overview-text p:last-child {
   margin-bottom: 0;
+}
+.lp-home .container:has(> .ord-unified-metadata) {
+  gap: 24px;
+}
+.lp-home .ord-unified-metadata {
+  margin: 0;
+  text-align: left;
 }
 .lp-overview-diagram {
   display: flex;
@@ -583,8 +593,8 @@ html[data-theme="light"] .neonephos-logo--light {
   width: 100%;
 }
 .lp-home .row .col {
-  flex: 1 1 0;
-  min-width: 280px;
+  flex: 1 1 280px;
+  min-width: 0;
 }
 .lp-home .card {
   background: var(--lp-c-bg-elv);
