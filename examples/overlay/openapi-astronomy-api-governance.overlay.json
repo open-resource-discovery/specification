@@ -7,6 +7,10 @@
     "systemNamespace": "sap.foo"
   },
   "visibility": "internal",
+  "target": {
+    "ordId": "sap.foo:apiResource:astronomy:v1",
+    "definitionType": "openapi-v3"
+  },
   "patches": [
     {
       "action": "merge",

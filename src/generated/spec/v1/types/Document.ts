@@ -26,7 +26,7 @@ export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
  * The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
  * In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
  */
-export type OverlayDefinitionType = (
+export type OverlayTargetDefinitionType = (
   | string
   | "openapi-v2"
   | "openapi-v3"
@@ -3542,7 +3542,7 @@ export interface OverlayDefinition {
    * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
   purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
-  target?: OverlayTarget;
+  target?: OverlayDefinitionTarget;
 }
 /**
  * Optional context about the target being patched.
@@ -3557,11 +3557,12 @@ export interface OverlayDefinition {
  *
  * Multiple identifiers, if provided, are treated as all pointing to the same resource.
  */
-export interface OverlayTarget {
+export interface OverlayDefinitionTarget {
   /**
    * URL or URI pointing directly to the file being patched.
    * This is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),
    * but can also point to any JSON/YAML-based target document.
+   * Relative references are resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl).
    */
   url?: string;
   /**
@@ -3572,7 +3573,7 @@ export interface OverlayTarget {
    * @minItems 1
    */
   correlationIds?: [string, ...string[]];
-  definitionType?: OverlayDefinitionType;
+  definitionType?: OverlayTargetDefinitionType;
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

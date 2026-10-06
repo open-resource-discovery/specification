@@ -124,7 +124,7 @@ IF the resources have already been published to the public [SAP Business Acceler
 
 ### ORD Overlays
 
-- Standalone [ORD Overlay Resources](../../spec-v1/interfaces/Document.md#ord-overlay-resource) MUST provide at least one entry in `relatedApiResources` or `relatedEventResources` with `relationType` set to `ord:patches` to identify the ORD resource being patched.
+- Standalone [ORD Overlay Resources](../../spec-v1/interfaces/Document.md#overlay) MUST provide at least one entry in `relatedApiResources` or `relatedEventResources` with `relationType` set to `ord:patches` to identify the ORD resource being patched.
 
 - All ORD Overlays governed by this policy MUST have an effective `visibility`
   of `internal` or `private`, regardless of their purpose or publishing mechanism.

@@ -7,6 +7,10 @@
     "systemNamespace": "sap.foo"
   },
   "visibility": "internal",
+  "target": {
+    "ordId": "sap.foo:apiResource:BusinessPartnerODataV2:v1",
+    "definitionType": "edmx"
+  },
   "patches": [
     {
       "action": "merge",

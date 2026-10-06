@@ -32,6 +32,43 @@ export type OverlayCorrelationID2 = string;
  */
 export type OverlayVisibility = ("public" | "internal" | "private") & string;
 /**
+ * Optional, but RECOMMENDED type of the target definition being patched.
+ * If provided, this SHOULD match the `type` of the referenced metadata definition
+ * (as used in API/Event/Capability resource definitions).
+ * This is especially useful when target `ordId` resolves to a resource with multiple attached definitions.
+ *
+ * This can be used to disambiguate how selectors are interpreted for the target.
+ *
+ * MUST be either:
+ * - any valid [Specification ID](../../spec-v1/index.md#specification-id), or
+ * - one of the pre-defined values reused from:
+ *   - API Resource Definition `type`
+ *   - Event Resource Definition `type`
+ *   - Capability Definition `type`
+ *
+ * The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
+ * In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
+ */
+export type OverlayDefinitionType = (
+  | string
+  | "openapi-v2"
+  | "openapi-v3"
+  | "openapi-v3.1+"
+  | "raml-v1"
+  | "edmx"
+  | "csdl-json"
+  | "graphql-sdl"
+  | "wsdl-v1"
+  | "wsdl-v2"
+  | "a2a-agent-card"
+  | "sap-rfc-metadata-v1"
+  | "sap-sql-api-definition-v1"
+  | "sap-csn-interop-effective-v1"
+  | "asyncapi-v2"
+  | "sap.mdo:mdi-capability-definition:v1"
+) &
+  string;
+/**
  * The patch operation to perform on the selected element.
  */
 export type OverlayPatchAction = "update" | "remove" | "merge";
@@ -175,6 +212,7 @@ export interface ORDOverlay {
   describedSystemVersion?: OverlaySystemVersion;
   describedSystemInstance?: OverlaySystemInstance;
   visibility?: OverlayVisibility;
+  target?: OverlayTarget;
   /**
    * Ordered sequence of patches to apply to the targeted resource(s).
    * Patches are applied strictly in the order they are listed.
@@ -245,6 +283,59 @@ export interface OverlaySystemVersion {
  * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
  */
 export interface OverlaySystemInstance {
+  /**
+   * Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.
+   * By providing the base URL, relative URLs in the overlay are resolved relative to it.
+   *
+   * The `baseUrl` MUST NOT contain a trailing slash.
+   */
+  baseUrl?: string;
+  /**
+   * Optional local ID for the system instance (usually tenant ID), as known by the described system.
+   */
+  localId?: string;
+  /**
+   * Correlation IDs for linking this system instance to external systems of record.
+   *
+   * @minItems 1
+   */
+  correlationIds?: [OverlayCorrelationID2, ...OverlayCorrelationID2[]];
+}
+/**
+ * Optional target context identifying the resource or definition file being patched.
+ * See [Overlay Target](#overlay-target) for details on identifier requirements and disambiguation.
+ */
+export interface OverlayTarget {
+  /**
+   * ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).
+   * MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).
+   */
+  ordId?: string;
+  /**
+   * URL or URI pointing directly to the file being patched.
+   * This is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),
+   * but can also point to any JSON/YAML-based target document.
+   */
+  url?: string;
+  /**
+   * Correlation IDs referencing the target resource in external registries or systems of record.
+   * Reuses the ORD correlation ID format: `namespace:type:localId`.
+   * All listed IDs are treated as pointing to the same resource.
+   *
+   * @minItems 1
+   */
+  correlationIds?: [string, ...string[]];
+  definitionType?: OverlayDefinitionType;
+  systemInstance?: OverlaySystemInstance1;
+}
+/**
+ * A [system instance](../../spec-v1/index.md#system-instance) is a concrete, running instance of a system type.
+ * This object is identical to the ORD Document `describedSystemInstance` object; see [System Instance](../../spec-v1/interfaces/Document.md#system-instance).
+ *
+ * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
+ * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
+ */
+export interface OverlaySystemInstance1 {
   /**
    * Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.
    * By providing the base URL, relative URLs in the overlay are resolved relative to it.

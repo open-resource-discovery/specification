@@ -3,6 +3,10 @@
   "ordOverlay": "0.1",
   "ordId": "sap.platform:overlay:ord-reference-app-enrichment:v1",
   "description": "Assigns ORD resources from the reference app to platform groups and adds platform-managed labels, without modifying the original ORD document. Note: a dedicated ordId selector for ORD document-level patching is planned for a future version.",
+  "target": {
+    "ordId": "sap.foo:package:ord-reference-app:v0",
+    "url": "/open-resource-discovery/v1/documents/example"
+  },
   "patches": [
     {
       "action": "merge",

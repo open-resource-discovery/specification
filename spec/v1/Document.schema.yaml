@@ -3395,10 +3395,11 @@ definitions:
         <<: *resourceDefinitionPurpose
 
       target:
+        x-introduced-in-version: "1.17.0"
         description: |-
           Optional target context identifying the resource or definition file being patched.
-          See [Overlay Target](#overlay-target) for details on identifier requirements and disambiguation.
-        $ref: "#/definitions/OverlayTarget"
+          See [Overlay Definition Target](#overlay-definition-target) for details on identifier requirements and disambiguation.
+        $ref: "#/definitions/OverlayDefinitionTarget"
 
     additionalProperties: false
     required:
@@ -3408,10 +3409,11 @@ definitions:
 
   ############################################################################################################
 
-  OverlayTarget:
+  OverlayDefinitionTarget:
     type: object
-    title: Overlay Target
+    title: Overlay Definition Target
     x-ums-type: "embedded"
+    x-introduced-in-version: "1.17.0"
     description: |-
       Optional context about the target being patched.
       The target can refer to a resource definition file by its URL, correlation IDs, or definition type.
@@ -3425,6 +3427,7 @@ definitions:
 
       Multiple identifiers, if provided, are treated as all pointing to the same resource.
     additionalProperties: false
+    minProperties: 1
     properties:
       url:
         type: string
@@ -3433,6 +3436,7 @@ definitions:
           URL or URI pointing directly to the file being patched.
           This is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),
           but can also point to any JSON/YAML-based target document.
+          Relative references are resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl).
         examples:
           - "https://example.com/api/openapi.json"
           - "./openapi.yaml"
@@ -3468,7 +3472,7 @@ definitions:
           The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
           In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
         type: string
-        title: Overlay Definition Type
+        title: Overlay Target Definition Type
         x-ums-type: "ignore"
         anyOf:
           - type: string

@@ -55,6 +55,10 @@ spec:
       relatedTypeName: 'OverlaySystemInstance'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.\nThis object is identical to the ORD Document `describedSystemInstance` object; see [System Instance](../../spec-v1/interfaces/Document.md#system-instance).\n\nIts purpose is to link the overlay to the same system landscape model as ORD resources, if needed.\nUse this when the overlay should only patch metadata for one concrete tenant / runtime instance.\n\nUsually this is not necessary for static overlays if the patched resource is already selected via ORD ID."
+    - propertyName: 'target'
+      relatedTypeName: 'OverlayTarget'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional target context identifying the resource or definition file being patched.\nSee [Overlay Target](#overlay-target) for details on identifier requirements and disambiguation."
     - propertyName: 'patches'
       relatedTypeName: 'OverlayPatch'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
