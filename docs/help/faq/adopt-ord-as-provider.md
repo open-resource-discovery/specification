@@ -98,7 +98,8 @@ The response (of at least some requests) will depend on tenant context, customiz
 In practice it's more realistic that such an implementation will be a mix between static and dynamic metadata.
 Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to split metadata into separate ORD documents with different [perspectives](../../spec-v1/concepts/perspectives.md) (e.g. `system-version` for static and `system-instance` for dynamic metadata).
 
-> 🚧 The [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) showcases a mix between static and dynamic metadata. The source-code for it is yet to be made public, though.
+> 🚧 The [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) showcases a mix between static and dynamic metadata and embeds the ORD Explorer for its public metadata.
+> Its [source code](https://github.com/open-resource-discovery/reference-application) is available on GitHub.
 
 ## Shared Concerns
 

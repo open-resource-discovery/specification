@@ -15,6 +15,10 @@ import {
 
 # Open Resource Discovery Specification 1.16
 
+New to ORD?
+Start with the [ORD Introduction](../introduction.mdx) for a concise primer or explore the [ORD presentation](https://open-resource-discovery.github.io/presentation/) for a visual walkthrough of the specification and ecosystem.
+The [presentation source](https://github.com/open-resource-discovery/presentation) is available on GitHub.
+
 ## Notational Conventions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
