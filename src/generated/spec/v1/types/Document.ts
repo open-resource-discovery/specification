@@ -2810,7 +2810,6 @@ export interface DataProduct {
    * Generic Links with arbitrary meaning and content.
    */
   links?: Link[];
-  extensible?: Extensible;
   /**
    * List of industry tags.
    * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
@@ -3304,7 +3303,6 @@ export interface Agent {
    * Generic Links with arbitrary meaning and content.
    */
   links?: Link[];
-  extensible?: Extensible;
   /**
    * List of free text style tags.
    * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
