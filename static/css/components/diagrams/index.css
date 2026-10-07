@@ -175,6 +175,20 @@ html[data-theme="dark"] .ord-diagram {
 .ord-role-flow span { position: absolute; bottom: 0.75rem; width: 100%; color: var(--ord-faint); font-size: 0.58rem; font-style: normal; text-align: center; text-transform: uppercase; }
 .ord-roles figcaption { grid-column: 1 / -1; color: var(--ord-muted); font-size: 0.85rem; text-align: center; }
 
+/* Specification navigation */
+.ord-spec-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; }
+.ord-spec-map__section { display: flex; min-width: 0; min-height: 240px; flex-direction: column; gap: 0.55rem; border: 1px solid var(--ord-sep); border-top: 4px solid var(--ord-provider); border-radius: 8px; background: var(--ord-provider-soft); padding: 1.15rem; }
+.ord-spec-map__section--publication { border-top-color: var(--ord-brand); background: var(--ord-teal-soft); }
+.ord-spec-map__section--discovery { border-top-color: var(--ord-aggregator); background: var(--ord-aggregator-soft); }
+.ord-spec-map__section--semantics { border-top-color: var(--ord-coral); background: var(--ord-coral-soft); }
+.ord-spec-map__label { color: var(--ord-faint); font-size: 0.67rem; font-weight: 750; letter-spacing: 0.04em; text-transform: uppercase; }
+.ord-spec-map__section > strong { max-width: 28rem; font-size: 1.05rem; line-height: 1.3; }
+.ord-spec-map__section > p { color: var(--ord-muted); font-size: 0.8rem; line-height: 1.45; }
+.ord-spec-map__links { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: auto; }
+.ord-spec-map__links a { display: inline-flex; align-items: center; border: 1px solid var(--ord-border); border-radius: 999px; background: var(--ord-panel); color: var(--ord-text) !important; font-size: 0.72rem; font-weight: 700; line-height: 1.2; padding: 0.48rem 0.65rem; text-decoration: none; }
+.ord-spec-map__links a::after { margin-left: 0.35rem; color: var(--ord-faint); content: "→"; }
+.ord-spec-map__links a:hover, .ord-spec-map__links a:focus-visible { border-color: var(--ord-brand); color: var(--ord-brand) !important; text-decoration: none; }
+
 /* Pull discovery */
 .ord-discovery-flow { display: flex; flex-direction: column; gap: 1rem; }
 .ord-discovery-flow__steps { display: flex; align-items: stretch; }
@@ -568,7 +582,8 @@ html[data-theme="dark"] .ord-diagram {
 }
 
 @media (max-width: 760px) {
-  .ord-alignment, .ord-namespace, .ord-data-model, .ord-perspectives__grid, .ord-id-fragments, .ord-identifier-grid, .ord-change-grid, .ord-resolution-summary .branches, .ord-ai-enrichment { grid-template-columns: 1fr; }
+  .ord-alignment, .ord-spec-map, .ord-namespace, .ord-data-model, .ord-perspectives__grid, .ord-id-fragments, .ord-identifier-grid, .ord-change-grid, .ord-resolution-summary .branches, .ord-ai-enrichment { grid-template-columns: 1fr; }
+  .ord-spec-map__section { min-height: 0; }
   .ord-alignment__mode { min-height: 330px; }
   .ord-data-model figcaption, .ord-namespace figcaption { grid-column: 1; }
   .ord-data-model figcaption { align-items: flex-start; flex-direction: column; }

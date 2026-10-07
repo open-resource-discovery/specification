@@ -323,6 +323,87 @@ export function RolesDiagram() {
   );
 }
 
+export function SpecificationMap() {
+  const sections = [
+    {
+      label: "01 · Participants",
+      question: "Who publishes, connects, and uses metadata?",
+      description:
+        "Start with the three roles. One system can implement more than one.",
+      links: [
+        ["ORD roles", "#ord-roles"],
+        ["Provider", "#ord-provider"],
+        ["Aggregator", "#ord-aggregator"],
+        ["Consumer", "#ord-consumer"],
+      ],
+      type: "roles",
+    },
+    {
+      label: "02 · Publication",
+      question: "How is metadata exposed and retrieved?",
+      description:
+        "Follow the provider contract from its entry point to documents and definitions.",
+      links: [
+        ["Transport modes", "#ord-transport-modes"],
+        ["Provider API", "#ord-provider-api"],
+        ["ORD document", "#ord-document"],
+        ["Resource definitions", "#resource-definitions"],
+      ],
+      type: "publication",
+    },
+    {
+      label: "03 · Discovery",
+      question: "How does metadata become discoverable?",
+      description:
+        "See what aggregators must preserve, resolve, validate, and serve.",
+      links: [
+        ["Aggregation", "#ord-aggregation"],
+        ["Discovery API", "#ord-discovery-api"],
+        ["Perspectives", "#perspectives"],
+      ],
+      type: "discovery",
+    },
+    {
+      label: "04 · Semantics",
+      question: "How does metadata stay unambiguous?",
+      description:
+        "Use shared identity, lifecycle, and protocol conventions across resources.",
+      links: [
+        ["ID concepts", "#id-concepts"],
+        ["Version and lifecycle", "#version-and-lifecycle"],
+        ["REST characteristics", "#common-rest-characteristics"],
+        ["Terminology", "#terminology"],
+      ],
+      type: "semantics",
+    },
+  ] as const;
+
+  return (
+    <nav
+      className="ord-diagram ord-spec-map"
+      aria-label="Navigate the ORD specification"
+    >
+      {sections.map(({ label, question, description, links, type }) => (
+        <section
+          className={`ord-spec-map__section ord-spec-map__section--${type}`}
+          key={type}
+        >
+          <span className="ord-spec-map__label">{label}</span>
+          <strong>{question}</strong>
+          <p>{description}</p>
+          <div className="ord-spec-map__links">
+            {links.map(([title, href]) => (
+              <a href={href} key={href}>
+                {title}
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </nav>
+  );
+}
+
 export function DiscoveryFlowDiagram() {
   const steps = [
     ["01", "Know the system", "Base URL or registered endpoint", "known"],
