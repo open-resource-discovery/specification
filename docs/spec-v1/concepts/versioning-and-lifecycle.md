@@ -7,6 +7,8 @@ import { ApiLifecycleDiagram, LifecycleDiagram } from "@site/src/components/OrdD
 
 # Versioning and Lifecycle
 
+> **Visual walkthrough:** Explore [versioning and lifecycle](https://open-resource-discovery.github.io/presentation/versioning-lifecycle) and the [API lifecycle example](https://open-resource-discovery.github.io/presentation/api-lifecycle) in the ORD presentation.
+
 ## Overview
 
 ORD uses two complementary mechanisms to track the state of a resource over time:

@@ -8,6 +8,8 @@ title: Data Product
 
 > 🚧 Please note that the [Data Products](../interfaces/Document#data-product) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
 
+> **Visual walkthrough:** See [Data Product ownership, lineage, and ports](https://open-resource-discovery.github.io/presentation/data-products) in the ORD presentation.
+
 ## Definition
 
 > A [Data Product](../interfaces/Document#data-product) is a **data set** exposed for consumption via APIs or Events.
