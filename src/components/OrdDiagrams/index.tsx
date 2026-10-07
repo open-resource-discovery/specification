@@ -323,6 +323,87 @@ export function RolesDiagram() {
   );
 }
 
+export function SpecificationMap() {
+  const sections = [
+    {
+      label: "01 · Participants",
+      question: "Who publishes, connects, and uses metadata?",
+      description:
+        "Start with the three roles. One system can implement more than one.",
+      links: [
+        ["ORD roles", "#ord-roles"],
+        ["Provider", "#ord-provider"],
+        ["Aggregator", "#ord-aggregator"],
+        ["Consumer", "#ord-consumer"],
+      ],
+      type: "roles",
+    },
+    {
+      label: "02 · Publication",
+      question: "How is metadata exposed and retrieved?",
+      description:
+        "Follow the provider contract from its entry point to documents and definitions.",
+      links: [
+        ["Transport modes", "#ord-transport-modes"],
+        ["Provider API", "#ord-provider-api"],
+        ["ORD document", "#ord-document"],
+        ["Resource definitions", "#resource-definitions"],
+      ],
+      type: "publication",
+    },
+    {
+      label: "03 · Discovery",
+      question: "How does metadata become discoverable?",
+      description:
+        "See what aggregators must preserve, resolve, validate, and serve.",
+      links: [
+        ["Aggregation", "#ord-aggregation"],
+        ["Discovery API", "#ord-discovery-api"],
+        ["Perspectives", "#perspectives"],
+      ],
+      type: "discovery",
+    },
+    {
+      label: "04 · Semantics",
+      question: "How does metadata stay unambiguous?",
+      description:
+        "Use shared identity, lifecycle, and protocol conventions across resources.",
+      links: [
+        ["ID concepts", "#id-concepts"],
+        ["Version and lifecycle", "#version-and-lifecycle"],
+        ["REST characteristics", "#common-rest-characteristics"],
+        ["Terminology", "#terminology"],
+      ],
+      type: "semantics",
+    },
+  ] as const;
+
+  return (
+    <nav
+      className="ord-diagram ord-spec-map"
+      aria-label="Navigate the ORD specification"
+    >
+      {sections.map(({ label, question, description, links, type }) => (
+        <section
+          className={`ord-spec-map__section ord-spec-map__section--${type}`}
+          key={type}
+        >
+          <span className="ord-spec-map__label">{label}</span>
+          <strong>{question}</strong>
+          <p>{description}</p>
+          <div className="ord-spec-map__links">
+            {links.map(([title, href]) => (
+              <a href={href} key={href}>
+                {title}
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </nav>
+  );
+}
+
 export function DiscoveryFlowDiagram() {
   const steps = [
     ["01", "Know the system", "Base URL or registered endpoint", "known"],
@@ -796,6 +877,213 @@ export function NamespaceDiagram() {
           <code>foo:product:Orders:</code>.
         </span>
       </figcaption>
+    </figure>
+  );
+}
+
+export function OrdIdDiagram() {
+  return (
+    <figure className="ord-diagram ord-id-diagram" aria-label="Construction and meaning of an ORD ID">
+      <div className="ord-id-pattern">
+        <span className="namespace">namespace</span><i>:</i>
+        <span className="concept">conceptName</span><i>:</i>
+        <span className="resource">resourceName</span><i>:</i>
+        <span className="major">v&lt;major&gt;</span>
+      </div>
+      <div className="ord-id-example">
+        <span>Example</span>
+        <code><b className="namespace">foo.orders</b>:<b className="concept">apiResource</b>:<b className="resource">Orders</b>:<b className="major">v1</b></code>
+      </div>
+      <div className="ord-id-fragments">
+        <section className="namespace"><span>01</span><h3>Namespace</h3><p>Identifies the owner governing the information.</p></section>
+        <section className="concept"><span>02</span><h3>Concept name</h3><p>A fixed ORD type such as <code>apiResource</code> or <code>agent</code>.</p></section>
+        <section className="resource"><span>03</span><h3>Resource name</h3><p>A stable technical name within the namespace.</p></section>
+        <section className="major"><span>04</span><h3>Major version</h3><p>Marks incompatible generations. Product and Vendor IDs leave this fragment empty.</p></section>
+      </div>
+      <figcaption><b>Design-time ORD ID</b><i>+</i><b>system-instance context</b><i>=</i><span>a unique resource instance at runtime</span></figcaption>
+    </figure>
+  );
+}
+
+export function IdentifierTypesDiagram() {
+  const identifiers = [
+    ["ord", "Identity inside ORD", "ORD ID", "What ORD resource or taxonomy item is this?", "foo.orders:apiResource:Orders:v1", ["Stable identity within ORD", "Uses a fixed ORD type name", "Major version marks an incompatible generation"]],
+    ["correlation", "Identity outside ORD", "Correlation ID", "Which external record is this the same as?", "foo.crm:customer:4711", ["Maps to a system-of-record identifier", "Stored in correlationIds", "No separate version fragment"]],
+    ["specification", "Shared behavior", "Specification ID", "Which standard or strategy should be implemented?", "ord:overlay:v1", ["Names a standard or strategy", "Used by extensible fields", "Major version marks incompatible specifications"]],
+  ] as const;
+  return (
+    <figure className="ord-diagram ord-identifier-types" aria-label="Comparison of ORD IDs, correlation IDs, and specification IDs">
+      <div className="ord-identifier-grid">
+        {identifiers.map(([kind, kicker, title, question, example, details]) => (
+          <section className={`ord-identifier-card ord-identifier-card--${kind}`} key={kind}>
+            <header><span>{kicker}</span><h3>{title}</h3><p>{question}</p></header>
+            <code>{example}</code>
+            <ul>{details.map((detail) => <li key={detail}>{detail}</li>)}</ul>
+          </section>
+        ))}
+      </div>
+      <figcaption><strong>Reference ORD IDs for content described by ORD.</strong><span>Group Types use Concept IDs such as <code>foo:process</code>; <code>ord:</code> identifies ORD-owned specifications.</span></figcaption>
+    </figure>
+  );
+}
+
+export function GroupingPackagingDiagram() {
+  return (
+    <figure className="ord-diagram ord-grouping" aria-label="ORD grouping concepts compared by concern and resource assignment">
+      <div className="ord-grouping-table-wrap">
+        <table>
+          <thead><tr><th>Concept</th><th>Concern</th><th>Assignment</th><th>Reference</th></tr></thead>
+          <tbody>
+            <tr className="mandatory"><th>Package <small>required</small></th><td>Publishing ownership and shared metadata</td><td>Resource → exactly 1</td><td><code>partOfPackage</code></td></tr>
+            <tr><th>Product</th><td>Software portfolio or service offering</td><td>Package / resource → 0..n</td><td><code>partOfProducts</code></td></tr>
+            <tr><th>Consumption Bundle</th><td>Shared credentials and authentication mechanism</td><td>API / Event → 0..n</td><td><code>partOfConsumptionBundles</code></td></tr>
+            <tr><th>Entity Type</th><td>Business object or domain semantics</td><td>Supported resources → 0..n</td><td>Varies by resource type</td></tr>
+            <tr><th>Group</th><td>Custom, governed taxonomy defined by a Group Type</td><td>Resource → 0..n</td><td><code>partOfGroups</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="ord-group-example"><div><small>ORD resource</small><strong>Sales API</strong></div><i>→</i><div><small>Group</small><strong>Order to cash</strong></div><i>→</i><div><small>Group Type</small><strong>Business process</strong></div></div>
+      <figcaption><b>Tags</b> add keywords; <b>labels</b> add queryable key-value metadata. Namespaces govern identity; use Groups for flexible taxonomy.</figcaption>
+    </figure>
+  );
+}
+
+export function LifecycleDiagram() {
+  return (
+    <figure className="ord-diagram ord-lifecycle" aria-label="ORD versioning and lifecycle model">
+      <div className="ord-status-flow"><span>Common releaseStatus path</span><b>development</b><i>→</i><b>beta</b><i>→</i><b>active</b><i>→</i><b>deprecated</b><i>→</i><b>sunset</b></div>
+      <div className="ord-change-grid">
+        <section><header><span>Compatible change</span><strong>Update the resource in place</strong></header><div><code>…:Order:v1</code><b>1.0.0</b><i>→</i><code>…:Order:v1</code><b>1.1.0</b></div><p>The ORD ID stays stable; the Semantic Version communicates the new resource state.</p></section>
+        <section className="breaking"><header><span>Incompatible change</span><strong>Create a successor identity</strong></header><div><code>…:Order:v1</code><b>deprecated</b><i>→</i><code>…:Order:v2</code><b>active</b></div><p>Link the successor. When the old resource is decommissioned, mark it sunset and publish a tombstone.</p></section>
+      </div>
+      <figcaption><strong>Keep three signals separate:</strong> identity in the ORD ID, contract state in <code>version</code>, and maturity in <code>releaseStatus</code>.</figcaption>
+    </figure>
+  );
+}
+
+export function ApiLifecycleDiagram() {
+  return (
+    <figure className="ord-diagram ord-api-lifecycle" aria-label="An API evolves under one ORD ID until an incompatible contract creates a successor identity">
+      <div className="ord-api-lifecycle__scroll">
+        <svg viewBox="0 0 1136 390" role="img" aria-labelledby="ord-api-lifecycle-title ord-api-lifecycle-desc">
+          <title id="ord-api-lifecycle-title">API lifecycle from compatible evolution to successor and retirement</title>
+          <desc id="ord-api-lifecycle-desc">An API evolves compatibly under the same ORD ID. A breaking contract creates a new major ORD ID while the old resource is deprecated, then sunset with a tombstone.</desc>
+          <defs>
+            <marker id="ord-lifecycle-update-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" className="ord-api-lifecycle__update-fill" /></marker>
+            <marker id="ord-lifecycle-successor-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" className="ord-api-lifecycle__successor-fill" /></marker>
+          </defs>
+          <g className="ord-api-lifecycle__stage"><text x="0" y="24">01 · Baseline</text><text x="304" y="24">02 · Compatible update</text><text x="608" y="24">03 · Breaking contract</text><text x="912" y="24">04 · Retire old API</text></g>
+          <path d="M224 134H304" className="ord-api-lifecycle__update-line" markerEnd="url(#ord-lifecycle-update-arrow)" />
+          <path d="M528 134H608" className="ord-api-lifecycle__update-line" markerEnd="url(#ord-lifecycle-update-arrow)" />
+          <path d="M832 134H912" className="ord-api-lifecycle__update-line" markerEnd="url(#ord-lifecycle-update-arrow)" />
+          <path d="M568 134V306H608" className="ord-api-lifecycle__successor-line" markerEnd="url(#ord-lifecycle-successor-arrow)" />
+          <path d="M832 306H912" className="ord-api-lifecycle__update-line" markerEnd="url(#ord-lifecycle-update-arrow)" />
+          <g className="ord-api-lifecycle__resource" transform="translate(0 66)"><rect width="224" height="136" rx="8" /><text x="18" y="30" className="name">Orders API</text><text x="18" y="62" className="id">…:Order:v1</text><text x="18" y="91">version: 1.0.0</text><text x="18" y="116">releaseStatus: active</text></g>
+          <g className="ord-api-lifecycle__resource" transform="translate(304 66)"><rect width="224" height="136" rx="8" /><text x="18" y="30" className="name">Same resource</text><text x="18" y="62" className="id">…:Order:v1</text><text x="18" y="91">version: 1.1.0</text><text x="18" y="116">releaseStatus: active</text></g>
+          <g className="ord-api-lifecycle__resource ord-api-lifecycle__old-resource" transform="translate(608 66)"><rect width="224" height="136" rx="8" /><text x="18" y="30" className="name">Retained contract</text><text x="18" y="62" className="id">…:Order:v1</text><text x="18" y="91">version: 1.1.0</text><text x="18" y="116">releaseStatus: deprecated</text></g>
+          <g className="ord-api-lifecycle__resource" transform="translate(912 66)"><rect width="224" height="136" rx="8" /><text x="18" y="30" className="name">Publish a tombstone</text><text x="18" y="62" className="id">…:Order:v1</text><text x="18" y="91">Record sunsetDate</text><text x="18" y="116">Remove or keep as sunset</text></g>
+          <g className="ord-api-lifecycle__resource ord-api-lifecycle__successor" transform="translate(608 238)"><rect width="224" height="136" rx="8" /><text x="18" y="30" className="name">New resource</text><text x="18" y="62" className="id">…:Order:v2</text><text x="18" y="91">version: 2.0.0</text><text x="18" y="116">releaseStatus: active</text></g>
+          <g className="ord-api-lifecycle__resource" transform="translate(912 238)"><rect width="224" height="136" rx="8" /><text x="18" y="30" className="name">Continues evolving</text><text x="18" y="62" className="id">…:Order:v2</text><text x="18" y="91">version: 2.1.0</text><text x="18" y="116">releaseStatus: active</text></g>
+          <text x="0" y="238" className="ord-api-lifecycle__annotation">Optional feature added?</text><text x="0" y="264" className="ord-api-lifecycle__explanation">Update version; preserve the ORD ID.</text>
+          <text x="304" y="338" className="ord-api-lifecycle__annotation ord-api-lifecycle__breaking-note">Consumer contract breaks?</text><text x="304" y="364" className="ord-api-lifecycle__explanation">Create a successor with a new major ID.</text>
+          <text x="618" y="225" className="ord-api-lifecycle__coexist">Both contracts coexist during migration</text>
+        </svg>
+      </div>
+      <figcaption>Deprecation is an explicit decision: link <code>successors</code> and provide migration dates. Development and beta resources may break without a new major ID; tenant extensions update <code>lastUpdate</code>.</figcaption>
+    </figure>
+  );
+}
+
+export function PerspectiveResolutionSummaryDiagram() {
+  return (
+    <figure className="ord-diagram ord-resolution-summary" aria-label="Summary of ORD perspective resolution">
+      <section className="request"><span>Consumer request</span><strong>Resolve the effective view for a system instance</strong></section>
+      <div className="decision">Is a complete <code>system-instance</code> perspective published?</div>
+      <div className="branches">
+        <section className="yes"><span>Yes</span><strong>Use only the runtime perspective</strong><p>An absent ORD ID is unavailable on that instance. Do not fill it from static metadata.</p></section>
+        <section className="no"><span>No</span><strong>Resolve the effective static view</strong><p>Select the applicable system-version layer, then fall back by ORD ID to system-type.</p><div><b>system-version</b><i>→</i><b>system-type</b></div></section>
+      </div>
+      <figcaption><span><b>Complete representations.</b> Never merge properties.</span><span><b>Exact means exact.</b> Do not substitute a missing requested version.</span><span><b>System-independent</b> stays outside the fallback chain.</span></figcaption>
+    </figure>
+  );
+}
+
+export function AiEnrichmentDiagram() {
+  return (
+    <figure className="ord-diagram ord-ai-enrichment" aria-label="AI-oriented enrichment at ORD resource and resource-definition levels">
+      <section><header><span>01</span><strong>Resource-level guidance</strong><small>Inside the ORD document</small></header><pre><code>"title": "Orders API",{`\n`}"description": "Read customer orders",{`\n`}"aiHint": "Use before shipping…"</code></pre><footer><b>Helps an AI consumer choose</b><span>Purpose and usage guidance stay separate from human documentation.</span></footer></section>
+      <section className="definition"><header><span>02</span><strong>Definition-level enrichment</strong><small>OpenAPI, OData, A2A, MCP, and more</small></header><div className="ord-enrichment-stack"><code>Base definition</code><b>+</b><code>ORD Overlay<br />purpose: ord:ai-enrichment</code></div><footer><b>Helps an AI consumer use</b><span>Add operation-level semantics and hints without editing the source.</span></footer></section>
+      <figcaption><code>aiHint</code> is defined on supported ORD resources. Fine-grained enrichment belongs in an ORD Overlay.</figcaption>
+    </figure>
+  );
+}
+
+export function OverlayDiagram() {
+  return (
+    <figure className="ord-diagram ord-overlay" aria-label="An ORD Overlay enriches a resource definition without modifying its source">
+      <div className="ord-overlay__flow">
+        <section><small>Source definition</small><strong>openapi.json</strong><pre><code>operationId: listOrders{`\n`}summary: List orders</code></pre><span>Owned by the API team</span></section><i>+</i>
+        <section className="patch"><small>ORD Overlay 0.1</small><strong>orders.overlay.json</strong><pre><code>action: merge{`\n`}selector:{`\n`}  operation: listOrders{`\n`}data: &#123; summary: … &#125;</code></pre><span>Separately owned and governed</span></section><i>=</i>
+        <section className="result"><small>Enriched definition</small><strong>OpenAPI + guidance</strong><pre><code>operationId: listOrders{`\n`}summary: List orders{`\n`}for fulfillment</code></pre><span>Original contract stays unchanged</span></section>
+      </div>
+      <figcaption><span><b>Target</b> definition</span><span><b>Select</b> an element</span><span><b>Patch</b> merge, update, or remove</span></figcaption>
+    </figure>
+  );
+}
+
+export function IntegrationScenarioDiagram() {
+  return (
+    <figure className="ord-diagram ord-integration-scenario" aria-label="A system declares the external APIs and events needed for an integration scenario">
+      <section className="consumer"><small>Described system</small><strong>System A</strong><span>Implements the integration scenario</span></section>
+      <div className="needs"><span>needs</span><i>→</i></div>
+      <section className="dependency"><small>ORD metadata</small><strong>Integration Dependency</strong><span>Declares required resources and alternatives</span></section>
+      <div className="needs"><span>references</span><i>→</i></div>
+      <section className="provider"><small>Integration target</small><strong>System B</strong><div><b>API B-1 or API B-2</b><b>Event B-3</b><b>uses callback API A-2</b></div></section>
+      <figcaption>ORD describes the type-level integration capability and its requirements. Runtime connections remain outside ORD.</figcaption>
+    </figure>
+  );
+}
+
+export function AgentConnectivityDiagram() {
+  return (
+    <figure className="ord-diagram ord-agent-connectivity" aria-label="Complete overview of the Agent relationships defined by ORD">
+      <div className="ord-agent-model">
+        <section className="ord-agent-relations ord-agent-classification">
+          <header><small>Placement and classification</small><strong>Where the Agent belongs</strong></header>
+          <div><code>partOfPackage</code><i>→</i><b>Package <small>exactly 1</small></b></div>
+          <div><code>partOfProducts</code><i>→</i><b>Products <small>0..n</small></b></div>
+          <div><code>partOfGroups</code><i>→</i><b>Groups <small>0..n</small></b></div>
+        </section>
+
+        <section className="ord-agent-card">
+          <small>ORD resource</small>
+          <strong>Agent</strong>
+          <span>Autonomous task execution</span>
+          <div>
+            <code>ordId</code><code>version</code><code>visibility</code><code>releaseStatus</code>
+          </div>
+        </section>
+
+        <div className="ord-agent-technical">
+          <section className="ord-agent-path ord-agent-exposure">
+            <header><code>exposedApiResources</code><small>0..n</small></header>
+            <div><b>API Resource</b><i>→</i><b>Resource Definition</b><i>→</i><b>A2A Agent Card <small>example</small></b></div>
+            <p><code>apiProtocol: a2a</code> and <code>type: a2a-agent-card</code> describe one supported interaction contract.</p>
+          </section>
+          <section className="ord-agent-path ord-agent-dependencies">
+            <header><code>integrationDependencies</code><small>0..n</small></header>
+            <div><b>Integration Dependency</b><i>→</i><b>API Resources</b><b>Event Resources</b><b>Capabilities</b></div>
+            <p>Dependency aspects identify required external resources. An MCP API and selected tools are one example.</p>
+          </section>
+        </div>
+
+        <section className="ord-agent-relations ord-agent-domain">
+          <header><small>Domain and evolution</small><strong>What the Agent relates to</strong></header>
+          <div><code>relatedEntityTypes</code><i>→</i><b>Entity Types <small>0..n</small></b></div>
+          <div><code>successors</code><i>→</i><b>Successor Agents <small>0..n</small></b></div>
+        </section>
+      </div>
+      <figcaption>These are the Agent's explicit ORD relationships. Generic metadata such as links, labels, tags, responsibility, and correlation IDs adds context but is not another resource relation.</figcaption>
     </figure>
   );
 }

@@ -3,6 +3,8 @@ sidebar_position: 5
 description: Detailed explanation of the Integration Dependency concept.
 ---
 
+import { IntegrationScenarioDiagram } from "@site/src/components/OrdDiagrams";
+
 # Integration Dependency
 
 ## Summary
@@ -35,11 +37,7 @@ At ORD level, only the "type-level" ability to integrate and its requirements ar
 
 The following diagram shows how two systems can integrate with each other via APIs and Events:
 
-<div className="img-box" style={{aspectRatio: "611/271"}}>
-
-![Integration Dependency Problem Statement](/img/integration-dependency-ps.drawio.svg "Integration Dependency Problem Statement")
-
-</div>
+<IntegrationScenarioDiagram />
 
 > **Figure 1:** This figure shows an integration scenario between System A and System B. System Instance A has implemented API clients against API Resources B-1 and B-2 of its integration target, as well as an event subscription (client implementation) for events from event resource B-3. It has an API Resource A-2, which the integration target uses to provide data back to System A.
 

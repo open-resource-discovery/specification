@@ -4,6 +4,8 @@ description: How to group, bundle and package ORD content.
 title: Grouping and Bundling
 ---
 
+import { GroupingPackagingDiagram } from "@site/src/components/OrdDiagrams";
+
 # Grouping and Bundling
 
 ## Quick Summary
@@ -49,17 +51,11 @@ However, there are still some [Considerations on the granularity of ORD Document
 
 ## Choosing the Right Concept
 
-The following table summarizes all grouping options and helps decide which one to use:
+The following overview compares the structured grouping concepts and their intended concerns.
 
-| Concept | Level | Assignment | Key Question |
-|---|---|---|---|
-| [Product](#product) | Portfolio | Package / resource → 0..n Products | What named software product or service offering does this belong to? |
-| [Package](#package) | Publishing | **Every resource MUST have exactly one** | What is published together and shown in a catalog? |
-| [Consumption Bundle](#consumption-bundle) | Technical access | API / Event → 0..n Bundles | What can be consumed with the same auth mechanism and credentials? |
-| [Entity Type](#entity-type) | Semantic | API / Event / Data Product → 0..n Entity Types | What business object or domain concept does this relate to? |
-| [Group](#groups) | Custom taxonomy | Any resource → 0..n Groups | Custom, governed grouping and taxonomy assignment beyond the predefined ORD concepts |
-| [Tags](#tags) | Free tagging | Any resource → 0..n tags | Flexible keyword tagging for search and navigation |
-| [Labels](#labels) | Key-value metadata | Any resource → 0..n labels | Structured metadata for programmatic querying and filtering |
+<GroupingPackagingDiagram />
+
+Tags and labels remain lightweight alternatives for search, navigation, and programmatic filtering.
 
 ## Best Practices and Recommendations
 

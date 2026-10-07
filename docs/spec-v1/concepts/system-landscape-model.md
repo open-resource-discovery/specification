@@ -3,6 +3,8 @@ sidebar_position: 5
 description: Detailed explanation of the System Landscape and the ORD Data model.
 ---
 
+import { DataModelDiagram } from "@site/src/components/OrdDiagrams";
+
 # System Landscape Model
 
 ## Summary
@@ -66,11 +68,7 @@ The ORD Resources and Capabilities describe either a System Type (in static pers
 
 Taxonomy is independent of Systems, but can be defined either locally or globally.
 
-<div className="img-box" style={{aspectRatio: "862/537"}}>
-
-![ORD Data Model Overview](/img/ord-high-level-data-model.drawio.svg 'ORD Data Model Overview')
-
-</div>
+<DataModelDiagram />
 
 ## Taxonomy
 

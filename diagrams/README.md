@@ -35,7 +35,29 @@ These ports still have separate implementations. Use this mapping when changing 
 | `PerspectivesDiagram` | `PerspectivesDiagram.vue` | `perspectives-overview` |
 | `LandscapeDiagram` | `LandscapeDiagram.vue` | `connected-landscape` |
 | `NamespaceDiagram` | `NamespaceConceptDiagram.vue` | `namespace-concept` |
+| `OrdIdDiagram` | `OrdIdDiagram.vue` | `ord-identifiers` |
+| `IdentifierTypesDiagram` | `IdentifierTypesDiagram.vue` | `related-identifiers` |
+| `GroupingPackagingDiagram` | `GroupingPackagingDiagram.vue` | `grouping-packaging` |
+| `LifecycleDiagram` | `LifecycleDiagram.vue` | `versioning-lifecycle` |
+| `ApiLifecycleDiagram` | `ApiLifecycleDiagram.vue` | `api-lifecycle` |
+| `PerspectiveResolutionSummaryDiagram` | `PerspectiveResolutionDiagram.vue` | `perspective-resolution` |
 | `PullSequenceDiagram` | `PullSequenceDiagram.vue` | `pull-sequence` |
+| `IntegrationScenarioDiagram` | Presentation-native scenario diagrams | `connected-landscape` |
+| `AgentConnectivityDiagram` | `AiDiscoveryDiagram.vue` | `ai-discovery` |
+| `AiEnrichmentDiagram` | `AiEnrichmentDiagram.vue` | `ai-enrichment` |
+| `OverlayDiagram` | `OverlayDiagram.vue` | `ord-overlays` |
 | `SapArchitectureDiagram` | `SapArchitectureDiagram.vue` | `sap-case-study` |
 
 When another connector-heavy diagram changes, extract its node and edge data using the same pattern. Keep the wrappers and typography native to their framework. For a static illustration that needs no responsive text or interaction, a shared SVG can also be appropriate. Avoid generating one framework's whole component from the other: template conversion alone does not preserve layout or connector geometry.
+
+## Retained Draw.io sources
+
+The following editable Draw.io SVGs are retained as historical or detailed references even though the documentation currently renders code-native replacements:
+
+- [`integration-dependency-ps.drawio.svg`](../static/img/integration-dependency-ps.drawio.svg)
+- [`ord-ai-agent.drawio.svg`](../static/img/ord-ai-agent.drawio.svg)
+- [`ord-explicit-system-persectices-flow.drawio.svg`](../static/img/ord-explicit-system-persectices-flow.drawio.svg)
+- [`ord-metadata-integration-target-architecture.drawio.svg`](../static/img/ord-metadata-integration-target-architecture.drawio.svg)
+- [`versioning-and-lifecycle.drawio.svg`](../static/img/versioning-and-lifecycle.drawio.svg)
+
+Do not remove these files solely because they are not embedded in a documentation page.

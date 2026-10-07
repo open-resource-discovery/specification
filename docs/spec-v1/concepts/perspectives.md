@@ -3,6 +3,8 @@ sidebar_position: 5
 description: Metadata can be described from static or dynamic perspectives. This article explains the concept in more detail.
 ---
 
+import { PerspectiveResolutionSummaryDiagram } from "@site/src/components/OrdDiagrams";
+
 # Perspectives
 
 > ⏩ The technical requirements of this are described in the [specification section on perspectives](../../spec-v1/index.md#perspectives).
@@ -101,6 +103,10 @@ The dynamic perspective is a more precise description of the system instance tha
 If no dynamic perspective has been published for a system instance, the static perspective can be used as the fallback.
 
 The following diagram shows how an aggregator resolves a request:
+
+<PerspectiveResolutionSummaryDiagram />
+
+The detailed decision flow below covers the individual outcomes and error cases.
 
 <div className="img-box" style={{aspectRatio: "1233/1122"}}>
 

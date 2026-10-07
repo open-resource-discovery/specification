@@ -6,87 +6,47 @@ title: ORD Specification
 import {
   DataModelDiagram,
   DiscoveryFlowDiagram,
+  IdentifierTypesDiagram,
   NamespaceDiagram,
+  OrdIdDiagram,
   PerspectivesDiagram,
   ProviderDiagram,
   PullSequenceDiagram,
   RolesDiagram,
+  SpecificationMap,
 } from "@site/src/components/OrdDiagrams";
 
 # Open Resource Discovery Specification 1.16
 
-New to ORD?
-Start with the [ORD Introduction](../introduction.mdx) for a concise primer or explore the [ORD presentation](https://open-resource-discovery.github.io/presentation/) for a visual walkthrough of the specification and ecosystem.
+Open Resource Discovery (ORD) is an open protocol that enables applications and services to publish a machine-readable description of their resources and capabilities.
+This document defines the normative information model, provider interfaces, and aggregation behavior for ORD 1.16.
+
+If you are new to ORD, start with the [ORD Introduction](../introduction.mdx) or use the [visual presentation](https://open-resource-discovery.github.io/presentation/) for a guided walkthrough.
 The [presentation source](https://github.com/open-resource-discovery/presentation) is available on GitHub.
+
+## Specification Overview
+
+The specification is organized around four questions.
+Use this map to go directly to the normative section you need.
+
+<SpecificationMap />
+
+## Applying the Specification
+
+The most common way to apply ORD is to describe the resources and capabilities of an application or service.
+Start with static metadata, then decide whether publishing a runtime-specific view provides additional value.
+
+1. **Identify what the application exposes and requires.** Describe its APIs, Events, Data Products, Capabilities, Agents, and Integration Dependencies, and link their native resource definitions where applicable.
+2. **Publish a static description first.** Choose the appropriate `system-type` or `system-version` [perspective](./concepts/perspectives.md#static-perspective), then expose the ORD configuration, ORD documents, and referenced definitions by following [Implementing ORD Natively](./concepts/implementing-ord-natively.md#start-simple-static-ord).
+3. **Evaluate whether a system-instance view adds value.** Add `system-instance` publishing when resources or metadata differ at runtime because of tenant configuration, feature activation, extensions, user-created resources, or dynamic endpoints.
+   A published `system-instance` perspective is a complete description of that instance, not a patch over the static baseline.
+4. **Add structure and lifecycle guidance as needed.** Use the [System Landscape Model](./concepts/system-landscape-model.md), [Grouping and Bundling](./concepts/grouping-and-bundling.md), [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md), [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md), and [Compatibility](./concepts/compatibility.md) to refine the description.
+
+The normative requirements remain in the specification sections and the generated [interfaces and schemas](/spec-v1/interfaces/).
 
 ## Notational Conventions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
-
-## Specification Overview
-
-The following diagram provides a high-level overview of how the ORD specification is structured.
-Click on the elements to navigate to the corresponding sections.
-
-<div style={{minHeight: "590px"}}>
-
-```mermaid
-flowchart TB
-    subgraph Roles["ORD Roles"]
-        Provider["ORD Provider"]
-        Aggregator["ORD Aggregator"]
-        Consumer["ORD Consumer"]
-    end
-
-    subgraph Parts["ORD Parts"]
-        ProviderAPI["ORD Provider API"]
-        Config["ORD Config"]
-        Document["ORD Document"]
-        Definitions["Resource Definitions"]
-        DiscoveryAPI["ORD Discovery API"]
-    end
-
-    subgraph Content["Document Content"]
-        Resources["ORD Resources<br/>(API, Event, ...)"]
-        Taxonomy["ORD Taxonomy<br/>(Package, Product, ...)"]
-    end
-
-    Provider -->|exposes| ProviderAPI
-    ProviderAPI -->|serves| Config
-    ProviderAPI -->|serves| Document
-    ProviderAPI -->|serves| Definitions
-    Document -->|contains| Resources
-    Document -->|contains| Taxonomy
-    Aggregator -->|fetches from| ProviderAPI
-    Aggregator -->|provides| DiscoveryAPI
-    Consumer -->|consumes| DiscoveryAPI
-    Consumer -.->|or directly| ProviderAPI
-
-    click Provider "#ord-provider"
-    click Aggregator "#ord-aggregator"
-    click Consumer "#ord-consumer"
-    click ProviderAPI "#ord-provider-api"
-    click Config "#ord-configuration-endpoint"
-    click Document "#ord-document"
-    click Definitions "#resource-definitions"
-    click DiscoveryAPI "#ord-discovery-api"
-    click Resources "#ord-resource"
-    click Taxonomy "#ord-taxonomy"
-```
-
-</div>
-
-## Applying the Specification
-
-The specification defines the normative ORD model and protocol.
-The following guides explain how its concepts fit together and how to apply them in practice.
-
-| Goal | Guides |
-| --- | --- |
-| Understand the system context | [System Landscape Model](./concepts/system-landscape-model.md)<br />[Perspectives](./concepts/perspectives.md)<br />[Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) |
-| Organize and connect metadata | [Grouping and Bundling](./concepts/grouping-and-bundling.md)<br />[Data Product](./concepts/data-product.md)<br />[Integration Dependency](./concepts/integration-dependency.md)<br />[AI Agents and Protocols](./concepts/ai-agents-and-protocols.md) |
-| Evolve contracts safely | [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md)<br />[Compatibility](./concepts/compatibility.md) |
-| Implement an ORD provider | [Implementing ORD Natively](./concepts/implementing-ord-natively.md) |
 
 ## ORD Roles
 
@@ -719,6 +679,8 @@ If it has not been published, the aggregator MUST report that the system version
 
 ## ID Concepts
 
+<IdentifierTypesDiagram />
+
 ### Namespaces
 
 ORD makes use of namespaces to ensure we don't have ID collisions between multiple, potentially independent sources of information.
@@ -915,6 +877,8 @@ This commonly uses an [authority namespace](#authority-namespace), but can also 
 #### ORD ID Construction
 
 The ORD ID consists of four fragments, separated by `:`.
+
+<OrdIdDiagram />
 
 It MUST be constructed as defined here:
 
