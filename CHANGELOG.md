@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `Technology Area Enterprise Technology` to the standardized `lineOfBusiness` values, and `Building Materials`, `Fashion`, and `Real Estate` to the standardized `industry` values.
+
 ## [1.16.4]
 
 ### Changed

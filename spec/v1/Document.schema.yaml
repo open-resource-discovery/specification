@@ -632,6 +632,7 @@ definitions:
             - const: Sourcing and Procurement
             - const: Strategy, Compliance, and Governance
             - const: Supply Chain
+            - const: Technology Area Enterprise Technology
             # TODO: Cleanup. Those values seem to be not part of the lineOfBusiness vocabulary officially:
             - const: Sustainability
             - const: Metering
@@ -658,6 +659,7 @@ definitions:
             - const: Agribusiness
             - const: Automotive
             - const: Banking
+            - const: Building Materials
             - const: Chemicals
             - const: Consumer Industries
             - const: Consumer Products
@@ -665,6 +667,7 @@ definitions:
             - const: Discrete Industries
             - const: Energy and Natural Resources
             - const: Engineering Construction and Operations
+            - const: Fashion
             - const: Financial Services
             - const: Future Cities
             - const: Healthcare
@@ -680,6 +683,7 @@ definitions:
             - const: Professional Services
             - const: Public Sector
             - const: Public Services
+            - const: Real Estate
             - const: Retail
             - const: Service Industries
             - const: Sports and Entertainment
