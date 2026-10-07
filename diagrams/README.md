@@ -35,7 +35,17 @@ These ports still have separate implementations. Use this mapping when changing 
 | `PerspectivesDiagram` | `PerspectivesDiagram.vue` | `perspectives-overview` |
 | `LandscapeDiagram` | `LandscapeDiagram.vue` | `connected-landscape` |
 | `NamespaceDiagram` | `NamespaceConceptDiagram.vue` | `namespace-concept` |
+| `OrdIdDiagram` | `OrdIdDiagram.vue` | `ord-identifiers` |
+| `IdentifierTypesDiagram` | `IdentifierTypesDiagram.vue` | `related-identifiers` |
+| `GroupingPackagingDiagram` | `GroupingPackagingDiagram.vue` | `grouping-packaging` |
+| `LifecycleDiagram` | `LifecycleDiagram.vue` | `versioning-lifecycle` |
+| `ApiLifecycleDiagram` | `ApiLifecycleDiagram.vue` | `api-lifecycle` |
+| `PerspectiveResolutionSummaryDiagram` | `PerspectiveResolutionDiagram.vue` | `perspective-resolution` |
 | `PullSequenceDiagram` | `PullSequenceDiagram.vue` | `pull-sequence` |
+| `IntegrationScenarioDiagram` | Presentation-native scenario diagrams | `connected-landscape` |
+| `AgentConnectivityDiagram` | `AiDiscoveryDiagram.vue` | `ai-discovery` |
+| `AiEnrichmentDiagram` | `AiEnrichmentDiagram.vue` | `ai-enrichment` |
+| `OverlayDiagram` | `OverlayDiagram.vue` | `ord-overlays` |
 | `SapArchitectureDiagram` | `SapArchitectureDiagram.vue` | `sap-case-study` |
 
 When another connector-heavy diagram changes, extract its node and edge data using the same pattern. Keep the wrappers and typography native to their framework. For a static illustration that needs no responsive text or interaction, a shared SVG can also be appropriate. Avoid generating one framework's whole component from the other: template conversion alone does not preserve layout or connector geometry.

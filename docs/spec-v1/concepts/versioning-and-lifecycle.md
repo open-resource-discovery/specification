@@ -3,6 +3,8 @@ sidebar_position: 2
 description: How versioning and lifecycle management work for ORD resources.
 ---
 
+import { ApiLifecycleDiagram, LifecycleDiagram } from "@site/src/components/OrdDiagrams";
+
 # Versioning and Lifecycle
 
 ## Overview
@@ -14,6 +16,8 @@ ORD uses two complementary mechanisms to track the state of a resource over time
 - **`releaseStatus`**: Reflects the maturity and stability commitment of the resource contract (`development`, `beta`, `active`, `deprecated`, `sunset`).
 
 Together, these allow aggregators and consumers to track resource evolution without breaking existing integrations.
+
+<LifecycleDiagram />
 
 ## Versioning
 
@@ -121,4 +125,4 @@ When a resource is decommissioned:
 
 ## Visual Overview
 
-![IDs, Version and Lifecycle](/img/versioning-and-lifecycle.drawio.svg "IDs, Version and Lifecycle")
+<ApiLifecycleDiagram />

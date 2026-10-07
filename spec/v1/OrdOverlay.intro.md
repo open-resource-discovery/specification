@@ -1,10 +1,14 @@
 
+import { OverlayDiagram } from "@site/src/components/OrdDiagrams";
+
 :::caution[Beta]
 This specification is in **beta** and subject to change.
 :::
 
 The **ORD Overlay** is an optional ORD model extension that allows patching referenced resource definition files
 (e.g. OpenAPI, AsyncAPI, OData CSDL, MCP/A2A Agent Cards) without modifying the original source files.
+
+<OverlayDiagram />
 
 ```json
 {

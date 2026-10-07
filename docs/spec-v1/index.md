@@ -6,7 +6,9 @@ title: ORD Specification
 import {
   DataModelDiagram,
   DiscoveryFlowDiagram,
+  IdentifierTypesDiagram,
   NamespaceDiagram,
+  OrdIdDiagram,
   PerspectivesDiagram,
   ProviderDiagram,
   PullSequenceDiagram,
@@ -719,6 +721,8 @@ If it has not been published, the aggregator MUST report that the system version
 
 ## ID Concepts
 
+<IdentifierTypesDiagram />
+
 ### Namespaces
 
 ORD makes use of namespaces to ensure we don't have ID collisions between multiple, potentially independent sources of information.
@@ -915,6 +919,8 @@ This commonly uses an [authority namespace](#authority-namespace), but can also 
 #### ORD ID Construction
 
 The ORD ID consists of four fragments, separated by `:`.
+
+<OrdIdDiagram />
 
 It MUST be constructed as defined here:
 

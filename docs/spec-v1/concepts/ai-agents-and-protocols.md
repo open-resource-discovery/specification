@@ -4,6 +4,8 @@ description: AI Agents and related protocols in ORD.
 title: AI Agents and Protocols
 ---
 
+import { AgentConnectivityDiagram, AiEnrichmentDiagram } from "@site/src/components/OrdDiagrams";
+
 # AI Agents and Protocols
 
 > 🚧 Please note that the [Agents](../interfaces/Document#agent) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
@@ -35,11 +37,7 @@ From a technical perspective, an Agent is simply a specialized type of applicati
 -   **Instantiation:** While the "Agent Resource" describes the *type* or *class* of the agent (Design Time), the running software represents an *instance* of that agent (Runtime).
     -   *See [System Landscape Model](./system-landscape-model.md) for more on the distinction between Systems, Tenants, and Resources.*
 
-<div className="img-box" style={{aspectRatio: "512/378"}}>
-
-![AI Agent Overview](/img/ord-ai-agent.drawio.svg "AI Agent Overview")
-
-</div>
+How the Agent resource links to its interaction contract and required external resources is shown in [Connectivity & Protocols](#connectivity--protocols).
 
 ## Agent Example
 
@@ -103,25 +101,7 @@ The ORD Agent resource acts as a central hub that connects to other ORD concepts
 ORD supports the discovery of **AI-Native Protocols**.
 These are API protocols specifically designed for simple consumption by LLMs and AI Agents, well-supported by the emerging AI ecosystem, and optimized for this use case.
 
-```mermaid
-graph TD
-    classDef concept fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#333;
-    classDef tech fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#333;
-    classDef dep fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#333;
-
-    Agent["Agent<br/>(Product-like Concept)"]:::concept
-    System["System / Application"]:::tech
-    API["API Resource<br/>(Interaction Contract)"]:::tech
-    Dep["Integration Dependency<br/>(Required External Data/Tools)"]:::dep
-
-    System -- Hosts --> Agent
-    Agent -- Exposes --> API
-    Agent -- Requires --> Dep
-
-    API -.->|Protocol: A2A| A2A[A2A Protocol]
-    Dep -.->|Protocol: MCP| MCP[MCP Server]
-    Dep -.->|Generic| Other["Other Resources (APIs, Events, etc.)"]
-```
+<AgentConnectivityDiagram />
 
 ### Exposing Capabilities (Interaction)
 
@@ -213,6 +193,8 @@ Without `subset`, the dependency would imply access to all operations of the ref
 The following ORD resource types support an `aiHint` property: API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities.
 
 `aiHint` provides guidance specifically for AI consumers such as LLMs and agent orchestrators, and is intentionally separate from human-facing `description` and `shortDescription` fields so both can evolve independently.
+
+<AiEnrichmentDiagram />
 
 ```json
 {
