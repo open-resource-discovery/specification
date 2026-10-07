@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Added `extensible` to Agents and Data Products.
+
 ## [1.16.4]
 
 ### Changed

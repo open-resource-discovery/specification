@@ -82,6 +82,9 @@
           "ordId": "sap.xref:apiResource:Customer:v1"
         }
       ],
+      "extensible": {
+        "supported": "no"
+      },
       "responsible": "sap:ach:CIC-DP-CO"
     },
     {
