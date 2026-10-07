@@ -126,6 +126,25 @@ IF the resources have already been published to the public [SAP Business Acceler
 
 - [ORD Overlays](../../spec-v1/interfaces/OrdOverlay.md) MUST always provide a [`target.ordId`](../../spec-v1/interfaces/OrdOverlay.md#overlay-target_ordid) to identify the ORD resource being patched.
 
+- All ORD Overlays governed by this policy MUST have an effective `visibility` of `internal`,
+  regardless of their purpose or publishing mechanism.
+
+  This applies to all five publishing representations:
+
+  - **Standalone ORD Overlay documents**: MUST explicitly set `visibility: internal`.
+  - **Overlay Resources** (`overlays[*]` in an ORD Document): MUST explicitly set `visibility: internal`.
+  - **Overlay Definitions within an Overlay Resource** (`overlays[*].definitions[*]`):
+    An explicit `visibility` MUST be `internal`.
+    If `visibility` is omitted, the visibility inherited from the containing Overlay Resource
+    according to ORD MUST be `internal` (i.e. the Overlay Resource itself must satisfy the requirement above).
+  - **`ord:overlay:v1` resource definitions attached to an API Resource**: same semantics as Overlay Definitions above,
+    with the containing resource being the API Resource.
+  - **`ord:overlay:v1` resource definitions attached to an Event Resource**: same semantics as Overlay Definitions above,
+    with the containing resource being the Event Resource.
+
+  The existing ORD restriction that a resource definition's `visibility` MUST NOT be less restrictive than
+  the `visibility` of its containing resource continues to apply.
+
 ### Correlation IDs
 
 With ORD comes a [Correlation ID](../../spec-v1/index.md#correlation-id) concept.
