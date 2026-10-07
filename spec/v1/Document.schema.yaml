@@ -2663,6 +2663,10 @@ definitions:
         description: |-
           Generic Links with arbitrary meaning and content.
 
+      extensible:
+        <<: *extensible
+        x-introduced-in-version: "1.17.0"
+
       ## Taxonomy
 
       industry: #used by DSP - needs coordinated deprecation with datasphere & UCL
@@ -3237,6 +3241,10 @@ definitions:
         <<: *links
         description: |-
           Generic Links with arbitrary meaning and content.
+
+      extensible:
+        <<: *extensible
+        x-introduced-in-version: "1.17.0"
 
       tags:
         <<: *tags
