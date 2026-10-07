@@ -138,9 +138,10 @@ spec:
           type: 'boolean'
           description: "If true, the references resources can be provided by multiple system instances.\nIf not, only one integration target is supported."
         - name: 'systemTypes'
-          type: 'string'
+          type: 'custom'
+          customTypeName: 'SystemTypeIntegrationAspect'
           array: !!bool 'true'
-          description: "List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).\n\nEach entry MUST be a valid [system namespace](../index.md#system-namespace).\nUse separate aspects when multiple system types are required (AND condition).\nSystem-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency."
+          description: "List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).\n\nEach entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.\nUse separate aspects when multiple system types are required (AND condition).\nSystem-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency."
         - name: 'apiResources'
           type: 'custom'
           customTypeName: 'ApiResourceIntegrationAspect'
@@ -160,6 +161,20 @@ spec:
           type: 'custom'
           customTypeName: 'Labels'
           description: 'Generic labels that can be applied to most ORD information.'
+    - name: 'SystemTypeIntegrationAspect'
+      metadataProperties:
+        - name: 'systemNamespace'
+          type: 'string'
+          description: 'The [system namespace](../index.md#system-namespace) that identifies the required system type.'
+          mandatory: !!bool 'true'
+          constraints:
+            maxLength: !!int '32'
+            pattern: '^[a-z0-9]+(?:[.][a-z0-9]+){1}$'
+        - name: 'minVersion'
+          type: 'string'
+          description: "Minimum [system version](../index.md#system-version) that the integration requires.\nThe target system version MUST be greater than or equal to this value according to Semantic Versioning precedence."
+          constraints:
+            pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
     - name: 'ApiResourceIntegrationAspect'
       metadataProperties:
         - name: 'ordId'

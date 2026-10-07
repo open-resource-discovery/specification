@@ -15,11 +15,15 @@
       "aspects": [
         {
           "mandatory": true,
-          "systemTypes": ["sap.billing"],
+          "systemTypes": [{ "systemNamespace": "sap.billing" }],
         },
         {
           "mandatory": true,
-          "systemTypes": ["sap.s4pce", "sap.s4", "sap.s4op"],
+          "systemTypes": [
+            { "systemNamespace": "sap.s4pce", "minVersion": "2025.4.0" },
+            { "systemNamespace": "sap.s4" },
+            { "systemNamespace": "sap.s4op" },
+          ],
         },
       ],
     },

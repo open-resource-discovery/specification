@@ -12,7 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added `systemTypes` to `IntegrationAspect` for dependencies on system types that do not require a specific resource contract.
+- Added `systemTypes` to `IntegrationAspect` for dependencies on system types that do not require a specific resource contract, including an optional minimum system version.
 
 ### Changed
 

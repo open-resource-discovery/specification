@@ -3734,13 +3734,13 @@ export interface Aspect {
   /**
    * List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).
    *
-   * Each entry MUST be a valid [system namespace](../index.md#system-namespace).
+   * Each entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.
    * Use separate aspects when multiple system types are required (AND condition).
    * System-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency.
    *
    * @minItems 1
    */
-  systemTypes?: [string, ...string[]];
+  systemTypes?: [SystemTypeIntegrationAspect, ...SystemTypeIntegrationAspect[]];
   /**
    * List of API Resource Dependencies.
    */
@@ -3754,6 +3754,20 @@ export interface Aspect {
    */
   capabilities?: CapabilityIntegrationAspect[];
   labels?: Labels;
+}
+/**
+ * System-type related integration aspect.
+ */
+export interface SystemTypeIntegrationAspect {
+  /**
+   * The [system namespace](../index.md#system-namespace) that identifies the required system type.
+   */
+  systemNamespace: string;
+  /**
+   * Minimum [system version](../index.md#system-version) that the integration requires.
+   * The target system version MUST be greater than or equal to this value according to Semantic Versioning precedence.
+   */
+  minVersion?: string;
 }
 /**
  * API resource related integration aspect

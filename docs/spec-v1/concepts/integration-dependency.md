@@ -48,7 +48,8 @@ The following overview summarizes the resources involved in an integration betwe
 An **Integration Dependency** describes the ability to integrate with an external application or service for the purpose of achieving an integration goal or scenario.
 In practice this is often implemented as client integration code.
 
-An aspect can lists the API and Event interfaces that need or may be used, typically also described via ORD by the integration target system or the owner of the contract. As a fallback it can also identify a whole target system types through `systemTypes` when the dependency does not concern a specific contract.
+An aspect can list the API and Event interfaces that need or may be used, typically also described via ORD by the integration target system or the owner of the contract.
+As a fallback, it can identify whole target system types through `systemTypes` when the dependency does not concern a specific contract.
 
 It is also possible to define that only a `subset` of the referenced resource is required, allowing the dependency to be expressed with minimal surface area (e.g. specific event types for SAP Event Broker subscriptions, or specific MCP tools for an agent).
 Integration Dependencies are optional to provide and are mandated only by specific use cases (e.g. SAP Event Broker, Data Products, AI Agents).
@@ -71,17 +72,17 @@ Requirements express the following additional information:
 
 - Requirements can be optional if the application can still provide meaningful results without it being provided.
 - Within a requirement there can be references to semantically equivalent API or event resources that are alternatives to each other (OR condition).
-- Constraints like a minimum version of the target resource.
+- Constraints like a minimum version of the target resource or system type.
 - Define a `subset` of the target resource that is needed — specific API operations, MCP tools, or event types. This avoids granting broader permissions than necessary, reduces subscription scope, and for agents allows the runtime to load only the relevant tool descriptions into the LLM context.
 - The requirement API or event resources can be references to descriptions from another (external) application if the integration target application owns the contract and lifecycle of it. But the contract can also be owned by the described application itself.
 - Additionally, it is possible to describe which Consumption Bundle is to be used for setting up trust and credentials to the target API or Event resource.
 - The application could also decide to expose an API or event resource contract itself, that another (external) application needs to implement and fulfill to integrate with the application in focus.
 
 When only the presence of or connection to a particular system type matters, `systemTypes` provides a simpler alternative to resource-level requirements within an aspect.
-Each value identifies an alternative integration target by its [system namespace](../index.md#system-namespace).
+Each entry identifies an alternative integration target by its [system namespace](../index.md#system-namespace) and can optionally require a minimum system version.
 All entries in one aspect are alternatives (OR condition), including entries across `systemTypes`, `apiResources`, `eventResources` and `capabilities`.
 Each mandatory aspect must be fulfilled (AND condition).
-A namespace-only aspect can be combined with more detailed resource or capability aspects in the same Integration Dependency, making those requirements complementary.
+A system-type aspect can be combined with more detailed resource or capability aspects in the same Integration Dependency, making those requirements complementary.
 
 Integration Dependencies can also be mandatory, which implies that it's a prerequisite for provisioning the described system.
 They inherit the typical, shared ORD attributes that can be used to handle lifecycle, versioning, globally unique IDs, correlations and more.
@@ -101,40 +102,6 @@ Only the system itself knows what external requirements it has and what integrat
 > This figure shows a high-Level overview on ORD entities and where Integration Dependency and Requirements fit in.
 
 ## Examples with Explanation
-
-### System Type Dependencies
-
-An integration dependency can identify target system types without naming any particular resource contract.
-
-```json
-{
-  "integrationDependencies": [
-    {
-      "ordId": "sap.example:integrationDependency:BillingAndERP:v1",
-      "version": "1.0.0",
-      "title": "Billing and ERP systems",
-      "mandatory": true,
-      "releaseStatus": "active",
-      "visibility": "public",
-      "partOfPackage": "sap.example:package:Example:v1",
-      "aspects": [
-        {
-          "mandatory": true,
-          "systemTypes": ["sap.billing"]
-        },
-        {
-          "mandatory": true,
-          "systemTypes": ["sap.s4pce", "sap.s4", "sap.s4op"]
-        }
-      ]
-    }
-  ]
-}
-```
-
-This dependency MUST have `sap.billing` AND MUST have one of `sap.s4pce` OR `sap.s4` OR `sap.s4op`.
-Additional API-resource, event-resource or capability aspects can be added to the same `aspects` array when the dependency also needs more detailed contracts.
-Those mandatory aspects are complementary and must also be fulfilled.
 
 ### SAP Subscription Billing Events
 
@@ -207,3 +174,42 @@ An agent that depends on only a subset of tools in an MCP server can use `subset
 ```
 
 The `subset` narrows the dependency to only the listed tools, which helps consumers understand the exact surface area required and can optimize permission grants or routing.
+
+### System Type Dependencies
+
+An integration dependency can identify target system types without naming any particular resource contract.
+
+```json
+{
+  "integrationDependencies": [
+    {
+      "ordId": "sap.example:integrationDependency:BillingAndERP:v1",
+      "version": "1.0.0",
+      "title": "Billing and ERP systems",
+      "mandatory": true,
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.example:package:Example:v1",
+      "aspects": [
+        {
+          "mandatory": true,
+          "systemTypes": [{ "systemNamespace": "sap.billing" }]
+        },
+        {
+          "mandatory": true,
+          "systemTypes": [
+            { "systemNamespace": "sap.s4pce", "minVersion": "2025.4.0" },
+            { "systemNamespace": "sap.s4" },
+            { "systemNamespace": "sap.s4op" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+This dependency MUST have `sap.billing` AND MUST have one of `sap.s4pce` OR `sap.s4` OR `sap.s4op`.
+If `sap.s4pce` fulfills the second aspect, its system version MUST be at least `2025.4.0`.
+Additional API-resource, event-resource or capability aspects can be added to the same `aspects` array when the dependency also needs more detailed contracts.
+Those mandatory aspects are complementary and must also be fulfilled.
