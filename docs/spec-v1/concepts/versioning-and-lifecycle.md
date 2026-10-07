@@ -34,28 +34,12 @@ The `version` field MUST follow [Semantic Versioning 2.0.0](https://semver.org/)
 The `version` SHOULD be updated whenever the resource definition changes in a way that is relevant to consumers. If runtime customizations or extensions lead to a changed resource definition, a build number SHOULD be appended (e.g. `1.2.3+build.42`).
 
 If the resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-See [Mapping Native Versions to SemVer](#mapping-native-versions-to-semver) below for guidance and examples.
+If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
+Simple normalization (e.g. `v1.2` to `1.2.0`) is appropriate when the native scheme already carries SemVer meaning; other schemes need a mapping based on the resource's compatibility changes.
 
 **Scope of version increments:** A version change is only relevant if the ORD resource or taxonomy itself changed. If a resource inside a `Package` changes but the `Package` definition did not, the `Package` version does not need to be incremented.
 
 **Extension changes:** If a resource has been extended by a user (tenant-specific customization), that change MUST be indicated via `lastUpdate` — the `version` MUST NOT be bumped for extension changes. See [Tracking Changes with `lastUpdate`](#tracking-changes-with-lastupdate) below.
-
-### Mapping Native Versions to SemVer
-
-Some resource definition formats accept version strings without requiring SemVer syntax or compatibility semantics. Providers must consider both when converting a native version for ORD.
-
-If the native scheme already expresses SemVer compatibility, conversion can be a simple normalization, such as removing a `v` prefix or adding a missing patch component. If it uses another scheme, the provider must choose a SemVer version that reflects the resource's actual compatibility changes as closely as possible. Producing a syntactically valid string alone is insufficient.
-
-| Native version | ORD `version` | Assumption behind the mapping |
-|---|---|---|
-| `2.3.0` | `2.3.0` | The native version already follows SemVer. |
-| `v2.3` | `2.3.0` | The native major/minor components carry SemVer meaning; the omitted patch is zero. |
-| `2026.10` | `1.5.0` | This calendar-labelled release adds backward-compatible functionality to the contract previously published in ORD as `1.4.2`. |
-| `release-42` | `2.0.0` | This release introduces a breaking change to the contract previously published in ORD as `1.5.0`. |
-
-These mappings illustrate the stated assumptions; they do not define a universal conversion algorithm. Providers should apply the chosen mapping consistently across releases so that SemVer ordering and compatibility remain meaningful. Build metadata is ignored when determining SemVer precedence, so it cannot be the sole way to express release ordering or breaking changes.
 
 ### The `<majorVersion>` in the ORD ID
 

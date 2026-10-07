@@ -493,9 +493,7 @@ export interface ApiResource {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -1460,9 +1458,7 @@ export interface EventResource {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -1990,9 +1986,7 @@ export interface EntityType {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -2328,9 +2322,7 @@ export interface Capability {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -2662,9 +2654,7 @@ export interface DataProduct {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -3092,9 +3082,7 @@ export interface Agent {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -3374,9 +3362,7 @@ export interface Overlay {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -3620,9 +3606,7 @@ export interface IntegrationDependency {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -4059,9 +4043,7 @@ export interface Package {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.
@@ -4385,9 +4367,7 @@ export interface ConsumptionBundle {
    *
    * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
-   * If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-   * The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-   * See [Mapping Native Versions to SemVer](../concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+   * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
    * If the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.
    * The `version` MUST not be bumped for changes in extensions.

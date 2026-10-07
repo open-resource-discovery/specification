@@ -1094,9 +1094,7 @@ Optionally, a build number MAY be added or incremented in the `version` to indic
 
 When the `version` major version changes, the [ORD ID](#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
 If the resource definition also contains a version number, it SHOULD match the resource `version` whenever possible.
-If the native version does not follow SemVer, it MUST be converted to a valid SemVer version for ORD.
-The conversion MUST preserve the native version's ordering and compatibility semantics as closely as possible, including the distinction between breaking and backward-compatible changes.
-See [Mapping Native Versions to SemVer](./concepts/versioning-and-lifecycle.md#mapping-native-versions-to-semver) for guidance and examples.
+If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
 
 When a breaking change is introduced, the rules on constructing [ORD IDs](#ord-id) will ensure that the old version of the resource is not replaced.
 The new version will lead to the creation of a separate and new successor resource (see `successor` property).
