@@ -921,7 +921,7 @@ export interface RelatedAPIResource {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: (string | "ord:patches") & string;
+  relationType?: (string | "ord:patches" | "same-as") & string;
 }
 /**
  * Defines a relation to an Event Resource (via its ORD ID).
@@ -939,7 +939,7 @@ export interface RelatedEventResource {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: (string | "ord:patches") & string;
+  relationType?: (string | "ord:patches" | "same-as") & string;
 }
 /**
  * A changelog entry can be used to indicate changes.
@@ -2149,7 +2149,7 @@ export interface RelatedEntityType {
    *
    * MUST be a valid [Concept ID](../index.md#concept-id).
    */
-  relationType?: (string | "part-of" | "can-share-identity") & string;
+  relationType?: (string | "part-of" | "can-share-identity" | "same-as") & string;
 }
 /**
  * Machine-readable definition that describes the entity type's internal model structure.
@@ -2470,7 +2470,7 @@ export interface RelatedCapability {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: string;
+  relationType?: (string | "same-as") & string;
 }
 /**
  * Link and categorization of a machine-readable capability definition.
