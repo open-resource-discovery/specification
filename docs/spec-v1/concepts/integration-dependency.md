@@ -14,7 +14,7 @@ import { IntegrationScenarioDiagram } from "@site/src/components/OrdDiagrams";
 An **Integration Dependency** states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.
 The purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.
 
-An integration dependency contains a list of requirements that identify the system types, API resources, event resources or other ORD concepts involved.
+An integration dependency contains a list of requirements that identify the API resources, event resources, whole system types, or other ORD concepts involved.
 Each requirement describes one aspect / ingredient and can be used to express alternatives (OR condition) for achieving the same outcome.
 
 See also: [Integration Dependency interface](../interfaces/Document#integration-dependency).
