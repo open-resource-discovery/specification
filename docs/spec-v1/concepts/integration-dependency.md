@@ -47,8 +47,8 @@ The following overview summarizes the resources involved in an integration betwe
 
 An **Integration Dependency** describes the ability to integrate with an external application or service for the purpose of achieving an integration goal or scenario.
 In practice this is often implemented as client integration code.
-An aspect can identify target system types through `systemTypes` when the dependency does not concern a specific contract.
-For more precise dependencies, an aspect lists the API and Event interfaces that need or may be used, typically also described via ORD by the integration target system or the owner of the contract.
+
+An aspect can lists the API and Event interfaces that need or may be used, typically also described via ORD by the integration target system or the owner of the contract. As a fallback it can also identify a whole target system types through `systemTypes` when the dependency does not concern a specific contract.
 
 It is also possible to define that only a `subset` of the referenced resource is required, allowing the dependency to be expressed with minimal surface area (e.g. specific event types for SAP Event Broker subscriptions, or specific MCP tools for an agent).
 Integration Dependencies are optional to provide and are mandated only by specific use cases (e.g. SAP Event Broker, Data Products, AI Agents).
