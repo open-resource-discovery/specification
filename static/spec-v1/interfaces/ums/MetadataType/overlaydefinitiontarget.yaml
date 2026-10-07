@@ -10,22 +10,26 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: !!bool 'true'
-  description: "Optional context about the target being patched.\nThe target can refer to a resource definition file by its URL, correlation IDs, or definition type.\n\nWhen this object is present, at least one of `url`, `correlationIds`, or `definitionType`\nMUST be provided so that consumers can identify what is being patched.\nUse `url` and/or `definitionType` to disambiguate which definition file to target.\n\nExample: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.\nIn such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.\n\nMultiple identifiers, if provided, are treated as all pointing to the same resource."
+  description: "Optional context identifying the resource definition being patched without relying on its provider URL, which an ORD Aggregator rewrites when it hosts the definition.\n\nThe target resource is identified by the Overlay Resource's `relatedApiResources` or `relatedEventResources` relationships and can additionally be identified through `correlationIds`.\n`definitionType`, `definitionPurpose`, and `definitionVisibility` select the attached definition using the resource definition uniqueness key.\n\nExample: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.\nIn such cases, `definitionType` makes the concrete patch target explicit.\n\nMultiple identifiers, if provided, are treated as all pointing to the same resource."
   metadataProperties:
     - name: 'id'
       type: 'guid'
       mandatory: !!bool 'true'
       unique: !!bool 'true'
       description: 'UMS ID (globally unique), used for relations.'
-    - name: 'url'
-      type: 'string'
-      description: "URL or URI pointing directly to the file being patched.\nThis is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),\nbut can also point to any JSON/YAML-based target document.\nRelative references are resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl)."
     - name: 'correlationIds'
       type: 'string'
       array: !!bool 'true'
       description: "Correlation IDs referencing the target resource in external registries or systems of record.\nReuses the ORD correlation ID format: `namespace:type:localId`.\nAll listed IDs are treated as pointing to the same resource."
     - name: 'definitionType'
       type: 'string'
-      description: "Optional, but RECOMMENDED type of the target definition being patched.\nIf provided, this SHOULD match the `type` of the referenced metadata definition\n(as used in API/Event/Capability resource definitions).\nThis is especially useful when a resource has multiple attached definitions.\n\nThis can be used to disambiguate how selectors are interpreted for the target.\n\nMUST be either:\n- any valid [Specification ID](../../spec-v1/index.md#specification-id), or\n- one of the pre-defined values reused from:\n  - API Resource Definition `type`\n  - Event Resource Definition `type`\n  - Capability Definition `type`\n\nThe literal value `custom` is deprecated for `definitionType` and MUST NOT be used.\nIn such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead."
+      description: "Type of the target definition being patched.\nThis MUST match the `type` of the referenced metadata definition (as used in API/Event/Capability resource definitions).\nThis is especially useful when a resource has multiple attached definitions.\n\nThis can be used to disambiguate how selectors are interpreted for the target.\n\nMUST be either:\n- any valid [Specification ID](../../spec-v1/index.md#specification-id), or\n- one of the pre-defined values reused from:\n  - API Resource Definition `type`\n  - Event Resource Definition `type`\n  - Capability Definition `type`\n\nThe literal value `custom` is deprecated for `definitionType` and MUST NOT be used.\nIn such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead."
+      mandatory: !!bool 'true'
+    - name: 'definitionPurpose'
+      type: 'string'
+      description: "Purpose of the target resource definition.\nTogether with `definitionType` and `definitionVisibility`, this forms the resource definition uniqueness key.\nIf omitted, the target is the primary/default definition without a `purpose`."
+    - name: 'definitionVisibility'
+      type: 'string'
+      description: "Effective visibility of the target resource definition.\nTogether with `definitionType` and `definitionPurpose`, this forms the resource definition uniqueness key.\nIf omitted, the target definition uses the visibility inherited from its ORD resource."
   customTypeDefinitions: []
   metadataRelations: []

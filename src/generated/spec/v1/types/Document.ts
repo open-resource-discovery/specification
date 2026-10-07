@@ -9,9 +9,8 @@ export type Usage = "external" | "local";
  */
 export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
 /**
- * Optional, but RECOMMENDED type of the target definition being patched.
- * If provided, this SHOULD match the `type` of the referenced metadata definition
- * (as used in API/Event/Capability resource definitions).
+ * Type of the target definition being patched.
+ * This MUST match the `type` of the referenced metadata definition (as used in API/Event/Capability resource definitions).
  * This is especially useful when a resource has multiple attached definitions.
  *
  * This can be used to disambiguate how selectors are interpreted for the target.
@@ -3545,26 +3544,17 @@ export interface OverlayDefinition {
   target?: OverlayDefinitionTarget;
 }
 /**
- * Optional context about the target being patched.
- * The target can refer to a resource definition file by its URL, correlation IDs, or definition type.
+ * Optional context identifying the resource definition being patched without relying on its provider URL, which an ORD Aggregator rewrites when it hosts the definition.
  *
- * When this object is present, at least one of `url`, `correlationIds`, or `definitionType`
- * MUST be provided so that consumers can identify what is being patched.
- * Use `url` and/or `definitionType` to disambiguate which definition file to target.
+ * The target resource is identified by the Overlay Resource's `relatedApiResources` or `relatedEventResources` relationships and can additionally be identified through `correlationIds`.
+ * `definitionType`, `definitionPurpose`, and `definitionVisibility` select the attached definition using the resource definition uniqueness key.
  *
  * Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
- * In such cases, provide `definitionType` and/or `url` to make the concrete patch target explicit.
+ * In such cases, `definitionType` makes the concrete patch target explicit.
  *
  * Multiple identifiers, if provided, are treated as all pointing to the same resource.
  */
 export interface OverlayDefinitionTarget {
-  /**
-   * URL or URI pointing directly to the file being patched.
-   * This is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),
-   * but can also point to any JSON/YAML-based target document.
-   * Relative references are resolved against the ORD Document's root [`baseUrl`](#ord-document_baseurl).
-   */
-  url?: string;
   /**
    * Correlation IDs referencing the target resource in external registries or systems of record.
    * Reuses the ORD correlation ID format: `namespace:type:localId`.
@@ -3573,7 +3563,19 @@ export interface OverlayDefinitionTarget {
    * @minItems 1
    */
   correlationIds?: [string, ...string[]];
-  definitionType?: OverlayTargetDefinitionType;
+  definitionType: OverlayTargetDefinitionType;
+  /**
+   * Purpose of the target resource definition.
+   * Together with `definitionType` and `definitionVisibility`, this forms the resource definition uniqueness key.
+   * If omitted, the target is the primary/default definition without a `purpose`.
+   */
+  definitionPurpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
+  /**
+   * Effective visibility of the target resource definition.
+   * Together with `definitionType` and `definitionPurpose`, this forms the resource definition uniqueness key.
+   * If omitted, the target definition uses the visibility inherited from its ORD resource.
+   */
+  definitionVisibility?: "public" | "internal" | "private";
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

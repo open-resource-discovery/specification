@@ -93,7 +93,7 @@ and references the actual overlay file via a `definitions` entry with `type: ord
           "purpose": "ord:ai-enrichment",
           "target": {
             "definitionType": "openapi-v3",
-            "url": "/ord/metadata/my-api.oas3.json"
+            "definitionVisibility": "public"
           }
         }
       ]
@@ -114,24 +114,24 @@ with `relationType: ord:patches` identify the ORD resources being patched withou
 
 Each standalone overlay definition can additionally use its optional [`target`](../../spec-v1/interfaces/Document.md#overlay-definition-target)
 to narrow the concrete definition file within those related resources.
-Relative `url` values in this definition-level target are resolved against the ORD Document's root `baseUrl`.
 If either target is omitted, the association must be clear from the remaining target metadata and publication context.
-If both targets are present, they MUST identify the same target, and shared identifiers MUST match after relative URLs are resolved.
+If both targets are present, they MUST identify the same target, and shared identifiers MUST match.
 An ORD Aggregator SHOULD validate this consistency when it retrieves the overlay document.
 If the aggregator detects a mismatch, it MUST reject the overlay definition and MUST NOT apply the overlay.
 
-Key fields shared by both target objects:
+The ORD-level target uses stable definition metadata rather than a provider URL, because aggregators rewrite resource definition URLs when hosting them.
 
 | Field | Purpose |
 |---|---|
-| `url` | Direct URL to the specific metadata definition file (e.g. an OpenAPI JSON file). |
-| `correlationIds` | Identifies the target definition through one or more correlation IDs. |
-| `definitionType` | Declares the format of the file (e.g. `openapi-v3`, `a2a-agent-card`). Disambiguates when a resource has multiple definitions. |
+| `correlationIds` | Identifies the target resource through one or more external identifiers. |
+| `definitionType` | Selects the definition format and is required when an ORD-level target is provided. |
+| `definitionPurpose` | Selects a complementary definition; omission selects the primary/default definition. |
+| `definitionVisibility` | Selects the effective definition visibility; omission uses the resource's visibility. |
 
-The document-level target additionally supports `ordId` and `systemInstance` because the overlay may be distributed without an ORD Document envelope.
+The document-level target additionally supports `ordId`, `url`, and `systemInstance` because the overlay may be distributed without an ORD Document envelope.
 
 Example of ambiguity: an OData API resource may expose both `edmx` and `openapi-v3` definitions.
-Provide `definitionType`, `url`, and/or `correlationIds` on the standalone overlay definition to make the concrete patch target explicit.
+Use `definitionType` on the standalone overlay definition to make the concrete patch target explicit.
 
 
 ## Selectors

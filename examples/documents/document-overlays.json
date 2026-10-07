@@ -20,7 +20,7 @@
           "purpose": "ord:ai-enrichment",
           "target": {
             "definitionType": "openapi-v3",
-            "url": "/ord/metadata/astronomy-v1.oas3.json"
+            "definitionVisibility": "public"
           }
         }
       ]
@@ -42,7 +42,7 @@
           "purpose": "foo.bar:governance",
           "target": {
             "definitionType": "openapi-v3",
-            "url": "/ord/metadata/astronomy-v1.oas3.json"
+            "definitionVisibility": "public"
           }
         }
       ]
