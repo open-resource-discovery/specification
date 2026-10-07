@@ -33,7 +33,7 @@ export type OverlayCorrelationID2 = string;
 export type OverlayVisibility = ("public" | "internal" | "private") & string;
 /**
  * Optional, but RECOMMENDED type of the target definition being patched.
- * If provided, this SHOULD match the `type` of the referenced metadata definition
+ * If provided and corresponding ORD definition metadata is available, this MUST match its `type` or, when provided, its `customType`
  * (as used in API/Event/Capability resource definitions).
  * This is especially useful when target `ordId` resolves to a resource with multiple attached definitions.
  *
@@ -66,6 +66,7 @@ export type OverlayDefinitionType = (
   | "sap-csn-interop-effective-v1"
   | "asyncapi-v2"
   | "sap.mdo:mdi-capability-definition:v1"
+  | "oas-overlay-v1"
 ) &
   string;
 /**

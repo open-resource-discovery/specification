@@ -244,7 +244,7 @@ definitions:
       definitionType:
         description: |-
           Optional, but RECOMMENDED type of the target definition being patched.
-          If provided, this SHOULD match the `type` of the referenced metadata definition
+          If provided and corresponding ORD definition metadata is available, this MUST match its `type` or, when provided, its `customType`
           (as used in API/Event/Capability resource definitions).
           This is especially useful when target `ordId` resolves to a resource with multiple attached definitions.
 
@@ -282,6 +282,8 @@ definitions:
           - const: sap-csn-interop-effective-v1
           - const: asyncapi-v2
           - const: sap.mdo:mdi-capability-definition:v1
+          - const: oas-overlay-v1
+            x-introduced-in-version: "1.17.0"
         examples:
           - "openapi-v3"
           - "asyncapi-v2"

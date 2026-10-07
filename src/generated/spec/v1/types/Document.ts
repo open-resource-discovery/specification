@@ -10,7 +10,7 @@ export type Usage = "external" | "local";
 export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
 /**
  * Type of the target definition being patched.
- * This MUST match the `type` of the referenced metadata definition (as used in API/Event/Capability resource definitions).
+ * This MUST match the referenced metadata definition's `type` or, when provided, its `customType` (as used in API/Event/Capability resource definitions).
  * This is especially useful when a resource has multiple attached definitions.
  *
  * This can be used to disambiguate how selectors are interpreted for the target.
@@ -42,6 +42,7 @@ export type OverlayTargetDefinitionType = (
   | "sap-csn-interop-effective-v1"
   | "asyncapi-v2"
   | "sap.mdo:mdi-capability-definition:v1"
+  | "oas-overlay-v1"
 ) &
   string;
 
@@ -3548,6 +3549,8 @@ export interface OverlayDefinition {
  *
  * The target resource is identified by the Overlay Resource's `relatedApiResources` or `relatedEventResources` relationships and can additionally be identified through `correlationIds`.
  * `definitionType`, `definitionPurpose`, and `definitionVisibility` select the attached definition using the resource definition uniqueness key.
+ * When multiple resources are related, the remaining target metadata or application context MUST make the intended resource or resources unambiguous.
+ * The relationship list alone does not imply that every overlay definition patches every related resource.
  *
  * Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
  * In such cases, `definitionType` makes the concrete patch target explicit.
