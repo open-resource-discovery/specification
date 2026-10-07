@@ -10,6 +10,8 @@ import { AgentConnectivityDiagram, AiEnrichmentDiagram } from "@site/src/compone
 
 > 🚧 Please note that the [Agents](../interfaces/Document#agent) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
 
+> **Visual walkthrough:** Explore [Agent interaction and dependencies](https://open-resource-discovery.github.io/presentation/ai-discovery) and [AI metadata enrichment](https://open-resource-discovery.github.io/presentation/ai-enrichment) in the ORD presentation. The Agent slide also includes explicitly marked skills and plugins proposals.
+
 ## Agents
 
 > An [Agent](../interfaces/Document#agent) is an **autonomous software entity** capable of task execution, described through high quality **metadata** that can be accessed through a central catalog ([ORD Aggregator](../index.md#ord-aggregator)).

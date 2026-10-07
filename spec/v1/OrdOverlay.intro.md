@@ -10,6 +10,8 @@ The **ORD Overlay** is an optional ORD model extension that allows patching refe
 
 <OverlayDiagram />
 
+For a guided visual walkthrough, see [ORD Overlays in the presentation](https://open-resource-discovery.github.io/presentation/ord-overlays).
+
 ```json
 {
   "ordOverlay": "0.1",

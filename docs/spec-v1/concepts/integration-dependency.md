@@ -7,6 +7,8 @@ import { IntegrationScenarioDiagram } from "@site/src/components/OrdDiagrams";
 
 # Integration Dependency
 
+> **Visual walkthrough:** Explore [integration dependencies and their aspects](https://open-resource-discovery.github.io/presentation/integration-dependencies) in the ORD presentation.
+
 ## Summary
 
 An **Integration Dependency** states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.
