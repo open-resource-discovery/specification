@@ -9,7 +9,7 @@ import { ApiLifecycleDiagram, LifecycleDiagram } from "@site/src/components/OrdD
 
 ## Overview
 
-ORD uses two complementary mechanisms to track the state of a resource over time:
+ORD uses three complementary signals to track the state of a resource over time:
 
 - **`version`**: A full [Semantic Versioning 2.0.0](https://semver.org/) string (e.g. `1.4.2`) that expresses the precise state of the resource definition.
 - **`<majorVersion>` in the ORD ID**: An integer fragment (e.g. `v1`, `v2`) that encodes whether a breaking change has been introduced, forming a stable identity for each major generation of a resource.

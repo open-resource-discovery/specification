@@ -35,11 +35,11 @@ At ORD level, only the "type-level" ability to integrate and its requirements ar
 > This is simpler than listing multiple system-type-specific ORD IDs as alternatives in the aspect.
 > See [Shared Taxonomy, Resources and Contracts](./shared-resources.md).
 
-The following diagram shows how two systems can integrate with each other via APIs and Events:
+The following overview summarizes the resources involved in an integration between two systems:
 
 <IntegrationScenarioDiagram />
 
-> **Figure 1:** This figure shows an integration scenario between System A and System B. System Instance A has implemented API clients against API Resources B-1 and B-2 of its integration target, as well as an event subscription (client implementation) for events from event resource B-3. It has an API Resource A-2, which the integration target uses to provide data back to System A.
+> **Figure 1:** System A declares an Integration Dependency on either API B-1 or API B-2 and on Event B-3 from System B. The callback API A-2 belongs to System A and is used by System B to send data back. The detailed diagram below separates these requirements into aspects; the overview does not depict runtime clients, subscriptions, or connections.
 
 ## Concept
 
