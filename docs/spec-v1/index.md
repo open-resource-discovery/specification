@@ -33,13 +33,16 @@ Use this map to go directly to the normative section you need.
 
 ## Applying the Specification
 
-The sections on this page define the protocol.
-The concept guides explain how to apply those rules to common modeling and implementation decisions.
+The most common way to apply ORD is to describe the resources and capabilities of an application or service.
+Start with static metadata, then decide whether publishing a runtime-specific view provides additional value.
 
-1. **Model the system context.** Start with the [System Landscape Model](./concepts/system-landscape-model.md), then choose the applicable [Perspectives](./concepts/perspectives.md) and ownership model for [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md).
-2. **Describe resources and their relationships.** Use [Grouping and Bundling](./concepts/grouping-and-bundling.md), [Data Product](./concepts/data-product.md), [Integration Dependency](./concepts/integration-dependency.md), and [AI Agents and Protocols](./concepts/ai-agents-and-protocols.md) as needed.
-3. **Plan for change.** Apply [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md) and [Compatibility](./concepts/compatibility.md) before publishing stable identifiers and contracts.
-4. **Build and validate a provider.** Follow [Implementing ORD Natively](./concepts/implementing-ord-natively.md), the normative [ORD Provider API](#ord-provider-api), and the generated [interfaces and schemas](/spec-v1/interfaces/).
+1. **Identify what the application exposes and requires.** Describe its APIs, Events, Data Products, Capabilities, Agents, and Integration Dependencies, and link their native resource definitions where applicable.
+2. **Publish a static description first.** Choose the appropriate `system-type` or `system-version` [perspective](./concepts/perspectives.md#static-perspective), then expose the ORD configuration, ORD documents, and referenced definitions by following [Implementing ORD Natively](./concepts/implementing-ord-natively.md#start-simple-static-ord).
+3. **Evaluate whether a system-instance view adds value.** Add `system-instance` publishing when resources or metadata differ at runtime because of tenant configuration, feature activation, extensions, user-created resources, or dynamic endpoints.
+   A published `system-instance` perspective is a complete description of that instance, not a patch over the static baseline.
+4. **Add structure and lifecycle guidance as needed.** Use the [System Landscape Model](./concepts/system-landscape-model.md), [Grouping and Bundling](./concepts/grouping-and-bundling.md), [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md), [Versioning and Lifecycle](./concepts/versioning-and-lifecycle.md), and [Compatibility](./concepts/compatibility.md) to refine the description.
+
+The normative requirements remain in the specification sections and the generated [interfaces and schemas](/spec-v1/interfaces/).
 
 ## Notational Conventions
 
