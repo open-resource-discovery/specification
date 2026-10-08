@@ -6,10 +6,6 @@
 */
 
 /* Markdown core headings, spacing and badges */
-.theme-doc-sidebar-item-link-level-2 {
-  font-size: 0.9em;
-}
-
 article .card {
   padding: 0 16px 16px !important;
 }
