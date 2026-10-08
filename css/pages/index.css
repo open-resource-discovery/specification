@@ -712,8 +712,8 @@ html[data-theme="light"] .neonephos-logo--light {
 }
 .theme-doc-sidebar-menu .menu__link--active {
   color: var(--c-accent) !important;
-  border-left: 5px solid var(--c-accent);
-  padding-left: calc(var(--ifm-menu-link-padding-horizontal) - 5px);
+  border-left: 3px solid var(--c-accent);
+  padding-left: calc(var(--ifm-menu-link-padding-horizontal) - 3px);
 }
 .breadcrumbs .breadcrumbs__link:hover,
 .table-of-contents .table-of-contents__link:hover {

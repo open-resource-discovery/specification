@@ -153,7 +153,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
             },
             {
               "const": "open",
@@ -175,7 +175,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):v([0-9]+)$",
           "maxLength": 255,
           "examples": [

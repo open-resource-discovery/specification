@@ -115,7 +115,7 @@
         {
           "type": "string",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-          "description": "Any valid [Specification ID](../index.md#specification-id)."
+          "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
         },
         {
           "const": "none",
@@ -136,7 +136,7 @@
     },
     "customPolicyLevel": {
       "type": "string",
-      "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
+      "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
       "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
       "maxLength": 255,
       "x-introduced-in-version": "1.3.0",
@@ -148,7 +148,7 @@
     },
     "policyLevels": {
       "type": "array",
-      "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+      "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
       "x-introduced-in-version": "1.9.9",
       "items": {
         "type": "string",
@@ -291,7 +291,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -310,7 +310,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -350,7 +350,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -364,7 +364,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "none",
@@ -385,7 +385,7 @@
         },
         "customPolicyLevel": {
           "type": "string",
-          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
@@ -397,7 +397,7 @@
         },
         "policyLevels": {
           "type": "array",
-          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
@@ -683,7 +683,7 @@
         "runtimeRestriction": {
           "x-introduced-in-version": "1.8.0",
           "x-feature-status": "alpha",
-          "description": "If provided, all resources that are part of this Package can only run on the listed runtime.\n\nMUST be a valid [system namespace](../index.md#system-namespace).",
+          "description": "If provided, all resources that are part of this Package can only run on the listed runtime.\n\nMUST be a valid [system namespace](../concepts/identifiers.md#system-namespace).",
           "type": "string",
           "pattern": "^[a-z0-9]+(?:[.][a-z0-9]+){1}$",
           "examples": [
@@ -733,7 +733,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(consumptionBundle):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -752,7 +752,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -792,7 +792,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -911,7 +911,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -929,7 +929,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -1045,7 +1045,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -1066,7 +1066,7 @@
           "default": false,
           "x-introduced-in-version": "1.13.0",
           "x-feature-status": "beta",
-          "description": "Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.\n\nAbstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.\nAbstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page.\nSee also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs."
+          "description": "Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.\n\nAbstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.\nAbstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.\n\nMore details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).\nSee also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs."
         },
         "visibility": {
           "type": "string",
@@ -1088,7 +1088,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -1243,36 +1243,36 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "odata-v2",
-              "description": "[OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.\nAn API Resource definition of type `edmx` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id)."
+              "description": "[OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.\nAn API Resource definition of type `edmx` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "odata-v4",
-              "description": "[OData Version 4](https://www.odata.org/documentation/) API.\nAn OData V4 API MUST be described via a Common Schema Definition Language (CSDL).\nAn API Resource definition of type `edmx` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id)."
+              "description": "[OData Version 4](https://www.odata.org/documentation/) API.\nAn OData V4 API MUST be described via a Common Schema Definition Language (CSDL).\nAn API Resource definition of type `edmx` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "rest",
-              "description": "Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.\nPlease not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.\nAn API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id)."
+              "description": "Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.\nPlease not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.\nAn API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "graphql",
-              "description": "[GraphQL](https://graphql.org/) API.\nAn API Resource definition of type `graphql-sdl` SHOULD be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `graphql-sdl`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id)."
+              "description": "[GraphQL](https://graphql.org/) API.\nAn API Resource definition of type `graphql-sdl` SHOULD be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `graphql-sdl`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "delta-sharing",
               "x-introduced-in-version": "1.8.0",
-              "description": "[Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) Protocol, where one API Resource corresponds to a share.\nFor each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).\nFor delta-sharing APIs the resource definition MAY be omitted, as the protocol itself allows for metadata discovery at runtime."
+              "description": "[Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) Protocol, where one API Resource corresponds to a share.\nFor each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).\nFor delta-sharing APIs the resource definition MAY be omitted, as the protocol itself allows for metadata discovery at runtime."
             },
             {
               "const": "soap-inbound",
-              "description": "[SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.\nAn API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../index.md#specification-id)."
+              "description": "[SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.\nAn API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "soap-outbound",
-              "description": "[SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides/describes outbound interfaces for async communication.\nAn API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../index.md#specification-id)."
+              "description": "[SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides/describes outbound interfaces for async communication.\nAn API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "mcp",
@@ -1280,7 +1280,7 @@
             },
             {
               "const": "websocket",
-              "description": "Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.\nSince WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.\nThe API Resource definitions `type` MUST ONLY be set to `custom` or any valid [Specification ID](../index.md#specification-id)."
+              "description": "Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.\nSince WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.\nThe API Resource definitions `type` MUST ONLY be set to `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "a2a",
@@ -1290,12 +1290,12 @@
             {
               "const": "sap-rfc",
               "x-introduced-in-version": "1.5.0",
-              "description": "[SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html) (Remote Function Call)  is the standard SAP interface for communication between SAP systems.\nRFC calls a function to be executed in a remote system.\nAn API Resource definition of type `sap-rfc-metadata-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `custom` or any valid [Specification ID](../index.md#specification-id)."
+              "description": "[SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html) (Remote Function Call)  is the standard SAP interface for communication between SAP systems.\nRFC calls a function to be executed in a remote system.\nAn API Resource definition of type `sap-rfc-metadata-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "sap-sql-api-v1",
               "x-introduced-in-version": "1.9.2",
-              "description": "SAP SQL API that follows the [SQL interface specification for SAP ecosystem](https://github.com/SAP/sql-interface-specification).\nAn API Resource definition of type `sap-sql-api-definition-v1` SHOULD be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `sap-sql-api-definition-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id)."
+              "description": "SAP SQL API that follows the [SQL interface specification for SAP ecosystem](https://github.com/SAP/sql-interface-specification).\nAn API Resource definition of type `sap-sql-api-definition-v1` SHOULD be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `sap-sql-api-definition-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "sap-ina-api-v1",
@@ -1321,7 +1321,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customImplementationStandardDescription` SHOULD be provided."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id).\nIf chosen, `customImplementationStandardDescription` SHOULD be provided."
             },
             {
               "const": "cff:open-service-broker:v2",
@@ -1338,7 +1338,7 @@
         },
         "customImplementationStandard": {
           "type": "string",
-          "description": "If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `implementationStandard` is set to `custom`.",
+          "description": "If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `implementationStandard` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -1356,7 +1356,7 @@
           "x-introduced-in-version": "1.13.0",
           "x-feature-status": "beta",
           "type": "array",
-          "description": "A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.\nIt does not imply the same endpoints, security or tenant specific configuration is used.\n\nServes as a declaration of compatible implementation of API contract, effectively functioning as an \"implementationOf\" relationship. The data that compatible APIs return follow the same schema, but itself can be different.\nThis means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page.",
+          "description": "A reference to the interface (API contract) and its maximum version that this API implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.\nIt does not imply the same endpoints, security or tenant specific configuration is used.\n\nServes as a declaration of compatible implementation of API contract, effectively functioning as an \"implementationOf\" relationship. The data that compatible APIs return follow the same schema, but itself can be different.\nThis means that if one API is returning 1 record for a dedicated request, a compatible API could return multiple and different records, as long as they adhere to the same schema.\n\nMUST be a valid reference to an (usually external) [API Resource](#api-resource) ORD ID.\n\nAll APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.\n\nMore details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).",
           "items": {
             "$ref": "#/definitions/ApiCompatibility"
           },
@@ -1390,7 +1390,7 @@
               {
                 "type": "string",
                 "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-                "description": "Any valid [Specification ID](../index.md#specification-id)."
+                "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
               },
               {
                 "const": "data-federation",
@@ -1719,7 +1719,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "none",
@@ -1740,7 +1740,7 @@
         },
         "customPolicyLevel": {
           "type": "string",
-          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
@@ -1752,7 +1752,7 @@
         },
         "policyLevels": {
           "type": "array",
-          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
@@ -1795,7 +1795,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -1814,7 +1814,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -1929,7 +1929,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -1950,7 +1950,7 @@
           "default": false,
           "x-introduced-in-version": "1.13.0",
           "x-feature-status": "beta",
-          "description": "Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.\n\nAbstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.\nAbstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page.\nSee also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs."
+          "description": "Indicates that the resource serves as interface only and cannot be called directly, similar to the abstract keyword in programming languages like Java.\n\nAbstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.\nAbstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.\n\nMore details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).\nSee also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs."
         },
         "visibility": {
           "type": "string",
@@ -1972,7 +1972,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -2104,12 +2104,12 @@
               "x-association-target": [
                 "#/definitions/ApiResource/ordId"
               ],
-              "description": "Any valid [API Resource ORD ID](../index.md#ord-id).\n\nRECOMMENDED to use if the contract is published via ORD and has an ORD ID."
+              "description": "Any valid [API Resource ORD ID](../concepts/identifiers.md#ord-id).\n\nRECOMMENDED to use if the contract is published via ORD and has an ORD ID."
             },
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customImplementationStandardDescription` SHOULD be provided."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id).\nIf chosen, `customImplementationStandardDescription` SHOULD be provided."
             },
             {
               "const": "custom",
@@ -2122,7 +2122,7 @@
         },
         "customImplementationStandard": {
           "type": "string",
-          "description": "If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `implementationStandard` is set to `custom`.",
+          "description": "If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `implementationStandard` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -2140,7 +2140,7 @@
           "x-introduced-in-version": "1.13.0",
           "x-feature-status": "beta",
           "type": "array",
-          "description": "A reference to the interface (event contract) and its maximum version that this event implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.\n\nServes as a declaration of compatible implementation of event contract, effectively functioning as an \"implementationOf\" relationship. The data that compatible events return follow the same schema, but itself can be different.\nThis means that if one event is returning 1 record for a dedicated request, a compatible event could return multiple and different records, as long as they adhere to the same schema.\n\nAll events that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.\n\nMore details can be found on the [Compatibility](../concepts/compatibility) concept page.",
+          "description": "A reference to the interface (event contract) and its maximum version that this event implements. Even if the interface contract evolves compatible, this resource will not be compatible with versions beyond the specified one.\n\nServes as a declaration of compatible implementation of event contract, effectively functioning as an \"implementationOf\" relationship. The data that compatible events return follow the same schema, but itself can be different.\nThis means that if one event is returning 1 record for a dedicated request, a compatible event could return multiple and different records, as long as they adhere to the same schema.\n\nAll events that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.\n\nMore details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).",
           "items": {
             "$ref": "#/definitions/EventCompatibility"
           },
@@ -2449,7 +2449,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "none",
@@ -2470,7 +2470,7 @@
         },
         "customPolicyLevel": {
           "type": "string",
-          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
@@ -2482,7 +2482,7 @@
         },
         "policyLevels": {
           "type": "array",
-          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
@@ -2528,7 +2528,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -2550,7 +2550,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -2650,7 +2650,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -2686,7 +2686,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -2843,7 +2843,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "none",
@@ -2864,7 +2864,7 @@
         },
         "customPolicyLevel": {
           "type": "string",
-          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
@@ -2876,7 +2876,7 @@
         },
         "policyLevels": {
           "type": "array",
-          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
@@ -2922,13 +2922,13 @@
       "description": "Machine-readable definition that describes the entity type's internal model structure.\n\nEntity Type definitions represent an internal implementation detail - the underlying domain model of your application.\nThis can be used to describe a shared internal model multiple APIs and Events are based on.\nHowever, interaction with the actual data happens through API Resources or Event Resources that expose these entity types with a defined interface and contract.\n\nEach definition is an alternative description format for the same entity type.\nThe same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.\n\n**Why Entity Types are private by default**: Since entity type definitions are internal implementation details, they SHOULD be marked as `private` visibility by default.\n\n**Finding related APIs**: To discover which APIs expose a particular Entity Type, check the API Resource's `relatedEntityTypes` property.",
       "properties": {
         "type": {
-          "description": "Type of the entity type resource definition.\n\nMUST be either:\n- any valid [Specification ID](../index.md#specification-id), or\n- one of the pre-defined values listed below.",
+          "description": "Type of the entity type resource definition.\n\nMUST be either:\n- any valid [Specification ID](../concepts/identifiers.md#specification-id), or\n- one of the pre-defined values listed below.",
           "type": "string",
           "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "sap-csn-interop-effective-v1",
@@ -3009,7 +3009,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(dataProduct):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -3028,7 +3028,7 @@
         "correlationIds": {
           "x-feature-status": "beta",
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -3119,7 +3119,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -3321,7 +3321,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "business-object",
@@ -3661,7 +3661,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "none",
@@ -3683,7 +3683,7 @@
         "customPolicyLevel": {
           "x-feature-status": "beta",
           "type": "string",
-          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "If the fixed `policyLevel` values need to be extended, an arbitrary `customPolicyLevel` can be provided.\nThe policy level is inherited from packages to resources they contain, but can be overwritten at resource level.\n\nMUST only be provided if `policyLevel` is set to `custom`.\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "x-introduced-in-version": "1.3.0",
@@ -3695,7 +3695,7 @@
         },
         "policyLevels": {
           "type": "array",
-          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
@@ -3745,7 +3745,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -3769,7 +3769,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource|eventResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -3800,7 +3800,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "openapi-v2",
@@ -3874,7 +3874,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -3937,12 +3937,12 @@
           "type": "string",
           "x-feature-status": "alpha",
           "x-introduced-in-version": "1.15.0",
-          "description": "Marks a resource definition as a *complementary* variant of the resource's default definition,\nfor example an overlay, an AI-enriched variant, or an agent-security-permissions view.\nAll entries in the definitions list, with or without `purpose`, MUST describe the same\nunderlying resource; see the list property for the full modelling rules.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the definitions list.\n\nMUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for\nvalues standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`).",
+          "description": "Marks a resource definition as a *complementary* variant of the resource's default definition,\nfor example an overlay, an AI-enriched variant, or an agent-security-permissions view.\nAll entries in the definitions list, with or without `purpose`, MUST describe the same\nunderlying resource; see the list property for the full modelling rules.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the definitions list.\n\nMUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for\nvalues standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`).",
           "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
+              "description": "Any valid [Concept ID](../concepts/identifiers.md#concept-id)."
             },
             {
               "const": "ord:ai-enrichment",
@@ -3980,7 +3980,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "asyncapi-v2",
@@ -4007,7 +4007,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -4069,12 +4069,12 @@
           "type": "string",
           "x-feature-status": "alpha",
           "x-introduced-in-version": "1.15.0",
-          "description": "Marks a resource definition as a *complementary* variant of the resource's default definition,\nfor example an overlay, an AI-enriched variant, or an agent-security-permissions view.\nAll entries in the definitions list, with or without `purpose`, MUST describe the same\nunderlying resource; see the list property for the full modelling rules.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the definitions list.\n\nMUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for\nvalues standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`).",
+          "description": "Marks a resource definition as a *complementary* variant of the resource's default definition,\nfor example an overlay, an AI-enriched variant, or an agent-security-permissions view.\nAll entries in the definitions list, with or without `purpose`, MUST describe the same\nunderlying resource; see the list property for the full modelling rules.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the definitions list.\n\nMUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for\nvalues standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`).",
           "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
+              "description": "Any valid [Concept ID](../concepts/identifiers.md#concept-id)."
             },
             {
               "const": "ord:ai-enrichment",
@@ -4109,7 +4109,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(agent):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -4128,7 +4128,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -4197,7 +4197,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -4233,7 +4233,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -4341,7 +4341,7 @@
         },
         "policyLevels": {
           "type": "array",
-          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../index.md#specification-id).",
+          "description": "A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.\nFor each chosen policy level, additional expectations and validations rules will be applied.\n\nPolicy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.\n\nA policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).",
           "x-introduced-in-version": "1.9.9",
           "items": {
             "type": "string",
@@ -4658,7 +4658,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(overlay):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -4681,7 +4681,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -4717,7 +4717,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -4833,7 +4833,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             }
           ],
           "examples": [
@@ -4895,12 +4895,12 @@
           "type": "string",
           "x-feature-status": "alpha",
           "x-introduced-in-version": "1.15.0",
-          "description": "Marks a resource definition as a *complementary* variant of the resource's default definition,\nfor example an overlay, an AI-enriched variant, or an agent-security-permissions view.\nAll entries in the definitions list, with or without `purpose`, MUST describe the same\nunderlying resource; see the list property for the full modelling rules.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the definitions list.\n\nMUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for\nvalues standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`).",
+          "description": "Marks a resource definition as a *complementary* variant of the resource's default definition,\nfor example an overlay, an AI-enriched variant, or an agent-security-permissions view.\nAll entries in the definitions list, with or without `purpose`, MUST describe the same\nunderlying resource; see the list property for the full modelling rules.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the definitions list.\n\nMUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for\nvalues standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`).",
           "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
+              "description": "Any valid [Concept ID](../concepts/identifiers.md#concept-id)."
             },
             {
               "const": "ord:ai-enrichment",
@@ -4933,7 +4933,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(product):([a-zA-Z0-9._\\-]+):()$",
           "maxLength": 255,
           "examples": [
@@ -4942,7 +4942,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -5042,7 +5042,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -5061,7 +5061,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -5080,7 +5080,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "sap.mdo:mdi-capability:v1",
@@ -5097,7 +5097,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -5159,7 +5159,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -5195,7 +5195,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -5376,7 +5376,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "sap.mdo:mdi-capability-definition:v1",
@@ -5393,7 +5393,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -5455,12 +5455,12 @@
           "type": "string",
           "x-feature-status": "alpha",
           "x-introduced-in-version": "1.15.0",
-          "description": "Marks a resource definition as a *complementary* variant of the resource's default definition,\nfor example an overlay, an AI-enriched variant, or an agent-security-permissions view.\nAll entries in the definitions list, with or without `purpose`, MUST describe the same\nunderlying resource; see the list property for the full modelling rules.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the definitions list.\n\nMUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for\nvalues standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`).",
+          "description": "Marks a resource definition as a *complementary* variant of the resource's default definition,\nfor example an overlay, an AI-enriched variant, or an agent-security-permissions view.\nAll entries in the definitions list, with or without `purpose`, MUST describe the same\nunderlying resource; see the list property for the full modelling rules.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the definitions list.\n\nMUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for\nvalues standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`).",
           "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
+              "description": "Any valid [Concept ID](../concepts/identifiers.md#concept-id)."
             },
             {
               "const": "ord:ai-enrichment",
@@ -5494,7 +5494,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -5513,7 +5513,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -5573,7 +5573,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -5609,7 +5609,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -5798,7 +5798,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -5839,7 +5839,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -5864,10 +5864,10 @@
         },
         "systemTypeRestriction": {
           "type": "array",
-          "description": "In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).\n\nIf given, only system types of the defined namespaces are supported as integration partners.\nIf not given, there is no restriction which system type provides the events.",
+          "description": "In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../concepts/identifiers.md#system-namespace).\n\nIf given, only system types of the defined namespaces are supported as integration partners.\nIf not given, there is no restriction which system type provides the events.",
           "items": {
             "type": "string",
-            "description": "Valid [system namespace](../index.md#system-namespace).\n",
+            "description": "Valid [system namespace](../concepts/identifiers.md#system-namespace).\n",
             "pattern": "^[a-z0-9]+(?:[.][a-z0-9]+){1}$"
           },
           "minItems": 1,
@@ -5936,7 +5936,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -5965,11 +5965,11 @@
       "type": "object",
       "title": "Vendor",
       "x-ums-type": "root",
-      "description": "The vendor of a product or a package, usually a corporation or a customer / user.\n\nThe vendor of a `Package` is the authoritative statement of the current ownership attribution for the content of the Package.\nIt is independent of the namespaces of the resource ORD IDs and MUST NOT be derived from them.\nThe vendor of a `Product` is the owner of the product.\n\nIf ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.\n\nBoth have already a [vendor namespace](../index.md#vendor-namespace) within their ORD ID.\nThe `Vendor` entity is giving more details on the vendor namespace.\nFor one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.\n\nFor example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.",
+      "description": "The vendor of a product or a package, usually a corporation or a customer / user.\n\nThe vendor of a `Package` is the authoritative statement of the current ownership attribution for the content of the Package.\nIt is independent of the namespaces of the resource ORD IDs and MUST NOT be derived from them.\nThe vendor of a `Product` is the owner of the product.\n\nIf ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.\n\nBoth have already a [vendor namespace](../concepts/identifiers.md#vendor-namespace) within their ORD ID.\nThe `Vendor` entity is giving more details on the vendor namespace.\nFor one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.\n\nFor example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.",
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+):(vendor):([a-zA-Z0-9._\\-]+):()$",
           "maxLength": 255,
           "examples": [
@@ -6047,7 +6047,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.",
           "oneOf": [
             {
               "const": "development",
@@ -6215,7 +6215,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "terms-of-service",
@@ -6256,7 +6256,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -6296,7 +6296,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "api-documentation",
@@ -6337,7 +6337,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -6378,7 +6378,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id)."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "payment",
@@ -6407,7 +6407,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -6463,7 +6463,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -6507,7 +6507,7 @@
       "properties": {
         "systemNamespace": {
           "type": "string",
-          "description": "The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.\nIt is used to reference the system type in the ORD.",
+          "description": "The [system namespace](../concepts/identifiers.md#system-namespace) is a unique identifier for the system type.\nIt is used to reference the system type in the ORD.",
           "pattern": "^[a-z0-9]+(?:[.][a-z0-9]+){1}$",
           "maxLength": 32,
           "examples": [
@@ -6518,7 +6518,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -6580,7 +6580,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -6625,7 +6625,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
             },
             {
               "const": "open",
@@ -6647,7 +6647,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -6692,7 +6692,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../index.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
+              "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id).\nIf chosen, `customDescription` SHOULD be provided."
             },
             {
               "const": "custom",
@@ -6702,7 +6702,7 @@
         },
         "customType": {
           "type": "string",
-          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../index.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
+          "description": "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -6732,7 +6732,7 @@
     "Labels": {
       "title": "Labels",
       "type": "object",
-      "description": "Generic key-value labels that can be applied to most ORD information.\nThey are defined as an object that may have arbitrary keys.\nThe value of a key is an array of strings.\n\nLabels can be used to attach technical information that cannot be expressed natively in ORD.\nAn ORD aggregator should allow to categorize and query information based on the labels provided.\n\nTo learn more about the concept, see [Labels](../concepts/grouping-and-bundling#labels).\n\nIf multiple parties rely on the existence of certain label information,\nstandardization through ORD SHOULD be preferred.\n\nAll labels attached to a `Package` will be inherited to the resources they contain.\nDuplicate labels will be merged by the ORD aggregator according to the following rules:\n* Values of the same label key will be merged.\n* Duplicate values of the same label key will be removed.\n\n**RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.\nThe namespace in the Concept ID clearly identifies who owns and defines the label's semantics.",
+      "description": "Generic key-value labels that can be applied to most ORD information.\nThey are defined as an object that may have arbitrary keys.\nThe value of a key is an array of strings.\n\nLabels can be used to attach technical information that cannot be expressed natively in ORD.\nAn ORD aggregator should allow to categorize and query information based on the labels provided.\n\nTo learn more about the concept, see [Labels](../concepts/grouping-and-bundling#labels).\n\nIf multiple parties rely on the existence of certain label information,\nstandardization through ORD SHOULD be preferred.\n\nAll labels attached to a `Package` will be inherited to the resources they contain.\nDuplicate labels will be merged by the ORD aggregator according to the following rules:\n* Values of the same label key will be merged.\n* Duplicate values of the same label key will be removed.\n\n**RECOMMENDATION**: Use a [Concept ID](../concepts/identifiers.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.\nThe namespace in the Concept ID clearly identifies who owns and defines the label's semantics.",
       "x-ums-type": "custom",
       "patternProperties": {
         "^[a-zA-Z0-9-_.:/]*$": {
@@ -6792,7 +6792,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -6894,7 +6894,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -7029,7 +7029,7 @@
       "x-deprecated-in-version": "1.11.0",
       "x-deprecation-text": "Use the simplified `relatedEntityTypes` instead.",
       "x-ums-type": "custom",
-      "description": "An API or Event resource may optionally define its `entityTypeMappings`.\nThis is used to map and correlate the API models to the underlying, conceptual **entity types**.\n\nIf the mapping from API resource to entity types is not defined,\ncertain use-cases that rely on this explicit connection will not be possible.\n\nThis mapping is meant to be rather fine granular.\nTherefore, the mapping needs to be done on basis of one of the referenced resource definitions,\nas only there we know the details and the actual contents of the API Model of the API resource.\n\nFor the various resource definition formats the selection of API models may need to be expressed differently.\nAs a consequence, there are different types of selectors that are specialized toward certain resource definition formats.\n\nThe target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)\nor to an [ORD ID](../index.md#ord-id) of an entity type.\nIt is assumed that the entity types are described in more detail or on a different abstraction level via metadata.\nWhen the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.\nThis can be determined either by the namespace of the correlation ID,\nor through a defined and known `implementationStandard` that can resolve the `localId` fragment of the correlation ID .\n\nAt SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.\nTo indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).\n\nODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the\ncorresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.",
+      "description": "An API or Event resource may optionally define its `entityTypeMappings`.\nThis is used to map and correlate the API models to the underlying, conceptual **entity types**.\n\nIf the mapping from API resource to entity types is not defined,\ncertain use-cases that rely on this explicit connection will not be possible.\n\nThis mapping is meant to be rather fine granular.\nTherefore, the mapping needs to be done on basis of one of the referenced resource definitions,\nas only there we know the details and the actual contents of the API Model of the API resource.\n\nFor the various resource definition formats the selection of API models may need to be expressed differently.\nAs a consequence, there are different types of selectors that are specialized toward certain resource definition formats.\n\nThe target of the mapping is a correlation to an entity type via a [Correlation ID](../concepts/identifiers.md#correlation-id)\nor to an [ORD ID](../concepts/identifiers.md#ord-id) of an entity type.\nIt is assumed that the entity types are described in more detail or on a different abstraction level via metadata.\nWhen the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.\nThis can be determined either by the namespace of the correlation ID,\nor through a defined and known `implementationStandard` that can resolve the `localId` fragment of the correlation ID .\n\nAt SAP, the metadata about entity types could be retrieved via the CSN_EXPOSURE service.\nTo indicate this, the service needs to be implemented and described in ORD with `implementationStandard` set to `sap:csn-exposure:v1`).\n\nODM 2.0 relies on the entity type mappings and uses the the mapping to express the relationship of an API to the\ncorresponding ODM entity. ORD consumers like SAP Business Accelerator Hub consume the mapping to make the relationships navigate-able for customers.",
       "properties": {
         "apiModelSelectors": {
           "type": "array",
@@ -7047,7 +7047,7 @@
         },
         "entityTypeTargets": {
           "type": "array",
-          "description": "List of entity types the ORD resource maps to.\nIf `apiModelSelectors` are given, the mapping is more precise by also pointing to the specific model in the API.\n\nIf multiple entity types are defined as the mapping target,\nall of them can be at least partially mapped to the source API model(s).\n\nEntity types can be referenced using either using an [ORD ID](../index.md#ord-id) or a [Correlation ID](../index.md#correlation-id).",
+          "description": "List of entity types the ORD resource maps to.\nIf `apiModelSelectors` are given, the mapping is more precise by also pointing to the specific model in the API.\n\nIf multiple entity types are defined as the mapping target,\nall of them can be at least partially mapped to the source API model(s).\n\nEntity types can be referenced using either using an [ORD ID](../concepts/identifiers.md#ord-id) or a [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "anyOf": [
               {
@@ -7238,11 +7238,11 @@
       "x-deprecation-text": "Use the simplified `relatedEntityTypes` instead.",
       "x-ums-type": "custom",
       "type": "object",
-      "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.",
+      "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [ORD ID](../concepts/identifiers.md#ord-id) of an entity type.",
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -7261,7 +7261,7 @@
     "EntityTypeCorrelationIdTarget": {
       "title": "Entity Type Target (Correlation Id)",
       "type": "object",
-      "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [Correlation ID](../index.md#correlation-id).",
+      "description": "Define which entity type is the target of an entity type mapping\n\nEntity types can be referenced using a [Correlation ID](../concepts/identifiers.md#correlation-id).",
       "x-introduced-in-version": "1.6.0",
       "x-deprecated-in-version": "1.11.0",
       "x-deprecation-text": "Use the simplified `relatedEntityTypes` instead.",
@@ -7290,7 +7290,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -7302,14 +7302,14 @@
         },
         "relationType": {
           "type": "string",
-          "description": "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\".\n\nMUST be a valid [Concept ID](../index.md#concept-id).",
+          "description": "Optional type of the relationship, which defines a stricter semantic what the relationship implies.\n\nIf not provided, the relationship type has no semantics, it's \"related somehow\".\n\nMUST be a valid [Concept ID](../concepts/identifiers.md#concept-id).",
           "x-introduced-in-version": "1.12.0",
           "x-feature-status": "beta",
           "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
+              "description": "Any valid [Concept ID](../concepts/identifiers.md#concept-id)."
             },
             {
               "const": "part-of",
@@ -7340,7 +7340,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -7352,12 +7352,12 @@
         },
         "relationType": {
           "type": "string",
-          "description": "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
+          "description": "Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
           "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
+              "description": "Any valid [Concept ID](../concepts/identifiers.md#concept-id)."
             },
             {
               "const": "ord:patches",
@@ -7384,7 +7384,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -7396,12 +7396,12 @@
         },
         "relationType": {
           "type": "string",
-          "description": "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
+          "description": "Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
           "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
+              "description": "Any valid [Concept ID](../concepts/identifiers.md#concept-id)."
             },
             {
               "const": "ord:patches",
@@ -7428,7 +7428,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -7440,12 +7440,12 @@
         },
         "relationType": {
           "type": "string",
-          "description": "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
+          "description": "Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
           "anyOf": [
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
-              "description": "Any valid [Concept ID](../index.md#concept-id)."
+              "description": "Any valid [Concept ID](../concepts/identifiers.md#concept-id)."
             }
           ],
           "examples": [
@@ -7467,7 +7467,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(entityType):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -7491,7 +7491,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "[ORD ID](../index.md#ord-id) of the ORD resource/taxonomy that has been removed.",
+          "description": "[ORD ID](../concepts/identifiers.md#ord-id) of the ORD resource/taxonomy that has been removed.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(package|consumptionBundle|product|vendor|apiResource|eventResource|capability|entityType|integrationDependency|dataProduct|agent):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*|)?$",
           "maxLength": 255,
           "examples": [
@@ -7570,7 +7570,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource|eventResource|capability|dataProduct|agent):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*|)$",
           "maxLength": 255,
           "examples": []
@@ -7584,7 +7584,7 @@
         },
         "correlationIds": {
           "type": "array",
-          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../index.md#correlation-id).",
+          "description": "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).",
           "items": {
             "type": "string",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
@@ -7636,7 +7636,7 @@
         },
         "version": {
           "type": "string",
-          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
+          "description": "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.",
           "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
           "examples": [
             "1.2.3",
@@ -7672,7 +7672,7 @@
         },
         "releaseStatus": {
           "type": "string",
-          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.",
+          "description": "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.",
           "oneOf": [
             {
               "const": "development",

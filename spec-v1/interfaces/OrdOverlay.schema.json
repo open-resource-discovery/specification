@@ -138,7 +138,7 @@
       "properties": {
         "ordId": {
           "type": "string",
-          "description": "ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).",
+          "description": "ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).\nMUST be a valid [ORD ID](../../spec-v1/concepts/identifiers.md#ord-id).",
           "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
           "maxLength": 255,
           "examples": [
@@ -170,7 +170,7 @@
           ]
         },
         "definitionType": {
-          "description": "Optional, but RECOMMENDED type of the target definition being patched.\nIf provided, this SHOULD match the `type` of the referenced metadata definition\n(as used in API/Event/Capability resource definitions).\nThis is especially useful when target `ordId` resolves to a resource with multiple attached definitions.\n\nThis can be used to disambiguate how selectors are interpreted for the target.\n\nMUST be either:\n- any valid [Specification ID](../../spec-v1/index.md#specification-id), or\n- one of the pre-defined values reused from:\n  - API Resource Definition `type`\n  - Event Resource Definition `type`\n  - Capability Definition `type`\n\nThe literal value `custom` is deprecated for `definitionType` and MUST NOT be used.\nIn such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.",
+          "description": "Optional, but RECOMMENDED type of the target definition being patched.\nIf provided, this SHOULD match the `type` of the referenced metadata definition\n(as used in API/Event/Capability resource definitions).\nThis is especially useful when target `ordId` resolves to a resource with multiple attached definitions.\n\nThis can be used to disambiguate how selectors are interpreted for the target.\n\nMUST be either:\n- any valid [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id), or\n- one of the pre-defined values reused from:\n  - API Resource Definition `type`\n  - Event Resource Definition `type`\n  - Capability Definition `type`\n\nThe literal value `custom` is deprecated for `definitionType` and MUST NOT be used.\nIn such cases, use a concrete [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id) instead.",
           "type": "string",
           "title": "Overlay Definition Type",
           "x-ums-type": "ignore",
@@ -178,7 +178,7 @@
             {
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
-              "description": "Any valid [Specification ID](../../spec-v1/index.md#specification-id)."
+              "description": "Any valid [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id)."
             },
             {
               "const": "openapi-v2"
@@ -790,7 +790,7 @@
             "type": "string",
             "title": "Overlay Correlation ID",
             "x-ums-type": "ignore",
-            "description": "Correlation ID identifying related records in external systems of record.\nMUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).",
+            "description": "Correlation ID identifying related records in external systems of record.\nMUST be a valid [Correlation ID](../../spec-v1/concepts/identifiers.md#correlation-id).",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
             "maxLength": 255
           },
@@ -811,7 +811,7 @@
       "properties": {
         "systemNamespace": {
           "type": "string",
-          "description": "The [system namespace](../../spec-v1/index.md#system-namespace) is a unique identifier for the system type.",
+          "description": "The [system namespace](../../spec-v1/concepts/identifiers.md#system-namespace) is a unique identifier for the system type.",
           "pattern": "^[a-z0-9]+(?:[.][a-z0-9]+){1}$",
           "maxLength": 32,
           "examples": [
@@ -828,7 +828,7 @@
             "type": "string",
             "title": "Overlay Correlation ID",
             "x-ums-type": "ignore",
-            "description": "Correlation ID identifying related records in external systems of record.\nMUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).",
+            "description": "Correlation ID identifying related records in external systems of record.\nMUST be a valid [Correlation ID](../../spec-v1/concepts/identifiers.md#correlation-id).",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
             "maxLength": 255
           },
@@ -873,7 +873,7 @@
             "type": "string",
             "title": "Overlay Correlation ID",
             "x-ums-type": "ignore",
-            "description": "Correlation ID identifying related records in external systems of record.\nMUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).",
+            "description": "Correlation ID identifying related records in external systems of record.\nMUST be a valid [Correlation ID](../../spec-v1/concepts/identifiers.md#correlation-id).",
             "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+):([a-zA-Z0-9._\\-\\/]+)$",
             "maxLength": 255
           },

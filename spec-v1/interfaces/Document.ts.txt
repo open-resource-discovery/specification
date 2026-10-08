@@ -105,7 +105,7 @@ export interface OrdDocument {
    * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
    *
    * MUST only be provided if `policyLevel` is set to `custom`.
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   customPolicyLevel?: string;
   /**
@@ -114,7 +114,7 @@ export interface OrdDocument {
    *
    * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
    *
-   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   * A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   policyLevels?: string[];
   /**
@@ -192,7 +192,7 @@ export interface OrdDocument {
  */
 export interface SystemType {
   /**
-   * The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.
+   * The [system namespace](../concepts/identifiers.md#system-namespace) is a unique identifier for the system type.
    * It is used to reference the system type in the ORD.
    */
   systemNamespace?: string;
@@ -203,7 +203,7 @@ export interface SystemType {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   labels?: Labels;
@@ -234,7 +234,7 @@ export interface SystemType {
  * * Values of the same label key will be merged.
  * * Duplicate values of the same label key will be removed.
  *
- * **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
+ * **RECOMMENDATION**: Use a [Concept ID](../concepts/identifiers.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
  * The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
  */
 export interface Labels {
@@ -291,7 +291,7 @@ export interface SystemVersion {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   labels?: Labels;
@@ -339,7 +339,7 @@ export interface SystemInstance {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   labels?: Labels;
@@ -371,7 +371,7 @@ export interface ApiResource {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -389,7 +389,7 @@ export interface ApiResource {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -491,7 +491,7 @@ export interface ApiResource {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -523,7 +523,7 @@ export interface ApiResource {
    * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
    * Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
    *
-   * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * More details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).
    * See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
    */
   abstract?: boolean;
@@ -544,7 +544,7 @@ export interface ApiResource {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -694,7 +694,7 @@ export interface ApiResource {
   /**
    * If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `implementationStandard` is set to `custom`.
    */
@@ -718,7 +718,7 @@ export interface ApiResource {
    *
    * All APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
    *
-   * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * More details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).
    */
   compatibleWith?: APICompatibility[];
   /**
@@ -860,7 +860,7 @@ export interface ApiResource {
    * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
    *
    * MUST only be provided if `policyLevel` is set to `custom`.
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   customPolicyLevel?: string;
   /**
@@ -869,7 +869,7 @@ export interface ApiResource {
    *
    * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
    *
-   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   * A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   policyLevels?: string[];
   /**
@@ -913,11 +913,11 @@ export interface RelatedAPIResource {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
-   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   * Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
    *
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
@@ -931,11 +931,11 @@ export interface RelatedEventResource {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
-   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   * Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
    *
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
@@ -962,7 +962,7 @@ export interface ChangelogEntry {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -1016,7 +1016,7 @@ export interface ApiResourceDefinition {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */
@@ -1071,7 +1071,7 @@ export interface ApiResourceDefinition {
    * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
    * key for entries in the definitions list.
    *
-   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
    * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
@@ -1088,7 +1088,7 @@ export interface MetadataDefinitionAccessStrategy {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */
@@ -1136,8 +1136,8 @@ export interface APICompatibility {
  * For the various resource definition formats the selection of API models may need to be expressed differently.
  * As a consequence, there are different types of selectors that are specialized toward certain resource definition formats.
  *
- * The target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)
- * or to an [ORD ID](../index.md#ord-id) of an entity type.
+ * The target of the mapping is a correlation to an entity type via a [Correlation ID](../concepts/identifiers.md#correlation-id)
+ * or to an [ORD ID](../concepts/identifiers.md#ord-id) of an entity type.
  * It is assumed that the entity types are described in more detail or on a different abstraction level via metadata.
  * When the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.
  * This can be determined either by the namespace of the correlation ID,
@@ -1168,7 +1168,7 @@ export interface EntityTypeMapping {
    * If multiple entity types are defined as the mapping target,
    * all of them can be at least partially mapped to the source API model(s).
    *
-   * Entity types can be referenced using either using an [ORD ID](../index.md#ord-id) or a [Correlation ID](../index.md#correlation-id).
+   * Entity types can be referenced using either using an [ORD ID](../concepts/identifiers.md#ord-id) or a [Correlation ID](../concepts/identifiers.md#correlation-id).
    *
    * @minItems 1
    */
@@ -1220,20 +1220,20 @@ export interface ApiModelSelectorJsonPointer {
 /**
  * Define which entity type is the target of an entity type mapping
  *
- * Entity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.
+ * Entity types can be referenced using a [ORD ID](../concepts/identifiers.md#ord-id) of an entity type.
  */
 export interface EntityTypeTargetORDID {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
 }
 /**
  * Define which entity type is the target of an entity type mapping
  *
- * Entity types can be referenced using a [Correlation ID](../index.md#correlation-id).
+ * Entity types can be referenced using a [Correlation ID](../concepts/identifiers.md#correlation-id).
  */
 export interface EntityTypeTargetCorrelationId {
   correlationId: string;
@@ -1245,7 +1245,7 @@ export interface ExposedEntityType {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
 }
@@ -1273,7 +1273,7 @@ export interface ApiAndEventResourceLink {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */
@@ -1336,7 +1336,7 @@ export interface EventResource {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -1354,7 +1354,7 @@ export interface EventResource {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -1456,7 +1456,7 @@ export interface EventResource {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -1488,7 +1488,7 @@ export interface EventResource {
    * Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
    * Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
    *
-   * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * More details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).
    * See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
    */
   abstract?: boolean;
@@ -1509,7 +1509,7 @@ export interface EventResource {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -1608,7 +1608,7 @@ export interface EventResource {
   /**
    * If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `implementationStandard` is set to `custom`.
    */
@@ -1629,7 +1629,7 @@ export interface EventResource {
    *
    * All events that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
    *
-   * More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+   * More details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).
    */
   compatibleWith?: EventCompatibility[];
   /**
@@ -1759,7 +1759,7 @@ export interface EventResource {
    * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
    *
    * MUST only be provided if `policyLevel` is set to `custom`.
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   customPolicyLevel?: string;
   /**
@@ -1768,7 +1768,7 @@ export interface EventResource {
    *
    * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
    *
-   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   * A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   policyLevels?: string[];
   /**
@@ -1797,7 +1797,7 @@ export interface EventResourceDefinition {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */
@@ -1852,7 +1852,7 @@ export interface EventResourceDefinition {
    * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
    * key for entries in the definitions list.
    *
-   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
    * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
@@ -1889,7 +1889,7 @@ export interface EntityType {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -1907,7 +1907,7 @@ export interface EntityType {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -1984,7 +1984,7 @@ export interface EntityType {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -2027,7 +2027,7 @@ export interface EntityType {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -2109,7 +2109,7 @@ export interface EntityType {
    * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
    *
    * MUST only be provided if `policyLevel` is set to `custom`.
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   customPolicyLevel?: string;
   /**
@@ -2118,7 +2118,7 @@ export interface EntityType {
    *
    * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
    *
-   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   * A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   policyLevels?: string[];
   /**
@@ -2142,7 +2142,7 @@ export interface RelatedEntityType {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -2150,7 +2150,7 @@ export interface RelatedEntityType {
    *
    * If not provided, the relationship type has no semantics, it's "related somehow".
    *
-   * MUST be a valid [Concept ID](../index.md#concept-id).
+   * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id).
    */
   relationType?: (string | "part-of" | "can-share-identity") & string;
 }
@@ -2173,7 +2173,7 @@ export interface EntityTypeDefinition {
    * Type of the entity type resource definition.
    *
    * MUST be either:
-   * - any valid [Specification ID](../index.md#specification-id), or
+   * - any valid [Specification ID](../concepts/identifiers.md#specification-id), or
    * - one of the pre-defined values listed below.
    */
   type: (string | "sap-csn-interop-effective-v1") & string;
@@ -2227,7 +2227,7 @@ export interface Capability {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -2245,7 +2245,7 @@ export interface Capability {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -2255,7 +2255,7 @@ export interface Capability {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */
@@ -2320,7 +2320,7 @@ export interface Capability {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -2363,7 +2363,7 @@ export interface Capability {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -2465,11 +2465,11 @@ export interface RelatedCapability {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
-   * Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+   * Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
    *
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
@@ -2487,7 +2487,7 @@ export interface CapabilityDefinition {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */
@@ -2542,7 +2542,7 @@ export interface CapabilityDefinition {
    * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
    * key for entries in the definitions list.
    *
-   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
    * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
@@ -2557,7 +2557,7 @@ export interface DataProduct {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -2575,7 +2575,7 @@ export interface DataProduct {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -2652,7 +2652,7 @@ export interface DataProduct {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -2909,7 +2909,7 @@ export interface DataProduct {
    * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
    *
    * MUST only be provided if `policyLevel` is set to `custom`.
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   customPolicyLevel?: string;
   /**
@@ -2918,7 +2918,7 @@ export interface DataProduct {
    *
    * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
    *
-   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   * A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   policyLevels?: string[];
   /**
@@ -2944,7 +2944,7 @@ export interface DataProductInputPort {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
 }
@@ -2960,7 +2960,7 @@ export interface DataProductOutputPort {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
 }
@@ -2973,7 +2973,7 @@ export interface DataProductLink {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */
@@ -2999,7 +2999,7 @@ export interface Agent {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -3017,7 +3017,7 @@ export interface Agent {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -3080,7 +3080,7 @@ export interface Agent {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -3123,7 +3123,7 @@ export interface Agent {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -3199,7 +3199,7 @@ export interface Agent {
    *
    * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
    *
-   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   * A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   policyLevels?: string[];
   /**
@@ -3336,7 +3336,7 @@ export interface Overlay {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -3360,7 +3360,7 @@ export interface Overlay {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -3403,7 +3403,7 @@ export interface Overlay {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -3500,7 +3500,7 @@ export interface OverlayDefinition {
    * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
    * key for entries in the definitions list.
    *
-   * MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+   * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
    * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
@@ -3531,7 +3531,7 @@ export interface IntegrationDependency {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -3549,7 +3549,7 @@ export interface IntegrationDependency {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -3604,7 +3604,7 @@ export interface IntegrationDependency {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -3647,7 +3647,7 @@ export interface IntegrationDependency {
    *
    * Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
    *
-   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+   * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
@@ -3751,7 +3751,7 @@ export interface ApiResourceIntegrationAspect {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -3795,7 +3795,7 @@ export interface EventResourceIntegrationAspect {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -3808,14 +3808,14 @@ export interface EventResourceIntegrationAspect {
    */
   subset?: EventResourceIntegrationAspectSubset[];
   /**
-   * In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
+   * In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../concepts/identifiers.md#system-namespace).
    *
    * If given, only system types of the defined namespaces are supported as integration partners.
    * If not given, there is no restriction which system type provides the events.
    *
    * @minItems 1
    *
-   * Items: Valid [system namespace](../index.md#system-namespace).
+   * Items: Valid [system namespace](../concepts/identifiers.md#system-namespace).
    *
    */
   systemTypeRestriction?: [string, ...string[]];
@@ -3843,7 +3843,7 @@ export interface CapabilityIntegrationAspect {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -3862,7 +3862,7 @@ export interface CapabilityIntegrationAspect {
  *
  * If ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.
  *
- * Both have already a [vendor namespace](../index.md#vendor-namespace) within their ORD ID.
+ * Both have already a [vendor namespace](../concepts/identifiers.md#vendor-namespace) within their ORD ID.
  * The `Vendor` entity is giving more details on the vendor namespace.
  * For one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.
  *
@@ -3872,7 +3872,7 @@ export interface Vendor {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -3917,7 +3917,7 @@ export interface Product {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -3927,7 +3927,7 @@ export interface Product {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -3992,7 +3992,7 @@ export interface Package {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -4010,7 +4010,7 @@ export interface Package {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -4041,7 +4041,7 @@ export interface Package {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -4067,7 +4067,7 @@ export interface Package {
    * The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
    *
    * MUST only be provided if `policyLevel` is set to `custom`.
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   customPolicyLevel?: string;
   /**
@@ -4076,7 +4076,7 @@ export interface Package {
    *
    * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
    *
-   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   * A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   policyLevels?: string[];
   /**
@@ -4215,7 +4215,7 @@ export interface Package {
   /**
    * If provided, all resources that are part of this Package can only run on the listed runtime.
    *
-   * MUST be a valid [system namespace](../index.md#system-namespace).
+   * MUST be a valid [system namespace](../concepts/identifiers.md#system-namespace).
    */
   runtimeRestriction?: string;
   /**
@@ -4249,7 +4249,7 @@ export interface PackageLink {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */
@@ -4316,7 +4316,7 @@ export interface ConsumptionBundle {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
-   * It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
   /**
@@ -4334,7 +4334,7 @@ export interface ConsumptionBundle {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -4365,7 +4365,7 @@ export interface ConsumptionBundle {
    * It SHOULD be changed if the ORD information or referenced resource definitions changed.
    * It SHOULD express minor and patch changes that don't lead to incompatible changes.
    *
-   * When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+   * When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
    * If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
    * If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
    *
@@ -4438,7 +4438,7 @@ export interface CredentialExchangeStrategy {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */
@@ -4507,7 +4507,7 @@ export interface Group {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -4558,7 +4558,7 @@ export interface GroupType {
    *
    * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
    *
-   * MUST be a valid [Correlation ID](../index.md#correlation-id).
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
    */
   correlationIds?: string[];
   /**
@@ -4586,7 +4586,7 @@ export interface GroupType {
  */
 export interface Tombstone {
   /**
-   * [ORD ID](../index.md#ord-id) of the ORD resource/taxonomy that has been removed.
+   * [ORD ID](../concepts/identifiers.md#ord-id) of the ORD resource/taxonomy that has been removed.
    */
   ordId?: string;
   /**
