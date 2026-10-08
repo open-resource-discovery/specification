@@ -183,24 +183,24 @@ An integration dependency can identify target system types without naming any pa
 {
   "integrationDependencies": [
     {
-      "ordId": "sap.example:integrationDependency:BillingAndERP:v1",
+      "ordId": "foo.bar:integrationDependency:BillingAndERP:v1",
       "version": "1.0.0",
       "title": "Billing and ERP systems",
       "mandatory": true,
       "releaseStatus": "active",
       "visibility": "public",
-      "partOfPackage": "sap.example:package:Example:v1",
+      "partOfPackage": "foo.bar:package:Example:v1",
       "aspects": [
         {
           "mandatory": true,
-          "systemTypes": [{ "systemNamespace": "sap.billing" }]
+          "systemTypes": [{ "systemNamespace": "foo.bar" }]
         },
         {
           "mandatory": true,
           "systemTypes": [
-            { "systemNamespace": "sap.s4pce", "minSystemVersion": "2025.4.0" },
-            { "systemNamespace": "sap.s4" },
-            { "systemNamespace": "sap.s4op" }
+            { "systemNamespace": "foo.erpcloud", "minSystemVersion": "2025.4.0" },
+            { "systemNamespace": "foo.erp" },
+            { "systemNamespace": "foo.erponprem" }
           ]
         }
       ]
@@ -209,7 +209,7 @@ An integration dependency can identify target system types without naming any pa
 }
 ```
 
-This dependency MUST have `sap.billing` AND MUST have one of `sap.s4pce` OR `sap.s4` OR `sap.s4op`.
-If `sap.s4pce` fulfills the second aspect, its system version MUST be at least `2025.4.0`.
+This dependency MUST have `foo.bar` AND MUST have one of `foo.erpcloud` OR `foo.erp` OR `foo.erponprem`.
+If `foo.erpcloud` fulfills the second aspect, its system version MUST be at least `2025.4.0`.
 Additional API-resource, event-resource or capability aspects can be added to the same `aspects` array when the dependency also needs more detailed contracts.
 Those mandatory aspects are complementary and must also be fulfilled.

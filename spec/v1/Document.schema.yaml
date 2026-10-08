@@ -3901,22 +3901,6 @@ definitions:
           If true, the references resources can be provided by multiple system instances.
           If not, only one integration target is supported.
 
-      systemTypes:
-        type: array
-        x-introduced-in-version: "1.17.0"
-        description: |-
-          List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).
-
-          Each entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.
-          Use separate aspects when multiple system types are required (AND condition).
-          System-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency.
-        items:
-          $ref: "#/definitions/SystemTypeIntegrationAspect"
-        minItems: 1
-        uniqueItems: true
-        examples:
-          - [{ systemNamespace: "sap.billing" }]
-
       apiResources:
         type: array
         description: |-
@@ -3937,6 +3921,22 @@ definitions:
           List of Capability Dependencies.
         items:
           $ref: "#/definitions/CapabilityIntegrationAspect"
+
+      systemTypes:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).
+
+          Each entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.
+          Use separate aspects when multiple system types are required (AND condition).
+          System-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency.
+        items:
+          $ref: "#/definitions/SystemTypeIntegrationAspect"
+        minItems: 1
+        uniqueItems: true
+        examples:
+          - [{ systemNamespace: "foo.bar" }]
 
       labels:
         <<: *labels
@@ -4144,11 +4144,11 @@ definitions:
       systemNamespace:
         type: string
         description: |-
-          The [system namespace](../index.md#system-namespace) that identifies the required system type.
+          The [system namespace](../concepts/identifiers.md#system-namespace) that identifies the required system type.
         pattern: ^[a-z0-9]+(?:[.][a-z0-9]+){1}$
         maxLength: 32
         examples:
-          - "sap.s4"
+          - "foo.bar"
 
       minSystemVersion:
         <<: *minSystemVersion
