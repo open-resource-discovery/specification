@@ -1,18 +1,17 @@
 import Link from "@docusaurus/Link";
 import { useHistory, useLocation } from "@docusaurus/router";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import type React from "react";
 import { useEffect } from "react";
 
 /** Preserve incoming query strings and section links when a document moves. */
 export default function DocRedirect({
   to,
   defaultHash,
-  children,
+  label,
 }: {
   to: string;
   defaultHash: string;
-  children: React.ReactNode;
+  label: string;
 }) {
   const location = useLocation();
   const history = useHistory();
@@ -24,7 +23,7 @@ export default function DocRedirect({
 
   return (
     <p>
-      This page has moved. <Link to={target}>Continue to {children}.</Link>
+      This page has moved. <Link to={target}>Continue to {label}.</Link>
     </p>
   );
 }

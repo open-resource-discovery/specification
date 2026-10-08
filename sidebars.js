@@ -7,12 +7,14 @@ const sidebars = {
       type: "category",
       label: "ORD Specification",
       link: { type: "doc", id: "spec-v1/index" },
+      collapsible: false,
       collapsed: false,
       items: [
         {
           type: "category",
           label: "Concepts",
           link: { type: "doc", id: "spec-v1/concepts/index" },
+          collapsible: false,
           collapsed: false,
           items: [
             "spec-v1/concepts/identifiers",
@@ -30,6 +32,7 @@ const sidebars = {
           type: "category",
           label: "Interfaces and Schemas",
           link: { type: "doc", id: "spec-v1/interfaces/index" },
+          collapsible: false,
           collapsed: false,
           items: [
             {
@@ -48,11 +51,6 @@ const sidebars = {
               label: "ORD Overlay Interface",
             },
             "spec-v1/interfaces/document-api",
-            {
-              type: "link",
-              label: "Schema Explorer",
-              href: "https://open-resource-discovery.org/tools/schema-viewer/index.html?schema=Document",
-            },
           ],
         },
       ],
@@ -62,6 +60,7 @@ const sidebars = {
       label: "Guides",
       className: "sidebar-guides",
       link: { type: "doc", id: "spec-v1/guides/index" },
+      collapsible: false,
       collapsed: false,
       items: [
         {
