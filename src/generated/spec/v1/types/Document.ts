@@ -3713,7 +3713,7 @@ export interface Aspect {
    * MUST NOT exceed 255 chars.
    * MUST NOT contain line breaks.
    */
-  title: string;
+  title?: string;
   /**
    * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *

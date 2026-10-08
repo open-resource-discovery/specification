@@ -122,7 +122,6 @@ spec:
         - name: 'title'
           type: 'string'
           description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
-          mandatory: !!bool 'true'
           constraints:
             minLength: !!int '1'
             maxLength: !!int '255'

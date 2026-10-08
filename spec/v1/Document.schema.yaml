@@ -3926,7 +3926,6 @@ definitions:
 
     additionalProperties: false
     required:
-      - title # TODO: Do we need a mandatory title?
       - mandatory
 
   ############################################################################################################
