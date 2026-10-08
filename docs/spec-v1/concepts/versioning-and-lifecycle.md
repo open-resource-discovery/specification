@@ -34,7 +34,7 @@ The `version` field MUST follow [Semantic Versioning 2.0.0](https://semver.org/)
 | Major (`x.0.0`) | `2.0.0` | Breaking changes that may require existing consumers to adapt |
 
 The `version` SHOULD be updated whenever the resource definition changes in a way that is relevant to consumers.
-If runtime customizations or extensions lead to a changed resource definition, a build metadata suffix SHOULD be appended, for example `1.2.3+build.42`.
+If runtime customizations or extensions lead to a changed resource definition, a build metadata suffix MAY be appended, for example `1.2.3+build.42`.
 
 If the resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
 If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
