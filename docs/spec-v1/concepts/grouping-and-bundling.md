@@ -42,7 +42,7 @@ Some of them have a specific intended usage, while others offer the application 
 
 ### Namespaces
 
-While ORD IDs contain [namespaces](../index.md#namespaces) that can include optional [sub-context namespaces](../index.md#sub-context-namespace), these should NOT be used for grouping purposes. Changing sub-context namespaces creates incompatible changes by altering ORD IDs. Use [groups](#groups) for grouping instead.
+While ORD IDs contain [namespaces](../index.md#namespaces) that can include optional [sub-context namespaces](./identifiers.md#sub-context-namespace), these should NOT be used for grouping purposes. Changing sub-context namespaces creates incompatible changes by altering ORD IDs. Use [groups](#groups) for grouping instead.
 
 Sub-context namespaces should only be used if they are expected to be stable and are necessary to ensure conflict-free ORD IDs. A valid use case is enabling sub-teams to work independently with isolated, conflict-free sub-namespaces.
 

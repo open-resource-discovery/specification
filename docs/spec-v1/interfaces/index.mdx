@@ -1,33 +1,96 @@
 ---
+title: Interfaces and Schemas
 sidebar_position: 0
 hide_table_of_contents: true
 ---
 
-# ORD Interfaces
+import Link from "@docusaurus/Link";
 
-In this section you will find the technical ORD interfaces.
+# Interfaces and Schemas
 
-They are available as human readable documentation and also as machine-readable metadata.
+ORD defines a small set of complementary interfaces for discovering and exchanging metadata.
+The human-readable reference pages explain their fields, while the JSON Schemas and OpenAPI definition provide machine-readable contracts for implementation and validation.
 
-Additionally, the ORD spec is also published as a NPM package, which includes both the JSON Schema interfaces and generated TypeScript definitions.
+For pull transport, an ORD consumer first reads the [ORD Configuration](/spec-v1/interfaces/Configuration), which points to one or more [ORD Documents](/spec-v1/interfaces/Document) and describes how they can be retrieved.
+ORD Documents carry the actual resource and taxonomy metadata.
+[ORD Overlays](/spec-v1/interfaces/OrdOverlay) can optionally enrich supported metadata or referenced resource definitions without changing the original source files.
 
-## ORD Version 1
+## Interface Overview
 
-- [ORD Document](../index.md#ord-document)
-  - [Human readable documentation](Document.md)
-  - [JSON Schema](https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json)
-  - [TypeScript Interfaces](https://open-resource-discovery.org/spec-v1/interfaces/Document.ts.txt)
-  - [CSV file](https://open-resource-discovery.org/spec-v1/interfaces/Document.csv "Document.csv"), [Excel file](https://open-resource-discovery.org/spec-v1/interfaces/Document.xlsx "Document.xlsx")
-- [ORD Configuration](../index.md#ord-configuration-endpoint)
-  - [Human readable documentation](Configuration.md)
-  - [JSON Schema](https://open-resource-discovery.org/spec-v1/interfaces/Configuration.schema.json)
-  - [TypeScript Interfaces](https://open-resource-discovery.org/spec-v1/interfaces/Configuration.ts.txt)
-  - [CSV file](https://open-resource-discovery.org/spec-v1/interfaces/Configuration.csv "Configuration.csv"), [Excel file](https://open-resource-discovery.org/spec-v1/interfaces/Configuration.xlsx "Configuration.xlsx")
-- [ORD Document Endpoint](../index.md#ord-document-endpoint) and [ORD Configuration Endpoint](../index.md#ord-configuration-endpoint)
-  - [OpenAPI 3 Definition](./document-api.mdx)
+<div className="ord-diagram ord-spec-map ord-interface-overview">
+  <section className="ord-spec-map__section ord-spec-map__section--publication">
+    <span className="ord-spec-map__label">01 · Discovery</span>
+    <h3 className="ord-spec-map__title"><Link to="/spec-v1/interfaces/Configuration">ORD Configuration</Link></h3>
+    <p>The discovery entry point for pull transport.</p>
+    <p>It advertises available ORD Documents, their perspectives and access strategies, and optional provider capabilities.</p>
+    <div className="ord-spec-map__links">
+      <Link to="/spec-v1/interfaces/Configuration">Reference</Link>
+      <a href="./Configuration.schema.json">JSON Schema</a>
+      <a href="./Configuration.ts.txt">TypeScript</a>
+      <a href="./Configuration.csv">CSV</a>
+      <a href="./Configuration.xlsx">Excel</a>
+    </div>
+  </section>
 
+  <section className="ord-spec-map__section ord-spec-map__section--publication">
+    <span className="ord-spec-map__label">02 · Metadata</span>
+    <h3 className="ord-spec-map__title"><Link to="/spec-v1/interfaces/Document">ORD Document</Link></h3>
+    <p>The main metadata payload exchanged between ORD providers and consumers.</p>
+    <p>It describes resources, taxonomy, relationships, lifecycle information, visibility, and the represented system perspective.</p>
+    <div className="ord-spec-map__links">
+      <Link to="/spec-v1/interfaces/Document">Reference</Link>
+      <a href="./Document.schema.json">JSON Schema</a>
+      <a href="./Document.ts.txt">TypeScript</a>
+      <a href="./Document.csv">CSV</a>
+      <a href="./Document.xlsx">Excel</a>
+    </div>
+  </section>
 
-import DocCardList from '@theme/DocCardList'
+  <section className="ord-spec-map__section ord-spec-map__section--publication">
+    <span className="ord-spec-map__label">03 · Enrichment</span>
+    <h3 className="ord-spec-map__title"><Link to="/spec-v1/interfaces/OrdOverlay">ORD Overlay <small>(beta)</small></Link></h3>
+    <p>An optional extension for applying targeted metadata patches without modifying the original artifact.</p>
+    <p>It can enrich ORD resources and supported resource definition formats such as OpenAPI, AsyncAPI, OData, MCP, and A2A.</p>
+    <div className="ord-spec-map__links">
+      <Link to="/spec-v1/interfaces/OrdOverlay">Reference</Link>
+      <a href="./OrdOverlay.schema.json">JSON Schema</a>
+    </div>
+  </section>
 
-<br />
-<DocCardList />
+  <section className="ord-spec-map__section ord-spec-map__section--publication">
+    <span className="ord-spec-map__label">04 · HTTP Contract</span>
+    <h3 className="ord-spec-map__title"><Link to="/spec-v1/interfaces/document-api">ORD Document API</Link></h3>
+    <p>The HTTP interface for retrieving ORD Configuration and ORD Documents through pull transport.</p>
+    <p>The OpenAPI definition complements the payload schemas with endpoint, parameter, response, and media-type details.</p>
+    <div className="ord-spec-map__links">
+      <Link to="/spec-v1/interfaces/document-api">Reference</Link>
+      <a href="./DocumentAPI.oas3.yaml">OpenAPI definition</a>
+    </div>
+  </section>
+</div>
+
+## Explore and Consume the Interfaces
+
+Use the interactive explorer for visual inspection, or add the published package as an implementation dependency.
+
+<div className="ord-diagram ord-spec-map ord-interface-overview">
+  <section className="ord-spec-map__section ord-spec-map__section--publication">
+    <span className="ord-spec-map__label">Interactive Browser</span>
+    <h3 className="ord-spec-map__title"><a href="../../tools/schema-viewer/index.html?schema=Document">Schema Explorer</a></h3>
+    <p>Browse the ORD Document, Configuration, and Overlay schemas interactively.</p>
+    <p>Navigate nested types, inspect constraints, and understand how schema definitions relate without reading the raw JSON Schema.</p>
+    <div className="ord-spec-map__links">
+      <a href="../../tools/schema-viewer/index.html?schema=Document">Open Schema Explorer</a>
+    </div>
+  </section>
+
+  <section className="ord-spec-map__section ord-spec-map__section--publication">
+    <span className="ord-spec-map__label">Implementation Package</span>
+    <h3 className="ord-spec-map__title"><a href="https://www.npmjs.com/package/@open-resource-discovery/specification">NPM Package</a></h3>
+    <p>The <code>@open-resource-discovery/specification</code> package bundles the published JSON Schemas and generated TypeScript types.</p>
+    <p>Implementations can add it as a dependency to validate ORD payloads and use the interfaces directly without copying generated files.</p>
+    <div className="ord-spec-map__links">
+      <a href="https://www.npmjs.com/package/@open-resource-discovery/specification">View package on NPM</a>
+    </div>
+  </section>
+</div>

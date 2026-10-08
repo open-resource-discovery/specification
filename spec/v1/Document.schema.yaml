@@ -198,7 +198,7 @@ properties:
       - type: string
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         description: |-
-          Any valid [Specification ID](../index.md#specification-id).
+          Any valid [Specification ID](../concepts/identifiers.md#specification-id).
       - const: "none"
         description: |-
           No policy level chosen. Only the base rules on how to create correct ORD documents apply.
@@ -223,7 +223,7 @@ properties:
       The policy level is inherited from packages to resources they contain, but can be overwritten at resource level.
 
       MUST only be provided if `policyLevel` is set to `custom`.
-      MUST be a valid [Specification ID](../index.md#specification-id).
+      MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
     pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
     maxLength: 255
     x-introduced-in-version: "1.3.0"
@@ -240,7 +240,7 @@ properties:
 
       Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
 
-      A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+      A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
     x-introduced-in-version: "1.9.9"
     items:
       type: string
@@ -402,7 +402,7 @@ definitions:
         description: |-
           The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
 
-          It MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type.
+          It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
         maxLength: 255
         examples:
@@ -431,7 +431,7 @@ definitions:
 
           If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
 
-          MUST be a valid [Correlation ID](../index.md#correlation-id).
+          MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
         items: &correlationId
           type: string
           pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
@@ -487,7 +487,7 @@ definitions:
           It SHOULD be changed if the ORD information or referenced resource definitions changed.
           It SHOULD express minor and patch changes that don't lead to incompatible changes.
 
-          When the `version` major version changes, the [ORD ID](../index.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
+          When the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.
           If a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
           If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
 
@@ -704,7 +704,7 @@ definitions:
         description: |-
           If provided, all resources that are part of this Package can only run on the listed runtime.
 
-          MUST be a valid [system namespace](../index.md#system-namespace).
+          MUST be a valid [system namespace](../concepts/identifiers.md#system-namespace).
         type: string
         pattern: ^[a-z0-9]+(?:[.][a-z0-9]+){1}$
         examples:
@@ -1126,7 +1126,7 @@ definitions:
           Abstract resources define contracts that other resources can declare compatibility with through the `compatibleWith` property.
           Abstract resources can be system-owned, authority-owned or system-independent, depending on who governs the interface contract.
 
-          More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+          More details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).
           See also [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources#abstract-resources-and-compatiblewith) for how abstract contracts relate to shared ORD IDs.
       visibility:
         <<: *visibility
@@ -1141,7 +1141,7 @@ definitions:
 
           Note: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.
 
-          See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/compatibility.md) for more details.
+          See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
         oneOf:
           - const: development
             x-introduced-in-version: "1.14.2"
@@ -1348,45 +1348,45 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: odata-v2
             description: |-
               [OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.
               An API Resource definition of type `edmx` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: odata-v4
             description: |-
               [OData Version 4](https://www.odata.org/documentation/) API.
               An OData V4 API MUST be described via a Common Schema Definition Language (CSDL).
               An API Resource definition of type `edmx` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: rest
             description: |-
               Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.
               Please not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.
               An API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: graphql
             description: |-
               [GraphQL](https://graphql.org/) API.
               An API Resource definition of type `graphql-sdl` SHOULD be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `graphql-sdl`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `graphql-sdl`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: delta-sharing
             x-introduced-in-version: "1.8.0"
             description: |-
               [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) Protocol, where one API Resource corresponds to a share.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
               For delta-sharing APIs the resource definition MAY be omitted, as the protocol itself allows for metadata discovery at runtime.
           - const: soap-inbound
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.
               An API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../index.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: soap-outbound
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides/describes outbound interfaces for async communication.
               An API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../index.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: mcp
             description: |-
               [MCP](https://modelcontextprotocol.io) is an open protocol that standardizes how applications provide context to LLMs, based on JSON-RPC message format.
@@ -1397,7 +1397,7 @@ definitions:
             description: |-
               Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.
               Since WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.
-              The API Resource definitions `type` MUST ONLY be set to `custom` or any valid [Specification ID](../index.md#specification-id).
+              The API Resource definitions `type` MUST ONLY be set to `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: a2a
             x-introduced-in-version: "1.12.2"
             description: |-
@@ -1410,13 +1410,13 @@ definitions:
               [SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html) (Remote Function Call)  is the standard SAP interface for communication between SAP systems.
               RFC calls a function to be executed in a remote system.
               An API Resource definition of type `sap-rfc-metadata-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: sap-sql-api-v1
             x-introduced-in-version: "1.9.2"
             description: |-
               SAP SQL API that follows the [SQL interface specification for SAP ecosystem](https://github.com/SAP/sql-interface-specification).
               An API Resource definition of type `sap-sql-api-definition-v1` SHOULD be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-sql-api-definition-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../index.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `sap-sql-api-definition-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: sap-ina-api-v1
             x-introduced-in-version: "1.8.0"
             description: |-
@@ -1462,7 +1462,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
               If chosen, `customImplementationStandardDescription` SHOULD be provided.
           - const: cff:open-service-broker:v2
             description: |-
@@ -1480,7 +1480,7 @@ definitions:
         description: |-
           If the fixed `implementationStandard` values need to be extended, an arbitrary `customImplementationStandard` can be provided.
 
-          MUST be a valid [Specification ID](../index.md#specification-id).
+          MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
 
           MUST only be provided if `implementationStandard` is set to `custom`.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -1517,7 +1517,7 @@ definitions:
 
           All APIs that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
 
-          More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+          More details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).
         items:
           $ref: "#/definitions/ApiCompatibility"
         examples:
@@ -1565,7 +1565,7 @@ definitions:
             - type: string
               pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
               description: |-
-                Any valid [Specification ID](../index.md#specification-id).
+                Any valid [Specification ID](../concepts/identifiers.md#specification-id).
             - const: data-federation
               description: |-
                 Resources are designed to support [data federation](https://en.wikipedia.org/wiki/Federated_database_system). This goes beyond plain queries, but typically allowing connections on the data base level, in the context of a business user.
@@ -1886,13 +1886,13 @@ definitions:
             x-association-target:
             - "#/definitions/ApiResource/ordId"
             description: |-
-              Any valid [API Resource ORD ID](../index.md#ord-id).
+              Any valid [API Resource ORD ID](../concepts/identifiers.md#ord-id).
 
               RECOMMENDED to use if the contract is published via ORD and has an ORD ID.
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
               If chosen, `customImplementationStandardDescription` SHOULD be provided.
           - const: custom
             # TODO: Deprecate this?
@@ -1924,7 +1924,7 @@ definitions:
 
           All events that share the same `compatibleWith` value MAY be treated the same or similar by a consumer client.
 
-          More details can be found on the [Compatibility](../concepts/compatibility) concept page.
+          More details can be found in [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility).
         items:
           $ref: "#/definitions/EventCompatibility"
         examples:
@@ -2257,14 +2257,14 @@ definitions:
           Type of the entity type resource definition.
 
           MUST be either:
-          - any valid [Specification ID](../index.md#specification-id), or
+          - any valid [Specification ID](../concepts/identifiers.md#specification-id), or
           - one of the pre-defined values listed below.
         type: string
         anyOf:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: sap-csn-interop-effective-v1
             description: |-
               [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.
@@ -2571,7 +2571,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: business-object
             description: |-
               Business Objects: master data, transaction data
@@ -2793,7 +2793,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: openapi-v2
             description: |-
               [OpenAPI 2 / Swagger 2](https://spec.openapis.org/oas/v2.0.html) API Definition for [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) APIs.
@@ -2880,7 +2880,7 @@ definitions:
         description: |-
           If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
 
-          MUST be a valid [Specification ID](../index.md#specification-id).
+          MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
 
           MUST only be provided if `type` is set to `custom`.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
@@ -2957,14 +2957,14 @@ definitions:
           Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
           key for entries in the definitions list.
 
-          MUST be a valid [Concept ID](../index.md#concept-id). The `ord:` namespace is reserved for
+          MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
           values standardized by the ORD specification itself; custom values MUST use a vendor- or
           product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
         anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
-              Any valid [Concept ID](../index.md#concept-id).
+              Any valid [Concept ID](../concepts/identifiers.md#concept-id).
           - const: ord:ai-enrichment
             description: |-
               The definition is enriched with additional metadata specifically for AI/agent consumption.
@@ -3003,7 +3003,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: asyncapi-v2
             description: |-
               [AsyncAPI 2](https://www.asyncapi.com/docs/reference/specification/v2.0.0) API definition for events.
@@ -3373,7 +3373,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
         examples:
           - "ord:overlay:v1"
 
@@ -3515,7 +3515,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: "sap.mdo:mdi-capability:v1"
             description: |-
               Capability for SAP Master Data Integration (MDI).
@@ -3676,7 +3676,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: "sap.mdo:mdi-capability-definition:v1"
             description: |-
               Specification for describing master data integration capabilities for Master Data Orchestration (MDO).
@@ -4008,14 +4008,14 @@ definitions:
       systemTypeRestriction:
         type: array
         description: |-
-          In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../index.md#system-namespace).
+          In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../concepts/identifiers.md#system-namespace).
 
           If given, only system types of the defined namespaces are supported as integration partners.
           If not given, there is no restriction which system type provides the events.
         items:
           type: string
           description: |
-            Valid [system namespace](../index.md#system-namespace).
+            Valid [system namespace](../concepts/identifiers.md#system-namespace).
           pattern: ^[a-z0-9]+(?:[.][a-z0-9]+){1}$
         minItems: 1
         examples:
@@ -4130,7 +4130,7 @@ definitions:
 
       If ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.
 
-      Both have already a [vendor namespace](../index.md#vendor-namespace) within their ORD ID.
+      Both have already a [vendor namespace](../concepts/identifiers.md#vendor-namespace) within their ORD ID.
       The `Vendor` entity is giving more details on the vendor namespace.
       For one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.
 
@@ -4356,7 +4356,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: terms-of-service
             description: |-
               Link to human-readable terms of service / use documentation.
@@ -4426,7 +4426,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: api-documentation
             description: |-
               Link to human-readable documentation describing the API or event resource in more detail.
@@ -4497,7 +4497,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: payment
             description: |-
               Links to a resource detailing pricing details of the data product.
@@ -4615,7 +4615,7 @@ definitions:
       systemNamespace:
         type: string
         description: |-
-          The [system namespace](../index.md#system-namespace) is a unique identifier for the system type.
+          The [system namespace](../concepts/identifiers.md#system-namespace) is a unique identifier for the system type.
           It is used to reference the system type in the ORD.
         pattern: ^[a-z0-9]+(?:[.][a-z0-9]+){1}$
         maxLength: 32
@@ -4704,7 +4704,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
               If chosen, `customDescription` SHOULD be provided.
           - const: open
             description: |-
@@ -4773,7 +4773,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
               If chosen, `customDescription` SHOULD be provided.
           - const: custom
             # TODO: Deprecate this?
@@ -4838,7 +4838,7 @@ definitions:
       * Values of the same label key will be merged.
       * Duplicate values of the same label key will be removed.
 
-      **RECOMMENDATION**: Use a [Concept ID](../index.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
+      **RECOMMENDATION**: Use a [Concept ID](../concepts/identifiers.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
       The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
     x-ums-type: "custom"
     patternProperties:
@@ -5130,8 +5130,8 @@ definitions:
       For the various resource definition formats the selection of API models may need to be expressed differently.
       As a consequence, there are different types of selectors that are specialized toward certain resource definition formats.
 
-      The target of the mapping is a correlation to an entity type via a [Correlation ID](../index.md#correlation-id)
-      or to an [ORD ID](../index.md#ord-id) of an entity type.
+      The target of the mapping is a correlation to an entity type via a [Correlation ID](../concepts/identifiers.md#correlation-id)
+      or to an [ORD ID](../concepts/identifiers.md#ord-id) of an entity type.
       It is assumed that the entity types are described in more detail or on a different abstraction level via metadata.
       When the correlation ID is used, an ORD consumer may need to know how to access the entity type metadata through conventions.
       This can be determined either by the namespace of the correlation ID,
@@ -5169,7 +5169,7 @@ definitions:
           If multiple entity types are defined as the mapping target,
           all of them can be at least partially mapped to the source API model(s).
 
-          Entity types can be referenced using either using an [ORD ID](../index.md#ord-id) or a [Correlation ID](../index.md#correlation-id).
+          Entity types can be referenced using either using an [ORD ID](../concepts/identifiers.md#ord-id) or a [Correlation ID](../concepts/identifiers.md#correlation-id).
         items:
           anyOf:
             - $ref: "#/definitions/EntityTypeOrdIdTarget"
@@ -5400,7 +5400,7 @@ definitions:
     description: |-
       Define which entity type is the target of an entity type mapping
 
-      Entity types can be referenced using a [ORD ID](../index.md#ord-id) of an entity type.
+      Entity types can be referenced using a [ORD ID](../concepts/identifiers.md#ord-id) of an entity type.
     properties:
       ordId:
         <<: *ordId
@@ -5423,7 +5423,7 @@ definitions:
     description: |-
       Define which entity type is the target of an entity type mapping
 
-      Entity types can be referenced using a [Correlation ID](../index.md#correlation-id).
+      Entity types can be referenced using a [Correlation ID](../concepts/identifiers.md#correlation-id).
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
     x-deprecation-text: |-
@@ -5470,14 +5470,14 @@ definitions:
 
           If not provided, the relationship type has no semantics, it's "related somehow".
 
-          MUST be a valid [Concept ID](../index.md#concept-id).
+          MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id).
         x-introduced-in-version: "1.12.0"
         x-feature-status: beta
         anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
-              Any valid [Concept ID](../index.md#concept-id).
+              Any valid [Concept ID](../concepts/identifiers.md#concept-id).
           - const: part-of
             description: |-
               The described entity type is a composite part of the referenced entity type.
@@ -5520,7 +5520,7 @@ definitions:
       relationType:
         type: string
         description: |-
-          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+          Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
 
           Defines the semantic meaning of the relationship.
           If not provided, the relationship has no specific semantics ("related somehow").
@@ -5528,7 +5528,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
-              Any valid [Concept ID](../index.md#concept-id).
+              Any valid [Concept ID](../concepts/identifiers.md#concept-id).
           - const: "ord:patches"
             x-introduced-in-version: "1.15.0"
             description: |-
@@ -5566,7 +5566,7 @@ definitions:
       relationType:
         type: string
         description: |-
-          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+          Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
 
           Defines the semantic meaning of the relationship.
           If not provided, the relationship has no specific semantics ("related somehow").
@@ -5574,7 +5574,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
-              Any valid [Concept ID](../index.md#concept-id).
+              Any valid [Concept ID](../concepts/identifiers.md#concept-id).
           - const: "ord:patches"
             x-introduced-in-version: "1.15.0"
             description: |-
@@ -5612,7 +5612,7 @@ definitions:
       relationType:
         type: string
         description: |-
-          Optional type of the relationship as a [Concept ID](../index.md#concept-id).
+          Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
 
           Defines the semantic meaning of the relationship.
           If not provided, the relationship has no specific semantics ("related somehow").
@@ -5620,7 +5620,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
-              Any valid [Concept ID](../index.md#concept-id).
+              Any valid [Concept ID](../concepts/identifiers.md#concept-id).
         examples:
           - "foo.bar:relationName"
     required:
@@ -5679,7 +5679,7 @@ definitions:
           - "#/definitions/DataProduct/ordId"
           - "#/definitions/Agent/ordId"
         description: |-
-          [ORD ID](../index.md#ord-id) of the ORD resource/taxonomy that has been removed.
+          [ORD ID](../concepts/identifiers.md#ord-id) of the ORD resource/taxonomy that has been removed.
       groupId:
         <<: *groupId
         x-association-target:

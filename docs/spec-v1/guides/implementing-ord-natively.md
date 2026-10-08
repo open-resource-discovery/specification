@@ -80,7 +80,7 @@ For a production implementation, still consider:
 - validation of ORD documents and referenced resource definitions during build or startup
 - [`ETag` support](../index.md#ord-provider-cache-handling), so aggregators can efficiently detect unchanged metadata
 - access protection, if the metadata is not public
-- using the correct static [perspective](./perspectives.md), usually `system-version` or `system-type`
+- using the correct static [perspective](../concepts/perspectives.md), usually `system-version` or `system-type`
 
 A static implementation is a good starting point because it proves the transport and schema model.
 Most real applications, however, need to generate at least part of the response from application metadata.
@@ -115,7 +115,7 @@ Global-Tenant-Id: c6c80b52-ecc1-47f8-9303-0d55fb67fd41
 
 Static and dynamic perspectives can be served by different implementations, for example, a static ORD Provider for the baseline and application code for the `system-instance` endpoint, as long as both use the same ORD IDs for the same resources.
 
-See [Perspectives](./perspectives.md) and [Correct Use of Perspectives](../index.md#correct-use-of-perspectives) for the detailed semantics and aggregator fallback behavior.
+See [Perspectives](../concepts/perspectives.md) and [Correct Use of Perspectives](../index.md#correct-use-of-perspectives) for the detailed semantics and aggregator fallback behavior.
 The next section shows one way to implement this in code.
 
 ## Implementing Tenant-Aware ORD

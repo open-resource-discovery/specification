@@ -1,3 +1,4 @@
+import Link from "@docusaurus/Link";
 import unifiedMetadata from "../../../diagrams/unified-metadata.json";
 
 const consumers = [
@@ -369,8 +370,8 @@ export function SpecificationMap() {
       description:
         "Use shared identity, lifecycle, and protocol conventions across resources.",
       links: [
-        ["ID concepts", "#id-concepts"],
-        ["Version and lifecycle", "#version-and-lifecycle"],
+        ["ID concepts", "/spec-v1/concepts/identifiers"],
+        ["Version and lifecycle", "/spec-v1/concepts/versioning-and-lifecycle"],
         ["REST characteristics", "#common-rest-characteristics"],
         ["Terminology", "#terminology"],
       ],
@@ -393,9 +394,9 @@ export function SpecificationMap() {
           <p>{description}</p>
           <div className="ord-spec-map__links">
             {links.map(([title, href]) => (
-              <a href={href} key={href}>
+              <Link to={href} key={href}>
                 {title}
-              </a>
+              </Link>
             ))}
           </div>
         </section>
@@ -498,6 +499,164 @@ export function DataModelDiagram() {
         <span>
           Stable IDs, lifecycle, visibility, definitions, and relationships
           connect the three parts.
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
+
+const taxonomyScopes = [
+  {
+    category: "Resources and capabilities",
+    description: "Descriptions of what a system exposes or requires",
+    items: [
+      [
+        "API Resource",
+        "/spec-v1/interfaces/Document#api-resource",
+        "yes",
+        "abstract",
+        "no",
+      ],
+      [
+        "Event Resource",
+        "/spec-v1/interfaces/Document#event-resource",
+        "yes",
+        "abstract",
+        "no",
+      ],
+      [
+        "Capability",
+        "/spec-v1/interfaces/Document#capability",
+        "yes",
+        "no",
+        "no",
+      ],
+      [
+        "Data Product",
+        "/spec-v1/concepts/data-product",
+        "yes",
+        "abstract",
+        "no",
+      ],
+      [
+        "Integration Dependency",
+        "/spec-v1/concepts/integration-dependency",
+        "yes",
+        "no",
+        "no",
+      ],
+    ],
+  },
+  {
+    category: "Taxonomy",
+    description: "Structure and shared meaning around those descriptions",
+    items: [
+      [
+        "Entity Type",
+        "/spec-v1/concepts/grouping-and-bundling#entity-type",
+        "yes",
+        "yes",
+        "no",
+      ],
+      ["Vendor", "/spec-v1/interfaces/Document#vendor", "no", "yes", "yes"],
+      [
+        "Product",
+        "/spec-v1/concepts/grouping-and-bundling#product",
+        "no",
+        "yes",
+        "yes",
+      ],
+      [
+        "Package",
+        "/spec-v1/concepts/grouping-and-bundling#package",
+        "no",
+        "yes",
+        "no",
+      ],
+      [
+        "Consumption Bundle",
+        "/spec-v1/concepts/grouping-and-bundling#consumption-bundle",
+        "no",
+        "yes",
+        "no",
+      ],
+      [
+        "Group / Group Type",
+        "/spec-v1/concepts/grouping-and-bundling#groups",
+        "yes",
+        "yes",
+        "no",
+      ],
+    ],
+  },
+] as const;
+
+const taxonomyScopeLabels = {
+  yes: "Yes",
+  no: "No",
+  abstract: "Abstract",
+} as const;
+
+export function TaxonomyScopeDiagram() {
+  return (
+    <figure
+      className="ord-diagram ord-taxonomy-scope"
+      aria-label="Comparison of where ORD resources and taxonomy can be published"
+    >
+      <div className="ord-taxonomy-scope__grid">
+        {taxonomyScopes.map(({ category, description, items }) => (
+          <section key={category}>
+            <header>
+              <strong>{category}</strong>
+              <span>{description}</span>
+            </header>
+            <table
+              className="ord-taxonomy-scope__matrix"
+              aria-label={`${category} publication scope`}
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Concept</th>
+                  <th scope="col">Dynamic</th>
+                  <th scope="col">Global</th>
+                  <th scope="col">Always</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map(([name, href, dynamic, global, always]) => (
+                  <tr key={name}>
+                    <th scope="row">
+                      <Link to={href}>{name}</Link>
+                    </th>
+                    {[
+                      ["dynamic", dynamic],
+                      ["global", global],
+                      ["always", always],
+                    ].map(([dimension, status]) => (
+                      <td key={`${name}-${dimension}`}>
+                        <span
+                          className={`ord-taxonomy-scope__status ord-taxonomy-scope__status--${status}`}
+                        >
+                          {taxonomyScopeLabels[status]}
+                        </span>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        ))}
+      </div>
+      <figcaption>
+        <span>
+          <b>Dynamic</b> can differ by system instance.
+        </span>
+        <span>
+          <b>Global</b> can use the system-independent perspective.
+        </span>
+        <span>
+          <b>Abstract</b> is a non-consumable shared contract.
         </span>
       </figcaption>
     </figure>
@@ -943,6 +1102,90 @@ export function OrdIdDiagram() {
   );
 }
 
+type CompactIdFragment = {
+  label: string;
+  value: string;
+  tone: "namespace" | "concept" | "identifier" | "major";
+};
+
+function CompactIdConstructionDiagram({
+  ariaLabel,
+  fragments,
+}: {
+  ariaLabel: string;
+  fragments: CompactIdFragment[];
+}) {
+  return (
+    <figure className="ord-diagram ord-id-construction" aria-label={ariaLabel}>
+      <div className="ord-id-pattern">
+        {fragments.map((fragment, index) => (
+          <div className="ord-id-segment" key={fragment.label}>
+            {index > 0 && <i>:</i>}
+            <span className={fragment.tone}>{fragment.label}</span>
+          </div>
+        ))}
+      </div>
+      <div className="ord-id-example">
+        <span>Example</span>
+        <code>
+          {fragments.map((fragment, index) => (
+            <span className="ord-id-example-segment" key={fragment.label}>
+              {index > 0 && ":"}
+              <b className={fragment.tone}>{fragment.value}</b>
+            </span>
+          ))}
+        </code>
+      </div>
+    </figure>
+  );
+}
+
+export function CorrelationIdDiagram() {
+  return (
+    <CompactIdConstructionDiagram
+      ariaLabel="Construction of a Correlation ID"
+      fragments={[
+        { label: "namespace", value: "foo.crm", tone: "namespace" },
+        { label: "conceptName", value: "customer", tone: "concept" },
+        {
+          label: "localIdentifier",
+          value: "4711",
+          tone: "identifier",
+        },
+      ]}
+    />
+  );
+}
+
+export function ConceptIdDiagram() {
+  return (
+    <CompactIdConstructionDiagram
+      ariaLabel="Construction of a Concept ID"
+      fragments={[
+        { label: "namespace", value: "foo", tone: "namespace" },
+        { label: "conceptName", value: "process", tone: "concept" },
+      ]}
+    />
+  );
+}
+
+export function SpecificationIdDiagram() {
+  return (
+    <CompactIdConstructionDiagram
+      ariaLabel="Construction of a Specification ID"
+      fragments={[
+        { label: "namespace", value: "ord", tone: "namespace" },
+        {
+          label: "specificationIdentifier",
+          value: "overlay",
+          tone: "identifier",
+        },
+        { label: "v<major>", value: "v1", tone: "major" },
+      ]}
+    />
+  );
+}
+
 export function IdentifierTypesDiagram() {
   const identifiers = [
     [
@@ -970,6 +1213,18 @@ export function IdentifierTypesDiagram() {
       ],
     ],
     [
+      "grouping",
+      "Custom taxonomy",
+      "Group and Group Type IDs",
+      "Which taxonomy and group classify this resource?",
+      "foo:process:foo:orderToCash",
+      [
+        "A Group Type ID is a Concept ID",
+        "A Group ID combines two Concept IDs",
+        "Used by partOfGroups",
+      ],
+    ],
+    [
       "specification",
       "Shared behavior",
       "Specification ID",
@@ -977,7 +1232,7 @@ export function IdentifierTypesDiagram() {
       "ord:overlay:v1",
       [
         "Names a standard or strategy",
-        "Used by extensible fields",
+        "The ord namespace marks ORD-owned specifications",
         "Major version marks incompatible specifications",
       ],
     ],
@@ -985,7 +1240,7 @@ export function IdentifierTypesDiagram() {
   return (
     <figure
       className="ord-diagram ord-identifier-types"
-      aria-label="Comparison of ORD IDs, correlation IDs, and specification IDs"
+      aria-label="Comparison of ORD identifier categories"
     >
       <div className="ord-identifier-grid">
         {identifiers.map(
@@ -1009,13 +1264,6 @@ export function IdentifierTypesDiagram() {
           ),
         )}
       </div>
-      <figcaption>
-        <strong>Reference ORD IDs for content described by ORD.</strong>
-        <span>
-          Group Types use Concept IDs such as <code>foo:process</code>;{" "}
-          <code>ord:</code> identifies ORD-owned specifications.
-        </span>
-      </figcaption>
     </figure>
   );
 }

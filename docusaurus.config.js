@@ -111,6 +111,10 @@ const config = {
             to: "/spec-v1/interfaces/Document",
           },
           {
+            from: "/spec-v1/concepts/implementing-ord-natively",
+            to: "/spec-v1/guides/implementing-ord-natively",
+          },
+          {
             from: "/spec-extensions/models/OrdOverlay",
             to: "/spec-v1/interfaces/OrdOverlay",
           },
@@ -252,7 +256,7 @@ const config = {
                 to: "spec-v1/interfaces/OrdOverlay",
               },
               {
-                label: "ORD Detail Pages",
+                label: "Concepts",
                 to: "spec-v1/concepts",
               },
               {
@@ -312,10 +316,6 @@ const config = {
             label: "Help",
             to: "help/",
             items: [
-              {
-                label: "ORD Presentation",
-                href: "https://open-resource-discovery.github.io/presentation/",
-              },
               // {
               //   label: "Overview",
               //   to: "help/",
@@ -327,6 +327,14 @@ const config = {
               {
                 label: "FAQ",
                 to: "help/faq/",
+              },
+              {
+                label: "Guides",
+                to: "spec-v1/guides/",
+              },
+              {
+                label: "ORD Presentation",
+                href: "https://open-resource-discovery.github.io/presentation/",
               },
               {
                 label: "Ask AI (NotebookLM)",

@@ -65,7 +65,7 @@ Each system type that exposes or relies on them publishes the shared ORD informa
 ## Namespace Ownership
 
 The namespace in an ORD ID or Concept ID expresses ownership of the definition.
-Shared ORD information does not always require an [authority namespace](../index.md#authority-namespace), although that is often the best choice.
+Shared ORD information does not always require an [authority namespace](./identifiers.md#authority-namespace), although that is often the best choice.
 
 | Ownership model | When to use it | Example |
 | --- | --- | --- |
@@ -80,7 +80,7 @@ If neither system owns the contract and both implement or expose a contract gove
 
 ## Authority Namespaces
 
-An [authority namespace](../index.md#authority-namespace) represents an organizational unit responsible for cross-system alignment and governance.
+An [authority namespace](./identifiers.md#authority-namespace) represents an organizational unit responsible for cross-system alignment and governance.
 It is the recommended model when shared ORD information is not owned by one concrete system type.
 
 Authority namespaces are especially useful when:
@@ -104,9 +104,9 @@ The [Consumption Bundle](./grouping-and-bundling.md#consumption-bundle) can stil
 
 | Scenario | Namespace to use |
 | --- | --- |
-| Resource or taxonomy is specific to one system type | [System namespace](../index.md#system-namespace) |
-| Resource or taxonomy is owned by another system type and reused as defined | That other [system namespace](../index.md#system-namespace) |
-| Resource, dependency, package, group or access model is governed across system types | [Authority namespace](../index.md#authority-namespace) |
+| Resource or taxonomy is specific to one system type | [System namespace](./identifiers.md#system-namespace) |
+| Resource or taxonomy is owned by another system type and reused as defined | That other [system namespace](./identifiers.md#system-namespace) |
+| Resource, dependency, package, group or access model is governed across system types | [Authority namespace](./identifiers.md#authority-namespace) |
 | Product, Vendor or global taxonomy exists independently of system publication | Appropriate global namespace with `system-independent` perspective |
 
 ## Publisher Rules
@@ -241,7 +241,7 @@ Without a shared ORD ID, the same dependency would need to enumerate all system-
 
 ### Abstract Resources and compatibleWith
 
-Shared ORD information and [abstract resources with `compatibleWith`](./compatibility.md) address related but distinct scenarios:
+Shared ORD information and [abstract resources with `compatibleWith`](./versioning-and-lifecycle.md#compatibility) address related but distinct scenarios:
 
 - **Shared ORD ID:** Multiple publishers expose or reference the same governed definition. This is an identity relationship.
 - **`abstract: true` with `compatibleWith`:** A resource defines an interface-only contract. Other concrete resources declare that they implement or are compatible with that contract. This is a compatibility relationship.
