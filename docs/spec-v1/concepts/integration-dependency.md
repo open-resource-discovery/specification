@@ -19,6 +19,9 @@ Each requirement describes one aspect / ingredient and can be used to express al
 
 See also: [Integration Dependency interface](../interfaces/Document#integration-dependency).
 
+An aspect's `title` is optional display text. Consumers MUST handle its absence, for example by deriving a label from the referenced resources or system types.
+This does not change which requirements the aspect expresses or whether it is mandatory.
+
 ## Background
 
 In a distributed and technology-agnostic system landscape it is necessary to understand which integrations can (or have to) be set up.
