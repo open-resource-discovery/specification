@@ -46,6 +46,8 @@ Simple normalization (e.g. `v1.2` to `1.2.0`) is appropriate when the native sch
 The `version` MUST NOT be bumped for extension changes.
 See [Tracking Changes with `lastUpdate`](#tracking-changes-with-lastupdate) below.
 
+<span id="the-majorversion-in-the-ord-id" />
+
 ### The majorVersion Fragment in the ORD ID
 
 The `<majorVersion>` fragment in the [ORD ID](./identifiers.md#ord-id) (e.g. `v1`, `v2`) signals a breaking change in the API contract. It is part of the resource's permanent identity.

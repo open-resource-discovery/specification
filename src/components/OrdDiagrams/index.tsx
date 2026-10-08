@@ -1,3 +1,4 @@
+import Link from "@docusaurus/Link";
 import unifiedMetadata from "../../../diagrams/unified-metadata.json";
 
 const consumers = [
@@ -393,9 +394,9 @@ export function SpecificationMap() {
           <p>{description}</p>
           <div className="ord-spec-map__links">
             {links.map(([title, href]) => (
-              <a href={href} key={href}>
+              <Link to={href} key={href}>
                 {title}
-              </a>
+              </Link>
             ))}
           </div>
         </section>
@@ -509,23 +510,83 @@ const taxonomyScopes = [
     category: "Resources and capabilities",
     description: "Descriptions of what a system exposes or requires",
     items: [
-      ["API Resource", "/spec-v1/interfaces/Document#api-resource", "yes", "abstract", "no"],
-      ["Event Resource", "/spec-v1/interfaces/Document#event-resource", "yes", "abstract", "no"],
-      ["Capability", "/spec-v1/interfaces/Document#capability", "yes", "no", "no"],
-      ["Data Product", "/spec-v1/concepts/data-product", "yes", "abstract", "no"],
-      ["Integration Dependency", "/spec-v1/concepts/integration-dependency", "yes", "no", "no"],
+      [
+        "API Resource",
+        "/spec-v1/interfaces/Document#api-resource",
+        "yes",
+        "abstract",
+        "no",
+      ],
+      [
+        "Event Resource",
+        "/spec-v1/interfaces/Document#event-resource",
+        "yes",
+        "abstract",
+        "no",
+      ],
+      [
+        "Capability",
+        "/spec-v1/interfaces/Document#capability",
+        "yes",
+        "no",
+        "no",
+      ],
+      [
+        "Data Product",
+        "/spec-v1/concepts/data-product",
+        "yes",
+        "abstract",
+        "no",
+      ],
+      [
+        "Integration Dependency",
+        "/spec-v1/concepts/integration-dependency",
+        "yes",
+        "no",
+        "no",
+      ],
     ],
   },
   {
     category: "Taxonomy",
     description: "Structure and shared meaning around those descriptions",
     items: [
-      ["Entity Type", "/spec-v1/concepts/grouping-and-bundling#entity-type", "yes", "yes", "no"],
+      [
+        "Entity Type",
+        "/spec-v1/concepts/grouping-and-bundling#entity-type",
+        "yes",
+        "yes",
+        "no",
+      ],
       ["Vendor", "/spec-v1/interfaces/Document#vendor", "no", "yes", "yes"],
-      ["Product", "/spec-v1/concepts/grouping-and-bundling#product", "no", "yes", "yes"],
-      ["Package", "/spec-v1/concepts/grouping-and-bundling#package", "no", "yes", "no"],
-      ["Consumption Bundle", "/spec-v1/concepts/grouping-and-bundling#consumption-bundle", "no", "yes", "no"],
-      ["Group / Group Type", "/spec-v1/concepts/grouping-and-bundling#groups", "yes", "yes", "no"],
+      [
+        "Product",
+        "/spec-v1/concepts/grouping-and-bundling#product",
+        "no",
+        "yes",
+        "yes",
+      ],
+      [
+        "Package",
+        "/spec-v1/concepts/grouping-and-bundling#package",
+        "no",
+        "yes",
+        "no",
+      ],
+      [
+        "Consumption Bundle",
+        "/spec-v1/concepts/grouping-and-bundling#consumption-bundle",
+        "no",
+        "yes",
+        "no",
+      ],
+      [
+        "Group / Group Type",
+        "/spec-v1/concepts/grouping-and-bundling#groups",
+        "yes",
+        "yes",
+        "no",
+      ],
     ],
   },
 ] as const;
@@ -549,7 +610,10 @@ export function TaxonomyScopeDiagram() {
               <strong>{category}</strong>
               <span>{description}</span>
             </header>
-            <table className="ord-taxonomy-scope__matrix" aria-label={`${category} publication scope`}>
+            <table
+              className="ord-taxonomy-scope__matrix"
+              aria-label={`${category} publication scope`}
+            >
               <thead>
                 <tr>
                   <th scope="col">Concept</th>
@@ -561,7 +625,9 @@ export function TaxonomyScopeDiagram() {
               <tbody>
                 {items.map(([name, href, dynamic, global, always]) => (
                   <tr key={name}>
-                    <th scope="row"><a href={href}>{name}</a></th>
+                    <th scope="row">
+                      <Link to={href}>{name}</Link>
+                    </th>
                     {[
                       ["dynamic", dynamic],
                       ["global", global],
@@ -583,9 +649,15 @@ export function TaxonomyScopeDiagram() {
         ))}
       </div>
       <figcaption>
-        <span><b>Dynamic</b> can differ by system instance.</span>
-        <span><b>Global</b> can use the system-independent perspective.</span>
-        <span><b>Abstract</b> is a non-consumable shared contract.</span>
+        <span>
+          <b>Dynamic</b> can differ by system instance.
+        </span>
+        <span>
+          <b>Global</b> can use the system-independent perspective.
+        </span>
+        <span>
+          <b>Abstract</b> is a non-consumable shared contract.
+        </span>
       </figcaption>
     </figure>
   );
@@ -1044,10 +1116,7 @@ function CompactIdConstructionDiagram({
   fragments: CompactIdFragment[];
 }) {
   return (
-    <figure
-      className="ord-diagram ord-id-construction"
-      aria-label={ariaLabel}
-    >
+    <figure className="ord-diagram ord-id-construction" aria-label={ariaLabel}>
       <div className="ord-id-pattern">
         {fragments.map((fragment, index) => (
           <div className="ord-id-segment" key={fragment.label}>

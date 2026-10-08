@@ -97,7 +97,7 @@ A vendor namespace MUST be constructed according to the following rules:
 
 ### System Namespace
 
-An <dfn id="def-ord-system-namespace">system namespace</dfn> is a stable and globally unique identifier namespace that corresponds to an ORD <a href="/spec-v1#system-type">system type</a> (application or service type).
+An <dfn id="def-ord-system-namespace">system namespace</dfn> is a stable and globally unique identifier namespace that corresponds to an ORD [system type](../index.md#system-type) (application or service type).
 
 The system type is the top-level technical, simplified view on an application or service.
 There can be hierarchical groupings of them to higher, logical concepts and also to divide them into multiple sub-components.
@@ -108,7 +108,7 @@ To model a more complex application or organizational structure, for instance co
 
 System namespaces are sub-namespaces of exactly one vendor namespace.
 
-An system namespace MUST be constructed according to the following rules:
+A system namespace MUST be constructed according to the following rules:
 
 `<systemNamespace> := <vendorNamespace>.<systemTypeId>`
 
@@ -139,19 +139,19 @@ An authority namespace MUST be constructed according to the following rules:
 
 ### Sub-Context Namespace
 
-A <dfn id="def-ord-sub-context-namespace">sub-context namespace</dfn> is a stable and globally unique identifier namespace that allows for further namespacing within an [system namespace](#system-namespace) or [authority namespace](#system-namespace).
+A <dfn id="def-ord-sub-context-namespace">sub-context namespace</dfn> is a stable and globally unique identifier namespace that allows for further namespacing within a [system namespace](#system-namespace) or [authority namespace](#authority-namespace).
 
 A sub-context can be motivated by ownership, ID uniqueness, domain or technical modularity concerns.
 
 - A Sub-Context MUST be directly below an application / service namespace or an authority namespace.
 - A Sub-Context MAY contain further sub-namespaces, e.g. `subcontext.subsubcontext`.
-- **The Sub-Context MUST NOT be interpreted as identity by services and consumers.**.
+- **The Sub-Context MUST NOT be interpreted as identity by services and consumers.**
 
 A sub-context namespace MUST be constructed according to the following rules:
 
 `<subContextNamespace>` := `<systemNamespace|authorityNamespace>.<subContextName>`
 
-- `<systemNamespace|authorityNamespace>` MUST be a valid [system namespace](#system-namespace) or [authority namespace](#system-namespace).
+- `<systemNamespace|authorityNamespace>` MUST be a valid [system namespace](#system-namespace) or [authority namespace](#authority-namespace).
 - `<subContextName>` is the identifier of the application / service.
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`) (`^[a-z0-9]+$`).
   - MAY include further sub-context namespaces, separated by `.`.
@@ -386,7 +386,7 @@ Examples (contrived):
 
 A <dfn id="def-specification-id">Specification ID</dfn> is a stable and globally unique reference to a specification of a standard, procedure or guideline.
 
-It can be used to indicate which strategy to use for certain ORD behaviors ([access strategies](../../spec-extensions/access-strategies/index.mdx), credential exchange strategies, [policy levels](../../spec-extensions/policy-levels/index.mdx) and can be implemented in multiple ways (see [strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern)).
+It can be used to indicate which strategy to use for certain ORD behaviors ([access strategies](../../spec-extensions/access-strategies/index.mdx), credential exchange strategies, [policy levels](../../spec-extensions/policy-levels/index.mdx)) and can be implemented in multiple ways (see [strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern)).
 In some situations it is also used to refer to certain implementation standards (for example resource definition standards).
 
 ### Specification ID Construction
@@ -398,7 +398,7 @@ In some situations it is also used to refer to certain implementation standards 
 - **`<namespace>`** := an [ORD namespace](#namespaces).
   - MUST be a valid [namespace](#namespaces).
 
-  - If the specification is specific only to a single application / service, an [system namespace](#system-namespace) SHOULD be chosen.
+  - If the specification is specific only to a single application / service, a [system namespace](#system-namespace) SHOULD be chosen.
 
 - **`<specificationIdentifier>`** a technical Specification Identifier that is unique within `<namespace>`
   - MUST only contain ASCII letters (`a-z`, `A-Z`), digits (`0-9`) and the special characters `-`, `_`, `/` and `.`.

@@ -111,10 +111,6 @@ const config = {
             to: "/spec-v1/interfaces/Document",
           },
           {
-            from: "/spec-v1/concepts/compatibility",
-            to: "/spec-v1/concepts/versioning-and-lifecycle#compatibility",
-          },
-          {
             from: "/spec-v1/concepts/implementing-ord-natively",
             to: "/spec-v1/guides/implementing-ord-natively",
           },
