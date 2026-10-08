@@ -16,7 +16,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Aligned document-level and definition-level overlay target types, including `oas-overlay-v1`; clarified matching against `type` or `customType`, unambiguous routing, and rejection of conflicting target metadata.
+- Aligned document-level and definition-level overlay target types, including `oas-overlay-v1` and `arazzo-v1`; clarified matching against `type` or `customType`, unambiguous routing, and rejection of conflicting target metadata.
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
 - Reorganized identifier, versioning, lifecycle, and compatibility guidance into focused detail-page sections, simplified the main specification overview, and refreshed the related diagrams and navigation without changing normative requirements.
 
