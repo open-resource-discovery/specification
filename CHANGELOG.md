@@ -10,6 +10,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added [Arazzo Specification](https://www.openapis.org/arazzo-specification) support for describing multi-step API workflows.
+  - Added standardized Capability type `workflow` with definition type `arazzo-v1`.
+  - Added `arazzo-v1` to ORD Overlay target definition types.
+  - Added `ord:orchestrates` as a `relatedApiResources.relationType` value for declaring that the source resource orchestrates the target API Resource.
+
 ### Changed
 
 - Allowed customer-namespaced ORD IDs to be published globally when the allocating platform guarantees global uniqueness across customer scopes; otherwise partner content still requires ORD IDs under the partner's registered vendor namespace.
