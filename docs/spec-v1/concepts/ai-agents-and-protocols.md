@@ -196,7 +196,7 @@ Without `subset`, the dependency would imply access to all operations of the ref
           "description": "Reusable skill for extracting structured data from uploaded documents",
           "mandatory": false,
           "capabilities": [
-            { "ordId": "sap.bar:capability:documentProcessing:v1" }
+            { "ordId": "foo.bar.skill:capability:documentProcessing:v1" }
           ]
         }
       ]
@@ -276,8 +276,13 @@ Given the rapidly evolving AI ecosystem, ORD takes a conservative approach to ad
 Agent skills are discrete, reusable capabilities that agents can perform and may package instructions, scripts, and resources.
 In ORD, these are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "agent-skill"`.
 ORD treats skill and plugin archives as opaque, format-neutral artifacts and does not prescribe their internal layout or format version.
+An `agent-skill` capability does not need to provide a definition.
+If it provides one, `agent-skill-zip` is the RECOMMENDED definition type.
+Capability publishers are RECOMMENDED to include the capability type in the ORD ID to prevent accidental collisions between different capability types.
+They can use a sub-context namespace, as in the skill example below, or a suffix in the local identifier, as in the plugin example.
 
 This enables:
+
 - **Discovery:** Agents can discover and load skills on-demand through the catalog
 - **Reusability:** Skills can be shared across multiple agents and systems
 - **Dependency Management:** Both agents and skills can declare `integrationDependencies` on API Resources, Event Resources, or Capabilities (see [Skill Dependencies](#skill-dependencies) below).
@@ -288,7 +293,7 @@ This enables:
 {
   "capabilities": [
     {
-      "ordId": "sap.foo:capability:disputeSummarization:v1",
+      "ordId": "foo.bar.skill:capability:disputeSummarization:v1",
       "title": "Dispute Summarization Skill",
       "shortDescription": "Summarizes dispute cases and their resolution history",
       "version": "1.0.0",
@@ -321,7 +326,7 @@ Agents can depend on external skills through Integration Dependency aspects:
           "description": "Uses an external agent skill for processing documents",
           "mandatory": false,
           "capabilities": [
-            { "ordId": "sap.bar:capability:documentProcessing:v1" }
+            { "ordId": "foo.bar.skill:capability:documentProcessing:v1" }
           ]
         }
       ]
@@ -338,7 +343,7 @@ A Capability of type `agent-skill` can itself declare `integrationDependencies`,
 {
   "capabilities": [
     {
-      "ordId": "sap.foo:capability:disputeSummarization:v1",
+      "ordId": "foo.bar.skill:capability:disputeSummarization:v1",
       "type": "agent-skill",
       "title": "Dispute Summarization Skill",
       "version": "1.0.0",
@@ -360,13 +365,16 @@ The referenced Integration Dependency is structured exactly like the [example ab
 
 Where an `agent-skill` describes a single discrete capability, an **agent plugin** bundles multiple agent resources (such as one or more agent skills) into a single, distributable package.
 In ORD, plugins are modeled using the **[Capability](../interfaces/Document#capability)** resource type with `type: "agent-plugin"`.
+An `agent-plugin` capability does not need to provide a definition.
+If it provides one, `agent-plugin-zip` is the RECOMMENDED definition type.
 
 This enables:
+
 - **Distribution:** A set of related skills and assets can be discovered, versioned, and installed as one unit.
 - **Reusability:** A plugin can be shared across multiple agents and systems, just like individual skills.
 - **Dependency Management:** Like `agent-skill`, an `agent-plugin` can declare `integrationDependencies` on API Resources, Event Resources, or Capabilities (see [Skill Dependencies](#skill-dependencies) above).
 
-The bundle is referenced through a capability definition of type `agent-plugin-zip`, a ZIP archive (`mediaType: "application/zip"`) that packages the plugin's skills and assets together.
+When the bundle is referenced through a capability definition of type `agent-plugin-zip`, it is a ZIP archive (`mediaType: "application/zip"`) that packages the plugin's skills and assets together.
 ORD intentionally remains format-neutral for plugin bundles.
 It treats the archive as opaque and does not prescribe its internal layout or format version; package-format identification, versioning, and interpretation remain the responsibility of the producer and consumer.
 
@@ -387,7 +395,7 @@ To narrow this down, a capability reference MAY carry a `subset` listing the spe
           "mandatory": false,
           "capabilities": [
             {
-              "ordId": "sap.foo:capability:disputeManagementPlugin:v1",
+              "ordId": "foo.bar:capability:disputeManagementPlugin:v1",
               "subset": [{ "skillName": "disputeSummarization" }]
             }
           ]
@@ -406,7 +414,7 @@ The `skillName` values are names understood within the plugin bundle itself; ORD
 {
   "capabilities": [
     {
-      "ordId": "sap.foo:capability:disputeManagementPlugin:v1",
+      "ordId": "foo.bar:capability:disputeManagementPlugin:v1",
       "title": "Dispute Management Plugin",
       "shortDescription": "Bundles the dispute summarization and resolution skills",
       "version": "1.0.0",

@@ -2219,6 +2219,8 @@ export interface EntityTypeDefinition {
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
  * This is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).
+ * To avoid accidental ORD ID collisions between capabilities of different types, publishers are RECOMMENDED to include the capability type in the ORD ID.
+ * The type can be represented either as a sub-context namespace, for example `foo.bar.skill:capability:disputeSummarization:v1`, or as a suffix in the local identifier, for example `foo.bar:capability:disputeSummarizationSkill:v1`.
  *
  * If a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.
  * This is the same idea and mechanism as with API resources and their resource definition formats.
@@ -2414,6 +2416,7 @@ export interface Capability {
    *
    * This is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to API Resources, Event Resources, or other Capabilities to function.
    * The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
+   * Runtime-specific connector configuration, credentials, guardrails, provisioning, and activation behavior remain outside this definition.
    *
    * MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
    */
@@ -3882,6 +3885,7 @@ export interface CapabilityIntegrationAspectSubset {
    * The name of the individual skill within the referenced capability.
    *
    * This MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).
+   * Where the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter.
    */
   skillName: string;
 }

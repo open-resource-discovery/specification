@@ -108,7 +108,7 @@
   ],
   "capabilities": [
     {
-      "ordId": "sap.foo:capability:disputeSummarization:v1",
+      "ordId": "foo.bar.skill:capability:disputeSummarization:v1",
       "title": "Dispute Summarization Skill",
       "shortDescription": "Summarizes dispute cases and their resolution history",
       "description": "An agent skill that generates concise summaries of financial dispute cases, including key facts, involved parties, and resolution status.",
@@ -156,7 +156,7 @@
           "mandatory": false,
           "capabilities": [
             {
-              "ordId": "sap.bar:capability:documentProcessing:v1"
+              "ordId": "foo.bar.skill:capability:documentProcessing:v1"
             }
           ]
         }

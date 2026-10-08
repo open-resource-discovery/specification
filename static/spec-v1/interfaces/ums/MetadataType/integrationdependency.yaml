@@ -252,7 +252,7 @@ spec:
       metadataProperties:
         - name: 'skillName'
           type: 'string'
-          description: "The name of the individual skill within the referenced capability.\n\nThis MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle)."
+          description: "The name of the individual skill within the referenced capability.\n\nThis MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).\nWhere the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter."
           mandatory: !!bool 'true'
     - name: 'Link'
       metadataProperties:
