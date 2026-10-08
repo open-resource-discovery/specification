@@ -3,4 +3,7 @@
 !dist/**
 !package.json
 !LICENSE
+!License.md
+!LICENSES/Apache-2.0.txt
+!LICENSES/Community-Spec-1.0.txt
 !static/spec-v1/interfaces/*.json

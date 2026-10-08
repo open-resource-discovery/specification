@@ -30,7 +30,7 @@ That leaves the main challenge to create the ORD documents correctly. Two things
 
 **A:** Not that we are aware of, but it is designed to support this.
 
-ORD is [open source](https://github.com/open-resource-discovery/specification) under the Apache 2 license (see [public announcement](https://blogs.sap.com/2023/11/14/open-resource-discovery-a-protocol-for-decentralized-metadata-discovery-is-now-open-source/)) and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/). We are in discussion with other companies to form a broader community around the standard.
+ORD is [published openly](https://github.com/open-resource-discovery/specification). The normative specification uses Community Specification License 1.0; generated interfaces, examples, and tooling use Apache-2.0. See the [licensing policy](../../disclaimer.md). ORD is governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/). We are in discussion with other companies to form a broader community around the standard.
 
 #### Q: How long does it take for metadata changes to reflect in the Aggregators?
 
@@ -47,8 +47,8 @@ In SAP context, we support on-premises software through [Cloud Connectors](https
 
 #### Q: What does "Open" in ORD stand for?
 
-**A:** The "Open" in ORD refers to the protocol itself being published publicly under a permissive license (Apache 2.0).
-It can be freely implemented by SAP partners and customers.
+**A:** The "Open" in ORD refers to the protocol being published publicly and developed through an open community.
+Anyone can implement it. The normative specification uses Community Specification License 1.0, while generated machine-readable interfaces and tooling use Apache-2.0. Implementers should review the [licensing policy](https://github.com/open-resource-discovery/specification/blob/main/License.md), including the acceptance conditions for the Community Specification patent grants.
 
 The standard is published at https://open-resource-discovery.org and governed by the [Linux Foundation](https://www.linuxfoundation.org/) / [NeoNephos](https://neonephos.org/).
 

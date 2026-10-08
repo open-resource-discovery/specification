@@ -12,6 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
+- **License model changed from repository-wide Apache-2.0 to a Community Specification model.** The normative, human-readable ORD standard is now licensed under the [Community Specification License 1.0](./LICENSES/Community-Spec-1.0.txt). Normative YAML schema, OpenAPI, and UMS sources are dual-licensed as `Community-Spec-1.0 OR Apache-2.0`. Generated JSON Schemas, TypeScript types and UMS artifacts, npm artifacts, examples, validators, build tooling, and site code remain Apache-2.0-only. Patent commitments are limited by [`Scope.md`](./Scope.md); the copyright license assigned to an artifact does not expand that scope. This change does not modify the technical content of the specification. See [`License.md`](./License.md), [`Notices.md`](./Notices.md), and [`Governance.md`](./Governance.md) for details.
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
 
 ## [1.16.4]
