@@ -2,13 +2,13 @@
 
 The Open Resource Discovery (ORD) standard provides a technology-agnostic, machine-readable protocol for applications and services to **self-describe their exposed resources and capabilities** and for those descriptions to be **discovered and aggregated** across organizational and product boundaries. ORD covers both static reference documentation and runtime, tenant-specific landscape views.
 
-The ORD standard defines a "resource" as any discrete, uniquely addressable capability or asset that a system exposes for consumption, including (but not limited to) APIs, Events, Entity Types, Data Products, Integration Dependencies, Capabilities, Packages, Consumption Bundles, and Groups, together with the supporting taxonomy (Vendor, Product, Industry, Line of Business, Tags, Labels) and identity (ORD ID, namespace) used to describe them.
+The ORD information model describes APIs, Events, Entity Types, Data Products, Agents, Integration Dependencies, and Capabilities, together with grouping concepts (Packages, Consumption Bundles, and Groups), supporting taxonomy (Vendor, Product, Industry, Line of Business, Tags, Labels), and identity (ORD ID, namespace). Grouping and taxonomy concepts are distinguished from the resources they describe.
 
 ## In Scope
 
 This Working Group is focused specifically on establishing and promoting activities focused on:
 
-1. An **information model** — the structure, attributes, relationships, identity scheme, and taxonomy used by ORD documents to describe resources and their context (APIs, Events, Entity Types, Data Products, Integration Dependencies, Capabilities, Packages, Consumption Bundles, Groups, and the related metadata).
+1. An **information model** — the structure, attributes, relationships, identity scheme, and taxonomy used by ORD documents to describe resources and their context (APIs, Events, Entity Types, Data Products, Agents, Integration Dependencies, Capabilities, Packages, Consumption Bundles, Groups, and the related metadata).
 2. A **discovery and transport protocol** — the ORD Configuration endpoint (`.well-known/open-resource-discovery`), ORD Documents, the ORD Discovery API offered by aggregators, and the behaviors required of the ORD Provider, ORD Aggregator, and ORD Consumer roles.
 3. **Access strategies and security** — the standardized mechanisms by which ORD documents and the resources they reference are accessed (authentication/authorization access strategies, visibility scopes).
 4. **Versioning, lifecycle, and policy levels** — rules for evolving the specification, marking compatibility, and declaring conformance levels (including extensible policy-level definitions) for ORD documents and their referenced resources.

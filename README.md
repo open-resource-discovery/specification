@@ -40,7 +40,7 @@ The [reference application source](https://github.com/open-resource-discovery/re
 
 #### Diagrams
 
-See [diagram sources and synchronization](./diagrams/README.md) for the shared graph data and the matching React and Vue diagrams in the specification site and presentation.
+See [diagram sources and synchronization](https://github.com/open-resource-discovery/specification/blob/main/diagrams/README.md) for the shared graph data and the matching React and Vue diagrams in the specification site and presentation.
 
 ## History
 

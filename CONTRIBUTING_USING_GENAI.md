@@ -1,10 +1,10 @@
-# Guideline for AI-generated code contributions to SAP Open Source Software Projects
+# Guideline for AI-generated code contributions to Open Resource Discovery Projects
 
 As artificial intelligence evolves, AI-generated code is becoming valuable for many software projects, including open-source initiatives. While we recognize the potential benefits of incorporating AI-generated content into our open-source projects there are certain requirements that need to be reflected and adhered to when making contributions.
 
 When using AI-generated code contributions in OSS Projects, their usage needs to align with Open-Source Software values and legal requirements. We have established these essential guidelines to help contributors navigate the complexities of using AI tools while maintaining compliance with open-source licenses and the broader [Open-Source Definition](https://opensource.org/osd).
 
-AI-generated code or content can be contributed to SAP Open Source Software projects if the following conditions are met:
+AI-generated code or content can be contributed to Open Resource Discovery projects if the following conditions are met:
 
 1. **Compliance with AI Tool Terms and Conditions**: Contributors must ensure that the AI tool's terms and conditions do not impose any restrictions on the tool's output that conflict with the project's open-source license or intellectual property policies. This includes ensuring that the AI-generated content adheres to the [Open-Source Definition](https://opensource.org/osd).
 2. **Filtering Similar Suggestions**: Contributors must use features provided by AI tools to suppress responses that are similar to third-party materials or flag similarities. We only accept contributions from AI tools with such filtering options. If the AI tool flags any similarities, contributors must review and ensure compliance with the licensing terms of such materials before including them in the project.

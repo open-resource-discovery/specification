@@ -403,6 +403,9 @@ const config = {
                 <p>Open Resource Discovery is a project of NeoNephos Foundation and part of ApeiroRA. For applicable policies including privacy policy, terms of use and trademark usage guidelines, please see <a href="https://linuxfoundation.eu">https://linuxfoundation.eu</a>. Linux is a registered trademark of Linus Torvalds.</p>
               </div>
             </div>
+            <div class="footer-legal-links">
+              <a href="${`${baseUrl}disclaimer`}">Licenses and disclaimer</a>
+            </div>
             <!--
             <div class="footer-legal-links">
               <a href="${`${baseUrl}about/terms-of-use`}">Terms of Use</a>

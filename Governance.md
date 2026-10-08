@@ -20,7 +20,7 @@ The Working Group must formally designate one or more Maintainers and an Editor.
 
 ## 2. Decision Making
 
-**2.1. Consensus-based.** Decisions on the specification are made by consensus among Maintainers, informed by input from Contributors and the Steering Committee. The agreement of all Participants is preferred but not required; Maintainers determine consensus in good faith based on the dominant view and the substance of objections. Evidence of consensus must be recorded in a public pull request, issue, or published meeting minutes.
+**2.1. Consensus-based.** Decisions on the specification are made through a consensus process among Working Group Participants. Maintainers organize that process and determine consensus in good faith based on the dominant view of the Participants and the substance of support and objections. The agreement of all Participants is preferred but not required. Evidence of consensus must be recorded in a public pull request, issue, or published meeting minutes.
 
 **2.2. Appeals.** A decision may be appealed via a GitHub issue or pull request. Appeals are considered by the Maintainers in good faith and receive a written response within a reasonable time. Unresolved appeals may be escalated to the Steering Committee.
 

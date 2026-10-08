@@ -73,3 +73,20 @@ copyright information is recorded in
 [`REUSE.toml`](https://github.com/open-resource-discovery/specification/blob/main/REUSE.toml);
 the [REUSE compliance report](https://api.reuse.software/info/github.com/open-resource-discovery/specification)
 checks that mapping.
+
+## Implementing ORD
+
+The Apache-2.0 license of the npm package and generated interfaces does not
+record Community Specification License acceptance on behalf of an implementer.
+Section 2.1.3 of the Community Specification License describes the acceptance
+routes for its direct patent grants: include the license with a source
+implementation, include it in the notices or documentation accompanying a
+non-source distribution, or have an authorized representative submit a pull
+request or commit to this repository's
+[`Notices.md`](https://github.com/open-resource-discovery/specification/blob/main/Notices.md)
+identifying the implementer and ORD version.
+
+Review the reciprocal patent grant in Section 2.1.2 and the separate licensing
+commitment in Section 2.2 before selecting an acceptance route. Contributor
+assent and implementer acceptance serve different purposes; a DCO sign-off
+alone does not record assent to these specification terms.

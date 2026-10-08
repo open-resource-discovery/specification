@@ -3,7 +3,7 @@
   "name": "@open-resource-discovery/specification",
   "version": "1.17.0",
   "description": "Open Resource Discovery (ORD) Specification",
-  "author": "SAP SE",
+  "author": "Open Resource Discovery contributors",
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -41,7 +41,7 @@
     "generate": "npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json",
     "postgenerate": "npm run build:ts && node ./dist/helper/copyGeneratedToDestination.js",
     "generate:llm-notebook": "npm run generate && node ./dist/helper/exportForNotebookLM.js",
-    "check:license-policy": "node src/helper/checkLicensePolicy.mjs"
+    "check:license-policy": "node --test src/helper/checkLicensePolicy.test.mjs && node src/helper/checkLicensePolicy.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
