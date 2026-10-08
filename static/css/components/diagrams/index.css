@@ -242,18 +242,19 @@ html[data-theme="dark"] .ord-diagram {
 .ord-taxonomy-scope__grid > section:last-child > header { background: var(--ord-violet-soft); }
 .ord-taxonomy-scope__grid > section > header strong { font-size: 0.9rem; }
 .ord-taxonomy-scope__grid > section > header span { color: var(--ord-muted); font-size: 0.68rem; line-height: 1.3; }
-.ord-taxonomy-scope__matrix { width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed; }
+.ord-taxonomy-scope__matrix { display: table; width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed; }
 .ord-taxonomy-scope__matrix :is(th, td) { border: 0; border-top: 1px solid var(--ord-sep); padding: 0.35rem 0.3rem; }
-.ord-taxonomy-scope__matrix thead th { height: 31px; border-top: 0; background: var(--ord-panel-soft); color: var(--ord-faint); font-size: 0.55rem; font-weight: 750; letter-spacing: 0.025em; text-align: center; text-transform: uppercase; }
-.ord-taxonomy-scope__matrix :is(th, td):first-child { width: calc(100% - 156px); padding-left: 0.6rem; text-align: left; }
+.ord-taxonomy-scope__matrix thead th { height: 31px; border-top: 0; background: var(--ord-panel-soft); color: var(--ord-faint); font-size: 0.55rem; font-weight: 750; letter-spacing: 0.025em; text-align: center; text-transform: uppercase; white-space: nowrap; }
+.ord-taxonomy-scope__matrix thead th:not(:first-child) { width: 64px; }
+.ord-taxonomy-scope__matrix :is(th, td):first-child { padding-left: 0.6rem; text-align: left; }
 .ord-taxonomy-scope__matrix tbody th { height: 36px; line-height: 1.2; }
 .ord-taxonomy-scope__matrix tbody th a { color: var(--ord-text); font-size: 0.7rem; font-weight: 650; text-decoration: none; }
 .ord-taxonomy-scope__matrix tbody th a::after { content: " →"; color: var(--ord-brand); }
 .ord-taxonomy-scope__matrix tbody th a:hover { color: var(--ord-brand); text-decoration: underline; text-underline-offset: 2px; }
-.ord-taxonomy-scope__matrix td { width: 52px; text-align: center; }
-.ord-taxonomy-scope__status { justify-self: center; border-radius: 999px; color: var(--ord-faint); font-size: 0.56rem; font-weight: 750; line-height: 1; padding: 0.3rem 0.38rem; }
+.ord-taxonomy-scope__matrix td { width: 64px; text-align: center; }
+.ord-taxonomy-scope__status { justify-self: center; border-radius: 999px; color: var(--ord-faint); font-size: 0.56rem; font-weight: 750; line-height: 1; padding: 0.3rem 0.38rem; white-space: nowrap; }
 .ord-taxonomy-scope__status--yes { background: var(--ord-teal-soft); color: var(--ord-brand); }
-.ord-taxonomy-scope__status--abstract { background: var(--ord-violet-soft); color: #6f4ad6; }
+.ord-taxonomy-scope__status--abstract { background: var(--ord-violet-soft); color: var(--ord-id-resource); }
 .ord-taxonomy-scope__status--no { color: var(--ord-faint); }
 .ord-taxonomy-scope figcaption { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; color: var(--ord-muted); font-size: 0.68rem; line-height: 1.35; }
 .ord-taxonomy-scope figcaption b { color: var(--ord-text); }
