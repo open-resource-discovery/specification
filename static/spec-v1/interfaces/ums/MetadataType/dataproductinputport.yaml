@@ -19,7 +19,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId_ID'
       type: 'guid'
-      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type."
       mandatory: !!bool 'true'
       constraints:
         maxLength: !!int '255'
@@ -31,5 +31,5 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: !!bool 'true'
       managedByProperty: 'ordId_ID'
-      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../index.md#ord-id) of the appropriate ORD type."
+      description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type."
       mandatory: !!bool 'true'

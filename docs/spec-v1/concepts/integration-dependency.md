@@ -33,7 +33,7 @@ Integration Dependency was introduced to describe what a system can _consume_ / 
 If this is set up and connected at run-time, it constitutes an integration.
 At ORD level, only the "type-level" ability to integrate and its requirements are described — not concrete runtime instances.
 
-> **Tip:** When the integration target resource uses a shared ORD ID, for example with an [authority namespace](../index.md#authority-namespace), a reused system namespace or an [abstract resource](./compatibility.md#abstract-ord-resources), a single dependency reference covers all system types providing that contract.
+> **Tip:** When the integration target resource uses a shared ORD ID, for example with an [authority namespace](./identifiers.md#authority-namespace), a reused system namespace or an [abstract resource](./versioning-and-lifecycle.md#abstract-ord-resources), a single dependency reference covers all system types providing that contract.
 > This is simpler than listing multiple system-type-specific ORD IDs as alternatives in the aspect.
 > See [Shared Taxonomy, Resources and Contracts](./shared-resources.md).
 

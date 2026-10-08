@@ -10,17 +10,17 @@
 export type OverlayPerspective = ("system-type" | "system-version" | "system-instance") & string;
 /**
  * Correlation ID identifying related records in external systems of record.
- * MUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).
+ * MUST be a valid [Correlation ID](../../spec-v1/concepts/identifiers.md#correlation-id).
  */
 export type OverlayCorrelationID = string;
 /**
  * Correlation ID identifying related records in external systems of record.
- * MUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).
+ * MUST be a valid [Correlation ID](../../spec-v1/concepts/identifiers.md#correlation-id).
  */
 export type OverlayCorrelationID1 = string;
 /**
  * Correlation ID identifying related records in external systems of record.
- * MUST be a valid [Correlation ID](../../spec-v1/index.md#correlation-id).
+ * MUST be a valid [Correlation ID](../../spec-v1/concepts/identifiers.md#correlation-id).
  */
 export type OverlayCorrelationID2 = string;
 /**
@@ -40,14 +40,14 @@ export type OverlayVisibility = ("public" | "internal" | "private") & string;
  * This can be used to disambiguate how selectors are interpreted for the target.
  *
  * MUST be either:
- * - any valid [Specification ID](../../spec-v1/index.md#specification-id), or
+ * - any valid [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id), or
  * - one of the pre-defined values reused from:
  *   - API Resource Definition `type`
  *   - Event Resource Definition `type`
  *   - Capability Definition `type`
  *
  * The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
- * In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
+ * In such cases, use a concrete [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id) instead.
  */
 export type OverlayDefinitionType = (
   | string
@@ -236,7 +236,7 @@ export interface ORDOverlay {
  */
 export interface OverlaySystemType {
   /**
-   * The [system namespace](../../spec-v1/index.md#system-namespace) is a unique identifier for the system type.
+   * The [system namespace](../../spec-v1/concepts/identifiers.md#system-namespace) is a unique identifier for the system type.
    */
   systemNamespace?: string;
   /**
@@ -308,7 +308,7 @@ export interface OverlaySystemInstance {
 export interface OverlayTarget {
   /**
    * ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).
-   * MUST be a valid [ORD ID](../../spec-v1/index.md#ord-id).
+   * MUST be a valid [ORD ID](../../spec-v1/concepts/identifiers.md#ord-id).
    */
   ordId?: string;
   /**

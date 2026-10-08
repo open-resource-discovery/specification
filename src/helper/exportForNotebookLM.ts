@@ -35,7 +35,11 @@ export async function exportForNotebookLM(): Promise<void> {
       src: "docs/spec-v1/concepts/ai-agents-and-protocols.md",
       prefix: "30_concept_",
     },
-    { src: "docs/spec-v1/concepts/compatibility.md", prefix: "31_concept_" },
+    { src: "docs/spec-v1/concepts/identifiers.md", prefix: "31_concept_" },
+    {
+      src: "docs/spec-v1/concepts/versioning-and-lifecycle.md",
+      prefix: "32_concept_",
+    },
     { src: "docs/spec-v1/concepts/data-product.md", prefix: "32_concept_" },
     {
       src: "docs/spec-v1/concepts/grouping-and-bundling.md",

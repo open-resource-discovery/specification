@@ -3,7 +3,7 @@ sidebar_position: 5
 description: Detailed explanation of the System Landscape and the ORD Data model.
 ---
 
-import { DataModelDiagram } from "@site/src/components/OrdDiagrams";
+import { DataModelDiagram, TaxonomyScopeDiagram } from "@site/src/components/OrdDiagrams";
 
 # System Landscape Model
 
@@ -54,9 +54,9 @@ They are described in more detail behind the link.
 
 It should be pointed out that the:
 
-- [vendor namespace](../index.md#vendor-namespace) corresponds to the [ORD Vendor](../interfaces/Document.md#vendor).
-- [system namespace](../index.md#system-namespace) corresponds to the [ORD System Type](../index.md#system-type).
-- [sub-context namespaces](../index.md#sub-context-namespace) have no corresponding ORD concept.
+- [vendor namespace](./identifiers.md#vendor-namespace) corresponds to the [ORD Vendor](../interfaces/Document.md#vendor).
+- [system namespace](./identifiers.md#system-namespace) corresponds to the [ORD System Type](../index.md#system-type).
+- [sub-context namespaces](./identifiers.md#sub-context-namespace) have no corresponding ORD concept.
 
 When resources, taxonomy or contracts are shared across multiple system types, the namespace identifies the owner of the shared definition.
 See [Namespace Ownership](./shared-resources.md#namespace-ownership) for guidance on choosing the correct namespace.
@@ -74,23 +74,11 @@ Taxonomy is independent of Systems, but can be defined either locally or globall
 
 ## Taxonomy
 
-Some taxonomy concepts can even be "global", in this case they can always be viewed and navigated in the dynamic system landscape, even if it has no system instances in it.
+Some taxonomy concepts can be global, so they remain available in a catalog even when no system instance publishes them.
+The following overview compares which ORD concepts can differ by system instance, can be published globally, or are always global.
+Select a concept name to open its detailed definition.
 
-Here is an overview which ORD concepts can be dynamic (different per System Instance), which can potentially be global and which are always global:
-
-| ORD Concept            | Category              | Can be Dynamic | Can be Global | Always Global |
-| ---------------------- | --------------------- | -------------- | ------------- | ------------- |
-| API Resource           | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
-| Event Resource         | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
-| Capability             | Resource / Capability | ✅             | ❌            | ❌            |
-| Data Product           | Resource / Capability | ✅             | ✅ (abstract) | ❌            |
-| Integration Dependency | Resource / Capability | ✅             | ❌            | ❌            |
-| Entity Type            | Taxonomy              | ✅             | ✅            | ❌            |
-| Vendor                 | Taxonomy              | ❌             | ✅            | ✅            |
-| Product                | Taxonomy              | ❌             | ✅            | ✅            |
-| Package                | Taxonomy              | ❌             | ✅            | ❌            |
-| Consumption Bundle     | Taxonomy              | ❌             | ✅            | ❌            |
-| Group / Group Type     | Taxonomy              | ✅             | ✅            | ❌            |
+<TaxonomyScopeDiagram />
 
 ## Big Picture
 

@@ -13,6 +13,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Changed
 
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
+- Reorganized identifier, versioning, lifecycle, and compatibility guidance into focused detail-page sections, simplified the main specification overview, and refreshed the related diagrams and navigation without changing normative requirements.
 
 ## [1.16.4]
 
@@ -34,7 +35,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified that overlay output is semantically, not byte, canonical.
 - Clarified OData operation selectors: a namespace-qualified name may omit its signature only when unique; overloaded operations require an exact signature with all parameters in declaration order; `Name()` selects a zero-parameter operation; and signature selectors never fall back to a FunctionImport.
 - Clarified OData entity-set selectors: an unqualified name may be used only when unique; otherwise a fully qualified name is required.
-- Clarified the [Customer Namespace](./docs/spec-v1/index.md#customer-namespace): customer-created or customer-governed content SHOULD use `customer.*` or `c.*`, while providers that cannot distinguish it from standard content may use the system's regular namespace.
+- Clarified the [Customer Namespace](./docs/spec-v1/concepts/identifiers.md#customer-namespace): customer-created or customer-governed content SHOULD use `customer.*` or `c.*`, while providers that cannot distinguish it from standard content may use the system's regular namespace.
   Customer namespaces MUST NOT be used for globally shared content, and partner content MUST be exported under the partner's registered vendor namespace before global publication.
   The Package `vendor` remains authoritative for current ownership attribution independently of the ORD ID namespace, and the SAP policy levels now allow registered partner Vendors.
 - Defined the uniqueness scope of customer-namespaced ORD IDs and required catalogs and consumers to retain that scope when comparing, resolving, or deduplicating these IDs.
@@ -147,14 +148,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Added
 
 - Added `correlationIds` to package
-- Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/concepts/implementing-ord-natively) guide
+- Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/guides/implementing-ord-natively) guide
 
 ## [1.14.4]
 
 ### Changed
 
 - Added recommendation to use [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts. The `labels` key validation pattern now also allows `:` and `/` characters accordingly.
-- Clarified the use of [authority namespaces](https://open-resource-discovery.org/spec-v1#authority-namespace) for resource ORD IDs: when multiple system types share the same resource contract under a shared authority namespace, the uniqueness and aggregation rules now explicitly address this. See [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
+- Clarified the use of [authority namespaces](https://open-resource-discovery.org/spec-v1/concepts/identifiers#authority-namespace) for resource ORD IDs: when multiple system types share the same resource contract under a shared authority namespace, the uniqueness and aggregation rules now explicitly address this. See [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
 - Added concept page on [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
 - Clarification: Consolidated and clarified the [static perspective resolution](https://open-resource-discovery.org/spec-v1/concepts/perspectives#static-perspective-resolution) algorithm for aggregators. When no specific version is requested, explicit `system-type` perspective data takes precedence; if unavailable, the aggregator SHOULD derive it from the latest `system-version`. Previously this behavior was scattered and only stated as MAY.
 

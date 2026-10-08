@@ -233,14 +233,41 @@ html[data-theme="dark"] .ord-diagram {
 .ord-data-model figcaption strong { white-space: nowrap; }
 .ord-data-model figcaption span { color: var(--ord-muted); font-size: 0.75rem; text-align: right; }
 
+/* Taxonomy publication scope */
+.ord-taxonomy-scope { display: flex; flex-direction: column; gap: 0.85rem; }
+.ord-taxonomy-scope__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.ord-taxonomy-scope__grid > section { min-width: 0; overflow: hidden; border: 1px solid var(--ord-sep); border-top: 4px solid var(--ord-teal); border-radius: 8px; background: var(--ord-card); }
+.ord-taxonomy-scope__grid > section:last-child { border-top-color: var(--ord-violet); }
+.ord-taxonomy-scope__grid > section > header { display: flex; min-height: 76px; flex-direction: column; gap: 0.2rem; justify-content: center; background: var(--ord-teal-soft); padding: 0.75rem 0.85rem; }
+.ord-taxonomy-scope__grid > section:last-child > header { background: var(--ord-violet-soft); }
+.ord-taxonomy-scope__grid > section > header strong { font-size: 0.9rem; }
+.ord-taxonomy-scope__grid > section > header span { color: var(--ord-muted); font-size: 0.68rem; line-height: 1.3; }
+.ord-taxonomy-scope__matrix { width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed; }
+.ord-taxonomy-scope__matrix :is(th, td) { border: 0; border-top: 1px solid var(--ord-sep); padding: 0.35rem 0.3rem; }
+.ord-taxonomy-scope__matrix thead th { height: 31px; border-top: 0; background: var(--ord-panel-soft); color: var(--ord-faint); font-size: 0.55rem; font-weight: 750; letter-spacing: 0.025em; text-align: center; text-transform: uppercase; }
+.ord-taxonomy-scope__matrix :is(th, td):first-child { width: calc(100% - 156px); padding-left: 0.6rem; text-align: left; }
+.ord-taxonomy-scope__matrix tbody th { height: 36px; line-height: 1.2; }
+.ord-taxonomy-scope__matrix tbody th a { color: var(--ord-text); font-size: 0.7rem; font-weight: 650; text-decoration: none; }
+.ord-taxonomy-scope__matrix tbody th a::after { content: " →"; color: var(--ord-brand); }
+.ord-taxonomy-scope__matrix tbody th a:hover { color: var(--ord-brand); text-decoration: underline; text-underline-offset: 2px; }
+.ord-taxonomy-scope__matrix td { width: 52px; text-align: center; }
+.ord-taxonomy-scope__status { justify-self: center; border-radius: 999px; color: var(--ord-faint); font-size: 0.56rem; font-weight: 750; line-height: 1; padding: 0.3rem 0.38rem; }
+.ord-taxonomy-scope__status--yes { background: var(--ord-teal-soft); color: var(--ord-brand); }
+.ord-taxonomy-scope__status--abstract { background: var(--ord-violet-soft); color: #6f4ad6; }
+.ord-taxonomy-scope__status--no { color: var(--ord-faint); }
+.ord-taxonomy-scope figcaption { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; color: var(--ord-muted); font-size: 0.68rem; line-height: 1.35; }
+.ord-taxonomy-scope figcaption b { color: var(--ord-text); }
+
 /* Identifiers */
-.ord-id-diagram { display: flex; flex-direction: column; gap: 1rem; }
+.ord-id-diagram, .ord-id-construction { display: flex; flex-direction: column; gap: 1rem; }
 .ord-id-pattern { display: flex; align-items: stretch; justify-content: center; font-family: var(--ifm-font-family-monospace); font-size: clamp(0.88rem, 2vw, 1.25rem); font-weight: 700; }
+.ord-id-segment { display: contents; }
 .ord-id-pattern span { display: flex; align-items: center; border-radius: 6px; padding: 0.8rem 1rem; }
 .ord-id-pattern i { display: flex; align-items: center; color: var(--ord-faint); font-style: normal; padding: 0 0.3rem; }
 .ord-id-pattern .namespace, .ord-id-fragments .namespace { background: var(--ord-sky-soft); color: var(--ord-id-namespace); }
 .ord-id-pattern .concept, .ord-id-fragments .concept { background: var(--ord-teal-soft); color: var(--ord-brand); }
 .ord-id-pattern .resource, .ord-id-fragments .resource { background: var(--ord-violet-soft); color: var(--ord-id-resource); }
+.ord-id-pattern .identifier { background: var(--ord-violet-soft); color: var(--ord-id-resource); }
 .ord-id-pattern .major, .ord-id-fragments .major { background: var(--ord-coral-soft); color: var(--ord-id-major); }
 .ord-id-example { display: flex; align-items: center; justify-content: center; gap: 0.8rem; }
 .ord-id-example > span { color: var(--ord-muted); font-size: 0.8rem; }
@@ -248,6 +275,7 @@ html[data-theme="dark"] .ord-diagram {
 .ord-id-example .namespace { color: var(--ord-id-namespace); }
 .ord-id-example .concept { color: var(--ord-brand); }
 .ord-id-example .resource { color: var(--ord-id-resource); }
+.ord-id-example .identifier { color: var(--ord-id-resource); }
 .ord-id-example .major { color: var(--ord-id-major); }
 .ord-id-fragments { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.65rem; }
 .ord-id-fragments section { min-width: 0; min-height: 150px; border: 1px solid var(--ord-sep); border-radius: 8px; padding: 1rem; }
@@ -259,9 +287,10 @@ html[data-theme="dark"] .ord-diagram {
 .ord-id-diagram figcaption i { color: var(--ord-brand); font-style: normal; }
 
 .ord-identifier-types { display: flex; flex-direction: column; gap: 0.8rem; }
-.ord-identifier-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; }
+.ord-identifier-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; }
 .ord-identifier-card { display: flex; min-width: 0; flex-direction: column; gap: 0.8rem; border: 1px solid var(--ord-sep); border-top: 4px solid var(--ord-teal); border-radius: 8px; background: var(--ord-teal-soft); padding: 1rem; }
 .ord-identifier-card--correlation { border-top-color: var(--ord-sky); background: var(--ord-sky-soft); }
+.ord-identifier-card--grouping { border-top-color: var(--ord-lime); background: var(--ord-lime-soft); }
 .ord-identifier-card--specification { border-top-color: var(--ord-violet); background: var(--ord-violet-soft); }
 .ord-identifier-card header { display: flex; min-height: 112px; flex-direction: column; gap: 0.35rem; }
 .ord-identifier-card header > span { color: var(--ord-brand); font-size: 0.65rem; font-weight: 750; text-transform: uppercase; }
@@ -269,8 +298,6 @@ html[data-theme="dark"] .ord-diagram {
 .ord-identifier-card p, .ord-identifier-card li { color: var(--ord-muted); font-size: 0.78rem; line-height: 1.4; }
 .ord-identifier-card > code { display: block; min-height: 58px; align-content: center; overflow-wrap: anywhere; border-radius: 6px; background: var(--ord-panel); color: var(--ord-text); font-size: 0.78rem; padding: 0.65rem; }
 .ord-identifier-card ul { display: flex; flex-direction: column; gap: 0.4rem; margin: 0; padding-left: 1rem; }
-.ord-identifier-types figcaption { display: flex; flex-wrap: wrap; gap: 0.55rem; border-left: 4px solid var(--ord-brand-2); background: var(--ord-teal-soft); color: var(--ord-muted); padding: 0.8rem 1rem; }
-.ord-identifier-types figcaption strong { color: var(--ord-text); }
 
 /* Grouping and packaging */
 .ord-grouping { display: flex; flex-direction: column; gap: 1rem; }
@@ -593,7 +620,7 @@ html[data-theme="dark"] .ord-diagram {
 
 /* Sidebars can make the article narrow even on a desktop or tablet. */
 @container ord-diagrams (max-width: 660px) {
-  .ord-alignment, .ord-spec-map, .ord-namespace, .ord-data-model, .ord-perspectives__grid, .ord-id-fragments, .ord-identifier-grid, .ord-change-grid, .ord-resolution-summary .branches, .ord-ai-enrichment { grid-template-columns: 1fr; }
+  .ord-alignment, .ord-spec-map, .ord-namespace, .ord-data-model, .ord-taxonomy-scope__grid, .ord-perspectives__grid, .ord-id-fragments, .ord-identifier-grid, .ord-change-grid, .ord-resolution-summary .branches, .ord-ai-enrichment { grid-template-columns: 1fr; }
   .ord-spec-map__section { min-height: 0; }
   .ord-alignment__mode { min-height: 330px; }
   .ord-data-model figcaption, .ord-namespace figcaption { grid-column: 1; }
@@ -621,6 +648,9 @@ html[data-theme="dark"] .ord-diagram {
   .ord-silos__grid { grid-template-columns: repeat(auto-fit, minmax(94px, 1fr)); }
   .ord-silo { min-height: 150px; }
   .ord-id-pattern { flex-wrap: wrap; }
+  .ord-id-construction .ord-id-pattern { flex-direction: column; flex-wrap: nowrap; align-items: center; }
+  .ord-id-construction .ord-id-segment { display: flex; flex-direction: column; align-items: center; }
+  .ord-id-construction .ord-id-pattern i { padding: 0.2rem 0; }
   .ord-id-fragments section, .ord-identifier-card header { min-height: 0; }
   .ord-resolution-summary figcaption, .ord-overlay figcaption, .ord-pull-sequence figcaption { grid-template-columns: 1fr; }
   .ord-overlay__flow { grid-template-columns: 1fr; gap: 0.5rem; }

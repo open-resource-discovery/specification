@@ -111,6 +111,14 @@ const config = {
             to: "/spec-v1/interfaces/Document",
           },
           {
+            from: "/spec-v1/concepts/compatibility",
+            to: "/spec-v1/concepts/versioning-and-lifecycle#compatibility",
+          },
+          {
+            from: "/spec-v1/concepts/implementing-ord-natively",
+            to: "/spec-v1/guides/implementing-ord-natively",
+          },
+          {
             from: "/spec-extensions/models/OrdOverlay",
             to: "/spec-v1/interfaces/OrdOverlay",
           },
@@ -252,7 +260,7 @@ const config = {
                 to: "spec-v1/interfaces/OrdOverlay",
               },
               {
-                label: "ORD Detail Pages",
+                label: "Concepts",
                 to: "spec-v1/concepts",
               },
               {
@@ -274,6 +282,11 @@ const config = {
                 to: "https://github.com/open-resource-discovery/specification/blob/main/CHANGELOG.md",
               },
             ],
+          },
+          {
+            label: "Guides",
+            position: "left",
+            to: "spec-v1/guides/",
           },
           {
             type: "dropdown",
