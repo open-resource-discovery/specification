@@ -545,6 +545,7 @@ const taxonomyScopes = [
         "no",
         "no",
       ],
+      ["Agent", "/spec-v1/concepts/ai-agents-and-protocols", "yes", "no", "no"],
     ],
   },
   {
