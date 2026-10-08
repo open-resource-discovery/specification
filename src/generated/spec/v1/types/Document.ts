@@ -2575,7 +2575,7 @@ export interface Capability {
    *
    * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
    *
-   * A policy level MUST be a valid [Specification ID](../index.md#specification-id).
+   * A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    */
   policyLevels?: string[];
   /**
