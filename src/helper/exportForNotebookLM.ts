@@ -19,7 +19,7 @@ export async function exportForNotebookLM(): Promise<void> {
 
     // Introduction and overview
     { src: "docs/introduction.mdx", prefix: "10_intro_" },
-    { src: "docs/overview/index.md", prefix: "11_overview_" },
+    { src: "docs/index.md", prefix: "11_overview_" },
     { src: "docs/ecosystem/index.mdx", prefix: "12_ecosystem_" },
 
     // Specification core
@@ -29,30 +29,41 @@ export async function exportForNotebookLM(): Promise<void> {
       prefix: "21_interface_",
     },
     { src: "docs/spec-v1/interfaces/Document.md", prefix: "22_interface_" },
+    { src: "docs/spec-v1/interfaces/OrdOverlay.md", prefix: "23_interface_" },
 
     // Concepts
-    {
-      src: "docs/spec-v1/concepts/ai-agents-and-protocols.md",
-      prefix: "30_concept_",
-    },
-    { src: "docs/spec-v1/concepts/identifiers.md", prefix: "31_concept_" },
+    { src: "docs/spec-v1/concepts/identifiers.md", prefix: "30_concept_" },
     {
       src: "docs/spec-v1/concepts/versioning-and-lifecycle.md",
-      prefix: "32_concept_",
+      prefix: "31_concept_",
     },
-    { src: "docs/spec-v1/concepts/data-product.md", prefix: "32_concept_" },
     {
       src: "docs/spec-v1/concepts/grouping-and-bundling.md",
-      prefix: "33_concept_",
+      prefix: "32_concept_",
     },
-    {
-      src: "docs/spec-v1/concepts/integration-dependency.md",
-      prefix: "34_concept_",
-    },
-    { src: "docs/spec-v1/concepts/perspectives.md", prefix: "35_concept_" },
     {
       src: "docs/spec-v1/concepts/system-landscape-model.md",
+      prefix: "33_concept_",
+    },
+    { src: "docs/spec-v1/concepts/perspectives.md", prefix: "34_concept_" },
+    { src: "docs/spec-v1/concepts/data-product.md", prefix: "35_concept_" },
+    {
+      src: "docs/spec-v1/concepts/integration-dependency.md",
       prefix: "36_concept_",
+    },
+    {
+      src: "docs/spec-v1/concepts/ai-agents-and-protocols.md",
+      prefix: "37_concept_",
+    },
+    {
+      src: "docs/spec-v1/concepts/shared-resources.md",
+      prefix: "38_concept_",
+    },
+
+    // Guides
+    {
+      src: "docs/spec-v1/guides/implementing-ord-natively.md",
+      prefix: "39_guide_",
     },
 
     // Examples (generated)
