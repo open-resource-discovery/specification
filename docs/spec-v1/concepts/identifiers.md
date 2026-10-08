@@ -112,7 +112,7 @@ A system namespace MUST be constructed according to the following rules:
 
 `<systemNamespace> := <vendorNamespace>.<systemTypeId>`
 
-- `<systemNamespace>` MUST be a valid [vendor namespace](#vendor-namespace)
+- `<vendorNamespace>` MUST be a valid [vendor namespace](#vendor-namespace)
 - `<systemTypeId>` is the identifier of the technical system type (of the application or service).
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
 - MUST match Regexp: `^[a-z0-9]+(?:[.][a-z0-9]+){1}$`
@@ -257,12 +257,12 @@ It MUST be constructed as defined here:
   - MUST NOT be provided for `Product` and `Vendor`
   - If provided: MUST be an integer and MUST NOT contain leading zeroes.
   - MUST be incremented if the resource introduced an incompatible API change. This correlates with a major version change in [Semantic Versioning](https://semver.org/).
-    - If the described resource has a `releaseStatus` of `beta`, this rule can be ignored. Incompatible changes MAY be introduced in `beta` resources.
+    - If the described resource has a `releaseStatus` of `development` or `beta`, this rule can be ignored. Incompatible changes MAY be introduced in these resources without incrementing `<majorVersion>`, as described in [Versioning and Lifecycle](./versioning-and-lifecycle.md#exception-for-development-and-beta-resources).
   - MUST NOT be incremented if non-breaking changes have been made to the resource; the updated resource should replace the current one.
   - The `<majorVersion>` and the major version of [`version`](./versioning-and-lifecycle.md#relationship-between-version-and-ord-id-majorversion) SHOULD be identical.
   - If the REST API expresses its version in the URL path (e.g. `/v2/`), `<majorVersion>` SHOULD match it.
 
-- The ORD ID MUST be globally unique.
+- The ORD ID MUST be unique within the [scope defined above](#ord-id), including the customer scope for `customer.*` and `c.*` namespaces.
 
 - The ORD ID is immutable and MUST not change after it has been published.
 
@@ -270,7 +270,7 @@ It MUST be constructed as defined here:
 
 - The ORD ID MUST be interpreted case-insensitively when used for comparison, lookups or deduplication.
   - Although `<resourceName>` permits mixed-case letters, two ORD IDs differing only in casing MUST be treated as the same identifier.
-  - This is required because ORD IDs appear as URL path segments (conventionally case-insensitive) and are shared across independent organizations, where case-sensitive distinctions would make global uniqueness unenforceable.
+  - Case-insensitive comparison is an ORD identifier rule. It does not change the case sensitivity of URL paths that contain an ORD ID.
 
 An ORD ID MUST match the following [regular expression](https://en.wikipedia.org/wiki/Regular_expression):
 
@@ -366,7 +366,7 @@ It MUST be constructed as defined here:
   - SHOULD be (sufficiently) human readable and SEO/URL friendly (avoid UUIDs).
   - SHOULD be registered as a known concept on the level of its `<namespace>`.
 
-The system of record application / service or responsible org unit is indicated through the [`<namespace>`](#namespaces) and MUST be able to resolve / correlate when given the `<conceptName>` and the `<localIdentifier>`.
+The system of record application / service or responsible org unit is indicated through the [`<namespace>`](#namespaces) and MUST be able to resolve / correlate the concept when given the `<conceptName>`.
 
 A Concept ID MUST not exceed 255 characters in total.
 
@@ -401,7 +401,7 @@ In some situations it is also used to refer to certain implementation standards 
   - If the specification is specific only to a single application / service, a [system namespace](#system-namespace) SHOULD be chosen.
 
 - **`<specificationIdentifier>`** a technical Specification Identifier that is unique within `<namespace>`
-  - MUST only contain ASCII letters (`a-z`, `A-Z`), digits (`0-9`) and the special characters `-`, `_`, `/` and `.`.
+  - MUST only contain ASCII letters (`a-z`, `A-Z`), digits (`0-9`) and the special characters `-`, `_` and `.`.
   - MUST be unique within `<namespace>`.
   - SHOULD be (sufficiently) human readable (avoid UUIDs).
 
