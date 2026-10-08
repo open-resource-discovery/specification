@@ -169,9 +169,10 @@ If a provider cannot reliably distinguish customer-created content from the desc
 These namespaces identify the customer-scoped ID space and MUST NOT be interpreted as vendor ownership, which is defined via `partOfPackage.vendor`.
 The reserved authority namespace `customer.ext` can be used for customer in-app extensions.
 
-Customer namespaces MUST NOT be used for content published in a global marketplace or otherwise shared globally.
+Customer namespaces MUST NOT be used for content published in a global marketplace or otherwise shared globally unless the platform allocating the ORD IDs guarantees their global uniqueness across customer scopes.
 Partner content MAY be developed under a customer namespace while it remains within a customer scope.
-Before that content is offered in a global marketplace or otherwise shared globally, it MUST be exported with ORD IDs under the registered vendor namespace of the partner.
+It MAY retain those ORD IDs when published globally if such a global uniqueness guarantee exists.
+Otherwise, before that content is offered in a global marketplace or otherwise shared globally, it MUST be exported with ORD IDs under the registered vendor namespace of the partner.
 This export creates the globally published identity and does not rename the customer-scoped ORD IDs.
 
 The uniqueness scope of a `customer.*` or `c.*` ORD ID is the applicable customer scope.
