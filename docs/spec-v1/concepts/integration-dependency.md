@@ -117,6 +117,8 @@ Only the system itself knows what external requirements it has and what integrat
       "mandatory": false,
       "aspects": [
         {
+          "title": "Subscription Billing business events",
+          "mandatory": true,
           "eventResources": [
             {
               "ordId": "sap.billing.sb:eventResource:SAPSubscriptionBillingBusinessEvents:v2",
@@ -156,6 +158,8 @@ An agent that depends on only a subset of tools in an MCP server can use `subset
       "partOfPackage": "foo.myapp:package:MyPackage:v1",
       "aspects": [
         {
+          "title": "Product search and details tools",
+          "mandatory": true,
           "apiResources": [
             {
               "ordId": "foo.sometool:apiResource:SomeToolMCPServer:v1",
@@ -192,10 +196,12 @@ An integration dependency can identify target system types without naming any pa
       "partOfPackage": "foo.bar:package:Example:v1",
       "aspects": [
         {
+          "title": "Billing system",
           "mandatory": true,
           "systemTypes": [{ "systemNamespace": "foo.bar" }]
         },
         {
+          "title": "ERP system",
           "mandatory": true,
           "systemTypes": [
             { "systemNamespace": "foo.erpcloud", "minSystemVersion": "2025.4.0" },

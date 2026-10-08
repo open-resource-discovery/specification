@@ -145,10 +145,12 @@
       "mandatory": true,
       "aspects": [
         {
+          "title": "Billing system",
           "mandatory": true,
           "systemTypes": [{ "systemNamespace": "foo.bar" }],
         },
         {
+          "title": "ERP system",
           "mandatory": true,
           "systemTypes": [
             { "systemNamespace": "foo.erpcloud", "minSystemVersion": "2025.4.0" },
