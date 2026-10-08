@@ -8,6 +8,8 @@ import { GroupingPackagingDiagram } from "@site/src/components/OrdDiagrams";
 
 # Grouping and Bundling
 
+> **Visual walkthrough:** Compare [grouping and packaging](https://open-resource-discovery.github.io/presentation/grouping-packaging) in the ORD presentation.
+
 ## Quick Summary
 
 ORD offers multiple ways how resources are grouped or bundled together.

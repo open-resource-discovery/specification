@@ -10,6 +10,8 @@ import { AgentConnectivityDiagram, AiEnrichmentDiagram } from "@site/src/compone
 
 > 🚧 Please note that the [Agents](../interfaces/Document#agent) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
 
+> **Visual walkthrough:** Explore [Agent interaction and dependencies](https://open-resource-discovery.github.io/presentation/ai-discovery) and [AI metadata enrichment](https://open-resource-discovery.github.io/presentation/ai-enrichment) in the ORD presentation. The Agent slide also includes explicitly marked skills and plugins proposals.
+
 ## Agents
 
 > An [Agent](../interfaces/Document#agent) is an **autonomous software entity** capable of task execution, described through high quality **metadata** that can be accessed through a central catalog ([ORD Aggregator](../index.md#ord-aggregator)).
@@ -88,7 +90,7 @@ The following example shows how an Agent is described in an ORD Document:
 ```
 
 Key aspects of this example:
-- **`ordId`**: A globally unique identifier for the agent
+- **`ordId`**: A stable design-time identifier for the agent; runtime identity also needs the [system-instance context](../index.md#ord-id)
 - **`exposedApiResources`**: Links to the API(s) through which the agent can be invoked (e.g., an A2A API)
 - **`integrationDependencies`**: Declares what external resources the agent requires to function
 - **`relatedEntityTypes`**: Documents which domain business entities the agent operates on
@@ -105,8 +107,9 @@ These are API protocols specifically designed for simple consumption by LLMs and
 
 ### Exposing Capabilities (Interaction)
 
-Once an agent is implemented, there must be a defined contract for interacting with it.
-In ORD, this is modeled by linking the Agent to an **[API Resource](../interfaces/Document#api-resource)**.
+If an agent exposes an interaction interface, its contract is described separately by an **[API Resource](../interfaces/Document#api-resource)**.
+The Agent references that resource through the optional `exposedApiResources` property.
+An Agent without an exposed interaction API can still be described in ORD.
 
 -   **A2A (Agent-to-Agent):** While ORD is protocol-agnostic, the [Agent2Agent (A2A) Protocol](https://a2a-protocol.org/latest/) is the primary AI-Native Protocol for this purpose.
     It enables seamless communication and collaboration between AI agents through standardized agent card definitions.
@@ -151,10 +154,11 @@ This is modeled using **[Integration Dependencies](../interfaces/Document#integr
 -   **MCP (Model Context Protocol):** A common pattern is for an Agent to depend on an [MCP Server](https://modelcontextprotocol.io/docs/getting-started/intro).
     The Integration Dependency declares this requirement, allowing the runtime environment to provision the necessary connections to data sources and tools.
     When only a subset of tools is needed, the `subset` field narrows the dependency to the exact operations required (using the tool `name` from the MCP server card as `operationId`).
-    This matters for agents specifically: it keeps LLM context lean by loading only the relevant tool descriptions, and it scopes permission grants to the minimal required surface area.
+    This lets an agent runtime load only the relevant tool descriptions and use the declared subset when configuring permissions.
+    Declaring a subset does not grant access; runtime authentication and authorization remain separate concerns.
 -   **Other Resources:** Agents are not limited to AI-native protocols.
     They can also depend on any other [ORD resource](../index.md#ord-resource), such as **[API Resources](../interfaces/Document#api-resource)** (REST, OData, GraphQL) or **[Event Resources](../interfaces/Document#event-resource)**, to interact with existing business systems.
--   **Agent Chaining:** Agents can also have dependencies on other Agents, forming complex workflows.
+-   **Agent Chaining:** An Agent can depend on another Agent's interaction API by referencing its API Resource in an Integration Dependency.
 
 Here's an example of an Integration Dependency for an agent that depends on a specific set of MCP tools.
 Without `subset`, the dependency would imply access to all operations of the referenced resource:

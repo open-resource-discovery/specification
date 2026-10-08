@@ -7,9 +7,11 @@ import { ApiLifecycleDiagram, LifecycleDiagram } from "@site/src/components/OrdD
 
 # Versioning and Lifecycle
 
+> **Visual walkthrough:** Explore [versioning and lifecycle](https://open-resource-discovery.github.io/presentation/versioning-lifecycle) and the [API lifecycle example](https://open-resource-discovery.github.io/presentation/api-lifecycle) in the ORD presentation.
+
 ## Overview
 
-ORD uses two complementary mechanisms to track the state of a resource over time:
+ORD uses three complementary signals to track the state of a resource over time:
 
 - **`version`**: A full [Semantic Versioning 2.0.0](https://semver.org/) string (e.g. `1.4.2`) that expresses the precise state of the resource definition.
 - **`<majorVersion>` in the ORD ID**: An integer fragment (e.g. `v1`, `v2`) that encodes whether a breaking change has been introduced, forming a stable identity for each major generation of a resource.
@@ -33,7 +35,9 @@ The `version` field MUST follow [Semantic Versioning 2.0.0](https://semver.org/)
 
 The `version` SHOULD be updated whenever the resource definition changes in a way that is relevant to consumers. If runtime customizations or extensions lead to a changed resource definition, a build number SHOULD be appended (e.g. `1.2.3+build.42`).
 
-If the resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD be kept in sync with the resource `version` to avoid inconsistencies.
+If the resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.
+If the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.
+Simple normalization (e.g. `v1.2` to `1.2.0`) is appropriate when the native scheme already carries SemVer meaning; other schemes need a mapping based on the resource's compatibility changes.
 
 **Scope of version increments:** A version change is only relevant if the ORD resource or taxonomy itself changed. If a resource inside a `Package` changes but the `Package` definition did not, the `Package` version does not need to be incremented.
 

@@ -9,6 +9,8 @@ import { PerspectiveResolutionSummaryDiagram } from "@site/src/components/OrdDia
 
 > ⏩ The technical requirements of this are described in the [specification section on perspectives](../../spec-v1/index.md#perspectives).
 
+> **Visual walkthrough:** See the [perspective resolution decision flow](https://open-resource-discovery.github.io/presentation/perspective-resolution) in the ORD presentation.
+
 ## Overview
 
 An application or service can be described both from a [static](../../spec-v1/index.md#static-perspective) or a [dynamic](../../spec-v1/index.md#dynamic-perspective) perspective. The configuration endpoint can point to different ORD documents that represent the information from the different perspectives.

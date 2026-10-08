@@ -16,6 +16,8 @@ But also some taxonomy like entity types help to connect, by expressing shared u
 
 The metadata discovery can happen at run-time, describing the tenant at its current state - or we can describe all tenants of the same system type and version statically.
 
+> **Visual walkthrough:** Explore the [system landscape model](https://open-resource-discovery.github.io/presentation/landscape-model) in the ORD presentation.
+
 ## Systems
 
 ORD relies on a high-level system landscape model to be already existing.
