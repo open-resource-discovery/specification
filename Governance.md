@@ -1,6 +1,6 @@
 # Governance
 
-The Open Resource Discovery (ORD) project is governed by the **ORD Steering Committee** under the [NeoNephos Foundation](https://neonephos.org/projects/open-resource-discovery-ord/), a [Linux Foundation Europe](https://linuxfoundation.eu) project.
+The Open Resource Discovery (ORD) project is governed by the **ORD Steering Committee** under the [NeoNephos Foundation](https://neonephos.org/projects), a [Linux Foundation Europe](https://linuxfoundation.eu) project.
 
 The authoritative governance materials — committee composition, decision-making process, charter, meeting cadence, and contribution policies — are maintained in the dedicated steering repository:
 
