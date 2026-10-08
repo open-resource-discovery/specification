@@ -60,9 +60,16 @@ const sidebars = {
     {
       type: "category",
       label: "Guides",
+      className: "sidebar-guides",
       link: { type: "doc", id: "spec-v1/guides/index" },
       collapsed: false,
-      items: ["spec-v1/guides/implementing-ord-natively"],
+      items: [
+        {
+          type: "doc",
+          id: "spec-v1/guides/implementing-ord-natively",
+          label: "Native Implementation",
+        },
+      ],
     },
     {
       type: "category",

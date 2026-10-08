@@ -607,6 +607,12 @@
     font-size: 14px !important;
     opacity: 0.9;
   }
+  .theme-doc-sidebar-menu
+    .sidebar-guides
+    > .menu__list-item-collapsible
+    > .menu__link {
+    font-size: 14px !important;
+  }
   .navbar-sidebar__items .menu__link,
   .theme-doc-sidebar-menu .menu__link {
     display: block;

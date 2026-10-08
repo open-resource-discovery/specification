@@ -284,11 +284,6 @@ const config = {
             ],
           },
           {
-            label: "Guides",
-            position: "left",
-            to: "spec-v1/guides/",
-          },
-          {
             type: "dropdown",
             position: "left",
             label: "Extensions",
@@ -325,10 +320,6 @@ const config = {
             label: "Help",
             to: "help/",
             items: [
-              {
-                label: "ORD Presentation",
-                href: "https://open-resource-discovery.github.io/presentation/",
-              },
               // {
               //   label: "Overview",
               //   to: "help/",
@@ -340,6 +331,14 @@ const config = {
               {
                 label: "FAQ",
                 to: "help/faq/",
+              },
+              {
+                label: "Guides",
+                to: "spec-v1/guides/",
+              },
+              {
+                label: "ORD Presentation",
+                href: "https://open-resource-discovery.github.io/presentation/",
               },
               {
                 label: "Ask AI (NotebookLM)",
