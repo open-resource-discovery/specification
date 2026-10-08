@@ -237,7 +237,7 @@ export interface ORDOverlay {
  */
 export interface OverlaySystemType {
   /**
-   * The [system namespace](../../spec-v1/index.md#system-namespace) is a unique identifier for the system type.
+   * The [system namespace](../concepts/identifiers.md#system-namespace) is a unique identifier for the system type.
    */
   systemNamespace?: string;
   /**

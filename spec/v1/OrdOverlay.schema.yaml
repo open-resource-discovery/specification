@@ -1108,7 +1108,7 @@ definitions:
       systemNamespace:
         type: string
         description: |-
-          The [system namespace](../../spec-v1/index.md#system-namespace) is a unique identifier for the system type.
+          The [system namespace](../concepts/identifiers.md#system-namespace) is a unique identifier for the system type.
         pattern: ^[a-z0-9]+(?:[.][a-z0-9]+){1}$
         maxLength: 32
         examples:
