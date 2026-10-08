@@ -126,6 +126,12 @@ IF the resources have already been published to the public [SAP Business Acceler
 
 - [ORD Overlays](../../spec-v1/interfaces/OrdOverlay.md) MUST always provide a [`target.ordId`](../../spec-v1/interfaces/OrdOverlay.md#overlay-target_ordid) to identify the ORD resource being patched.
 
+- All ORD Overlays governed by this policy MUST have an effective `visibility`
+  of `internal` or `private`, regardless of their purpose or publishing mechanism.
+
+  The existing ORD restriction that a resource definition's `visibility` MUST NOT
+  be less restrictive than the `visibility` of its containing resource continues to apply.
+
 ### Correlation IDs
 
 With ORD comes a [Correlation ID](../../spec-v1/index.md#correlation-id) concept.
