@@ -3767,7 +3767,7 @@ export interface SystemTypeIntegrationAspect {
    * Minimum [system version](../index.md#system-version) that the integration requires.
    * The target system version MUST be greater than or equal to this value according to Semantic Versioning precedence.
    */
-  minVersion?: string;
+  minSystemVersion?: string;
 }
 /**
  * API resource related integration aspect

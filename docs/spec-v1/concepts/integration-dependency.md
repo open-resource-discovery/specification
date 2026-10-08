@@ -198,7 +198,7 @@ An integration dependency can identify target system types without naming any pa
         {
           "mandatory": true,
           "systemTypes": [
-            { "systemNamespace": "sap.s4pce", "minVersion": "2025.4.0" },
+            { "systemNamespace": "sap.s4pce", "minSystemVersion": "2025.4.0" },
             { "systemNamespace": "sap.s4" },
             { "systemNamespace": "sap.s4op" }
           ]

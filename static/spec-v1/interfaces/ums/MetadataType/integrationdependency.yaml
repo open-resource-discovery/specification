@@ -170,7 +170,7 @@ spec:
           constraints:
             maxLength: !!int '32'
             pattern: '^[a-z0-9]+(?:[.][a-z0-9]+){1}$'
-        - name: 'minVersion'
+        - name: 'minSystemVersion'
           type: 'string'
           description: "Minimum [system version](../index.md#system-version) that the integration requires.\nThe target system version MUST be greater than or equal to this value according to Semantic Versioning precedence."
           constraints:
