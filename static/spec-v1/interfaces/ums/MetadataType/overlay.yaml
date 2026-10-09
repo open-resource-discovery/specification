@@ -56,7 +56,7 @@ spec:
       type: 'custom'
       customTypeName: 'OverlayDefinition'
       array: !!bool 'true'
-      description: "List of overlay definition files referenced by this ORD Overlay Resource.\nEach entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches."
+      description: "List of overlay definition files referenced by this ORD Overlay Resource.\nEach entry points to an overlay document that contains the actual patches."
     - name: 'tags'
       type: 'string'
       array: !!bool 'true'
