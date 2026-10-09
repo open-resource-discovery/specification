@@ -45,7 +45,7 @@ How the Agent resource links to its interaction contract and required external r
 
 The following example shows how an Agent is described in an ORD Document:
 
-```json
+```json5
 {
   "agents": [
     {
@@ -120,7 +120,7 @@ An Agent without an exposed interaction API can still be described in ORD.
 
 Here's an example of an A2A API Resource linked to an agent:
 
-```json
+```json5
 {
   "apiResources": [
     {
@@ -168,7 +168,7 @@ All of this is modeled using **[Integration Dependencies](../interfaces/Document
 Here's an example of an Integration Dependency for an agent that depends on a specific set of MCP tools.
 Without `subset`, the dependency would imply access to all operations of the referenced resource:
 
-```json
+```json5
 {
   "integrationDependencies": [
     {
@@ -213,7 +213,7 @@ The following ORD resource types support an `aiHint` property: API Resources, Ev
 
 <AiEnrichmentDiagram />
 
-```json
+```json5
 {
   "apiResources": [
     {
@@ -289,7 +289,7 @@ This enables:
 
 **Example agent skill:**
 
-```json
+```json5
 {
   "capabilities": [
     {
@@ -315,7 +315,7 @@ This enables:
 
 Agents can depend on external skills through Integration Dependency aspects:
 
-```json
+```json5
 {
   "integrationDependencies": [
     {
@@ -384,7 +384,7 @@ Like any capability, an `agent-plugin` can be referenced from an Integration Dep
 
 To narrow this down, a capability reference MAY carry a `subset` listing the specific skills within the plugin that are actually required (analogous to `subset` on `apiResources`/`eventResources`). Only the listed skills then need to be loaded into the harness / context, rather than the whole bundle:
 
-```json
+```json5
 {
   "integrationDependencies": [
     {
