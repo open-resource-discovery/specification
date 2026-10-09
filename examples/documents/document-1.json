@@ -197,6 +197,20 @@
       "releaseStatus": "active",
       "visibility": "public",
       "partOfPackage": "sap.foo.bar:package:SomePackage:v1",
+      "partOfProducts": ["sap.foo:product:ord-reference-app:"],
+      "responsible": "sap.foo:team:ord-reference-app",
+      "policyLevels": ["sap:core:v1"],
+      "countries": ["DE", "US"],
+      "lineOfBusiness": ["R&D Engineering"],
+      "industry": ["High Tech"],
+      "changelogEntries": [
+        {
+          "date": "2023-01-26",
+          "description": "Initial release of the capability.",
+          "releaseStatus": "active",
+          "version": "1.0.0"
+        }
+      ],
       "definitions": [
         {
           "type": "sap.mdo:mdi-capability-definition:v1",

@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `partOfProducts`, `responsible`, lifecycle metadata, taxonomy, and `policyLevels` to Capabilities for consistency with other ORD resources.
+
 ### Changed
 
 - Allowed customer-namespaced ORD IDs to be published globally when the allocating platform guarantees global uniqueness across customer scopes; otherwise partner content still requires ORD IDs under the partner's registered vendor namespace.
