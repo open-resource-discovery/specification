@@ -3675,7 +3675,8 @@ export interface IntegrationDependency {
   /**
    * List of integration aspects that make up the Integration Dependency.
    *
-   * Each aspect listed is a dedicated, constituent part (AND condition).
+   * Each mandatory aspect is a dedicated, constituent part that needs to be fulfilled (AND condition).
+   * System-type aspects can be combined with more detailed API-resource, event-resource or capability aspects.
    */
   aspects?: Aspect[];
   /**
@@ -3703,7 +3704,7 @@ export interface IntegrationDependency {
  * Each aspect can list references to resources, which could be owned and defined by the integration target or by the described system itself.
  * In case the reference links to own resources, it is implied that they are to be used by the integration target to fulfill the Integration Dependency.
  *
- * If multiple resources are given within an aspect, they are considered alternatives to each other (OR condition).
+ * If multiple dependencies are given within an aspect, including across `systemTypes`, `apiResources`, `eventResources` and `capabilities`, they are considered alternatives to each other (OR condition).
  * In case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.
  */
 export interface Aspect {
@@ -3742,6 +3743,16 @@ export interface Aspect {
    * List of Capability Dependencies.
    */
   capabilities?: CapabilityIntegrationAspect[];
+  /**
+   * List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).
+   *
+   * Each entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.
+   * Use separate aspects when multiple system types are required (AND condition).
+   * System-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency.
+   *
+   * @minItems 1
+   */
+  systemTypes?: [SystemTypeIntegrationAspect, ...SystemTypeIntegrationAspect[]];
   labels?: Labels;
 }
 /**
@@ -3852,6 +3863,20 @@ export interface CapabilityIntegrationAspect {
    */
   minVersion?: string;
   labels?: Labels;
+}
+/**
+ * System-type related integration aspect.
+ */
+export interface SystemTypeIntegrationAspect {
+  /**
+   * The [system namespace](../concepts/identifiers.md#system-namespace) that identifies the required system type.
+   */
+  systemNamespace: string;
+  /**
+   * Minimum [system version](../index.md#system-version) that the integration requires.
+   * The target system version MUST be greater than or equal to this value according to Semantic Versioning precedence.
+   */
+  minSystemVersion?: string;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.

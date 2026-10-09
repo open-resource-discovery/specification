@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `systemTypes` to `IntegrationAspect` for dependencies on system types that do not require a specific resource contract, including an optional minimum system version.
+
 ### Changed
 
 - Allowed customer-namespaced ORD IDs to be published globally when the allocating platform guarantees global uniqueness across customer scopes; otherwise partner content still requires ORD IDs under the partner's registered vendor namespace.
