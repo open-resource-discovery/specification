@@ -339,7 +339,7 @@ Agents can depend on external skills through Integration Dependency aspects:
 
 A Capability of type `agent-skill` can itself declare `integrationDependencies`, using the same mechanism as Agents and analogous to `inputPorts` on [Data Products](./data-product.md).
 
-```json
+```json5
 {
   "capabilities": [
     {
