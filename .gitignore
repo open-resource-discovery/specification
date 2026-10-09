@@ -35,5 +35,6 @@ docs/spec-extensions/models/*.md
 
 .claude/
 .codex
+.playwright-cli/
 .DS_Store
 grounding/
