@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: !!bool 'false'
-  description: "The event resource provides a high-level description of a collection of related Events. More detailed information, such as the event resource definitions, are provided in links in the table below.\nWhich events are considered \"related\" is up to the implementer. A common practice is to bundle events that are based on the same resource/Business Object. It is also an option to bundle all available events into a single event resource/event catalog.\nPlease note that event resources can be described, but still be [`disabled`](#event-resource_disabled).\nIf the event resource is not created or owned by the user / customer of the system or by partners / third parties, it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property."
+  description: "The event resource provides a high-level description of a collection of related Events. More detailed information, such as the event resource definitions, are provided in links in the table below.\nWhich events are considered \"related\" is up to the implementer. A common practice is to bundle events that are based on the same resource/Business Object. It is also an option to bundle all available events into a single event resource/event catalog.\nPlease note that event resources can be described, but still be [`disabled`](#event-resource_disabled).\nIf the event resource is created or owned by the user or customer of the system or by partners or third parties, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property."
   metadataProperties:
     - name: 'id'
       type: 'guid'
