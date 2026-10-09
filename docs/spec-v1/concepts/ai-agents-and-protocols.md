@@ -326,7 +326,7 @@ Agents can depend on external skills through Integration Dependency aspects:
           "description": "Uses an external agent skill for processing documents",
           "mandatory": false,
           "capabilities": [
-            { "ordId": "foo.bar.skill:capability:documentProcessing:v1" }
+            { "ordId": "foo.bar.skill:capability:disputeSummarization:v1" }
           ]
         }
       ]
