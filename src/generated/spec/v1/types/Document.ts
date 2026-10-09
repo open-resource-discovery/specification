@@ -8,6 +8,44 @@ export type Usage = "external" | "local";
  * Defines whether and how the resource can be extended with custom fields.
  */
 export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
+/**
+ * Type of the target definition being patched.
+ * This MUST match the referenced metadata definition's `type` or, when provided, its `customType` (as used in API/Event/Capability resource definitions).
+ * This is especially useful when a resource has multiple attached definitions.
+ *
+ * This can be used to disambiguate how selectors are interpreted for the target.
+ *
+ * MUST be either:
+ * - any valid [Specification ID](../../spec-v1/index.md#specification-id), or
+ * - one of the pre-defined values reused from:
+ *   - API Resource Definition `type`
+ *   - Event Resource Definition `type`
+ *   - Capability Definition `type`
+ *
+ * The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
+ * In such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead.
+ */
+export type OverlayTargetDefinitionType = (
+  | string
+  | "openapi-v2"
+  | "openapi-v3"
+  | "openapi-v3.1+"
+  | "raml-v1"
+  | "edmx"
+  | "csdl-json"
+  | "graphql-sdl"
+  | "wsdl-v1"
+  | "wsdl-v2"
+  | "a2a-agent-card"
+  | "sap-rfc-metadata-v1"
+  | "sap-sql-api-definition-v1"
+  | "sap-csn-interop-effective-v1"
+  | "asyncapi-v2"
+  | "sap.mdo:mdi-capability-definition:v1"
+  | "arazzo-v1"
+  | "oas-overlay-v1"
+) &
+  string;
 
 /**
  * The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
@@ -3505,6 +3543,43 @@ export interface OverlayDefinition {
    * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
    */
   purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
+  target?: OverlayDefinitionTarget;
+}
+/**
+ * Optional context identifying the resource definition being patched without relying on its provider URL, which an ORD Aggregator rewrites when it hosts the definition.
+ *
+ * The target resource is identified by the Overlay Resource's `relatedApiResources` or `relatedEventResources` relationships and can additionally be identified through `correlationIds`.
+ * `definitionType`, `definitionPurpose`, and `definitionVisibility` select the attached definition using the resource definition uniqueness key.
+ * When multiple resources are related, the remaining target metadata or application context MUST make the intended resource or resources unambiguous.
+ * The relationship list alone does not imply that every overlay definition patches every related resource.
+ *
+ * Example: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.
+ * In such cases, `definitionType` makes the concrete patch target explicit.
+ *
+ * Multiple identifiers, if provided, are treated as all pointing to the same resource.
+ */
+export interface OverlayDefinitionTarget {
+  /**
+   * Correlation IDs referencing the target resource in external registries or systems of record.
+   * Reuses the ORD correlation ID format: `namespace:type:localId`.
+   * All listed IDs are treated as pointing to the same resource.
+   *
+   * @minItems 1
+   */
+  correlationIds?: [string, ...string[]];
+  definitionType: OverlayTargetDefinitionType;
+  /**
+   * Purpose of the target resource definition.
+   * Together with `definitionType` and `definitionVisibility`, this forms the resource definition uniqueness key.
+   * If omitted, the target is the primary/default definition without a `purpose`.
+   */
+  definitionPurpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
+  /**
+   * Effective visibility of the target resource definition.
+   * Together with `definitionType` and `definitionPurpose`, this forms the resource definition uniqueness key.
+   * If omitted, the target definition uses the visibility inherited from its ORD resource.
+   */
+  definitionVisibility?: "public" | "internal" | "private";
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

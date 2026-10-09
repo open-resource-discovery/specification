@@ -31,6 +31,18 @@ const schemaMappings: SchemaMapping[] = [
     examplesPath: "./examples/documents",
     filePattern: /\.json$/,
   },
+  {
+    schemaName: "OrdOverlay",
+    schemaPath: "./src/generated/spec/v1/schemas/OrdOverlay.schema.json",
+    examplesPath: "./examples/overlay",
+    filePattern: /\.json$/,
+  },
+  {
+    schemaName: "OrdOverlay",
+    schemaPath: "./src/generated/spec/v1/schemas/OrdOverlay.schema.json",
+    examplesPath: "./examples/definitions",
+    filePattern: /^ord-document-overlay\.json$/,
+  },
 ];
 
 /**

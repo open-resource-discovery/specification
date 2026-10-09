@@ -90,7 +90,11 @@ and references the actual overlay file via a `definitions` entry with `type: ord
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
           "url": "/ord/overlays/ai-enrichment.overlay.json",
-          "purpose": "ord:ai-enrichment"
+          "purpose": "ord:ai-enrichment",
+          "target": {
+            "definitionType": "openapi-v3",
+            "definitionVisibility": "public"
+          }
         }
       ]
     }
@@ -100,22 +104,38 @@ and references the actual overlay file via a `definitions` entry with `type: ord
 
 ## Target Resolution
 
-The optional [`target`](#overlay-target) object narrows which document the overlay applies to.
-When omitted, all patches in the file are context-free and each patch's [`selector`](#overlay-selector) alone identifies the element.
-Omitting `target` is only appropriate when the association between the overlay and its target definition file
-is established by external convention (e.g. a pipeline that always merges a fixed overlay into a fixed file).
-For all other cases, specifying `target.ordId` is strongly recommended to make patch resolution unambiguous.
+The optional [`OrdOverlay.target`](#overlay-target) keeps an overlay document self-contained by identifying the resource or definition file it patches.
+When an overlay is published as an attached resource definition, its containing API or Event resource also establishes the resource being patched.
 
-Key fields on `target`:
+When an overlay is published as a standalone `OrdOverlayResource`,
+[`relatedApiResources`](../../spec-v1/interfaces/Document.md#overlay) and
+[`relatedEventResources`](../../spec-v1/interfaces/Document.md#overlay) entries
+with `relationType: ord:patches` identify the ORD resources being patched without requiring consumers to retrieve the overlay document first.
+
+Each standalone overlay definition can additionally use its optional [`target`](../../spec-v1/interfaces/Document.md#overlay-definition-target)
+to narrow the concrete definition file within those related resources.
+If either target is omitted, the association must be clear from the remaining target metadata and publication context.
+If several related resources remain possible, consumers MUST defer application until the overlay document's target or explicit application context makes the intended resource or resources unambiguous.
+Consumers MUST NOT arbitrarily select a related resource or assume that every overlay definition patches every related resource.
+For an explicitly multi-resource overlay, the definition selector MUST resolve unambiguously for each intended resource.
+If both targets are present, they MUST identify the same target, and shared identifiers MUST match.
+An ORD Aggregator SHOULD validate this consistency when it retrieves the overlay document.
+If the aggregator detects a mismatch, it MUST reject the overlay definition and MUST NOT apply the overlay.
+
+The ORD-level target uses stable definition metadata rather than a provider URL, because aggregators rewrite resource definition URLs when hosting them.
 
 | Field | Purpose |
 |---|---|
-| `ordId` | Identifies the ORD resource whose attached definition file is being patched. Used together with `url` or `definitionType` to disambiguate. |
-| `url` | Direct URL to the specific metadata definition file (e.g. an OpenAPI JSON file). |
-| `definitionType` | Declares the format of the file (e.g. `openapi-v3`, `a2a-agent-card`). Disambiguates when a resource has multiple definitions attached. |
+| `correlationIds` | Identifies the target resource through one or more external identifiers. |
+| `definitionType` | Selects the definition format and is required when an ORD-level target is provided. |
+| `definitionPurpose` | Selects a complementary definition; omission selects the primary/default definition. |
+| `definitionVisibility` | Selects the effective definition visibility; omission uses the resource's visibility. |
+
+The document-level target additionally supports `ordId`, `url`, and `systemInstance` because the overlay may be distributed without an ORD Document envelope.
+In both target locations, `definitionType` matches the target definition's `type` or its `customType` when provided; the literal legacy marker `custom` is not a valid selector.
 
 Example of ambiguity: an OData API resource may expose both `edmx` and `openapi-v3` definitions.
-Provide `definitionType` and/or `url` to make the concrete patch target explicit.
+Use `definitionType` on the standalone overlay definition to make the concrete patch target explicit.
 
 
 ## Selectors

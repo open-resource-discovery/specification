@@ -17,7 +17,11 @@
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
           "url": "/open-resource-discovery/v1/overlays/astronomy-api-ai-enrichment.overlay.json",
-          "purpose": "ord:ai-enrichment"
+          "purpose": "ord:ai-enrichment",
+          "target": {
+            "definitionType": "openapi-v3",
+            "definitionVisibility": "public"
+          }
         }
       ]
     },
@@ -35,7 +39,11 @@
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
           "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json",
-          "purpose": "foo.bar:governance"
+          "purpose": "foo.bar:governance",
+          "target": {
+            "definitionType": "openapi-v3",
+            "definitionVisibility": "public"
+          }
         }
       ]
     }

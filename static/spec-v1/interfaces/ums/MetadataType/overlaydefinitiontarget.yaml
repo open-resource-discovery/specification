@@ -1,0 +1,35 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlaydefinitiontarget'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlayDefinitionTarget'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: !!bool 'true'
+  description: "Optional context identifying the resource definition being patched without relying on its provider URL, which an ORD Aggregator rewrites when it hosts the definition.\n\nThe target resource is identified by the Overlay Resource's `relatedApiResources` or `relatedEventResources` relationships and can additionally be identified through `correlationIds`.\n`definitionType`, `definitionPurpose`, and `definitionVisibility` select the attached definition using the resource definition uniqueness key.\nWhen multiple resources are related, the remaining target metadata or application context MUST make the intended resource or resources unambiguous.\nThe relationship list alone does not imply that every overlay definition patches every related resource.\n\nExample: one OData API resource can have both `edmx` and `openapi-v3` definitions attached.\nIn such cases, `definitionType` makes the concrete patch target explicit.\n\nMultiple identifiers, if provided, are treated as all pointing to the same resource."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: !!bool 'true'
+      unique: !!bool 'true'
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'correlationIds'
+      type: 'string'
+      array: !!bool 'true'
+      description: "Correlation IDs referencing the target resource in external registries or systems of record.\nReuses the ORD correlation ID format: `namespace:type:localId`.\nAll listed IDs are treated as pointing to the same resource."
+    - name: 'definitionType'
+      type: 'string'
+      description: "Type of the target definition being patched.\nThis MUST match the referenced metadata definition's `type` or, when provided, its `customType` (as used in API/Event/Capability resource definitions).\nThis is especially useful when a resource has multiple attached definitions.\n\nThis can be used to disambiguate how selectors are interpreted for the target.\n\nMUST be either:\n- any valid [Specification ID](../../spec-v1/index.md#specification-id), or\n- one of the pre-defined values reused from:\n  - API Resource Definition `type`\n  - Event Resource Definition `type`\n  - Capability Definition `type`\n\nThe literal value `custom` is deprecated for `definitionType` and MUST NOT be used.\nIn such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead."
+      mandatory: !!bool 'true'
+    - name: 'definitionPurpose'
+      type: 'string'
+      description: "Purpose of the target resource definition.\nTogether with `definitionType` and `definitionVisibility`, this forms the resource definition uniqueness key.\nIf omitted, the target is the primary/default definition without a `purpose`."
+    - name: 'definitionVisibility'
+      type: 'string'
+      description: "Effective visibility of the target resource definition.\nTogether with `definitionType` and `definitionPurpose`, this forms the resource definition uniqueness key.\nIf omitted, the target definition uses the visibility inherited from its ORD resource."
+  customTypeDefinitions: []
+  metadataRelations: []

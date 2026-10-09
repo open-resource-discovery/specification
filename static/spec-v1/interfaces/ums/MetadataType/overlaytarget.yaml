@@ -19,7 +19,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId'
       type: 'string'
-      description: "ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).\nMUST be a valid [ORD ID](../../spec-v1/concepts/identifiers.md#ord-id)."
+      description: "ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).\nMUST be a valid [ORD ID](../../spec-v1/index.md#ord-id)."
       constraints:
         maxLength: !!int '255'
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
@@ -32,7 +32,7 @@ spec:
       description: "Correlation IDs referencing the target resource in external registries or systems of record.\nReuses the ORD correlation ID format: `namespace:type:localId`.\nAll listed IDs are treated as pointing to the same resource."
     - name: 'definitionType'
       type: 'string'
-      description: "Optional, but RECOMMENDED type of the target definition being patched.\nIf provided, this SHOULD match the `type` of the referenced metadata definition\n(as used in API/Event/Capability resource definitions).\nThis is especially useful when target `ordId` resolves to a resource with multiple attached definitions.\n\nThis can be used to disambiguate how selectors are interpreted for the target.\n\nMUST be either:\n- any valid [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id), or\n- one of the pre-defined values reused from:\n  - API Resource Definition `type`\n  - Event Resource Definition `type`\n  - Capability Definition `type`\n\nThe literal value `custom` is deprecated for `definitionType` and MUST NOT be used.\nIn such cases, use a concrete [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id) instead."
+      description: "Optional, but RECOMMENDED type of the target definition being patched.\nIf provided and corresponding ORD definition metadata is available, this MUST match its `type` or, when provided, its `customType`\n(as used in API/Event/Capability resource definitions).\nThis is especially useful when target `ordId` resolves to a resource with multiple attached definitions.\n\nThis can be used to disambiguate how selectors are interpreted for the target.\n\nMUST be either:\n- any valid [Specification ID](../../spec-v1/index.md#specification-id), or\n- one of the pre-defined values reused from:\n  - API Resource Definition `type`\n  - Event Resource Definition `type`\n  - Capability Definition `type`\n\nThe literal value `custom` is deprecated for `definitionType` and MUST NOT be used.\nIn such cases, use a concrete [Specification ID](../../spec-v1/index.md#specification-id) instead."
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'systemInstance'
