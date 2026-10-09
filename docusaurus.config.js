@@ -218,6 +218,7 @@ const config = {
       prism: {
         theme: prismThemes.oceanicNext,
         darkTheme: prismThemes.oceanicNext,
+        additionalLanguages: ["json5"],
       },
       mermaid: {
         theme: { light: "neutral", dark: "dark" },

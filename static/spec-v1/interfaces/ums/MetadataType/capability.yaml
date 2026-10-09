@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: !!bool 'false'
-  description: "Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.\nThis is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).\n\nIf a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.\nThis is the same idea and mechanism as with API resources and their resource definition formats."
+  description: "Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.\nThis is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).\nTo avoid accidental ORD ID collisions between capabilities of different types, publishers are RECOMMENDED to include the capability type in the ORD ID.\nThe type can be represented either as a sub-context namespace, for example `foo.bar.skill:capability:disputeSummarization:v1`, or as a suffix in the local identifier, for example `foo.bar:capability:disputeSummarizationSkill:v1`.\n\nIf a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.\nThis is the same idea and mechanism as with API resources and their resource definition formats."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -106,6 +106,10 @@ spec:
       type: 'guid'
       array: !!bool 'true'
       description: "Optional list of related EntityType Resources.\nMUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID."
+    - name: 'integrationDependencies_ID'
+      type: 'guid'
+      array: !!bool 'true'
+      description: "Optional list of integration dependencies that the capability relies on.\n\nThis is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to API Resources, Event Resources, or other Capabilities to function.\nThe mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.\nRuntime-specific connector configuration, credentials, guardrails, provisioning, and activation behavior remain outside this definition.\n\nMUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID."
     - name: 'definitions'
       type: 'custom'
       customTypeName: 'CapabilityDefinition'
@@ -249,6 +253,12 @@ spec:
       relatedTypeName: 'RelatedCapability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Optional list of related Capabilities.\n\nUse this to indicate dependencies, extensions, or other relationships between capabilities."
+    - propertyName: 'integrationDependencies'
+      relatedTypeName: 'IntegrationDependency'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      propertyBased: !!bool 'true'
+      managedByProperty: 'integrationDependencies_ID'
+      description: "Optional list of integration dependencies that the capability relies on.\n\nThis is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to API Resources, Event Resources, or other Capabilities to function.\nThe mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.\nRuntime-specific connector configuration, credentials, guardrails, provisioning, and activation behavior remain outside this definition.\n\nMUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID."
     - propertyName: 'inverseRelatedCapabilities'
       relatedTypeName: 'RelatedCapability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

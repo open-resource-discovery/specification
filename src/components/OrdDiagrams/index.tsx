@@ -125,8 +125,9 @@ export function ProviderDiagram() {
         <title id="ord-provider-title">ORD provider overview</title>
         <desc id="ord-provider-desc">
           An application or service exposes resources and capabilities through
-          ORD and declares dependencies on external resources. The protocols and
-          formats shown are examples.
+          ORD, including Agent Skills and Agent Plugins, and declares
+          dependencies on external resources. The protocols and formats shown
+          are examples.
         </desc>
         <g className="provided">
           <path d="M330 200V132" />
@@ -162,8 +163,8 @@ export function ProviderDiagram() {
             / Service
           </tspan>
         </text>
-        <g className="tag provided-tag" transform="translate(200 52)">
-          <rect width="260" height="62" rx="8" />
+        <g className="tag provided-tag" transform="translate(200 36)">
+          <rect width="260" height="78" rx="8" />
           <text x="130" y="25" textAnchor="middle">
             Capabilities
           </text>
@@ -173,7 +174,10 @@ export function ProviderDiagram() {
             y="47"
             textAnchor="middle"
           >
-            Features · configuration
+            <tspan x="130">Features · configuration</tspan>
+            <tspan x="130" dy="17">
+              Agent Skills · Agent Plugins
+            </tspan>
           </text>
         </g>
         <g className="tag provided-tag" transform="translate(520 100)">

@@ -3493,6 +3493,8 @@ definitions:
     description: |-
       Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
       This is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).
+      To avoid accidental ORD ID collisions between capabilities of different types, publishers are RECOMMENDED to include the capability type in the ORD ID.
+      The type can be represented either as a sub-context namespace, for example `foo.bar.skill:capability:disputeSummarization:v1`, or as a suffix in the local identifier, for example `foo.bar:capability:disputeSummarizationSkill:v1`.
 
       If a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.
       This is the same idea and mechanism as with API resources and their resource definition formats.
@@ -3517,6 +3519,22 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../concepts/identifiers.md#specification-id).
+          - const: "agent-skill"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              An agent skill is a discrete, reusable capability that an agent can perform.
+              Agent skills can be invoked by agents or other systems and represent
+              a well-defined task or function that the agent is capable of executing.
+              A definition is optional.
+              If a definition is provided, its `type` is RECOMMENDED to be `agent-skill-zip`.
+          - const: "agent-plugin"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              An agent plugin bundles multiple agent resources (such as one or more agent skills) into a single, distributable package.
+              Where an `agent-skill` describes a single discrete capability, an `agent-plugin` groups related agent resources together
+              so they can be discovered, versioned, and installed as one unit.
+              A definition is optional.
+              If a definition is provided, its `type` is RECOMMENDED to be `agent-plugin-zip`.
           - const: "sap.mdo:mdi-capability:v1"
             description: |-
               Capability for SAP Master Data Integration (MDI).
@@ -3527,7 +3545,7 @@ definitions:
               If chosen, `customType` MUST be provided.
             # Deprecate this in future?
         examples:
-          - custom
+          - "agent-skill"
 
       customType:
         <<: *customType
@@ -3626,6 +3644,26 @@ definitions:
         examples:
           - [{ "ordId": "sap.foo:capability:baseExtensibility:v1", "relationType": "foo.bar:relationName" }]
 
+      integrationDependencies:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          Optional list of integration dependencies that the capability relies on.
+
+          This is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to API Resources, Event Resources, or other Capabilities to function.
+          The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
+          Runtime-specific connector configuration, credentials, guardrails, provisioning, and activation behavior remain outside this definition.
+
+          MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          maxLength: 255
+          x-association-target:
+            - "#/definitions/IntegrationDependency/ordId"
+        examples:
+          - ["sap.foo.bar:integrationDependency:DocumentProcessing:v1"]
+
       definitions:
         <<: *resourceDefinitions
         items:
@@ -3678,6 +3716,25 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../concepts/identifiers.md#specification-id).
+          - const: "agent-skill-zip"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              A ZIP archive containing an agent skill and its relevant assets, such as instructions, configuration, schemas, or scripts.
+              ORD treats the archive as opaque and does not prescribe its internal layout or format version.
+              Package-format identification and versioning remain outside this definition type.
+
+              The `mediaType` MUST be set to `application/zip`.
+              When this definition type is used, the enclosing capability `type` MUST be set to `agent-skill`.
+          - const: "agent-plugin-zip"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              A ZIP archive that bundles multiple agent resources (such as one or more agent skills) into a single agent plugin package,
+              including all relevant assets such as configuration and schema files.
+              ORD treats the archive as opaque and does not prescribe its internal layout or format version.
+              Package-format identification and versioning remain outside this definition type.
+
+              The `mediaType` MUST be set to `application/zip`.
+              When this definition type is used, the enclosing capability `type` MUST be set to `agent-plugin`.
           - const: "sap.mdo:mdi-capability-definition:v1"
             description: |-
               Specification for describing master data integration capabilities for Master Data Orchestration (MDO).
@@ -4109,12 +4166,53 @@ definitions:
       minVersion:
         <<: *minVersion
 
+      subset:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          List of skills within the referenced capability that are required.
+
+          This is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.
+          If `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).
+          If `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context.
+        items:
+          $ref: "#/definitions/CapabilityIntegrationAspectSubset"
+
       labels:
         <<: *labels
 
     additionalProperties: false
     required:
       - ordId
+
+  ############################################################################################################
+
+  CapabilityIntegrationAspectSubset:
+    type: object
+    title: Capability Integration Aspect Subset
+    x-introduced-in-version: "1.17.0"
+    x-ums-type: "custom"
+    description: |-
+      Defines that the Capability Integration Aspect only requires a subset of the referenced capability.
+
+      For bundling capabilities such as `agent-plugin`, this is the list of contained skills that need to be available to make the integration work.
+      Without a `subset`, the dependency implies the whole capability (e.g. the entire plugin).
+      With a `subset`, only the listed skills are required, allowing consumers to understand / load only the minimal surface area needed.
+    properties:
+      skillName:
+        type: string
+        description: |-
+          The name of the individual skill within the referenced capability.
+
+          This MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).
+          Where the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter.
+        examples:
+          - "disputeSummarization"
+          - "disputeResolution"
+
+    additionalProperties: false
+    required:
+      - skillName
 
   ############################################################################################################
 
