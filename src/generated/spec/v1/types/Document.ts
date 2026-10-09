@@ -403,7 +403,7 @@ export interface SystemInstance {
  *
  * Please note that APIs can be described, but still be [`disabled`](#api-resource_disabled).
  *
- * If the API is not created or owned by the user of the system or by third parties (like partners), it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
+ * If the API is created or owned by the user of the system or by third parties such as partners, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property.
  */
 export interface ApiResource {
   /**
@@ -1368,7 +1368,7 @@ export interface Extensible {
  * The event resource provides a high-level description of a collection of related Events. More detailed information, such as the event resource definitions, are provided in links in the table below.
  * Which events are considered "related" is up to the implementer. A common practice is to bundle events that are based on the same resource/Business Object. It is also an option to bundle all available events into a single event resource/event catalog.
  * Please note that event resources can be described, but still be [`disabled`](#event-resource_disabled).
- * If the event resource is not created or owned by the user / customer of the system or by partners / third parties, it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
+ * If the event resource is created or owned by the user or customer of the system or by partners or third parties, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property.
  */
 export interface EventResource {
   /**
@@ -3937,9 +3937,9 @@ export interface CapabilityIntegrationAspect {
  *
  * If ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.
  *
- * Both have already a [vendor namespace](../concepts/identifiers.md#vendor-namespace) within their ORD ID.
- * The `Vendor` entity is giving more details on the vendor namespace.
- * For one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.
+ * Every Vendor ORD ID contains its [vendor namespace](../concepts/identifiers.md#vendor-namespace).
+ * The `Vendor` entity provides more details about that vendor namespace.
+ * Exactly one `Vendor` ORD entity MUST describe each vendor namespace.
  *
  * For example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.
  */
@@ -4051,8 +4051,9 @@ export interface Product {
 /**
  * A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
  *
- * The Package can also be used to indicate which products or vendors provided the packaged resources.
- * For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
+ * The Package can also indicate which vendor owns the packaged resources and which products they are part of.
+ * For partner or customer content, the Package indicates current ownership attribution through `vendor`.
+ * The independent `partOfProducts` assignment indicates the associated product offerings.
  *
  * A Package SHOULD contain at least one resource. Avoid empty Packages.
  *
