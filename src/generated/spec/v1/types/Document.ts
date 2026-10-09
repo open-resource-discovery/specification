@@ -330,8 +330,25 @@ export interface SystemInstance {
    * Optional local ID for the system instance, as known by the described system.
    *
    * In case of multi-tenant systems, it is equivalent to the local tenant id.
+   * This is the same identity that can be passed as the `Local-Tenant-Id` header in the
+   * [`open`](../../spec-extensions/access-strategies/open.md#local-tenant-id) and
+   * [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#local-tenant-id) access strategies.
    */
   localId?: string;
+  /**
+   * Optional globally unique and stable ID of the system instance (tenant), assigned by the authority responsible
+   * for that tenant identity.
+   *
+   * Unlike `localId`, which is only unique within the described system, `globalId` is intended for correlation
+   * across participating systems. It is the same identity that can be passed as the `Global-Tenant-Id`
+   * header in the [`open`](../../spec-extensions/access-strategies/open.md#global-tenant-id) and
+   * [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#global-tenant-id) access strategies.
+   *
+   * The provider MUST NOT invent this value. It MAY receive the value from an authoritative tenant or landscape
+   * service, including through aggregator onboarding, and include it when it can reliably correlate the described
+   * system instance with that authority's record.
+   */
+  globalId?: string;
   /**
    * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
    *
