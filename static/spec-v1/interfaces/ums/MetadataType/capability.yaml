@@ -252,5 +252,5 @@ spec:
     - propertyName: 'inverseRelatedCapabilities'
       relatedTypeName: 'RelatedCapability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: 'Capabilities that declared a relationship to this capability.'
+      description: 'Published relationships that reference this Capability.'
       mandatory: !!bool 'false'
