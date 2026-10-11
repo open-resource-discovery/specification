@@ -1,0 +1,60 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json#",
+  "openResourceDiscovery": "1.16",
+  "description": "Draft example for the proposed generic relationships feature. This uses the development schema and is not valid against the published ORD 1.16 schema. A release version must be assigned before merging.",
+  "relationships": [
+    {
+      "localId": "release-implements-release-capability",
+      "source": {
+        "ordId": "example.erp:apiResource:Procurement:v1",
+        "resourceVersion": "1.4.0",
+        "definition": {
+          "type": "openapi-v3",
+          "url": "https://erp.example.com/metadata/procurement-openapi.json"
+        },
+        "element": { "operation": "releaseOrder" }
+      },
+      "relationType": "ord:implementsCapability",
+      "target": { "ordId": "example.procurement:capability:OrderRelease:v1" },
+      "visibility": "internal"
+    },
+    {
+      "localId": "release-modifies-order",
+      "source": {
+        "ordId": "example.erp:apiResource:Procurement:v1",
+        "resourceVersion": "1.4.0",
+        "definition": {
+          "type": "openapi-v3",
+          "url": "https://erp.example.com/metadata/procurement-openapi.json"
+        },
+        "element": { "operation": "releaseOrder" }
+      },
+      "relationType": "ord:modifiesEntityType",
+      "target": { "ordId": "example.procurement:entityType:PurchaseOrder:v1" },
+      "visibility": "internal",
+      "description": "Declares a release transition; the application enforces approval and caller authorization."
+    },
+    {
+      "localId": "get-order-reads-order",
+      "source": {
+        "ordId": "example.erp:apiResource:Procurement:v1",
+        "resourceVersion": "1.4.0",
+        "definition": {
+          "type": "openapi-v3",
+          "url": "https://erp.example.com/metadata/procurement-openapi.json"
+        },
+        "element": { "jsonPointer": "/paths/~1orders~1{id}/get" }
+      },
+      "relationType": "ord:readsEntityType",
+      "target": { "ordId": "example.procurement:entityType:PurchaseOrder:v1" },
+      "visibility": "internal"
+    },
+    {
+      "localId": "release-flow-automates-process-task",
+      "source": { "ordId": "example.procurement:capability:OrderReleaseFlow:v1" },
+      "relationType": "example.architecture:automatesProcessStep",
+      "target": { "uri": "https://architecture.example.com/models/approval-v2.bpmn#ReleaseOrder" },
+      "visibility": "internal"
+    }
+  ]
+}

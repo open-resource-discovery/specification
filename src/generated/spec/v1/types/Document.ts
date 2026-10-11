@@ -8,6 +8,23 @@ export type Usage = "external" | "local";
  * Defines whether and how the resource can be extended with custom fields.
  */
 export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
+/**
+ * An ORD resource/taxonomy identifier, an exact element of a linked definition,
+ * or an absolute URI identifying an external metadata concept or model element.
+ *
+ * Endpoints describe metadata, not business-instance records. Resource identity is
+ * resolved in the assertion's publication/customer/perspective context. Consumers
+ * MUST preserve unresolved, inaccessible, ambiguous, and version-mismatched references
+ * without presenting them as successfully resolved relationships.
+ */
+export type RelationshipEndpoint = RelationshipORDEndpoint | RelationshipExternalEndpoint;
+/**
+ * Identifies exactly one native definition element. The native contract remains
+ * authoritative. Zero matches are unresolved; more than one match is ambiguous.
+ * Consumers MUST NOT silently select one candidate or treat selectors as wildcards.
+ */
+export type RelationshipElementSelector =
+  RelationshipElementByOperation | RelationshipElementByJSONPointer | RelationshipElementByNativeID;
 
 /**
  * The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
@@ -155,6 +172,23 @@ export interface OrdDocument {
    * Array of all integration dependencies that are described in this ORD document.
    */
   integrationDependencies?: IntegrationDependency[];
+  /**
+   * ⚠️ DRAFT / BETA: Generic, directed assertions between ORD resources, elements of
+   * their authoritative definitions, and externally identified metadata concepts.
+   *
+   * Each assertion is owned by the publisher of this ORD Document. A publisher MAY
+   * describe its own resources or publish independently curated cross-system assertions.
+   * This does not transfer ownership of the referenced resources or modify their definitions.
+   *
+   * Aggregators MUST retain the document's publisher, customer scope, perspective and
+   * described-system context with each assertion. An ORD ID alone is not a deployment
+   * identity, and a relationship MUST NOT be interpreted as runtime authorization.
+   *
+   * Existing specialized associations retain their semantics. See
+   * [Generic Relationships](../concepts/generic-relationships.md) for resolution,
+   * publication, and the proposed relationship vocabulary.
+   */
+  relationships?: GenericRelationship[];
   /**
    * Array of all Vendors that are described in this ORD document.
    */
@@ -3852,6 +3886,130 @@ export interface CapabilityIntegrationAspect {
    */
   minVersion?: string;
   labels?: Labels;
+}
+/**
+ * A publisher-owned, directed metadata assertion: source → relationType → target.
+ *
+ * The assertion identity is its localId within the publishing document and its
+ * publisher/customer/perspective context. A relationship is not a new operation
+ * resource and does not reproduce an operation's inputs, outputs, or execution contract.
+ * Publishers MUST use distinct localIds within one document.
+ */
+export interface GenericRelationship {
+  /**
+   * Stable identifier for this assertion within the publishing document.
+   * Consumers MUST NOT compare localIds across publisher or document contexts.
+   */
+  localId: string;
+  source: RelationshipEndpoint;
+  /**
+   * Directed relationship predicate, identified by a [Concept ID](../concepts/identifiers.md#concept-id).
+   *
+   * The `ord:` namespace is reserved. The following values are proposed for standardization;
+   * custom predicates MUST use a namespace controlled by their definition owner.
+   * Consumers MUST preserve unknown predicates and MUST NOT invent semantics for them.
+   */
+  relationType: (
+    string | "ord:implementsCapability" | "ord:readsEntityType" | "ord:modifiesEntityType" | "ord:representsConcept"
+  ) &
+    string;
+  target: RelationshipEndpoint;
+  /**
+   * Intended visibility of the assertion itself. Providers and aggregators MUST
+   * enforce metadata access restrictions; this property does not grant access.
+   * Publishing an assertion MUST NOT disclose restricted endpoint metadata or
+   * a restricted relationship to an audience that is not allowed to see it.
+   */
+  visibility: "public" | "internal" | "private";
+  /**
+   * Optional explanation of the assertion, including scope and relevant limitations.
+   * Notated in CommonMark. Machine-readable predicate semantics remain authoritative.
+   */
+  description?: string;
+  /**
+   * Optional links to the predicate definition, mapping documentation, or evidence.
+   * Links are references, not authorization or a guarantee of trustworthiness.
+   */
+  links?: Link[];
+}
+/**
+ * An ORD resource or taxonomy item, optionally selecting one exact element of
+ * its authoritative definition. An element requires resourceVersion and definition.
+ */
+export interface RelationshipORDEndpoint {
+  /**
+   * [ORD ID](../concepts/identifiers.md#ord-id) of the referenced resource or taxonomy item.
+   * Customer-scoped identifiers MUST retain their customer scope during resolution.
+   */
+  ordId: string;
+  /**
+   * Exact version of the referenced ORD resource. REQUIRED when element is supplied.
+   * MUST equal the version of the authoritative resource used for resolution.
+   */
+  resourceVersion?: string;
+  definition?: RelationshipDefinitionReference;
+  element?: RelationshipElementSelector;
+}
+/**
+ * Identifies one authoritative definition linked by the referenced ORD resource.
+ * It MUST match a published definition by type and effective absolute URL.
+ * Relative provider URLs MUST be resolved against that provider document's base URL
+ * before publication here, not against the relationship publisher's base URL.
+ */
+export interface RelationshipDefinitionReference {
+  /**
+   * The definition type as published on the referenced ORD resource.
+   */
+  type: string;
+  /**
+   * Effective absolute URL of the exact definition to inspect.
+   */
+  url: string;
+  /**
+   * Optional SHA-256 digest of the authoritative definition file's bytes.
+   * If supplied, consumers MUST verify it before reporting an element as resolved.
+   * This guards against mutable URLs; it is not a signature or a trust assertion.
+   */
+  sha256?: string;
+}
+export interface RelationshipElementByOperation {
+  /**
+   * Exact native operation identifier, aligned with ORD Overlay operation selectors:
+   * OpenAPI operationId, MCP tool name, A2A skill ID, or namespace-qualified
+   * OData Action/Function name or signature. A2A skills are advertised abilities,
+   * not proof of a directly callable operation. OData overloads require a signature
+   * when a qualified name alone is ambiguous.
+   * For MCP this selects a provider-published definition snapshot; live tools/list
+   * addressing needs a runtime-definition profile (not supplied by this draft).
+   */
+  operation: string;
+}
+export interface RelationshipElementByJSONPointer {
+  /**
+   * Exact non-root JSON Pointer (RFC 6901) into a JSON/YAML definition.
+   * For an OpenAPI operation without operationId, select the HTTP method object
+   * inside the appropriate path item. This is not JSONPath.
+   */
+  jsonPointer: string;
+}
+export interface RelationshipElementByNativeID {
+  /**
+   * Exact identifier defined by the native format, for example a CSN entity name,
+   * BPMN task ID, DMN decision ID, or Arazzo workflowId. A format-specific resolver
+   * MUST define its scope and matching rules. Unsupported formats remain unresolved.
+   */
+  nativeId: string;
+}
+/**
+ * An externally identified metadata concept or model element.
+ */
+export interface RelationshipExternalEndpoint {
+  /**
+   * Absolute URI identifying an external metadata concept or model element,
+   * for example a vocabulary concept or a BPMN task. URI identity does not
+   * require an HTTP retrieval and MUST NOT trigger unrestricted network access.
+   */
+  uri: string;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.
