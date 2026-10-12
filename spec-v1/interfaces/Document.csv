@@ -298,12 +298,18 @@ Capability,description,false,string
 Capability,aiHint,false,string
 Capability,partOfPackage,true,string
 Capability,partOfGroups,false,array<string>
+Capability,partOfProducts,false,array<string>
 Capability,version,true,string
 Capability,lastUpdate,false,string
 Capability,visibility,true,string
 Capability,releaseStatus,true,string
 Capability,disabled,false,boolean
 Capability,minSystemVersion,false,string
+Capability,responsible,false,string
+Capability,deprecationDate,false,string
+Capability,sunsetDate,false,string
+Capability,successors,false,array<string>
+Capability,changelogEntries,false,array<ChangelogEntry>
 Capability,relatedEntityTypes,false,array<string>
 Capability,relatedApiResources,false,array<RelatedApiResource>
 Capability,relatedEventResources,false,array<RelatedEventResource>
@@ -311,9 +317,13 @@ Capability,relatedCapabilities,false,array<RelatedCapability>
 Capability,integrationDependencies,false,array<string>
 Capability,definitions,false,array<CapabilityDefinition>
 Capability,links,false,array<Link>
+Capability,countries,false,array<string>
+Capability,lineOfBusiness,false,array<string>
+Capability,industry,false,array<string>
 Capability,tags,false,array<string>
 Capability,labels,false,Labels
 Capability,documentationLabels,false,DocumentationLabels
+Capability,policyLevels,false,array<string>
 Capability,systemInstanceAware,false,boolean
 Capability Definition,type,true,string
 Capability Definition,customType,false,string
