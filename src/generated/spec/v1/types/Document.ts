@@ -5,7 +5,7 @@
  */
 export type Usage = "external" | "local";
 /**
- * Defines whether and how the resource can be extended with custom fields.
+ * Defines whether and how the resource can be extended.
  */
 export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
 
@@ -330,8 +330,25 @@ export interface SystemInstance {
    * Optional local ID for the system instance, as known by the described system.
    *
    * In case of multi-tenant systems, it is equivalent to the local tenant id.
+   * This is the same identity that can be passed as the `Local-Tenant-Id` header in the
+   * [`open`](../../spec-extensions/access-strategies/open.md#local-tenant-id) and
+   * [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#local-tenant-id) access strategies.
    */
   localId?: string;
+  /**
+   * Optional globally unique and stable ID of the system instance (tenant), assigned by the authority responsible
+   * for that tenant identity.
+   *
+   * Unlike `localId`, which is only unique within the described system, `globalId` is intended for correlation
+   * across participating systems. It is the same identity that can be passed as the `Global-Tenant-Id`
+   * header in the [`open`](../../spec-extensions/access-strategies/open.md#global-tenant-id) and
+   * [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#global-tenant-id) access strategies.
+   *
+   * The provider MUST NOT invent this value. It MAY receive the value from an authoritative tenant or landscape
+   * service, including through aggregator onboarding, and include it when it can reliably correlate the described
+   * system instance with that authority's record.
+   */
+  globalId?: string;
   /**
    * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
    *
@@ -365,7 +382,7 @@ export interface SystemInstance {
  *
  * Please note that APIs can be described, but still be [`disabled`](#api-resource_disabled).
  *
- * If the API is not created or owned by the user of the system or by third parties (like partners), it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
+ * If the API is created or owned by the user of the system or by third parties such as partners, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property.
  */
 export interface ApiResource {
   /**
@@ -1317,9 +1334,9 @@ export interface Link {
 export interface Extensible {
   supported: ExtensibilitySupportLevel;
   /**
-   * A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+   * A description about the extensibility capabilities of this resource, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
-   * This description may contain detailed steps on how to extend the API.
+   * This description may contain detailed steps on how to extend the resource.
    * Links to external resources can be provided within the description as markdown links.
    *
    * This description MUST be provided if `supported` is set to `manual` or `automatic`.
@@ -1330,7 +1347,7 @@ export interface Extensible {
  * The event resource provides a high-level description of a collection of related Events. More detailed information, such as the event resource definitions, are provided in links in the table below.
  * Which events are considered "related" is up to the implementer. A common practice is to bundle events that are based on the same resource/Business Object. It is also an option to bundle all available events into a single event resource/event catalog.
  * Please note that event resources can be described, but still be [`disabled`](#event-resource_disabled).
- * If the event resource is not created or owned by the user / customer of the system or by partners / third parties, it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
+ * If the event resource is created or owned by the user or customer of the system or by partners or third parties, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property.
  */
 export interface EventResource {
   /**
@@ -2219,6 +2236,8 @@ export interface EntityTypeDefinition {
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
  * This is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).
+ * To avoid accidental ORD ID collisions between capabilities of different types, publishers are RECOMMENDED to include the capability type in the ORD ID.
+ * The type can be represented either as a sub-context namespace, for example `foo.bar.skill:capability:disputeSummarization:v1`, or as a suffix in the local identifier, for example `foo.bar:capability:disputeSummarizationSkill:v1`.
  *
  * If a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.
  * This is the same idea and mechanism as with API resources and their resource definition formats.
@@ -2251,7 +2270,7 @@ export interface Capability {
   /**
    * Type of the Capability
    */
-  type: (string | "sap.mdo:mdi-capability:v1" | "workflow" | "custom") & string;
+  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "workflow" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -2313,6 +2332,20 @@ export interface Capability {
    * See [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types).
    */
   partOfGroups?: string[];
+  /**
+   * List of products this package and its resources are a part of.
+   *
+   * MUST be a valid reference to a [Product](#product) ORD ID.
+   *
+   * `partOfProducts` assigned to a `Package` are inherited by all ORD resources it contains.
+   * Resources that belong to a different product than their package can override this directly.
+   *
+   * Every ORD resource SHOULD be assigned to at least one product, either directly or inherited from its package.
+   * Setting `partOfProducts` on the package is the preferred approach, as it propagates automatically to all contained resources.
+   *
+   * @minItems 0
+   */
+  partOfProducts?: string[];
   /**
    * The complete [SemVer](https://semver.org/) version string.
    *
@@ -2387,6 +2420,39 @@ export interface Capability {
    */
   minSystemVersion?: string;
   /**
+   * Contains typically the organization that is responsible in the sense of RACI matrix for this ORD resource. This includes support and feature requests. It is maintained as correlation id to for example support components.
+   */
+  responsible?: string;
+  /**
+   * The deprecation date defines when the resource has been set as deprecated.
+   * This is not to be confused with the `sunsetDate` which defines when the resource will be actually sunset, aka. decommissioned / removed / archived.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   */
+  deprecationDate?: string;
+  /**
+   * The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.
+   *
+   * If the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).
+   * Once the sunset date is known and ready to be communicated externally, it MUST be provided here.
+   *
+   * The date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+   */
+  sunsetDate?: string;
+  /**
+   * The successor resource(s).
+   *
+   * MUST be a valid reference to an ORD ID.
+   *
+   * If the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.
+   * If `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`.
+   */
+  successors?: string[];
+  /**
+   * Contains changelog entries that summarize changes with special regards to version and releaseStatus
+   */
+  changelogEntries?: ChangelogEntry[];
+  /**
    * Optional list of related EntityType Resources.
    * MUST be a valid reference to an [EntityType Resource](#entity-type) ORD ID.
    */
@@ -2409,6 +2475,16 @@ export interface Capability {
    * Use this to indicate dependencies, extensions, or other relationships between capabilities.
    */
   relatedCapabilities?: RelatedCapability[];
+  /**
+   * Optional list of integration dependencies that the capability relies on.
+   *
+   * This is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to API Resources, Event Resources, or other Capabilities to function.
+   * The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
+   * Runtime-specific connector configuration, credentials, guardrails, provisioning, and activation behavior remain outside this definition.
+   *
+   * MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+   */
+  integrationDependencies?: string[];
   /**
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
@@ -2435,6 +2511,85 @@ export interface Capability {
    * Generic Links with arbitrary meaning and content.
    */
   links?: Link[];
+  extensible?: Extensible;
+  /**
+   * List of countries that the Package resources are applicable to.
+   *
+   * MUST be expressed as an array of country codes according to [IES ISO-3166 ALPHA-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+   *
+   * `countries` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  countries?: string[];
+  /**
+   * List of line of business tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * `lineOfBusiness` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  lineOfBusiness?: ((
+    | string
+    | "Asset Management"
+    | "Commerce"
+    | "Finance"
+    | "Human Resources"
+    | "Manufacturing"
+    | "Marketing"
+    | "R&D Engineering"
+    | "Sales"
+    | "Service"
+    | "Sourcing and Procurement"
+    | "Strategy, Compliance, and Governance"
+    | "Supply Chain"
+    | "Sustainability"
+    | "Metering"
+    | "Grid Operations and Maintenance"
+    | "Plant Operations and Maintenance"
+    | "Maintenance and Engineering"
+  ) &
+    string)[];
+  /**
+   * List of industry tags.
+   * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
+   *
+   * `industry` that are assigned to a `Package` are inherited to all of the ORD resources it contains.
+   */
+  industry?: ((
+    | string
+    | "Aerospace and Defense"
+    | "Agribusiness"
+    | "Automotive"
+    | "Banking"
+    | "Chemicals"
+    | "Consumer Industries"
+    | "Consumer Products"
+    | "Defense and Security"
+    | "Discrete Industries"
+    | "Energy and Natural Resources"
+    | "Engineering Construction and Operations"
+    | "Financial Services"
+    | "Future Cities"
+    | "Healthcare"
+    | "High Tech"
+    | "Higher Education and Research"
+    | "Industrial Machinery and Components"
+    | "Insurance"
+    | "Life Sciences"
+    | "Media"
+    | "Mill Products"
+    | "Mining"
+    | "Oil and Gas"
+    | "Professional Services"
+    | "Public Sector"
+    | "Public Services"
+    | "Retail"
+    | "Service Industries"
+    | "Sports and Entertainment"
+    | "Telecommunications"
+    | "Travel and Transportation"
+    | "Utilities"
+    | "Wholesale Distribution"
+  ) &
+    string)[];
   /**
    * List of free text style tags.
    * No special characters are allowed except `-`, `_`, `.`, `/` and ` `.
@@ -2444,6 +2599,15 @@ export interface Capability {
   tags?: string[];
   labels?: Labels;
   documentationLabels?: DocumentationLabels;
+  /**
+   * A list of [policy levels](../../spec-extensions/policy-levels/) that the described resources need to be compliant with.
+   * For each chosen policy level, additional expectations and validations rules will be applied.
+   *
+   * Policy levels can be defined on ORD Document level, but also be overwritten on an individual package or resource level.
+   *
+   * A policy level MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
+   */
+  policyLevels?: string[];
   /**
    * Defines whether this ORD resource is **system-instance-aware**.
    * This is the case when the referenced resource definitions are potentially different between **system instances**.
@@ -2483,7 +2647,10 @@ export interface CapabilityDefinition {
   /**
    * Type of the capability resource definition
    */
-  type: (string | "sap.mdo:mdi-capability-definition:v1" | "arazzo-v1" | "custom") & string;
+  type: (
+    string | "agent-skill-zip" | "agent-plugin-zip" | "sap.mdo:mdi-capability-definition:v1" | "arazzo-v1" | "custom"
+  ) &
+    string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -3675,7 +3842,8 @@ export interface IntegrationDependency {
   /**
    * List of integration aspects that make up the Integration Dependency.
    *
-   * Each aspect listed is a dedicated, constituent part (AND condition).
+   * Each mandatory aspect is a dedicated, constituent part that needs to be fulfilled (AND condition).
+   * System-type aspects can be combined with more detailed API-resource, event-resource or capability aspects.
    */
   aspects?: Aspect[];
   /**
@@ -3703,7 +3871,7 @@ export interface IntegrationDependency {
  * Each aspect can list references to resources, which could be owned and defined by the integration target or by the described system itself.
  * In case the reference links to own resources, it is implied that they are to be used by the integration target to fulfill the Integration Dependency.
  *
- * If multiple resources are given within an aspect, they are considered alternatives to each other (OR condition).
+ * If multiple dependencies are given within an aspect, including across `systemTypes`, `apiResources`, `eventResources` and `capabilities`, they are considered alternatives to each other (OR condition).
  * In case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.
  */
 export interface Aspect {
@@ -3713,7 +3881,7 @@ export interface Aspect {
    * MUST NOT exceed 255 chars.
    * MUST NOT contain line breaks.
    */
-  title: string;
+  title?: string;
   /**
    * Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    *
@@ -3742,6 +3910,16 @@ export interface Aspect {
    * List of Capability Dependencies.
    */
   capabilities?: CapabilityIntegrationAspect[];
+  /**
+   * List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).
+   *
+   * Each entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.
+   * Use separate aspects when multiple system types are required (AND condition).
+   * System-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency.
+   *
+   * @minItems 1
+   */
+  systemTypes?: [SystemTypeIntegrationAspect, ...SystemTypeIntegrationAspect[]];
   labels?: Labels;
 }
 /**
@@ -3851,7 +4029,45 @@ export interface CapabilityIntegrationAspect {
    *
    */
   minVersion?: string;
+  /**
+   * List of skills within the referenced capability that are required.
+   *
+   * This is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.
+   * If `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).
+   * If `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context.
+   */
+  subset?: CapabilityIntegrationAspectSubset[];
   labels?: Labels;
+}
+/**
+ * Defines that the Capability Integration Aspect only requires a subset of the referenced capability.
+ *
+ * For bundling capabilities such as `agent-plugin`, this is the list of contained skills that need to be available to make the integration work.
+ * Without a `subset`, the dependency implies the whole capability (e.g. the entire plugin).
+ * With a `subset`, only the listed skills are required, allowing consumers to understand / load only the minimal surface area needed.
+ */
+export interface CapabilityIntegrationAspectSubset {
+  /**
+   * The name of the individual skill within the referenced capability.
+   *
+   * This MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).
+   * Where the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter.
+   */
+  skillName: string;
+}
+/**
+ * System-type related integration aspect.
+ */
+export interface SystemTypeIntegrationAspect {
+  /**
+   * The [system namespace](../concepts/identifiers.md#system-namespace) that identifies the required system type.
+   */
+  systemNamespace: string;
+  /**
+   * Minimum [system version](../index.md#system-version) that the integration requires.
+   * The target system version MUST be greater than or equal to this value according to Semantic Versioning precedence.
+   */
+  minSystemVersion?: string;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.
@@ -3862,9 +4078,9 @@ export interface CapabilityIntegrationAspect {
  *
  * If ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.
  *
- * Both have already a [vendor namespace](../concepts/identifiers.md#vendor-namespace) within their ORD ID.
- * The `Vendor` entity is giving more details on the vendor namespace.
- * For one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.
+ * Every Vendor ORD ID contains its [vendor namespace](../concepts/identifiers.md#vendor-namespace).
+ * The `Vendor` entity provides more details about that vendor namespace.
+ * Exactly one `Vendor` ORD entity MUST describe each vendor namespace.
  *
  * For example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.
  */
@@ -3976,8 +4192,9 @@ export interface Product {
 /**
  * A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
  *
- * The Package can also be used to indicate which products or vendors provided the packaged resources.
- * For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
+ * The Package can also indicate which vendor owns the packaged resources and which products they are part of.
+ * For partner or customer content, the Package indicates current ownership attribution through `vendor`.
+ * The independent `partOfProducts` assignment indicates the associated product offerings.
  *
  * A Package SHOULD contain at least one resource. Avoid empty Packages.
  *
