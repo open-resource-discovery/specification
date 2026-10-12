@@ -12,10 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added `oas-overlay-v1` as a resource definition `type` on API Resource Definitions. This allows publishers to expose [OpenAPI Initiative Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html) documents directly through ORD.
-- Added `oas-overlay-v1` to the allowed values of `target.definitionType` on `OrdOverlay`, so ORD Overlays can target OpenAPI Overlay files.
-- Added an appendix section ["Relation to the OpenAPI Initiative Overlay Specification"](https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay#appendix-relation-to-the-openapi-initiative-overlay-specification) to the ORD Overlay documentation that describes what motivated a dedicated, ORD-opinionated overlay model, where the two specifications overlap, and how they interoperate.
-- `sap:core:v1` policy level: SAP applications and services MUST use `type: "ord:overlay:v1"` as the overlay format for all published overlays.
+- Added `relatedDataProducts` to Data Products for expressing typed relationships to other Data Products through extensible reference objects.
 - Added [Arazzo Specification](https://www.openapis.org/arazzo-specification) support for describing multi-step API workflows.
   - Added standardized Capability type `workflow` with definition type `arazzo-v1`.
   - Added `arazzo-v1` to ORD Overlay target definition types.
@@ -25,13 +22,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   ORD Overlays support the same identifier in `describedSystemInstance` and `target.systemInstance`, with matching identity semantics and validation constraints.
   Cross-linked `localId`/`Local-Tenant-Id` and `globalId`/`Global-Tenant-Id` between the ORD Document interface and the access-strategy documentation.
 - Added `systemTypes` to `IntegrationAspect` for dependencies on system types that do not require a specific resource contract, including an optional minimum system version.
-- Added capability type `agent-skill` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
-- Added capability definition type `agent-skill-zip` for ZIP archive definitions of agent skills with media type `application/zip`.
-- Added capability type `agent-plugin` for bundling multiple agent resources (such as one or more agent skills) into a single, distributable package.
-- Added capability definition type `agent-plugin-zip` for ZIP archive definitions of agent plugins with media type `application/zip`.
-- Added `integrationDependencies` to `Capability`, mirroring the property on `Agent` and allowing a capability to declare the API Resources, Event Resources, or other Capabilities it requires. See [AI Agents and Protocols: Skill Dependencies](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#skill-dependencies).
-- Added `subset` property to `CapabilityIntegrationAspect` (new `CapabilityIntegrationAspectSubset` object with `skillName`). Lets a dependency on a bundling capability such as `agent-plugin` be narrowed to specific contained skills, so consumers load only the minimal surface into the harness / context instead of the whole bundle.
-- Added `partOfProducts`, `responsible`, lifecycle metadata, taxonomy, and `policyLevels` to Capabilities for consistency with other ORD resources.
+- Added standardized Capability types `agent-skill` and `agent-plugin`, with `agent-skill-zip` and `agent-plugin-zip` definitions for distributing skills and plugin bundles as ZIP archives.
+- Added `integrationDependencies` to Capabilities, allowing them to declare required API Resources, Event Resources, or other Capabilities. Dependencies on bundling capabilities such as agent plugins can use `subset.skillName` to identify only the required skills. See [AI Agents and Protocols: Skill Dependencies](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#skill-dependencies).
+- Added `partOfProducts`, `responsible`, lifecycle metadata, taxonomy, `policyLevels`, and `extensible` to Capabilities for consistency with other ORD resources and support for custom fields.
+- Added support for [OpenAPI Initiative Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html): API Resources can publish `oas-overlay-v1` definitions, and ORD Overlays can target them. The ORD Overlay documentation now explains how the two overlay specifications interoperate.
+- Added the `sap:documentation:v1` policy level for human-readable metadata requirements. `sap:core:v1` now inherits this policy level.
 
 ### Changed
 
@@ -39,8 +34,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   The exported TypeScript `Aspect.title` property is now optional; consumers that assumed a title was always present may require source changes when upgrading. Documents with title-less aspects do not validate against earlier schemas.
 - Allowed customer-namespaced ORD IDs to be published globally when the allocating platform guarantees global uniqueness across customer scopes; otherwise partner content still requires ORD IDs under the partner's registered vendor namespace.
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
-- Reorganized identifier, versioning, lifecycle, and compatibility guidance into focused detail-page sections, simplified the main specification overview, and refreshed the related diagrams and navigation without changing normative requirements.
-- Added `extensible` to Capabilities and generalized its descriptions beyond API and event custom fields.
+- `sap:core:v1` now requires all ORD Overlays to have effective `internal` or `private` visibility and requires SAP publishers to use `ord:overlay:v1` rather than `oas-overlay-v1` for published overlays.
 
 ## [1.16.4]
 

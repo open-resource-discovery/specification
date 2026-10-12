@@ -13,10 +13,10 @@ import {
   SpecificationMap,
 } from "@site/src/components/OrdDiagrams";
 
-# Open Resource Discovery Specification 1.16
+# Open Resource Discovery Specification 1.17
 
 Open Resource Discovery (ORD) is an open protocol that enables applications and services to publish a machine-readable description of their resources and capabilities.
-This document defines the normative information model, provider interfaces, and aggregation behavior for ORD 1.16.
+This document defines the normative information model, provider interfaces, and aggregation behavior for ORD 1.17.
 
 If you are new to ORD, start with the [ORD Introduction](../introduction.mdx) or use the [visual presentation](https://open-resource-discovery.github.io/presentation/) for a guided walkthrough.
 The [presentation source](https://github.com/open-resource-discovery/presentation) is available on GitHub.

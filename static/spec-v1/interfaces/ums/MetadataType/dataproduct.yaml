@@ -295,6 +295,10 @@ spec:
       description: 'Aggregated list of entity types that are at least partially exposed by the data product. Detailed mapping can be found on the output port schema level.'
       reverseRelation:
         relationPropertyName: 'dataProducts'
+    - propertyName: 'relatedDataProducts'
+      relatedTypeName: 'RelatedDataProduct'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of related Data Products.\n\nUse this to indicate which other Data Products are associated with this Data Product.\nThe optional `relationType` on each reference can express the semantics of the relationship."
     - propertyName: 'inputPorts'
       relatedTypeName: 'DataProductInputPort'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
@@ -304,3 +308,8 @@ spec:
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Output ports are the interface (APIs and Events) through which the data of the data product can be accessed.\n\nOutput ports of the same data product might produce different facets of the data set with different qualities.\nA data set can also be made available via different protocols, which also results in different ports.\n\nAs long as different output ports are accessing the same model beneath, they should belong to the same data product.\nIf the above criteria cannot be reasonably met, consider splitting the data product into multiple smaller data products."
       mandatory: !!bool 'true'
+    - propertyName: 'inverseRelatedDataProducts'
+      relatedTypeName: 'RelatedDataProduct'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Data Products that declared a relationship to this Data Product.'
+      mandatory: !!bool 'false'
