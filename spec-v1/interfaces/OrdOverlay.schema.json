@@ -224,6 +224,10 @@
             },
             {
               "const": "sap.mdo:mdi-capability-definition:v1"
+            },
+            {
+              "const": "arazzo-v1",
+              "x-introduced-in-version": "1.17.0"
             }
           ],
           "examples": [

@@ -5097,6 +5097,11 @@
               "description": "Capability for SAP Master Data Integration (MDI).\n\nFor the capability definitions: `type` MUST ONLY be set to `sap.mdo:mdi-capability-definition:v1`."
             },
             {
+              "const": "workflow",
+              "x-introduced-in-version": "1.17.0",
+              "description": "Standardized capability representing an executable, multi-step workflow that orchestrates\none or more APIs. Typically defined via an [Arazzo](https://spec.openapis.org/arazzo/v1.0.0.html)\ndocument attached as a capability definition with `type: \"arazzo-v1\"`.\n\nWorkflow capabilities SHOULD list every API Resource they interact with in\n`relatedApiResources`, each with\n`relationType: \"ord:orchestrates\"`."
+            },
+            {
               "const": "custom",
               "description": "If chosen, `customType` MUST be provided."
             }
@@ -5718,6 +5723,11 @@
             {
               "const": "sap.mdo:mdi-capability-definition:v1",
               "description": "Specification for describing master data integration capabilities for Master Data Orchestration (MDO).\n\nThe `mediaType` MUST be set to `application/json`.\nThe capability `type` MUST be set to `sap.mdo:mdi-capability:v1`."
+            },
+            {
+              "const": "arazzo-v1",
+              "x-introduced-in-version": "1.17.0",
+              "description": "[Arazzo Specification v1.0.0](https://spec.openapis.org/arazzo/v1.0.0.html) workflow document\ndescribing multi-step API interactions.\n\nThe `mediaType` MUST be set to `application/json` or `application/yaml`.\nThe capability `type` SHOULD be set to `workflow`."
             },
             {
               "const": "custom",
@@ -7786,6 +7796,11 @@
               "const": "ord:patches",
               "x-introduced-in-version": "1.15.0",
               "description": "The source resource patches one or more definition files of the target resource.\nUsed on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch."
+            },
+            {
+              "const": "ord:orchestrates",
+              "x-introduced-in-version": "1.17.0",
+              "description": "The source resource orchestrates the target API Resource as part of a multi-step workflow.\nTypically used on [Capabilities](#capability) of `type: \"workflow\"` (e.g. defined via an\n[Arazzo](https://spec.openapis.org/arazzo/v1.0.0.html) document) to declare which APIs\nthe workflow invokes."
             }
           ],
           "examples": [
