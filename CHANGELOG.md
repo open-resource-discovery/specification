@@ -18,6 +18,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added capability definition type `agent-plugin-zip` for ZIP archive definitions of agent plugins with media type `application/zip`.
 - Added `integrationDependencies` to `Capability`, mirroring the property on `Agent` and allowing a capability to declare the API Resources, Event Resources, or other Capabilities it requires. See [AI Agents and Protocols: Skill Dependencies](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#skill-dependencies).
 - Added `subset` property to `CapabilityIntegrationAspect` (new `CapabilityIntegrationAspectSubset` object with `skillName`). Lets a dependency on a bundling capability such as `agent-plugin` be narrowed to specific contained skills, so consumers load only the minimal surface into the harness / context instead of the whole bundle.
+- Added `partOfProducts`, `responsible`, lifecycle metadata, taxonomy, and `policyLevels` to Capabilities for consistency with other ORD resources.
 
 ### Changed
 
