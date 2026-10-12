@@ -196,6 +196,7 @@ Data Product,changelogEntries,false,array<ChangelogEntry>
 Data Product,type,true,string
 Data Product,category,true,string
 Data Product,entityTypes,false,array<string>
+Data Product,relatedDataProducts,false,array<RelatedDataProduct>
 Data Product,inputPorts,false,array<DataProductInputPort>
 Data Product,outputPorts,true,array<DataProductOutputPort>
 Data Product,responsible,true,string
@@ -469,6 +470,8 @@ Related API Resource,ordId,true,string
 Related API Resource,relationType,false,string
 Related Event Resource,ordId,true,string
 Related Event Resource,relationType,false,string
+Related Data Product,ordId,true,string
+Related Data Product,relationType,false,string
 Related Capability,ordId,true,string
 Related Capability,relationType,false,string
 Exposed Entity Type,ordId,true,string

@@ -3359,6 +3359,22 @@
             ]
           ]
         },
+        "relatedDataProducts": {
+          "type": "array",
+          "x-introduced-in-version": "1.17.0",
+          "description": "Optional list of related Data Products.\n\nUse this to indicate which other Data Products are associated with this Data Product.\nThe optional `relationType` on each reference can express the semantics of the relationship.",
+          "items": {
+            "$ref": "#/definitions/RelatedDataProduct"
+          },
+          "examples": [
+            [
+              {
+                "ordId": "sap.foo.bar:dataProduct:Product:v1",
+                "relationType": "foo.bar:relationName"
+              }
+            ]
+          ]
+        },
         "inputPorts": {
           "x-feature-status": "beta",
           "type": "array",
@@ -7857,6 +7873,39 @@
               "description": "The source resource patches one or more definition files of the target resource.\nUsed on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch."
             }
           ],
+          "examples": [
+            "foo.bar:relationName"
+          ]
+        }
+      },
+      "required": [
+        "ordId"
+      ],
+      "additionalProperties": false
+    },
+    "RelatedDataProduct": {
+      "title": "Related Data Product",
+      "x-introduced-in-version": "1.17.0",
+      "x-ums-type": "embedded",
+      "type": "object",
+      "description": "Defines a relation to another Data Product (via its ORD ID).",
+      "properties": {
+        "ordId": {
+          "type": "string",
+          "description": "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(dataProduct):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+          "maxLength": 255,
+          "examples": [
+            "sap.foo.bar:dataProduct:Product:v1"
+          ],
+          "x-association-target": [
+            "#/definitions/DataProduct/ordId"
+          ]
+        },
+        "relationType": {
+          "type": "string",
+          "description": "Optional type of the relationship as a [Concept ID](../index.md#concept-id).\n\nDefines the semantic meaning of the relationship.\nIf not provided, the relationship has no specific semantics (\"related somehow\").",
+          "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-\\/]+)$",
           "examples": [
             "foo.bar:relationName"
           ]
