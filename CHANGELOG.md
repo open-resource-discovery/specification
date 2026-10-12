@@ -12,6 +12,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
+- Added optional `describedSystemInstance.globalId` property for a globally unique and stable tenant identifier assigned by the responsible tenant authority.
+  It records the same identity that can be passed as the `Global-Tenant-Id` header in the `open` and `basic-auth` access strategies.
+  ORD Overlays support the same identifier in `describedSystemInstance` and `target.systemInstance`, with matching identity semantics and validation constraints.
+  Cross-linked `localId`/`Local-Tenant-Id` and `globalId`/`Global-Tenant-Id` between the ORD Document interface and the access-strategy documentation.
 - Added `systemTypes` to `IntegrationAspect` for dependencies on system types that do not require a specific resource contract, including an optional minimum system version.
 - Added capability type `agent-skill` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
 - Added capability definition type `agent-skill-zip` for ZIP archive definitions of agent skills with media type `application/zip`.
