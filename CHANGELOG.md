@@ -8,7 +8,10 @@ but omits the **patch** level in the spec version number.
 
 For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMAP.md)
 
+
 ## [unreleased]
+
+## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added
 
@@ -36,6 +39,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
 - Clarified identifier and lifecycle guidance: Specification IDs do not allow `/` in the specification identifier, runtime extensions MAY use SemVer build metadata but MUST update `lastUpdate`, and decommissioned resources or unused taxonomy require tombstones; resources may be removed or retained with `releaseStatus: sunset` and a `sunsetDate`.
 - `sap:core:v1` now requires all ORD Overlays to have effective `internal` or `private` visibility and requires SAP publishers to use `ord:overlay:v1` rather than `oas-overlay-v1` for published overlays.
+
 
 ## [1.16.4]
 
