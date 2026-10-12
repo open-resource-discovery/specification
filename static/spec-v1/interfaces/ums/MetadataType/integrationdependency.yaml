@@ -94,7 +94,7 @@ spec:
       type: 'custom'
       customTypeName: 'IntegrationAspect'
       array: !!bool 'true'
-      description: "List of integration aspects that make up the Integration Dependency.\n\nEach aspect listed is a dedicated, constituent part (AND condition)."
+      description: "List of integration aspects that make up the Integration Dependency.\n\nEach mandatory aspect is a dedicated, constituent part that needs to be fulfilled (AND condition).\nSystem-type aspects can be combined with more detailed API-resource, event-resource or capability aspects."
     - name: 'relatedIntegrationDependencies_ID'
       type: 'guid'
       array: !!bool 'true'
@@ -122,7 +122,6 @@ spec:
         - name: 'title'
           type: 'string'
           description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
-          mandatory: !!bool 'true'
           constraints:
             minLength: !!int '1'
             maxLength: !!int '255'
@@ -153,6 +152,11 @@ spec:
           customTypeName: 'CapabilityIntegrationAspect'
           array: !!bool 'true'
           description: 'List of Capability Dependencies.'
+        - name: 'systemTypes'
+          type: 'custom'
+          customTypeName: 'SystemTypeIntegrationAspect'
+          array: !!bool 'true'
+          description: "List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).\n\nEach entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.\nUse separate aspects when multiple system types are required (AND condition).\nSystem-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency."
         - name: 'labels'
           type: 'custom'
           customTypeName: 'Labels'
@@ -239,10 +243,35 @@ spec:
           description: "Minimum version of the references resource that the integration requires.\n"
           constraints:
             pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+        - name: 'subset'
+          type: 'custom'
+          customTypeName: 'CapabilityIntegrationAspectSubset'
+          array: !!bool 'true'
+          description: "List of skills within the referenced capability that are required.\n\nThis is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.\nIf `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).\nIf `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context."
         - name: 'labels'
           type: 'custom'
           customTypeName: 'Labels'
           description: 'Generic labels that can be applied to most ORD information.'
+    - name: 'CapabilityIntegrationAspectSubset'
+      metadataProperties:
+        - name: 'skillName'
+          type: 'string'
+          description: "The name of the individual skill within the referenced capability.\n\nThis MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).\nWhere the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter."
+          mandatory: !!bool 'true'
+    - name: 'SystemTypeIntegrationAspect'
+      metadataProperties:
+        - name: 'systemNamespace'
+          type: 'string'
+          description: 'The [system namespace](../concepts/identifiers.md#system-namespace) that identifies the required system type.'
+          mandatory: !!bool 'true'
+          constraints:
+            maxLength: !!int '32'
+            pattern: '^[a-z0-9]+(?:[.][a-z0-9]+){1}$'
+        - name: 'minSystemVersion'
+          type: 'string'
+          description: "Minimum [system version](../index.md#system-version) that the integration requires.\nThe target system version MUST be greater than or equal to this value according to Semantic Versioning precedence."
+          constraints:
+            pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
     - name: 'Link'
       metadataProperties:
         - name: 'title'

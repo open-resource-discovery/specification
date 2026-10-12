@@ -133,5 +133,32 @@
         },
       ],
     },
+    // This dependency requires foo.bar AND one of the listed ERP system types.
+    // More detailed resource or capability aspects can be added as complementary requirements.
+    {
+      "ordId": "foo.bar:integrationDependency:BillingAndERP:v1",
+      "version": "1.0.0",
+      "title": "Billing and ERP systems",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "foo.bar:package:SomePackage:v1",
+      "mandatory": true,
+      "aspects": [
+        {
+          "title": "Billing system",
+          "mandatory": true,
+          "systemTypes": [{ "systemNamespace": "foo.bar" }],
+        },
+        {
+          "title": "ERP system",
+          "mandatory": true,
+          "systemTypes": [
+            { "systemNamespace": "foo.erpcloud", "minSystemVersion": "2025.4.0" },
+            { "systemNamespace": "foo.erp" },
+            { "systemNamespace": "foo.erponprem" },
+          ],
+        },
+      ],
+    },
   ],
 }
