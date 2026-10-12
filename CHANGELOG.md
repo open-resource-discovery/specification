@@ -12,6 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
+- Added `relatedDataProducts` to Data Products for expressing typed relationships to other Data Products through extensible reference objects.
 - Added `oas-overlay-v1` as a resource definition `type` on API Resource Definitions. This allows publishers to expose [OpenAPI Initiative Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html) documents directly through ORD.
 - Added `oas-overlay-v1` to the allowed values of `target.definitionType` on `OrdOverlay`, so ORD Overlays can target OpenAPI Overlay files.
 - Added an appendix section ["Relation to the OpenAPI Initiative Overlay Specification"](https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay#appendix-relation-to-the-openapi-initiative-overlay-specification) to the ORD Overlay documentation that describes what motivated a dedicated, ORD-opinionated overlay model, where the two specifications overlap, and how they interoperate.
