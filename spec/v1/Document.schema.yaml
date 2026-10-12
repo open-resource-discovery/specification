@@ -385,8 +385,9 @@ definitions:
     description: |-
       A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
 
-      The Package can also be used to indicate which products or vendors provided the packaged resources.
-      For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
+      The Package can also indicate which vendor owns the packaged resources and which products they are part of.
+      For partner or customer content, the Package indicates current ownership attribution through `vendor`.
+      The independent `partOfProducts` assignment indicates the associated product offerings.
 
       A Package SHOULD contain at least one resource. Avoid empty Packages.
 
@@ -959,7 +960,7 @@ definitions:
 
       Please note that APIs can be described, but still be [`disabled`](#api-resource_disabled).
 
-      If the API is not created or owned by the user of the system or by third parties (like partners), it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
+      If the API is created or owned by the user of the system or by third parties such as partners, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property.
     properties:
       ## IDs
 
@@ -1734,7 +1735,7 @@ definitions:
 
       Please note that event resources can be described, but still be [`disabled`](#event-resource_disabled).
 
-      If the event resource is not created or owned by the user / customer of the system or by partners / third parties, it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
+      If the event resource is created or owned by the user or customer of the system or by partners or third parties, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property.
     properties:
       ordId:
         <<: *ordId
@@ -3504,6 +3505,8 @@ definitions:
     description: |-
       Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
       This is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).
+      To avoid accidental ORD ID collisions between capabilities of different types, publishers are RECOMMENDED to include the capability type in the ORD ID.
+      The type can be represented either as a sub-context namespace, for example `foo.bar.skill:capability:disputeSummarization:v1`, or as a suffix in the local identifier, for example `foo.bar:capability:disputeSummarizationSkill:v1`.
 
       If a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.
       This is the same idea and mechanism as with API resources and their resource definition formats.
@@ -3528,17 +3531,43 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../concepts/identifiers.md#specification-id).
+          - const: "agent-skill"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              An agent skill is a discrete, reusable capability that an agent can perform.
+              Agent skills can be invoked by agents or other systems and represent
+              a well-defined task or function that the agent is capable of executing.
+              A definition is optional.
+              If a definition is provided, its `type` is RECOMMENDED to be `agent-skill-zip`.
+          - const: "agent-plugin"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              An agent plugin bundles multiple agent resources (such as one or more agent skills) into a single, distributable package.
+              Where an `agent-skill` describes a single discrete capability, an `agent-plugin` groups related agent resources together
+              so they can be discovered, versioned, and installed as one unit.
+              A definition is optional.
+              If a definition is provided, its `type` is RECOMMENDED to be `agent-plugin-zip`.
           - const: "sap.mdo:mdi-capability:v1"
             description: |-
               Capability for SAP Master Data Integration (MDI).
 
               For the capability definitions: `type` MUST ONLY be set to `sap.mdo:mdi-capability-definition:v1`.
+          - const: workflow
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              Standardized capability representing an executable, multi-step workflow that orchestrates
+              one or more APIs. Typically defined via an [Arazzo](https://spec.openapis.org/arazzo/v1.0.0.html)
+              document attached as a capability definition with `type: "arazzo-v1"`.
+
+              Workflow capabilities SHOULD list every API Resource they interact with in
+              `relatedApiResources`, each with
+              `relationType: "ord:orchestrates"`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
             # Deprecate this in future?
         examples:
-          - custom
+          - "agent-skill"
 
       customType:
         <<: *customType
@@ -3577,6 +3606,11 @@ definitions:
           description: |-
             The Capabilities that are part the given Group.
 
+      partOfProducts:
+        <<: *partOfProducts
+        x-introduced-in-version: "1.17.0"
+        minItems: 0
+
       version:
         <<: *version
 
@@ -3594,6 +3628,34 @@ definitions:
 
       minSystemVersion:
         <<: *minSystemVersion
+
+      responsible:
+        <<: *responsible
+        x-introduced-in-version: "1.17.0"
+
+      deprecationDate:
+        <<: *deprecationDate
+        x-introduced-in-version: "1.17.0"
+
+      sunsetDate:
+        <<: *sunsetDate
+        x-introduced-in-version: "1.17.0"
+
+      successors:
+        <<: *successors
+        x-introduced-in-version: "1.17.0"
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          x-association-target:
+            - "#/definitions/Capability/ordId"
+          maxLength: 255
+        examples:
+          - ["sap.foo.bar:capability:fieldExtensibility:v2"]
+
+      changelogEntries:
+        <<: *changelogEntries
+        x-introduced-in-version: "1.17.0"
 
       relatedEntityTypes:
         # NOTE: It would have been better for consistency and evolution to use the `RelatedEntityType` object
@@ -3637,6 +3699,26 @@ definitions:
         examples:
           - [{ "ordId": "sap.foo:capability:baseExtensibility:v1", "relationType": "foo.bar:relationName" }]
 
+      integrationDependencies:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          Optional list of integration dependencies that the capability relies on.
+
+          This is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to API Resources, Event Resources, or other Capabilities to function.
+          The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
+          Runtime-specific connector configuration, credentials, guardrails, provisioning, and activation behavior remain outside this definition.
+
+          MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+        items:
+          type: string
+          pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          maxLength: 255
+          x-association-target:
+            - "#/definitions/IntegrationDependency/ordId"
+        examples:
+          - ["sap.foo.bar:integrationDependency:DocumentProcessing:v1"]
+
       definitions:
         <<: *resourceDefinitions
         items:
@@ -3647,6 +3729,22 @@ definitions:
         description: |-
           Generic Links with arbitrary meaning and content.
 
+      extensible:
+        <<: *extensible
+        x-introduced-in-version: "1.17.0"
+
+      countries:
+        <<: *countries
+        x-introduced-in-version: "1.17.0"
+
+      lineOfBusiness:
+        <<: *lineOfBusiness
+        x-introduced-in-version: "1.17.0"
+
+      industry:
+        <<: *industry
+        x-introduced-in-version: "1.17.0"
+
       tags:
         <<: *tags
 
@@ -3655,6 +3753,10 @@ definitions:
 
       documentationLabels:
         <<: *documentationLabels
+
+      policyLevels:
+        <<: *policyLevels
+        x-introduced-in-version: "1.17.0"
 
       systemInstanceAware:
         <<: *systemInstanceAware
@@ -3689,12 +3791,39 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
               Any valid [Specification ID](../concepts/identifiers.md#specification-id).
+          - const: "agent-skill-zip"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              A ZIP archive containing an agent skill and its relevant assets, such as instructions, configuration, schemas, or scripts.
+              ORD treats the archive as opaque and does not prescribe its internal layout or format version.
+              Package-format identification and versioning remain outside this definition type.
+
+              The `mediaType` MUST be set to `application/zip`.
+              When this definition type is used, the enclosing capability `type` MUST be set to `agent-skill`.
+          - const: "agent-plugin-zip"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              A ZIP archive that bundles multiple agent resources (such as one or more agent skills) into a single agent plugin package,
+              including all relevant assets such as configuration and schema files.
+              ORD treats the archive as opaque and does not prescribe its internal layout or format version.
+              Package-format identification and versioning remain outside this definition type.
+
+              The `mediaType` MUST be set to `application/zip`.
+              When this definition type is used, the enclosing capability `type` MUST be set to `agent-plugin`.
           - const: "sap.mdo:mdi-capability-definition:v1"
             description: |-
               Specification for describing master data integration capabilities for Master Data Orchestration (MDO).
 
               The `mediaType` MUST be set to `application/json`.
               The capability `type` MUST be set to `sap.mdo:mdi-capability:v1`.
+          - const: arazzo-v1
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              [Arazzo Specification v1.0.0](https://spec.openapis.org/arazzo/v1.0.0.html) workflow document
+              describing multi-step API interactions.
+
+              The `mediaType` MUST be set to `application/json` or `application/yaml`.
+              The capability `type` SHOULD be set to `workflow`.
           - const: custom
             description: |-
               If chosen, a custom type MUST be provided via `customType`
@@ -3834,7 +3963,8 @@ definitions:
         description: |-
           List of integration aspects that make up the Integration Dependency.
 
-          Each aspect listed is a dedicated, constituent part (AND condition).
+          Each mandatory aspect is a dedicated, constituent part that needs to be fulfilled (AND condition).
+          System-type aspects can be combined with more detailed API-resource, event-resource or capability aspects.
         items:
           $ref: "#/definitions/IntegrationAspect"
 
@@ -3888,7 +4018,7 @@ definitions:
       Each aspect can list references to resources, which could be owned and defined by the integration target or by the described system itself.
       In case the reference links to own resources, it is implied that they are to be used by the integration target to fulfill the Integration Dependency.
 
-      If multiple resources are given within an aspect, they are considered alternatives to each other (OR condition).
+      If multiple dependencies are given within an aspect, including across `systemTypes`, `apiResources`, `eventResources` and `capabilities`, they are considered alternatives to each other (OR condition).
       In case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.
     properties:
       title:
@@ -3933,12 +4063,27 @@ definitions:
         items:
           $ref: "#/definitions/CapabilityIntegrationAspect"
 
+      systemTypes:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).
+
+          Each entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.
+          Use separate aspects when multiple system types are required (AND condition).
+          System-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency.
+        items:
+          $ref: "#/definitions/SystemTypeIntegrationAspect"
+        minItems: 1
+        uniqueItems: true
+        examples:
+          - [{ systemNamespace: "foo.bar" }]
+
       labels:
         <<: *labels
 
     additionalProperties: false
     required:
-      - title # TODO: Do we need a mandatory title?
       - mandatory
 
   ############################################################################################################
@@ -4120,12 +4265,82 @@ definitions:
       minVersion:
         <<: *minVersion
 
+      subset:
+        type: array
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          List of skills within the referenced capability that are required.
+
+          This is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.
+          If `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).
+          If `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context.
+        items:
+          $ref: "#/definitions/CapabilityIntegrationAspectSubset"
+
       labels:
         <<: *labels
 
     additionalProperties: false
     required:
       - ordId
+
+  ############################################################################################################
+
+  SystemTypeIntegrationAspect:
+    type: object
+    title: System Type Integration Aspect
+    x-introduced-in-version: "1.17.0"
+    x-ums-type: "custom"
+    description: |-
+      System-type related integration aspect.
+    properties:
+      systemNamespace:
+        type: string
+        description: |-
+          The [system namespace](../concepts/identifiers.md#system-namespace) that identifies the required system type.
+        pattern: ^[a-z0-9]+(?:[.][a-z0-9]+){1}$
+        maxLength: 32
+        examples:
+          - "foo.bar"
+
+      minSystemVersion:
+        <<: *minSystemVersion
+        description: |-
+          Minimum [system version](../index.md#system-version) that the integration requires.
+          The target system version MUST be greater than or equal to this value according to Semantic Versioning precedence.
+
+    additionalProperties: false
+    required:
+      - systemNamespace
+
+  ############################################################################################################
+
+  CapabilityIntegrationAspectSubset:
+    type: object
+    title: Capability Integration Aspect Subset
+    x-introduced-in-version: "1.17.0"
+    x-ums-type: "custom"
+    description: |-
+      Defines that the Capability Integration Aspect only requires a subset of the referenced capability.
+
+      For bundling capabilities such as `agent-plugin`, this is the list of contained skills that need to be available to make the integration work.
+      Without a `subset`, the dependency implies the whole capability (e.g. the entire plugin).
+      With a `subset`, only the listed skills are required, allowing consumers to understand / load only the minimal surface area needed.
+    properties:
+      skillName:
+        type: string
+        description: |-
+          The name of the individual skill within the referenced capability.
+
+          This MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).
+          Where the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter.
+        examples:
+          - "disputeSummarization"
+          - "disputeResolution"
+
+    additionalProperties: false
+    required:
+      - skillName
 
   ############################################################################################################
 
@@ -4142,9 +4357,9 @@ definitions:
 
       If ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.
 
-      Both have already a [vendor namespace](../concepts/identifiers.md#vendor-namespace) within their ORD ID.
-      The `Vendor` entity is giving more details on the vendor namespace.
-      For one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.
+      Every Vendor ORD ID contains its [vendor namespace](../concepts/identifiers.md#vendor-namespace).
+      The `Vendor` entity provides more details about that vendor namespace.
+      Exactly one `Vendor` ORD entity MUST describe each vendor namespace.
 
       For example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.
     properties:
@@ -4596,8 +4811,30 @@ definitions:
           Optional local ID for the system instance, as known by the described system.
 
           In case of multi-tenant systems, it is equivalent to the local tenant id.
+          This is the same identity that can be passed as the `Local-Tenant-Id` header in the
+          [`open`](../../spec-extensions/access-strategies/open.md#local-tenant-id) and
+          [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#local-tenant-id) access strategies.
         examples:
           - "LocalTenantId123"
+
+      globalId:
+        type: string
+        x-introduced-in-version: "1.17.0"
+        description: |-
+          Optional globally unique and stable ID of the system instance (tenant), assigned by the authority responsible
+          for that tenant identity.
+
+          Unlike `localId`, which is only unique within the described system, `globalId` is intended for correlation
+          across participating systems. It is the same identity that can be passed as the `Global-Tenant-Id`
+          header in the [`open`](../../spec-extensions/access-strategies/open.md#global-tenant-id) and
+          [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#global-tenant-id) access strategies.
+
+          The provider MUST NOT invent this value. It MAY receive the value from an authoritative tenant or landscape
+          service, including through aggregator onboarding, and include it when it can reliably correlate the described
+          system instance with that authority's record.
+        maxLength: 255
+        examples:
+          - "c6c80b52-ecc1-47f8-9303-0d55fb67fd41"
 
       correlationIds:
         <<: *correlationIds
@@ -5074,34 +5311,32 @@ definitions:
         type: string
         title: Extensibility Support Level
         x-ums-type: "ignore"
-        description: Defines whether and how the resource can be extended with custom fields.
+        description: Defines whether and how the resource can be extended.
         oneOf:
           - const: "no"
             description: |-
               Not extensible.
 
-              The data model of the resource (API or event) cannot be extended with custom fields.
+              The resource cannot be extended with custom fields, entities, skills, or other resource-specific elements.
           - const: "manual"
             description: |-
               Manually extensible.
 
-              In addition to defining a custom field, manual activities are required to include the field
-              in the data model of the resource (API or event).
-              Examples: using a specific mapping tool or selecting the resource in a data model extension tool.
+              After defining an extension, manual activities are required to include it in the resource.
+              Examples include using a mapping tool, selecting the resource in a data model extension tool, or adding a skill to an agent.
           - const: "automatic"
             description: |-
               Automatically extensible.
 
-              After defining a custom field in the local domain model, the resource (API or event)
-              is automatically extended as part of the default extension field definition.
+              After defining an extension through the applicable extension mechanism, the resource is automatically extended.
 
       description:
         type: string
         minLength: 1
         description: |-
-          A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
+          A description about the extensibility capabilities of this resource, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
 
-          This description may contain detailed steps on how to extend the API.
+          This description may contain detailed steps on how to extend the resource.
           Links to external resources can be provided within the description as markdown links.
 
           This description MUST be provided if `supported` is set to `manual` or `automatic`.
@@ -5546,6 +5781,13 @@ definitions:
             description: |-
               The source resource patches one or more definition files of the target resource.
               Used on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch.
+          - const: "ord:orchestrates"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              The source resource orchestrates the target API Resource as part of a multi-step workflow.
+              Typically used on [Capabilities](#capability) of `type: "workflow"` (e.g. defined via an
+              [Arazzo](https://spec.openapis.org/arazzo/v1.0.0.html) document) to declare which APIs
+              the workflow invokes.
         examples:
           - "foo.bar:relationName"
     required:
@@ -5888,7 +6130,7 @@ definitions:
       documentationLabels:
         <<: *documentationLabels
 
-      # Currently not available in Capability:
+      # Currently not available in Overlay:
       # deprecationDate:
       #   <<: *deprecationDate
       # sunsetDate:
