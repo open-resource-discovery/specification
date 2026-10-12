@@ -2219,6 +2219,8 @@ export interface EntityTypeDefinition {
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
  * This is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).
+ * To avoid accidental ORD ID collisions between capabilities of different types, publishers are RECOMMENDED to include the capability type in the ORD ID.
+ * The type can be represented either as a sub-context namespace, for example `foo.bar.skill:capability:disputeSummarization:v1`, or as a suffix in the local identifier, for example `foo.bar:capability:disputeSummarizationSkill:v1`.
  *
  * If a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.
  * This is the same idea and mechanism as with API resources and their resource definition formats.
@@ -2251,7 +2253,7 @@ export interface Capability {
   /**
    * Type of the Capability
    */
-  type: (string | "sap.mdo:mdi-capability:v1" | "custom") & string;
+  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -2410,6 +2412,16 @@ export interface Capability {
    */
   relatedCapabilities?: RelatedCapability[];
   /**
+   * Optional list of integration dependencies that the capability relies on.
+   *
+   * This is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to API Resources, Event Resources, or other Capabilities to function.
+   * The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
+   * Runtime-specific connector configuration, credentials, guardrails, provisioning, and activation behavior remain outside this definition.
+   *
+   * MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+   */
+  integrationDependencies?: string[];
+  /**
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
@@ -2483,7 +2495,7 @@ export interface CapabilityDefinition {
   /**
    * Type of the capability resource definition
    */
-  type: (string | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
+  type: (string | "agent-skill-zip" | "agent-plugin-zip" | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -3851,7 +3863,31 @@ export interface CapabilityIntegrationAspect {
    *
    */
   minVersion?: string;
+  /**
+   * List of skills within the referenced capability that are required.
+   *
+   * This is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.
+   * If `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).
+   * If `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context.
+   */
+  subset?: CapabilityIntegrationAspectSubset[];
   labels?: Labels;
+}
+/**
+ * Defines that the Capability Integration Aspect only requires a subset of the referenced capability.
+ *
+ * For bundling capabilities such as `agent-plugin`, this is the list of contained skills that need to be available to make the integration work.
+ * Without a `subset`, the dependency implies the whole capability (e.g. the entire plugin).
+ * With a `subset`, only the listed skills are required, allowing consumers to understand / load only the minimal surface area needed.
+ */
+export interface CapabilityIntegrationAspectSubset {
+  /**
+   * The name of the individual skill within the referenced capability.
+   *
+   * This MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).
+   * Where the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter.
+   */
+  skillName: string;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.

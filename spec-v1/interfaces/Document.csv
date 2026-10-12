@@ -308,6 +308,7 @@ Capability,relatedEntityTypes,false,array<string>
 Capability,relatedApiResources,false,array<RelatedApiResource>
 Capability,relatedEventResources,false,array<RelatedEventResource>
 Capability,relatedCapabilities,false,array<RelatedCapability>
+Capability,integrationDependencies,false,array<string>
 Capability,definitions,false,array<CapabilityDefinition>
 Capability,links,false,array<Link>
 Capability,tags,false,array<string>
@@ -363,7 +364,9 @@ Event Resource Integration Aspect Subset,eventType,true,string
 API Resource Integration Aspect Subset,operationId,true,string
 Capability Integration Aspect,ordId,true,string
 Capability Integration Aspect,minVersion,false,string
+Capability Integration Aspect,subset,false,array<CapabilityIntegrationAspectSubset>
 Capability Integration Aspect,labels,false,Labels
+Capability Integration Aspect Subset,skillName,true,string
 Vendor,ordId,true,string
 Vendor,title,true,string
 Vendor,partners,false,array<string>

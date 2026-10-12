@@ -5038,7 +5038,7 @@
       "title": "Capability",
       "x-ums-type": "root",
       "x-introduced-in-version": "1.4.0",
-      "description": "Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.\nThis is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).\n\nIf a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.\nThis is the same idea and mechanism as with API resources and their resource definition formats.",
+      "description": "Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.\nThis is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).\nTo avoid accidental ORD ID collisions between capabilities of different types, publishers are RECOMMENDED to include the capability type in the ORD ID.\nThe type can be represented either as a sub-context namespace, for example `foo.bar.skill:capability:disputeSummarization:v1`, or as a suffix in the local identifier, for example `foo.bar:capability:disputeSummarizationSkill:v1`.\n\nIf a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.\nThis is the same idea and mechanism as with API resources and their resource definition formats.",
       "properties": {
         "ordId": {
           "type": "string",
@@ -5083,6 +5083,16 @@
               "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
+              "const": "agent-skill",
+              "x-introduced-in-version": "1.17.0",
+              "description": "An agent skill is a discrete, reusable capability that an agent can perform.\nAgent skills can be invoked by agents or other systems and represent\na well-defined task or function that the agent is capable of executing.\nA definition is optional.\nIf a definition is provided, its `type` is RECOMMENDED to be `agent-skill-zip`."
+            },
+            {
+              "const": "agent-plugin",
+              "x-introduced-in-version": "1.17.0",
+              "description": "An agent plugin bundles multiple agent resources (such as one or more agent skills) into a single, distributable package.\nWhere an `agent-skill` describes a single discrete capability, an `agent-plugin` groups related agent resources together\nso they can be discovered, versioned, and installed as one unit.\nA definition is optional.\nIf a definition is provided, its `type` is RECOMMENDED to be `agent-plugin-zip`."
+            },
+            {
               "const": "sap.mdo:mdi-capability:v1",
               "description": "Capability for SAP Master Data Integration (MDI).\n\nFor the capability definitions: `type` MUST ONLY be set to `sap.mdo:mdi-capability-definition:v1`."
             },
@@ -5092,7 +5102,7 @@
             }
           ],
           "examples": [
-            "custom"
+            "agent-skill"
           ]
         },
         "customType": {
@@ -5302,6 +5312,24 @@
             ]
           ]
         },
+        "integrationDependencies": {
+          "type": "array",
+          "x-introduced-in-version": "1.17.0",
+          "description": "Optional list of integration dependencies that the capability relies on.\n\nThis is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to API Resources, Event Resources, or other Capabilities to function.\nThe mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.\nRuntime-specific connector configuration, credentials, guardrails, provisioning, and activation behavior remain outside this definition.\n\nMUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+            "maxLength": 255,
+            "x-association-target": [
+              "#/definitions/IntegrationDependency/ordId"
+            ]
+          },
+          "examples": [
+            [
+              "sap.foo.bar:integrationDependency:DocumentProcessing:v1"
+            ]
+          ]
+        },
         "definitions": {
           "type": "array",
           "description": "List of available machine-readable definitions, which describe the resource in detail.\nSee also [Resource Definitions](../index.md#resource-definitions) for more context.\n\nEvery entry MUST describe the *same* underlying resource. Allowed variations are alternative\nrepresentations (different formats) and complementary artifacts distinguished by `purpose`\n(e.g. overlays, AI-enriched variants, agent-security-permissions views).\nThis list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.\nModel those as separate ORD resources instead.\n\nThe entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;\nconsumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such\ndefault per `(type, visibility)` combination.\n\nThe combination of `type` (or `customType` for `type: \"custom\"`), `purpose`, and `visibility` MUST\nbe unique within the list.\n\nIt is RECOMMENDED to provide the definitions as they enable machine-readable use cases.\nIf the definitions are added or changed, the `version` MUST be incremented.\nAn ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.",
@@ -5377,6 +5405,16 @@
               "type": "string",
               "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
               "description": "Any valid [Specification ID](../concepts/identifiers.md#specification-id)."
+            },
+            {
+              "const": "agent-skill-zip",
+              "x-introduced-in-version": "1.17.0",
+              "description": "A ZIP archive containing an agent skill and its relevant assets, such as instructions, configuration, schemas, or scripts.\nORD treats the archive as opaque and does not prescribe its internal layout or format version.\nPackage-format identification and versioning remain outside this definition type.\n\nThe `mediaType` MUST be set to `application/zip`.\nWhen this definition type is used, the enclosing capability `type` MUST be set to `agent-skill`."
+            },
+            {
+              "const": "agent-plugin-zip",
+              "x-introduced-in-version": "1.17.0",
+              "description": "A ZIP archive that bundles multiple agent resources (such as one or more agent skills) into a single agent plugin package,\nincluding all relevant assets such as configuration and schema files.\nORD treats the archive as opaque and does not prescribe its internal layout or format version.\nPackage-format identification and versioning remain outside this definition type.\n\nThe `mediaType` MUST be set to `application/zip`.\nWhen this definition type is used, the enclosing capability `type` MUST be set to `agent-plugin`."
             },
             {
               "const": "sap.mdo:mdi-capability-definition:v1",
@@ -5952,6 +5990,14 @@
             "1.0.0-alpha.1"
           ]
         },
+        "subset": {
+          "type": "array",
+          "x-introduced-in-version": "1.17.0",
+          "description": "List of skills within the referenced capability that are required.\n\nThis is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.\nIf `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).\nIf `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context.",
+          "items": {
+            "$ref": "#/definitions/CapabilityIntegrationAspectSubset"
+          }
+        },
         "labels": {
           "$ref": "#/definitions/Labels"
         }
@@ -5959,6 +6005,27 @@
       "additionalProperties": false,
       "required": [
         "ordId"
+      ]
+    },
+    "CapabilityIntegrationAspectSubset": {
+      "type": "object",
+      "title": "Capability Integration Aspect Subset",
+      "x-introduced-in-version": "1.17.0",
+      "x-ums-type": "custom",
+      "description": "Defines that the Capability Integration Aspect only requires a subset of the referenced capability.\n\nFor bundling capabilities such as `agent-plugin`, this is the list of contained skills that need to be available to make the integration work.\nWithout a `subset`, the dependency implies the whole capability (e.g. the entire plugin).\nWith a `subset`, only the listed skills are required, allowing consumers to understand / load only the minimal surface area needed.",
+      "properties": {
+        "skillName": {
+          "type": "string",
+          "description": "The name of the individual skill within the referenced capability.\n\nThis MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).\nWhere the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter.",
+          "examples": [
+            "disputeSummarization",
+            "disputeResolution"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "skillName"
       ]
     },
     "Vendor": {
