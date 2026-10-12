@@ -12,6 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
+- Added `systemTypes` to `IntegrationAspect` for dependencies on system types that do not require a specific resource contract, including an optional minimum system version.
 - Added capability type `agent-skill` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
 - Added capability definition type `agent-skill-zip` for ZIP archive definitions of agent skills with media type `application/zip`.
 - Added capability type `agent-plugin` for bundling multiple agent resources (such as one or more agent skills) into a single, distributable package.
