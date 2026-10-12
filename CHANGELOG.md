@@ -12,6 +12,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
+- Added `oas-overlay-v1` as a resource definition `type` on API Resource Definitions. This allows publishers to expose [OpenAPI Initiative Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html) documents directly through ORD.
+- Added `oas-overlay-v1` to the allowed values of `target.definitionType` on `OrdOverlay`, so ORD Overlays can target OpenAPI Overlay files.
+- Added an appendix section ["Relation to the OpenAPI Initiative Overlay Specification"](https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay#appendix-relation-to-the-openapi-initiative-overlay-specification) to the ORD Overlay documentation that describes what motivated a dedicated, ORD-opinionated overlay model, where the two specifications overlap, and how they interoperate.
+- `sap:core:v1` policy level: SAP applications and services MUST use `type: "ord:overlay:v1"` as the overlay format for all published overlays.
 - Added [Arazzo Specification](https://www.openapis.org/arazzo-specification) support for describing multi-step API workflows.
   - Added standardized Capability type `workflow` with definition type `arazzo-v1`.
   - Added `arazzo-v1` to ORD Overlay target definition types.

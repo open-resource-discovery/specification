@@ -2870,6 +2870,13 @@ definitions:
               ORD Overlay file for patching referenced resource definition files.
               For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
               The `mediaType` MUST be set to `application/json`.
+          - const: oas-overlay-v1
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              [OpenAPI Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html) document for patching an OpenAPI definition.
+              Use this when overlays are authored in the OpenAPI Initiative Overlay format rather than the
+              [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) format.
+              The `mediaType` MUST be set to `application/json` or `application/yaml`.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
@@ -3334,7 +3341,7 @@ definitions:
         type: array
         description: |-
           List of overlay definition files referenced by this ORD Overlay Resource.
-          Each entry points to an ORD Overlay document (`type: ord:overlay:v1`) that contains the actual patches.
+          Each entry points to an overlay document that contains the actual patches.
         items:
           $ref: "#/definitions/OverlayDefinition"
 
@@ -3371,6 +3378,11 @@ definitions:
           - const: "ord:overlay:v1"
             description: |-
               ORD Overlay document (v1). The `mediaType` MUST be set to `application/json`.
+          - const: "oas-overlay-v1"
+            x-introduced-in-version: "1.17.0"
+            description: |-
+              [OpenAPI Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html) document for patching an OpenAPI definition.
+              The `mediaType` MUST be set to `application/json` or `application/yaml`.
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
