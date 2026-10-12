@@ -125,7 +125,7 @@ export function ProviderDiagram() {
         <title id="ord-provider-title">ORD provider overview</title>
         <desc id="ord-provider-desc">
           An application or service exposes resources and capabilities through
-          ORD, including Agent Skills and Agent Plugins, and declares
+          ORD, including Agent Skills, Agent Plugins, and Workflows, and declares
           dependencies on external resources. The protocols and formats shown
           are examples.
         </desc>
@@ -174,9 +174,9 @@ export function ProviderDiagram() {
             y="47"
             textAnchor="middle"
           >
-            <tspan x="130">Features · configuration</tspan>
+            <tspan x="130">Agent Skills · Agent Plugins</tspan>
             <tspan x="130" dy="17">
-              Agent Skills · Agent Plugins
+              Workflows · custom types
             </tspan>
           </text>
         </g>
