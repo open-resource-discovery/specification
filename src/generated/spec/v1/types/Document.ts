@@ -365,7 +365,7 @@ export interface SystemInstance {
  *
  * Please note that APIs can be described, but still be [`disabled`](#api-resource_disabled).
  *
- * If the API is not created or owned by the user of the system or by third parties (like partners), it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
+ * If the API is created or owned by the user of the system or by third parties such as partners, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property.
  */
 export interface ApiResource {
   /**
@@ -1330,7 +1330,7 @@ export interface Extensible {
  * The event resource provides a high-level description of a collection of related Events. More detailed information, such as the event resource definitions, are provided in links in the table below.
  * Which events are considered "related" is up to the implementer. A common practice is to bundle events that are based on the same resource/Business Object. It is also an option to bundle all available events into a single event resource/event catalog.
  * Please note that event resources can be described, but still be [`disabled`](#event-resource_disabled).
- * If the event resource is not created or owned by the user / customer of the system or by partners / third parties, it MUST be assigned to dedicated [Packages](#package) that state this the ownership via the `vendor` property.
+ * If the event resource is created or owned by the user or customer of the system or by partners or third parties, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property.
  */
 export interface EventResource {
   /**
@@ -2219,6 +2219,8 @@ export interface EntityTypeDefinition {
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
  * This is a generic ORD concept that aims to cover many different capability discovery use cases that would otherwise need be implemented as individual service provider interfaces (SPIs).
+ * To avoid accidental ORD ID collisions between capabilities of different types, publishers are RECOMMENDED to include the capability type in the ORD ID.
+ * The type can be represented either as a sub-context namespace, for example `foo.bar.skill:capability:disputeSummarization:v1`, or as a suffix in the local identifier, for example `foo.bar:capability:disputeSummarizationSkill:v1`.
  *
  * If a capability needs to expose more information than possible with generic capability properties, a custom capability definition can be defined and referenced in ORD.
  * This is the same idea and mechanism as with API resources and their resource definition formats.
@@ -2251,7 +2253,7 @@ export interface Capability {
   /**
    * Type of the Capability
    */
-  type: (string | "sap.mdo:mdi-capability:v1" | "custom") & string;
+  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -2457,6 +2459,16 @@ export interface Capability {
    */
   relatedCapabilities?: RelatedCapability[];
   /**
+   * Optional list of integration dependencies that the capability relies on.
+   *
+   * This is particularly useful for capabilities of type `agent-skill` or `agent-plugin`, which may require access to API Resources, Event Resources, or other Capabilities to function.
+   * The mechanism is the same as for [Agents](#agent), and the direct analogue of `inputPorts` on [Data Products](#data-product): the artifact itself declares what it needs to run.
+   * Runtime-specific connector configuration, credentials, guardrails, provisioning, and activation behavior remain outside this definition.
+   *
+   * MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
+   */
+  integrationDependencies?: string[];
+  /**
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
@@ -2617,7 +2629,7 @@ export interface CapabilityDefinition {
   /**
    * Type of the capability resource definition
    */
-  type: (string | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
+  type: (string | "agent-skill-zip" | "agent-plugin-zip" | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -3985,7 +3997,31 @@ export interface CapabilityIntegrationAspect {
    *
    */
   minVersion?: string;
+  /**
+   * List of skills within the referenced capability that are required.
+   *
+   * This is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.
+   * If `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).
+   * If `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context.
+   */
+  subset?: CapabilityIntegrationAspectSubset[];
   labels?: Labels;
+}
+/**
+ * Defines that the Capability Integration Aspect only requires a subset of the referenced capability.
+ *
+ * For bundling capabilities such as `agent-plugin`, this is the list of contained skills that need to be available to make the integration work.
+ * Without a `subset`, the dependency implies the whole capability (e.g. the entire plugin).
+ * With a `subset`, only the listed skills are required, allowing consumers to understand / load only the minimal surface area needed.
+ */
+export interface CapabilityIntegrationAspectSubset {
+  /**
+   * The name of the individual skill within the referenced capability.
+   *
+   * This MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).
+   * Where the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter.
+   */
+  skillName: string;
 }
 /**
  * The vendor of a product or a package, usually a corporation or a customer / user.
@@ -3996,9 +4032,9 @@ export interface CapabilityIntegrationAspect {
  *
  * If ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.
  *
- * Both have already a [vendor namespace](../concepts/identifiers.md#vendor-namespace) within their ORD ID.
- * The `Vendor` entity is giving more details on the vendor namespace.
- * For one vendor namespace there MUST only be exactly one `Vendor` ORD entity describing it.
+ * Every Vendor ORD ID contains its [vendor namespace](../concepts/identifiers.md#vendor-namespace).
+ * The `Vendor` entity provides more details about that vendor namespace.
+ * Exactly one `Vendor` ORD entity MUST describe each vendor namespace.
  *
  * For example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.
  */
@@ -4110,8 +4146,9 @@ export interface Product {
 /**
  * A [**Package**](../concepts/grouping-and-bundling#package) organizes a set of related resources together, by publishing and catalog presentation concerns.
  *
- * The Package can also be used to indicate which products or vendors provided the packaged resources.
- * For partner or customer content, the Package can indicate this via the `vendor` and `partOfProducts` assignments.
+ * The Package can also indicate which vendor owns the packaged resources and which products they are part of.
+ * For partner or customer content, the Package indicates current ownership attribution through `vendor`.
+ * The independent `partOfProducts` assignment indicates the associated product offerings.
  *
  * A Package SHOULD contain at least one resource. Avoid empty Packages.
  *
