@@ -6005,7 +6005,7 @@
         },
         "aspects": {
           "type": "array",
-          "description": "List of integration aspects that make up the Integration Dependency.\n\nEach aspect listed is a dedicated, constituent part (AND condition).",
+          "description": "List of integration aspects that make up the Integration Dependency.\n\nEach mandatory aspect is a dedicated, constituent part that needs to be fulfilled (AND condition).\nSystem-type aspects can be combined with more detailed API-resource, event-resource or capability aspects.",
           "items": {
             "$ref": "#/definitions/IntegrationAspect"
           }
@@ -6071,7 +6071,7 @@
       "title": "Aspect",
       "x-introduced-in-version": "1.7.0",
       "x-ums-type": "custom",
-      "description": "An (integration) aspect is the constituent part that makes up an Integration Dependency.\n\nEach aspect can list references to resources, which could be owned and defined by the integration target or by the described system itself.\nIn case the reference links to own resources, it is implied that they are to be used by the integration target to fulfill the Integration Dependency.\n\nIf multiple resources are given within an aspect, they are considered alternatives to each other (OR condition).\nIn case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.",
+      "description": "An (integration) aspect is the constituent part that makes up an Integration Dependency.\n\nEach aspect can list references to resources, which could be owned and defined by the integration target or by the described system itself.\nIn case the reference links to own resources, it is implied that they are to be used by the integration target to fulfill the Integration Dependency.\n\nIf multiple dependencies are given within an aspect, including across `systemTypes`, `apiResources`, `eventResources` and `capabilities`, they are considered alternatives to each other (OR condition).\nIn case an AND condition is needed, multiple aspects need to be added to the Integration Dependency.",
       "properties": {
         "title": {
           "type": "string",
@@ -6115,6 +6115,23 @@
           "items": {
             "$ref": "#/definitions/CapabilityIntegrationAspect"
           }
+        },
+        "systemTypes": {
+          "type": "array",
+          "x-introduced-in-version": "1.17.0",
+          "description": "List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).\n\nEach entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.\nUse separate aspects when multiple system types are required (AND condition).\nSystem-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency.",
+          "items": {
+            "$ref": "#/definitions/SystemTypeIntegrationAspect"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "examples": [
+            [
+              {
+                "systemNamespace": "foo.bar"
+              }
+            ]
+          ]
         },
         "labels": {
           "$ref": "#/definitions/Labels"
@@ -6304,6 +6321,38 @@
       "additionalProperties": false,
       "required": [
         "ordId"
+      ]
+    },
+    "SystemTypeIntegrationAspect": {
+      "type": "object",
+      "title": "System Type Integration Aspect",
+      "x-introduced-in-version": "1.17.0",
+      "x-ums-type": "custom",
+      "description": "System-type related integration aspect.",
+      "properties": {
+        "systemNamespace": {
+          "type": "string",
+          "description": "The [system namespace](../concepts/identifiers.md#system-namespace) that identifies the required system type.",
+          "pattern": "^[a-z0-9]+(?:[.][a-z0-9]+){1}$",
+          "maxLength": 32,
+          "examples": [
+            "foo.bar"
+          ]
+        },
+        "minSystemVersion": {
+          "type": "string",
+          "description": "Minimum [system version](../index.md#system-version) that the integration requires.\nThe target system version MUST be greater than or equal to this value according to Semantic Versioning precedence.",
+          "x-introduced-in-version": "1.10.0",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+          "examples": [
+            "1.2.3",
+            "2024.8.0"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "systemNamespace"
       ]
     },
     "CapabilityIntegrationAspectSubset": {
