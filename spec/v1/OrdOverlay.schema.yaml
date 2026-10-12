@@ -282,6 +282,8 @@ definitions:
           - const: sap-csn-interop-effective-v1
           - const: asyncapi-v2
           - const: sap.mdo:mdi-capability-definition:v1
+          - const: arazzo-v1
+            x-introduced-in-version: "1.17.0"
         examples:
           - "openapi-v3"
           - "asyncapi-v2"

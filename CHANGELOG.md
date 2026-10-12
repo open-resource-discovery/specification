@@ -12,6 +12,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
+- Added [Arazzo Specification](https://www.openapis.org/arazzo-specification) support for describing multi-step API workflows.
+  - Added standardized Capability type `workflow` with definition type `arazzo-v1`.
+  - Added `arazzo-v1` to ORD Overlay target definition types.
+  - Added `ord:orchestrates` as a `relatedApiResources.relationType` value for declaring that the source resource orchestrates the target API Resource.
 - Added optional `describedSystemInstance.globalId` property for a globally unique and stable tenant identifier assigned by the responsible tenant authority.
   It records the same identity that can be passed as the `Global-Tenant-Id` header in the `open` and `basic-auth` access strategies.
   ORD Overlays support the same identifier in `describedSystemInstance` and `target.systemInstance`, with matching identity semantics and validation constraints.

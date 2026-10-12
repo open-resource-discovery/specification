@@ -939,7 +939,7 @@ export interface RelatedAPIResource {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: (string | "ord:patches") & string;
+  relationType?: (string | "ord:patches" | "ord:orchestrates") & string;
 }
 /**
  * Defines a relation to an Event Resource (via its ORD ID).
@@ -2270,7 +2270,7 @@ export interface Capability {
   /**
    * Type of the Capability
    */
-  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "custom") & string;
+  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "workflow" | "custom") & string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -2647,7 +2647,10 @@ export interface CapabilityDefinition {
   /**
    * Type of the capability resource definition
    */
-  type: (string | "agent-skill-zip" | "agent-plugin-zip" | "sap.mdo:mdi-capability-definition:v1" | "custom") & string;
+  type: (
+    string | "agent-skill-zip" | "agent-plugin-zip" | "sap.mdo:mdi-capability-definition:v1" | "arazzo-v1" | "custom"
+  ) &
+    string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
