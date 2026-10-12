@@ -19,11 +19,11 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'supported'
       type: 'string'
-      description: 'Defines whether and how the resource can be extended with custom fields.'
+      description: 'Defines whether and how the resource can be extended.'
       mandatory: !!bool 'true'
     - name: 'description'
       type: 'string'
-      description: "A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThis description may contain detailed steps on how to extend the API.\nLinks to external resources can be provided within the description as markdown links.\n\nThis description MUST be provided if `supported` is set to `manual` or `automatic`."
+      description: "A description about the extensibility capabilities of this resource, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThis description may contain detailed steps on how to extend the resource.\nLinks to external resources can be provided within the description as markdown links.\n\nThis description MUST be provided if `supported` is set to `manual` or `automatic`."
       constraints:
         minLength: !!int '1'
   customTypeDefinitions: []

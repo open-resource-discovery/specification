@@ -79,7 +79,7 @@ Requirements express the following additional information:
 - The application could also decide to expose an API or event resource contract itself, that another (external) application needs to implement and fulfill to integrate with the application in focus.
 
 When only the presence of or connection to a particular system type matters, `systemTypes` provides a simpler alternative to resource-level requirements within an aspect.
-Each entry identifies an alternative integration target by its [system namespace](../index.md#system-namespace) and can optionally require a minimum system version.
+Each entry identifies an alternative integration target by its [system namespace](./identifiers.md#system-namespace) and can optionally require a minimum system version.
 All entries in one aspect are alternatives (OR condition), including entries across `systemTypes`, `apiResources`, `eventResources` and `capabilities`.
 Each mandatory aspect must be fulfilled (AND condition).
 A system-type aspect can be combined with more detailed resource or capability aspects in the same Integration Dependency, making those requirements complementary.
