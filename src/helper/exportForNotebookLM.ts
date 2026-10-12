@@ -1,10 +1,10 @@
-import { access, copyFile, mkdir, rm } from "node:fs/promises";
+import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { log } from "./log";
 
 /**
- * Exports all relevant markdown documentation to a flat folder for NotebookLM.
- * Files are prepended with their directory structure to maintain context.
+ * Exports all relevant markdown documentation as a small set of thematic
+ * bundles that fit within NotebookLM's source limit.
  */
 export async function exportForNotebookLM(): Promise<void> {
   const outputDir = "src/generated/llm-notebook";
@@ -30,6 +30,10 @@ export async function exportForNotebookLM(): Promise<void> {
     },
     { src: "docs/spec-v1/interfaces/Document.md", prefix: "22_interface_" },
     { src: "docs/spec-v1/interfaces/OrdOverlay.md", prefix: "23_interface_" },
+    {
+      src: "docs/spec-v1/interfaces/document-api.mdx",
+      prefix: "24_interface_",
+    },
 
     // Concepts
     { src: "docs/spec-v1/concepts/identifiers.md", prefix: "30_concept_" },
@@ -87,6 +91,10 @@ export async function exportForNotebookLM(): Promise<void> {
       src: "docs/spec-v1/examples/document-special-protocols.md",
       prefix: "47_example_",
     },
+    {
+      src: "docs/spec-v1/examples/document-overlays.md",
+      prefix: "48_example_",
+    },
 
     // Extensions
     {
@@ -104,6 +112,10 @@ export async function exportForNotebookLM(): Promise<void> {
     {
       src: "docs/spec-extensions/policy-levels/sap-dp-v1.md",
       prefix: "53_policy-level_",
+    },
+    {
+      src: "docs/spec-extensions/policy-levels/sap-documentation-v1.md",
+      prefix: "53a_policy-level_",
     },
     {
       src: "docs/spec-extensions/access-strategies/open.md",
@@ -135,6 +147,28 @@ export async function exportForNotebookLM(): Promise<void> {
     { src: "docs/help/faq/why-ord.md", prefix: "61_faq_" },
     { src: "docs/help/faq/adopt-ord-as-provider.md", prefix: "62_faq_" },
   ];
+  const bundles = [
+    {
+      filename: "01-foundations.md",
+      title: "ORD Foundations",
+      from: 0,
+      to: 20,
+    },
+    { filename: "02-interfaces.md", title: "ORD Interfaces", from: 20, to: 30 },
+    {
+      filename: "03-concepts-and-guides.md",
+      title: "ORD Concepts and Guides",
+      from: 30,
+      to: 40,
+    },
+    { filename: "04-examples.md", title: "ORD Examples", from: 40, to: 50 },
+    {
+      filename: "05-extensions-and-help.md",
+      title: "ORD Extensions and Help",
+      from: 50,
+      to: Number.POSITIVE_INFINITY,
+    },
+  ];
 
   try {
     log.info("Starting NotebookLM export...");
@@ -148,7 +182,14 @@ export async function exportForNotebookLM(): Promise<void> {
     let skippedCount = 0;
     const skippedFiles: string[] = [];
 
-    // Copy each document with the appropriate prefix
+    const bundleContents = new Map(
+      bundles.map((bundle) => [
+        bundle.filename,
+        `# ${bundle.title}\n\nThis file combines public ORD documentation for NotebookLM. Each section identifies its original source path.\n`,
+      ]),
+    );
+
+    // Combine each document into its thematic bundle.
     for (const doc of documents) {
       const srcPath = path.join(process.cwd(), doc.src);
 
@@ -162,18 +203,33 @@ export async function exportForNotebookLM(): Promise<void> {
         continue;
       }
 
-      // Generate output filename: prefix + original filename (normalize .mdx to .md)
-      const originalFilename = path.basename(doc.src).replace(/\.mdx$/, ".md");
-      const outputFilename = `${doc.prefix}${originalFilename}`;
-      const destPath = path.join(outputDir, outputFilename);
+      const order = Number.parseInt(doc.prefix, 10);
+      const bundle = bundles.find(
+        (candidate) => order >= candidate.from && order < candidate.to,
+      );
+      if (!bundle) {
+        throw new Error(`No NotebookLM bundle configured for: ${doc.src}`);
+      }
 
-      // Copy the file
-      await copyFile(srcPath, destPath);
+      const content = await readFile(srcPath, "utf8");
+      bundleContents.set(
+        bundle.filename,
+        `${bundleContents.get(bundle.filename)}\n---\n\n## Source: ${doc.src}\n\n${content.trim()}\n`,
+      );
       successCount++;
     }
 
+    for (const bundle of bundles) {
+      await writeFile(
+        `${outputDir}/${bundle.filename}`,
+        `${bundleContents.get(bundle.filename)}\n`,
+      );
+    }
+
     log.info(`\nExport completed successfully!`);
-    log.info(`Exported ${successCount} files to ${outputDir}`);
+    log.info(
+      `Exported ${successCount} documents in ${bundles.length} bundles to ${outputDir}`,
+    );
 
     if (skippedCount > 0) {
       log.warn(`\nSkipped ${skippedCount} missing files:`);
