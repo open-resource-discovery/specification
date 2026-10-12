@@ -34,6 +34,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   The exported TypeScript `Aspect.title` property is now optional; consumers that assumed a title was always present may require source changes when upgrading. Documents with title-less aspects do not validate against earlier schemas.
 - Allowed customer-namespaced ORD IDs to be published globally when the allocating platform guarantees global uniqueness across customer scopes; otherwise partner content still requires ORD IDs under the partner's registered vendor namespace.
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
+- Clarified identifier and lifecycle guidance: Specification IDs do not allow `/` in the specification identifier, runtime extensions MAY use SemVer build metadata but MUST update `lastUpdate`, and decommissioned resources or unused taxonomy require tombstones; resources may be removed or retained with `releaseStatus: sunset` and a `sunsetDate`.
 - `sap:core:v1` now requires all ORD Overlays to have effective `internal` or `private` visibility and requires SAP publishers to use `ord:overlay:v1` rather than `oas-overlay-v1` for published overlays.
 
 ## [1.16.4]
