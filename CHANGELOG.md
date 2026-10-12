@@ -16,11 +16,23 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   It records the same identity that can be passed as the `Global-Tenant-Id` header in the `open` and `basic-auth` access strategies.
   ORD Overlays support the same identifier in `describedSystemInstance` and `target.systemInstance`, with matching identity semantics and validation constraints.
   Cross-linked `localId`/`Local-Tenant-Id` and `globalId`/`Global-Tenant-Id` between the ORD Document interface and the access-strategy documentation.
+- Added `systemTypes` to `IntegrationAspect` for dependencies on system types that do not require a specific resource contract, including an optional minimum system version.
+- Added capability type `agent-skill` for describing discrete, reusable agent skills that can be invoked by orchestrator agents or other systems.
+- Added capability definition type `agent-skill-zip` for ZIP archive definitions of agent skills with media type `application/zip`.
+- Added capability type `agent-plugin` for bundling multiple agent resources (such as one or more agent skills) into a single, distributable package.
+- Added capability definition type `agent-plugin-zip` for ZIP archive definitions of agent plugins with media type `application/zip`.
+- Added `integrationDependencies` to `Capability`, mirroring the property on `Agent` and allowing a capability to declare the API Resources, Event Resources, or other Capabilities it requires. See [AI Agents and Protocols: Skill Dependencies](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#skill-dependencies).
+- Added `subset` property to `CapabilityIntegrationAspect` (new `CapabilityIntegrationAspectSubset` object with `skillName`). Lets a dependency on a bundling capability such as `agent-plugin` be narrowed to specific contained skills, so consumers load only the minimal surface into the harness / context instead of the whole bundle.
+- Added `partOfProducts`, `responsible`, lifecycle metadata, taxonomy, and `policyLevels` to Capabilities for consistency with other ORD resources.
 
 ### Changed
 
+- Made `IntegrationAspect.title` optional. Existing documents remain valid, but consumers MUST handle aspects without a title, for example by deriving a display label from the referenced resources or system types.
+  The exported TypeScript `Aspect.title` property is now optional; consumers that assumed a title was always present may require source changes when upgrading. Documents with title-less aspects do not validate against earlier schemas.
+- Allowed customer-namespaced ORD IDs to be published globally when the allocating platform guarantees global uniqueness across customer scopes; otherwise partner content still requires ORD IDs under the partner's registered vendor namespace.
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
 - Reorganized identifier, versioning, lifecycle, and compatibility guidance into focused detail-page sections, simplified the main specification overview, and refreshed the related diagrams and navigation without changing normative requirements.
+- Added `extensible` to Capabilities and generalized its descriptions beyond API and event custom fields.
 
 ## [1.16.4]
 
