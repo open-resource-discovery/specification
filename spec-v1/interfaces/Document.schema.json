@@ -5417,6 +5417,9 @@
             "$ref": "#/definitions/Link"
           }
         },
+        "extensible": {
+          "$ref": "#/definitions/Extensible"
+        },
         "countries": {
           "type": "array",
           "items": {
@@ -7349,26 +7352,26 @@
           "type": "string",
           "title": "Extensibility Support Level",
           "x-ums-type": "ignore",
-          "description": "Defines whether and how the resource can be extended with custom fields.",
+          "description": "Defines whether and how the resource can be extended.",
           "oneOf": [
             {
               "const": "no",
-              "description": "Not extensible.\n\nThe data model of the resource (API or event) cannot be extended with custom fields."
+              "description": "Not extensible.\n\nThe resource cannot be extended with custom fields, entities, skills, or other resource-specific elements."
             },
             {
               "const": "manual",
-              "description": "Manually extensible.\n\nIn addition to defining a custom field, manual activities are required to include the field\nin the data model of the resource (API or event).\nExamples: using a specific mapping tool or selecting the resource in a data model extension tool."
+              "description": "Manually extensible.\n\nAfter defining an extension, manual activities are required to include it in the resource.\nExamples include using a mapping tool, selecting the resource in a data model extension tool, or adding a skill to an agent."
             },
             {
               "const": "automatic",
-              "description": "Automatically extensible.\n\nAfter defining a custom field in the local domain model, the resource (API or event)\nis automatically extended as part of the default extension field definition."
+              "description": "Automatically extensible.\n\nAfter defining an extension through the applicable extension mechanism, the resource is automatically extended."
             }
           ]
         },
         "description": {
           "type": "string",
           "minLength": 1,
-          "description": "A description about the extensibility capabilities of this API, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThis description may contain detailed steps on how to extend the API.\nLinks to external resources can be provided within the description as markdown links.\n\nThis description MUST be provided if `supported` is set to `manual` or `automatic`.",
+          "description": "A description about the extensibility capabilities of this resource, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThis description may contain detailed steps on how to extend the resource.\nLinks to external resources can be provided within the description as markdown links.\n\nThis description MUST be provided if `supported` is set to `manual` or `automatic`.",
           "examples": [
             "Please find the extensibility documentation [here](#here)"
           ]
