@@ -175,8 +175,10 @@ Without `subset`, the dependency would imply access to all operations of the ref
       "ordId": "foo.app1:integrationDependency:DisputeAgent-mcpDeps:v1",
       "title": "MCP Tool Dependencies for Dispute Agent",
       "shortDescription": "MCP tools required by the Dispute Agent at runtime.",
+      "version": "1.0.0",
       "mandatory": true,
       "releaseStatus": "active",
+      "visibility": "public",
       "partOfPackage": "sap.foo:package:MyPackage:v1",
       "aspects": [
         {
@@ -192,7 +194,6 @@ Without `subset`, the dependency would imply access to all operations of the ref
           ]
         },
         {
-          "title": "Document Processing Skill",
           "description": "Reusable skill for extracting structured data from uploaded documents",
           "mandatory": false,
           "capabilities": [
@@ -297,6 +298,9 @@ This enables:
       "title": "Dispute Summarization Skill",
       "shortDescription": "Summarizes dispute cases and their resolution history",
       "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "type": "agent-skill",
       "definitions": [
         {
@@ -320,9 +324,14 @@ Agents can depend on external skills through Integration Dependency aspects:
   "integrationDependencies": [
     {
       "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
+      "title": "Dispute Case Management Integration",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "mandatory": false,
       "aspects": [
         {
-          "title": "Document Processing Skill Access",
           "description": "Uses an external agent skill for processing documents",
           "mandatory": false,
           "capabilities": [
@@ -389,9 +398,14 @@ To narrow this down, a capability reference MAY carry a `subset` listing the spe
   "integrationDependencies": [
     {
       "ordId": "sap.foo:integrationDependency:DisputeHandling:v1",
+      "title": "Dispute Handling Integration",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "mandatory": false,
       "aspects": [
         {
-          "title": "Dispute Summarization",
           "mandatory": false,
           "capabilities": [
             {
@@ -418,6 +432,9 @@ The `skillName` values are names understood within the plugin bundle itself; ORD
       "title": "Dispute Management Plugin",
       "shortDescription": "Bundles the dispute summarization and resolution skills",
       "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
       "type": "agent-plugin",
       "definitions": [
         {
