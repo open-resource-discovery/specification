@@ -354,7 +354,7 @@ Integration Dependency,links,false,array<Link>
 Integration Dependency,tags,false,array<string>
 Integration Dependency,labels,false,Labels
 Integration Dependency,documentationLabels,false,DocumentationLabels
-Aspect,title,true,string
+Aspect,title,false,string
 Aspect,description,false,string
 Aspect,mandatory,true,boolean
 Aspect,supportMultipleProviders,false,boolean
