@@ -3,7 +3,7 @@
   "openResourceDiscovery": "1.16",
   "integrationDependencies": [
     // This is an example for a simple Integration Dependency
-    // that only expresses that only declares that some events are needed together
+    // that declares that some events are needed together
     // This is needed for the SAP Event Broker to provide the "Subscription Content" related feature.
     {
       "ordId": "sap.s4:integrationDependency:subscriptionReplication:v2",
@@ -23,7 +23,6 @@
       // or an "internal" visibility resource
       "aspects": [
         {
-          "title": "SAPSubscriptionBillingBusinessEvents Title",
           "mandatory": true,
           "eventResources": [
             {
@@ -44,7 +43,6 @@
           ],
         },
         {
-          "title": "Billing Forecast Events",
           "description": "The second aspect is interpreted as AND condition and used in case events from multiple event resources / catalog need to be subscribed",
           "mandatory": true,
           "eventResources": [
@@ -76,7 +74,6 @@
       "lastUpdate": "2023-08-03T10:14:26.941Z",
       "aspects": [
         {
-          "title": "RawCustomerOrder",
           "description": "Exchange Customer Order Data",
           "mandatory": true,
           "supportMultipleProviders": true,
@@ -108,7 +105,6 @@
           ],
         },
         {
-          "title": "RetailTransaction",
           "description": "Test",
           "mandatory": false,
           "supportMultipleProviders": false,
@@ -145,12 +141,10 @@
       "mandatory": true,
       "aspects": [
         {
-          "title": "Billing system",
           "mandatory": true,
           "systemTypes": [{ "systemNamespace": "foo.bar" }],
         },
         {
-          "title": "ERP system",
           "mandatory": true,
           "systemTypes": [
             { "systemNamespace": "foo.erpcloud", "minSystemVersion": "2025.4.0" },

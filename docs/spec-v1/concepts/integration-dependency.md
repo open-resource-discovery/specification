@@ -53,6 +53,7 @@ In practice this is often implemented as client integration code.
 
 An aspect can list the API and Event interfaces that need or may be used, typically also described via ORD by the integration target system or the owner of the contract.
 As a fallback, it can identify whole target system types through `systemTypes` when the dependency does not concern a specific contract.
+An aspect `title` is optional and should be omitted when its referenced resources or description already make its purpose clear.
 
 It is also possible to define that only a `subset` of the referenced resource is required, allowing the dependency to be expressed with minimal surface area (e.g. specific event types for SAP Event Broker subscriptions, or specific MCP tools for an agent).
 Integration Dependencies are optional to provide and are mandated only by specific use cases (e.g. SAP Event Broker, Data Products, AI Agents).
@@ -120,7 +121,6 @@ Only the system itself knows what external requirements it has and what integrat
       "mandatory": false,
       "aspects": [
         {
-          "title": "Subscription Billing business events",
           "mandatory": true,
           "eventResources": [
             {
@@ -158,10 +158,10 @@ An agent that depends on only a subset of tools in an MCP server can use `subset
       "shortDescription": "MCP tools required by My Agent at runtime.",
       "mandatory": true,
       "releaseStatus": "active",
+      "visibility": "public",
       "partOfPackage": "foo.myapp:package:MyPackage:v1",
       "aspects": [
         {
-          "title": "Product search and details tools",
           "mandatory": true,
           "apiResources": [
             {
@@ -199,12 +199,10 @@ An integration dependency can identify target system types without naming any pa
       "partOfPackage": "foo.bar:package:Example:v1",
       "aspects": [
         {
-          "title": "Billing system",
           "mandatory": true,
           "systemTypes": [{ "systemNamespace": "foo.bar" }]
         },
         {
-          "title": "ERP system",
           "mandatory": true,
           "systemTypes": [
             { "systemNamespace": "foo.erpcloud", "minSystemVersion": "2025.4.0" },
