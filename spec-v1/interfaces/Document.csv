@@ -410,6 +410,7 @@ Data Product Link,customType,false,string
 Data Product Link,url,true,string
 System Instance,baseUrl,false,string
 System Instance,localId,false,string
+System Instance,globalId,false,string
 System Instance,correlationIds,false,array<string>
 System Instance,labels,false,Labels
 System Instance,documentationLabels,false,DocumentationLabels
