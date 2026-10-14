@@ -35,6 +35,9 @@ spec:
       description: "Optional description of the overlay document itself.\n\nNotated in [CommonMark](https://spec.commonmark.org/) (Markdown)."
       constraints:
         minLength: !!int '1'
+    - name: 'purpose'
+      type: 'string'
+      description: "Optional classification of the overlay's intent, i.e. *why* this overlay exists and what kind of\nenrichment or adaptation it applies as a whole.\n\nThis complements the free-text `description` by providing a machine-readable value that registries\nand tooling can filter, group, and report on (e.g. \"show all AI-enrichment overlays for this resource\").\nIt is purely informational and has no effect on patch application.\n\nThis reuses the same vocabulary as the ORD Document\n[API Resource Definition](../../spec-v1/interfaces/Document.md#api-resource-definition) `purpose`, so that an\noverlay's intent aligns with the `purpose` of the `resourceDefinitions` entry it is attached to.\n\nMUST be a valid [Concept ID](../../spec-v1/concepts/identifiers.md#concept-id). The `ord:` namespace is\nreserved for values standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`)."
     - name: 'perspective'
       type: 'string'
       description: "Overlay-specific [perspective](../../spec-v1/index.md#perspectives) that scopes where this overlay should be applied.\n\nUse this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`\nto describe whether the overlay applies broadly to a system type, to one released system version,\nor only to a specific system instance."
