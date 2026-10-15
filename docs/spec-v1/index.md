@@ -460,7 +460,9 @@ Every ORD resource that carries machine-readable definitions (API Resource, Even
 
 Within a single resource, the list MAY still hold several entries, but they must all describe the same underlying resource. Additional entries beyond the default exist to carry complementary artifacts (overlays, AI-enriched variants, agent-security-permissions views, …) and, where supported, are distinguished via the `purpose` property.
 
-The entry *without* a `purpose` is the primary / default definition, and there SHOULD be exactly one per `(type, visibility)` combination. Consumers that don't explicitly ask for a specific `purpose` MUST fall back to the default entry with the highest `visibility` they are entitled to see. Values under the `ord:` namespace are reserved for the ORD specification; custom purposes MUST use their own namespace prefix.
+The entry *without* a `purpose` is the primary / default definition, and there SHOULD be exactly one per `(type, visibility)` combination for API Resources, Event Resources, Capabilities, and Overlays. Consumers that don't explicitly ask for a specific `purpose` MUST fall back to the default entry with the highest `visibility` they are entitled to see. Values under the `ord:` namespace are reserved for the ORD specification; custom purposes MUST use their own namespace prefix.
+
+**Entity Type definitions** follow an Entity-Type-specific uniqueness key that additionally includes `mediaType`: the combination of `(type, visibility, mediaType, purpose)` MUST be unique within the `definitions` list. Unlike API/Event/Capability resources, there is **no SHOULD-recommendation to provide a default** (purpose-less) entry for Entity Types. All definitions MAY carry distinct purposes, and the absence of a purpose-less entry MUST NOT produce a validation error, warning, or informational finding.
 
 An ORD resource can also reference an ORD Overlay as an additional `resourceDefinitions` entry with type `ord:overlay:v1`. The same overlay files can optionally be discovered independently via the [ORD configuration endpoint](#ord-configuration-endpoint). For details, see [ORD Overlay](./interfaces/OrdOverlay.md).
 
