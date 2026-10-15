@@ -2099,6 +2099,19 @@ export interface EntityType {
   relatedEntityTypes?: RelatedEntityType[];
   /**
    * List of available machine-readable definitions that describe the entity type's internal model in detail.
+   *
+   * Every entry MUST describe the *same* underlying entity type. Allowed variations are alternative
+   * representation formats and complementary artifacts distinguished by `purpose`
+   * (e.g. an AI-enriched variant, an agent-security-permissions view).
+   *
+   * The entry without a `purpose` value is the default definition for its `(type, visibility, mediaType)`.
+   * Providing such a default is optional: definitions may all specify distinct purposes.
+   * The absence of a purpose-less entry does NOT warrant a validation error, warning, or informational finding.
+   *
+   * The combination of `type`, `visibility`, `mediaType`, and `purpose` MUST be unique within the list.
+   * Two entries that are otherwise identical but differ only in `url` are still considered duplicates.
+   * Missing `purpose` counts as the same absence for the uniqueness comparison —
+   * two entries with the same `(type, visibility, mediaType)` and no `purpose` are duplicates.
    */
   definitions?: EntityTypeDefinition[];
   /**
@@ -2180,8 +2193,13 @@ export interface RelatedEntityType {
  * This can be used to describe a shared internal model multiple APIs and Events are based on.
  * However, interaction with the actual data happens through API Resources or Event Resources that expose these entity types with a defined interface and contract.
  *
- * Each definition is an alternative description format for the same entity type.
- * The same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
+ * Each definition is an alternative description format or complementary artifact for the same entity type.
+ * The combination of `type`, `visibility`, `mediaType`, and `purpose` MUST be unique within the `definitions` list.
+ * Two entries that are otherwise identical but differ only in `url` are still considered duplicates.
+ *
+ * Omitting `purpose` identifies the default definition for its `(type, visibility, mediaType)` combination.
+ * Providing such a default is optional: all definitions may specify distinct purposes.
+ * The absence of a purpose-less entry does NOT warrant a validation error, warning, or informational finding.
  *
  * **Why Entity Types are private by default**: Since entity type definitions are internal implementation details, they SHOULD be marked as `private` visibility by default.
  *
@@ -2234,6 +2252,24 @@ export interface EntityTypeDefinition {
    * Only use `public` visibility when the internal model definition itself needs open access for standardization or documentation purposes.
    */
   visibility: "public" | "internal" | "private";
+  /**
+   * Marks an entity type definition as a *complementary* variant for the same entity type,
+   * for example an AI-enriched model description or an agent-security-permissions view.
+   * All entries in the `definitions` list, with or without `purpose`, MUST describe the same
+   * underlying entity type; this list MUST NOT bundle different entity types.
+   *
+   * Together with `type`, `visibility`, and `mediaType`, `purpose` forms the uniqueness
+   * key for entries in the `definitions` list.
+   *
+   * Omitting `purpose` identifies the default definition for its `(type, visibility, mediaType)`
+   * combination. Providing such a default is optional; definitions may all carry distinct purposes.
+   * The absence of a purpose-less entry does NOT warrant a validation error, warning, or informational finding.
+   *
+   * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
