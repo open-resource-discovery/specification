@@ -1375,10 +1375,26 @@ definitions:
               For each API Resource definition: `type` MUST ONLY be set to `graphql-sdl`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: delta-sharing
             x-introduced-in-version: "1.8.0"
+            x-deprecated-in-version: "1.18.0"
+            x-deprecation-text: |-
+              Use `opensharing` instead.
+              [OpenSharing](https://opensharing.io) is the direct successor to Delta Sharing, developed as a vendor-neutral open standard under the Linux Foundation AI & Data. OpenSharing is a superset of the Delta Sharing protocol and all existing Delta Sharing clients are compatible with it, so a consumer that supports `delta-sharing` MAY treat `opensharing` the same way.
             description: |-
               [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) Protocol, where one API Resource corresponds to a share.
               For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
               For delta-sharing APIs the resource definition MAY be omitted, as the protocol itself allows for metadata discovery at runtime.
+
+              _Deprecated: superseded by `opensharing`, the vendor-neutral successor to Delta Sharing. New API Resources SHOULD use `opensharing`._
+          - const: opensharing
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              [OpenSharing](https://opensharing.io) Protocol, where one API Resource corresponds to a share.
+
+              OpenSharing is the vendor-neutral successor to [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md), governed as an open standard (Apache 2.0) under the Linux Foundation AI & Data. It is a superset of Delta Sharing: all existing Delta Sharing clients are compatible with OpenSharing, so a consumer that supports the (deprecated) `delta-sharing` protocol MAY treat `opensharing` the same way, while OpenSharing additionally covers AI asset types (volumes, models, agent skills) beyond structured tables.
+
+              It is RECOMMENDED to set `implementationStandard` to `sap:opensharing:v1`.
+              For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
+              For opensharing APIs the resource definition MAY be omitted, as the protocol itself allows for metadata discovery at runtime.
           - const: soap-inbound
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.
