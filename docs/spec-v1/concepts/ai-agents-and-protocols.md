@@ -94,6 +94,8 @@ Key aspects of this example:
 - **`exposedApiResources`**: Links to the API(s) through which the agent can be invoked (e.g., an A2A API)
 - **`integrationDependencies`**: Declares what external resources the agent requires to function
 - **`relatedEntityTypes`**: Documents which domain business entities the agent operates on
+- **`relatedCapabilities`**: Links the agent to named Capability resources, including the abilities it implements
+- **`relatedAgents`**: Declares agent-level relationships, such as delegation to a specialist
 - **`labels`**: Extensible key-value pairs for additional metadata like LLM models used
 
 ## Connectivity & Protocols
@@ -206,6 +208,96 @@ Without `subset`, the dependency would imply access to all operations of the ref
 }
 ```
 
+## Agent-Owned Relationships
+
+An Agent can declare two additional, typed relationships using ORD's existing
+`{ ordId, relationType }` pattern. The target kind is fixed by the property: a
+Capability for `relatedCapabilities`, or an Agent for `relatedAgents`.
+
+### Implemented Capabilities
+
+Use `relatedCapabilities` with `ord:implementsCapability` to identify a named
+ability or feature that the Agent implements. A Capability resource can describe
+that ability independently of a particular Agent or interaction API. This lets
+catalog consumers ask **which Agents implement this Capability**, including
+Agents without an exposed API and multiple Agents with different interfaces.
+
+The same predicate can be used on the existing `Capability.relatedCapabilities`
+property when a source Capability, such as a workflow, implements another
+Capability's ability. It does not imply identical contracts or lifecycle.
+
+A Capability consumed by an Agent, such as a required skill asset, belongs in its
+[Integration Dependencies](./integration-dependency.md). Implementing an ability
+and requiring another resource are separate statements.
+
+### Delegation to Another Agent
+
+Use `relatedAgents` with `ord:delegatesTo` when the source Agent delegates a task
+or subtask to a particular Agent. Consumers can ask **which specialist this Agent
+delegates to** without inferring delegation from an API dependency.
+
+An API dependency establishes an integration requirement; it does not establish
+that another Agent receives delegated work. Several Agents may share an API, and
+an internal delegate may not expose an interaction API. A delegation declaration
+therefore identifies the Agent's role rather than a protocol or operation.
+
+When delegation requires an external interface, continue describing that
+requirement through an Integration Dependency. Its API `subset.operationId` and
+event `subset.eventType` provide the existing selection detail. A delegation link
+does not assert that a runtime connection exists or that a task has executed.
+
+### Example and Publication Ownership
+
+This fictional Agent resource fragment declares an implemented business ability,
+a specialist delegation, and a separate integration requirement:
+
+```json
+{
+  "ordId": "example.procurement:agent:OrderResolution:v1",
+  "title": "Order Resolution Agent",
+  "version": "1.0.0",
+  "visibility": "internal",
+  "releaseStatus": "active",
+  "partOfPackage": "example.procurement:package:Agents:v1",
+  "relatedCapabilities": [
+    {
+      "ordId": "example.procurement:capability:OrderResolution:v1",
+      "relationType": "ord:implementsCapability"
+    }
+  ],
+  "relatedAgents": [
+    {
+      "ordId": "example.risk:agent:SupplierRisk:v1",
+      "relationType": "ord:delegatesTo"
+    }
+  ],
+  "integrationDependencies": [
+    "example.procurement:integrationDependency:SupplierRiskAssessment:v1"
+  ]
+}
+```
+
+The Agent's publisher owns these statements about its implementation and behavior.
+The referenced Capability, specialist Agent, and required interfaces retain their
+own publishers and lifecycle. Their resource descriptions are published separately.
+
+An aggregator can derive reverse navigation, such as “which Agents implement this
+Capability?” or “which Agents delegate to this specialist?”. The referenced
+resources do not need to publish matching inverse relationships. A reverse query
+retains the original source, predicate, and publication context.
+
+Both properties are optional and beta. If `relationType` is omitted, the link means
+only “related somehow”; consumers must not infer implementation or delegation.
+Custom relation types use Concept IDs and need their own documented meaning.
+Schema validation checks target ID kinds and the relationship object shape;
+consumers still need to resolve references and apply the predicate's source/target
+semantics. Discovery metadata does not grant permission to invoke an Agent.
+
+These relationships complement existing API/Event `exposedEntityTypes`, Agent
+`exposedApiResources`, Capability-related APIs/Events, and Integration Dependencies.
+They do not introduce parallel concept mappings, generic document-level assertions,
+native element selectors, or independently curated claims between external resources.
+
 ## AI Hints on ORD Resources
 
 The following ORD resource types support an `aiHint` property: API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities.
@@ -258,6 +350,8 @@ The AI Agents concept in ORD is currently in **Beta status** and may undergo ref
 - Relationships to API Resources via `exposedApiResources`
 - Relationships to dependencies via `integrationDependencies`
 - Links to related Entity Types via `relatedEntityTypes`
+- Agent-owned Capability implementation links via `relatedCapabilities`
+- Agent-owned delegation links via `relatedAgents`
 - Extensibility via `labels` and `tags` for evolving properties
 
 ### Extensibility Approach
