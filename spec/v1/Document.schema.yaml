@@ -632,7 +632,6 @@ definitions:
             - const: Sourcing and Procurement
             - const: Strategy, Compliance, and Governance
             - const: Supply Chain
-            - const: Technology Area Enterprise Technology
             # TODO: Cleanup. Those values seem to be not part of the lineOfBusiness vocabulary officially:
             - const: Sustainability
             - const: Metering
