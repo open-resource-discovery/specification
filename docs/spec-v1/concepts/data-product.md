@@ -39,7 +39,7 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 > **Note:** Throughout this document, "API" refers to both APIs and Events for readability, as Events are treated as a specialized API form.
 
 - Data Products are consumed via APIs and Events, which are expected to be described via [metadata](#metadata-aspect) for machine- and human-readable documentation.
-- For Data Products only certain types of API Protocols and qualities (performant mass read) are adequate. E.g. SAP uses [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md), which we additionally describe with [CSN Interop](https://sap.github.io/csn-interop-specification/) for richer metadata.
+- For Data Products only certain types of API Protocols and qualities (performant mass read) are adequate. E.g. SAP uses [OpenSharing](https://opensharing.io) — the vendor-neutral successor to [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) — which we additionally describe with [CSN Interop](https://sap.github.io/csn-interop-specification/) for richer metadata. OpenSharing is a superset of Delta Sharing, so existing Delta Sharing clients remain compatible; the `delta-sharing` API Protocol is deprecated in favor of `opensharing`.
 - Data Products are also expected to describe their data lineage. This is done via Data Product input ports, which are described in details as an ORD [Integration Dependency](../interfaces/Document#integration-dependency)
 
 ### Metadata Aspect
