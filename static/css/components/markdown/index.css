@@ -6,14 +6,6 @@
 */
 
 /* Markdown core headings, spacing and badges */
-.theme-doc-sidebar-item-link-level-2 {
-  font-size: 0.9em;
-}
-.theme-doc-sidebar-item-link-level-2 a {
-  border-left: 5px solid #ddd;
-  padding-inline: 7px;
-}
-
 article .card {
   padding: 0 16px 16px !important;
 }

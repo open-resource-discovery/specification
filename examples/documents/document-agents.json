@@ -1,13 +1,14 @@
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.16",
+  "openResourceDiscovery": "1.17",
   "description": "Example based on ORD Reference App",
   "policyLevels": [],
   "describedSystemVersion": {
     "version": "1.0.0"
   },
   "describedSystemInstance": {
-    "baseUrl": "https://tenant1.example-sap-system.com"
+    "baseUrl": "https://tenant1.example-sap-system.com",
+    "globalId": "c6c80b52-ecc1-47f8-9303-0d55fb67fd41"
   },
   "apiResources": [
     {
@@ -106,6 +107,70 @@
       ]
     }
   ],
+  "capabilities": [
+    {
+      "ordId": "foo.bar.skill:capability:disputeSummarization:v1",
+      "title": "Dispute Summarization Skill",
+      "shortDescription": "Summarizes dispute cases and their resolution history",
+      "description": "An agent skill that generates concise summaries of financial dispute cases, including key facts, involved parties, and resolution status.",
+      "version": "1.0.0",
+      "lastUpdate": "2022-12-19T15:47:04+00:00",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "type": "agent-skill",
+      "definitions": [
+        {
+          "type": "agent-skill-zip",
+          "mediaType": "application/zip",
+          "url": "/capabilities/disputeSummarization/skill.zip",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    },
+    {
+      "ordId": "foo.bar:capability:disputeManagementPlugin:v1",
+      "title": "Dispute Management Plugin",
+      "shortDescription": "Bundles reusable skills for dispute management",
+      "version": "1.0.0",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "type": "agent-plugin",
+      "definitions": [
+        {
+          "type": "agent-plugin-zip",
+          "mediaType": "application/zip",
+          "url": "/capabilities/disputeManagementPlugin/plugin.zip",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    },
+    {
+      "ordId": "sap.foo:capability:disputeResolutionWorkflow:v1",
+      "title": "Dispute Resolution Workflow",
+      "shortDescription": "Coordinates the APIs used to resolve a dispute",
+      "version": "1.0.0",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "type": "workflow",
+      "relatedApiResources": [
+        {
+          "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1",
+          "relationType": "ord:orchestrates"
+        }
+      ],
+      "definitions": [
+        {
+          "type": "arazzo-v1",
+          "mediaType": "application/yaml",
+          "url": "/definitions/dispute-resolution.arazzo.yaml",
+          "accessStrategies": [{ "type": "open" }]
+        }
+      ]
+    }
+  ],
   "integrationDependencies": [
     {
       "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
@@ -119,12 +184,21 @@
       "mandatory": true,
       "aspects": [
         {
-          "title": "Case Management API Access",
           "description": "Access to dispute case management APIs",
           "mandatory": true,
           "apiResources": [
             {
               "ordId": "sap.bar:apiResource:DisputeResolutionAPI:v1"
+            }
+          ]
+        },
+        {
+          "description": "Optionally uses the dispute summarization skill from the dispute management plugin.",
+          "mandatory": false,
+          "capabilities": [
+            {
+              "ordId": "foo.bar:capability:disputeManagementPlugin:v1",
+              "subset": [{ "skillName": "disputeSummarization" }]
             }
           ]
         }

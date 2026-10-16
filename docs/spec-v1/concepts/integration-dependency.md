@@ -3,17 +3,24 @@ sidebar_position: 5
 description: Detailed explanation of the Integration Dependency concept.
 ---
 
+import { IntegrationScenarioDiagram } from "@site/src/components/OrdDiagrams";
+
 # Integration Dependency
+
+> **Visual walkthrough:** Explore [integration dependencies and their aspects](https://open-resource-discovery.github.io/presentation/integration-dependencies) in the ORD presentation.
 
 ## Summary
 
 An **Integration Dependency** states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.
 The purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.
 
-The integration dependency includes a list of requirements, which point out which API and event resources (or other ORD concepts) are involved.
+An integration dependency contains a list of requirements that identify the API resources, event resources, whole system types, or other ORD concepts involved.
 Each requirement describes one aspect / ingredient and can be used to express alternatives (OR condition) for achieving the same outcome.
 
 See also: [Integration Dependency interface](../interfaces/Document#integration-dependency).
+
+An aspect's `title` is optional display text. Consumers MUST handle its absence, for example by deriving a label from the referenced resources or system types.
+This does not change which requirements the aspect expresses or whether it is mandatory.
 
 ## Background
 
@@ -29,23 +36,24 @@ Integration Dependency was introduced to describe what a system can _consume_ / 
 If this is set up and connected at run-time, it constitutes an integration.
 At ORD level, only the "type-level" ability to integrate and its requirements are described — not concrete runtime instances.
 
-> **Tip:** When the integration target resource uses a shared ORD ID, for example with an [authority namespace](../index.md#authority-namespace), a reused system namespace or an [abstract resource](./compatibility.md#abstract-ord-resources), a single dependency reference covers all system types providing that contract.
+> **Tip:** When the integration target resource uses a shared ORD ID, for example with an [authority namespace](./identifiers.md#authority-namespace), a reused system namespace or an [abstract resource](./versioning-and-lifecycle.md#abstract-ord-resources), a single dependency reference covers all system types providing that contract.
 > This is simpler than listing multiple system-type-specific ORD IDs as alternatives in the aspect.
 > See [Shared Taxonomy, Resources and Contracts](./shared-resources.md).
 
-The following diagram shows how two systems can integrate with each other via APIs and Events:
+The following overview summarizes the resources involved in an integration between two systems:
 
-<div className="img-box" style={{aspectRatio: "611/271"}}>
+<IntegrationScenarioDiagram />
 
-![Integration Dependency Problem Statement](/img/integration-dependency-ps.drawio.svg "Integration Dependency Problem Statement")
-
-</div>
-
-> **Figure 1:** This figure shows an integration scenario between System A and System B. System Instance A has implemented API clients against API Resources B-1 and B-2 of its integration target, as well as an event subscription (client implementation) for events from event resource B-3. It has an API Resource A-2, which the integration target uses to provide data back to System A.
+> **Figure 1:** System A declares an Integration Dependency on either API B-1 or API B-2 and on Event B-3 from System B. The callback API A-2 belongs to System A and is used by System B to send data back. The detailed diagram below separates these requirements into aspects; the overview does not depict runtime clients, subscriptions, or connections.
 
 ## Concept
 
-An **Integration Dependency** describes the ability to integrate with an external application or service for the purpose of achieving an integration goal or scenario. In practice this is often implemented as client integration code. It lists the API and Event interfaces that need or may be used — typically also described via ORD by the integration target system or the owner of the contract.
+An **Integration Dependency** describes the ability to integrate with an external application or service for the purpose of achieving an integration goal or scenario.
+In practice this is often implemented as client integration code.
+
+An aspect can list the API and Event interfaces that need or may be used, typically also described via ORD by the integration target system or the owner of the contract.
+As a fallback, it can identify whole target system types through `systemTypes` when the dependency does not concern a specific contract.
+An aspect `title` is optional and should be omitted when its referenced resources or description already make its purpose clear.
 
 It is also possible to define that only a `subset` of the referenced resource is required, allowing the dependency to be expressed with minimal surface area (e.g. specific event types for SAP Event Broker subscriptions, or specific MCP tools for an agent).
 Integration Dependencies are optional to provide and are mandated only by specific use cases (e.g. SAP Event Broker, Data Products, AI Agents).
@@ -68,11 +76,17 @@ Requirements express the following additional information:
 
 - Requirements can be optional if the application can still provide meaningful results without it being provided.
 - Within a requirement there can be references to semantically equivalent API or event resources that are alternatives to each other (OR condition).
-- Constraints like a minimum version of the target resource.
+- Constraints like a minimum version of the target resource or system type.
 - Define a `subset` of the target resource that is needed — specific API operations, MCP tools, or event types. This avoids granting broader permissions than necessary, reduces subscription scope, and for agents allows the runtime to load only the relevant tool descriptions into the LLM context.
 - The requirement API or event resources can be references to descriptions from another (external) application if the integration target application owns the contract and lifecycle of it. But the contract can also be owned by the described application itself.
 - Additionally, it is possible to describe which Consumption Bundle is to be used for setting up trust and credentials to the target API or Event resource.
 - The application could also decide to expose an API or event resource contract itself, that another (external) application needs to implement and fulfill to integrate with the application in focus.
+
+When only the presence of or connection to a particular system type matters, `systemTypes` provides a simpler alternative to resource-level requirements within an aspect.
+Each entry identifies an alternative integration target by its [system namespace](./identifiers.md#system-namespace) and can optionally require a minimum system version.
+All entries in one aspect are alternatives (OR condition), including entries across `systemTypes`, `apiResources`, `eventResources` and `capabilities`.
+Each mandatory aspect must be fulfilled (AND condition).
+A system-type aspect can be combined with more detailed resource or capability aspects in the same Integration Dependency, making those requirements complementary.
 
 Integration Dependencies can also be mandatory, which implies that it's a prerequisite for provisioning the described system.
 They inherit the typical, shared ORD attributes that can be used to handle lifecycle, versioning, globally unique IDs, correlations and more.
@@ -107,6 +121,7 @@ Only the system itself knows what external requirements it has and what integrat
       "mandatory": false,
       "aspects": [
         {
+          "mandatory": true,
           "eventResources": [
             {
               "ordId": "sap.billing.sb:eventResource:SAPSubscriptionBillingBusinessEvents:v2",
@@ -143,9 +158,11 @@ An agent that depends on only a subset of tools in an MCP server can use `subset
       "shortDescription": "MCP tools required by My Agent at runtime.",
       "mandatory": true,
       "releaseStatus": "active",
+      "visibility": "public",
       "partOfPackage": "foo.myapp:package:MyPackage:v1",
       "aspects": [
         {
+          "mandatory": true,
           "apiResources": [
             {
               "ordId": "foo.sometool:apiResource:SomeToolMCPServer:v1",
@@ -164,3 +181,42 @@ An agent that depends on only a subset of tools in an MCP server can use `subset
 ```
 
 The `subset` narrows the dependency to only the listed tools, which helps consumers understand the exact surface area required and can optimize permission grants or routing.
+
+### System Type Dependencies
+
+An integration dependency can identify target system types without naming any particular resource contract.
+
+```json
+{
+  "integrationDependencies": [
+    {
+      "ordId": "foo.bar:integrationDependency:BillingAndERP:v1",
+      "version": "1.0.0",
+      "title": "Billing and ERP systems",
+      "mandatory": true,
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "foo.bar:package:Example:v1",
+      "aspects": [
+        {
+          "mandatory": true,
+          "systemTypes": [{ "systemNamespace": "foo.bar" }]
+        },
+        {
+          "mandatory": true,
+          "systemTypes": [
+            { "systemNamespace": "foo.erpcloud", "minSystemVersion": "2025.4.0" },
+            { "systemNamespace": "foo.erp" },
+            { "systemNamespace": "foo.erponprem" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+This dependency MUST have `foo.bar` AND MUST have one of `foo.erpcloud` OR `foo.erp` OR `foo.erponprem`.
+If `foo.erpcloud` fulfills the second aspect, its system version MUST be at least `2025.4.0`.
+Additional API-resource, event-resource or capability aspects can be added to the same `aspects` array when the dependency also needs more detailed contracts.
+Those mandatory aspects are complementary and must also be fulfilled.

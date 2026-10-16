@@ -8,11 +8,39 @@ but omits the **patch** level in the spec version number.
 
 For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMAP.md)
 
+
 ## [unreleased]
+
+## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added
 
-- `Building Materials`, `Fashion`, and `Real Estate` to the standardized `industry` values.
+- Added `relatedDataProducts` to Data Products for expressing typed relationships to other Data Products through extensible reference objects.
+- Added [Arazzo Specification](https://www.openapis.org/arazzo-specification) support for describing multi-step API workflows.
+  - Added standardized Capability type `workflow` with definition type `arazzo-v1`.
+  - Added `arazzo-v1` to ORD Overlay target definition types.
+  - Added `ord:orchestrates` as a `relatedApiResources.relationType` value for declaring that the source resource orchestrates the target API Resource.
+- Added optional `describedSystemInstance.globalId` property for a globally unique and stable tenant identifier assigned by the responsible tenant authority.
+  It records the same identity that can be passed as the `Global-Tenant-Id` header in the `open` and `basic-auth` access strategies.
+  ORD Overlays support the same identifier in `describedSystemInstance` and `target.systemInstance`, with matching identity semantics and validation constraints.
+  Cross-linked `localId`/`Local-Tenant-Id` and `globalId`/`Global-Tenant-Id` between the ORD Document interface and the access-strategy documentation.
+- Added `systemTypes` to `IntegrationAspect` for dependencies on system types that do not require a specific resource contract, including an optional minimum system version.
+- Added standardized Capability types `agent-skill` and `agent-plugin`, with `agent-skill-zip` and `agent-plugin-zip` definitions for distributing skills and plugin bundles as ZIP archives.
+- Added `integrationDependencies` to Capabilities, allowing them to declare required API Resources, Event Resources, or other Capabilities. Dependencies on bundling capabilities such as agent plugins can use `subset.skillName` to identify only the required skills. See [AI Agents and Protocols: Skill Dependencies](https://open-resource-discovery.org/spec-v1/concepts/ai-agents-and-protocols#skill-dependencies).
+- Added `partOfProducts`, `responsible`, lifecycle metadata, taxonomy, `policyLevels`, and `extensible` to Capabilities for consistency with other ORD resources and support for custom fields.
+- Added support for [OpenAPI Initiative Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html): API Resources can publish `oas-overlay-v1` definitions, and ORD Overlays can target them. The ORD Overlay documentation now explains how the two overlay specifications interoperate.
+- Added the `sap:documentation:v1` policy level for human-readable metadata requirements. `sap:core:v1` now inherits this policy level.
+- Added `Building Materials`, `Fashion`, and `Real Estate` to the standardized `industry` values.
+
+### Changed
+
+- Made `IntegrationAspect.title` optional. Existing documents remain valid, but consumers MUST handle aspects without a title, for example by deriving a display label from the referenced resources or system types.
+  The exported TypeScript `Aspect.title` property is now optional; consumers that assumed a title was always present may require source changes when upgrading. Documents with title-less aspects do not validate against earlier schemas.
+- Allowed customer-namespaced ORD IDs to be published globally when the allocating platform guarantees global uniqueness across customer scopes; otherwise partner content still requires ORD IDs under the partner's registered vendor namespace.
+- Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
+- Clarified identifier and lifecycle guidance: Specification IDs do not allow `/` in the specification identifier, runtime extensions MAY use SemVer build metadata but MUST update `lastUpdate`, and decommissioned resources or unused taxonomy require tombstones; resources may be removed or retained with `releaseStatus: sunset` and a `sunsetDate`.
+- `sap:core:v1` now requires all ORD Overlays to have effective `internal` or `private` visibility and requires SAP publishers to use `ord:overlay:v1` rather than `oas-overlay-v1` for published overlays.
+
 
 ## [1.16.4]
 
@@ -34,7 +62,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified that overlay output is semantically, not byte, canonical.
 - Clarified OData operation selectors: a namespace-qualified name may omit its signature only when unique; overloaded operations require an exact signature with all parameters in declaration order; `Name()` selects a zero-parameter operation; and signature selectors never fall back to a FunctionImport.
 - Clarified OData entity-set selectors: an unqualified name may be used only when unique; otherwise a fully qualified name is required.
-- Clarified the [Customer Namespace](./docs/spec-v1/index.md#customer-namespace): customer-created or customer-governed content SHOULD use `customer.*` or `c.*`, while providers that cannot distinguish it from standard content may use the system's regular namespace.
+- Clarified the [Customer Namespace](./docs/spec-v1/concepts/identifiers.md#customer-namespace): customer-created or customer-governed content SHOULD use `customer.*` or `c.*`, while providers that cannot distinguish it from standard content may use the system's regular namespace.
   Customer namespaces MUST NOT be used for globally shared content, and partner content MUST be exported under the partner's registered vendor namespace before global publication.
   The Package `vendor` remains authoritative for current ownership attribution independently of the ORD ID namespace, and the SAP policy levels now allow registered partner Vendors.
 - Defined the uniqueness scope of customer-namespaced ORD IDs and required catalogs and consumers to retain that scope when comparing, resolving, or deduplicating these IDs.
@@ -147,14 +175,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Added
 
 - Added `correlationIds` to package
-- Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/concepts/implementing-ord-natively) guide
+- Added [Implementing ORD Natively](https://open-resource-discovery.org/spec-v1/guides/implementing-ord-natively) guide
 
 ## [1.14.4]
 
 ### Changed
 
 - Added recommendation to use [Concept IDs](https://open-resource-discovery.org/spec-v1#concept-id) as `labels` keys to indicate ownership and avoid naming conflicts. The `labels` key validation pattern now also allows `:` and `/` characters accordingly.
-- Clarified the use of [authority namespaces](https://open-resource-discovery.org/spec-v1#authority-namespace) for resource ORD IDs: when multiple system types share the same resource contract under a shared authority namespace, the uniqueness and aggregation rules now explicitly address this. See [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
+- Clarified the use of [authority namespaces](https://open-resource-discovery.org/spec-v1/concepts/identifiers#authority-namespace) for resource ORD IDs: when multiple system types share the same resource contract under a shared authority namespace, the uniqueness and aggregation rules now explicitly address this. See [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
 - Added concept page on [Shared Resources Across System Types](https://open-resource-discovery.org/spec-v1/concepts/shared-resources).
 - Clarification: Consolidated and clarified the [static perspective resolution](https://open-resource-discovery.org/spec-v1/concepts/perspectives#static-perspective-resolution) algorithm for aggregators. When no specific version is requested, explicit `system-type` perspective data takes precedence; if unavailable, the aggregator SHOULD derive it from the latest `system-version`. Previously this behavior was scattered and only stated as MAY.
 

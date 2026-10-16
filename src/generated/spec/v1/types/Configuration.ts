@@ -107,7 +107,7 @@ export interface OrdV1DocumentAccessStrategy {
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
-   * MUST be a valid [Specification ID](../index.md#specification-id).
+   * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
    *
    * MUST only be provided if `type` is set to `custom`.
    */

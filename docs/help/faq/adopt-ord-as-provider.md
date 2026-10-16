@@ -1,10 +1,10 @@
 ---
 sidebar_position: 2
-title: HowTo adopt as ORD Provider
-description: ORD Provider guide how to adopt ORD, depending on preconditions and requirements.
+title: How to Adopt ORD as a Provider
+description: Learn how to adopt ORD as a provider based on your requirements and existing application architecture.
 ---
 
-# How To Adopt ORD as a Provider
+# How to Adopt ORD as a Provider
 
 ## Introduction
 

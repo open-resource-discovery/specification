@@ -1,7 +1,29 @@
-import { useLocation } from "@docusaurus/router";
+import { useHistory, useLocation } from "@docusaurus/router";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import OriginalRoot from "@theme-original/Root";
 import type React from "react";
 import { useEffect, useRef } from "react";
+
+// Keep published deep links working after moving the normative detail sections.
+const movedIdentifierAnchors = new Set([
+  "structure-of-namespaces",
+  "namespace-constraints",
+  "vendor-namespace",
+  "system-namespace",
+  "authority-namespace",
+  "sub-context-namespace",
+  "customer-namespace",
+  "ord-id-construction",
+  "ord-id-resolving",
+  "correlation-id-construction",
+  "specification-id-construction",
+  "def-ord-system-namespace",
+  "def-authority-namespace",
+  "def-ord-sub-context-namespace",
+  "def-ord-id",
+  "def-correlation-id",
+  "def-specification-id",
+]);
 
 /** Idempotent: only sets data-label, no structural mutations */
 function enhanceTables(root: Document | HTMLElement = document) {
@@ -103,9 +125,35 @@ function widthStepIndex(w: number, start = 1400, step = 200) {
 
 export default function Root({ children }: { children: React.ReactNode }) {
   const loc = useLocation();
+  const history = useHistory();
+  const specificationPath = useBaseUrl("/spec-v1");
+  const identifiersPath = useBaseUrl("/spec-v1/concepts/identifiers");
+  const lifecyclePath = useBaseUrl(
+    "/spec-v1/concepts/versioning-and-lifecycle",
+  );
   const navSeq = useRef(0);
   const lastStep = useRef<number | null>(null);
   const rafTid = useRef<number | null>(null);
+
+  useEffect(() => {
+    const path = loc.pathname.replace(/\/$/, "");
+    const anchor = loc.hash.slice(1);
+    if (path === specificationPath) {
+      if (movedIdentifierAnchors.has(anchor)) {
+        history.replace(`${identifiersPath}${loc.search}${loc.hash}`);
+      } else if (anchor === "versioning" || anchor === "lifecycle") {
+        history.replace(`${lifecyclePath}${loc.search}${loc.hash}`);
+      }
+    }
+  }, [
+    loc.pathname,
+    loc.hash,
+    loc.search,
+    history,
+    specificationPath,
+    identifiersPath,
+    lifecyclePath,
+  ]);
 
   // Initial hydration: tables + anchors align properly
   useEffect(() => {

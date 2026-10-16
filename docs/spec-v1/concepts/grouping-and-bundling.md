@@ -4,7 +4,11 @@ description: How to group, bundle and package ORD content.
 title: Grouping and Bundling
 ---
 
+import { GroupingPackagingDiagram } from "@site/src/components/OrdDiagrams";
+
 # Grouping and Bundling
+
+> **Visual walkthrough:** Compare [grouping and packaging](https://open-resource-discovery.github.io/presentation/grouping-packaging) in the ORD presentation.
 
 ## Quick Summary
 
@@ -38,7 +42,7 @@ Some of them have a specific intended usage, while others offer the application 
 
 ### Namespaces
 
-While ORD IDs contain [namespaces](../index.md#namespaces) that can include optional [sub-context namespaces](../index.md#sub-context-namespace), these should NOT be used for grouping purposes. Changing sub-context namespaces creates incompatible changes by altering ORD IDs. Use [groups](#groups) for grouping instead.
+While ORD IDs contain [namespaces](../index.md#namespaces) that can include optional [sub-context namespaces](./identifiers.md#sub-context-namespace), these should NOT be used for grouping purposes. Changing sub-context namespaces creates incompatible changes by altering ORD IDs. Use [groups](#groups) for grouping instead.
 
 Sub-context namespaces should only be used if they are expected to be stable and are necessary to ensure conflict-free ORD IDs. A valid use case is enabling sub-teams to work independently with isolated, conflict-free sub-namespaces.
 
@@ -49,17 +53,11 @@ However, there are still some [Considerations on the granularity of ORD Document
 
 ## Choosing the Right Concept
 
-The following table summarizes all grouping options and helps decide which one to use:
+The following overview compares the structured grouping concepts and their intended concerns.
 
-| Concept | Level | Assignment | Key Question |
-|---|---|---|---|
-| [Product](#product) | Portfolio | Package / resource → 0..n Products | What named software product or service offering does this belong to? |
-| [Package](#package) | Publishing | **Every resource MUST have exactly one** | What is published together and shown in a catalog? |
-| [Consumption Bundle](#consumption-bundle) | Technical access | API / Event → 0..n Bundles | What can be consumed with the same auth mechanism and credentials? |
-| [Entity Type](#entity-type) | Semantic | API / Event / Data Product → 0..n Entity Types | What business object or domain concept does this relate to? |
-| [Group](#groups) | Custom taxonomy | Any resource → 0..n Groups | Custom, governed grouping and taxonomy assignment beyond the predefined ORD concepts |
-| [Tags](#tags) | Free tagging | Any resource → 0..n tags | Flexible keyword tagging for search and navigation |
-| [Labels](#labels) | Key-value metadata | Any resource → 0..n labels | Structured metadata for programmatic querying and filtering |
+<GroupingPackagingDiagram />
+
+Tags and labels remain lightweight alternatives for search, navigation, and programmatic filtering.
 
 ## Best Practices and Recommendations
 

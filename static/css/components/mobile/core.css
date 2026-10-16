@@ -204,7 +204,7 @@
 
 /* Responsive tables in docs */
 @media (max-width: 1152px) {
-  .theme-doc-markdown table thead {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) thead {
     display: table-header-group !important;
     position: absolute !important;
     width: 1px;
@@ -216,23 +216,23 @@
     overflow: hidden;
     white-space: nowrap;
   }
-  .theme-doc-markdown table {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
   }
-  .theme-doc-markdown table tbody {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) tbody {
     display: grid;
     gap: 12px;
   }
-  .theme-doc-markdown table tbody tr {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) tbody tr {
     display: block;
     padding: 12px;
     border: 1px solid var(--lp-c-border, rgba(127, 127, 127, 0.25));
     border-radius: 10px;
     background: var(--c-bg, transparent);
   }
-  .theme-doc-markdown table td {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) td {
     display: grid;
     grid-template-columns: clamp(100px, 32%, 160px) 1fr;
     column-gap: 12px;
@@ -243,13 +243,13 @@
     word-break: break-word;
     overflow-wrap: anywhere;
   }
-  .theme-doc-markdown table td + td {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) td + td {
     border-top: 1px solid var(--lp-c-border, rgba(127, 127, 127, 0.15));
   }
-  .theme-doc-markdown table td:first-child {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) td:first-child {
     padding-top: 2px;
   }
-  .theme-doc-markdown table td::before {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) td::before {
     content: attr(data-label);
     font-size: 12px;
     font-weight: 400;
@@ -259,22 +259,22 @@
     line-height: 1.2;
     align-self: start;
   }
-  .theme-doc-markdown table td .optional,
-  .theme-doc-markdown table td .mandatory {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) td .optional,
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) td .mandatory {
     transform: translateY(-1px);
   }
-  .theme-doc-markdown table td code {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) td code {
     white-space: pre-wrap;
     word-break: break-word;
   }
-  .theme-doc-markdown table td a {
+  .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) td a {
     word-break: break-word;
   }
-  html[data-theme="light"] .theme-doc-markdown table tbody tr {
+  html[data-theme="light"] .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) tbody tr {
     border-color: var(--lp-c-border, rgba(0, 0, 0, 0.08));
     background: var(--c-bg, #fff);
   }
-  html[data-theme="light"] .theme-doc-markdown table td + td {
+  html[data-theme="light"] .theme-doc-markdown table:not(.ord-taxonomy-scope__matrix) td + td {
     border-top-color: var(--lp-c-border, rgba(0, 0, 0, 0.06));
   }
   .markdown .interface-property-name,
@@ -286,10 +286,11 @@
 /* Sidebar container and backdrop */
 @media (max-width: 996px) {
   .navbar-sidebar {
+    top: var(--doc-banner-height, 0px) !important;
     position: fixed;
     inset: 0;
     width: 100vw !important;
-    height: 100dvh !important;
+    height: calc(100dvh - var(--doc-banner-height, 0px)) !important;
     z-index: 2000;
     margin: 0;
     left: 0 !important;
@@ -606,6 +607,12 @@
   .navbar-sidebar__item.menu .menu__list .menu__list .menu__link {
     font-size: 14px !important;
     opacity: 0.9;
+  }
+  .theme-doc-sidebar-menu
+    .sidebar-guides
+    > .menu__list-item-collapsible
+    > .menu__link {
+    font-size: 14px !important;
   }
   .navbar-sidebar__items .menu__link,
   .theme-doc-sidebar-menu .menu__link {

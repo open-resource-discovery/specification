@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/package",
   "name": "@open-resource-discovery/specification",
-  "version": "1.16.4",
+  "version": "1.17.0",
   "description": "Open Resource Discovery (ORD) Specification",
   "author": "SAP SE",
   "license": "Apache-2.0",
@@ -52,7 +52,7 @@
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "clsx": "2.1.1",
-    "lefthook": "2.1.16",
+    "lefthook": "2.2.1",
     "prism-react-renderer": "2.4.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",

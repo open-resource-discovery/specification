@@ -8,6 +8,8 @@ title: Data Product
 
 > 🚧 Please note that the [Data Products](../interfaces/Document#data-product) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
 
+> **Visual walkthrough:** See [Data Product ownership, lineage, and ports](https://open-resource-discovery.github.io/presentation/data-products) in the ORD presentation.
+
 ## Definition
 
 > A [Data Product](../interfaces/Document#data-product) is a **data set** exposed for consumption via APIs or Events.
@@ -43,6 +45,7 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
 ### Metadata Aspect
 
 - A data product is described by the producer via ORD, which fulfills the role as its discoverability API / port. Through this, the discoverability of a Data Product is decentralized and therefore "shifted left": It's the data products responsibility to describe itself. The [ORD Aggregators](../index.md#ord-aggregator)(s) take on the responsibility of the Data Product Directory.
+- A [data product](../interfaces/Document#data-product) can use `relatedDataProducts` to reference other data products. The optional `relationType` is a [Concept ID](./identifiers.md#concept-id) that expresses the relationship's meaning; omit it when only a generic association is known.
 - Please note that ORD is only used to describe Data Products on (slow changing) metadata level. It is not intended as an active control API or as an API to fetch fast moving runtime data (e.g. log metrics)
   - However, those can be added to the Data Product as dedicated APIs, which follow a standardized [SPI](https://en.wikipedia.org/wiki/Service_provider_interface) contract and be marked as such via the ORD `implementationStandard`. This way, such APIs can still be discovered via API, but are treated as a separate concern.
 

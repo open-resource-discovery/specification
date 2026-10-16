@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.16",
+  "openResourceDiscovery": "1.17",
   "description": "Example ORD document showing standalone ORD Overlay Resources",
   "overlays": [
     {
@@ -36,6 +36,23 @@
           "mediaType": "application/json",
           "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json",
           "purpose": "foo.bar:governance"
+        }
+      ]
+    },
+    {
+      "ordId": "sap.foo:overlay:astronomy-api-openapi-overlay:v1",
+      "title": "Astronomy API OpenAPI Overlay",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "relatedApiResources": [
+        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
+      ],
+      "definitions": [
+        {
+          "type": "oas-overlay-v1",
+          "mediaType": "application/yaml",
+          "url": "/open-resource-discovery/v1/overlays/astronomy-api.overlay.yaml"
         }
       ]
     }

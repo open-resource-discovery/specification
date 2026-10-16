@@ -221,6 +221,7 @@ function adjustLayoutForBanner() {
   var baseOffset = isDesktop ? 72 : 84;
   var extraBannerHeight = bannerHeight > 30 ? (bannerHeight - 30) : 0;
   document.documentElement.style.setProperty('--doc-header-offset', (baseOffset + extraBannerHeight) + 'px');
+  document.documentElement.style.setProperty('--doc-banner-height', bannerHeight + 'px');
 
   if (isDesktop) {
     // Desktop: reset mobile styles
@@ -261,6 +262,7 @@ function adjustLayoutForBanner() {
 
 // Re-adjust on resize
 window.addEventListener("resize", adjustLayoutForBanner);
+window.addEventListener("load", adjustLayoutForBanner);
 window.addEventListener("load", initInternalBanner, false);
 
 window.addEventListener("load", __applyNavScrolled__, false);
