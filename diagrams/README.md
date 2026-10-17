@@ -72,10 +72,12 @@ All Draw.io SVGs, including retained references, use this palette. These fills a
 
 Use `#0a0f12` for text, `#5a6a73` for muted text and connectors, and `#758995` for secondary connectors. Keep colored lifecycle arrows meaningful. In role diagrams, use blue for Providers, violet for Aggregators, and lime for Consumers, and update their legends together. Reserve amber for warning outcomes rather than successful results.
 
+For UML class diagrams, use distinct accent headers with white attribute compartments and matching outlines. Keep connectors dark enough to read alongside the class borders, without changing their paths or arrow meanings.
+
 The following editable Draw.io SVGs are retained as historical or detailed references even though the documentation currently renders code-native replacements:
 
 - [`integration-dependency-ps.drawio.svg`](../static/img/integration-dependency-ps.drawio.svg)
-- [`ord-ai-agent.drawio.svg`](../static/img/ord-ai-agent.drawio.svg)
+- [`ord-ai-agent.drawio.svg`](../static/img/ord-ai-agent.drawio.svg): legacy class model; current documentation uses `AgentConnectivityDiagram`, while the `ai-discovery` slide uses `AiDiscoveryDiagram.vue`.
 - [`ord-explicit-system-persectices-flow.drawio.svg`](../static/img/ord-explicit-system-persectices-flow.drawio.svg)
 - [`ord-metadata-integration-target-architecture.drawio.svg`](../static/img/ord-metadata-integration-target-architecture.drawio.svg)
 - [`versioning-and-lifecycle.drawio.svg`](../static/img/versioning-and-lifecycle.drawio.svg)
