@@ -56,6 +56,22 @@ When another connector-heavy diagram changes, extract its node and edge data usi
 
 Two active Draw.io SVGs are shared byte-for-byte with the presentation: [`system.drawio.svg`](../static/img/system-landscape/system.drawio.svg) (`landscape-model`) and [`integration-dependency.drawio.svg`](../static/img/integration-dependency.drawio.svg) (`integration-dependencies`). The presentation's `sync:diagrams` and `check:diagrams` commands cover both assets. Keep their embedded editable source and rendered styling aligned; styling changes should preserve node bounds, labels, and connector routing.
 
+The specification is the source of truth for every Draw.io diagram. Edit its SVG here, including the embedded editable model, then sync any presentation copy from this checkout. The Data Product slide uses a separate, simplified native Vue diagram; it does not embed the detailed [`data-product-model.drawio.svg`](../static/img/data-product-model.drawio.svg).
+
+All Draw.io SVGs, including retained references, use this palette. These fills are stronger than the native diagrams' pale card surfaces so dense diagrams remain readable. Preserve text size, layout, arrow routing, dashed lines, and meaningful stroke weights. Use rounded corners for standalone cards; keep table cells, attached UML compartments, and flowchart shapes intact. Diagrams keep a white surface in both site themes.
+
+| Accent | Fill | Outline |
+| --- | --- | --- |
+| Teal | `#cfe9e3` | `#46988d` |
+| Blue | `#d5e5f6` | `#5c8fb9` |
+| Coral | `#f3d8cc` | `#bd8069` |
+| Violet | `#e5daf1` | `#9676b3` |
+| Lime | `#dfebcd` | `#829e5e` |
+| Neutral | `#e9eef3` | `#8799a6` (cards), `#9aabb7` (containers) |
+| Warning | `#f3e5ba` | `#b19142` |
+
+Use `#0a0f12` for text, `#5a6a73` for muted text and connectors, and `#758995` for secondary connectors. Keep colored lifecycle arrows meaningful. In role diagrams, use blue for Providers, violet for Aggregators, and lime for Consumers, and update their legends together. Reserve amber for warning outcomes rather than successful results.
+
 The following editable Draw.io SVGs are retained as historical or detailed references even though the documentation currently renders code-native replacements:
 
 - [`integration-dependency-ps.drawio.svg`](../static/img/integration-dependency-ps.drawio.svg)
