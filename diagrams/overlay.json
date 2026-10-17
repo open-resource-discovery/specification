@@ -1,0 +1,22 @@
+{
+  "overview": [
+    {
+      "title": "Beyond OpenAPI",
+      "text": "OpenAPI · AsyncAPI · OData · MCP · A2A · Arazzo"
+    },
+    {
+      "title": "Semantic selectors",
+      "text": "Select operations, entities, or properties by name; JSONPath is a fallback."
+    },
+    {
+      "title": "Maturity in ORD 1.17",
+      "text": "Document format: beta. Publication model: alpha."
+    }
+  ],
+  "steps": [
+    { "title": "Target", "text": "ORD ID + definition type or URL" },
+    { "title": "Select", "text": "Semantic names across native formats" },
+    { "title": "Patch", "text": "merge, update, or remove" }
+  ],
+  "comparison": "OpenAPI Overlay uses JSONPath for OpenAPI documents. ORD Overlay adds semantic selectors across metadata formats."
+}

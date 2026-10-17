@@ -1,0 +1,58 @@
+{
+  "name": "Fulfillment Agent",
+  "description": "Processes new orders, checks their details, and updates fulfillment status. Can use an external skill to summarize an order.",
+  "url": "https://fulfillment.example.com/a2a",
+  "preferredTransport": "HTTP+JSON",
+  "additionalInterfaces": [
+    {
+      "url": "https://fulfillment.example.com/a2a",
+      "transport": "HTTP+JSON"
+    }
+  ],
+  "provider": {
+    "organization": "Example Fulfillment Provider",
+    "url": "https://fulfillment.example.com"
+  },
+  "version": "1.0.0",
+  "protocolVersion": "0.3.0",
+  "documentationUrl": "https://fulfillment.example.com/docs/agent",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "securitySchemes": {
+    "oidc": {
+      "type": "openIdConnect",
+      "openIdConnectUrl": "https://fulfillment.example.com/.well-known/openid-configuration"
+    }
+  },
+  "security": [
+    {
+      "oidc": []
+    }
+  ],
+  "defaultInputModes": [
+    "text/plain",
+    "application/json"
+  ],
+  "defaultOutputModes": [
+    "text/plain",
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "fulfill-order",
+      "name": "Fulfill Order",
+      "description": "Coordinates fulfillment for the given order ID.",
+      "tags": [
+        "orders",
+        "fulfillment"
+      ],
+      "examples": [
+        "Fulfill order 12345"
+      ]
+    }
+  ],
+  "supportsAuthenticatedExtendedCard": false
+}
