@@ -21,6 +21,8 @@ This check detects data drift, not visual correctness. Visually inspect both ren
 
 ## Other diagram counterparts
 
+[`overlay.json`](./overlay.json) holds the shared overlay scope, semantic-selector guidance, maturity note, and processing steps. Both renderers consume this content; `sync:diagrams` and `check:diagrams` also cover its vendored presentation copy. Keep example markup and typography native to each renderer.
+
 These ports still have separate implementations. Use this mapping when changing or converting them, and compare the rendered diagrams, including connector endpoints and arrow meanings.
 
 | React export in `src/components/OrdDiagrams/index.tsx` | Vue component in `components/` | Presentation route |
@@ -51,6 +53,8 @@ These ports still have separate implementations. Use this mapping when changing 
 When another connector-heavy diagram changes, extract its node and edge data using the same pattern. Keep the wrappers and typography native to their framework. For a static illustration that needs no responsive text or interaction, a shared SVG can also be appropriate. Avoid generating one framework's whole component from the other: template conversion alone does not preserve layout or connector geometry.
 
 ## Retained Draw.io sources
+
+Two active Draw.io SVGs are shared byte-for-byte with the presentation: [`system.drawio.svg`](../static/img/system-landscape/system.drawio.svg) (`landscape-model`) and [`integration-dependency.drawio.svg`](../static/img/integration-dependency.drawio.svg) (`integration-dependencies`). The presentation's `sync:diagrams` and `check:diagrams` commands cover both assets. Keep their embedded editable source and rendered styling aligned; styling changes should preserve node bounds, labels, and connector routing.
 
 The following editable Draw.io SVGs are retained as historical or detailed references even though the documentation currently renders code-native replacements:
 

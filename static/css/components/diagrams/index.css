@@ -404,6 +404,11 @@ html[data-theme="dark"] .ord-diagram {
 .ord-ai-enrichment footer span { color: var(--ord-muted); font-size: 0.75rem; }
 .ord-ai-enrichment figcaption { grid-column: 1 / -1; border-radius: 8px; background: var(--ord-card); color: var(--ord-muted); padding: 0.75rem 1rem; text-align: center; }
 .ord-overlay { display: flex; flex-direction: column; gap: 0.9rem; }
+.ord-overlay__overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+.ord-overlay__overview > section { display: flex; flex-direction: column; gap: 0.3rem; border-left: 3px solid var(--ord-brand-2); background: var(--ord-teal-soft); padding: 0.7rem; }
+.ord-overlay__overview strong { color: var(--ord-text); font-size: 0.85rem; }
+.ord-overlay__overview span, .ord-overlay__comparison, .ord-id-scope-note { color: var(--ord-muted); font-size: 0.78rem; line-height: 1.4; }
+.ord-lifecycle-exception { display: block; margin-top: 0.3rem; font-size: 0.78rem; }
 .ord-overlay__flow { display: grid; grid-template-columns: 1fr 34px 1fr 34px 1fr; align-items: stretch; }
 .ord-overlay__flow > section { display: flex; min-width: 0; flex-direction: column; gap: 0.6rem; border: 1px solid var(--ord-border); border-radius: 8px; background: var(--ord-card); padding: 1rem; }
 .ord-overlay__flow > section.patch { border: 2px solid var(--ord-brand-2); background: var(--ord-teal-soft); }
@@ -661,7 +666,7 @@ html[data-theme="dark"] .ord-diagram {
   .ord-id-construction .ord-id-pattern i { padding: 0.2rem 0; }
   .ord-id-fragments section, .ord-identifier-card header { min-height: 0; }
   .ord-resolution-summary figcaption, .ord-overlay figcaption, .ord-pull-sequence figcaption { grid-template-columns: 1fr; }
-  .ord-overlay__flow { grid-template-columns: 1fr; gap: 0.5rem; }
+  .ord-overlay__overview, .ord-overlay__flow { grid-template-columns: 1fr; gap: 0.5rem; }
   .ord-overlay__flow > i { transform: rotate(90deg); }
   .ord-integration-scenario { grid-template-columns: 1fr; }
   .ord-integration-scenario .needs i { transform: rotate(90deg); }

@@ -10,7 +10,7 @@ import { AgentConnectivityDiagram, AiEnrichmentDiagram } from "@site/src/compone
 
 > 🚧 Please note that the [Agents](../interfaces/Document#agent) concept is still in development and contains <span className="feature-status-beta">BETA</span> properties and will get further extended.
 
-> **Visual walkthrough:** Explore [Agent interaction and dependencies](https://open-resource-discovery.github.io/presentation/ai-discovery) and [AI metadata enrichment](https://open-resource-discovery.github.io/presentation/ai-enrichment) in the ORD presentation. The Agent slide also includes explicitly marked skills and plugins proposals.
+> **Visual walkthrough:** Explore [Agent interaction and dependencies](https://open-resource-discovery.github.io/presentation/ai-discovery), [Agent Skills and Plugins](https://open-resource-discovery.github.io/presentation/skills-preview), and [AI metadata enrichment](https://open-resource-discovery.github.io/presentation/ai-enrichment) in the ORD presentation. Agent Skills and Agent Plugins are standardized Capability types in ORD 1.17.
 
 ## Agents
 
