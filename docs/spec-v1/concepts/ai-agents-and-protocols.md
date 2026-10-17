@@ -187,9 +187,9 @@ Its two mandatory aspects combine with AND. Without `subset`, the API reference 
 }
 ```
 
-## Agent Skills and Plugins
+## Agent Skills, Plugins, and Workflows
 
-ORD 1.17 standardizes Agent Skills and Agent Plugins as discoverable Capability types.
+ORD 1.17 standardizes Agent Skills, Agent Plugins, and Workflows as discoverable Capability types. Capabilities can also describe custom behavior.
 
 ### Agent Skills as Capabilities
 
@@ -347,6 +347,44 @@ The `skillName` values are names understood within the plugin bundle itself; ORD
 }
 ```
 
+### Workflows as Capabilities
+
+A Capability with `type: "workflow"` describes an executable, multi-step workflow that orchestrates one or more APIs.
+It can link an Arazzo document through a definition of type `arazzo-v1`.
+Workflow Capabilities SHOULD list the API Resources they interact with in `relatedApiResources`, using `relationType: "ord:orchestrates"`.
+
+The Fulfillment Workflow in the application example orchestrates the Agent's interaction API:
+
+```json
+{
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:fulfillmentWorkflow:v1",
+      "title": "Fulfillment Workflow",
+      "type": "workflow",
+      "relatedApiResources": [
+        {
+          "ordId": "sap.foo:apiResource:FulfillmentAgent:v1",
+          "relationType": "ord:orchestrates"
+        }
+      ],
+      "definitions": [
+        {
+          "type": "arazzo-v1",
+          "mediaType": "application/yaml",
+          "url": "/definitions/fulfillment.arazzo.yaml",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## AI Hints on ORD Resources
 
 The following ORD resource types support an `aiHint` property: API Resources, Event Resources, Entity Types, Data Products, Agents, and Capabilities.
@@ -417,7 +455,7 @@ Given the rapidly evolving AI ecosystem, ORD takes a conservative approach to ad
 
 The walkthrough uses two ORD Documents, each describing its own provider:
 
-- [Fulfillment application](../examples/document-agents): the Agent, its interaction API, and its dependencies on external resources.
+- [Fulfillment application](../examples/document-agents): the Agent, its interaction API, an orchestrating Workflow Capability, and its dependencies on external resources.
 - [Order Assistance provider](../examples/document-agent-capabilities): the reusable skill and plugin, including their own Order Lookup dependency.
 
 Both documents reference `foo.orders:apiResource:OrderToolsMCPServer:v1`; the Fulfillment application also references `foo.orders:eventResource:OrderCreated:v1` and `foo.orders:entityType:Order:v1`.

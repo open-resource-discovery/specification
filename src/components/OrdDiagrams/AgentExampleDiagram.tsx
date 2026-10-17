@@ -88,7 +88,7 @@ export function AgentExampleDiagram() {
         </svg>
       </section>
       <figcaption>
-        Arrows describe metadata references. Each Agent, Skill, or Plugin can
+        Arrows describe metadata references. Each Agent or Capability can
         declare its own Integration Dependencies.
       </figcaption>
     </figure>
