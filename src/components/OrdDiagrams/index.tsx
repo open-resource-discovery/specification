@@ -3,6 +3,8 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import unifiedMetadata from "../../../diagrams/unified-metadata.json";
 import overlay from "../../../diagrams/overlay.json";
 
+export { AgentExampleDiagram } from "./AgentExampleDiagram";
+
 const consumers = [
   "Joule",
   "Joule Studio",
@@ -1889,6 +1891,7 @@ export function AgentConnectivityDiagram() {
         <img
           src={modelUrl}
           alt="Agent relationships: one Package, optional Products, Groups, Entity Types, successor Agents, interaction APIs, and Integration Dependencies."
+          style={{ backgroundColor: "#fff" }}
           loading="lazy"
           decoding="async"
         />

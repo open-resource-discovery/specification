@@ -437,6 +437,34 @@ html[data-theme="dark"] .ord-diagram {
 .ord-integration-scenario figcaption { grid-column: 1 / -1; color: var(--ord-muted); font-size: 0.78rem; text-align: center; }
 
 /* Agent connectivity */
+.ord-agent-example__scroll { overflow-x: auto; }
+.ord-agent-example svg { display: block; width: 100%; min-width: 800px; }
+.ord-agent-example text { fill: var(--ord-text); font-family: var(--lp-font-family-base); }
+.ord-agent-example :is(.agent-node, .api-node, .event-node, .capability-node, .dependency-node) rect { stroke-width: 2; }
+.ord-agent-example .agent-node rect { fill: var(--ord-coral-soft); stroke: #f3c4b6; }
+.ord-agent-example .api-node rect { fill: var(--ord-sky-soft); stroke: var(--ord-sky); }
+.ord-agent-example .event-node rect { fill: var(--ord-teal-soft); stroke: var(--ord-teal); }
+.ord-agent-example .capability-node rect { fill: var(--ord-violet-soft); stroke: #8061bd; }
+.ord-agent-example .dependency-node rect { fill: var(--ord-card); stroke: var(--ord-border); }
+.ord-agent-example .column-label { fill: var(--ord-muted); font-size: 17px; font-weight: 650; }
+.ord-agent-example .kind { fill: var(--ord-muted); font-size: 16px; font-weight: 650; }
+.ord-agent-example .capability-node .kind { fill: #6b49bc; }
+html[data-theme="dark"] .ord-agent-example .capability-node .kind { fill: #b7a0ff; }
+.ord-agent-example .name { font-size: 23px; font-weight: 750; }
+.ord-agent-example .detail { fill: var(--ord-muted); font-size: 17px; }
+.ord-agent-example .field-label { font-family: var(--ifm-font-family-monospace); font-size: 15px; }
+.ord-agent-example :is(.interaction-edge, .dependency-edge) { fill: none; stroke-width: 2; stroke-linejoin: round; }
+.ord-agent-example .interaction-edge { stroke: var(--ord-faint); }
+.ord-agent-example .interaction-head { fill: var(--ord-faint); }
+.ord-agent-example .interaction-label { fill: var(--ord-muted); }
+.ord-agent-example .dependency-edge { stroke: #c6503b; }
+.ord-agent-example .dependency-head { fill: #c6503b; }
+html[data-theme="dark"] .ord-agent-example .dependency-edge { stroke: var(--ord-coral); }
+html[data-theme="dark"] .ord-agent-example .dependency-head { fill: var(--ord-coral); }
+.ord-agent-example .dependency-label { fill: #ac4432; }
+html[data-theme="dark"] .ord-agent-example .dependency-label { fill: var(--ord-coral); }
+.ord-agent-example figcaption { margin-top: 0.8rem; color: var(--ord-muted); font-size: 0.75rem; text-align: center; }
+
 .ord-agent-connectivity { display: flex; flex-direction: column; gap: 0.8rem; }
 .ord-agent-connectivity > a { display: block; overflow: hidden; border-radius: 8px; background: #fff; }
 .ord-agent-connectivity img { display: block; width: 100%; height: auto; margin: 0; }
