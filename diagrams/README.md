@@ -54,9 +54,11 @@ When another connector-heavy diagram changes, extract its node and edge data usi
 
 ## Retained Draw.io sources
 
-Two active Draw.io SVGs are shared byte-for-byte with the presentation: [`system.drawio.svg`](../static/img/system-landscape/system.drawio.svg) (`landscape-model`) and [`integration-dependency.drawio.svg`](../static/img/integration-dependency.drawio.svg) (`integration-dependencies`). The presentation's `sync:diagrams` and `check:diagrams` commands cover both assets. Keep their embedded editable source and rendered styling aligned; styling changes should preserve node bounds, labels, and connector routing.
+Three active Draw.io SVGs are shared byte-for-byte with the presentation: [`system.drawio.svg`](../static/img/system-landscape/system.drawio.svg) (`landscape-model`), [`integration-dependency.drawio.svg`](../static/img/integration-dependency.drawio.svg) (`integration-dependencies`), and [`ord-ai-agent.drawio.svg`](../static/img/ord-ai-agent.drawio.svg) (`ai-discovery`). The presentation's `sync:diagrams` and `check:diagrams` commands cover all three assets. Keep their embedded editable source and rendered styling aligned; styling changes should preserve node bounds, labels, and connector routing.
 
 The specification is the source of truth for every Draw.io diagram. Edit its SVG here, including the embedded editable model, then sync any presentation copy from this checkout. The Data Product slide uses a separate, simplified native Vue diagram; it does not embed the detailed [`data-product-model.drawio.svg`](../static/img/data-product-model.drawio.svg).
+
+[`ord-ai-agent.drawio.svg`](../static/img/ord-ai-agent.drawio.svg) is the Agent relationship model used by `AgentConnectivityDiagram` in the specification and `AiDiscoveryDiagram.vue` in the presentation. It follows the Data Product model's rounded cards and inset fields, with one box per concept and cardinality labels instead of stacked copies. Capability references explicitly include Agent Skills and Plugins as examples. Update the editable model and rendered SVG together when changing the model.
 
 All Draw.io SVGs, including retained references, use this palette. These fills are stronger than the native diagrams' pale card surfaces so dense diagrams remain readable. Preserve text size, layout, arrow routing, dashed lines, and meaningful stroke weights. Use rounded corners for standalone cards; keep table cells, attached UML compartments, and flowchart shapes intact. Diagrams keep a white surface in both site themes.
 
@@ -77,7 +79,6 @@ For UML class diagrams, use distinct accent headers with white attribute compart
 The following editable Draw.io SVGs are retained as historical or detailed references even though the documentation currently renders code-native replacements:
 
 - [`integration-dependency-ps.drawio.svg`](../static/img/integration-dependency-ps.drawio.svg)
-- [`ord-ai-agent.drawio.svg`](../static/img/ord-ai-agent.drawio.svg): legacy class model; current documentation uses `AgentConnectivityDiagram`, while the `ai-discovery` slide uses `AiDiscoveryDiagram.vue`.
 - [`ord-explicit-system-persectices-flow.drawio.svg`](../static/img/ord-explicit-system-persectices-flow.drawio.svg)
 - [`ord-metadata-integration-target-architecture.drawio.svg`](../static/img/ord-metadata-integration-target-architecture.drawio.svg)
 - [`versioning-and-lifecycle.drawio.svg`](../static/img/versioning-and-lifecycle.drawio.svg)

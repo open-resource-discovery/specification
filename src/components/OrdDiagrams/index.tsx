@@ -1,4 +1,5 @@
 import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import unifiedMetadata from "../../../diagrams/unified-metadata.json";
 import overlay from "../../../diagrams/overlay.json";
 
@@ -1878,117 +1879,26 @@ export function IntegrationScenarioDiagram() {
 }
 
 export function AgentConnectivityDiagram() {
+  const modelUrl = useBaseUrl("/img/ord-ai-agent.drawio.svg");
   return (
     <figure
       className="ord-diagram ord-agent-connectivity"
-      aria-label="Complete overview of the Agent relationships defined by ORD"
+      aria-label="Agent relationships defined by ORD"
     >
-      <div className="ord-agent-model">
-        <section className="ord-agent-relations ord-agent-classification">
-          <header>
-            <small>Placement and classification</small>
-            <strong>Where the Agent belongs</strong>
-          </header>
-          <div>
-            <code>partOfPackage</code>
-            <i>→</i>
-            <b>
-              Package <small>exactly 1</small>
-            </b>
-          </div>
-          <div>
-            <code>partOfProducts</code>
-            <i>→</i>
-            <b>
-              Products <small>0..n</small>
-            </b>
-          </div>
-          <div>
-            <code>partOfGroups</code>
-            <i>→</i>
-            <b>
-              Groups <small>0..n</small>
-            </b>
-          </div>
-        </section>
-
-        <section className="ord-agent-card">
-          <small>ORD resource</small>
-          <strong>Agent</strong>
-          <span>Autonomous task execution</span>
-          <div>
-            <code>ordId</code>
-            <code>version</code>
-            <code>visibility</code>
-            <code>releaseStatus</code>
-          </div>
-        </section>
-
-        <div className="ord-agent-technical">
-          <section className="ord-agent-path ord-agent-exposure">
-            <header>
-              <code>exposedApiResources</code>
-              <small>0..n</small>
-            </header>
-            <div>
-              <b>API Resource</b>
-              <i>→</i>
-              <b>Resource Definition</b>
-              <i>→</i>
-              <b>
-                A2A Agent Card <small>example</small>
-              </b>
-            </div>
-            <p>
-              <code>apiProtocol: a2a</code> and{" "}
-              <code>type: a2a-agent-card</code> describe one supported
-              interaction contract.
-            </p>
-          </section>
-          <section className="ord-agent-path ord-agent-dependencies">
-            <header>
-              <code>integrationDependencies</code>
-              <small>0..n</small>
-            </header>
-            <div>
-              <b>Integration Dependency</b>
-              <i>→</i>
-              <b>API Resources</b>
-              <b>Event Resources</b>
-              <b>Capabilities</b>
-            </div>
-            <p>
-              Dependency aspects identify required external resources. An MCP
-              API and selected tools are one example.
-            </p>
-          </section>
-        </div>
-
-        <section className="ord-agent-relations ord-agent-domain">
-          <header>
-            <small>Domain and evolution</small>
-            <strong>What the Agent relates to</strong>
-          </header>
-          <div>
-            <code>relatedEntityTypes</code>
-            <i>→</i>
-            <b>
-              Entity Types <small>0..n</small>
-            </b>
-          </div>
-          <div>
-            <code>successors</code>
-            <i>→</i>
-            <b>
-              Successor Agents <small>0..n</small>
-            </b>
-          </div>
-        </section>
-      </div>
+      <a href={modelUrl} target="_blank" rel="noopener noreferrer">
+        <img
+          src={modelUrl}
+          alt="Agent relationships: one Package, optional Products, Groups, Entity Types, successor Agents, interaction APIs, and Integration Dependencies."
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
       <figcaption>
-        These are the Agent's explicit ORD relationships. Generic metadata such
-        as links, labels, tags, responsibility, and correlation IDs adds context
-        but is not another resource relation.
+        Product assignments can also be inherited from the Package. Generic
+        metadata such as links, labels, and tags is omitted.{" "}
+        <a href={modelUrl} target="_blank" rel="noopener noreferrer">
+          Open the full-size diagram.
+        </a>
       </figcaption>
     </figure>
   );
