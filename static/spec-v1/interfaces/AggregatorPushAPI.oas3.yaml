@@ -12,11 +12,20 @@ info:
     unit, so a resource is never published without all of its valid definitions.
     A provider can opt into strict validation, in which any error publishes nothing and leaves
     the submission available for correction until it expires.
-    A scope ID lets independently operated providers replace only their own contribution set
-    within one publication context and is required for every replacement.
-    Providers should register scope IDs with the aggregator during onboarding before using them.
-    The aggregator authorizes the authenticated push client for both the publication context and
-    the selected scope when a submission is opened and before it is published.
+    During onboarding, the aggregator associates each publisher with exactly one registered ORD
+    namespace and zero or more directly granted Group IDs. A registered namespace can have
+    multiple publishers. For ORD information objects that support `partOfGroups`, resources without
+    a direct group assignment are authorized within the publisher's namespace hierarchy; grouped
+    resources require at least one matching direct grant. Group grants use union semantics and are
+    not transitive. A new contribution is authorized from staged membership; an update requires
+    both retained and staged membership to be authorized. Objects without `partOfGroups` are
+    independently authorized from their own identifier namespace: the substring before the first
+    `:` in `ordId`, the namespace in `groupTypeId` for a Group Type, or the group-instance
+    namespace (the third colon-delimited component of `groupId`) for a Group. A referenced Group
+    Type is authorized independently from its own `groupTypeId`.
+    The contribution and replacement boundary is the authenticated publisher and publication
+    context. The aggregator retains that provenance so replacement never removes another
+    publisher's contribution, even when permissions overlap.
 
     Every operation requires authentication.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
@@ -51,11 +60,9 @@ paths:
       description: |-
         Opens an isolated staging area for one authenticated publisher and one publication
         context.
-        A scope ID is required for `replace` and limits removal to one contribution set that
-        should already be registered with the aggregator.
-        It remains optional for `merge`.
-        When a scope ID is supplied, the aggregator verifies that it is registered and that the
-        authenticated push client is authorized for both the publication context and the scope.
+        The aggregator verifies that the authenticated publisher is onboarded and authorized for
+        the requested publication context. Resource authorization is evaluated asynchronously
+        from the staged content during commit, not when the empty submission is opened.
         Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly.
         Validation defaults to partial acceptance of valid publication units; strict
         all-or-nothing validation must be selected explicitly.
@@ -74,11 +81,10 @@ paths:
                 value:
                   context:
                     perspective: system-type
-              scopedReplace:
-                summary: Replace one onboarded contribution scope
+              replace:
+                summary: Replace the publisher's contribution in this context
                 value:
                   publicationMode: replace
-                  scopeId: sap.s4.beh
                   context:
                     perspective: system-type
               strictMerge:
@@ -371,10 +377,21 @@ paths:
         staging at least one valid ORD Document that contains no ORD information to retain.
         A staged unit skipped because of an error is not considered omitted for replacement and
         does not remove its previously published contribution.
-        Tombstones apply only inside the submission's contribution boundary, and unscoped
-        tombstones require provider-wide removal authorization.
-        Before publishing, the aggregator verifies again that the authenticated push client is
-        authorized for the publication context and any selected scope.
+        Tombstones apply only inside the authenticated publisher and publication-context boundary.
+        During asynchronous validation, the aggregator verifies again that the authenticated
+        publisher is authorized for the publication context and checks every staged resource
+        against the publisher's currently registered namespace hierarchy and direct group grants.
+        New contributions are checked from staged membership. Updates require both the retained
+        resource and staged replacement to be authorized, so a membership change cannot grant
+        access to an existing contribution. Before applying accepted units, the aggregator rechecks
+        current authorization as part of the atomic publication decision.
+        An unauthorized publication unit is reported as a validation issue and is skipped in
+        default mode; in strict mode, it fails the complete commit. Objects without
+        `partOfGroups` are independently authorized by their own identifier namespace and do not
+        become group-authorized by a resource's grant.
+        Replacement omission and tombstones can remove only contributions attributed to that
+        publisher and context that remain within its current authorization; they never remove a
+        contribution attributed to another publisher.
         Repeating this request while the same revision is validating returns its current state.
         Accepted publication units are applied atomically.
         A submission-wide error, or any error in strict mode, moves the submission to `failed`,
@@ -528,7 +545,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     Forbidden:
-      description: The selected scope is not registered, or the publisher is not authorized for the operation, publication context, or selected scope.
+      description: The publisher is not onboarded or is not authorized for the requested operation or publication context. Staged-content authorization failures discovered during asynchronous commit processing are reported as validation issues instead.
       content:
         application/problem+json:
           schema:
@@ -589,18 +606,10 @@ components:
       type: object
       required: [context]
       additionalProperties: false
-      allOf:
-        - if:
-            required: [publicationMode]
-            properties:
-              publicationMode:
-                const: replace
-          then:
-            required: [scopeId]
       properties:
         publicationMode:
           type: string
-          description: Whether omission removes prior contributions inside the selected replacement boundary. Defaults to the non-destructive `merge` mode.
+          description: Whether omission removes the authenticated publisher's prior contributions in this publication context that remain within its current authorization. Defaults to the non-destructive `merge` mode.
           enum: [replace, merge]
           default: merge
         strict:
@@ -613,18 +622,6 @@ components:
             Submission-wide errors always fail the commit.
         context:
           $ref: "#/components/schemas/PublicationContext"
-        scopeId:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: |-
-            Stable identifier for a contribution set that should be registered with the aggregator
-            during onboarding before use.
-            It should be a registered ORD namespace that reflects the component or team responsible
-            for the publishing scope.
-            Using a namespace as the scope ID does not grant authority to publish ORD IDs in that namespace.
-            It is required for `replace` and limits removal to that scope in the publication context.
-            For `merge`, it records provenance for a later scoped replacement.
     PublicationContext:
       type: object
       description: |-
@@ -658,13 +655,6 @@ components:
         - artifactCounts
         - issueCounts
       additionalProperties: true
-      allOf:
-        - if:
-            properties:
-              publicationMode:
-                const: replace
-          then:
-            required: [scopeId]
       properties:
         id:
           type: string
@@ -678,11 +668,6 @@ components:
           description: Whether validation errors prevent publication of the entire submission.
         context:
           $ref: "#/components/schemas/PublicationContext"
-        scopeId:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: Selected contribution scope. Required for `replace` and optional for `merge`.
         expiresAt:
           type: string
           format: date-time

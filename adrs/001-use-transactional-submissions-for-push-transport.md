@@ -21,7 +21,7 @@ Several independently operated ORD Providers can contribute metadata for the sam
 - Let independent valid publication units succeed when another unit is invalid.
 - Support opt-in all-or-nothing validation when several units must advance together.
 - Let providers repair and retry a failed submission.
-- Support complete-state replacement without removing contributions from another publisher or provider scope.
+- Support complete-state replacement without removing contributions from another publisher.
 - Provide asynchronous status and complete validation diagnostics.
 - Bound the lifetime of abandoned server-side state.
 - Keep authentication technology and onboarding implementation-specific.
@@ -81,23 +81,28 @@ The URL is an association key during push and is not fetched from the provider.
 Each submission belongs to the publisher established by its authenticated credential and exactly one publication context.
 The context consists of one perspective and any required system version or aggregator-issued system instance identifier.
 The aggregator validates the submitted context and document claims against authoritative state.
-Permission to publish particular ORD ID namespaces is checked separately from publisher identity.
 
-A `replace` submission must identify a `scopeId`, while a `merge` submission can omit it.
-The scope ID is a stable identifier for one contribution set.
-The provider should register each scope ID with the aggregator during onboarding before using it.
-The registration mechanism is implementation-specific.
-It should be a registered [ORD namespace](../docs/spec-v1/index.md#namespaces) that reflects the component or team responsible for the publishing scope.
-Using a namespace as the scope ID does not grant authority to publish ORD IDs in that namespace.
-When a submission includes a scope ID, the aggregator must verify that it is registered and that the authenticated push client is authorized to publish both for the publication context and for that scope.
-It performs this check when the submission is opened and again before publishing a successful commit.
-An unregistered or unauthorized scope causes the operation to fail with `403 Forbidden`.
-Scope authorization is independent of ORD ID namespace permissions.
-It must attribute every published item and resource definition to its publisher, publication context, and either its scope ID or the unscoped contribution set.
+During onboarding, the aggregator associates every publisher with exactly one registered [ORD namespace](../docs/spec-v1/index.md#namespaces) and zero or more directly granted [Group IDs](../docs/spec-v1/concepts/grouping-and-bundling.md#groups).
+One namespace can have multiple publishers.
+The publisher namespace includes its descendant sub-context namespaces for push authorization, but the association does not change namespace ownership or establish general ORD ID authority.
+Push deliberately does not allow that publisher to use the broader shared-resource pattern to contribute IDs outside its namespace hierarchy.
+Publishing shared content in an authority namespace requires a separate authenticated publisher onboarded to exactly that authority namespace.
+This transport rule does not change the general ORD ownership, reuse, or consistency semantics for shared resources.
+The onboarding mechanism remains implementation-specific.
+
+For top-level ORD information objects whose schema supports `partOfGroups`, other than the Group taxonomy object itself, a publisher can contribute an object when its ORD ID is in the publisher namespace hierarchy and its direct `partOfGroups` value either is absent or empty, or intersects the publisher's grants.
+Any one matching grant is sufficient, and group membership is not resolved transitively through a Group object's own `partOfGroups` relationships.
+New contributions are authorized from their staged membership. Updates require both the retained contribution and its staged replacement to be authorized, so changing publisher-controlled membership cannot grant access to an existing contribution.
+Other top-level ORD information objects use their own identifier namespace: the part before the first `:` of an `ordId`, the namespace in a Group Type's `groupTypeId`, or the group-instance namespace (the third colon-delimited component) of a Group's `groupId`.
+Packages, Groups, and Group Types can be published independently or accompany an authorized resource when each passes this namespace check; the Group Type referenced by a Group is checked separately from its own `groupTypeId`.
+Objects without `partOfGroups`, including Vendors, Products, Consumption Bundles, and Overlays, are governed solely by that identifier-namespace rule.
+The aggregator checks publisher onboarding and context when opening the submission, checks every staged unit during asynchronous commit validation, and rechecks current authorization as part of the atomic publication decision so onboarding changes take effect before publication.
+An unauthorized unit is a validation error and follows default partial or strict all-or-nothing behavior, rather than causing submission creation to return `403 Forbidden`.
+It attributes every published information object and resource definition to its publisher and publication context.
 
 A submission can declare a publication mode when it is opened and defaults to `merge` when the mode is omitted.
 `replace` must be selected explicitly because it gives omission destructive meaning.
-For `replace`, the staged set is the complete current contribution of the selected scope in the publication context.
+For `replace`, the staged set is the authenticated publisher's complete current contribution in the publication context.
 On a successful `replace` commit, the aggregator removes prior contributions inside the selected replacement boundary that are absent from the staged set.
 Omission therefore expresses removal and the provider does not need to track removed resources or publish tombstones inside that boundary.
 A provider can remove every prior contribution in the boundary by staging at least one valid ORD Document that contains no ORD information to retain and committing it in `replace` mode.
@@ -106,17 +111,15 @@ Each top-level ORD information object is one publication unit.
 For an ORD resource that declares resource definitions, the unit also contains every definition it declares.
 If that resource or one definition changes, the provider resubmits the resource and all of its definitions, while unrelated resources can remain omitted.
 Previously published definitions do not complete a partially staged resource.
-When `merge` includes a `scopeId`, the aggregator records that scope as contribution provenance so a later scoped replacement can remove the contribution safely.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
 The effect of a tombstone is limited to the same contribution boundary as the submission.
-An unscoped tombstone therefore requires separate provider-wide removal authorization.
-The contribution boundary is the stable publisher, publication context, and optional scope ID recorded by the aggregator.
-In `replace` mode, the replacement boundary always includes a scope ID.
-It is not an ORD Document, credential, or ORD namespace.
-Scoped replacement never removes content attributed to another scope, publisher, or delegator.
-Scopes partition provenance but do not change ORD identity, uniqueness, or merging rules.
+Replacement omissions and tombstones can remove only retained contributions that remain authorized by the publisher's current namespace and group grants.
+Contributions that are no longer authorized remain untouched and require aggregator or administrator lifecycle handling outside the push protocol.
+The contribution and replacement boundary is the stable publisher and publication context recorded by the aggregator.
+Even when publishers have overlapping namespace and group permissions, replacement and tombstones never remove content attributed to another publisher.
+Publisher authorization does not change ORD identity, uniqueness, or merging rules.
 Providers normally use `replace` for upgrades and periodic full reconciliation, `merge` for hot fixes and transports, and `merge` plus tombstones for removals they track explicitly.
-A provider that does not keep deletion bookkeeping uses scoped `replace` so the aggregator can derive removals from its complete current inventory.
+A provider that does not keep deletion bookkeeping uses `replace` so the aggregator can derive removals from its complete current inventory.
 A staged publication unit that is skipped because of an error is not considered omitted by `replace`, so its previously published contribution remains unchanged.
 A complete replacement cannot be split into sequential partial replacement submissions because each successful commit would remove contributions omitted from that submission.
 
@@ -143,11 +146,11 @@ The issues endpoint reports all errors, warnings, and information messages and i
 
 Every operation uses HTTPS and authentication.
 Each credential identifies exactly one described system type or one system-independent publisher in authoritative aggregator state.
-An aggregator can further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
-Each registered scope and any provider-wide unscoped tombstone operation requires separate authorization.
+An aggregator can further restrict a credential to particular perspectives, system versions, or system instances.
+The publisher's registered namespace and direct group grants determine which resources it can contribute.
 The concrete machine-to-machine authentication mechanism, credential issuance, and API base URL are communicated by the aggregator during onboarding.
 The onboarding information also states supported request content encodings, maximum encoded and decoded artifact sizes, aggregate decoded submission size, artifact counts, active submissions per publisher, concurrency, rate limits, and decompression limits.
-These limits must allow an onboarded provider to publish the complete contribution of each authorized replacement scope in one submission.
+These limits must allow an onboarded provider to publish its complete contribution in one submission.
 
 ### Consequences
 
@@ -157,12 +160,12 @@ These limits must allow an onboarded provider to publish the complete contributi
 - ✅ Strict submissions can make several requests form one all-or-nothing publication.
 - ✅ Providers can correct a failed submission and commit it again.
 - ✅ `replace` lets the aggregator derive removals from a complete current state without tombstones.
-- ✅ Scope IDs let independent ORD Providers replace only their own contributions to the same application.
+- ✅ Publisher and publication-context provenance lets independent ORD Providers replace only their own contributions to the same application.
 - ✅ Asynchronous validation does not keep an upload request open while a large submission is processed.
 - ✅ Status, diagnostics, expiry, and discard behavior are interoperable.
 - ⚠️ Aggregators must operate temporary storage and a submission lifecycle.
 - ⚠️ Aggregators must document supported content encodings and capacity limits so providers can plan submissions that fit.
-- ⚠️ Aggregators must retain scope provenance for every published contribution.
+- ⚠️ Aggregators must retain publisher and publication-context provenance for every published contribution.
 - ⚠️ Providers that require dependent resources to advance together must opt into strict validation.
 - ⚠️ Providers must poll for the terminal commit result.
 

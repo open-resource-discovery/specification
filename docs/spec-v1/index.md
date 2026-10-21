@@ -193,7 +193,7 @@ See [Push Transport Guidance](./concepts/push-transport.md) for operational exam
 
 A push publication is assembled as a stateful submission:
 
-1. The provider opens a submission for one publication context, chooses whether strict validation is required, and can choose `replace` publication with an authorized scope ID instead of the default `merge` mode, for which a scope ID is optional.
+1. The provider opens a submission for one publication context, chooses whether strict validation is required, and can choose `replace` publication instead of the default `merge` mode.
 2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
 3. The provider commits the submission.
 4. The aggregator validates the staged set asynchronously and determines which publication units can be accepted.
@@ -242,43 +242,64 @@ A provider MAY discard such a submission explicitly.
 While the aggregator retains an expiry marker, every operation targeting the expired submission MUST return `410 Gone`.
 If the aggregator later removes that marker completely, subsequent requests return `404 Not Found`, as they do for any unknown or inaccessible submission identifier.
 
-#### Publication Scope and Removal
+#### Publisher Authorization and Removal
 
 Each submission belongs to the publisher established by its authenticated credential and exactly one publication context.
 The publication context contains one [perspective](#perspectives) and any required system version or aggregator-issued system instance identifier.
 The aggregator MUST verify that the staged ORD Documents describe the same authorized context.
 
-A `replace` submission MUST include a `scopeId`.
-A `merge` submission MAY include a `scopeId`.
-The scope ID is a stable identifier for one contribution set.
-The provider SHOULD register each scope ID with the aggregator during onboarding before using it.
+During onboarding, the aggregator MUST associate each publisher with exactly one registered [ORD namespace](#namespaces) and zero or more directly granted [Group IDs](./concepts/grouping-and-bundling.md#groups).
+A registered namespace MAY be associated with multiple publishers.
+The publisher namespace includes that namespace and its descendant [sub-context namespaces](#sub-context-namespace).
+An ID is in that hierarchy when its namespace equals the registered namespace or starts with that namespace followed by `.`.
+This one-namespace rule is deliberately narrower than the general [shared-resource model](./concepts/shared-resources.md): a push publisher MUST NOT contribute an ID from another system's or authority's namespace.
+Shared content in an authority namespace requires a separately authenticated publisher onboarded to exactly that authority namespace.
+This is a push-transport authorization boundary; it does not change the ownership, reuse, or consistency semantics of shared ORD information in other transports.
 The registration mechanism is implementation-specific.
-It SHOULD be a registered [ORD namespace](#namespaces) that reflects the component or team responsible for the publishing scope.
-Using a namespace as the scope ID MUST NOT grant authority to publish ORD IDs in that namespace.
-When a submission includes a `scopeId`, the aggregator MUST verify that the scope is registered and that the authenticated push client is authorized to publish both for the publication context and for that particular scope.
-The aggregator MUST perform this authorization when the submission is opened and again before publishing a successful commit.
-It MUST return `403 Forbidden` if the scope is unregistered or either authorization check fails.
-Scope authorization is separate from ORD ID namespace permissions.
+
+For push authorization, an **authorized resource** is a top-level ORD information object whose schema supports `partOfGroups`, other than the Group taxonomy object itself, and whose ORD ID is in the publisher namespace hierarchy, provided that either:
+
+- `partOfGroups` is absent or empty; or
+- at least one Group ID in its direct `partOfGroups` value is granted to the publisher.
+
+Multiple grants use union semantics: matching any one directly assigned group is sufficient.
+Group grants are non-transitive; neither a group's own `partOfGroups` relationships nor any other group hierarchy grants access to its members.
+For a new publisher contribution, the aggregator MUST evaluate this rule against the staged resource.
+For an update to an existing contribution, both the retained resource and the staged replacement MUST satisfy the rule; a publisher cannot gain access by removing an ungranted group assignment or adding a granted one in the staged representation.
+When opening a submission, the aggregator MUST check only that the publisher is onboarded and authorized for the requested publication context.
+It MUST check every staged publication unit during asynchronous commit validation and MUST recheck the publisher's current onboarding and authorization as part of the atomic publication decision, so changes made while a submission is open or validating take effect safely.
+An unauthorized unit is a validation error: in default mode it is skipped, while in strict mode it fails the complete commit.
+Content authorization discovered at commit MUST NOT be reported as an HTTP `403 Forbidden` response to submission creation.
+
+Every other top-level ORD information object is independently authorized when its own identifier namespace is in the publisher namespace hierarchy, whether it is published alone or is required to validate or resolve an authorized resource.
+The namespace is extracted deterministically as follows:
+
+- for an object identified by an ORD ID, use the substring before the first `:` in its `ordId`;
+- for a Group Type, use the namespace before the first `:` in its `groupTypeId`; and
+- for a Group, use the namespace of the group-instance Concept ID, which is the third colon-delimited component of its `groupId`. The Group Type referenced by that Group is a separate object and is authorized from its own `groupTypeId`.
+
+This covers required Packages as well as Groups and Group Types referenced by an authorized resource.
+Vendors, Products, Consumption Bundles, Overlays, and other first-class objects that do not support `partOfGroups` remain governed solely by their own identifier namespace under these rules.
+A group grant does not authorize the Group object, its Group Type, a Package, or any unrelated object, and acceptance of supporting information does not create a transitive grant.
 
 `merge` is the default publication mode when no mode is specified.
-In `replace` mode, the staged set is the complete current contribution of the selected scope in the publication context.
+In `replace` mode, the staged set is the authenticated publisher's complete current contribution in the publication context.
 After successful validation, the aggregator MUST remove prior contributions inside the selected replacement boundary that are absent from the submission.
 The provider does not need tombstones for omitted content inside that boundary.
 To remove every prior contribution in a replacement boundary, the provider stages at least one valid ORD Document for the publication context that contains no ORD information to retain and commits it in `replace` mode.
-An empty replacement affects only the selected scope and MUST NOT remove contributions from another publisher or scope.
+An empty replacement affects only that publisher and publication context and MUST NOT remove contributions from another publisher.
 In `merge` mode, omission does not remove prior contributions.
-If a merge submission includes a `scopeId`, the aggregator MUST retain that scope as contribution provenance.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
 In push transport, a tombstone MUST affect only matching contributions inside the submission's contribution boundary.
-An unscoped tombstone MUST require separate provider-wide removal authorization.
 In partial `replace` processing, a staged publication unit that is skipped because of an error MUST NOT be treated as omitted and MUST NOT remove its previously published contribution.
+Replacement omissions and tombstones MUST also satisfy the publisher's current namespace and direct-group authorization against the retained contribution.
+If a previously published contribution is no longer authorized because onboarding or group grants changed, `replace` omission and tombstones MUST leave it unchanged; its retirement requires aggregator or administrator lifecycle handling outside this protocol.
 The accepted changes and removals in either publication mode MUST be applied atomically.
 
-The contribution boundary is the stable publisher, publication context, and optional scope ID recorded by the aggregator.
-In `replace` mode, the replacement boundary always includes a scope ID.
-It is not an ORD Document, credential, or ORD ID namespace.
-The aggregator MUST retain contribution provenance and a scoped replacement MUST NOT remove content attributed to another scope, publisher, or delegator.
-Scopes MUST NOT change ORD identity, uniqueness, or merging rules.
+The contribution and replacement boundary is the stable publisher and publication context recorded by the aggregator.
+The aggregator MUST attribute every published information object and resource definition to that publisher and context.
+Overlapping namespace and group permissions MUST NOT allow one publisher's `replace` submission or tombstone to remove a contribution attributed to another publisher.
+Publisher authorization MUST NOT change ORD identity, uniqueness, or merging rules.
 
 #### Status and Diagnostics
 
@@ -335,8 +356,8 @@ An aggregator MUST return the original submission for a repeated key with the sa
 
 The push API MUST use HTTPS and authenticate every operation.
 Each credential MUST identify exactly one described system type or one system-independent publisher in authoritative aggregator state.
-An aggregator MAY further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
-Each registered scope and any provider-wide unscoped tombstone operation MUST be authorized separately.
+An aggregator MAY further restrict a credential to particular perspectives, system versions, or system instances.
+The authenticated publisher's registered namespace and direct group grants determine which resources it can contribute.
 Identifiers supplied by a request MUST NOT establish authority by themselves.
 
 ORD does not mandate one credential technology.
