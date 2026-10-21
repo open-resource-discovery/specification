@@ -9,6 +9,21 @@ description: Operational guidance for choosing ORD push publication modes and pl
 The normative push protocol is defined in the [ORD specification](../index.md#push-transport) and the [ORD Aggregator Push API](../interfaces/aggregator-push-api.mdx).
 This page provides non-normative guidance for applying that protocol to common publication lifecycles.
 
+## Publisher Publication Scope
+
+During onboarding, the aggregator associates each publisher with exactly one registered [ORD namespace](../index.md#namespaces) and zero or more [Group IDs](./grouping-and-bundling.md#groups).
+A namespace can have zero or more associated publishers.
+These associations define the publisher's publication scope. Namespace and Group ID matching are exact.
+The registered namespace is the outer boundary of that scope; Group IDs cannot extend publication privileges beyond it.
+
+Within its namespace, a publisher has publication privileges for every Group object, every ORD entity without a group association, and every resource associated with at least one of the publisher's Group IDs.
+Group matching is direct and non-transitive.
+Publication privileges for a new resource are evaluated from its staged state. Updating an existing resource requires both its retained and staged states to be inside the publisher's publication scope.
+The aggregator checks publication privileges during commit and again immediately before publication.
+
+Publishers with overlapping publication scopes can update or remove the same information regardless of which publisher supplied it previously.
+The aggregator therefore does not need publisher-of-origin bookkeeping.
+
 ## Choosing a Publication Mode
 
 The publication mode determines whether omission means removal.
@@ -27,38 +42,37 @@ The provider needs durable bookkeeping of successfully published resource bundle
 ### Known Removals
 
 Use `merge` with tombstones when the provider knows which previously published ORD IDs were removed.
-The tombstones remove matching contributions only inside the submission's contribution boundary.
+The tombstones remove matching ORD information only inside the publisher's current publication scope and publication context.
 
 This pattern is appropriate when a source system or publishing pipeline records deletions explicitly.
 
 ### Upgrades and Full Reconciliation
 
-Use `replace` when the provider publishes a complete current inventory for a replacement boundary.
+Use `replace` when the provider publishes a complete current inventory for one or more explicitly selected Group IDs. Declare those targets in `scope` when opening the submission.
 This is useful after a major upgrade, for periodic reconciliation, or when many resources changed together.
-The aggregator derives removals by comparing the successfully validated submission with prior contributions inside that boundary.
+The aggregator derives removals by comparing the successfully validated submission with previously published ORD information inside that boundary.
 
-Every `replace` submission requires a `scopeId`.
-The scope ensures that replacement affects only one onboarded contribution set when several independently operated providers contribute to the same application or one provider partitions its publication into independently replaceable sets.
-Providers should register each scope ID with the aggregator during onboarding before using it.
-The aggregator checks that the authenticated push client is authorized to publish both for the application or other publication context and for the selected scope.
-Prefer a registered [ORD namespace](../index.md#namespaces) that reflects the component or team responsible for the publishing scope.
-A component within one system will normally use a registered sub-context namespace, while a cross-system organizational owner can use an authority namespace.
+The replacement boundary is the publication context intersected with the publisher's exact registered namespace and resources directly associated with at least one target Group ID.
+For a resource associated with multiple groups, one matching target Group ID places the complete resource inside the boundary. Omitting it removes the resource even when it is also associated with non-target groups.
+Each target Group ID must be directly associated with the publisher. Ungrouped information and resources associated only with other Group IDs are not removed through omission.
+The aggregator rejects a replacement target that is not associated with the publisher and rechecks those associations before publication.
 
 ### Providers Without Deletion Bookkeeping
 
-Use scoped `replace` when the provider can enumerate its complete current state but cannot reliably identify which previously published resources were deleted.
-Omitted contributions are removed only after the replacement validates successfully.
+Use `replace` when the provider can enumerate the complete current state of the selected Group IDs but cannot reliably identify which previously published resources were deleted.
+Omitted resources are removed only after the replacement validates successfully.
 This avoids requiring tombstones for deletions the provider no longer remembers.
 
-## Removing a Complete Contribution
+## Removing All Resources in a Replacement Boundary
 
 The protocol requires every committed submission to contain at least one valid ORD Document.
-To remove everything previously published inside a replacement boundary, stage a valid ORD Document for the publication context that contains no ORD information to retain and commit it in `replace` mode.
+To remove every resource inside a replacement boundary, stage a valid ORD Document for the publication context that contains no resources to retain and commit it in `replace` mode.
 
-A scoped empty replacement removes only contributions attributed to that publisher, publication context, and scope.
-It does not remove contributions owned by another publisher or delegator.
+An empty replacement removes all resources inside the publisher's exact registered namespace that are in the publication context and directly associated with at least one target Group ID.
+This includes resources submitted by another publisher with an overlapping publication scope.
+If a namespace or group association was removed, the affected information remains published until the aggregator or an administrator handles its lifecycle outside the push protocol.
 
-This operation removes published ORD contributions.
+This operation removes published ORD information.
 It does not delete an aggregator's authoritative system-version or system-instance record, which is outside the ORD push protocol.
 
 ## Planning for Aggregator Limits
@@ -70,9 +84,9 @@ The aggregator also communicates its submission inactivity timeout.
 A provider should check these limits before opening a submission and should avoid creating more simultaneous submissions than necessary.
 Routine changes can be divided into several independent `merge` submissions when their resource bundles do not need one atomic publication boundary.
 
-A `replace` submission represents the complete state of its replacement boundary and cannot be divided into sequential partial replacements without changing its meaning.
-Providers should choose scope boundaries that make complete replacement practical within the aggregator's documented limits.
-The provider and aggregator should resolve an insufficient replacement limit during onboarding rather than silently splitting the replacement.
+A `replace` submission represents the complete state of its target Group IDs and cannot be divided into sequential partial replacements for the same targets without changing its meaning.
+Publishers with overlapping publication scopes must coordinate replacements because each replacement treats omitted resources in the overlap as removed.
+The provider and aggregator should ensure during onboarding that the limits can accommodate the complete state of the target Group IDs rather than silently splitting a replacement.
 
 ## Choosing Validation Behavior
 

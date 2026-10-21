@@ -12,11 +12,25 @@ info:
     unit, so a resource is never published without all of its valid definitions.
     A provider can opt into strict validation, in which any error publishes nothing and leaves
     the submission available for correction until it expires.
-    A scope ID lets independently operated providers replace only their own contribution set
-    within one publication context and is required for every replacement.
-    Providers should register scope IDs with the aggregator during onboarding before using them.
-    The aggregator authorizes the authenticated push client for both the publication context and
-    the selected scope when a submission is opened and before it is published.
+    During onboarding, the aggregator associates each publisher with exactly one registered ORD
+    namespace and zero or more Group IDs. A registered namespace can have zero or more publishers.
+    These associations define the publisher's publication scope. Namespace and Group ID matching
+    are exact. The registered namespace is the outer boundary of that scope; Group IDs cannot extend
+    publication privileges beyond it. Within its namespace, a publisher has publication privileges for every Group object,
+    every ORD entity without a group association, and every resource associated with at least one
+    of the publisher's Group IDs. Group matching is direct and non-transitive. A new resource is
+    evaluated from its staged state; an update requires both its retained and staged states to be
+    inside the publisher's publication scope.
+    A replace submission declares one or more target Group IDs. Its replacement boundary is the
+    publication context intersected with the publisher's exact registered namespace and resources
+    directly associated with at least one target Group ID. Every target Group ID must remain associated with the publisher.
+    A resource associated with multiple groups enters the replacement boundary when any direct group
+    association matches a target Group ID. Omitting it removes the complete resource even if it also
+    belongs to non-target groups.
+    Ungrouped information is outside the replacement boundary. The tombstone removal boundary is the publication context
+    intersected with the publisher's current publication scope. Publisher-of-origin attribution
+    is not required. Publishers with overlapping publication scopes can update or remove the same ORD
+    information regardless of which publisher submitted it previously.
 
     Every operation requires authentication.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
@@ -51,12 +65,12 @@ paths:
       description: |-
         Opens an isolated staging area for one authenticated publisher and one publication
         context.
-        A scope ID is required for `replace` and limits removal to one contribution set that
-        should already be registered with the aggregator.
-        It remains optional for `merge`.
-        When a scope ID is supplied, the aggregator verifies that it is registered and that the
-        authenticated push client is authorized for both the publication context and the scope.
-        Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly.
+        The aggregator verifies that the authenticated publisher is onboarded and that the requested
+        publication context is valid. Publication privileges are evaluated asynchronously
+        from the staged content during commit, not when the empty submission is opened.
+        Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly
+        together with one or more target Group IDs associated with the publisher.
+        The aggregator rejects a target Group ID that is not currently associated with the publisher.
         Validation defaults to partial acceptance of valid publication units; strict
         all-or-nothing validation must be selected explicitly.
         The response identifies when the submission expires unless its staged content changes.
@@ -70,15 +84,16 @@ paths:
               $ref: "#/components/schemas/CreateSubmissionRequest"
             examples:
               merge:
-                summary: Merge into the publisher's contribution
+                summary: Merge ORD information inside the publisher's publication scope
                 value:
                   context:
                     perspective: system-type
-              scopedReplace:
-                summary: Replace one onboarded contribution scope
+              replace:
+                summary: Replace resources in selected groups in this context
                 value:
                   publicationMode: replace
-                  scopeId: sap.s4.beh
+                  scope:
+                    - sap.cap:service:customer.incidents:incidents.IncidentsService
                   context:
                     perspective: system-type
               strictMerge:
@@ -367,14 +382,29 @@ paths:
         The aggregator publishes all remaining valid units together and reports every issue.
         An error that prevents publication units from being isolated safely fails the entire commit.
         When `strict` is `true`, any error fails the entire commit.
-        A replace submission can remove every prior contribution in its replacement boundary by
-        staging at least one valid ORD Document that contains no ORD information to retain.
+        A replace submission can remove all prior resources in its replacement boundary by
+        staging at least one valid ORD Document that contains no resources to retain.
         A staged unit skipped because of an error is not considered omitted for replacement and
-        does not remove its previously published contribution.
-        Tombstones apply only inside the submission's contribution boundary, and unscoped
-        tombstones require provider-wide removal authorization.
-        Before publishing, the aggregator verifies again that the authenticated push client is
-        authorized for the publication context and any selected scope.
+        does not remove its previously published state.
+        Tombstones apply only inside the publisher's current publication scope and publication context.
+        During asynchronous validation, the aggregator verifies the publication context and checks
+        every staged publication unit against the publisher's exact registered namespace and group
+        associations. New resources are checked from staged state. Updates require both the retained
+        and staged states to be inside the publisher's publication scope. Before applying accepted units, the
+        aggregator rechecks the current associations as part of the atomic publication decision.
+        If a replacement target is no longer associated with the publisher, the complete commit fails.
+        A publication unit outside the publisher's publication scope is reported as a validation
+        issue and is skipped in default mode; in strict mode, it fails the complete commit.
+        Replacement omission can remove only retained resources inside the publisher's exact registered
+        namespace whose direct `partOfGroups` value
+        contains at least one target Group ID that remains associated with the publisher.
+        A resource associated with multiple groups is removed in full when it is omitted and any one
+        of its direct group associations matches a target Group ID.
+        Ungrouped information and resources associated only with other Group IDs remain untouched. Tombstones
+        can remove retained ORD information in the publication context that remains within the
+        publisher's current publication scope. Removal can include information submitted by another
+        publisher with overlapping publication scope; the aggregator does not need
+        publisher-of-origin attribution to evaluate it.
         Repeating this request while the same revision is validating returns its current state.
         Accepted publication units are applied atomically.
         A submission-wide error, or any error in strict mode, moves the submission to `failed`,
@@ -528,7 +558,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     Forbidden:
-      description: The selected scope is not registered, or the publisher is not authorized for the operation, publication context, or selected scope.
+      description: The publisher is not onboarded or a replacement target Group ID is not associated with the publisher. Publication-scope failures discovered during asynchronous commit processing are reported as validation issues instead.
       content:
         application/problem+json:
           schema:
@@ -591,18 +621,40 @@ components:
       additionalProperties: false
       allOf:
         - if:
-            required: [publicationMode]
             properties:
               publicationMode:
                 const: replace
+            required: [publicationMode]
           then:
-            required: [scopeId]
+            required: [scope]
+        - if:
+            required: [scope]
+          then:
+            properties:
+              publicationMode:
+                const: replace
+            required: [publicationMode]
       properties:
         publicationMode:
           type: string
-          description: Whether omission removes prior contributions inside the selected replacement boundary. Defaults to the non-destructive `merge` mode.
+          description: Whether omission removes prior resources in the declared replacement Group IDs and publication context. Defaults to the non-destructive `merge` mode.
           enum: [replace, merge]
           default: merge
+        scope:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          description: |-
+            Direct Group IDs whose resources form the complete replacement set. Required for
+            `replace` and not allowed for `merge`. Every value must be associated with the
+            authenticated publisher. The publisher's exact registered namespace remains the outer
+            boundary. Matching is exact and non-transitive.
+            A resource associated with multiple groups is inside the replacement boundary when any
+            direct group association matches; omission removes the complete resource.
+            Ungrouped information and resources associated only with other Group IDs are outside the replacement boundary.
+          items:
+            type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
         strict:
           type: boolean
           default: false
@@ -613,26 +665,39 @@ components:
             Submission-wide errors always fail the commit.
         context:
           $ref: "#/components/schemas/PublicationContext"
-        scopeId:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: |-
-            Stable identifier for a contribution set that should be registered with the aggregator
-            during onboarding before use.
-            It should be a registered ORD namespace that reflects the component or team responsible
-            for the publishing scope.
-            Using a namespace as the scope ID does not grant authority to publish ORD IDs in that namespace.
-            It is required for `replace` and limits removal to that scope in the publication context.
-            For `merge`, it records provenance for a later scoped replacement.
     PublicationContext:
       type: object
       description: |-
-        Context that must resolve to exactly one authorized publication target.
+        Context that must resolve to exactly one publication target.
         `systemVersion` applies only to `system-version`, and `systemInstanceId` applies only to
         `system-instance`.
       required: [perspective]
       additionalProperties: false
+      allOf:
+        - if:
+            properties:
+              perspective:
+                const: system-version
+          then:
+            required: [systemVersion]
+        - if:
+            required: [systemVersion]
+          then:
+            properties:
+              perspective:
+                const: system-version
+        - if:
+            properties:
+              perspective:
+                const: system-instance
+          then:
+            required: [systemInstanceId]
+        - if:
+            required: [systemInstanceId]
+          then:
+            properties:
+              perspective:
+                const: system-instance
       properties:
         perspective:
           type: string
@@ -640,12 +705,12 @@ components:
         systemVersion:
           type: string
           minLength: 1
-          description: Required for `system-version` unless the credential identifies exactly one version.
+          description: Required for `system-version`.
         systemInstanceId:
           type: string
           minLength: 1
           maxLength: 255
-          description: Aggregator-issued identifier required for `system-instance` unless the credential identifies exactly one instance.
+          description: Aggregator-issued identifier required for `system-instance`.
     Submission:
       type: object
       required:
@@ -664,7 +729,13 @@ components:
               publicationMode:
                 const: replace
           then:
-            required: [scopeId]
+            required: [scope]
+        - if:
+            required: [scope]
+          then:
+            properties:
+              publicationMode:
+                const: replace
       properties:
         id:
           type: string
@@ -673,16 +744,19 @@ components:
         publicationMode:
           type: string
           enum: [replace, merge]
+        scope:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          description: Target Group IDs for a `replace` submission. Absent for `merge`.
+          items:
+            type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
         strict:
           type: boolean
           description: Whether validation errors prevent publication of the entire submission.
         context:
           $ref: "#/components/schemas/PublicationContext"
-        scopeId:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: Selected contribution scope. Required for `replace` and optional for `merge`.
         expiresAt:
           type: string
           format: date-time
