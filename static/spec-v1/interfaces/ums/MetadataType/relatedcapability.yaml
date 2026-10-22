@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: !!bool 'true'
-  description: 'Defines a relation to another Capability (via its ORD ID).'
+  description: 'Defines a relation to a Capability (via its ORD ID), published by the source Capability or Agent.'
   metadataProperties:
     - name: 'id'
       type: 'guid'
