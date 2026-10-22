@@ -8,7 +8,7 @@ title: Ontologies and Entity Types
 An ontology is a machine-readable specification of concepts, classifications, relationships, and constraints.
 It can describe a conceptual domain model, a data model, an API model, or more than one of these layers.
 A broader domain model can additionally contain state, rules, behavior, and domain events, so an ontology is not necessarily the complete domain model.
-ORD represents an ontology through an [Ontology Capability](../interfaces/Document#capability) and can connect it to individually addressable [Entity Types](../interfaces/Document#entity-type) and technical resources.
+ORD can express and publish an ontology as a [Capability](../interfaces/Document#capability) with `type: "ontology"` and connect it to individually addressable [Entity Types](../interfaces/Document#entity-type) and technical resources.
 
 ## Two complementary layers
 
@@ -24,10 +24,10 @@ API Resources, Event Resources, Data Products, Agents, and Capabilities can use 
 An Entity Type can provide `definitions` that describe its own internal model or aggregate.
 Such a definition is scoped to that individual Entity Type and is not a container for an entire multi-entity ontology.
 
-### Ontology Capabilities
+### Publishing an ontology as a Capability
 
-An Ontology Capability is a Capability with `type: "ontology"`.
-It gives the ontology itself an ORD identity, lifecycle, ownership context, visibility, and machine-readable definitions.
+An ontology can be expressed and published in ORD as a Capability with `type: "ontology"`.
+This gives the ontology itself an ORD identity, lifecycle, ownership context, visibility, and machine-readable definitions.
 
 The Capability definition describes the ontology as one coherent artifact within its declared scope.
 It can preserve relationships that would be lost if the model were split into separate files for every Entity Type.
@@ -35,21 +35,21 @@ It can also contain semantic elements that are not published as Entity Types, in
 
 Not every class or concept in an ontology needs to become an ORD Entity Type.
 Publishers SHOULD create Entity Types for the concepts that need to be discovered or referenced independently by other ORD resources.
-The Ontology Capability SHOULD list the Entity Types represented in its model through `relatedEntityTypes`.
+The Capability SHOULD list the Entity Types represented in the ontology through `relatedEntityTypes`.
 
 ### Why publish both?
 
-Entity Types and an Ontology Capability solve different discovery problems.
+Entity Types and an ontology published as a Capability solve different discovery problems.
 
 - Entity Types let consumers find and reference individual domain concepts by ORD ID.
-- The Ontology Capability lets consumers retrieve and interpret the ontology as a whole within its declared scope, including relationships and additional ontology elements.
+- The Capability lets consumers retrieve and interpret the ontology as a whole within its declared scope, including relationships and additional ontology elements.
 - Shared Entity Type references connect the ontology to APIs, Events, Data Products, Agents, and other Capabilities without duplicating the ontology definition on each resource.
 
 ```mermaid
 flowchart TB
   subgraph Provider[Provider publication]
-    DomainOntology[Domain-model Ontology Capability]
-    ContractOntology[Data or API-model Ontology Capability]
+    DomainOntology[Domain-model ontology as a Capability]
+    ContractOntology[Data or API-model ontology as a Capability]
     EntityTypes[Entity Types with ORD IDs]
     Contracts[API Resource and native API contract]
     DomainDefinition[OWL, RDFS, RDF, or another definition]
@@ -70,7 +70,7 @@ flowchart TB
 
 The provider publishes the ontology, its definitions, and relationships that it owns.
 An ORD aggregator can derive reverse navigation and combine this metadata into a connected view.
-A populated knowledge graph and its query interfaces are downstream concerns and are not created by publishing the Ontology Capability.
+A populated knowledge graph and its query interfaces are downstream concerns and are not created by publishing the ontology as a Capability.
 
 ## Ontology model layers
 
@@ -123,20 +123,20 @@ The following excerpt publishes a SHACL ontology for an API model while connecti
 
 ## Relationships to other ORD concepts
 
-The Ontology Capability acts as the catalog entry for the ontology as a whole, while Entity Types connect it to the rest of ORD.
+The Capability acts as the catalog entry for the ontology as a whole, while Entity Types connect it to the rest of ORD.
 
 | ORD concept | Relationship to Entity Types and the ontology |
 | --- | --- |
-| [Package and Product](./grouping-and-bundling.md) | The Ontology Capability and its Entity Types use `partOfPackage` and optionally `partOfProducts` to express ownership and product context. |
+| [Package and Product](./grouping-and-bundling.md) | The Capability and its Entity Types use `partOfPackage` and optionally `partOfProducts` to express ownership and product context. |
 | [API Resource](../interfaces/Document#api-resource) | An API can identify the Entity Types it exposes. An API-model ontology can reference the API Resource through `relatedApiResources`; the relationship does not replace the API's native contract. |
 | [Event Resource](../interfaces/Document#event-resource) | An Event Resource can identify Entity Types represented by its payloads, connecting event contracts to the shared semantic model. |
 | [Data Product](./data-product.md) | A Data Product can list the Entity Types in its data set. Consumers can follow those ORD IDs to the ontology that supplies their broader semantic context. |
 | [Agent](./ai-agents-and-protocols.md) | An Agent can use `relatedEntityTypes` to identify the domain concepts it operates on. Those same Entity Types connect the Agent to the ontology. |
-| Other Capabilities | A Capability can use `relatedEntityTypes` for domain context. An Ontology Capability can use `relatedCapabilities` for catalog-level relationships to another ontology or semantic capability. |
-| [Groups](./grouping-and-bundling.md#groups) | The Ontology Capability and Entity Types can use `partOfGroups` for governed classification or navigation. Groups do not replace semantic relationships expressed by the ontology itself. |
+| Other Capabilities | A Capability can use `relatedEntityTypes` for domain context. A Capability that publishes an ontology can use `relatedCapabilities` for catalog-level relationships to another ontology or semantic capability. |
+| [Groups](./grouping-and-bundling.md#groups) | The Capability and Entity Types can use `partOfGroups` for governed classification or navigation. Groups do not replace semantic relationships expressed by the ontology itself. |
 | [Integration Dependencies](./integration-dependency.md) | Integration Dependencies describe resources required at runtime. Ontology imports and references belong in the ontology definition and SHOULD NOT be modeled as Integration Dependencies solely because one ontology refers to another. |
 
-There is no direct Ontology Capability relationship to Data Products or Agents.
+There is no direct relationship from a Capability that publishes an ontology to Data Products or Agents.
 Their shared Entity Type ORD IDs provide the semantic connection and avoid duplicating relationship properties for every resource combination.
 
 ## Entity Type definitions and ontology definitions
@@ -171,7 +171,7 @@ Consumers can then select a serialization they support.
 
 ## Example
 
-The following excerpt publishes two independently addressable Entity Types and one Ontology Capability that covers both concepts as a complete model.
+The following excerpt publishes two independently addressable Entity Types and one ontology as a Capability that covers both concepts as a complete model.
 The optional Entity Type definition is scoped to Workforce Person, while both Capability definitions serialize the entire workforce ontology.
 
 ```json
@@ -246,5 +246,5 @@ Consumers MUST NOT infer the mapping from similar titles or local identifiers al
 ## SPARQL access
 
 [SPARQL 1.1](https://www.w3.org/TR/sparql11-query/) is a query language for RDF data, not an ontology definition or RDF serialization.
-Publishing an Ontology Capability does not imply that its provider offers a SPARQL endpoint.
+Publishing an ontology as a Capability does not imply that its provider offers a SPARQL endpoint.
 An ORD aggregator or a knowledge graph built from aggregated ORD metadata can offer SPARQL or another query interface, but ORD does not currently standardize that consumer-facing access contract.

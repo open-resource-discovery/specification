@@ -47,7 +47,7 @@ function ontologyDocument(definitionType: string) {
   };
 }
 
-describe("Ontology Capability validation", () => {
+describe("Ontology publication validation", () => {
   for (const definitionType of [
     "rdf-v1.1",
     "rdfs-v1.1",

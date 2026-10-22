@@ -3581,7 +3581,7 @@ definitions:
             description: |-
               Standardized capability representing a machine-readable ontology.
               An ontology can describe a conceptual domain model, a data model, an API model, or more than one of these layers.
-              An ontology capability SHOULD provide at least one definition.
+              A Capability with `type: "ontology"` SHOULD provide at least one definition.
               Its definitions SHOULD use `rdf-v1.1`, `rdfs-v1.1`, `owl-v2`, `shacl-v1.0`,
               `sap-csn-interop-effective-v1`, or an appropriate Specification ID.
 
@@ -3602,7 +3602,7 @@ definitions:
         minItems: 1
         x-introduced-in-version: "1.18.0"
         description: |-
-          Optional list of model layers described by an ontology Capability.
+          Optional list of model layers described by an ontology published as a Capability.
           This property SHOULD only be used when `type` is `ontology`.
 
           A single ontology can span more than one layer.

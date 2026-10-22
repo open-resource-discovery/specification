@@ -2275,7 +2275,7 @@ export interface Capability {
   type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "workflow" | "ontology" | "custom") &
     string;
   /**
-   * Optional list of model layers described by an ontology Capability.
+   * Optional list of model layers described by an ontology published as a Capability.
    * This property SHOULD only be used when `type` is `ontology`.
    *
    * A single ontology can span more than one layer.
