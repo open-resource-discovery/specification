@@ -45,28 +45,7 @@ Entity Types and an ontology published as a Capability solve different discovery
 - The Capability lets consumers retrieve and interpret the ontology as a whole within its declared scope, including relationships and additional ontology elements.
 - Shared Entity Type references connect the ontology to APIs, Events, Data Products, Agents, and other Capabilities without duplicating the ontology definition on each resource.
 
-```mermaid
-flowchart TB
-  subgraph Provider[Provider publication]
-    DomainOntology[Domain-model ontology as a Capability]
-    ContractOntology[Data or API-model ontology as a Capability]
-    EntityTypes[Entity Types with ORD IDs]
-    Contracts[API Resource and native API contract]
-    DomainDefinition[OWL, RDFS, RDF, or another definition]
-    ContractDefinition[SHACL, RDF, CSN Interop, or another definition]
-
-    DomainOntology -->|definitions| DomainDefinition
-    ContractOntology -->|definitions| ContractDefinition
-    DomainOntology -->|relatedEntityTypes| EntityTypes
-    ContractOntology -->|relatedEntityTypes| EntityTypes
-    ContractOntology -->|relatedApiResources for API models| Contracts
-    Contracts -->|exposedEntityTypes| EntityTypes
-  end
-
-  Provider --> Aggregator[ORD aggregator connected metadata view]
-  Aggregator -. optional downstream processing .-> KnowledgeGraph[Knowledge graph or semantic index]
-  KnowledgeGraph -. implementation-specific access .-> Sparql[SPARQL or another query interface]
-```
+![ORD ontology publication model](/img/ontology-publication.svg "ORD ontology publication model")
 
 The provider publishes the ontology, its definitions, and relationships that it owns.
 An ORD aggregator can derive reverse navigation and combine this metadata into a connected view.
