@@ -3579,9 +3579,10 @@ definitions:
           - const: ontology
             x-introduced-in-version: "1.18.0"
             description: |-
-              Standardized capability representing a machine-readable ontology or semantic domain model.
+              Standardized capability representing a machine-readable ontology.
+              An ontology can describe a conceptual domain model, a data model, an API model, or more than one of these layers.
               An ontology capability SHOULD provide at least one definition.
-              Its definitions SHOULD use `rdf-v1.1`, `rdfs-v1.1`, `owl-v2`,
+              Its definitions SHOULD use `rdf-v1.1`, `rdfs-v1.1`, `owl-v2`, `shacl-v1.0`,
               `sap-csn-interop-effective-v1`, or an appropriate Specification ID.
 
               RDF-based definitions can publish the same logical ontology in multiple serialization formats,
@@ -3594,6 +3595,34 @@ definitions:
         examples:
           - "agent-skill"
           - "ontology"
+
+      ontologyLayers:
+        type: array
+        uniqueItems: true
+        minItems: 1
+        x-introduced-in-version: "1.18.0"
+        description: |-
+          Optional list of model layers described by an ontology Capability.
+          This property SHOULD only be used when `type` is `ontology`.
+
+          A single ontology can span more than one layer.
+          The layer MUST NOT be inferred from the definition language alone.
+          For example, SHACL shapes can constrain either a conceptual RDF graph or a concrete data representation.
+        items:
+          type: string
+          oneOf:
+            - const: domain-model
+              description: |-
+                The ontology describes conceptual domain meaning independently of a particular technical contract.
+            - const: data-model
+              description: |-
+                The ontology describes or constrains a concrete data representation.
+            - const: api-model
+              description: |-
+                The ontology describes or constrains the model exposed by an API contract.
+        examples:
+          - ["domain-model"]
+          - ["data-model", "api-model"]
 
       customType:
         <<: *customType
@@ -3872,6 +3901,15 @@ definitions:
             x-introduced-in-version: "1.18.0"
             description: |-
               An [OWL 2](https://www.w3.org/TR/owl2-overview/) ontology represented as an RDF graph.
+
+              The `mediaType` MUST identify an RDF serialization, such as
+              `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
+              `application/rdf+xml` for RDF/XML, or `application/n-triples` for N-Triples.
+              The capability `type` SHOULD be set to `ontology`.
+          - const: shacl-v1.0
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              A [Shapes Constraint Language (SHACL)](https://www.w3.org/TR/shacl/) shapes graph for validating RDF data graphs.
 
               The `mediaType` MUST identify an RDF serialization, such as
               `application/ld+json` for JSON-LD, `text/turtle` for Turtle,

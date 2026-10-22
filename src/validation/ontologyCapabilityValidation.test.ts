@@ -25,6 +25,7 @@ function ontologyDocument(definitionType: string) {
         ordId: "example:capability:workforceOntology:v1",
         title: "Workforce Ontology",
         type: "ontology",
+        ontologyLayers: ["domain-model"],
         version: "1.0.0",
         releaseStatus: "active",
         visibility: "public",
@@ -47,7 +48,12 @@ function ontologyDocument(definitionType: string) {
 }
 
 describe("Ontology Capability validation", () => {
-  for (const definitionType of ["rdf-v1.1", "rdfs-v1.1", "owl-v2"]) {
+  for (const definitionType of [
+    "rdf-v1.1",
+    "rdfs-v1.1",
+    "owl-v2",
+    "shacl-v1.0",
+  ]) {
     it(`accepts ${definitionType} in JSON-LD and Turtle serializations`, () => {
       assert.equal(validate(ontologyDocument(definitionType)), true);
     });
@@ -55,5 +61,20 @@ describe("Ontology Capability validation", () => {
 
   it("does not treat SPARQL as an ontology definition type", () => {
     assert.equal(validate(ontologyDocument("sparql-v1.1")), false);
+  });
+
+  it("accepts an ontology spanning data and API model layers", () => {
+    const document = ontologyDocument("shacl-v1.0");
+    document.capabilities[0].ontologyLayers = ["data-model", "api-model"];
+    assert.equal(validate(document), true);
+  });
+
+  it("rejects unknown or duplicate ontology layers", () => {
+    const document = ontologyDocument("owl-v2");
+    document.capabilities[0].ontologyLayers = ["domain-model", "domain-model"];
+    assert.equal(validate(document), false);
+
+    document.capabilities[0].ontologyLayers = ["physical-model"];
+    assert.equal(validate(document), false);
   });
 });

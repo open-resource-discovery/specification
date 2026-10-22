@@ -37,6 +37,10 @@ spec:
       type: 'string'
       description: 'Type of the Capability'
       mandatory: !!bool 'true'
+    - name: 'ontologyLayers'
+      type: 'string'
+      array: !!bool 'true'
+      description: "Optional list of model layers described by an ontology Capability.\nThis property SHOULD only be used when `type` is `ontology`.\n\nA single ontology can span more than one layer.\nThe layer MUST NOT be inferred from the definition language alone.\nFor example, SHACL shapes can constrain either a conceptual RDF graph or a concrete data representation."
     - name: 'customType'
       type: 'string'
       description: "If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.\n\nMUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).\n\nMUST only be provided if `type` is set to `custom`."

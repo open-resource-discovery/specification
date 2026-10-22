@@ -2275,6 +2275,26 @@ export interface Capability {
   type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "workflow" | "ontology" | "custom") &
     string;
   /**
+   * Optional list of model layers described by an ontology Capability.
+   * This property SHOULD only be used when `type` is `ontology`.
+   *
+   * A single ontology can span more than one layer.
+   * The layer MUST NOT be inferred from the definition language alone.
+   * For example, SHACL shapes can constrain either a conceptual RDF graph or a concrete data representation.
+   *
+   * @minItems 1
+   */
+  ontologyLayers?: [
+    ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model"),
+    ...(("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model"))[]
+  ];
+  /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
    * MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
@@ -2659,6 +2679,7 @@ export interface CapabilityDefinition {
     | "rdf-v1.1"
     | "rdfs-v1.1"
     | "owl-v2"
+    | "shacl-v1.0"
     | "sap-csn-interop-effective-v1"
     | "custom"
   ) &
