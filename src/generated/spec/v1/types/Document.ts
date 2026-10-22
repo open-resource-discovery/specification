@@ -691,12 +691,12 @@ export interface ApiResource {
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
-   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * The entry without a `purpose` value is the primary/default definition for its `(type, mediaType, visibility)`;
    * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
-   * default per `(type, visibility)` combination.
+   * default per `(type, mediaType, visibility)` combination.
    *
-   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
-   * be unique within the list.
+   * The combination of `type` (or `customType` for `type: "custom"`), `mediaType`, `purpose`, and
+   * `visibility` MUST be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1602,12 +1602,12 @@ export interface EventResource {
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
-   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * The entry without a `purpose` value is the primary/default definition for its `(type, mediaType, visibility)`;
    * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
-   * default per `(type, visibility)` combination.
+   * default per `(type, mediaType, visibility)` combination.
    *
-   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
-   * be unique within the list.
+   * The combination of `type` (or `customType` for `type: "custom"`), `mediaType`, `purpose`, and
+   * `visibility` MUST be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -2272,7 +2272,8 @@ export interface Capability {
   /**
    * Type of the Capability
    */
-  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "workflow" | "custom") & string;
+  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "workflow" | "ontology" | "custom") &
+    string;
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -2497,12 +2498,12 @@ export interface Capability {
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
-   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * The entry without a `purpose` value is the primary/default definition for its `(type, mediaType, visibility)`;
    * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
-   * default per `(type, visibility)` combination.
+   * default per `(type, mediaType, visibility)` combination.
    *
-   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
-   * be unique within the list.
+   * The combination of `type` (or `customType` for `type: "custom"`), `mediaType`, `purpose`, and
+   * `visibility` MUST be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -2650,7 +2651,16 @@ export interface CapabilityDefinition {
    * Type of the capability resource definition
    */
   type: (
-    string | "agent-skill-zip" | "agent-plugin-zip" | "sap.mdo:mdi-capability-definition:v1" | "arazzo-v1" | "custom"
+    | string
+    | "agent-skill-zip"
+    | "agent-plugin-zip"
+    | "sap.mdo:mdi-capability-definition:v1"
+    | "arazzo-v1"
+    | "rdf-v1.1"
+    | "rdfs-v1.1"
+    | "owl-v2"
+    | "sap-csn-interop-effective-v1"
+    | "custom"
   ) &
     string;
   /**

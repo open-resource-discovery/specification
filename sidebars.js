@@ -24,6 +24,7 @@ const sidebars = {
             "spec-v1/concepts/perspectives",
             "spec-v1/concepts/data-product",
             "spec-v1/concepts/integration-dependency",
+            "spec-v1/concepts/ontologies",
             "spec-v1/concepts/ai-agents-and-protocols",
             "spec-v1/concepts/shared-resources",
           ],

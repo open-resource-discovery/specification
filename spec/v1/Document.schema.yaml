@@ -1440,12 +1440,12 @@ definitions:
           This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
           Model those as separate ORD resources instead.
 
-          The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+          The entry without a `purpose` value is the primary/default definition for its `(type, mediaType, visibility)`;
           consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
-          default per `(type, visibility)` combination.
+          default per `(type, mediaType, visibility)` combination.
 
-          The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
-          be unique within the list.
+          The combination of `type` (or `customType` for `type: "custom"`), `mediaType`, `purpose`, and
+          `visibility` MUST be unique within the list.
 
           It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
           If the definitions are added or changed, the `version` MUST be incremented.
@@ -3576,12 +3576,24 @@ definitions:
               Workflow capabilities SHOULD list every API Resource they interact with in
               `relatedApiResources`, each with
               `relationType: "ord:orchestrates"`.
+          - const: ontology
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              Standardized capability representing a machine-readable ontology or semantic domain model.
+              An ontology capability SHOULD provide at least one definition.
+              Its definitions SHOULD use `rdf-v1.1`, `rdfs-v1.1`, `owl-v2`,
+              `sap-csn-interop-effective-v1`, or an appropriate Specification ID.
+
+              RDF-based definitions can publish the same logical ontology in multiple serialization formats,
+              such as JSON-LD and Turtle, by using separate definition entries with different `mediaType` values.
+              See [Ontologies](../concepts/ontologies.md) for publication guidance.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
             # Deprecate this in future?
         examples:
           - "agent-skill"
+          - "ontology"
 
       customType:
         <<: *customType
@@ -3838,12 +3850,47 @@ definitions:
 
               The `mediaType` MUST be set to `application/json` or `application/yaml`.
               The capability `type` SHOULD be set to `workflow`.
+          - const: rdf-v1.1
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              An [RDF 1.1](https://www.w3.org/TR/rdf11-concepts/) graph.
+
+              The `mediaType` MUST identify an RDF 1.1 serialization, such as
+              `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
+              `application/rdf+xml` for RDF/XML, or `application/n-triples` for N-Triples.
+              The capability `type` SHOULD be set to `ontology`.
+          - const: rdfs-v1.1
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              An ontology expressed using [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/).
+
+              The `mediaType` MUST identify an RDF 1.1 serialization, such as
+              `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
+              `application/rdf+xml` for RDF/XML, or `application/n-triples` for N-Triples.
+              The capability `type` SHOULD be set to `ontology`.
+          - const: owl-v2
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              An [OWL 2](https://www.w3.org/TR/owl2-overview/) ontology represented as an RDF graph.
+
+              The `mediaType` MUST identify an RDF serialization, such as
+              `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
+              `application/rdf+xml` for RDF/XML, or `application/n-triples` for N-Triples.
+              The capability `type` SHOULD be set to `ontology`.
+          - const: sap-csn-interop-effective-v1
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable
+              [CSN](https://cap.cloud.sap/docs/cds/csn) export that can describe a complete CDS domain model.
+
+              The `mediaType` MUST be set to `application/json`.
+              The capability `type` SHOULD be set to `ontology`.
           - const: custom
             description: |-
               If chosen, a custom type MUST be provided via `customType`
             # Deprecate this?
         examples:
-          - custom
+          - owl-v2
 
       customType:
         # TODO: Deprecate this?
