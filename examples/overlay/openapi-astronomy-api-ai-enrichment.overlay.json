@@ -3,6 +3,7 @@
   "ordOverlay": "0.1",
   "ordId": "sap.foo:overlay:astronomy-api-ai-enrichment:v1",
   "description": "Enriches the Astronomy API with AI-optimized descriptions, usage hints, and examples that help LLMs and AI agents understand and correctly invoke each operation.",
+  "purpose": "ord:ai-enrichment",
   "describedSystemType": {
     "systemNamespace": "sap.foo"
   },
