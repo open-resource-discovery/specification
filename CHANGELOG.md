@@ -14,6 +14,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Added
 
 - Added `ord:publication-scope` as a standardized Group Type for partitioning resources into independently replaceable publication sets.
+  Resources omitted from a replaced publication scope are removed without a tombstone, where the ORD aggregator supports it.
 
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 

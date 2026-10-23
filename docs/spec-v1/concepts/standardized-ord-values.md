@@ -36,11 +36,14 @@ Future standardized label keys MUST be registered on this page before providers 
 
 `ord:publication-scope` is the standardized Group Type for partitioning resources into independently replaceable publication sets.
 It is optional.
+A publication scope compartmentalizes the publishing for one application or service, as onboarded to the ORD aggregator, which is usually at the [system type](../index.md#system-type) level.
+This lets parts of that publishing be replaced independently, for example when several ORD providers together describe the application or service.
 Assigning a resource to a publication scope describes the provider's intended publication boundary, but does not itself request replacement or authorize publication or removal.
 Providers MAY publish these Groups and their resource assignments in non-destructive `merge` operations where a transport supports that mode.
 A transport may separately require target Group IDs when an operation requests replacement.
 
 The ORD specification defines this Group Type, so providers MUST NOT publish a custom `groupTypes` definition for `ord:publication-scope`.
+Aggregators and validators MUST treat `ord:publication-scope` as a known Group Type and MUST NOT report a Group that references it as a dangling reference.
 An ORD provider MAY define any number of Group objects of this type.
 The provider chooses stable and unique Group IDs under a namespace it controls.
 
@@ -65,15 +68,28 @@ Group matching is exact and non-transitive.
 A resource MUST NOT reference more than one Group of this type, but MAY reference Groups of other types.
 
 Within a given perspective and, where applicable, described system context, each publication scope used for reconciliation MUST have exactly one authoritative ORD provider.
+Several ORD providers can together describe one application or service, but each publication scope belongs to exactly one of them.
 The aggregator determines which provider is authorized to publish that scope through its own authorization and onboarding configuration.
 An aggregator MUST NOT treat Group IDs or resource assignments as publication privileges or an authorization boundary.
 
 When a transport and aggregator support complete set reconciliation and the provider or scope is configured for it, the aggregator compares a successfully retrieved complete resource set with the previously retained set for that scope.
 It MUST remove previously retained resources assigned to the scope when they are absent from the complete set.
 The provider MUST continue to publish the Group object when its resource set is empty so the aggregator can identify that complete empty set.
+This removal by omission is an exception to the general rule that [removals are indicated through tombstones](../index.md#removal-of-resourcesinformation).
+
+The aggregator MUST NOT remove resources by omission in the following cases:
+
+- The retrieval of the complete set failed or was incomplete.
+- The resource is present in the complete set but was rejected during validation.
+- The resource is present in the complete set but is now assigned to another publication scope. It has moved to that scope.
+
+Replacement applies only to ORD resources assigned through `partOfGroups`.
+The Group object itself, Packages, Consumption Bundles, Products, Vendors and other taxonomy are outside the publication scope and are removed through tombstones.
 
 Behavior for each transport is defined by its transport rules.
 The publication scope Group Type defines the set boundary independently of how a transport retrieves or submits ORD information.
+No ORD transport currently defines publication scope replacement.
+Until one does, an aggregator applies it only where it supports replacement and has configured it for the provider or scope during onboarding.
 
 #### Pull Replace Mode (WIP)
 
