@@ -27,7 +27,7 @@ The provider needs durable bookkeeping of successfully published resource bundle
 ### Known Removals
 
 Use `merge` with tombstones when the provider knows which previously published ORD IDs were removed.
-The tombstones remove matching contributions only from the authenticated publisher in the submission's publication context.
+The tombstones remove matching contributions only from the submitting ORD provider in the submission's publication context.
 
 This pattern is appropriate when a source system or publishing pipeline records deletions explicitly.
 
@@ -35,10 +35,8 @@ This pattern is appropriate when a source system or publishing pipeline records 
 
 Use `replace` when the provider publishes its complete current contribution for one publication context.
 This is useful after a major upgrade, for periodic reconciliation, or when many resources changed together.
-The aggregator derives removals by comparing the successfully validated submission with that publisher's prior contributions in the same context.
-It must retain publisher and context provenance for accepted `merge` publications so later `replace` operations can identify the publisher's complete contribution.
-Fine-grained publication scopes are work in progress and are not defined by this API.
-The authenticated client establishes publisher identity, and aggregator authorization determines which publication boundaries it may change.
+The aggregator derives removals by comparing the successfully validated submission with that ORD provider's prior contributions in the same context.
+It must retain ORD provider and context provenance for accepted `merge` publications so later `replace` operations can identify the ORD provider's complete contribution.
 
 ### Providers Without Deletion Bookkeeping
 
@@ -49,13 +47,23 @@ This avoids requiring tombstones for deletions the provider no longer remembers.
 ## Removing a Complete Contribution
 
 The protocol requires every committed submission to contain at least one valid ORD Document.
-To remove everything previously published by this publisher in a publication context, stage a valid ORD Document for the context that contains no ORD information to retain and commit it in `replace` mode.
+To remove everything previously published by this ORD provider in a publication context, stage a valid ORD Document for the context that contains no ORD information to retain and commit it in `replace` mode.
 
-An empty replacement removes only contributions attributed to that publisher in that context.
-It does not remove contributions owned by another publisher or published in another context.
+An empty replacement removes only contributions attributed to that ORD provider in that context.
+It does not remove contributions owned by another ORD provider or published in another context.
 
 This operation removes published ORD contributions.
 It does not delete an aggregator's authoritative system-version or system-instance record, which is outside the ORD push protocol.
+
+## Combining Push and Pull
+
+An application or service can be described by several ORD providers.
+For example, one part can be submitted from a deployment pipeline through push transport while another part is served through an ORD Provider API and retrieved through pull transport.
+This works the same way as an application described by several pull-based ORD providers.
+
+The contributions of these ORD providers must not overlap, because each ORD ID is described at most once within a perspective.
+A push submission, including one in `replace` mode, changes only the contribution of the submitting ORD provider.
+To move ORD information from one ORD provider to another, remove it from the first ORD provider before the second one publishes it.
 
 ## Planning for Aggregator Limits
 
@@ -63,10 +71,11 @@ An aggregator documents its supported request content encodings and operational 
 These include encoded and decoded artifact size, aggregate decoded submission size, artifact count, active submissions, concurrent requests, and request rate.
 The aggregator also communicates its submission inactivity timeout.
 
-A provider should check these limits before opening a submission and should avoid creating more simultaneous submissions than necessary.
-Routine changes can be divided into several independent `merge` submissions when their resource bundles do not need one atomic publication boundary.
+A provider should check these limits before opening a submission.
+An ORD provider can have only one active submission per publication context, so it commits or discards a submission before opening the next one for that context.
+Routine changes can be divided into several `merge` submissions, committed one after another, when their resource bundles do not need one atomic publication boundary.
 
-A `replace` submission represents the publisher's complete contribution in its publication context and cannot be divided into sequential partial replacements without changing its meaning.
+A `replace` submission represents the ORD provider's complete contribution in its publication context and cannot be divided into sequential partial replacements without changing its meaning.
 The provider and aggregator should ensure during onboarding that this complete contribution fits within the aggregator's documented limits.
 
 ## Choosing Validation Behavior

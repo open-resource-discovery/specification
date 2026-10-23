@@ -21,7 +21,7 @@ Several independently operated ORD Providers can contribute metadata for the sam
 - Let independent valid publication units succeed when another unit is invalid.
 - Support opt-in all-or-nothing validation when several units must advance together.
 - Let providers repair and retry a failed submission.
-- Support complete-state replacement without removing contributions from another publisher.
+- Support complete-state replacement without removing contributions from another ORD provider.
 - Provide asynchronous status and complete validation diagnostics.
 - Bound the lifetime of abandoned server-side state.
 - Keep authentication technology and onboarding implementation-specific.
@@ -78,19 +78,22 @@ Using `PUT` makes uploads and repairs idempotent without assigning a persistent 
 The resource-definition request carries native bytes and identifies the ORD resource and exact `resourceDefinitions[].url` value that declare those bytes.
 The URL is an association key during push and is not fetched from the provider.
 
-Each submission belongs to the publisher established by its authenticated credential and exactly one publication context.
+Each submission belongs to the ORD provider established by its authenticated credential and to exactly one publication context.
+The aggregator identifies the ORD provider as the technical integration behind the authenticated client, as agreed during onboarding.
+Several ORD providers can together describe one application or service, using push or pull transport, as long as their contributions do not overlap.
 The context consists of one perspective and any required system version or aggregator-issued system instance identifier.
 The aggregator validates the submitted context and document claims against authoritative state.
-Permission to publish particular ORD ID namespaces is checked separately from publisher identity.
+Permission to publish particular ORD ID namespaces is checked separately from ORD provider identity.
 
-The aggregator must attribute every published item and resource definition to its authenticated publisher and publication context.
-This provenance lets a later `replace` identify the publisher's complete contribution in that context.
+The aggregator must attribute every published item and resource definition to its ORD provider and publication context.
+This provenance lets a later `replace` identify the ORD provider's complete contribution in that context.
 
 A submission can declare a publication mode when it is opened and defaults to `merge` when the mode is omitted.
 `replace` must be selected explicitly because it gives omission destructive meaning.
-For `replace`, the staged set is the complete current contribution of the authenticated publisher in the publication context.
-On a successful `replace` commit, the aggregator removes that publisher's prior contributions in the context that are absent from the staged set.
+For `replace`, the staged set is the complete current contribution of the ORD provider in the publication context.
+On a successful `replace` commit, the aggregator removes that ORD provider's prior contributions in the context that are absent from the staged set.
 Omission therefore expresses removal and the provider does not need to track removed resources or publish tombstones in that contribution.
+This is the only exception to the general rule that removals require tombstones.
 A provider can remove every prior contribution in the context by staging at least one valid ORD Document that contains no ORD information to retain and committing it in `replace` mode.
 `merge` upserts the accepted staged set without interpreting omission as removal.
 Each top-level ORD information object is one publication unit.
@@ -98,16 +101,18 @@ For an ORD resource that declares resource definitions, the unit also contains e
 If that resource or one definition changes, the provider resubmits the resource and all of its definitions, while unrelated resources can remain omitted.
 Previously published definitions do not complete a partially staged resource.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
-The effect of a push tombstone is limited to matching contributions from the authenticated publisher in the submission's publication context.
-Fine-grained publication scopes are work in progress and are not part of this push API.
-The authenticated client establishes publisher identity, and aggregator authorization determines which publication boundaries it may change; request data does not grant that authority.
-Possible future mechanisms include using Group assignment to identify a replacement set or configuring the authorized boundary during aggregator onboarding.
-Any finer-grained replace capability is an aggregator decision, and onboarding configuration is outside ORD standardization.
-Publication scopes do not change ORD identity, uniqueness, or merging rules.
+The effect of a push tombstone is limited to matching contributions from the ORD provider in the submission's publication context.
+This API does not define finer-grained replacement boundaries within one ORD provider's contribution in one publication context, and request data does not grant authority to change a contribution.
 Providers normally use `replace` for upgrades and periodic full reconciliation, `merge` for hot fixes and transports, and `merge` plus tombstones for removals they track explicitly.
 A provider that does not keep deletion bookkeeping uses `replace` so the aggregator can derive removals from its complete current inventory.
 A staged publication unit that is skipped because of an error is not considered omitted by `replace`, so its previously published contribution remains unchanged.
 A complete replacement cannot be split into sequential partial replacement submissions because each successful commit would remove contributions omitted from that submission.
+
+An ORD provider can have at most one active submission per publication context, where `open`, `validating` and `failed` submissions are active.
+A request to open another one is rejected with `409 Conflict`, and the problem details identify the active submission so the provider can continue or discard it.
+This serializes the commits of one ORD provider to one publication context.
+Without it, a `replace` submission opened before a `merge` hot fix and committed after it would remove that hot fix.
+Optimistic concurrency control, such as a base revision checked at commit, was not chosen because it adds state to every submission for a case that serialization avoids.
 
 Validation defaults to partial acceptance independently of the publication mode.
 An error attributable to one publication unit skips that complete unit, including all definitions declared by an invalid resource.
@@ -131,11 +136,11 @@ The status endpoint reports counts and lifecycle state.
 The issues endpoint reports all errors, warnings, and information messages and identifies the affected staged artifact and target when available.
 
 Every operation uses HTTPS and authentication.
-Each credential identifies exactly one described system type or one system-independent publisher in authoritative aggregator state.
+Each credential identifies exactly one ORD provider in authoritative aggregator state, and that ORD provider describes exactly one system type or only system-independent information.
 An aggregator can further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
-The aggregator authorizes each operation against the authenticated publisher, publication context, and any additional restrictions configured for the credential.
+The aggregator authorizes each operation against the ORD provider, publication context, and any additional restrictions configured for the credential.
 The concrete machine-to-machine authentication mechanism, credential issuance, and API base URL are communicated by the aggregator during onboarding.
-The onboarding information also states supported request content encodings, maximum encoded and decoded artifact sizes, aggregate decoded submission size, artifact counts, active submissions per publisher, concurrency, rate limits, and decompression limits.
+The onboarding information also states supported request content encodings, maximum encoded and decoded artifact sizes, aggregate decoded submission size, artifact counts, active submissions per ORD provider, concurrency, rate limits, and decompression limits.
 These limits must allow an onboarded provider to publish its complete contribution in one submission.
 
 ### Consequences
@@ -146,14 +151,15 @@ These limits must allow an onboarded provider to publish its complete contributi
 - ✅ Strict submissions can make several requests form one all-or-nothing publication.
 - ✅ Providers can correct a failed submission and commit it again.
 - ✅ `replace` lets the aggregator derive removals from a complete current state without tombstones.
-- ✅ A publisher can replace its complete contribution in one publication context without tracking individual deletions.
+- ✅ An ORD provider can replace its complete contribution in one publication context without tracking individual deletions.
 - ✅ Asynchronous validation does not keep an upload request open while a large submission is processed.
 - ✅ Status, diagnostics, expiry, and discard behavior are interoperable.
 - ⚠️ Aggregators must operate temporary storage and a submission lifecycle.
 - ⚠️ Aggregators must document supported content encodings and capacity limits so providers can plan submissions that fit.
-- ⚠️ Aggregators must retain publisher and publication-context provenance for every published contribution.
+- ⚠️ Aggregators must retain ORD provider and publication-context provenance for every published contribution.
 - ⚠️ Providers that require dependent resources to advance together must opt into strict validation.
 - ⚠️ Providers must poll for the terminal commit result.
+- ⚠️ An ORD provider must finish or discard a submission before opening the next one for the same publication context.
 
 ## More Information
 

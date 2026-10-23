@@ -214,32 +214,48 @@ A provider MAY discard such a submission explicitly.
 While the aggregator retains an expiry marker, every operation targeting the expired submission MUST return `410 Gone`.
 If the aggregator later removes that marker completely, subsequent requests return `404 Not Found`, as they do for any unknown or inaccessible submission identifier.
 
-#### Publication Scope and Removal
+#### Publication Context and Removal
 
-Each submission belongs to the publisher established by its authenticated credential and exactly one publication context.
+Each submission belongs to the ORD provider established by its authenticated credential and to exactly one publication context.
+The aggregator identifies the ORD provider as the technical integration behind the authenticated client, as agreed during onboarding.
 The publication context contains one [perspective](#perspectives) and any required system version or aggregator-issued system instance identifier.
 The aggregator MUST verify that the staged ORD Documents describe the same authorized context.
 
-The aggregator MUST retain the authenticated publisher and publication context as provenance for published contributions.
-This lets it associate later `merge` updates and tombstones with the publisher that submitted them.
+Several ORD providers can together describe one application or service, and each of them can use push or [pull transport](#pull-transport).
+Their contributions MUST NOT overlap, as already required by [ORD ID uniqueness](#ord-id-uniqueness-and-aggregation) within a perspective.
+Push submissions only change the contribution of the submitting ORD provider.
+They never change information retrieved through pull transport or submitted by another ORD provider.
+
+The aggregator MUST retain the ORD provider and publication context as provenance for published contributions.
+This lets it associate later `merge` updates and tombstones with the ORD provider that submitted them.
 
 `merge` is the default publication mode when no mode is specified.
-In `replace` mode, the staged set is the complete current contribution of the authenticated publisher in the publication context.
-After successful validation, the aggregator MUST remove that publisher's prior contributions in the context that are absent from the submission.
-The provider does not need tombstones for omitted content in that contribution.
+In `replace` mode, the staged set is the complete current contribution of the ORD provider in the publication context.
+After successful validation, the aggregator MUST remove that ORD provider's prior contributions in the context that are absent from the submission.
+This removal by omission is an exception to the general rule that [removals are indicated through tombstones](#removal-of-resourcesinformation).
 To remove every prior contribution in the context, the provider stages at least one valid ORD Document for the publication context that contains no ORD information to retain and commits it in `replace` mode.
-An empty replacement MUST NOT remove contributions from another publisher or publication context.
+An empty replacement MUST NOT remove contributions from another ORD provider or publication context.
 In `merge` mode, omission does not remove prior contributions.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
-In push transport, a tombstone MUST affect only matching contributions from the authenticated publisher in the submission's publication context.
-The aggregator MUST authorize a tombstone against that publisher's contributions.
+In push transport, a tombstone MUST affect only matching contributions from the ORD provider in the submission's publication context.
+The aggregator MUST authorize a tombstone against that ORD provider's contributions.
 In partial `replace` processing, a staged publication unit that is skipped because of an error MUST NOT be treated as omitted and MUST NOT remove its previously published contribution.
 The accepted changes and removals in either publication mode MUST be applied atomically.
 
-Fine-grained publication scopes are work in progress and are not part of this push API.
-The authenticated client establishes publisher identity, and aggregator authorization determines which publication boundaries it may change; request data does not grant that authority.
-Possible future mechanisms include using Group assignments to identify a replacement set or configuring the authorized boundary during aggregator onboarding.
-Any finer-grained replace capability and its authorization are aggregator decisions; onboarding configuration is outside ORD standardization.
+This API does not define finer-grained replacement boundaries within the contribution of one ORD provider in one publication context.
+Request data MUST NOT establish authority to change a contribution; authorization is decided by the aggregator.
+
+#### Concurrent Submissions
+
+An ORD provider MUST NOT have more than one active submission for the same publication context.
+A submission is active while it is `open`, `validating`, or `failed`.
+If the ORD provider requests another submission for that context, the aggregator MUST reject it with `409 Conflict` and identify the active submission in the problem details.
+The provider can then continue, commit, or discard the active submission.
+A repeated creation request with the same `Idempotency-Key` returns the original submission instead.
+
+This ensures that commits from one ORD provider to one publication context are applied in order.
+For example, a `replace` submission cannot be opened before a `merge` hot fix and then committed after it, which would remove that hot fix.
+Submissions for different publication contexts, or from different ORD providers, do not conflict because their contributions do not overlap.
 
 #### Status and Diagnostics
 
@@ -267,7 +283,7 @@ Each issue SHOULD identify the staged artifact and target to which it applies.
 
 #### Operational Limits, Timeouts, Retries, and Rate Limiting
 
-An aggregator MAY rate limit any push API operation and MAY apply different limits by publisher, operation, submission, or service capacity.
+An aggregator MAY rate limit any push API operation and MAY apply different limits by ORD provider, operation, submission, or service capacity.
 A rate-limited operation MUST return `429 Too Many Requests` with a `Retry-After` header.
 The aggregator MUST document the supported request `Content-Encoding` values and the following limits during onboarding:
 
@@ -275,7 +291,7 @@ The aggregator MUST document the supported request `Content-Encoding` values and
 - maximum decoded size of one ORD Document or resource definition
 - maximum aggregate decoded size of all staged content in one submission
 - maximum number of ORD Documents and resource definitions in one submission
-- maximum number of active submissions per publisher
+- maximum number of active submissions per ORD provider across publication contexts
 - request-rate and concurrent-request limits
 
 The aggregator MAY change capacity-dependent limits dynamically, and a provider MUST NOT assume that documented limits guarantee acceptance.
@@ -290,14 +306,15 @@ Providers SHOULD set a finite timeout for every request and treat a timeout or n
 They MAY safely retry artifact `PUT` and `DELETE` operations because those operations are idempotent.
 They MAY safely retry commit because repeating commit for the same staged revision returns its current state.
 To retry submission creation safely, a provider MUST send the same `Idempotency-Key` value on every attempt.
-An aggregator MUST return the original submission for a repeated key with the same authenticated publisher and request content, and MUST reject reuse of that key with different request content.
+An aggregator MUST return the original submission for a repeated key with the same ORD provider and request content, and MUST reject reuse of that key with different request content.
 
 #### Authentication and API Location
 
 The push API MUST use HTTPS and authenticate every operation.
-Each credential MUST identify exactly one described system type or one system-independent publisher in authoritative aggregator state.
+Each credential MUST identify exactly one ORD provider in authoritative aggregator state.
+That ORD provider describes exactly one system type or only system-independent information.
 An aggregator MAY further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
-The aggregator MUST authorize each operation against the authenticated publisher, publication context, and any additional restrictions configured for the credential.
+The aggregator MUST authorize each operation against the ORD provider, publication context, and any additional restrictions configured for the credential.
 Identifiers supplied by a request MUST NOT establish authority by themselves.
 
 ORD does not mandate one credential technology.
@@ -718,6 +735,8 @@ The following rules need to be implemented by ORD aggregators:
 
 The removal of resources is indicated through setting a [Tombstone](./interfaces/Document.md#tombstone).
 The ORD Aggregator MUST remove unpublished information that has been tombstoned within a grace period of 31 days.
+Omitting previously published information does not remove it.
+The only exception is a [push transport](#push-transport) submission in `replace` mode, which removes information omitted from the ORD provider's complete contribution in its publication context.
 
 ##### Hosting Resource Definitions
 
