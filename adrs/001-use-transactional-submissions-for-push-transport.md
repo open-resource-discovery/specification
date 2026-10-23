@@ -97,6 +97,7 @@ This is the only exception to the general rule that removals require tombstones.
 A provider can remove every prior contribution in the context by staging at least one valid ORD Document that contains no ORD information to retain and committing it in `replace` mode.
 `merge` upserts the accepted staged set without interpreting omission as removal.
 Each top-level ORD information object is one publication unit.
+Because resources inherit from their Package, an invalid staged Package fails the complete commit instead of publishing resources without it, and a resource whose Package assignment does not resolve is skipped.
 For an ORD resource that declares resource definitions, the unit also contains every definition it declares.
 If that resource or one definition changes, the provider resubmits the resource and all of its definitions, while unrelated resources can remain omitted.
 Previously published definitions do not complete a partially staged resource.
