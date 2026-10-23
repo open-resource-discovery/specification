@@ -159,6 +159,16 @@ These limits must allow an onboarded provider to publish the complete state of e
 - ⚠️ Providers that require dependent resources to advance together must opt into strict validation.
 - ⚠️ Providers must poll for the terminal commit result.
 
+### Naming Alternative: Publication Source
+
+`ord:publication-source` remains an alternative name for the standardized Group Type.
+It emphasizes that the Group identifies the stable logical component, pipeline, or provider partition from which the assigned resources are published.
+This makes the Group useful as provenance metadata even when replacement is not performed.
+It also avoids interpreting “scope” as an authorization scope.
+
+The trade-off is that “source” can be mistaken for a transport endpoint or the original system of record, while the normative behavior of this concept is to define a complete-state replacement boundary.
+The current proposal therefore retains `ord:publication-scope` while both names remain under discussion.
+
 ## More Information
 
 - [ORD Aggregator Push API](../spec/v1/AggregatorPushAPI.oas3.yaml)
