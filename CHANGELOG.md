@@ -11,6 +11,15 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added transactional push transport and the ORD Aggregator Push API.
+  Providers can stage several ORD Documents and resource definitions for asynchronous validation in `replace` or `merge` mode.
+  Replace mode applies to the submitting ORD provider's complete contribution in one publication context and is the only exception to removal through tombstones.
+  An ORD provider can have at most one active submission per publication context, so its commits to that context are applied in order.
+  Valid publication units are accepted by default while invalid units are skipped, and providers can opt into strict all-or-nothing validation.
+  An ORD resource and every resource definition it declares are always processed as one publication unit.
+
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added

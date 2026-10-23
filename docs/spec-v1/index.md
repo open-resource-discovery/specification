@@ -66,8 +66,8 @@ A **described system instance** is a system instance that is being described by 
 
 > ℹ In theory, it is also possible to describe other system instances "on behalf". In this case, the ORD provider system instance is not necessarily identical to the described system instances (see [`describedSystemInstance`](./interfaces/Document.md#ord-document_describedsysteminstance) property). For example, an ORD Provider could pre-aggregate information from multiple system instances and then describe them in one place via multiple ORD documents. Whether this is supported, depends on the ORD aggregator.
 
-An ORD provider MUST implement the [ORD Provider API](#ord-provider-api), which entails providing an [ORD configuration endpoint](#ord-configuration-endpoint) and [ORD document(s)](#ord-document).
-An ORD provider MUST use one of the standardized [ORD transport modes](#ord-transport-modes) for the ORD documents. Depending on the overall architecture, it MUST integrate with specific [ORD aggregators](#ord-aggregator).
+An ORD provider MUST use at least one standardized [ORD transport mode](#ord-transport-modes).
+For pull transport it implements the [ORD Provider API](#ord-provider-api), while for push transport it publishes to an [ORD aggregator](#ord-aggregator).
 
 > 📖 See also: [How To Adopt ORD as a Provider](../help/faq/adopt-ord-as-provider.md).
 
@@ -150,6 +150,193 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 <PullSequenceDiagram />
 
+### Push Transport
+
+In push transport mode, an [ORD provider](#ord-provider) publishes ORD information to an [ORD aggregator](#ord-aggregator) through the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx).
+Push is optional for providers and aggregators.
+It is useful when a provider can publish on change or from a CI/CD pipeline but cannot or does not want to operate a continuously reachable ORD Provider API.
+
+Push uses the standard [ORD Document](#ord-document) without transport-specific properties.
+Resource definitions are uploaded separately in their native media types.
+Their `url` values identify their associations within the submission and are not fetched from the provider.
+See [Push Transport Guidance](./concepts/push-transport.md) for operational examples, complete removal, and capacity planning.
+
+#### Transactional Submission
+
+A push publication is assembled as a stateful submission:
+
+1. The provider opens a submission for one publication context, chooses whether strict validation is required, and can choose `replace` publication instead of the default `merge` mode.
+2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
+3. The provider commits the submission.
+4. The aggregator validates the staged set asynchronously and determines which publication units can be accepted.
+5. The provider polls the submission and its issues until validation finishes.
+
+Staged content MUST NOT be discoverable.
+By default, commit validation MUST accept every valid publication unit and skip each unit that has an error.
+The provider MAY set `strict` to `true` when opening the submission to require all-or-nothing validation.
+In strict mode, any error MUST fail the entire commit, publish nothing, and retain the previous published state unchanged.
+Warnings and information messages MUST NOT prevent publication.
+A default-mode commit with only unit-local errors MUST publish the accepted units and report the skipped units through diagnostics.
+All accepted units from one commit MUST become discoverable atomically, so consumers cannot observe an intermediate state.
+A validation or authorization error that cannot be confined safely to one publication unit MUST fail the entire commit in both modes.
+This includes an error in the ORD Document envelope that prevents its contained units from being isolated reliably.
+A failed submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
+The provider MAY also commit a failed submission without changes, and the aggregator MUST then validate the same staged revision again.
+This helps when the failure depends on state outside the submission, such as authorization, ORD ID namespace permissions, or a conflicting contribution from another ORD provider.
+A default-mode submission that publishes with skipped units is terminal, and the provider MUST use a new submission to correct those units.
+The provider MUST retain the submission ID and its submission-local artifact IDs while a submission is editable.
+If that state is lost, the provider MUST discard the submission and start a new one rather than risk publishing obsolete staged artifacts.
+
+Each top-level ORD information object in a staged ORD Document is one publication unit.
+Document-level properties inherited by that object are part of its validation.
+Because ORD resources inherit properties from their Package, an error in a staged Package cannot be confined to one publication unit and MUST fail the entire commit.
+The `partOfPackage` assignment of a staged ORD resource MUST resolve to a Package that is staged in the same submission or already published in the same perspective.
+Otherwise, the resource has an error and its publication unit is skipped in the default mode.
+For an ORD resource that declares resource definitions, its publication unit also contains all of those definitions.
+Every resource-definition entry declared by a staged ORD resource MUST have exactly one matching staged resource-definition artifact in the same submission.
+Every staged resource-definition artifact MUST match exactly one staged resource by ORD ID and the exact declared `url` value.
+If the resource or any declared definition has an error, the aggregator MUST skip the complete publication unit in the default mode.
+The aggregator MUST NOT publish the resource, any of its definitions, or an update to either independently.
+If the resource or one of its definitions changes, the provider MUST stage the resource and all of its declared definitions, including unchanged definitions.
+In `merge` mode, unrelated ORD resources MAY be omitted and remain published.
+Previously published artifacts MUST NOT be used to satisfy the completeness requirements for a staged resource.
+The aggregator MUST NOT fetch the declared URL to complete a push submission.
+
+A provider MAY include `Content-Digest` when uploading a resource definition.
+As defined by RFC 9530, it covers the HTTP message content after applying any content coding, such as gzip, and before the aggregator decodes that content coding.
+When present, the header MUST contain exactly one `sha-256` digest.
+The aggregator MUST verify it and reject a malformed or mismatching digest with `400 Bad Request`.
+`Content-Digest` provides integrity for one HTTP message and MUST NOT be interpreted as a persistent artifact identifier or as permission to reuse stored content.
+
+The aggregator defines and communicates an inactivity timeout for editable submissions and returns the current expiry time when it creates or retrieves a submission.
+The recommended default timeout is 15 minutes.
+The expiry time starts when the submission is created and is extended whenever a successful staging operation changes its content.
+Status and issue retrieval MUST NOT extend it.
+Expiry is suspended while a submission is `validating`.
+If validation fails, the aggregator MUST communicate a new expiry time for the resulting `failed` submission.
+The aggregator MUST automatically discard the staged content of an `open` or `failed` submission that remains inactive until its expiry time.
+A provider MAY discard such a submission explicitly.
+While the aggregator retains an expiry marker, every operation targeting the expired submission MUST return `410 Gone`.
+If the aggregator later removes that marker completely, subsequent requests return `404 Not Found`, as they do for any unknown or inaccessible submission identifier.
+
+A `published` submission is retained for a period chosen by the aggregator, so the provider can read its final status and diagnostics, including errors for skipped publication units.
+The aggregator communicates the retention period during onboarding and returns its end as the expiry time of the published submission.
+The retention period is RECOMMENDED to be at least 24 hours.
+When it ends, the aggregator discards the submission record, while the published ORD information remains unchanged.
+Requests for that submission then return `410 Gone` while the aggregator retains a marker, and `404 Not Found` afterwards.
+A `410 Gone` response MUST state the outcome in its problem details: `expired` when the submission was discarded without being published, or `published` when its retention period ended after publication.
+
+#### Publication Context and Removal
+
+Each submission belongs to the ORD provider established by its authenticated credential and to exactly one publication context.
+The aggregator identifies the ORD provider as the technical integration behind the authenticated client, as agreed during onboarding.
+The publication context contains one [perspective](#perspectives) and any required system version or aggregator-issued system instance identifier.
+The aggregator MUST verify that the staged ORD Documents describe the same authorized context.
+
+Several ORD providers can together describe one application or service, and each of them can use push or [pull transport](#pull-transport).
+Their contributions MUST NOT overlap, as already required by [ORD ID uniqueness](#ord-id-uniqueness-and-aggregation) within a perspective.
+Push submissions only change the contribution of the submitting ORD provider.
+They never change information retrieved through pull transport or submitted by another ORD provider.
+
+The aggregator MUST retain the ORD provider and publication context as provenance for published contributions.
+This lets it associate later `merge` updates and tombstones with the ORD provider that submitted them.
+
+`merge` is the default publication mode when no mode is specified.
+In `replace` mode, the staged set is the complete current contribution of the ORD provider in the publication context.
+After successful validation, the aggregator MUST remove that ORD provider's prior contributions in the context that are absent from the submission.
+This removal by omission is an exception to the general rule that [removals are indicated through tombstones](#removal-of-resourcesinformation).
+To remove every prior contribution in the context, the provider stages at least one valid ORD Document for the publication context that contains no ORD information to retain and commits it in `replace` mode.
+An empty replacement MUST NOT remove contributions from another ORD provider or publication context.
+In `merge` mode, omission does not remove prior contributions.
+Tombstones remain available for explicit removals in `merge` mode and other transport modes.
+In push transport, a tombstone MUST affect only matching contributions from the ORD provider in the submission's publication context.
+The aggregator MUST authorize a tombstone against that ORD provider's contributions.
+In partial `replace` processing, a staged publication unit that is skipped because of an error MUST NOT be treated as omitted and MUST NOT remove its previously published contribution.
+The accepted changes and removals in either publication mode MUST be applied atomically.
+
+This API does not define finer-grained replacement boundaries within the contribution of one ORD provider in one publication context.
+Request data MUST NOT establish authority to change a contribution; authorization is decided by the aggregator.
+
+#### Concurrent Submissions
+
+An ORD provider MUST NOT have more than one active submission for the same publication context.
+A submission is active while it is `open`, `validating`, or `failed`.
+If the ORD provider requests another submission for that context, the aggregator MUST reject it with `409 Conflict` and identify the active submission in the problem details.
+The provider can then continue, commit, or discard the active submission.
+A repeated creation request with the same `Idempotency-Key` returns the original submission instead.
+
+This ensures that commits from one ORD provider to one publication context are applied in order.
+For example, a `replace` submission cannot be opened before a `merge` hot fix and then committed after it, which would remove that hot fix.
+Submissions for different publication contexts, or from different ORD providers, do not conflict because their contributions do not overlap.
+
+#### Status and Diagnostics
+
+A submission has one of the following states:
+
+- `open`: artifacts can be staged, replaced, or removed.
+- `validating`: the committed revision is immutable while validation runs.
+- `failed`: a submission-wide error occurred, or strict validation found at least one error. The staged artifacts can be corrected, or the submission can be committed again unchanged.
+- `published`: commit processing completed and the accepted publication units were applied atomically. A non-strict published submission can contain errors for skipped units.
+
+```mermaid
+stateDiagram-v2
+    [*] --> open: create
+    open --> validating: commit
+    validating --> published: accepted units applied
+    validating --> failed: fatal or strict-mode error
+    failed --> open: change staged artifact
+    failed --> validating: commit again
+    open --> [*]: discard or expire
+    failed --> [*]: discard or expire
+    published --> [*]: retention ends
+```
+
+The status endpoint reports the state, artifact counts, diagnostic counts, and expiry time.
+The issues endpoint reports all errors, warnings, and information messages for the current staged revision.
+Each issue SHOULD identify the staged artifact and target to which it applies.
+
+#### Operational Limits, Timeouts, Retries, and Rate Limiting
+
+An aggregator MAY rate limit any push API operation and MAY apply different limits by ORD provider, operation, submission, or service capacity.
+A rate-limited operation MUST return `429 Too Many Requests` with a `Retry-After` header.
+The aggregator MUST document the supported request `Content-Encoding` values and the following limits during onboarding:
+
+- maximum encoded request-body size
+- maximum decoded size of one ORD Document or resource definition
+- maximum aggregate decoded size of all staged content in one submission
+- maximum number of ORD Documents and resource definitions in one submission
+- maximum number of active submissions per ORD provider across publication contexts
+- request-rate and concurrent-request limits
+
+The aggregator MAY change capacity-dependent limits dynamically, and a provider MUST NOT assume that documented limits guarantee acceptance.
+
+A provider is not required to retry a rate-limited or temporarily failed operation.
+If it retries a `429` response, it MUST NOT send that retry before the time indicated by `Retry-After`.
+If a retriable response does not include `Retry-After`, the provider SHOULD use bounded exponential backoff with jitter.
+The provider SHOULD also respect `Retry-After` on a successful submission status response while its state is `validating`.
+Providers SHOULD bound their number of retries and maximum delay so that prolonged failures are surfaced to their operators.
+
+Providers SHOULD set a finite timeout for every request and treat a timeout or network failure as an indeterminate outcome.
+They MAY safely retry artifact `PUT` and `DELETE` operations because those operations are idempotent.
+They MAY safely retry commit because repeating commit for the same staged revision returns its current state, or validates a failed revision again.
+To retry submission creation safely, a provider MUST send the same `Idempotency-Key` value on every attempt.
+An aggregator MUST return the original submission for a repeated key with the same ORD provider and request content, and MUST reject reuse of that key with different request content.
+
+#### Authentication and API Location
+
+The push API MUST use HTTPS and authenticate every operation.
+Each credential MUST identify exactly one ORD provider in authoritative aggregator state.
+That ORD provider describes exactly one system type or only system-independent information.
+An aggregator MAY further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
+The aggregator MUST authorize each operation against the ORD provider, publication context, and any additional restrictions configured for the credential.
+Identifiers supplied by a request MUST NOT establish authority by themselves.
+
+ORD does not mandate one credential technology.
+The aggregator communicates its API base URL, authentication mechanism, credentials, and implementation limits during onboarding.
+The relative `/v1` paths and behavior are standardized by the [OpenAPI definition](./interfaces/aggregator-push-api.mdx).
+
+The rationale and rejected stateless design are recorded in [ADR 001](https://github.com/open-resource-discovery/specification/blob/main/adrs/001-use-transactional-submissions-for-push-transport.md).
+
 ### Other Modes of Transport
 
 Other modes of transport have not yet been standardized/specified.
@@ -164,17 +351,6 @@ Document-relative URL references resolve as relative file paths within the trans
 - The system instances do not need to know each other or be integrated in any way
 - The transferred file set contains the metadata needed for this type of consumption
 - All URLs in each ORD document MUST be resolvable, for example as document-relative file paths, through the document root `baseUrl`, through `describedSystemInstance.baseUrl`, or as full absolute URLs
-
-#### Push Transport
-
-> 🚧 Push transport is not part of the released specification.
-> [PR #187](https://github.com/open-resource-discovery/specification/pull/187) is the current proposal to add it.
-
-The Document can be pushed to the interested ORD aggregator, e.g. via a webhook, a known HTTP POST endpoint, or via file upload.
-
-- Every system instance needs to know where the ORD documents need to be pushed to.
-- An ORD aggregator might provide a dedicated HTTP POST endpoint for this.
-- Changes can be pushed faster and more efficiently compared to the [pull transport](#pull-transport).
 
 ## ORD Parts
 
@@ -573,6 +749,8 @@ The following rules need to be implemented by ORD aggregators:
 
 The removal of resources is indicated through setting a [Tombstone](./interfaces/Document.md#tombstone).
 The ORD Aggregator MUST remove unpublished information that has been tombstoned within a grace period of 31 days.
+Omitting previously published information does not remove it.
+The only exception is a [push transport](#push-transport) submission in `replace` mode, which removes information omitted from the ORD provider's complete contribution in its publication context.
 
 ##### Hosting Resource Definitions
 
