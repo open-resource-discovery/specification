@@ -189,6 +189,9 @@ If that state is lost, the provider MUST discard the submission and start a new 
 
 Each top-level ORD information object in a staged ORD Document is one publication unit.
 Document-level properties inherited by that object are part of its validation.
+Because ORD resources inherit properties from their Package, an error in a staged Package cannot be confined to one publication unit and MUST fail the entire commit.
+The `partOfPackage` assignment of a staged ORD resource MUST resolve to a Package that is staged in the same submission or already published in the same perspective.
+Otherwise, the resource has an error and its publication unit is skipped in the default mode.
 For an ORD resource that declares resource definitions, its publication unit also contains all of those definitions.
 Every resource-definition entry declared by a staged ORD resource MUST have exactly one matching staged resource-definition artifact in the same submission.
 Every staged resource-definition artifact MUST match exactly one staged resource by ORD ID and the exact declared `url` value.

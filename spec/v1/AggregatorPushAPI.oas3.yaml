@@ -372,6 +372,9 @@ paths:
         In the default mode, an error attributable to one publication unit skips that complete unit.
         The aggregator publishes all remaining valid units together and reports every issue.
         An error that prevents publication units from being isolated safely fails the entire commit.
+        This includes an error in a staged Package, because ORD resources inherit from their Package.
+        A resource whose `partOfPackage` resolves neither to a staged Package nor to a Package
+        already published in the same perspective has an error.
         When `strict` is `true`, any error fails the entire commit.
         A replace submission can remove every prior contribution of the ORD provider in the
         publication context by staging at least one valid ORD Document that contains no ORD
