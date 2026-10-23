@@ -108,7 +108,7 @@ The granularity of Packages is driven by all of the following concerns:
 #### Package publication mode
 
 A Package MAY declare a `publicationMode` of `merge` or `replace`.
-If omitted, the mode is `merge`.
+If omitted, the mode is `merge`, so removals of resources require tombstones.
 Set `publicationMode: replace` explicitly to declare a Package as a complete publication set.
 
 In `merge` mode, resources omitted from a publication are not removed by omission.

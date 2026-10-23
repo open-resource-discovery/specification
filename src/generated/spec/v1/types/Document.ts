@@ -4303,7 +4303,7 @@ export interface Package {
   version: string;
   /**
    * Declares the publication mode intended for resources assigned to this Package.
-   * If omitted, the mode is `merge`.
+   * If omitted, the mode is `merge`, so removals of resources require tombstones.
    *
    * In `merge` mode, omission of a resource does not remove it from the aggregated ORD information.
    * Removals continue to require explicit tombstones.
