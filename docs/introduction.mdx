@@ -80,7 +80,8 @@ Data Products, Agents, Perspectives, and ORD Overlays have beta status in ORD 1.
 
 An aggregator or direct consumer starts with a known system URL.
 It reads the well-known ORD configuration, fetches the referenced ORD documents, and follows links to detailed definitions.
-The supported transport is **pull-based discovery using HTTP GET**; the [push transport](./spec-v1/index.md#push-transport) remains a proposal.
+The default transport is **pull-based discovery using HTTP GET**.
+Where an aggregator supports it, providers can instead submit their metadata through [push transport](./spec-v1/index.md#push-transport).
 
 <DiscoveryFlowDiagram />
 
