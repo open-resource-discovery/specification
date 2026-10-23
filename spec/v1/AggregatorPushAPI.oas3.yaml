@@ -12,11 +12,9 @@ info:
     unit, so a resource is never published without all of its valid definitions.
     A provider can opt into strict validation, in which any error publishes nothing and leaves
     the submission available for correction until it expires.
-    A scope ID lets independently operated providers replace only their own contribution set
-    within one publication context and is required for every replacement.
-    Providers should register scope IDs with the aggregator during onboarding before using them.
-    The aggregator authorizes the authenticated push client for both the publication context and
-    the selected scope when a submission is opened and before it is published.
+    In `replace` mode, omission removes the authenticated publisher's prior contributions in the
+    publication context. Fine-grained publication scopes are outside this API version and remain
+    work in progress.
 
     Every operation requires authentication.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
@@ -51,11 +49,8 @@ paths:
       description: |-
         Opens an isolated staging area for one authenticated publisher and one publication
         context.
-        A scope ID is required for `replace` and limits removal to one contribution set that
-        should already be registered with the aggregator.
-        It remains optional for `merge`.
-        When a scope ID is supplied, the aggregator verifies that it is registered and that the
-        authenticated push client is authorized for both the publication context and the scope.
+        In `replace` mode, omission removes prior contributions from this authenticated publisher
+        in the publication context. Fine-grained publication scopes are not defined by this API.
         Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly.
         Validation defaults to partial acceptance of valid publication units; strict
         all-or-nothing validation must be selected explicitly.
@@ -74,11 +69,10 @@ paths:
                 value:
                   context:
                     perspective: system-type
-              scopedReplace:
-                summary: Replace one onboarded contribution scope
+              replace:
+                summary: Replace the publisher's contribution in this context
                 value:
                   publicationMode: replace
-                  scopeId: sap.s4.beh
                   context:
                     perspective: system-type
               strictMerge:
@@ -371,10 +365,10 @@ paths:
         staging at least one valid ORD Document that contains no ORD information to retain.
         A staged unit skipped because of an error is not considered omitted for replacement and
         does not remove its previously published contribution.
-        Tombstones apply only inside the submission's contribution boundary, and unscoped
-        tombstones require provider-wide removal authorization.
+        Tombstones apply only to contributions from this publisher in the submission's
+        publication context and require authorization for that contribution.
         Before publishing, the aggregator verifies again that the authenticated push client is
-        authorized for the publication context and any selected scope.
+        authorized for the publication context.
         Repeating this request while the same revision is validating returns its current state.
         Accepted publication units are applied atomically.
         A submission-wide error, or any error in strict mode, moves the submission to `failed`,
@@ -528,7 +522,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     Forbidden:
-      description: The selected scope is not registered, or the publisher is not authorized for the operation, publication context, or selected scope.
+      description: The publisher is not authorized for the operation or publication context.
       content:
         application/problem+json:
           schema:
@@ -589,18 +583,10 @@ components:
       type: object
       required: [context]
       additionalProperties: false
-      allOf:
-        - if:
-            required: [publicationMode]
-            properties:
-              publicationMode:
-                const: replace
-          then:
-            required: [scopeId]
       properties:
         publicationMode:
           type: string
-          description: Whether omission removes prior contributions inside the selected replacement boundary. Defaults to the non-destructive `merge` mode.
+          description: Whether omission removes prior contributions from this publisher in the publication context. Defaults to the non-destructive `merge` mode.
           enum: [replace, merge]
           default: merge
         strict:
@@ -613,18 +599,6 @@ components:
             Submission-wide errors always fail the commit.
         context:
           $ref: "#/components/schemas/PublicationContext"
-        scopeId:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: |-
-            Stable identifier for a contribution set that should be registered with the aggregator
-            during onboarding before use.
-            It should be a registered ORD namespace that reflects the component or team responsible
-            for the publishing scope.
-            Using a namespace as the scope ID does not grant authority to publish ORD IDs in that namespace.
-            It is required for `replace` and limits removal to that scope in the publication context.
-            For `merge`, it records provenance for a later scoped replacement.
     PublicationContext:
       type: object
       description: |-
@@ -658,13 +632,6 @@ components:
         - artifactCounts
         - issueCounts
       additionalProperties: true
-      allOf:
-        - if:
-            properties:
-              publicationMode:
-                const: replace
-          then:
-            required: [scopeId]
       properties:
         id:
           type: string
@@ -678,11 +645,6 @@ components:
           description: Whether validation errors prevent publication of the entire submission.
         context:
           $ref: "#/components/schemas/PublicationContext"
-        scopeId:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: Selected contribution scope. Required for `replace` and optional for `merge`.
         expiresAt:
           type: string
           format: date-time
