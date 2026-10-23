@@ -11,6 +11,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added optional provider contribution replacement for ORD aggregators.
+  An aggregator can remove information omitted from an ORD provider's complete contribution, where ORD providers are distinguished and replacement is agreed during aggregator onboarding.
+
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added
