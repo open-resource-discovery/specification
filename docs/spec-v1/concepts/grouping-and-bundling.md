@@ -208,6 +208,7 @@ E.g. a particular OData API for Employee Management can be part of both the "Emp
 The Group Type could even be defined globally. If the Group Type is shared across different applications, it should use the namespace of the owner that governs the taxonomy (see [Namespace Ownership](./shared-resources.md#namespace-ownership)).
 The Group Instances can potentially be globally defined, too. In this case it works like a global taxonomy with a predefined list of values and can use the `system-independent` perspective. It's also possible for the application itself to define and assign its own Group Types and Instances.
 See [Shared Taxonomy, Resources and Contracts](./shared-resources.md) for choosing between system-scoped and system-independent publication.
+Group Types in the reserved `ord:` namespace are defined by the ORD specification and listed under [Standardized ORD Values](./standardized-ord-values.md#group-types).
 
 > The Group concept is the correct choice when ORD resources need to be grouped by additional concerns, beyond the predefined concepts from ORD (like Package).
 
