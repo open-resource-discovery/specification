@@ -1434,9 +1434,9 @@ definitions:
           List of available machine-readable definitions, which describe the resource in detail.
           See also [Resource Definitions](../index.md#resource-definitions) for more context.
 
-          Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
-          representations (different formats) and complementary artifacts distinguished by `purpose`
-          (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+          Every entry MUST describe the *same* underlying resource.
+          Allowed variations are alternative representations and complementary artifacts.
+          Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
           This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
           Model those as separate ORD resources instead.
 
@@ -3582,12 +3582,10 @@ definitions:
               Standardized capability representing a machine-readable ontology.
               An ontology can describe a conceptual domain model, a data model, an API model, or more than one of these layers.
               A Capability with `type: "ontology"` SHOULD provide at least one definition.
-              Its definitions SHOULD use `rdf-v1.1`, `rdfs-v1.1`, `owl-v2`, `shacl-v1.0`,
-              `sap-csn-interop-effective-v1`, or an appropriate Specification ID.
-
-              RDF-based definitions can publish the same logical ontology in multiple serialization formats,
-              such as JSON-LD and Turtle, by using separate definition entries with different `mediaType` values.
-              See [Ontologies](../concepts/ontologies.md) for publication guidance.
+              Its definitions SHOULD use `rdf-v1.1`, `rdfs-v1.1`, `owl-v2`, `shacl-v1.0`, `sap-csn-interop-effective-v1`, or an appropriate Specification ID to identify their primary specification or processing contract.
+              RDF-based definitions can publish the same RDF graph in multiple serializations by using the same `type` and different `mediaType` values.
+              OWL ontology definitions and complementary SHACL shapes definitions MAY be published in parallel.
+              See [Ontologies](../concepts/ontologies.md) for type selection, serialization, combined-profile, and content guidance.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
@@ -3882,7 +3880,8 @@ definitions:
           - const: rdf-v1.1
             x-introduced-in-version: "1.18.0"
             description: |-
-              An [RDF 1.1](https://www.w3.org/TR/rdf11-concepts/) graph.
+              A generic [RDF 1.1](https://www.w3.org/TR/rdf11-concepts/) graph that does not claim a more specific supported semantic or processing contract.
+              The `purpose` SHOULD identify the graph's role when its definition type does not make that role clear.
 
               The `mediaType` MUST identify an RDF 1.1 serialization, such as
               `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
@@ -3891,7 +3890,7 @@ definitions:
           - const: rdfs-v1.1
             x-introduced-in-version: "1.18.0"
             description: |-
-              An ontology expressed using [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/).
+              An RDF vocabulary or schema whose primary semantic contract is [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/).
 
               The `mediaType` MUST identify an RDF 1.1 serialization, such as
               `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
@@ -3901,6 +3900,7 @@ definitions:
             x-introduced-in-version: "1.18.0"
             description: |-
               An [OWL 2](https://www.w3.org/TR/owl2-overview/) ontology represented as an RDF graph.
+              The graph can also contain RDF and RDFS terms without requiring additional definition types.
 
               The `mediaType` MUST identify an RDF serialization, such as
               `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
@@ -3910,6 +3910,7 @@ definitions:
             x-introduced-in-version: "1.18.0"
             description: |-
               A [Shapes Constraint Language (SHACL)](https://www.w3.org/TR/shacl/) shapes graph for validating RDF data graphs.
+              It can refer to classes and properties defined with RDF Schema or OWL without implying OWL reasoning.
 
               The `mediaType` MUST identify an RDF serialization, such as
               `application/ld+json` for JSON-LD, `text/turtle` for Turtle,

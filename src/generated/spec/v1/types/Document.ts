@@ -685,9 +685,9 @@ export interface ApiResource {
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
-   * representations (different formats) and complementary artifacts distinguished by `purpose`
-   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * Every entry MUST describe the *same* underlying resource.
+   * Allowed variations are alternative representations and complementary artifacts.
+   * Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
@@ -1596,9 +1596,9 @@ export interface EventResource {
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
-   * representations (different formats) and complementary artifacts distinguished by `purpose`
-   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * Every entry MUST describe the *same* underlying resource.
+   * Allowed variations are alternative representations and complementary artifacts.
+   * Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
@@ -2512,9 +2512,9 @@ export interface Capability {
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
-   * representations (different formats) and complementary artifacts distinguished by `purpose`
-   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * Every entry MUST describe the *same* underlying resource.
+   * Allowed variations are alternative representations and complementary artifacts.
+   * Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *

@@ -68,7 +68,8 @@ An ontology that describes a data or API model can use `relatedEntityTypes` to i
 Where applicable, `relatedApiResources` can identify the API Resource whose model the ontology describes.
 The API Resource can independently use `exposedEntityTypes` to state which Entity Types it exposes.
 
-The following excerpt publishes a SHACL ontology for an API model while connecting it to the shared conceptual Entity Type and the API Resource it describes.
+The following excerpt publishes an OWL ontology and a complementary SHACL shapes graph for an API model.
+Both definitions belong to the same ontology Capability and connect it to the shared conceptual Entity Type and the API Resource it describes.
 
 ```json
 {
@@ -89,6 +90,11 @@ The following excerpt publishes a SHACL ontology for an API model while connecti
         { "ordId": "example:apiResource:workforce:v1" }
       ],
       "definitions": [
+        {
+          "type": "owl-v2",
+          "mediaType": "text/turtle",
+          "url": "/ontologies/workforce-api.ttl"
+        },
         {
           "type": "shacl-v1.0",
           "mediaType": "text/turtle",
@@ -133,20 +139,54 @@ The whole-model definition preserves relationships and ontology elements that ar
 
 ## Definition type and serialization
 
-The definition `type` identifies the semantic language or model format.
+The definition `type` identifies the primary specification or processing contract claimed for the artifact.
+It does not enumerate every RDF vocabulary used by the graph.
 The `mediaType` identifies the concrete serialization that a consumer must parse.
+RDF Schema, OWL, and SHACL are not serialization formats or mutually exclusive vocabularies.
+Their terms can coexist in RDF graphs while retaining different semantic and processing roles.
 
 | Definition `type` | Meaning | Example `mediaType` values |
 | --- | --- | --- |
-| `rdf-v1.1` | Generic [RDF 1.1](https://www.w3.org/TR/rdf11-concepts/) graph | `application/ld+json`, `text/turtle`, `application/rdf+xml`, `application/n-triples` |
-| `rdfs-v1.1` | [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/) vocabulary | `application/ld+json`, `text/turtle`, `application/rdf+xml`, `application/n-triples` |
+| `rdf-v1.1` | Generic [RDF 1.1](https://www.w3.org/TR/rdf11-concepts/) graph without a more specific supported contract | `application/ld+json`, `text/turtle`, `application/rdf+xml`, `application/n-triples` |
+| `rdfs-v1.1` | RDF vocabulary or schema whose primary semantic contract is [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/) | `application/ld+json`, `text/turtle`, `application/rdf+xml`, `application/n-triples` |
 | `owl-v2` | [OWL 2](https://www.w3.org/TR/owl2-overview/) ontology represented as an RDF graph | `application/ld+json`, `text/turtle`, `application/rdf+xml`, `application/n-triples` |
 | `shacl-v1.0` | [SHACL](https://www.w3.org/TR/shacl/) shapes graph for validating RDF data graphs | `application/ld+json`, `text/turtle`, `application/rdf+xml`, `application/n-triples` |
 | `sap-csn-interop-effective-v1` | [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) domain model export | `application/json` |
 
+The `rdfs-v1.1` type remains useful for lightweight vocabularies that deliberately claim only RDFS classes, properties, hierarchies, domains, and ranges without claiming OWL semantics.
+
 Publishers MAY provide more than one serialization of the same definition.
 Each entry uses the same `type` and a different `mediaType`.
 Consumers can then select a serialization they support.
+For example, an OWL ontology serialized as JSON-LD and Turtle uses `owl-v2` for both entries.
+The use of RDF and RDFS terms in that ontology does not require additional `rdf-v1.1` or `rdfs-v1.1` entries.
+
+An OWL ontology and a complementary SHACL shapes graph MAY be published as parallel definitions of the same ontology Capability.
+Their different definition types distinguish their processing roles, so `purpose` is not required solely to distinguish OWL from SHACL.
+The SHACL shapes can refer to classes and properties from the OWL ontology, but SHACL validation does not by itself imply OWL reasoning.
+
+The generic `rdf-v1.1` type SHOULD be used when the graph does not claim a more specific supported contract.
+Its `purpose` SHOULD identify the graph's role when that role is not otherwise clear, such as mappings, annotations, or controlled values.
+For example, a generic mapping graph can use `type: "rdf-v1.1"` together with `purpose: "example:ontology-mappings"`.
+A known RDFS, OWL, or SHACL artifact SHOULD use the corresponding specific type instead of describing its semantics only through `purpose`.
+
+The built-in definition types target the RDF 1.1 and RDF Schema 1.1 W3C Recommendations.
+[RDF 1.1 includes model changes from RDF 1.0](https://www.w3.org/TR/rdf11-new/), while [RDF Schema 1.1 keeps the technical content of the 2004 Recommendation unchanged](https://www.w3.org/TR/rdf-schema/#sotd).
+ORD therefore does not provide separate `rdf-v1.0` or `rdfs-v1.0` definition types.
+A legacy contract that requires such a distinction can use an appropriate Specification ID.
+
+If one physical RDF graph intentionally combines several processing contracts, it SHOULD use an appropriate Specification ID that defines the combined profile.
+Publishing the same URL repeatedly under several built-in types does not define how a consumer should process that graph or which entailment regime applies.
+
+## Schema axioms and individual assertions
+
+An OWL ontology can contain [schema axioms and assertions about individuals](https://www.w3.org/TR/owl2-syntax/#Axioms), commonly described as TBox and ABox content.
+Stable reference individuals, enumerated values, code values, and controlled concepts can therefore be part of an ontology definition.
+OWL can express closed enumerations of individuals or literals through [`ObjectOneOf`](https://www.w3.org/TR/owl2-syntax/#Enumeration_of_Individuals) and [`DataOneOf`](https://www.w3.org/TR/owl2-syntax/#Enumeration_of_Literals).
+[SKOS](https://www.w3.org/TR/skos-reference/) concept schemes provide another pattern for controlled concepts, but they are open by default and do not by themselves state that the listed concepts are exhaustive.
+
+Publishing stable reference individuals does not make an ontology Capability a publication mechanism for operational instance data.
+Populated knowledge graphs, transactional records, and their query interfaces remain downstream concerns.
 
 ## Example
 

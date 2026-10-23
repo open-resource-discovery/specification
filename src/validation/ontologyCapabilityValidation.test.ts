@@ -69,6 +69,23 @@ describe("Ontology publication validation", () => {
     assert.equal(validate(document), true);
   });
 
+  it("accepts parallel OWL ontology and SHACL shapes definitions", () => {
+    const document = ontologyDocument("owl-v2");
+    document.capabilities[0].definitions = [
+      {
+        type: "owl-v2",
+        mediaType: "text/turtle",
+        url: "/ontologies/workforce.ttl",
+      },
+      {
+        type: "shacl-v1.0",
+        mediaType: "text/turtle",
+        url: "/ontologies/workforce-shapes.ttl",
+      },
+    ];
+    assert.equal(validate(document), true);
+  });
+
   it("rejects unknown or duplicate ontology layers", () => {
     const document = ontologyDocument("owl-v2");
     document.capabilities[0].ontologyLayers = ["domain-model", "domain-model"];
