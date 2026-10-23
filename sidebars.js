@@ -20,6 +20,7 @@ const sidebars = {
             "spec-v1/concepts/identifiers",
             "spec-v1/concepts/versioning-and-lifecycle",
             "spec-v1/concepts/grouping-and-bundling",
+            "spec-v1/concepts/standardized-ord-values",
             "spec-v1/concepts/system-landscape-model",
             "spec-v1/concepts/perspectives",
             "spec-v1/concepts/data-product",

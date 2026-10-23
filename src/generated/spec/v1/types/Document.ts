@@ -183,6 +183,7 @@ export interface OrdDocument {
   /**
    * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
    * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
+   * The only exception is the replacement of a [publication scope](../concepts/standardized-ord-values.md#publication-scope) where the ORD aggregator supports it.
    *
    * A tombstone entry MAY be removed after a grace period of 31 days.
    */
@@ -4823,6 +4824,7 @@ export interface GroupType {
 /**
  * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
  * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
+ * Resources omitted from a replaced [publication scope](../concepts/standardized-ord-values.md#publication-scope) are an exception and are removed without a tombstone.
  *
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *
