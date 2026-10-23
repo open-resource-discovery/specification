@@ -123,6 +123,7 @@ In strict mode, any error fails the complete commit and the previously published
 A failed submission remains available for correction until it expires.
 A default-mode commit with only unit-local errors becomes terminal after it publishes the accepted units, so correcting skipped units requires a new submission.
 Replacing or removing a staged artifact makes it eligible for another commit attempt.
+Committing a failed submission without changes validates the same revision again, which helps when the failure depends on state outside the submission.
 The provider retains the submission ID and its submission-local artifact IDs while a submission is editable.
 If it loses that state, it discards the submission and starts a new one rather than risking publication of obsolete staged artifacts.
 
@@ -132,6 +133,9 @@ The recommended default is 15 minutes, extended whenever a successful staging op
 Expiry is suspended during validation, and failed validation starts a new inactivity period so the provider has time to inspect and repair the submission.
 The aggregator automatically discards staged content when an `open` or `failed` submission remains inactive until that time.
 Operations on an expired submission return `410 Gone` while an expiry marker exists and `404 Not Found` after that marker is removed.
+A `published` submission stays readable for a retention period chosen by the aggregator, recommended to be at least 24 hours, so providers can read the diagnostics of skipped units.
+After that period, it is answered like an expired submission, and the `410 Gone` problem details state whether the submission expired or was published.
+The retention period is an aggregator choice, but the responses are standardized so that clients can handle both outcomes in the same way.
 The status endpoint reports counts and lifecycle state.
 The issues endpoint reports all errors, warnings, and information messages and identifies the affected staged artifact and target when available.
 

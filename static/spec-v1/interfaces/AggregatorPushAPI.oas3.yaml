@@ -383,6 +383,8 @@ paths:
         Before publishing, the aggregator verifies again that the authenticated push client is
         authorized for the publication context.
         Repeating this request while the same revision is validating returns its current state.
+        Committing a `failed` submission without changes validates the same staged revision again,
+        for example after authorization or a conflicting contribution outside the submission changed.
         Accepted publication units are applied atomically.
         A submission-wide error, or any error in strict mode, moves the submission to `failed`,
         publishes nothing, and preserves the staged artifacts so the provider can replace or
@@ -541,7 +543,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     NotFound:
-      description: The submission identifier is unknown or is not visible to this ORD provider. This also applies after the aggregator removes an expired submission's marker.
+      description: The submission identifier is unknown or is not visible to this ORD provider. This also applies after the aggregator removes the marker of an expired submission or of a published submission whose retention period ended.
       content:
         application/problem+json:
           schema:
@@ -553,7 +555,11 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     Gone:
-      description: The submission expired and its staged content is no longer available. The aggregator returns this while it retains an expiry marker for the submission.
+      description: |-
+        The submission is no longer available. The aggregator returns this while it retains a marker
+        for the submission, either after an `open` or `failed` submission expired without being
+        published, or after the retention period of a `published` submission ended.
+        The `outcome` member of the problem details states which case applies.
       content:
         application/problem+json:
           schema:
@@ -661,7 +667,13 @@ components:
         expiresAt:
           type: string
           format: date-time
-          description: Current inactivity deadline after which an `open` or `failed` submission and its staged artifacts are discarded. Successful staging changes extend this value; status and issue retrieval do not. Expiry is suspended during validation, and a failed validation receives a new inactivity deadline. Aggregators define and communicate the timeout, with 15 minutes as the recommended default.
+          description: |-
+            For an `open` or `failed` submission, the current inactivity deadline after which the submission and its staged artifacts are discarded.
+            Successful staging changes extend this value; status and issue retrieval do not.
+            Expiry is suspended during validation, and a failed validation receives a new inactivity deadline.
+            Aggregators define and communicate the timeout, with 15 minutes as the recommended default.
+            For a `published` submission, the end of its retention period, after which its status and issues are no longer available.
+            Aggregators choose and communicate the retention period, with at least 24 hours recommended.
         artifactCounts:
           $ref: "#/components/schemas/ArtifactCounts"
         issueCounts:
@@ -762,6 +774,13 @@ components:
         instance:
           type: string
           format: uri-reference
+        outcome:
+          type: string
+          enum: [expired, published]
+          description: |-
+            Present in `410 Gone` responses.
+            `expired` means the submission was discarded after inactivity without being published.
+            `published` means the submission was published and its retention period ended; its published ORD information is unaffected.
         activeSubmissionId:
           type: string
           description: Identifier of the active submission that prevents creating another submission for the same ORD provider and publication context.

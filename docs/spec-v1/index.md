@@ -181,6 +181,8 @@ All accepted units from one commit MUST become discoverable atomically, so consu
 A validation or authorization error that cannot be confined safely to one publication unit MUST fail the entire commit in both modes.
 This includes an error in the ORD Document envelope that prevents its contained units from being isolated reliably.
 A failed submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
+The provider MAY also commit a failed submission without changes, and the aggregator MUST then validate the same staged revision again.
+This helps when the failure depends on state outside the submission, such as authorization, ORD ID namespace permissions, or a conflicting contribution from another ORD provider.
 A default-mode submission that publishes with skipped units is terminal, and the provider MUST use a new submission to correct those units.
 The provider MUST retain the submission ID and its submission-local artifact IDs while a submission is editable.
 If that state is lost, the provider MUST discard the submission and start a new one rather than risk publishing obsolete staged artifacts.
@@ -213,6 +215,13 @@ The aggregator MUST automatically discard the staged content of an `open` or `fa
 A provider MAY discard such a submission explicitly.
 While the aggregator retains an expiry marker, every operation targeting the expired submission MUST return `410 Gone`.
 If the aggregator later removes that marker completely, subsequent requests return `404 Not Found`, as they do for any unknown or inaccessible submission identifier.
+
+A `published` submission is retained for a period chosen by the aggregator, so the provider can read its final status and diagnostics, including errors for skipped publication units.
+The aggregator communicates the retention period during onboarding and returns its end as the expiry time of the published submission.
+The retention period is RECOMMENDED to be at least 24 hours.
+When it ends, the aggregator discards the submission record, while the published ORD information remains unchanged.
+Requests for that submission then return `410 Gone` while the aggregator retains a marker, and `404 Not Found` afterwards.
+A `410 Gone` response MUST state the outcome in its problem details: `expired` when the submission was discarded without being published, or `published` when its retention period ended after publication.
 
 #### Publication Context and Removal
 
@@ -263,7 +272,7 @@ A submission has one of the following states:
 
 - `open`: artifacts can be staged, replaced, or removed.
 - `validating`: the committed revision is immutable while validation runs.
-- `failed`: a submission-wide error occurred, or strict validation found at least one error, and the staged artifacts can be corrected.
+- `failed`: a submission-wide error occurred, or strict validation found at least one error. The staged artifacts can be corrected, or the submission can be committed again unchanged.
 - `published`: commit processing completed and the accepted publication units were applied atomically. A non-strict published submission can contain errors for skipped units.
 
 ```mermaid
@@ -273,8 +282,10 @@ stateDiagram-v2
     validating --> published: accepted units applied
     validating --> failed: fatal or strict-mode error
     failed --> open: change staged artifact
+    failed --> validating: commit again
     open --> [*]: discard or expire
     failed --> [*]: discard or expire
+    published --> [*]: retention ends
 ```
 
 The status endpoint reports the state, artifact counts, diagnostic counts, and expiry time.
@@ -304,7 +315,7 @@ Providers SHOULD bound their number of retries and maximum delay so that prolong
 
 Providers SHOULD set a finite timeout for every request and treat a timeout or network failure as an indeterminate outcome.
 They MAY safely retry artifact `PUT` and `DELETE` operations because those operations are idempotent.
-They MAY safely retry commit because repeating commit for the same staged revision returns its current state.
+They MAY safely retry commit because repeating commit for the same staged revision returns its current state, or validates a failed revision again.
 To retry submission creation safely, a provider MUST send the same `Idempotency-Key` value on every attempt.
 An aggregator MUST return the original submission for a repeated key with the same ORD provider and request content, and MUST reject reuse of that key with different request content.
 
