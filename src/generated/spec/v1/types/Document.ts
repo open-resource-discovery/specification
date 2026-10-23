@@ -685,18 +685,18 @@ export interface ApiResource {
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
-   * representations (different formats) and complementary artifacts distinguished by `purpose`
-   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * Every entry MUST describe the *same* underlying resource.
+   * Allowed variations are alternative representations and complementary artifacts.
+   * Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
-   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * The entry without a `purpose` value is the primary/default definition for its `(type, mediaType, visibility)`;
    * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
-   * default per `(type, visibility)` combination.
+   * default per `(type, mediaType, visibility)` combination.
    *
-   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
-   * be unique within the list.
+   * The combination of `type` (or `customType` for `type: "custom"`), `mediaType`, `purpose`, and
+   * `visibility` MUST be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -1596,18 +1596,18 @@ export interface EventResource {
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
-   * representations (different formats) and complementary artifacts distinguished by `purpose`
-   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * Every entry MUST describe the *same* underlying resource.
+   * Allowed variations are alternative representations and complementary artifacts.
+   * Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
-   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * The entry without a `purpose` value is the primary/default definition for its `(type, mediaType, visibility)`;
    * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
-   * default per `(type, visibility)` combination.
+   * default per `(type, mediaType, visibility)` combination.
    *
-   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
-   * be unique within the list.
+   * The combination of `type` (or `customType` for `type: "custom"`), `mediaType`, `purpose`, and
+   * `visibility` MUST be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -2272,7 +2272,28 @@ export interface Capability {
   /**
    * Type of the Capability
    */
-  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "workflow" | "custom") & string;
+  type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "workflow" | "ontology" | "custom") &
+    string;
+  /**
+   * Optional list of model layers described by an ontology published as a Capability.
+   * This property SHOULD only be used when `type` is `ontology`.
+   *
+   * A single ontology can span more than one layer.
+   * The layer MUST NOT be inferred from the definition language alone.
+   * For example, SHACL shapes can constrain either a conceptual RDF graph or a concrete data representation.
+   *
+   * @minItems 1
+   */
+  ontologyLayers?: [
+    ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model"),
+    ...(("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model") &
+      ("domain-model" | "data-model" | "api-model"))[]
+  ];
   /**
    * If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
    *
@@ -2491,18 +2512,18 @@ export interface Capability {
    * List of available machine-readable definitions, which describe the resource in detail.
    * See also [Resource Definitions](../index.md#resource-definitions) for more context.
    *
-   * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
-   * representations (different formats) and complementary artifacts distinguished by `purpose`
-   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * Every entry MUST describe the *same* underlying resource.
+   * Allowed variations are alternative representations and complementary artifacts.
+   * Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
-   * The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+   * The entry without a `purpose` value is the primary/default definition for its `(type, mediaType, visibility)`;
    * consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
-   * default per `(type, visibility)` combination.
+   * default per `(type, mediaType, visibility)` combination.
    *
-   * The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
-   * be unique within the list.
+   * The combination of `type` (or `customType` for `type: "custom"`), `mediaType`, `purpose`, and
+   * `visibility` MUST be unique within the list.
    *
    * It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
    * If the definitions are added or changed, the `version` MUST be incremented.
@@ -2650,7 +2671,17 @@ export interface CapabilityDefinition {
    * Type of the capability resource definition
    */
   type: (
-    string | "agent-skill-zip" | "agent-plugin-zip" | "sap.mdo:mdi-capability-definition:v1" | "arazzo-v1" | "custom"
+    | string
+    | "agent-skill-zip"
+    | "agent-plugin-zip"
+    | "sap.mdo:mdi-capability-definition:v1"
+    | "arazzo-v1"
+    | "rdf-v1.1"
+    | "rdfs-v1.1"
+    | "owl-v2"
+    | "shacl-v1.0"
+    | "sap-csn-interop-effective-v1"
+    | "custom"
   ) &
     string;
   /**

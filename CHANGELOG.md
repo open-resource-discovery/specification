@@ -11,6 +11,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added the standardized Capability type `ontology` for publishing machine-readable ontologies and semantic domain models.
+  Capability definitions can use `rdf-v1.1`, `rdfs-v1.1`, `owl-v2`, `shacl-v1.0`, or `sap-csn-interop-effective-v1`.
+  OWL ontologies and complementary SHACL shapes can be published as parallel definitions.
+  RDF-based definitions support registered serialization media types such as JSON-LD and Turtle.
+- Included `mediaType` in resource-definition uniqueness and default-selection grouping so the same logical definition can be published in multiple serialization formats.
+
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added
