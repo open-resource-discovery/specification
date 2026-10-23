@@ -105,6 +105,33 @@ The granularity of Packages is driven by all of the following concerns:
 - The resources share certain aspects/taxonomy that is inherited down to them (e.g. `vendor`).
 - If applicable: The resources are meant to be used by only a particular target platform / software.
 
+#### Package publication mode
+
+A Package MAY declare a `publicationMode` of `merge` or `replace`.
+If omitted, the mode is `merge`, so removals of resources require tombstones.
+Set `publicationMode: replace` explicitly to declare a Package as a complete publication set.
+
+In `merge` mode, resources omitted from a publication are not removed by omission.
+Removals continue to require explicit tombstones.
+
+In `replace` mode, the resources assigned to the Package describe its complete current publication set.
+An ORD Aggregator that supports Package-level replacement MAY remove previously retained resources from that Package when they are absent from a successfully retrieved complete set.
+This removal by omission is an exception to the general rule that [removals are indicated through tombstones](../index.md#removal-of-resourcesinformation).
+The aggregator MUST NOT remove a resource by omission when the retrieval failed or was incomplete, when the resource is present but was rejected during validation, or when the resource is present but now assigned to another Package.
+Taxonomy, including the Package itself, still requires tombstones for removal.
+An empty Package in `replace` mode can represent an explicitly empty set.
+The Package itself and resources assigned to other Packages are outside this replacement boundary.
+
+A Package can be distributed across multiple ORD Documents, so an individual document is not necessarily a complete publication set.
+The transport or integration must establish that the full set was retrieved successfully before applying replacement.
+How this declaration composes with a transport-level publication mode is defined by that transport.
+The ORD Aggregator decides whether it supports Package-level replacement and which authenticated publishers may use it for particular Packages and contexts.
+The `publicationMode` property expresses intended update behavior and does not grant publication authority.
+
+Package-level replacement reuses the existing Package membership, but it is appropriate only when the replacement boundary matches a complete Package.
+It should not require changing Package membership solely to model a transport boundary, because Packages also control catalog presentation, ownership attribution, and inherited metadata.
+Use a separate grouping concept when publication boundaries must divide an existing Package without changing those Package semantics.
+
 When a package groups resources that are shared across multiple [system types](../index.md#system-type), the package itself SHOULD normally use the same owning namespace as the grouped resources.
 See [Namespace Ownership](./shared-resources.md#namespace-ownership) for guidance on choosing the correct namespace.
 
