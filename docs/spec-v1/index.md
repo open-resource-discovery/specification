@@ -165,7 +165,7 @@ See [Push Transport Guidance](./concepts/push-transport.md) for operational exam
 
 A push publication is assembled as a stateful submission:
 
-1. The provider opens a submission for one publication context, chooses whether strict validation is required, and can choose `replace` publication with an authorized scope ID instead of the default `merge` mode, for which a scope ID is optional.
+1. The provider opens a submission for one publication context, chooses whether strict validation is required, and can choose `replace` publication instead of the default `merge` mode.
 2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
 3. The provider commits the submission.
 4. The aggregator validates the staged set asynchronously and determines which publication units can be accepted.
@@ -220,37 +220,26 @@ Each submission belongs to the publisher established by its authenticated creden
 The publication context contains one [perspective](#perspectives) and any required system version or aggregator-issued system instance identifier.
 The aggregator MUST verify that the staged ORD Documents describe the same authorized context.
 
-A `replace` submission MUST include a `scopeId`.
-A `merge` submission MAY include a `scopeId`.
-The scope ID is a stable identifier for one contribution set.
-The provider SHOULD register each scope ID with the aggregator during onboarding before using it.
-The registration mechanism is implementation-specific.
-It SHOULD be a registered [ORD namespace](#namespaces) that reflects the component or team responsible for the publishing scope.
-Using a namespace as the scope ID MUST NOT grant authority to publish ORD IDs in that namespace.
-When a submission includes a `scopeId`, the aggregator MUST verify that the scope is registered and that the authenticated push client is authorized to publish both for the publication context and for that particular scope.
-The aggregator MUST perform this authorization when the submission is opened and again before publishing a successful commit.
-It MUST return `403 Forbidden` if the scope is unregistered or either authorization check fails.
-Scope authorization is separate from ORD ID namespace permissions.
+The aggregator MUST retain the authenticated publisher and publication context as provenance for published contributions.
+This lets it associate later `merge` updates and tombstones with the publisher that submitted them.
 
 `merge` is the default publication mode when no mode is specified.
-In `replace` mode, the staged set is the complete current contribution of the selected scope in the publication context.
-After successful validation, the aggregator MUST remove prior contributions inside the selected replacement boundary that are absent from the submission.
-The provider does not need tombstones for omitted content inside that boundary.
-To remove every prior contribution in a replacement boundary, the provider stages at least one valid ORD Document for the publication context that contains no ORD information to retain and commits it in `replace` mode.
-An empty replacement affects only the selected scope and MUST NOT remove contributions from another publisher or scope.
+In `replace` mode, the staged set is the complete current contribution of the authenticated publisher in the publication context.
+After successful validation, the aggregator MUST remove that publisher's prior contributions in the context that are absent from the submission.
+The provider does not need tombstones for omitted content in that contribution.
+To remove every prior contribution in the context, the provider stages at least one valid ORD Document for the publication context that contains no ORD information to retain and commits it in `replace` mode.
+An empty replacement MUST NOT remove contributions from another publisher or publication context.
 In `merge` mode, omission does not remove prior contributions.
-If a merge submission includes a `scopeId`, the aggregator MUST retain that scope as contribution provenance.
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
-In push transport, a tombstone MUST affect only matching contributions inside the submission's contribution boundary.
-An unscoped tombstone MUST require separate provider-wide removal authorization.
+In push transport, a tombstone MUST affect only matching contributions from the authenticated publisher in the submission's publication context.
+The aggregator MUST authorize a tombstone against that publisher's contributions.
 In partial `replace` processing, a staged publication unit that is skipped because of an error MUST NOT be treated as omitted and MUST NOT remove its previously published contribution.
 The accepted changes and removals in either publication mode MUST be applied atomically.
 
-The contribution boundary is the stable publisher, publication context, and optional scope ID recorded by the aggregator.
-In `replace` mode, the replacement boundary always includes a scope ID.
-It is not an ORD Document, credential, or ORD ID namespace.
-The aggregator MUST retain contribution provenance and a scoped replacement MUST NOT remove content attributed to another scope, publisher, or delegator.
-Scopes MUST NOT change ORD identity, uniqueness, or merging rules.
+Fine-grained publication scopes are work in progress and are not part of this push API.
+The authenticated client establishes publisher identity, and aggregator authorization determines which publication boundaries it may change; request data does not grant that authority.
+Possible future mechanisms include using Group assignments to identify a replacement set or configuring the authorized boundary during aggregator onboarding.
+Any finer-grained replace capability and its authorization are aggregator decisions; onboarding configuration is outside ORD standardization.
 
 #### Status and Diagnostics
 
@@ -308,7 +297,7 @@ An aggregator MUST return the original submission for a repeated key with the sa
 The push API MUST use HTTPS and authenticate every operation.
 Each credential MUST identify exactly one described system type or one system-independent publisher in authoritative aggregator state.
 An aggregator MAY further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
-Each registered scope and any provider-wide unscoped tombstone operation MUST be authorized separately.
+The aggregator MUST authorize each operation against the authenticated publisher, publication context, and any additional restrictions configured for the credential.
 Identifiers supplied by a request MUST NOT establish authority by themselves.
 
 ORD does not mandate one credential technology.
