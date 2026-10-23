@@ -88,7 +88,7 @@ A vendor namespace MUST be constructed according to the following rules:
   - There are reserved vendor namespaces:
     - `customer`: Used for ORD content whose identity is governed within a customer scope. This avoids requiring each customer to register a vendor namespace.
     - `c`: A shorter alias of `customer`, with identical semantics. Useful when the [namespace length limit](#namespace-constraints) is tight.
-    - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
+    - `ord`: Reserved for values defined by the ORD specification, such as values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id) and [standardized Group Types](./standardized-ord-values.md#group-types). MUST NOT be used by vendors.
 - MUST match Regexp: `^[a-z0-9]+$`
 
 **Examples**: For SAP, we chose and registered `sap`.
