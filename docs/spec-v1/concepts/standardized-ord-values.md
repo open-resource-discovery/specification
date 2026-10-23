@@ -1,16 +1,16 @@
 ---
 sidebar_position: 9
-title: Standardized ORD Values
-description: Registry of standardized ORD values and reserved entries.
+title: Standardized ORD Identifiers
+description: Registry of identifiers and keys standardized or reserved by the ORD specification.
 ---
 
-# Standardized ORD Values
+# Standardized ORD Identifiers
 
-The ORD specification reserves the `ord:` namespace for values it defines in extensible fields.
+The ORD specification reserves the `ord:` namespace for identifiers it defines in extensible fields.
 Vendors MUST NOT define custom values in this namespace.
 
-This page registers standardized `ord:` values and other reserved ORD entries.
-A value is not standardized merely because it uses the `ord:` namespace.
+This page registers standardized `ord:` identifiers and other reserved ORD entries.
+An identifier is not standardized merely because it uses the `ord:` namespace.
 
 ## Concept IDs
 

@@ -694,7 +694,7 @@ See the complete [Correlation ID rules](./concepts/identifiers.md#correlation-id
 
 A Concept ID identifies a namespaced concept used by extensible ORD fields.
 See the complete [Concept ID rules](./concepts/identifiers.md#concept-id).
-The ORD specification's reserved values are listed under [Standardized ORD Values](./concepts/standardized-ord-values.md).
+The ORD specification's standardized and reserved identifiers are listed under [Standardized ORD Identifiers](./concepts/standardized-ord-values.md).
 
 ### Specification ID
 
