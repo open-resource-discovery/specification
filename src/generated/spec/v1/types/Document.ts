@@ -183,6 +183,7 @@ export interface OrdDocument {
   /**
    * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
    * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
+   * The only exception is a Package with [`publicationMode: replace`](../concepts/grouping-and-bundling.md#package-publication-mode) where the ORD aggregator supports Package-level replacement.
    *
    * A tombstone entry MAY be removed after a grace period of 31 days.
    */
@@ -4309,6 +4310,8 @@ export interface Package {
    *
    * In `replace` mode, the resources assigned to this Package describe a complete publication set.
    * An ORD Aggregator that supports Package-level replacement MAY remove previously retained resources from this Package that are absent from a successfully retrieved complete set.
+   * This removal by omission is an exception to the general rule that removals are indicated through tombstones.
+   * Resources that are present but rejected during validation, or now assigned to another Package, are not removed.
    * The Package itself and resources outside it are not removed by this mode.
    *
    * ORD Documents may split a Package across multiple documents, so one document is not necessarily a complete set.
@@ -4843,6 +4846,7 @@ export interface GroupType {
 /**
  * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
  * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
+ * Resources omitted from a Package with `publicationMode: replace` are an exception and are removed without a tombstone, where the ORD aggregator supports Package-level replacement.
  *
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *

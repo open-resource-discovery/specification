@@ -116,6 +116,9 @@ Removals continue to require explicit tombstones.
 
 In `replace` mode, the resources assigned to the Package describe its complete current publication set.
 An ORD Aggregator that supports Package-level replacement MAY remove previously retained resources from that Package when they are absent from a successfully retrieved complete set.
+This removal by omission is an exception to the general rule that [removals are indicated through tombstones](../index.md#removal-of-resourcesinformation).
+The aggregator MUST NOT remove a resource by omission when the retrieval failed or was incomplete, when the resource is present but was rejected during validation, or when the resource is present but now assigned to another Package.
+Taxonomy, including the Package itself, still requires tombstones for removal.
 An empty Package in `replace` mode can represent an explicitly empty set.
 The Package itself and resources assigned to other Packages are outside this replacement boundary.
 
