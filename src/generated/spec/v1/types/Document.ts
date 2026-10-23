@@ -183,6 +183,7 @@ export interface OrdDocument {
   /**
    * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
    * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
+   * The only exception is an ORD aggregator that applies [provider contribution replacement](../index.md#provider-contribution-replacement), as agreed during onboarding.
    *
    * A tombstone entry MAY be removed after a grace period of 31 days.
    */
@@ -4823,6 +4824,7 @@ export interface GroupType {
 /**
  * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
  * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
+ * An ORD aggregator that applies [provider contribution replacement](../index.md#provider-contribution-replacement) also removes information omitted from an ORD provider's complete contribution.
  *
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *
