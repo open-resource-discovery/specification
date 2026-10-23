@@ -4509,6 +4509,7 @@ export interface Group {
  * What the Group Type means and how it is to be used correctly SHOULD be described in the `description` (which may include markdown links).
  *
  * Group Types can be defined centrally (ownership by an authority namespace or another shared owning namespace) or decentrally (defined by the application / service itself).
+ * Group Types in the reserved `ord:` namespace are defined by the ORD specification and listed under [Standardized ORD Values](../concepts/standardized-ord-values#group-types).
  *
  * To learn more about the concept, see [Group Concept Documentation](../concepts/grouping-and-bundling#groups).
  * For the distinction between system-scoped and system-independent shared taxonomy, see [Shared Taxonomy, Resources and Contracts](../concepts/shared-resources).

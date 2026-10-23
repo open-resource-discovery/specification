@@ -156,6 +156,8 @@ If the ORD information is [system-instance-aware](#system-instance-aware), the i
 In pull transport mode, [ORD information](#ord-information) is made available through a simple REST API that exposes [ORD documents](#ord-document) via `GET` endpoints.
 
 This is implemented by providing an [ORD Provider API](#ord-provider-api).
+An ORD provider that needs complete-state replacement across pull cycles MAY use the standardized [`ord:publication-scope`](./concepts/standardized-ord-values.md#publication-scope) Group Type.
+For an aggregator that supports pull replacement, publishing a Group of this type opts its directly assigned resources into complete-state reconciliation as defined by that concept.
 
 ##### Pull Transport - Pros
 
@@ -193,7 +195,7 @@ See [Push Transport Guidance](./concepts/push-transport.md) for operational exam
 
 A push publication is assembled as a stateful submission:
 
-1. The provider opens a submission for one publication context, chooses whether strict validation is required, and can choose `replace` publication with explicit target Group IDs in `scope` instead of the default `merge` mode.
+1. The provider opens a submission for one publication context, chooses whether strict validation is required, and can choose `replace` publication with explicit [publication scope](./concepts/standardized-ord-values.md#publication-scope) Group IDs in `scope` instead of the default `merge` mode.
 2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
 3. The provider commits the submission.
 4. The aggregator validates the staged set asynchronously and determines which publication units can be accepted.
@@ -242,50 +244,40 @@ A provider MAY discard such a submission explicitly.
 While the aggregator retains an expiry marker, every operation targeting the expired submission MUST return `410 Gone`.
 If the aggregator later removes that marker completely, subsequent requests return `404 Not Found`, as they do for any unknown or inaccessible submission identifier.
 
-#### Publisher Publication Scope and Removal
+#### Publication Scope and Removal
 
 Each submission belongs to the publisher established by its authenticated credential and exactly one publication context.
 The publication context contains one [perspective](#perspectives) and any required system version or aggregator-issued system instance identifier.
 The aggregator MUST verify that the staged ORD Documents describe the same publication context.
-
-During onboarding, the aggregator MUST associate each publisher with exactly one registered [ORD namespace](#namespaces) and zero or more [Group IDs](./concepts/grouping-and-bundling.md#groups).
-A registered namespace MAY be associated with any number of publishers, including none.
-These associations define the publisher's publication scope. Namespace and Group ID matching MUST be exact.
-The registered namespace MUST be the outer boundary of that scope; Group IDs MUST NOT extend publication privileges beyond it.
-How these associations are established is implementation-specific.
-
-Within its registered namespace, a publisher has publication privileges for every Group object, every ORD entity without a group association, and every resource directly associated with at least one of the publisher's Group IDs.
-Group matching MUST be direct and non-transitive.
-For a new resource, the aggregator MUST evaluate publication privileges from its staged state.
-For an update to an existing resource, both its retained and staged states MUST be inside the publisher's publication scope.
-The aggregator MUST check every staged publication unit against the publisher's publication scope during commit validation and MUST repeat that check as part of the atomic publication decision.
-A publication unit outside that scope is a validation error: in default mode it is skipped, while in strict mode it fails the complete commit.
-A publication-scope error discovered during commit MUST NOT be reported as an HTTP `403 Forbidden` response to submission creation.
+The aggregator MUST authorize the publisher for that context and for the ORD information it submits.
+The authorization model is implementation-specific and independent of replacement scopes.
 
 `merge` is the default publication mode when no mode is specified.
 In `merge` mode, omission does not remove previously published ORD information.
 
-In `replace` mode, `scope` MUST be an array containing one or more target Group IDs when the submission is opened.
-Every target Group ID MUST be directly associated with the publisher when the submission is opened and when it is published.
-If a target Group ID is not associated with the publisher when the submission is opened, the aggregator MUST reject the request. If that association is removed before publication, the aggregator MUST fail the complete commit.
-The staged set represents the complete state of resources inside the publisher's exact registered namespace whose direct `partOfGroups` value contains at least one target Group ID in the publication context.
-A resource associated with multiple groups MUST be inside the replacement boundary when any one of its direct group associations matches a target Group ID. If omitted, the aggregator MUST remove the complete resource even when it is also associated with non-target groups.
-Ungrouped information and resources associated only with other Group IDs are outside the replacement boundary.
+In `replace` mode, `scope` MUST be an array containing one or more Group IDs of the standardized [`ord:publication-scope`](./concepts/standardized-ord-values.md#publication-scope) Group Type.
+The provider chooses these Group IDs and MUST keep them stable.
+Each target Group object MUST be present in a staged ORD Document and MUST declare `groupTypeId: ord:publication-scope`.
+A missing or invalid target Group MUST fail the complete commit because the replacement boundary cannot be established safely.
+Every staged resource in a `replace` submission MUST reference at least one target Group ID directly through `partOfGroups`.
+The staged set represents the complete state of resources directly assigned to at least one target Group ID in the publication context.
+A resource MUST NOT reference more than one `ord:publication-scope` Group.
+Group matching MUST be exact and non-transitive.
 After successful validation, the aggregator MUST remove retained resources inside that boundary that are absent from the submission.
 A publication unit skipped because of an error MUST NOT be treated as omitted and MUST NOT remove its retained state.
-To remove every resource in a replacement boundary, the provider MUST stage at least one valid ORD Document for the publication context that contains no resources to retain and commit it in `replace` mode.
+To remove every resource in a replacement boundary, the provider MUST stage at least one valid ORD Document containing the target Group object but no resources assigned to it and commit the submission in `replace` mode.
 
 Tombstones remain available for explicit removals in `merge` mode and other transport modes.
-In push transport, a tombstone MUST affect only matching retained ORD information inside the publisher's current publication scope and publication context.
-Replacement omissions MUST affect only retained resources inside the publisher's exact registered namespace and directly associated with a target Group ID that remains associated with the publisher.
-Information outside these boundaries MUST remain unchanged; its retirement requires aggregator or administrator lifecycle handling outside this protocol.
+In push transport, a tombstone MUST affect only matching retained ORD information that the publisher is authorized to remove in the publication context.
+Replacement omissions MUST affect only retained resources directly assigned to a target publication scope Group ID.
+Information outside these boundaries MUST remain unchanged.
 The accepted changes and removals in either publication mode MUST be applied atomically.
 
-The replacement boundary is the publication context intersected with the publisher's exact registered namespace and resources directly associated with at least one target Group ID.
-The removal boundary for tombstones is the publication context intersected with the publisher's current publication scope.
-The aggregator MUST NOT require publisher-of-origin attribution for published information objects or resource definitions to evaluate either boundary.
-When publishers have overlapping publication scopes, each publisher can update or remove ORD information in the overlap regardless of which publisher submitted it previously.
-Publication privileges MUST NOT change ORD identity, uniqueness, or merging rules.
+The replacement boundary is the publication context intersected with resources directly assigned to at least one target publication scope Group ID.
+Each publication scope MUST have exactly one authoritative publisher in that context.
+The aggregator MUST reject use of the same scope by another publisher unless that association was explicitly reassigned outside the push protocol.
+The publication scope Group Type does not grant authority to publish or remove ORD information and MUST NOT change ORD identity, uniqueness, or merging rules.
+An aggregator MUST apply its authorization checks independently.
 
 #### Status and Diagnostics
 
@@ -342,8 +334,8 @@ An aggregator MUST return the original submission for a repeated key with the sa
 
 The push API MUST use HTTPS and authenticate every operation.
 Each credential MUST identify exactly one publisher in authoritative aggregator state.
-The authenticated publisher's namespace and group associations define its publication scope.
-Identifiers supplied by a request MUST NOT establish publication privileges by themselves.
+The aggregator MUST determine which publication contexts and ORD information that publisher may modify.
+Publication scope Group IDs supplied by a request MUST NOT establish publication privileges by themselves.
 
 ORD does not mandate one credential technology.
 The aggregator communicates its API base URL, authentication mechanism, credentials, and implementation limits during onboarding.
@@ -950,7 +942,7 @@ A vendor namespace MUST be constructed according to the following rules:
   - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
   - There are reserved vendor namespaces:
     - `customer`: Used in extension scenarios, where the customer of an application (tenant owner) creates their own ORD resources. This avoids that customers need to register their own namespaces (which could still be done as an alternative).
-    - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors.
+    - `ord`: Reserved for ORD specification-defined values in extensible enums that use [Specification IDs](#specification-id) or [Concept IDs](#concept-id). MUST NOT be used by vendors. See [Standardized ORD Values](./concepts/standardized-ord-values.md).
 - MUST match Regexp: `^[a-z0-9]+$`
 
 **Examples**: For SAP, we chose and registered `sap`.

@@ -12,25 +12,15 @@ info:
     unit, so a resource is never published without all of its valid definitions.
     A provider can opt into strict validation, in which any error publishes nothing and leaves
     the submission available for correction until it expires.
-    During onboarding, the aggregator associates each publisher with exactly one registered ORD
-    namespace and zero or more Group IDs. A registered namespace can have zero or more publishers.
-    These associations define the publisher's publication scope. Namespace and Group ID matching
-    are exact. The registered namespace is the outer boundary of that scope; Group IDs cannot extend
-    publication privileges beyond it. Within its namespace, a publisher has publication privileges for every Group object,
-    every ORD entity without a group association, and every resource associated with at least one
-    of the publisher's Group IDs. Group matching is direct and non-transitive. A new resource is
-    evaluated from its staged state; an update requires both its retained and staged states to be
-    inside the publisher's publication scope.
-    A replace submission declares one or more target Group IDs. Its replacement boundary is the
-    publication context intersected with the publisher's exact registered namespace and resources
-    directly associated with at least one target Group ID. Every target Group ID must remain associated with the publisher.
-    A resource associated with multiple groups enters the replacement boundary when any direct group
-    association matches a target Group ID. Omitting it removes the complete resource even if it also
-    belongs to non-target groups.
-    Ungrouped information is outside the replacement boundary. The tombstone removal boundary is the publication context
-    intersected with the publisher's current publication scope. Publisher-of-origin attribution
-    is not required. Publishers with overlapping publication scopes can update or remove the same ORD
-    information regardless of which publisher submitted it previously.
+    A replace submission declares one or more target Group IDs of the standardized
+    `ord:publication-scope` Group Type. The provider chooses these stable Group IDs.
+    The replacement boundary is the publication context intersected with resources directly
+    associated with at least one target Group ID. Group matching is exact and non-transitive.
+    A resource cannot belong to more than one `ord:publication-scope` Group.
+    Each publication scope has exactly one authoritative publisher in a publication context.
+    Publication scope groups do not grant publication privileges. The aggregator authorizes the
+    publisher for the publication context and submitted changes through an independent,
+    implementation-specific authorization model.
 
     Every operation requires authentication.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
@@ -66,11 +56,10 @@ paths:
         Opens an isolated staging area for one authenticated publisher and one publication
         context.
         The aggregator verifies that the authenticated publisher is onboarded and that the requested
-        publication context is valid. Publication privileges are evaluated asynchronously
-        from the staged content during commit, not when the empty submission is opened.
+        publication context is valid.
         Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly
-        together with one or more target Group IDs associated with the publisher.
-        The aggregator rejects a target Group ID that is not currently associated with the publisher.
+        together with one or more target Group IDs of the standardized `ord:publication-scope`
+        Group Type.
         Validation defaults to partial acceptance of valid publication units; strict
         all-or-nothing validation must be selected explicitly.
         The response identifies when the submission expires unless its staged content changes.
@@ -84,16 +73,16 @@ paths:
               $ref: "#/components/schemas/CreateSubmissionRequest"
             examples:
               merge:
-                summary: Merge ORD information inside the publisher's publication scope
+                summary: Merge ORD information
                 value:
                   context:
                     perspective: system-type
               replace:
-                summary: Replace resources in selected groups in this context
+                summary: Replace resources in selected publication scopes
                 value:
                   publicationMode: replace
                   scope:
-                    - sap.cap:service:customer.incidents:incidents.IncidentsService
+                    - ord:publication-scope:sap.s4:application
                   context:
                     perspective: system-type
               strictMerge:
@@ -383,28 +372,24 @@ paths:
         An error that prevents publication units from being isolated safely fails the entire commit.
         When `strict` is `true`, any error fails the entire commit.
         A replace submission can remove all prior resources in its replacement boundary by
-        staging at least one valid ORD Document that contains no resources to retain.
+        staging at least one valid ORD Document that contains the target Group object but no
+        resources assigned to it.
         A staged unit skipped because of an error is not considered omitted for replacement and
         does not remove its previously published state.
-        Tombstones apply only inside the publisher's current publication scope and publication context.
-        During asynchronous validation, the aggregator verifies the publication context and checks
-        every staged publication unit against the publisher's exact registered namespace and group
-        associations. New resources are checked from staged state. Updates require both the retained
-        and staged states to be inside the publisher's publication scope. Before applying accepted units, the
-        aggregator rechecks the current associations as part of the atomic publication decision.
-        If a replacement target is no longer associated with the publisher, the complete commit fails.
-        A publication unit outside the publisher's publication scope is reported as a validation
-        issue and is skipped in default mode; in strict mode, it fails the complete commit.
-        Replacement omission can remove only retained resources inside the publisher's exact registered
-        namespace whose direct `partOfGroups` value
-        contains at least one target Group ID that remains associated with the publisher.
-        A resource associated with multiple groups is removed in full when it is omitted and any one
-        of its direct group associations matches a target Group ID.
-        Ungrouped information and resources associated only with other Group IDs remain untouched. Tombstones
-        can remove retained ORD information in the publication context that remains within the
-        publisher's current publication scope. Removal can include information submitted by another
-        publisher with overlapping publication scope; the aggregator does not need
-        publisher-of-origin attribution to evaluate it.
+        During asynchronous validation, the aggregator verifies the publication context, the
+        standardized publication scope Group IDs, and its authorization for every staged change.
+        Every target Group object must be staged in the submission and declare
+        `groupTypeId: ord:publication-scope`. A missing or invalid target Group fails the complete commit.
+        Every staged resource in a replace submission must reference at least one target Group ID
+        directly through `partOfGroups`.
+        A resource must not reference more than one `ord:publication-scope` Group.
+        Replacement omission can remove only retained resources whose direct `partOfGroups` value
+        contains at least one target Group ID.
+        Group matching is exact and non-transitive.
+        Each publication scope has exactly one authoritative publisher in the publication context.
+        Use by another publisher fails unless the scope was explicitly reassigned outside this API.
+        Tombstones and replacement omissions apply only when the publisher is authorized to remove
+        the affected ORD information.
         Repeating this request while the same revision is validating returns its current state.
         Accepted publication units are applied atomically.
         A submission-wide error, or any error in strict mode, moves the submission to `failed`,
@@ -558,7 +543,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     Forbidden:
-      description: The publisher is not onboarded or a replacement target Group ID is not associated with the publisher. Publication-scope failures discovered during asynchronous commit processing are reported as validation issues instead.
+      description: The publisher is not onboarded or is not authorized for the requested publication context.
       content:
         application/problem+json:
           schema:
@@ -637,7 +622,7 @@ components:
       properties:
         publicationMode:
           type: string
-          description: Whether omission removes prior resources in the declared replacement Group IDs and publication context. Defaults to the non-destructive `merge` mode.
+          description: Whether omission removes prior resources in the declared publication scopes and publication context. Defaults to the non-destructive `merge` mode.
           enum: [replace, merge]
           default: merge
         scope:
@@ -645,16 +630,16 @@ components:
           minItems: 1
           uniqueItems: true
           description: |-
-            Direct Group IDs whose resources form the complete replacement set. Required for
-            `replace` and not allowed for `merge`. Every value must be associated with the
-            authenticated publisher. The publisher's exact registered namespace remains the outer
-            boundary. Matching is exact and non-transitive.
-            A resource associated with multiple groups is inside the replacement boundary when any
-            direct group association matches; omission removes the complete resource.
-            Ungrouped information and resources associated only with other Group IDs are outside the replacement boundary.
+            Group IDs of the standardized `ord:publication-scope` Group Type whose resources form
+            the complete replacement set. Required for `replace` and not allowed for `merge`.
+            The provider chooses these stable values. Matching is exact and non-transitive.
+            The corresponding Group objects must be staged in the submission.
+            Every staged resource must reference at least one target Group ID directly through
+            `partOfGroups`.
+            A resource must not reference more than one `ord:publication-scope` Group.
           items:
             type: string
-            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            pattern: ^ord:publication-scope:([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
         strict:
           type: boolean
           default: false
@@ -748,10 +733,10 @@ components:
           type: array
           minItems: 1
           uniqueItems: true
-          description: Target Group IDs for a `replace` submission. Absent for `merge`.
+          description: Target `ord:publication-scope` Group IDs for a `replace` submission. Absent for `merge`.
           items:
             type: string
-            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            pattern: ^ord:publication-scope:([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
         strict:
           type: boolean
           description: Whether validation errors prevent publication of the entire submission.
