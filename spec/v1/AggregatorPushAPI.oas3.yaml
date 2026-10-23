@@ -12,9 +12,9 @@ info:
     unit, so a resource is never published without all of its valid definitions.
     A provider can opt into strict validation, in which any error publishes nothing and leaves
     the submission available for correction until it expires.
-    In `replace` mode, omission removes the authenticated publisher's prior contributions in the
-    publication context. Fine-grained publication scopes are outside this API version and remain
-    work in progress.
+    In `replace` mode, omission removes the authenticated ORD provider's prior contributions in the
+    publication context. An ORD provider can have at most one active submission per publication
+    context.
 
     Every operation requires authentication.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
@@ -47,10 +47,15 @@ paths:
       operationId: createSubmission
       summary: Open a submission
       description: |-
-        Opens an isolated staging area for one authenticated publisher and one publication
+        Opens an isolated staging area for one authenticated ORD provider and one publication
         context.
-        In `replace` mode, omission removes prior contributions from this authenticated publisher
-        in the publication context. Fine-grained publication scopes are not defined by this API.
+        In `replace` mode, omission removes prior contributions from this ORD provider in the
+        publication context.
+        An ORD provider can have at most one active (`open`, `validating`, or `failed`) submission
+        per publication context. Another creation request for that context is rejected with
+        `409 Conflict`, and `activeSubmissionId` in the problem details identifies the active
+        submission. A repeated request with the same `Idempotency-Key` returns the original
+        submission instead.
         Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly.
         Validation defaults to partial acceptance of valid publication units; strict
         all-or-nothing validation must be selected explicitly.
@@ -65,12 +70,12 @@ paths:
               $ref: "#/components/schemas/CreateSubmissionRequest"
             examples:
               merge:
-                summary: Merge into the publisher's contribution
+                summary: Merge into the ORD provider's contribution
                 value:
                   context:
                     perspective: system-type
               replace:
-                summary: Replace the publisher's contribution in this context
+                summary: Replace the ORD provider's contribution in this context
                 value:
                   publicationMode: replace
                   context:
@@ -98,7 +103,14 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "409":
-          $ref: "#/components/responses/Conflict"
+          description: |-
+            Another submission is active for this ORD provider and publication context, or the
+            idempotency key was reused with different content. For an active submission,
+            `activeSubmissionId` identifies it.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "410":
           $ref: "#/components/responses/Gone"
         "429":
@@ -361,11 +373,12 @@ paths:
         The aggregator publishes all remaining valid units together and reports every issue.
         An error that prevents publication units from being isolated safely fails the entire commit.
         When `strict` is `true`, any error fails the entire commit.
-        A replace submission can remove every prior contribution in its replacement boundary by
-        staging at least one valid ORD Document that contains no ORD information to retain.
+        A replace submission can remove every prior contribution of the ORD provider in the
+        publication context by staging at least one valid ORD Document that contains no ORD
+        information to retain.
         A staged unit skipped because of an error is not considered omitted for replacement and
         does not remove its previously published contribution.
-        Tombstones apply only to contributions from this publisher in the submission's
+        Tombstones apply only to contributions from this ORD provider in the submission's
         publication context and require authorization for that contribution.
         Before publishing, the aggregator verifies again that the authenticated push client is
         authorized for the publication context.
@@ -522,13 +535,13 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     Forbidden:
-      description: The publisher is not authorized for the operation or publication context.
+      description: The ORD provider is not authorized for the operation or publication context.
       content:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/Problem"
     NotFound:
-      description: The submission identifier is unknown or is not visible to this publisher. This also applies after the aggregator removes an expired submission's marker.
+      description: The submission identifier is unknown or is not visible to this ORD provider. This also applies after the aggregator removes an expired submission's marker.
       content:
         application/problem+json:
           schema:
@@ -564,7 +577,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     RateLimited:
-      description: The publisher exceeded a rate or concurrency limit and may retry later.
+      description: The ORD provider exceeded a rate or concurrency limit and may retry later.
       headers:
         Retry-After:
           $ref: "#/components/headers/RetryAfter"
@@ -586,7 +599,7 @@ components:
       properties:
         publicationMode:
           type: string
-          description: Whether omission removes prior contributions from this publisher in the publication context. Defaults to the non-destructive `merge` mode.
+          description: Whether omission removes prior contributions from this ORD provider in the publication context. Defaults to the non-destructive `merge` mode.
           enum: [replace, merge]
           default: merge
         strict:
@@ -749,6 +762,9 @@ components:
         instance:
           type: string
           format: uri-reference
+        activeSubmissionId:
+          type: string
+          description: Identifier of the active submission that prevents creating another submission for the same ORD provider and publication context.
         issues:
           type: array
           items:
