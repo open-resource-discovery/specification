@@ -389,8 +389,10 @@ definitions:
       The Package can also indicate which vendor owns the packaged resources and which products they are part of.
       For partner or customer content, the Package indicates current ownership attribution through `vendor`.
       The independent `partOfProducts` assignment indicates the associated product offerings.
+      A Package with `publicationMode: replace` can also serve as a complete publication boundary for its assigned resources, when supported by the ORD Aggregator.
+      This declaration does not authorize a publisher to replace the Package.
 
-      A Package SHOULD contain at least one resource. Avoid empty Packages.
+      A Package SHOULD contain at least one resource. An empty Package with `publicationMode: replace` MAY represent a complete empty resource set.
 
       The Package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.
 
@@ -504,6 +506,28 @@ definitions:
         examples:
           - "1.2.3"
           - "1.0.0-alpha.1"
+
+      publicationMode:
+        type: string
+        enum:
+          - merge
+          - replace
+        description: |-
+          Declares the publication mode intended for resources assigned to this Package.
+          If omitted, the mode is `merge`.
+
+          In `merge` mode, omission of a resource does not remove it from the aggregated ORD information.
+          Removals continue to require explicit tombstones.
+
+          In `replace` mode, the resources assigned to this Package describe a complete publication set.
+          An ORD Aggregator that supports Package-level replacement MAY remove previously retained resources from this Package that are absent from a successfully retrieved complete set.
+          The Package itself and resources outside it are not removed by this mode.
+
+          ORD Documents may split a Package across multiple documents, so one document is not necessarily a complete set.
+          The transport or integration must establish that retrieval of the complete set succeeded before replacement is applied.
+          How this declaration composes with a transport-level publication mode is defined by that transport.
+          This property does not identify or authorize a publisher.
+          Support for Package-level replacement and the authenticated publishers allowed to use it are decisions for the ORD Aggregator.
 
       policyLevel:
         <<: *policyLevel
