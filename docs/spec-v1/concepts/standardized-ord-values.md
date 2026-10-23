@@ -37,6 +37,8 @@ Future standardized label keys MUST be registered on this page before providers 
 `ord:publication-scope` is the standardized Group Type for partitioning resources into independently replaceable publication sets.
 It is optional.
 Assigning a resource to a publication scope describes the provider's intended publication boundary, but does not itself request replacement or authorize publication or removal.
+Providers MAY publish these Groups and their resource assignments in non-destructive `merge` operations where a transport supports that mode.
+A transport may separately require target Group IDs when an operation requests replacement.
 
 The ORD specification defines this Group Type, so providers MUST NOT publish a custom `groupTypes` definition for `ord:publication-scope`.
 An ORD provider MAY define any number of Group objects of this type.
