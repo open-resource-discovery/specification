@@ -11,6 +11,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Allowed different resource visibility levels within the same Package under SAP Core. Resources and their definitions remain subject to their individual visibility rules.
+
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added
