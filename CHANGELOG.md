@@ -13,11 +13,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added optional `purpose` field (alpha) to `EntityTypeDefinition`, introduced in 1.18.0.
-  Together with `type`, `visibility`, and `mediaType`, `purpose` forms the uniqueness key for entries in an entity type's `definitions` list.
-  Omitting `purpose` identifies the default definition for its `(type, visibility, mediaType)` combination.
-  Providing such a default is optional — all definitions may specify distinct purposes and the absence of a purpose-less entry does not constitute a validation error.
-  `purpose` MUST be a valid Concept ID; standardised values `ord:ai-enrichment` and `ord:agent-security-permissions` are introduced alongside.
+- Added optional `purpose` metadata to Entity Type definitions using the shared definition-purpose model.
 
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
