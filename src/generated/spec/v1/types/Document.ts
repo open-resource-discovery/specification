@@ -1082,13 +1082,12 @@ export interface ApiResourceDefinition {
    */
   accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
   /**
-   * Marks a resource definition as a *complementary* variant of the resource's default definition,
+   * Marks a definition entry as a *complementary* variant for the same resource,
    * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
-   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the definitions list.
+   * The default and uniqueness rules are defined by the containing definitions list.
    *
    * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
@@ -1863,13 +1862,12 @@ export interface EventResourceDefinition {
    */
   visibility?: "public" | "internal" | "private";
   /**
-   * Marks a resource definition as a *complementary* variant of the resource's default definition,
+   * Marks a definition entry as a *complementary* variant for the same resource,
    * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
-   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the definitions list.
+   * The default and uniqueness rules are defined by the containing definitions list.
    *
    * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
@@ -2099,6 +2097,18 @@ export interface EntityType {
   relatedEntityTypes?: RelatedEntityType[];
   /**
    * List of available machine-readable definitions that describe the entity type's internal model in detail.
+   *
+   * Every entry MUST describe the *same* underlying entity type. Allowed variations are alternative
+   * representation formats and complementary artifacts distinguished by `purpose`
+   * (e.g. an AI-enriched variant, an agent-security-permissions view).
+   *
+   * The entry without a `purpose` value is the default definition for its `(type, visibility, mediaType)`.
+   * There SHOULD be exactly one such default per `(type, visibility, mediaType)` combination.
+   *
+   * The combination of `type`, `visibility`, `mediaType`, and `purpose` MUST be unique within the list.
+   * Two entries that are otherwise identical but differ only in `url` are still considered duplicates.
+   * Missing `purpose` counts as the same absence for the uniqueness comparison —
+   * two entries with the same `(type, visibility, mediaType)` and no `purpose` are duplicates.
    */
   definitions?: EntityTypeDefinition[];
   /**
@@ -2180,8 +2190,12 @@ export interface RelatedEntityType {
  * This can be used to describe a shared internal model multiple APIs and Events are based on.
  * However, interaction with the actual data happens through API Resources or Event Resources that expose these entity types with a defined interface and contract.
  *
- * Each definition is an alternative description format for the same entity type.
- * The same definition type MUST NOT be provided more than once, except with different `visibility` or `mediaType`.
+ * Each definition is an alternative description format or complementary artifact for the same entity type.
+ * The combination of `type`, `visibility`, `mediaType`, and `purpose` MUST be unique within the `definitions` list.
+ * Two entries that are otherwise identical but differ only in `url` are still considered duplicates.
+ *
+ * Omitting `purpose` identifies the default definition for its `(type, visibility, mediaType)` combination.
+ * There SHOULD be exactly one such default per `(type, visibility, mediaType)` combination.
  *
  * **Why Entity Types are private by default**: Since entity type definitions are internal implementation details, they SHOULD be marked as `private` visibility by default.
  *
@@ -2234,6 +2248,19 @@ export interface EntityTypeDefinition {
    * Only use `public` visibility when the internal model definition itself needs open access for standardization or documentation purposes.
    */
   visibility: "public" | "internal" | "private";
+  /**
+   * Marks a definition entry as a *complementary* variant for the same resource,
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
+   * All entries in the definitions list, with or without `purpose`, MUST describe the same
+   * underlying resource; see the list property for the full modelling rules.
+   *
+   * The default and uniqueness rules are defined by the containing definitions list.
+   *
+   * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
+   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * Capabilities can be used to describe use case specific capabilities, most notably supported features or additional information (like configuration) that needs to be understood from outside.
@@ -2703,13 +2730,12 @@ export interface CapabilityDefinition {
    */
   visibility?: "public" | "internal" | "private";
   /**
-   * Marks a resource definition as a *complementary* variant of the resource's default definition,
+   * Marks a definition entry as a *complementary* variant for the same resource,
    * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
-   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the definitions list.
+   * The default and uniqueness rules are defined by the containing definitions list.
    *
    * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
@@ -3686,13 +3712,12 @@ export interface OverlayDefinition {
    */
   visibility?: "public" | "internal" | "private";
   /**
-   * Marks a resource definition as a *complementary* variant of the resource's default definition,
+   * Marks a definition entry as a *complementary* variant for the same resource,
    * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
-   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the definitions list.
+   * The default and uniqueness rules are defined by the containing definitions list.
    *
    * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
