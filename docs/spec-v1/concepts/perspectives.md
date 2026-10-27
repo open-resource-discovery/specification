@@ -3,9 +3,13 @@ sidebar_position: 5
 description: Metadata can be described from static or dynamic perspectives. This article explains the concept in more detail.
 ---
 
+import { PerspectiveResolutionSummaryDiagram } from "@site/src/components/OrdDiagrams";
+
 # Perspectives
 
 > ⏩ The technical requirements of this are described in the [specification section on perspectives](../../spec-v1/index.md#perspectives).
+
+> **Visual walkthrough:** See the [perspective resolution decision flow](https://open-resource-discovery.github.io/presentation/perspective-resolution) in the ORD presentation.
 
 ## Overview
 
@@ -79,7 +83,7 @@ Some examples when metadata can be dynamic:
 - New resources can be created by the user of the application at run-time (typical situation for frameworks, platforms and extensible applications).
 - Endpoint URLs may be dynamic.
 
-At SAP, the run-time discovery of dynamic metadata (system-instance) is handled by the [Unified Customer Landscape](../../introduction.mdx#unified-customer-landscape) in BTP.
+At SAP, the run-time discovery of dynamic metadata (system-instance) is handled by the [Unified Metadata Service](../../introduction.mdx#dynamic-view-unified-metadata-service) in BTP.
 
 ### System Independent Perspective
 
@@ -101,6 +105,10 @@ The dynamic perspective is a more precise description of the system instance tha
 If no dynamic perspective has been published for a system instance, the static perspective can be used as the fallback.
 
 The following diagram shows how an aggregator resolves a request:
+
+<PerspectiveResolutionSummaryDiagram />
+
+The detailed decision flow below covers the individual outcomes and error cases.
 
 <div className="img-box" style={{aspectRatio: "1233/1122"}}>
 

@@ -29,11 +29,16 @@ The ORD standard is governed by the [Linux Foundation](https://www.linuxfoundati
 
 #### ORD Reference Application
 
-Check out the [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) for an example ORD implementation and how it behaves.
+Explore the public and demo-authenticated tenant-specific metadata of the [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) in its embedded [ORD Explorer](https://github.com/open-resource-discovery/explorer).
+The [reference application source](https://github.com/open-resource-discovery/reference-application) shows how the ORD Provider endpoints are implemented.
 
 #### ORD Example Data
 
 - Within this repository: [examples/](./examples/).
+
+#### Diagrams
+
+See [diagram sources and synchronization](./diagrams/README.md) for the shared graph data and the matching React and Vue diagrams in the specification site and presentation.
 
 ## History
 

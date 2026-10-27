@@ -230,7 +230,7 @@ definitions:
           - type: string
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
             description: |-
-              Any valid [Specification ID](../index.md#specification-id).
+              Any valid [Specification ID](../concepts/identifiers.md#specification-id).
               If chosen, `customDescription` SHOULD be provided.
           - const: open
             description: |-
@@ -253,7 +253,7 @@ definitions:
         description: |-
           If the fixed `type` enum values need to be extended, an arbitrary `customType` can be provided.
 
-          MUST be a valid [Specification ID](../index.md#specification-id).
+          MUST be a valid [Specification ID](../concepts/identifiers.md#specification-id).
 
           MUST only be provided if `type` is set to `custom`.
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):v([0-9]+)$

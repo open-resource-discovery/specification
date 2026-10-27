@@ -1,10 +1,10 @@
 ---
 sidebar_position: 2
-title: HowTo adopt as ORD Provider
-description: ORD Provider guide how to adopt ORD, depending on preconditions and requirements.
+title: How to Adopt ORD as a Provider
+description: Learn how to adopt ORD as a provider based on your requirements and existing application architecture.
 ---
 
-# How To Adopt ORD as a Provider
+# How to Adopt ORD as a Provider
 
 ## Introduction
 
@@ -30,6 +30,11 @@ So it needs to be clarified first, which information needs to be exposed via ORD
 > Everything else is optional, but may be a prerequisite for other Product integrations or use cases (like SAP Event Broker / Mesh or Data Products)
 
 ## Scenarios
+
+For providers that describe a system, the recommended publishing model is to publish a static perspective (`system-type`, `system-version`, or both).
+If metadata differs between tenants, additionally publish a complete `system-instance` perspective for each tenant, including unchanged resources as well as tenant-specific changes.
+Keep the static baseline published alongside these tenant views.
+See [ORD Provider Considerations](../../spec-v1/concepts/perspectives.md#ord-provider-considerations) for the perspective selection rules.
 
 ### ORD Support by Framework
 
@@ -95,10 +100,13 @@ If some of the metadata is dynamic (changes at run-time or different per tenant)
 Now becomes a necessity to implement ORD as a REST API, where the GET operations return metadata dynamically.
 The response (of at least some requests) will depend on tenant context, customizations and extensions.
 
-In practice it's more realistic that such an implementation will be a mix between static and dynamic metadata.
-Since static metadata is much cheaper and easier to provide, it's recommended to only use run-time dynamic generation of metadata where necessary. In ORD it's possible to split metadata into separate ORD documents with different [perspectives](../../spec-v1/concepts/perspectives.md) (e.g. `system-version` for static and `system-instance` for dynamic metadata).
+Publish the static baseline through `system-type`, `system-version`, or both, and additionally publish a complete `system-instance` perspective when metadata differs per tenant.
+The tenant perspective includes all resources available on that tenant, including those unchanged from the static baseline.
+Only generate metadata dynamically where necessary; an implementation can reuse static metadata when constructing the complete tenant view.
+See [perspectives](../../spec-v1/concepts/perspectives.md) for the publication and resolution rules.
 
-> 🚧 The [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) showcases a mix between static and dynamic metadata. The source-code for it is yet to be made public, though.
+> 🚧 The [ORD Reference Application](https://ord-reference-application.cfapps.sap.hana.ondemand.com/) showcases a mix between static and dynamic metadata and embeds the ORD Explorer for its public metadata.
+> Its [source code](https://github.com/open-resource-discovery/reference-application) is available on GitHub.
 
 ## Shared Concerns
 

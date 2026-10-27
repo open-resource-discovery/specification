@@ -1,145 +1,224 @@
 {
-  "$schema": "https://open-resource-discovery.github.io/specification/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.16",
-  "description": "Example based on ORD Reference App",
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
+  "openResourceDiscovery": "1.17",
+  "description": "Fulfillment application metadata. Dependencies reference resources published by the external Orders and Order Assistance providers.",
+  "perspective": "system-version",
   "policyLevels": [],
   "describedSystemVersion": {
     "version": "1.0.0"
   },
-  "describedSystemInstance": {
-    "baseUrl": "https://tenant1.example-sap-system.com"
-  },
   "apiResources": [
     {
-      "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1",
-      "title": "Dispute Resolution Agent",
-      "shortDescription": "This is an Agent short description...",
-      "description": "A longer description of this Agent with **markdown** \n## headers\n etc...",
-      "version": "1.0.3",
-      "lastUpdate": "2022-12-19T15:47:04+00:00",
-      "visibility": "public",
+      "ordId": "sap.foo:apiResource:FulfillmentAgent:v1",
+      "title": "Fulfillment Agent Interaction API",
+      "version": "1.0.0",
       "releaseStatus": "active",
-      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:fulfillment:v1",
+      "shortDescription": "A2A interaction contract for the Fulfillment Agent",
+      "description": "Accepts fulfillment requests and returns task progress and outcomes.",
       "apiProtocol": "a2a",
+      "aiHint": "Provide the order ID when requesting fulfillment. Check the task outcome before retrying a request that changes fulfillment status.",
       "resourceDefinitions": [
         {
           "type": "a2a-agent-card",
           "mediaType": "application/json",
-          "url": "/definitions/DisputeResolutionAgentcard.json",
-          "accessStrategies": [{ "type": "open" }]
-        }
-      ],
-      "partOfConsumptionBundles": [
-        {
-          "ordId": "sap.joule:consumptionBundle:mTLS:v1"
+          "url": "/definitions/FulfillmentAgentcard.json",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
         }
       ],
       "exposedEntityTypes": [
         {
-          "ordId": "sap.foo:entityType:DisputeCase:v1"
-        },
-        {
-          "ordId": "sap.foo:entityType:DisputeResolution:v1"
-        },
-        {
-          "ordId": "sap.odm:entityType:Dispute:v1"
-        }
-      ],
-      "partOfGroups": ["sap.eab:process:sap.foo:DisputeResolutionProcess"],
-      "apiResourceLinks": [
-        {
-          "type": "api-documentation",
-          "url": "https://help.sap.com/some/agent-documentation"
-        }
-      ],
-      "extensible": {
-        "supported": "no"
-      }
-    }
-  ],
-  "agents": [
-    {
-      "ordId": "sap.foo:agent:disputeAgent:v1",
-      "title": "Dispute Resolution Agent",
-      "shortDescription": "AI agent specialized in financial dispute case resolution",
-      "description": "A longer description of this Agent with **markdown** \n## headers\n etc...",
-      "version": "1.0.3",
-      "lastUpdate": "2022-12-19T15:47:04+00:00",
-      "visibility": "public",
-      "releaseStatus": "active",
-      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
-      "partOfGroups": ["sap.aicore:llmModel:sap.aicore:anthropic--claude-3.7-sonnet"],
-      "partOfProducts": ["sap:product:S4HANA_OD:"],
-      "responsible": "sap:ach:FIN-DR-AG",
-      "industry": ["Financial Services"],
-      "lineOfBusiness": ["Finance"],
-      "countries": ["DE", "US"],
-      "minSystemVersion": "1.0.0",
-      "deprecationDate": "2025-12-08T15:47:04+00:00",
-      "sunsetDate": "2027-12-08T15:47:04+00:00",
-      "changelogEntries": [
-        {
-          "date": "2024-04-29",
-          "description": "## Changelog\n\nInitial release of the Dispute Resolution Agent with core capabilities.",
-          "releaseStatus": "active",
-          "version": "1.0.3",
-          "url": "https://www.sap.com/foo/bar"
-        }
-      ],
-      "relatedEntityTypes": [
-        "sap.foo:entityType:DisputeCase:v1",
-        "sap.foo:entityType:DisputeResolution:v1",
-        "sap.odm:entityType:Dispute:v1"
-      ],
-      "exposedApiResources": [{"ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1"}],
-      "integrationDependencies": ["sap.foo:integrationDependency:DisputeCaseManagement:v1"],
-      "labels": {
-        "sap.ai:interactionMode": ["conversational", "system-triggered"]
-      },
-      "tags": ["finance", "billing", "dispute-resolution", "invoicing", "ai-agent"],
-      "links": [
-        {
-          "title": "Agent Documentation",
-          "url": "https://help.sap.com/some/agent-documentation",
-          "description": "Comprehensive documentation for the Dispute Resolution Agent"
+          "ordId": "foo.orders:entityType:Order:v1"
         }
       ]
     }
   ],
-  "integrationDependencies": [
+  "agents": [
     {
-      "ordId": "sap.foo:integrationDependency:DisputeCaseManagement:v1",
-      "title": "Dispute Case Management Integration",
-      "shortDescription": "Integration dependency for dispute case management system",
-      "description": "This integration dependency is required to access external dispute case management capabilities.",
+      "ordId": "sap.foo:agent:fulfillmentAgent:v1",
+      "title": "Fulfillment Agent",
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "public",
-      "partOfPackage": "sap.foo:package:ord-reference-app:v1",
-      "mandatory": true,
-      "aspects": [
+      "partOfPackage": "sap.foo:package:fulfillment:v1",
+      "shortDescription": "Coordinates order fulfillment using external order tools, events, and optional skills",
+      "description": "Processes new orders, checks their details, and updates fulfillment status. Can use an external skill to summarize an order.",
+      "partOfProducts": [
+        "sap.foo:product:Fulfillment:"
+      ],
+      "relatedEntityTypes": [
+        "foo.orders:entityType:Order:v1"
+      ],
+      "exposedApiResources": [
         {
-          "title": "Case Management API Access",
-          "description": "Access to dispute case management APIs",
-          "mandatory": true,
-          "apiResources": [
+          "ordId": "sap.foo:apiResource:FulfillmentAgent:v1"
+        }
+      ],
+      "integrationDependencies": [
+        "sap.foo:integrationDependency:OrderProcessing:v1",
+        "sap.foo:integrationDependency:OrderAssistance:v1"
+      ],
+      "partOfGroups": [
+        "sap.foo:process:sap.foo:Fulfillment"
+      ],
+      "labels": {
+        "sap.ai:interactionMode": [
+          "conversational",
+          "system-triggered"
+        ]
+      },
+      "tags": [
+        "orders",
+        "fulfillment",
+        "ai-agent"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "ordId": "sap.foo:capability:fulfillmentWorkflow:v1",
+      "title": "Fulfillment Workflow",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:fulfillment:v1",
+      "shortDescription": "Coordinates requests to the Fulfillment Agent",
+      "type": "workflow",
+      "relatedApiResources": [
+        {
+          "ordId": "sap.foo:apiResource:FulfillmentAgent:v1",
+          "relationType": "ord:orchestrates"
+        }
+      ],
+      "definitions": [
+        {
+          "type": "arazzo-v1",
+          "mediaType": "application/yaml",
+          "url": "/definitions/fulfillment.arazzo.yaml",
+          "accessStrategies": [
             {
-              "ordId": "sap.bar:apiResource:DisputeResolutionAPI:v1"
+              "type": "open"
             }
           ]
         }
       ]
     }
   ],
+  "integrationDependencies": [
+    {
+      "ordId": "sap.foo:integrationDependency:OrderProcessing:v1",
+      "title": "Order Processing Integration",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:fulfillment:v1",
+      "shortDescription": "Order tools and events required by the Fulfillment Agent",
+      "mandatory": true,
+      "aspects": [
+        {
+          "description": "Read orders and update their fulfillment status",
+          "mandatory": true,
+          "apiResources": [
+            {
+              "ordId": "foo.orders:apiResource:OrderToolsMCPServer:v1",
+              "subset": [
+                {
+                  "operationId": "searchOrders"
+                },
+                {
+                  "operationId": "getOrder"
+                },
+                {
+                  "operationId": "updateFulfillmentStatus"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "description": "React to newly created orders",
+          "mandatory": true,
+          "eventResources": [
+            {
+              "ordId": "foo.orders:eventResource:OrderCreated:v1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ordId": "sap.foo:integrationDependency:OrderAssistance:v1",
+      "title": "Order Assistance Integration",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "sap.foo:package:fulfillment:v1",
+      "shortDescription": "Optional order summarization through a standalone skill or a plugin",
+      "mandatory": false,
+      "aspects": [
+        {
+          "description": "Use either the standalone skill or the named skill in the plugin",
+          "mandatory": true,
+          "capabilities": [
+            {
+              "ordId": "foo.bar.skill:capability:orderSummarization:v1"
+            },
+            {
+              "ordId": "foo.bar:capability:orderManagementPlugin:v1",
+              "subset": [
+                {
+                  "skillName": "orderSummarization"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "vendors": [
+    {
+      "ordId": "sap:vendor:SAP:",
+      "title": "SAP"
+    }
+  ],
+  "products": [
+    {
+      "ordId": "sap.foo:product:Fulfillment:",
+      "title": "Fulfillment Application",
+      "shortDescription": "Example application for order fulfillment",
+      "vendor": "sap:vendor:SAP:"
+    }
+  ],
   "packages": [
     {
-      "ordId": "sap.foo:package:ord-reference-app:v1",
-      "title": "ORD Reference Application Package",
-      "shortDescription": "Package containing reference application resources",
-      "description": "This package contains all resources related to the ORD reference application including agents and APIs.",
+      "ordId": "sap.foo:package:fulfillment:v1",
+      "title": "Fulfillment Application",
+      "shortDescription": "Resources of the example Fulfillment application",
+      "description": "Contains the Agent, its interaction API, and its integration requirements.",
       "version": "1.0.0",
       "vendor": "sap:vendor:SAP:",
-      "partOfProducts": ["sap:product:S4HANA_OD:"]
+      "partOfProducts": [
+        "sap.foo:product:Fulfillment:"
+      ]
+    }
+  ],
+  "groupTypes": [
+    {
+      "groupTypeId": "sap.foo:process",
+      "title": "Business Process"
+    }
+  ],
+  "groups": [
+    {
+      "groupId": "sap.foo:process:sap.foo:Fulfillment",
+      "groupTypeId": "sap.foo:process",
+      "title": "Order Fulfillment"
     }
   ]
 }

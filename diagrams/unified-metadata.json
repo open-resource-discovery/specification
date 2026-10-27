@@ -1,0 +1,25 @@
+{
+  "layoutWidth": 440,
+  "nodes": [
+    { "id": "system", "label": "Systems", "detail": "& services", "x": 21, "y": 12, "width": 118 },
+    { "id": "data", "label": "Data", "detail": "", "x": 78, "y": 14, "width": 88 },
+    { "id": "api", "label": "APIs", "detail": "", "x": 13, "y": 47, "width": 88 },
+    { "id": "entity", "label": "Entity Types", "detail": "shared semantics", "x": 51, "y": 47, "width": 142 },
+    { "id": "agent", "label": "Agents", "detail": "", "x": 88, "y": 53, "width": 88 },
+    { "id": "event", "label": "Events", "detail": "", "x": 23, "y": 84, "width": 96 },
+    { "id": "taxonomy", "label": "Taxonomy", "detail": "groups · products", "x": 72, "y": 84, "width": 138 }
+  ],
+  "links": [
+    { "from": "system", "to": "api", "kind": "system" },
+    { "from": "system", "to": "data", "kind": "system" },
+    { "from": "system", "to": "agent", "kind": "system" },
+    { "from": "entity", "to": "api", "kind": "semantic" },
+    { "from": "entity", "to": "event", "kind": "semantic" },
+    { "from": "entity", "to": "data", "kind": "semantic" },
+    { "from": "entity", "to": "agent", "kind": "semantic" },
+    { "from": "taxonomy", "to": "api", "kind": "context" },
+    { "from": "taxonomy", "to": "event", "kind": "context" },
+    { "from": "taxonomy", "to": "data", "kind": "context" },
+    { "from": "taxonomy", "to": "agent", "kind": "context" }
+  ]
+}

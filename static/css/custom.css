@@ -1,6 +1,7 @@
 @import url("./foundation/index.css");
 @import url("./components/index.css");
 @import url("./pages/index.css");
+@import url("./pages/help.css");
 
 /* Hide internal banner by default - becomes visible when JS replaces content */
 .theme-announcement-bar:has(.internal-banner-hidden) {

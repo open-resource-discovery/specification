@@ -1,6 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.16",
+  "openResourceDiscovery": "1.17",
   "perspective": "system-version",
   "description": "Example based on ORD Reference App",
   "policyLevels": ["sap:core:v1"],
@@ -197,6 +197,20 @@
       "releaseStatus": "active",
       "visibility": "public",
       "partOfPackage": "sap.foo.bar:package:SomePackage:v1",
+      "partOfProducts": ["sap.foo:product:ord-reference-app:"],
+      "responsible": "sap.foo:team:ord-reference-app",
+      "policyLevels": ["sap:core:v1"],
+      "countries": ["DE", "US"],
+      "lineOfBusiness": ["R&D Engineering"],
+      "industry": ["High Tech"],
+      "changelogEntries": [
+        {
+          "date": "2023-01-26",
+          "description": "Initial release of the capability.",
+          "releaseStatus": "active",
+          "version": "1.0.0"
+        }
+      ],
       "definitions": [
         {
           "type": "sap.mdo:mdi-capability-definition:v1",
@@ -209,7 +223,11 @@
           ]
         }
       ],
-      "relatedEntityTypes": ["sap.foo:entityType:Constellation:v1"]
+      "relatedEntityTypes": ["sap.foo:entityType:Constellation:v1"],
+      "extensible": {
+        "supported": "manual",
+        "description": "Additional capability content can be added through the capability administration interface."
+      }
     }
   ],
   "entityTypes": [

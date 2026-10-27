@@ -1,9 +1,9 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
-  "openResourceDiscovery": "1.16",
+  "openResourceDiscovery": "1.17",
   "integrationDependencies": [
     // This is an example for a simple Integration Dependency
-    // that only expresses that only declares that some events are needed together
+    // that declares that some events are needed together
     // This is needed for the SAP Event Broker to provide the "Subscription Content" related feature.
     {
       "ordId": "sap.s4:integrationDependency:subscriptionReplication:v2",
@@ -23,7 +23,6 @@
       // or an "internal" visibility resource
       "aspects": [
         {
-          "title": "SAPSubscriptionBillingBusinessEvents Title",
           "mandatory": true,
           "eventResources": [
             {
@@ -44,7 +43,6 @@
           ],
         },
         {
-          "title": "Billing Forecast Events",
           "description": "The second aspect is interpreted as AND condition and used in case events from multiple event resources / catalog need to be subscribed",
           "mandatory": true,
           "eventResources": [
@@ -76,7 +74,6 @@
       "lastUpdate": "2023-08-03T10:14:26.941Z",
       "aspects": [
         {
-          "title": "RawCustomerOrder",
           "description": "Exchange Customer Order Data",
           "mandatory": true,
           "supportMultipleProviders": true,
@@ -108,7 +105,6 @@
           ],
         },
         {
-          "title": "RetailTransaction",
           "description": "Test",
           "mandatory": false,
           "supportMultipleProviders": false,
@@ -129,6 +125,31 @@
             {
               "ordId": "sap.cic:apiResource:RetailTransactionSQL:v2",
             },
+          ],
+        },
+      ],
+    },
+    // This dependency requires foo.bar AND one of the listed ERP system types.
+    // More detailed resource or capability aspects can be added as complementary requirements.
+    {
+      "ordId": "foo.bar:integrationDependency:BillingAndERP:v1",
+      "version": "1.0.0",
+      "title": "Billing and ERP systems",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "foo.bar:package:SomePackage:v1",
+      "mandatory": true,
+      "aspects": [
+        {
+          "mandatory": true,
+          "systemTypes": [{ "systemNamespace": "foo.bar" }],
+        },
+        {
+          "mandatory": true,
+          "systemTypes": [
+            { "systemNamespace": "foo.erpcloud", "minSystemVersion": "2025.4.0" },
+            { "systemNamespace": "foo.erp" },
+            { "systemNamespace": "foo.erponprem" },
           ],
         },
       ],
