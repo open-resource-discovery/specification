@@ -5748,7 +5748,14 @@ definitions:
               The related entity types can potentially share the same identity in their instance data / be ID mapped.
 
               E.g. a `BusinessPartner` can share the same identity as a `NaturalPerson`.
+          - const: "ord:alias"
+            x-introduced-in-version: "1.17.1"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "ord:alias"
           - "can-share-identity"
           - "foo.bar:relationName"
     required:
@@ -5780,6 +5787,7 @@ definitions:
           - "sap.s4:apiResource:API_BUSINESS_PARTNER:v1"
       relationType:
         type: string
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
 
@@ -5802,7 +5810,14 @@ definitions:
               Typically used on [Capabilities](#capability) of `type: "workflow"` (e.g. defined via an
               [Arazzo](https://spec.openapis.org/arazzo/v1.0.0.html) document) to declare which APIs
               the workflow invokes.
+          - const: "ord:alias"
+            x-introduced-in-version: "1.17.1"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "ord:alias"
           - "foo.bar:relationName"
     required:
       - ordId
@@ -5833,6 +5848,7 @@ definitions:
           - "sap.s4:eventResource:BusinessPartnerEvents:v1"
       relationType:
         type: string
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
 
@@ -5848,7 +5864,14 @@ definitions:
             description: |-
               The source resource patches one or more definition files of the target resource.
               Used on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch.
+          - const: "ord:alias"
+            x-introduced-in-version: "1.17.1"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "ord:alias"
           - "foo.bar:relationName"
     required:
       - ordId
@@ -5885,7 +5908,19 @@ definitions:
           Defines the semantic meaning of the relationship.
           If not provided, the relationship has no specific semantics ("related somehow").
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../concepts/identifiers.md#concept-id).
+          - const: "ord:alias"
+            x-introduced-in-version: "1.17.1"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "ord:alias"
           - "foo.bar:relationName"
     required:
       - ordId
@@ -5916,6 +5951,7 @@ definitions:
           - "sap.foo:capability:fieldExtensibility:v1"
       relationType:
         type: string
+        x-introduced-in-version: "1.14.2"
         description: |-
           Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
 
@@ -5926,7 +5962,14 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../concepts/identifiers.md#concept-id).
+          - const: "ord:alias"
+            x-introduced-in-version: "1.17.1"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "ord:alias"
           - "foo.bar:relationName"
     required:
       - ordId
