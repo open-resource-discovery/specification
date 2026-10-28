@@ -30,6 +30,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Added `partOfProducts`, `responsible`, lifecycle metadata, taxonomy, `policyLevels`, and `extensible` to Capabilities for consistency with other ORD resources and support for custom fields.
 - Added support for [OpenAPI Initiative Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html): API Resources can publish `oas-overlay-v1` definitions, and ORD Overlays can target them. The ORD Overlay documentation now explains how the two overlay specifications interoperate.
 - Added the `sap:documentation:v1` policy level for human-readable metadata requirements. `sap:core:v1` now inherits this policy level.
+- Added `Building Materials`, `Fashion`, and `Real Estate` to the standardized `industry` values.
 
 ### Changed
 
