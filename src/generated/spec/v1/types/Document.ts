@@ -4126,6 +4126,16 @@ export interface Vendor {
    */
   title: string;
   /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
+   */
+  correlationIds?: string[];
+  /**
    * Optional list of partner vendors, referenced through their ORD ID.
    *
    * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
