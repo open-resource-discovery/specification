@@ -573,6 +573,8 @@ The following rules need to be implemented by ORD aggregators:
 
 The removal of resources is indicated through setting a [Tombstone](./interfaces/Document.md#tombstone).
 The ORD Aggregator MUST remove unpublished information that has been tombstoned within a grace period of 31 days.
+Omitting previously published information does not remove it.
+The only exception is the replacement of a [publication scope](./concepts/standardized-ord-values.md#publication-scope) where the aggregator supports it.
 
 ##### Hosting Resource Definitions
 
@@ -694,6 +696,7 @@ See the complete [Correlation ID rules](./concepts/identifiers.md#correlation-id
 
 A Concept ID identifies a namespaced concept used by extensible ORD fields.
 See the complete [Concept ID rules](./concepts/identifiers.md#concept-id).
+The ORD specification's standardized and reserved identifiers are listed under [Standardized ORD Identifiers](./concepts/standardized-ord-values.md).
 
 ### Specification ID
 
