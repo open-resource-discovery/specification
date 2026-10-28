@@ -1434,18 +1434,18 @@ definitions:
           List of available machine-readable definitions, which describe the resource in detail.
           See also [Resource Definitions](../index.md#resource-definitions) for more context.
 
-          Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
-          representations (different formats) and complementary artifacts distinguished by `purpose`
-          (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+          Every entry MUST describe the *same* underlying resource.
+          Allowed variations are alternative representations and complementary artifacts.
+          Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
           This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
           Model those as separate ORD resources instead.
 
-          The entry without a `purpose` value is the primary/default definition for its `(type, visibility)`;
+          The entry without a `purpose` value is the primary/default definition for its `(type, mediaType, visibility)`;
           consumers that don't filter by `purpose` MUST fall back to it. There SHOULD be exactly one such
-          default per `(type, visibility)` combination.
+          default per `(type, mediaType, visibility)` combination.
 
-          The combination of `type` (or `customType` for `type: "custom"`), `purpose`, and `visibility` MUST
-          be unique within the list.
+          The combination of `type` (or `customType` for `type: "custom"`), `mediaType`, `purpose`, and
+          `visibility` MUST be unique within the list.
 
           It is RECOMMENDED to provide the definitions as they enable machine-readable use cases.
           If the definitions are added or changed, the `version` MUST be incremented.
@@ -3576,12 +3576,51 @@ definitions:
               Workflow capabilities SHOULD list every API Resource they interact with in
               `relatedApiResources`, each with
               `relationType: "ord:orchestrates"`.
+          - const: ontology
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              Standardized capability representing a machine-readable ontology.
+              An ontology can describe a conceptual domain model, a data model, an API model, or more than one of these layers.
+              A Capability with `type: "ontology"` SHOULD provide at least one definition.
+              Its definitions SHOULD use `rdf-v1.1`, `rdfs-v1.1`, `owl-v2`, `shacl-v1.0`, `sap-csn-interop-effective-v1`, or an appropriate Specification ID to identify their primary specification or processing contract.
+              RDF-based definitions can publish the same RDF graph in multiple serializations by using the same `type` and different `mediaType` values.
+              OWL ontology definitions and complementary SHACL shapes definitions MAY be published in parallel.
+              See [Ontologies](../concepts/ontologies.md) for type selection, serialization, combined-profile, and content guidance.
           - const: custom
             description: |-
               If chosen, `customType` MUST be provided.
             # Deprecate this in future?
         examples:
           - "agent-skill"
+          - "ontology"
+
+      ontologyLayers:
+        type: array
+        uniqueItems: true
+        minItems: 1
+        x-introduced-in-version: "1.18.0"
+        description: |-
+          Optional list of model layers described by an ontology published as a Capability.
+          This property SHOULD only be used when `type` is `ontology`.
+
+          A single ontology can span more than one layer.
+          The layer MUST NOT be inferred from the definition language alone.
+          For example, SHACL shapes can constrain either a conceptual RDF graph or a concrete data representation.
+        items:
+          type: string
+          oneOf:
+            - const: domain-model
+              description: |-
+                The ontology describes conceptual domain meaning independently of a particular technical contract.
+            - const: data-model
+              description: |-
+                The ontology describes or constrains a concrete data representation.
+            - const: api-model
+              description: |-
+                The ontology describes or constrains the model exposed by an API contract.
+        examples:
+          - ["domain-model"]
+          - ["data-model", "api-model"]
 
       customType:
         <<: *customType
@@ -3838,12 +3877,59 @@ definitions:
 
               The `mediaType` MUST be set to `application/json` or `application/yaml`.
               The capability `type` SHOULD be set to `workflow`.
+          - const: rdf-v1.1
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              A generic [RDF 1.1](https://www.w3.org/TR/rdf11-concepts/) graph that does not claim a more specific supported semantic or processing contract.
+              The `purpose` SHOULD identify the graph's role when its definition type does not make that role clear.
+
+              The `mediaType` MUST identify an RDF 1.1 serialization, such as
+              `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
+              `application/rdf+xml` for RDF/XML, or `application/n-triples` for N-Triples.
+              The capability `type` SHOULD be set to `ontology`.
+          - const: rdfs-v1.1
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              An RDF vocabulary or schema whose primary semantic contract is [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/).
+
+              The `mediaType` MUST identify an RDF 1.1 serialization, such as
+              `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
+              `application/rdf+xml` for RDF/XML, or `application/n-triples` for N-Triples.
+              The capability `type` SHOULD be set to `ontology`.
+          - const: owl-v2
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              An [OWL 2](https://www.w3.org/TR/owl2-overview/) ontology represented as an RDF graph.
+              The graph can also contain RDF and RDFS terms without requiring additional definition types.
+
+              The `mediaType` MUST identify an RDF serialization, such as
+              `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
+              `application/rdf+xml` for RDF/XML, or `application/n-triples` for N-Triples.
+              The capability `type` SHOULD be set to `ontology`.
+          - const: shacl-v1.0
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              A [Shapes Constraint Language (SHACL)](https://www.w3.org/TR/shacl/) shapes graph for validating RDF data graphs.
+              It can refer to classes and properties defined with RDF Schema or OWL without implying OWL reasoning.
+
+              The `mediaType` MUST identify an RDF serialization, such as
+              `application/ld+json` for JSON-LD, `text/turtle` for Turtle,
+              `application/rdf+xml` for RDF/XML, or `application/n-triples` for N-Triples.
+              The capability `type` SHOULD be set to `ontology`.
+          - const: sap-csn-interop-effective-v1
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable
+              [CSN](https://cap.cloud.sap/docs/cds/csn) export that can describe a complete CDS domain model.
+
+              The `mediaType` MUST be set to `application/json`.
+              The capability `type` SHOULD be set to `ontology`.
           - const: custom
             description: |-
               If chosen, a custom type MUST be provided via `customType`
             # Deprecate this?
         examples:
-          - custom
+          - owl-v2
 
       customType:
         # TODO: Deprecate this?

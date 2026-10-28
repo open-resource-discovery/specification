@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1128 370" role="img" aria-labelledby="title description">
+  <title id="title">ORD ontology publication model</title>
+  <desc id="description">Domain-model and data or API-model ontologies are published as Capabilities with machine-readable definitions and relationships to shared Entity Type ORD IDs. Technical contracts expose the same Entity Types. An ORD aggregator combines the metadata, while a knowledge graph and SPARQL access remain optional downstream services.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 10 5 0 10z" fill="#14213d"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-15%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#1c343b" flood-opacity=".07"/>
+    </filter>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #14213d; }
+      .edge { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.2; }
+      .semantic { stroke: #0f6f72; }
+      .relation { stroke: #0087c9; }
+      .definition { stroke: #9326b7; }
+      .aggregation { stroke: #4c5870; }
+      .downstream { stroke: #76838c; stroke-dasharray: 5 6; }
+      .card { fill: #fff; stroke: #dfe4ec; }
+      .label { fill: #4c5870; font-size: 10px; font-weight: 780; letter-spacing: .7px; }
+      .title { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
+      .body { fill: #4c5870; font-size: 12px; }
+      .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10.5px; }
+      .compact-title { font-size: 16px; font-weight: 700; letter-spacing: -.2px; }
+    </style>
+  </defs>
+
+  <path class="edge semantic" d="M202 103C202 76 468 76 468 62" marker-end="url(#arrow)"/>
+  <path class="edge semantic" d="M564 103V62" marker-end="url(#arrow)"/>
+  <path class="edge semantic" d="M924 103C924 76 660 76 660 62" marker-end="url(#arrow)"/>
+  <path class="edge relation" d="M718 151H770" marker-end="url(#arrow)"/>
+  <path class="edge definition" d="M202 215V240" marker-end="url(#arrow)"/>
+  <path class="edge definition" d="M564 215V240" marker-end="url(#arrow)"/>
+  <path class="edge aggregation" d="M202 289V304M564 289V304M924 215V304M202 304H924M564 304V317" marker-end="url(#arrow)"/>
+  <path class="edge downstream" d="M718 341H770" marker-end="url(#arrow)"/>
+
+  <text class="label" transform="translate(18 278) rotate(-90)">ORD PROVIDER PUBLICATION</text>
+
+  <g filter="url(#shadow)">
+    <rect x="405" y="0" width="318" height="62" rx="13" fill="#effaf7" stroke="#94cbc7"/>
+  </g>
+  <text class="label" x="564" y="18" text-anchor="middle">SHARED CONCEPTUAL IDENTITY</text>
+  <text class="title" x="564" y="40" text-anchor="middle" font-size="17">Entity Types with ORD IDs</text>
+  <text class="body" x="564" y="56" text-anchor="middle" font-size="11">Individually addressable domain concepts</text>
+
+  <g filter="url(#shadow)">
+    <rect class="card" x="48" y="103" width="308" height="112" rx="13"/>
+    <rect class="card" x="410" y="103" width="308" height="112" rx="13"/>
+    <rect class="card" x="770" y="103" width="308" height="112" rx="13"/>
+  </g>
+  <path d="M61 104H343" stroke="#0f6f72" stroke-width="4" stroke-linecap="round"/>
+  <path d="M423 104H705" stroke="#9326b7" stroke-width="4" stroke-linecap="round"/>
+  <path d="M783 104H1065" stroke="#0087c9" stroke-width="4" stroke-linecap="round"/>
+
+  <text class="label" x="64" y="124">CAPABILITY · TYPE: ONTOLOGY</text>
+  <text class="title" x="64" y="148">Domain-Model Ontology</text>
+  <rect x="62" y="155" width="185" height="18" rx="3" fill="#f4f4f5"/>
+  <text class="code" x="67" y="168">ontologyLayers: domain-model</text>
+  <rect x="62" y="176" width="132" height="18" rx="3" fill="#f4f4f5"/>
+  <text class="code" x="67" y="189">relatedEntityTypes</text>
+  <text class="body" x="199" y="189">connects covered</text>
+  <text class="body" x="64" y="205">concepts</text>
+
+  <text class="label" x="426" y="124">CAPABILITY · TYPE: ONTOLOGY</text>
+  <text class="title" x="426" y="148">Data / API-Model Ontology</text>
+  <rect x="424" y="155" width="230" height="18" rx="3" fill="#f4f4f5"/>
+  <text class="code" x="429" y="168">ontologyLayers: data-model · api-model</text>
+  <text class="body" x="426" y="189">Entity Type IDs identify the conceptual</text>
+  <text class="body" x="426" y="205">foundation</text>
+
+  <text class="label" x="786" y="124">NATIVE CONSUMER CONTRACTS</text>
+  <text class="title" x="786" y="148">APIs, Events, and Data Products</text>
+  <text class="body" x="786" y="170">Entity Type references + resource links</text>
+  <text class="body" x="786" y="189">Native definitions remain authoritative</text>
+
+  <rect x="507" y="72" width="114" height="17" rx="4" fill="#fff"/>
+  <text x="564" y="84" text-anchor="middle" fill="#4c5870" font-size="9.5" font-weight="700">relatedEntityTypes</text>
+
+  <rect x="48" y="240" width="308" height="49" rx="11" fill="#f7f3fa" stroke="#c991d9" stroke-dasharray="4 3"/>
+  <rect x="410" y="240" width="308" height="49" rx="11" fill="#f7f3fa" stroke="#c991d9" stroke-dasharray="4 3"/>
+  <text class="label" x="62" y="257">DEFINITIONS</text>
+  <text x="62" y="279" font-size="13" font-weight="700">OWL · RDFS · RDF</text>
+  <text class="label" x="424" y="257">DEFINITIONS</text>
+  <text x="424" y="279" font-size="13" font-weight="700">SHACL · RDF · CSN Interop</text>
+
+  <g filter="url(#shadow)">
+    <rect x="410" y="317" width="308" height="48" rx="13" fill="#f7f9fa" stroke="#dfe4ec"/>
+    <rect x="770" y="317" width="308" height="48" rx="13" fill="#fbfcfc" stroke="#dfe4ec" stroke-dasharray="5 4"/>
+  </g>
+  <text class="label" x="424" y="334">ORD AGGREGATION</text>
+  <text class="compact-title" x="424" y="355">Connected Metadata View</text>
+  <text class="label" x="784" y="334">OPTIONAL, IMPLEMENTATION-SPECIFIC</text>
+  <text class="compact-title" x="784" y="355">Knowledge Graph · SPARQL</text>
+</svg>
