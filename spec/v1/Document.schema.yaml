@@ -5748,14 +5748,14 @@ definitions:
               The related entity types can potentially share the same identity in their instance data / be ID mapped.
 
               E.g. a `BusinessPartner` can share the same identity as a `NaturalPerson`.
-          - const: same-as
+          - const: "ord:alias"
             x-introduced-in-version: "1.17.1"
             description: |-
               The source and target resource are the same or equivalent.
               This is useful when the same resource is described by different ORD providers or in different contexts,
               and the relationship expresses that they refer to the same underlying resource.
         examples:
-          - "same-as"
+          - "ord:alias"
           - "can-share-identity"
           - "foo.bar:relationName"
     required:
@@ -5810,14 +5810,14 @@ definitions:
               Typically used on [Capabilities](#capability) of `type: "workflow"` (e.g. defined via an
               [Arazzo](https://spec.openapis.org/arazzo/v1.0.0.html) document) to declare which APIs
               the workflow invokes.
-          - const: "same-as"
+          - const: "ord:alias"
             x-introduced-in-version: "1.17.1"
             description: |-
               The source and target resource are the same or equivalent.
               This is useful when the same resource is described by different ORD providers or in different contexts,
               and the relationship expresses that they refer to the same underlying resource.
         examples:
-          - "same-as"
+          - "ord:alias"
           - "foo.bar:relationName"
     required:
       - ordId
@@ -5864,14 +5864,14 @@ definitions:
             description: |-
               The source resource patches one or more definition files of the target resource.
               Used on [ORD Overlay Resources](#overlay) to declare which API or Event resource they patch.
-          - const: "same-as"
+          - const: "ord:alias"
             x-introduced-in-version: "1.17.1"
             description: |-
               The source and target resource are the same or equivalent.
               This is useful when the same resource is described by different ORD providers or in different contexts,
               and the relationship expresses that they refer to the same underlying resource.
         examples:
-          - "same-as"
+          - "ord:alias"
           - "foo.bar:relationName"
     required:
       - ordId
@@ -5950,14 +5950,14 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../concepts/identifiers.md#concept-id).
-          - const: same-as
+          - const: "ord:alias"
             x-introduced-in-version: "1.17.1"
             description: |-
               The source and target resource are the same or equivalent.
               This is useful when the same resource is described by different ORD providers or in different contexts,
               and the relationship expresses that they refer to the same underlying resource.
         examples:
-          - "same-as"
+          - "ord:alias"
           - "foo.bar:relationName"
     required:
       - ordId
