@@ -3127,7 +3127,7 @@ export interface RelatedDataProduct {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: string;
+  relationType?: (string | "ord:alias") & string;
 }
 /**
  * An input port of a data product states where it retrieves its data inputs from.

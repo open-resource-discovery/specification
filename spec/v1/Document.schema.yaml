@@ -5908,7 +5908,19 @@ definitions:
           Defines the semantic meaning of the relationship.
           If not provided, the relationship has no specific semantics ("related somehow").
         pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../concepts/identifiers.md#concept-id).
+          - const: "ord:alias"
+            x-introduced-in-version: "1.17.1"
+            description: |-
+              The source and target resource are the same or equivalent.
+              This is useful when the same resource is described by different ORD providers or in different contexts,
+              and the relationship expresses that they refer to the same underlying resource.
         examples:
+          - "ord:alias"
           - "foo.bar:relationName"
     required:
       - ordId

@@ -13,7 +13,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added standardized `ord:alias` relation type for `relatedEntityTypes`, `relatedApiResources`, `relatedEventResources`, and `relatedCapabilities` in ORD 1.17.1.
+- Added standardized `ord:alias` relation type for `relatedEntityTypes`, `relatedApiResources`, `relatedEventResources`, `relatedDataProducts`, and `relatedCapabilities` in ORD 1.17.1.
   It indicates that the source and target describe the same or an equivalent underlying resource, for example across different ORD providers or contexts.
 
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
