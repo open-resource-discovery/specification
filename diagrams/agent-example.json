@@ -1,0 +1,34 @@
+{
+  "viewBox": "0 0 1136 474",
+  "description": "An Agent links to its interaction API through exposedApiResources and to Integration Dependencies through integrationDependencies. Each dependency has aspects referencing external API Resources, Event Resources, or Capabilities. Capabilities, including Agent Skills, Agent Plugins, and Workflows, can declare their own dependencies. The central node represents the common concept, not a single dependency instance shared by all resources. Arrows show metadata references, not runtime calls.",
+  "columns": [
+    { "x": 20, "label": "Described resources" },
+    { "x": 406, "label": "Declared requirements" },
+    { "x": 840, "label": "External resources" }
+  ],
+  "nodes": [
+    { "id": "agent", "type": "agent", "x": 20, "y": 50, "width": 300, "kind": "Agent", "name": ["Fulfillment Agent"], "nameY": 57, "detail": "Autonomous task execution" },
+    { "id": "interaction", "type": "api", "x": 20, "y": 208, "width": 300, "kind": "API Resource · A2A example", "name": ["Interaction API"], "nameY": 57, "detail": "Agent Card definition" },
+    { "id": "skill", "type": "capability", "x": 20, "y": 364, "width": 300, "kind": "Capability", "name": ["Reusable behavior"], "nameY": 57, "detail": "Skill / Plugin / Workflow" },
+    { "id": "dependency", "type": "dependency", "x": 406, "y": 196, "width": 284, "kind": "", "name": ["Integration", "Dependency"], "nameY": 34, "detail": "Aspects reference ORD IDs" },
+    { "id": "api", "type": "api", "x": 840, "y": 50, "width": 272, "kind": "API Resource", "name": ["REST / MCP / …"], "nameY": 57, "detail": "MCP subsets select tools" },
+    { "id": "event", "type": "event", "x": 840, "y": 196, "width": 272, "kind": "Event Resource", "name": ["Business events"], "nameY": 57, "detail": "e.g. Order Created" },
+    { "id": "capability", "type": "capability", "x": 840, "y": 364, "width": 272, "kind": "Capability", "name": ["Skills / Plugins"], "nameY": 57, "detail": "Workflows & custom types" }
+  ],
+  "links": [
+    { "from": "agent", "to": "interaction", "type": "interaction", "path": "M170 146V208" },
+    { "from": "agent", "to": "dependency", "type": "dependency", "path": "M320 98H380V216H406" },
+    { "from": "skill", "to": "dependency", "type": "dependency", "path": "M320 412H380V252H406" },
+    { "from": "dependency", "to": "api", "type": "dependency", "path": "M690 206H770V98H840" },
+    { "from": "dependency", "to": "event", "type": "dependency", "path": "M690 244H840" },
+    { "from": "dependency", "to": "capability", "type": "dependency", "path": "M690 268H770V412H840" }
+  ],
+  "labels": [
+    { "x": 184, "y": 180, "text": "exposedApiResources", "type": "interaction", "anchor": "start" },
+    { "x": 392, "y": 178, "text": "integrationDependencies", "type": "dependency", "anchor": "start" },
+    { "x": 392, "y": 346, "text": "integrationDependencies", "type": "dependency", "anchor": "start" },
+    { "x": 784, "y": 178, "text": "apiResources", "type": "dependency", "anchor": "start" },
+    { "x": 765, "y": 230, "text": "eventResources", "type": "dependency", "anchor": "middle" },
+    { "x": 784, "y": 338, "text": "capabilities", "type": "dependency", "anchor": "start" }
+  ]
+}
