@@ -57,6 +57,8 @@ Metadata here includes both the ORD documents and the metadata definitions that 
 The metadata is static, if it can be fully determined at design-time or deploy-time.
 The application / service that is described usually stays the same at run-time and there are no tenant-specific changes / extensions or they are not documented via metadata.
 
+We recommend [push transport](../../spec-v1/index.md#push-transport) for static metadata publishing when the target aggregator supports it.
+
 #### Option 1: Serve as static files
 
 This option is not recommended, but let's look at it anyway, just to make a point how simple an ORD implementation can be.
@@ -72,7 +74,7 @@ Please consider whether the information [need to be protected](#protect-ord-prov
 
 #### Option 2: Implement a simple REST API
 
-We recommend implementing the ORD Provider API just like any other API that your application / service exposes.
+When using pull transport, implement the ORD Provider API just like any other API that your application / service exposes.
 How you do this may depend on your programming language, framework and backend architecture.
 
 The API itself consists just of three different types of API GET operations:
@@ -87,11 +89,7 @@ Please note that you may need to [protect the API access](#protect-ord-provider-
 
 #### Option 3: Push metadata
 
-If an ORD aggregator supports [push transport](../../spec-v1/index.md#push-transport), a provider can publish metadata at design-time or deploy-time, for example from a CI/CD pipeline or CLI utility.
-The transactional submission API stages several ORD Documents and resource definitions before validation.
-By default, the aggregator atomically publishes the valid resource bundles and skips invalid bundles while reporting diagnostics.
-Providers can opt into strict validation when every staged item must be published together or not at all.
-The provider needs the aggregator's push API base URL and credentials.
+Publish metadata at design-time or deploy-time following [Transactional Submission](../../spec-v1/index.md#transactional-submission); see [aggregator onboarding](#integrate-with-ord-aggregators) for the prerequisites.
 
 ### Dynamic Metadata
 
@@ -110,7 +108,7 @@ See [perspectives](../../spec-v1/concepts/perspectives.md) for the publication a
 
 ## Shared Concerns
 
-The following concerns apply the same to the different scenarios and should always be considered.
+The following concerns apply to all publication scenarios.
 
 ### Validate ORD and other Metadata
 
@@ -124,14 +122,18 @@ Industry standard metadata formats usually come with validators, too. Consider f
 ### Protect ORD Provider API Access
 
 You may not want to openly expose the ORD information and related metadata to everyone.
-If this is the case, the ORD Provider API needs to be protected.
+For pull transport, the ORD Provider API needs to be protected in this case.
 The specification makes no assumptions on how this is done, but the [ORD Aggregators](../../spec-v1/index.md#ord-aggregator) will likely define the [Access Strategies](../../spec-extensions/access-strategies/) it supports.
+
+For push transport, authenticate using the [aggregator's credentials](../../spec-v1/index.md#authentication-and-api-location).
 
 ### Integrate with ORD Aggregators
 
 An ORD Provider implementation alone will not be very useful, because the information also need to be made available to other Consumers. This is done by integrating with one (or multiple) [ORD Aggregators](../../spec-v1/index.md#ord-aggregator).
 
 How this is done is defined by the onboarding of the aggregators.
+For pull transport, provide the configuration endpoint location and the supported access strategy.
+For push transport, obtain the aggregator's [API URL and credentials](../../spec-v1/index.md#authentication-and-api-location) and [operational limits](../../spec-v1/index.md#operational-limits-timeouts-retries-and-rate-limiting).
 
 To avoid detecting issues late (when publishing to the ORD aggregator), we highly RECOMMEND to locally [validate ORD and other metadata](#validate-ord-and-other-metadata) first.
 

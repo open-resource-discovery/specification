@@ -87,7 +87,7 @@ import { ProviderDiagram } from "@site/src/components/OrdDiagrams";
     <ol>
       <li><strong>Understand:</strong> Read the <a href="./introduction">ORD introduction</a> to grasp the core concepts.</li>
       <li><strong>Explore:</strong> Check the <a href="./spec-v1/examples">example files</a> to see ORD in action.</li>
-      <li><strong>Implement:</strong> Follow the <a href="./spec-v1/#ord-provider">ORD Provider</a> section to publish ORD Documents and expose the ORD Configuration Interface.</li>
+      <li><strong>Implement:</strong> Follow the <a href="./help/faq/adopt-ord-as-provider">provider adoption guide</a> to publish ORD Documents and resource definitions through pull or push transport.</li>
       <li><strong>Validate:</strong> Use the <a href="https://www.npmjs.com/package/@open-resource-discovery/specification">JSON Schema</a> to validate your ORD documents.</li>
     </ol>
   </div>

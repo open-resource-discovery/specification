@@ -78,12 +78,12 @@ Data Products, Agents, Perspectives, and ORD Overlays have beta status in ORD 1.
 
 ### Discover metadata from a known entry point
 
-An aggregator or direct consumer starts with a known system URL.
+For [pull transport](./spec-v1/index.md#pull-transport), an aggregator or direct consumer starts with a known system URL.
 It reads the well-known ORD configuration, fetches the referenced ORD documents, and follows links to detailed definitions.
-The default transport is **pull-based discovery using HTTP GET**.
-Where an aggregator supports it, providers can instead submit their metadata through [push transport](./spec-v1/index.md#push-transport).
 
 <DiscoveryFlowDiagram />
+
+For static metadata, prefer [push transport](./spec-v1/index.md#push-transport) when the aggregator supports it.
 
 ORD describes systems whose location is already known, for example through service discovery or aggregator onboarding.
 It exchanges metadata; API calls, event subscriptions, and business processes use their own runtime protocols.
@@ -93,7 +93,7 @@ Discovering a resource does not grant permission to call it.
 <details>
 <summary>Follow the links in the Orders teaching example</summary>
 
-The presentation's fictional Orders provider illustrates the three metadata requests.
+The presentation's fictional Orders provider illustrates the three pull metadata requests.
 The URLs below are examples; the [complete example files](https://github.com/open-resource-discovery/presentation/tree/main/data/orders) can be inspected without a running service.
 
 1. **Read the configuration:** `GET https://orders.example.com/.well-known/open-resource-discovery` reveals the document location and its access strategy.
@@ -226,9 +226,12 @@ These illustrative screenshots show the two discovery needs; they are not captur
 A focused pilot makes the value visible without requiring a complete landscape rollout.
 Choose an existing API and a catalog or developer tool that needs to discover it.
 
-1. **Describe:** publish a Package and one API Resource, link its existing OpenAPI definition, and expose the ORD configuration. Most advanced concepts are optional; start with metadata the consumer needs.
-2. **Validate and connect:** validate the ORD document and its native definition locally, then onboard the provider to an aggregator. The aggregator crawls the metadata, resolves the effective view, and preserves access boundaries.
-3. **Discover:** make the API findable in the chosen consumer and verify that its contract can be retrieved. A direct consumer can also follow the provider links for a small pilot.
+1. **Describe:** create a Package and one API Resource and link its existing OpenAPI definition.
+   Most advanced concepts are optional; start with metadata the consumer needs.
+2. **Validate and connect:** validate the ORD document and its native definition locally, then onboard the provider to an aggregator using [pull or push transport](./spec-v1/index.md#ord-transport-modes).
+   The aggregator validates the metadata, resolves the effective view, and preserves access boundaries.
+3. **Discover:** make the API findable in the chosen consumer and verify that its contract can be retrieved.
+   With pull transport, a direct consumer can also follow the provider links for a small pilot.
 
 Add Entity Types, dependencies, and further resource types as the use case grows.
 Follow [How to Adopt ORD as a Provider](./help/faq/adopt-ord-as-provider.md) for implementation choices, and browse the [ecosystem](./ecosystem/index.mdx) for publishing and exploration tools.

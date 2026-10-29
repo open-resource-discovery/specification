@@ -34,7 +34,8 @@ The most common way to apply ORD is to describe the resources and capabilities o
 Start with static metadata, then decide whether publishing a runtime-specific view provides additional value.
 
 1. **Identify what the application exposes and requires.** Describe its APIs, Events, Data Products, Capabilities, Agents, and Integration Dependencies, and link their native resource definitions where applicable.
-2. **Publish a static description first.** Choose the appropriate `system-type` or `system-version` [perspective](./concepts/perspectives.md#static-perspective), then expose the ORD configuration, ORD documents, and referenced definitions by following [Implementing ORD Natively](./guides/implementing-ord-natively.md#start-simple-static-ord).
+2. **Publish a static description first.** Choose the appropriate `system-type` or `system-version` [perspective](./concepts/perspectives.md#static-perspective), then publish ORD documents and referenced definitions through [pull or push transport](#ord-transport-modes).
+   Prefer [push transport](#push-transport) for static metadata when the aggregator supports it.
 3. **Evaluate whether a system-instance view adds value.** Add `system-instance` publishing when resources or metadata differ at runtime because of tenant configuration, feature activation, extensions, user-created resources, or dynamic endpoints.
    A published `system-instance` perspective is a complete description of that instance, not a patch over the static baseline.
 4. **Add structure and lifecycle guidance as needed.** Use the [System Landscape Model](./concepts/system-landscape-model.md), [Grouping and Bundling](./concepts/grouping-and-bundling.md), [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md), and [Versioning, Compatibility, and Lifecycle](./concepts/versioning-and-lifecycle.md) to refine the description.
@@ -154,7 +155,9 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 In push transport mode, an [ORD provider](#ord-provider) publishes ORD information to an [ORD aggregator](#ord-aggregator) through the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx).
 Push is optional for providers and aggregators.
-It is useful when a provider can publish on change or from a CI/CD pipeline but cannot or does not want to operate a continuously reachable ORD Provider API.
+For static metadata publishing, we recommend push when the aggregator supports it, because publication can run from a CI/CD pipeline or CLI without a continuously running provider server.
+This avoids dedicated provider-side hosting, inbound endpoint protection, patching, and monitoring, reducing TCO, security effort, and maintenance.
+Push is also useful when a provider can publish runtime metadata on change.
 
 Push uses the standard [ORD Document](#ord-document) without transport-specific properties.
 Resource definitions are uploaded separately in their native media types.
@@ -523,14 +526,14 @@ Given:
 
 This section details how an [ORD Provider](#ord-provider) exposes one or multiple [ORD documents](#ord-document) for the [pull transport mode](#pull-transport).
 
-The ORD Provider MUST implement a RESTful API that provides an [ORD configuration endpoint](#ord-configuration-endpoint) and at least one [ORD document endpoint](#ord-document-endpoint).
+An ORD Provider using pull transport MUST implement a RESTful API that provides an [ORD configuration endpoint](#ord-configuration-endpoint) and at least one [ORD document endpoint](#ord-document-endpoint).
 
 The API contract is defined as an [OpenAPI 3 Definition](https://open-resource-discovery.org/spec-v1/interfaces/DocumentAPI.oas3.yaml).
 The definition contains the well-known ORD configuration endpoint and one exemplary document endpoint.
 
 #### ORD Configuration Endpoint
 
-The <dfn id="def-configuration-endpoint">ORD configuration endpoint</dfn> is the single entry point for the discovery.
+The <dfn id="def-configuration-endpoint">ORD configuration endpoint</dfn> is the single entry point for discovery through [pull transport](#pull-transport).
 
 The motivation behind the ORD configuration endpoint is to:
 
@@ -550,7 +553,7 @@ The idea behind the configuration endpoint is inspired by the [well-known URI](h
 
 ##### Provider Implementation
 
-The [ORD configuration endpoint](#ord-configuration-endpoint) MUST be implemented by [ORD Providers](#ord-provider) and be accessible via an HTTP GET request.
+The [ORD configuration endpoint](#ord-configuration-endpoint) MUST be implemented by [ORD Providers](#ord-provider) using pull transport and be accessible via an HTTP GET request.
 
 The response MUST be a valid UTF-8 encoded [JSON](https://www.json.org/json-en.html) document that is returned with the `application/json;charset=UTF-8` content type and the HTTP Status Code `200`.
 
@@ -645,7 +648,7 @@ When consumed via an [ORD aggregator](#ord-aggregator), the aggregator may [host
 
 #### Consumer Perspective
 
-An [ORD consumer](#ord-consumer) MUST first consult the [ORD configuration endpoint](#ord-configuration-endpoint).
+An [ORD consumer](#ord-consumer) retrieving metadata directly from an ORD Provider through pull transport MUST first consult the [ORD configuration endpoint](#ord-configuration-endpoint).
 The response will indicate the supported version(s) of ORD, the URLs of the exposed [ORD documents](#ord-document), and additional information that has implications for accessing the information. The ORD documents may contain links to metadata definitions and how to access them.
 
 The most important rules are:

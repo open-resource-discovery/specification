@@ -255,10 +255,10 @@ export function ProviderDiagram() {
         <g className="api-card" transform="translate(494 250)">
           <rect width="186" height="68" rx="8" />
           <text className="api-title" x="93" y="27" textAnchor="middle">
-            ORD Provider API
+            ORD publication
           </text>
           <text className="api-subtitle" x="93" y="49" textAnchor="middle">
-            Expose metadata
+            Pull API or push
           </text>
         </g>
         <g className="definition-note" transform="translate(514 194)">
@@ -289,7 +289,7 @@ export function RolesDiagram() {
           Describes an application or service.
         </span>
         <div>
-          <b>ORD Provider API</b>
+          <b>Pull or push transport</b>
           <b>ORD documents</b>
           <b>Definitions</b>
         </div>
@@ -349,12 +349,13 @@ export function SpecificationMap() {
     },
     {
       label: "02 · Publication",
-      question: "How is metadata exposed and retrieved?",
+      question: "How is metadata published and retrieved?",
       description:
-        "Follow the provider contract from its entry point to documents and definitions.",
+        "Choose pull endpoints or push submissions for ORD documents and definitions.",
       links: [
         ["Transport modes", "#ord-transport-modes"],
-        ["Provider API", "#ord-provider-api"],
+        ["Pull Provider API", "#ord-provider-api"],
+        ["Push submissions", "#push-transport"],
         ["ORD document", "#ord-document"],
         ["Resource definitions", "#resource-definitions"],
       ],
