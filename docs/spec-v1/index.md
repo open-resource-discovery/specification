@@ -59,6 +59,7 @@ A [system type](#system-type) can implement multiple roles, e.g. an ORD Consumer
 
 An **ORD provider** is a system instance (of an application or service) that exposes ORD information for self-description.
 The **provider role** applies to business applications/services that want to describe themselves ([described system instance](#described-system-instance)).
+Several ORD providers can together describe one application or service, and an [ORD aggregator](#ord-aggregator) distinguishes them through its onboarding.
 
 #### Described System Instance
 
@@ -573,6 +574,30 @@ The following rules need to be implemented by ORD aggregators:
 
 The removal of resources is indicated through setting a [Tombstone](./interfaces/Document.md#tombstone).
 The ORD Aggregator MUST remove unpublished information that has been tombstoned within a grace period of 31 days.
+Omitting previously published ORD information does not remove it, unless the aggregator applies [provider contribution replacement](#provider-contribution-replacement) to the ORD provider of that information.
+
+##### Provider Contribution Replacement
+
+An ORD aggregator MAY support replacing the complete contribution of an [ORD provider](#ord-provider).
+Previously published ORD information that the ORD provider omits is then removed without a tombstone.
+
+An application or service is usually onboarded to an ORD aggregator at the [system type](#system-type) level, and several ORD providers can together describe it.
+The aggregator identifies each ORD provider as a technical integration, for example by a registered ORD configuration endpoint or by an authenticated client or credential.
+Which ORD providers the aggregator distinguishes, whether it applies replacement to an ORD provider, and how this is agreed are aggregator implementation details established during onboarding.
+The ORD specification does not define a document property or request parameter that identifies an ORD provider or enables replacement.
+ORD information MUST NOT establish an ORD provider identity or enable replacement by itself.
+
+The replacement boundary is the contribution of one ORD provider within one [perspective](./concepts/perspectives.md) and, where applicable, one described system version or system instance.
+The aggregator MUST retain which ORD provider contributed each ORD resource and taxonomy item within that boundary.
+It MUST remove previously retained information from an ORD provider's contribution only if it has successfully retrieved or received the complete current contribution and the information is absent from it.
+A failed or incomplete retrieval MUST NOT cause removal by omission.
+Information that is present but rejected during validation MUST NOT be treated as omitted.
+Replacement MUST NOT remove the contributions of other ORD providers, or contributions to other perspectives or described systems.
+Tombstones remain valid for explicit removals but are not required for information omitted from a replaced contribution.
+
+To replace parts of the information for one application or service independently, for example from separate deployment pipelines, the aggregator can onboard those parts as separate ORD providers.
+Because an ORD ID MUST be described at most once within a perspective, the contributions of different ORD providers within a perspective do not overlap.
+To move ORD information to another ORD provider, the previous ORD provider removes it before the new one publishes it; otherwise the aggregator reports a [duplicate](#ord-id-uniqueness-and-aggregation).
 
 ##### Hosting Resource Definitions
 
