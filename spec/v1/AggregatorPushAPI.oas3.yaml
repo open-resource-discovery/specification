@@ -3,6 +3,10 @@ info:
   title: Open Resource Discovery Aggregator Push API
   version: 1.0.0
   description: |-
+    ALPHA: this API is proposed in specification PR #187
+    (https://github.com/open-resource-discovery/specification/pull/187) and may still change in
+    breaking ways.
+
     The ORD Aggregator Push API lets an authenticated ORD provider stage ORD Documents and
     resource definitions in a submission and publish them after asynchronous validation.
 
@@ -223,7 +227,7 @@ paths:
         This allows one invalid ORD information object to be reported and skipped without
         preventing other valid objects in the document from being published in the default mode.
         Nothing is published before commit processing completes.
-        Replacing an artifact in a failed submission opens it for another commit attempt.
+        Replacing an artifact in a `rejected` submission opens it for another commit attempt.
       requestBody:
         required: true
         content:
@@ -407,7 +411,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Submission"
         "200":
-          description: The same staged revision was already processed.
+          description: |-
+            The submission was already processed. The commit is not reprocessed; this returns the
+            existing outcome so a repeated commit request is idempotent.
           content:
             application/json:
               schema:
@@ -701,7 +707,7 @@ components:
         `open` accepts artifact changes.
         `validating` is an immutable staged revision undergoing commit validation.
         `rejected` retains artifacts for correction after a submission-wide error or any error in strict mode.
-        `processed` is terminal and indicates that commit processing completed and all accepted publication units were applied atomically.
+        `processed` is a final state: commit processing completed, all accepted publication units were applied atomically, and the submission can no longer be edited or reprocessed. A repeated commit request returns its existing outcome.
         A `processed` non-strict submission can have errors for skipped publication units, so a provider MUST read its issues.
       enum: [open, validating, rejected, processed]
     ArtifactCounts:
@@ -744,7 +750,7 @@ components:
           type: string
     ValidationIssue:
       type: object
-      required: [severity, message]
+      required: [severity, message, artifactKind]
       additionalProperties: true
       properties:
         severity:
@@ -756,6 +762,9 @@ components:
           type: string
         artifactKind:
           type: string
+          description: |-
+            Which kind of staged artifact the issue applies to, or `submission` for a submission-wide
+            issue. Always present, so the identity requirements below always apply.
           enum: [document, resource-definition, submission]
         artifactId:
           type: string
@@ -766,8 +775,8 @@ components:
           type: string
           description: |-
             ORD ID of the publication unit the issue applies to, when that unit is a resource or
-            taxonomy object. Exactly one of `ordId`, `groupId`, or `groupTypeId` identifies the unit
-            of a unit-local issue.
+            taxonomy object. A unit-local issue names its unit through exactly one of `ordId`,
+            `groupId`, or `groupTypeId`, unless the error cannot be attributed to one staged unit.
         groupId:
           type: string
           description: Group ID of the publication unit the issue applies to, when that unit is a Group.
@@ -783,6 +792,44 @@ components:
         jsonPointer:
           type: string
           description: Optional JSON Pointer deep-linking to the exact location of the issue within the staged artifact.
+      allOf:
+        # Submission-wide issues carry no unit identity.
+        - if:
+            properties:
+              artifactKind:
+                const: submission
+            required: [artifactKind]
+          then:
+            not:
+              anyOf:
+                - required: [ordId]
+                - required: [groupId]
+                - required: [groupTypeId]
+        # Unit-local issues identify their staged artifact and carry at most one unit identity.
+        # An issue that names a publication unit uses exactly one of ordId/groupId/groupTypeId; an
+        # artifact-level error (for example invalid JSON) or an error that cannot be attributed to
+        # one unit (an object missing its identifier, or a definition matching no staged resource)
+        # carries none, optionally with a jsonPointer.
+        - if:
+            properties:
+              artifactKind:
+                enum: [document, resource-definition]
+            required: [artifactKind]
+          then:
+            required: [artifactId]
+            not:
+              anyOf:
+                - required: [ordId, groupId]
+                - required: [ordId, groupTypeId]
+                - required: [groupId, groupTypeId]
+        # A resource-definition issue is always about a definition, so it MUST carry the definition URL.
+        - if:
+            properties:
+              artifactKind:
+                const: resource-definition
+            required: [artifactKind]
+          then:
+            required: [definitionUrl]
     Problem:
       type: object
       description: Problem Details object as defined by RFC 9457.

@@ -6,6 +6,8 @@ description: Operational guidance for choosing ORD push publication modes and pl
 
 # Push Transport Guidance
 
+> 🚧 Push transport is an <span className="feature-status-alpha">ALPHA</span> feature proposed in [specification PR #187](https://github.com/open-resource-discovery/specification/pull/187) and may still change in breaking ways.
+
 The normative push protocol is defined in the [ORD specification](../index.md#push-transport) and the [ORD Aggregator Push API](../interfaces/aggregator-push-api.mdx).
 This page provides non-normative guidance for applying that protocol to common publication lifecycles.
 

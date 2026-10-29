@@ -153,6 +153,8 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 ### Push Transport
 
+> 🚧 Push transport and the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx) are an <span className="feature-status-alpha">ALPHA</span> feature proposed in [specification PR #187](https://github.com/open-resource-discovery/specification/pull/187). The contract may still change in breaking ways.
+
 In push transport mode, an [ORD provider](#ord-provider) publishes ORD information to an [ORD aggregator](#ord-aggregator) through the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx).
 Push is optional for providers and aggregators.
 For static metadata publishing, we recommend push when the aggregator supports it, because publication can run from a CI/CD pipeline or CLI without a continuously running provider server.
@@ -180,7 +182,10 @@ The provider MAY set `strict` to `true` when opening the submission to require a
 In strict mode, any error MUST fail the entire commit, publish nothing, and retain the previous published state unchanged.
 Warnings and information messages MUST NOT prevent publication.
 A default-mode commit with only unit-local errors MUST publish the accepted units and report the skipped units through issues.
-After a `processed` or `rejected` commit, a staged publication unit was skipped if and only if an issue of severity `error` identifies it, and was accepted otherwise; a submission-wide `error` fails the whole commit so that no unit is published.
+In a `processed` submission, a staged publication unit was skipped if and only if an issue of severity `error` identifies it after all issue pages are read, and was accepted otherwise.
+A `rejected` submission applies nothing: no staged unit is accepted, and the previously published state is unchanged, regardless of which units carry errors.
+An `error` confined to one staged item that carries no unit identity, such as an item missing its required ORD ID, still skips that one item in the default mode and is identified by a `jsonPointer`.
+An `error` that cannot be confined to one staged item MUST fail the entire commit, as stated below.
 This lets a provider read per-unit outcomes from the issues endpoint without a separate outcome list.
 All accepted units from one commit MUST become discoverable atomically, so consumers cannot observe an intermediate state.
 A validation or authorization error that cannot be confined safely to one publication unit MUST fail the entire commit in both modes.
@@ -188,8 +193,11 @@ This includes an error in the ORD Document envelope that prevents its contained 
 A `rejected` submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
 The provider MAY also commit a `rejected` submission without changes, and the aggregator MUST then validate the same staged revision again.
 This helps when the failure depends on state outside the submission, such as authorization, ORD ID namespace permissions, or a conflicting contribution from another ORD provider.
-A default-mode submission that publishes with skipped units is `processed` and immutable, and the provider MUST use a new submission to correct those units.
-The provider repairs them by staging exactly the skipped units, identified by the `ordId`, `groupId`, or `groupTypeId` reported for each, together with the definitions those units declare.
+A default-mode submission that publishes with skipped units is `processed` and cannot be edited or reprocessed, so the provider MUST use a new submission to correct those units.
+A repeated commit request for a `processed` submission does not reprocess it and returns its existing outcome.
+The provider corrects only the skipped units by staging them, identified by the `ordId`, `groupId`, or `groupTypeId` reported for each, together with the definitions those units declare, and committing in `merge` mode.
+A `merge` submission upserts those units by identity and leaves the already accepted units unchanged.
+A follow-up `replace` submission MUST instead contain the ORD provider's complete intended contribution, because omission in `replace` removes the accepted units.
 The aggregator does not perform automatic selective retry.
 The provider MUST retain the submission ID and its submission-local artifact IDs while a submission is editable.
 If that state is lost, the provider MUST discard the submission and start a new one rather than risk publishing obsolete staged artifacts.
@@ -308,7 +316,10 @@ The issues endpoint reports all errors, warnings, and information messages for t
 Each issue that applies to one publication unit MUST identify its staged artifact through `artifactId`, the ID the provider assigned when staging that artifact, and the unit through exactly one of `ordId`, `groupId`, or `groupTypeId`.
 An issue about a resource definition MUST additionally carry the exact declared `definitionUrl`, so that two resources referencing the same URL produce distinguishable issues.
 An issue MAY include a `jsonPointer` for a precise location within the staged artifact.
+An issue that applies to a whole staged artifact rather than one unit, such as an ORD Document that is not valid JSON, uses the artifact's `artifactId` and carries no unit identity.
 A submission-wide issue that cannot be confined to one publication unit MUST use `artifactKind: submission` and carries no unit identity.
+A staged object that is missing its own required identifier fails item schema validation; because it has no ORD ID to report, the aggregator MUST identify that error through the document's `artifactId` and a `jsonPointer` to the object, and the publication unit is skipped in the default mode like any other item with an error.
+A staged resource definition whose declared `ordId` and `url` match no staged resource is reported with its `artifactId` and `definitionUrl` and no unit identity; such an error cannot be attributed to an accepted unit, so it never denotes a per-unit accepted or skipped outcome.
 
 #### Operational Limits, Timeouts, Retries, and Rate Limiting
 

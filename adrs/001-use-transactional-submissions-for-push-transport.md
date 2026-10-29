@@ -20,7 +20,7 @@ Several independently operated ORD Providers can contribute metadata for the sam
 - Preserve one ORD information object and all resource definitions it declares as one consistent publication unit.
 - Let independent valid publication units succeed when another unit is invalid.
 - Support opt-in all-or-nothing validation when several units must advance together.
-- Let providers repair and retry a failed submission.
+- Let providers repair and retry a `rejected` submission.
 - Support complete-state replacement without removing contributions from another ORD provider.
 - Provide asynchronous status and complete validation diagnostics.
 - Bound the lifetime of abandoned server-side state.
@@ -109,7 +109,7 @@ A provider that does not keep deletion bookkeeping uses `replace` so the aggrega
 A staged publication unit that is skipped because of an error is not considered omitted by `replace`, so its previously published contribution remains unchanged.
 A complete replacement cannot be split into sequential partial replacement submissions because each successful commit would remove contributions omitted from that submission.
 
-An ORD provider can have at most one active submission per publication context, where `open`, `validating` and `failed` submissions are active.
+An ORD provider can have at most one active submission per publication context, where `open`, `validating` and `rejected` submissions are active.
 A request to open another one is rejected with `409 Conflict`, and the problem details identify the active submission so the provider can continue or discard it.
 This serializes the commits of one ORD provider to one publication context.
 Without it, a `replace` submission opened before a `merge` hot fix and committed after it would remove that hot fix.
@@ -121,24 +121,25 @@ The aggregator publishes all remaining valid units together and reports every is
 A document-envelope, authorization, or other error that prevents publication units from being isolated safely fails the complete commit.
 The provider can set `strict` to `true` when opening a submission.
 In strict mode, any error fails the complete commit and the previously published state remains unchanged.
-A failed submission remains available for correction until it expires.
-A default-mode commit with only unit-local errors becomes terminal after it publishes the accepted units, so correcting skipped units requires a new submission.
+A `rejected` submission remains available for correction until it expires.
+A default-mode commit with only unit-local errors becomes `processed` after it publishes the accepted units and cannot be reprocessed, so correcting skipped units requires a new submission.
 Replacing or removing a staged artifact makes it eligible for another commit attempt.
-Committing a failed submission without changes validates the same revision again, which helps when the failure depends on state outside the submission.
+Committing a `rejected` submission without changes validates the same revision again, which helps when the failure depends on state outside the submission.
 The provider retains the submission ID and its submission-local artifact IDs while a submission is editable.
 If it loses that state, it discards the submission and starts a new one rather than risking publication of obsolete staged artifacts.
 
-The submission state is `open`, `validating`, `failed`, or `published`.
+The submission state is `open`, `validating`, `rejected`, or `processed`.
 The aggregator defines and communicates an inactivity timeout and returns the current expiry time with the submission.
 The recommended default is 15 minutes, extended whenever a successful staging operation changes the submission content.
 Expiry is suspended during validation, and failed validation starts a new inactivity period so the provider has time to inspect and repair the submission.
-The aggregator automatically discards staged content when an `open` or `failed` submission remains inactive until that time.
+The aggregator automatically discards staged content when an `open` or `rejected` submission remains inactive until that time.
 Operations on an expired submission return `410 Gone` while an expiry marker exists and `404 Not Found` after that marker is removed.
-A `published` submission stays readable for a retention period chosen by the aggregator, recommended to be at least 24 hours, so providers can read the diagnostics of skipped units.
-After that period, it is answered like an expired submission, and the `410 Gone` problem details state whether the submission expired or was published.
+A `processed` submission stays readable for a retention period chosen by the aggregator, recommended to be at least 24 hours, so providers can read the issues of skipped units.
+After that period, it is answered like an expired submission, and the `410 Gone` problem details state whether the submission expired or was processed.
 The retention period is an aggregator choice, but the responses are standardized so that clients can handle both outcomes in the same way.
 The status endpoint reports counts and lifecycle state.
-The issues endpoint reports all errors, warnings, and information messages and identifies the affected staged artifact and target when available.
+The issues endpoint reports all errors, warnings, and information messages.
+A unit-local issue identifies the affected staged artifact through `artifactId` and its publication unit through exactly one of `ordId`, `groupId`, or `groupTypeId`, adds the `definitionUrl` when it concerns a resource definition, and uses `artifactKind: submission` without a unit identity for submission-wide errors.
 
 Every operation uses HTTPS and authentication.
 Each credential identifies exactly one ORD provider in authoritative aggregator state, and that ORD provider describes exactly one system type or only system-independent information.
@@ -154,7 +155,7 @@ These limits must allow an onboarded provider to publish its complete contributi
 - ✅ Independent valid resources are not blocked by an invalid resource in the same ORD Document or submission.
 - ✅ A resource and every definition it declares are always accepted or skipped together.
 - ✅ Strict submissions can make several requests form one all-or-nothing publication.
-- ✅ Providers can correct a failed submission and commit it again.
+- ✅ Providers can correct a `rejected` submission and commit it again.
 - ✅ `replace` lets the aggregator derive removals from a complete current state without tombstones.
 - ✅ An ORD provider can replace its complete contribution in one publication context without tracking individual deletions.
 - ✅ Asynchronous validation does not keep an upload request open while a large submission is processed.
@@ -163,7 +164,7 @@ These limits must allow an onboarded provider to publish its complete contributi
 - ⚠️ Aggregators must document supported content encodings and capacity limits so providers can plan submissions that fit.
 - ⚠️ Aggregators must retain ORD provider and publication-context provenance for every published contribution.
 - ⚠️ Providers that require dependent resources to advance together must opt into strict validation.
-- ⚠️ Providers must poll for the terminal commit result.
+- ⚠️ Providers must poll for the `processed` or `rejected` commit result.
 - ⚠️ An ORD provider must finish or discard a submission before opening the next one for the same publication context.
 
 ## More Information
