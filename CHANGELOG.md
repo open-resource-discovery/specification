@@ -11,6 +11,15 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `opensharing` as an `apiProtocol`, the vendor-neutral successor to `delta-sharing` ([OpenSharing](https://opensharing.io), an open standard under the Linux Foundation AI & Data). OpenSharing is a superset of Delta Sharing: all existing Delta Sharing clients are compatible, so consumers that support `delta-sharing` MAY treat `opensharing` the same way. The RECOMMENDED `implementationStandard` for it is `sap:opensharing:v1`.
+
+### Deprecated
+
+- Deprecated the `delta-sharing` `apiProtocol` in favor of `opensharing`. Existing documents using `delta-sharing` remain valid; new API Resources SHOULD use `opensharing`.
+
+
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added
