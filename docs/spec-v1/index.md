@@ -180,15 +180,15 @@ The provider MAY set `strict` to `true` when opening the submission to require a
 In strict mode, any error MUST fail the entire commit, publish nothing, and retain the previous published state unchanged.
 Warnings and information messages MUST NOT prevent publication.
 A default-mode commit with only unit-local errors MUST publish the accepted units and report the skipped units through issues.
-After a `published` or `failed` commit, a staged publication unit was skipped if and only if an issue of severity `error` identifies it, and was accepted otherwise; a submission-wide `error` fails the whole commit so that no unit is published.
+After a `processed` or `rejected` commit, a staged publication unit was skipped if and only if an issue of severity `error` identifies it, and was accepted otherwise; a submission-wide `error` fails the whole commit so that no unit is published.
 This lets a provider read per-unit outcomes from the issues endpoint without a separate outcome list.
 All accepted units from one commit MUST become discoverable atomically, so consumers cannot observe an intermediate state.
 A validation or authorization error that cannot be confined safely to one publication unit MUST fail the entire commit in both modes.
 This includes an error in the ORD Document envelope that prevents its contained units from being isolated reliably.
-A failed submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
-The provider MAY also commit a failed submission without changes, and the aggregator MUST then validate the same staged revision again.
+A `rejected` submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
+The provider MAY also commit a `rejected` submission without changes, and the aggregator MUST then validate the same staged revision again.
 This helps when the failure depends on state outside the submission, such as authorization, ORD ID namespace permissions, or a conflicting contribution from another ORD provider.
-A default-mode submission that publishes with skipped units is `published` and immutable, and the provider MUST use a new submission to correct those units.
+A default-mode submission that publishes with skipped units is `processed` and immutable, and the provider MUST use a new submission to correct those units.
 The provider repairs them by staging exactly the skipped units, identified by the `ordId`, `groupId`, or `groupTypeId` reported for each, together with the definitions those units declare.
 The aggregator does not perform automatic selective retry.
 The provider MUST retain the submission ID and its submission-local artifact IDs while a submission is editable.
@@ -220,18 +220,18 @@ The recommended default timeout is 15 minutes.
 The expiry time starts when the submission is created and is extended whenever a successful staging operation changes its content.
 Status and issue retrieval MUST NOT extend it.
 Expiry is suspended while a submission is `validating`.
-If validation fails, the aggregator MUST communicate a new expiry time for the resulting `failed` submission.
-The aggregator MUST automatically discard the staged content of an `open` or `failed` submission that remains inactive until its expiry time.
+If validation fails, the aggregator MUST communicate a new expiry time for the resulting `rejected` submission.
+The aggregator MUST automatically discard the staged content of an `open` or `rejected` submission that remains inactive until its expiry time.
 A provider MAY discard such a submission explicitly.
 While the aggregator retains an expiry marker, every operation targeting the expired submission MUST return `410 Gone`.
 If the aggregator later removes that marker completely, subsequent requests return `404 Not Found`, as they do for any unknown or inaccessible submission identifier.
 
-A `published` submission is retained for a period chosen by the aggregator, so the provider can read its final status and issues, including errors for skipped publication units.
-The aggregator communicates the retention period during onboarding and returns its end as the expiry time of the published submission.
+A `processed` submission is retained for a period chosen by the aggregator, so the provider can read its final status and issues, including errors for skipped publication units.
+The aggregator communicates the retention period during onboarding and returns its end as the expiry time of the `processed` submission.
 The retention period is RECOMMENDED to be at least 24 hours.
 When it ends, the aggregator discards the submission record, while the published ORD information remains unchanged.
 Requests for that submission then return `410 Gone` while the aggregator retains a marker, and `404 Not Found` afterwards.
-A `410 Gone` response MUST state the outcome in its problem details: `expired` when the submission was discarded without being published, or `published` when its retention period ended after publication.
+A `410 Gone` response MUST state the outcome in its problem details: `expired` when the submission was discarded without being published, or `processed` when its retention period ended after publication.
 
 #### Publication Context and Removal
 
@@ -272,7 +272,7 @@ Request data MUST NOT establish authority to change a contribution; authorizatio
 #### Concurrent Submissions
 
 An ORD provider MUST NOT have more than one active submission for the same publication context.
-A submission is active while it is `open`, `validating`, or `failed`.
+A submission is active while it is `open`, `validating`, or `rejected`.
 If the ORD provider requests another submission for that context, the aggregator MUST reject it with `409 Conflict` and identify the active submission in the problem details.
 The provider can then continue, commit, or discard the active submission.
 A repeated creation request with the same `Idempotency-Key` returns the original submission instead.
@@ -287,20 +287,20 @@ A submission has one of the following states:
 
 - `open`: artifacts can be staged, replaced, or removed.
 - `validating`: the committed revision is immutable while validation runs.
-- `failed`: a submission-wide error occurred, or strict validation found at least one error. The staged artifacts can be corrected, or the submission can be committed again unchanged.
-- `published`: commit processing completed and the accepted publication units were applied atomically. A non-strict published submission can contain errors for skipped units.
+- `rejected`: a submission-wide error occurred, or strict validation found at least one error. The staged artifacts can be corrected, or the submission can be committed again unchanged.
+- `processed`: commit processing completed and the accepted publication units were applied atomically. A non-strict `processed` submission can contain errors for skipped units, so the provider MUST read its issues.
 
 ```mermaid
 stateDiagram-v2
     [*] --> open: create
     open --> validating: commit
-    validating --> published: accepted units applied
-    validating --> failed: fatal or strict-mode error
-    failed --> open: change staged artifact
-    failed --> validating: commit again
+    validating --> processed: accepted units applied
+    validating --> rejected: fatal or strict-mode error
+    rejected --> open: change staged artifact
+    rejected --> validating: commit again
     open --> [*]: discard or expire
-    failed --> [*]: discard or expire
-    published --> [*]: retention ends
+    rejected --> [*]: discard or expire
+    processed --> [*]: retention ends
 ```
 
 The status endpoint reports the state, artifact counts, issue counts, and expiry time.

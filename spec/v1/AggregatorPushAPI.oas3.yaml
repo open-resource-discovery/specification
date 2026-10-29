@@ -51,7 +51,7 @@ paths:
         context.
         In `replace` mode, omission removes prior contributions from this ORD provider in the
         publication context.
-        An ORD provider can have at most one active (`open`, `validating`, or `failed`) submission
+        An ORD provider can have at most one active (`open`, `validating`, or `rejected`) submission
         per publication context. Another creation request for that context is rejected with
         `409 Conflict`, and `activeSubmissionId` in the problem details identifies the active
         submission. A repeated request with the same `Idempotency-Key` returns the original
@@ -152,8 +152,8 @@ paths:
       operationId: discardSubmission
       summary: Discard a submission
       description: |-
-        Discards the staged artifacts of an `open` or `failed` submission.
-        A submission that is `validating` or `published` cannot be discarded.
+        Discards the staged artifacts of an `open` or `rejected` submission.
+        A submission that is `validating` or `processed` cannot be discarded.
       responses:
         "204":
           description: Submission discarded.
@@ -386,13 +386,13 @@ paths:
         Before publishing, the aggregator verifies again that the authenticated push client is
         authorized for the publication context.
         Repeating this request while the same revision is validating returns its current state.
-        Committing a `failed` submission without changes validates the same staged revision again,
+        Committing a `rejected` submission without changes validates the same staged revision again,
         for example after authorization or a conflicting contribution outside the submission changed.
         Accepted publication units are applied atomically.
-        A submission-wide error, or any error in strict mode, moves the submission to `failed`,
+        A submission-wide error, or any error in strict mode, moves the submission to `rejected`,
         publishes nothing, and preserves the staged artifacts so the provider can replace or
         remove them and commit again.
-        A default-mode commit that has only unit-local errors becomes `published` after applying
+        A default-mode commit that has only unit-local errors becomes `processed` after applying
         its valid units; skipped units and their errors remain visible in the issues.
       responses:
         "202":
@@ -407,7 +407,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Submission"
         "200":
-          description: The same staged revision was already published.
+          description: The same staged revision was already processed.
           content:
             application/json:
               schema:
@@ -546,7 +546,7 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
     NotFound:
-      description: The submission identifier is unknown or is not visible to this ORD provider. This also applies after the aggregator removes the marker of an expired submission or of a published submission whose retention period ended.
+      description: The submission identifier is unknown or is not visible to this ORD provider. This also applies after the aggregator removes the marker of an expired submission or of a processed submission whose retention period ended.
       content:
         application/problem+json:
           schema:
@@ -560,8 +560,8 @@ components:
     Gone:
       description: |-
         The submission is no longer available. The aggregator returns this while it retains a marker
-        for the submission, either after an `open` or `failed` submission expired without being
-        published, or after the retention period of a `published` submission ended.
+        for the submission, either after an `open` or `rejected` submission expired without being
+        published, or after the retention period of a `processed` submission ended.
         The `outcome` member of the problem details states which case applies.
       content:
         application/problem+json:
@@ -676,11 +676,11 @@ components:
           type: string
           format: date-time
           description: |-
-            For an `open` or `failed` submission, the current inactivity deadline after which the submission and its staged artifacts are discarded.
+            For an `open` or `rejected` submission, the current inactivity deadline after which the submission and its staged artifacts are discarded.
             Successful staging changes extend this value; status and issue retrieval do not.
             Expiry is suspended during validation, and a failed validation receives a new inactivity deadline.
             Aggregators define and communicate the timeout, with 15 minutes as the recommended default.
-            For a `published` submission, the end of its retention period, after which its status and issues are no longer available.
+            For a `processed` submission, the end of its retention period, after which its status and issues are no longer available.
             Aggregators choose and communicate the retention period, with at least 24 hours recommended.
         artifactCounts:
           $ref: "#/components/schemas/ArtifactCounts"
@@ -692,7 +692,7 @@ components:
         updatedAt:
           type: string
           format: date-time
-        publishedAt:
+        processedAt:
           type: string
           format: date-time
     SubmissionStatus:
@@ -700,10 +700,10 @@ components:
       description: |-
         `open` accepts artifact changes.
         `validating` is an immutable staged revision undergoing commit validation.
-        `failed` retains artifacts for correction after a submission-wide error or any error in strict mode.
-        `published` is terminal and indicates that commit processing completed and all accepted publication units were applied atomically.
-        A published non-strict submission can have errors for skipped publication units.
-      enum: [open, validating, failed, published]
+        `rejected` retains artifacts for correction after a submission-wide error or any error in strict mode.
+        `processed` is terminal and indicates that commit processing completed and all accepted publication units were applied atomically.
+        A `processed` non-strict submission can have errors for skipped publication units, so a provider MUST read its issues.
+      enum: [open, validating, rejected, processed]
     ArtifactCounts:
       type: object
       required: [documents, resourceDefinitions]
@@ -805,11 +805,11 @@ components:
           format: uri-reference
         outcome:
           type: string
-          enum: [expired, published]
+          enum: [expired, processed]
           description: |-
             Present in `410 Gone` responses.
             `expired` means the submission was discarded after inactivity without being published.
-            `published` means the submission was published and its retention period ended; its published ORD information is unaffected.
+            `processed` means the submission was processed and its retention period ended; its published ORD information is unaffected.
         activeSubmissionId:
           type: string
           description: Identifier of the active submission that prevents creating another submission for the same ORD provider and publication context.

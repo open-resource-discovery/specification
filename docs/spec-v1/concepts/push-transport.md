@@ -69,7 +69,7 @@ To move ORD information from one ORD provider to another, remove it from the fir
 
 An aggregator documents its supported request content encodings and operational limits during onboarding.
 These include encoded and decoded artifact size, aggregate decoded submission size, artifact count, active submissions, concurrent requests, and request rate.
-The aggregator also communicates its submission inactivity timeout and how long it retains published submissions for status and issues.
+The aggregator also communicates its submission inactivity timeout and how long it retains processed submissions for status and issues.
 
 A provider should check these limits before opening a submission.
 An ORD provider can have only one active submission per publication context, so it commits or discards a submission before opening the next one for that context.
