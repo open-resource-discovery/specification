@@ -183,6 +183,7 @@ export interface OrdDocument {
   /**
    * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
    * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
+   * The only exception is a Package with [`publicationMode: replace`](../concepts/grouping-and-bundling.md#package-publication-mode) where the ORD aggregator supports Package-level replacement.
    *
    * A tombstone entry MAY be removed after a grace period of 31 days.
    */
@@ -4222,8 +4223,10 @@ export interface Product {
  * The Package can also indicate which vendor owns the packaged resources and which products they are part of.
  * For partner or customer content, the Package indicates current ownership attribution through `vendor`.
  * The independent `partOfProducts` assignment indicates the associated product offerings.
+ * A Package with `publicationMode: replace` can also serve as a complete publication boundary for its assigned resources, when supported by the ORD Aggregator.
+ * This declaration does not authorize a publisher to replace the Package.
  *
- * A Package SHOULD contain at least one resource. Avoid empty Packages.
+ * A Package SHOULD contain at least one resource. An empty Package with `publicationMode: replace` MAY represent a complete empty resource set.
  *
  * The Package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.
  *
@@ -4298,6 +4301,26 @@ export interface Package {
    * For example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented.
    */
   version: string;
+  /**
+   * Declares the publication mode intended for resources assigned to this Package.
+   * If omitted, the mode is `merge`, so removals of resources require tombstones.
+   *
+   * In `merge` mode, omission of a resource does not remove it from the aggregated ORD information.
+   * Removals continue to require explicit tombstones.
+   *
+   * In `replace` mode, the resources assigned to this Package describe a complete publication set.
+   * An ORD Aggregator that supports Package-level replacement MAY remove previously retained resources from this Package that are absent from a successfully retrieved complete set.
+   * This removal by omission is an exception to the general rule that removals are indicated through tombstones.
+   * Resources that are present but rejected during validation, or now assigned to another Package, are not removed.
+   * The Package itself and resources outside it are not removed by this mode.
+   *
+   * ORD Documents may split a Package across multiple documents, so one document is not necessarily a complete set.
+   * The transport or integration must establish that retrieval of the complete set succeeded before replacement is applied.
+   * How this declaration composes with a transport-level publication mode is defined by that transport.
+   * This property does not identify or authorize a publisher.
+   * Support for Package-level replacement and the authenticated publishers allowed to use it are decisions for the ORD Aggregator.
+   */
+  publicationMode?: "merge" | "replace";
   /**
    * The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.
    * Depending on the chosen policy level, additional expectations and validations rules will be applied.
@@ -4823,6 +4846,7 @@ export interface GroupType {
 /**
  * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
  * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
+ * Resources omitted from a Package with `publicationMode: replace` are an exception and are removed without a tombstone, where the ORD aggregator supports Package-level replacement.
  *
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *

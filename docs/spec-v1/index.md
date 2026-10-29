@@ -573,6 +573,8 @@ The following rules need to be implemented by ORD aggregators:
 
 The removal of resources is indicated through setting a [Tombstone](./interfaces/Document.md#tombstone).
 The ORD Aggregator MUST remove unpublished information that has been tombstoned within a grace period of 31 days.
+Omitting previously published information does not remove it.
+The only exception is a Package with [`publicationMode: replace`](./concepts/grouping-and-bundling.md#package-publication-mode) where the aggregator supports Package-level replacement.
 
 ##### Hosting Resource Definitions
 
