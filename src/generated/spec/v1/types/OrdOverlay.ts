@@ -209,6 +209,23 @@ export interface ORDOverlay {
    * Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
    */
   description?: string;
+  /**
+   * Optional classification of the overlay's intent, i.e. *why* this overlay exists and what kind of
+   * enrichment or adaptation it applies as a whole.
+   *
+   * This complements the free-text `description` by providing a machine-readable value that registries
+   * and tooling can filter, group, and report on (e.g. "show all AI-enrichment overlays for this resource").
+   * It is purely informational and has no effect on patch application.
+   *
+   * This reuses the same vocabulary as the ORD Document
+   * [API Resource Definition](../../spec-v1/interfaces/Document.md#api-resource-definition) `purpose`, so that an
+   * overlay's intent aligns with the `purpose` of the `resourceDefinitions` entry it is attached to.
+   *
+   * MUST be a valid [Concept ID](../../spec-v1/concepts/identifiers.md#concept-id). The `ord:` namespace is
+   * reserved for values standardized by the ORD specification itself; custom values MUST use a vendor- or
+   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
   perspective?: OverlayPerspective;
   describedSystemType?: OverlaySystemType;
   describedSystemVersion?: OverlaySystemVersion;
