@@ -3097,6 +3097,8 @@ definitions:
 
       Agents enable intelligent automation and decision-making within business processes by providing semantic understanding and context-aware capabilities beyond traditional API-based integrations.
 
+      An Agent can also declare which Capabilities it implements and which other Agents it delegates tasks to through typed, agent-owned relationships.
+
       For more details, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols.md).
     properties:
       ordId:
@@ -3240,6 +3242,39 @@ definitions:
           $ref: "#/definitions/ExposedApiResourcesTarget"
         examples:
           - [{ "ordId": "sap.foo:apiResource:DisputeResolutionAgent:v1" }]
+
+      relatedCapabilities:
+        type: array
+        x-feature-status: beta
+        description: |-
+          Optional list of Capability Resources related to the described Agent.
+
+          Use `ord:implementsCapability` to identify a Capability whose ability or feature the Agent implements.
+          The publisher of the described Agent owns this declaration. Consumers MAY derive inverse navigation without a reciprocal property on the Capability.
+
+          Capabilities consumed or required by the Agent MUST be described through `integrationDependencies` instead of duplicating that requirement here.
+          If `relationType` is omitted, the reference does not imply implementation or consumption.
+        items:
+          $ref: "#/definitions/RelatedCapability"
+        examples:
+          - [{ "ordId": "example.procurement:capability:OrderResolution:v1", "relationType": "ord:implementsCapability" }]
+
+      relatedAgents:
+        type: array
+        x-feature-status: beta
+        description: |-
+          Optional list of Agent Resources related to the described Agent.
+
+          Use `ord:delegatesTo` to declare that the described Agent delegates tasks or subtasks to the referenced Agent.
+          The publisher of the described Agent owns this declaration. Consumers MAY derive inverse navigation without requiring the referenced Agent to publish a matching relationship.
+
+          Requirements on the referenced Agent's interaction APIs MUST be described through `integrationDependencies`.
+          This property identifies an agent-level role in the source Agent's behavior, not a duplicate list of required APIs or an assertion that a runtime connection exists.
+          If `relationType` is omitted, the reference does not imply delegation.
+        items:
+          $ref: "#/definitions/RelatedAgent"
+        examples:
+          - [{ "ordId": "example.risk:agent:SupplierRisk:v1", "relationType": "ord:delegatesTo" }]
 
       integrationDependencies:
         type: array
@@ -5899,7 +5934,7 @@ definitions:
     x-ums-type: "embedded"
     type: object
     description: |-
-      Defines a relation to another Capability (via its ORD ID).
+      Defines a relation to a Capability (via its ORD ID), published by the source Capability or Agent.
     properties:
       ordId:
         <<: *ordId
@@ -5909,7 +5944,7 @@ definitions:
         x-ums-reverse-relationship:
           propertyName: inverseRelatedCapabilities
           description: |-
-            Capabilities that declared a relationship to this capability.
+            Published relationships that reference this Capability.
           min: 0
           max: "*"
         examples:
@@ -5926,7 +5961,65 @@ definitions:
             pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
             description: |-
               Any valid [Concept ID](../concepts/identifiers.md#concept-id).
+          - const: "ord:implementsCapability"
+            x-feature-status: beta
+            description: |-
+              The source Agent or Capability implements the ability or feature described by the referenced Capability.
+
+              MUST ONLY be used on `Agent.relatedCapabilities` or `Capability.relatedCapabilities`.
+              This is a declaration of implementation, not a requirement to consume the target Capability, an invocation contract, or a runtime authorization grant.
         examples:
+          - "ord:implementsCapability"
+          - "foo.bar:relationName"
+    required:
+      - ordId
+    additionalProperties: false
+
+  ############################################################################################################
+
+  RelatedAgent:
+    title: Related Agent
+    x-feature-status: beta
+    x-ums-type: "embedded"
+    type: object
+    description: |-
+      Defines a relation to an Agent (via its ORD ID), published by the source Agent.
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):(agent):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        x-association-target:
+          - "#/definitions/Agent/ordId"
+        x-ums-reverse-relationship:
+          propertyName: inverseRelatedAgents
+          description: |-
+            Published relationships that reference this Agent.
+          min: 0
+          max: "*"
+        examples:
+          - "example.risk:agent:SupplierRisk:v1"
+      relationType:
+        type: string
+        description: |-
+          Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
+
+          Defines the semantic meaning of the relationship.
+          If not provided, the relationship has no specific semantics ("related somehow").
+        anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+            description: |-
+              Any valid [Concept ID](../concepts/identifiers.md#concept-id).
+          - const: "ord:delegatesTo"
+            x-feature-status: beta
+            description: |-
+              The source Agent delegates tasks or subtasks to the referenced Agent.
+
+              MUST ONLY be used on `Agent.relatedAgents`. Its direction is from the delegating Agent to the delegate.
+              It does not imply a reciprocal delegation, identify a protocol or operation, or assert that a task has executed.
+              Technical integration requirements are described separately through `integrationDependencies`.
+        examples:
+          - "ord:delegatesTo"
           - "foo.bar:relationName"
     required:
       - ordId

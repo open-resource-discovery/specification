@@ -2625,7 +2625,7 @@ export interface Capability {
   systemInstanceAware?: boolean;
 }
 /**
- * Defines a relation to another Capability (via its ORD ID).
+ * Defines a relation to a Capability (via its ORD ID), published by the source Capability or Agent.
  */
 export interface RelatedCapability {
   /**
@@ -2640,7 +2640,7 @@ export interface RelatedCapability {
    * Defines the semantic meaning of the relationship.
    * If not provided, the relationship has no specific semantics ("related somehow").
    */
-  relationType?: string;
+  relationType?: (string | "ord:implementsCapability") & string;
 }
 /**
  * Link and categorization of a machine-readable capability definition.
@@ -3187,6 +3187,8 @@ export interface DataProductLink {
  *
  * Agents enable intelligent automation and decision-making within business processes by providing semantic understanding and context-aware capabilities beyond traditional API-based integrations.
  *
+ * An Agent can also declare which Capabilities it implements and which other Agents it delegates tasks to through typed, agent-owned relationships.
+ *
  * For more details, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols.md).
  */
 export interface Agent {
@@ -3487,6 +3489,27 @@ export interface Agent {
    */
   exposedApiResources?: ExposedAPIResource[];
   /**
+   * Optional list of Capability Resources related to the described Agent.
+   *
+   * Use `ord:implementsCapability` to identify a Capability whose ability or feature the Agent implements.
+   * The publisher of the described Agent owns this declaration. Consumers MAY derive inverse navigation without a reciprocal property on the Capability.
+   *
+   * Capabilities consumed or required by the Agent MUST be described through `integrationDependencies` instead of duplicating that requirement here.
+   * If `relationType` is omitted, the reference does not imply implementation or consumption.
+   */
+  relatedCapabilities?: RelatedCapability[];
+  /**
+   * Optional list of Agent Resources related to the described Agent.
+   *
+   * Use `ord:delegatesTo` to declare that the described Agent delegates tasks or subtasks to the referenced Agent.
+   * The publisher of the described Agent owns this declaration. Consumers MAY derive inverse navigation without requiring the referenced Agent to publish a matching relationship.
+   *
+   * Requirements on the referenced Agent's interaction APIs MUST be described through `integrationDependencies`.
+   * This property identifies an agent-level role in the source Agent's behavior, not a duplicate list of required APIs or an assertion that a runtime connection exists.
+   * If `relationType` is omitted, the reference does not imply delegation.
+   */
+  relatedAgents?: RelatedAgent[];
+  /**
    * Optional list of integration dependencies that the agent relies on.
    *
    * MUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID.
@@ -3518,6 +3541,24 @@ export interface ExposedAPIResource {
    * MUST be a valid reference to an [API Resource](#api-resource) ORD ID.
    */
   ordId: string;
+}
+/**
+ * Defines a relation to an Agent (via its ORD ID), published by the source Agent.
+ */
+export interface RelatedAgent {
+  /**
+   * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
+   *
+   * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
+   */
+  ordId: string;
+  /**
+   * Optional type of the relationship as a [Concept ID](../concepts/identifiers.md#concept-id).
+   *
+   * Defines the semantic meaning of the relationship.
+   * If not provided, the relationship has no specific semantics ("related somehow").
+   */
+  relationType?: (string | "ord:delegatesTo") & string;
 }
 /**
  * An Overlay Resource is a standalone, versioned resource that references a metadata patch file.
