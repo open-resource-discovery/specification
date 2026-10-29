@@ -69,7 +69,7 @@ IF the resources have already been published to the public [SAP Business Acceler
   - This includes current limitations:
     - Packages MUST NOT be shared by multiple provider (source) systems
     - Packages MUST NOT contain mixed resource types. E.g., a Package must only contain either APIs or Events, but never both together.
-    - Packages MUST NOT contain content of mixed `visibility`
+- A Package can contain resources with different visibility values. Each resource and its definitions remain subject to their existing visibility rules.
 - The vendor of a Package MUST be set to `sap:vendor:SAP:`, `customer:vendor:Customer:`, or the registered Vendor of the partner to which ownership is attributed.
 
 ### Consumption Bundle
