@@ -179,14 +179,18 @@ By default, commit validation MUST accept every valid publication unit and skip 
 The provider MAY set `strict` to `true` when opening the submission to require all-or-nothing validation.
 In strict mode, any error MUST fail the entire commit, publish nothing, and retain the previous published state unchanged.
 Warnings and information messages MUST NOT prevent publication.
-A default-mode commit with only unit-local errors MUST publish the accepted units and report the skipped units through diagnostics.
+A default-mode commit with only unit-local errors MUST publish the accepted units and report the skipped units through issues.
+After a `published` or `failed` commit, a staged publication unit was skipped if and only if an issue of severity `error` identifies it, and was accepted otherwise; a submission-wide `error` fails the whole commit so that no unit is published.
+This lets a provider read per-unit outcomes from the issues endpoint without a separate outcome list.
 All accepted units from one commit MUST become discoverable atomically, so consumers cannot observe an intermediate state.
 A validation or authorization error that cannot be confined safely to one publication unit MUST fail the entire commit in both modes.
 This includes an error in the ORD Document envelope that prevents its contained units from being isolated reliably.
 A failed submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
 The provider MAY also commit a failed submission without changes, and the aggregator MUST then validate the same staged revision again.
 This helps when the failure depends on state outside the submission, such as authorization, ORD ID namespace permissions, or a conflicting contribution from another ORD provider.
-A default-mode submission that publishes with skipped units is terminal, and the provider MUST use a new submission to correct those units.
+A default-mode submission that publishes with skipped units is `published` and immutable, and the provider MUST use a new submission to correct those units.
+The provider repairs them by staging exactly the skipped units, identified by the `ordId`, `groupId`, or `groupTypeId` reported for each, together with the definitions those units declare.
+The aggregator does not perform automatic selective retry.
 The provider MUST retain the submission ID and its submission-local artifact IDs while a submission is editable.
 If that state is lost, the provider MUST discard the submission and start a new one rather than risk publishing obsolete staged artifacts.
 
@@ -222,7 +226,7 @@ A provider MAY discard such a submission explicitly.
 While the aggregator retains an expiry marker, every operation targeting the expired submission MUST return `410 Gone`.
 If the aggregator later removes that marker completely, subsequent requests return `404 Not Found`, as they do for any unknown or inaccessible submission identifier.
 
-A `published` submission is retained for a period chosen by the aggregator, so the provider can read its final status and diagnostics, including errors for skipped publication units.
+A `published` submission is retained for a period chosen by the aggregator, so the provider can read its final status and issues, including errors for skipped publication units.
 The aggregator communicates the retention period during onboarding and returns its end as the expiry time of the published submission.
 The retention period is RECOMMENDED to be at least 24 hours.
 When it ends, the aggregator discards the submission record, while the published ORD information remains unchanged.
@@ -234,7 +238,12 @@ A `410 Gone` response MUST state the outcome in its problem details: `expired` w
 Each submission belongs to the ORD provider established by its authenticated credential and to exactly one publication context.
 The aggregator identifies the ORD provider as the technical integration behind the authenticated client, as agreed during onboarding.
 The publication context contains one [perspective](#perspectives) and any required system version or aggregator-issued system instance identifier.
+The provider MUST supply `perspective` explicitly when creating a submission, even when the authenticated credential is restricted to one perspective.
+The provider MAY omit `systemVersion` for `system-version` or `systemInstanceId` for `system-instance` only when the credential unambiguously identifies the required version or instance.
 The aggregator MUST verify that the staged ORD Documents describe the same authorized context.
+All staged ORD Documents MUST describe the submission's perspective and target; a submission MUST NOT mix perspectives or targets.
+The same ORD ID can legitimately occur in different perspectives.
+Keeping each submission scoped to one perspective and target makes validation, replacement, and deletion unambiguous.
 
 Several ORD providers can together describe one application or service, and each of them can use push or [pull transport](#pull-transport).
 Their contributions MUST NOT overlap, as already required by [ORD ID uniqueness](#ord-id-uniqueness-and-aggregation) within a perspective.
@@ -272,7 +281,7 @@ This ensures that commits from one ORD provider to one publication context are a
 For example, a `replace` submission cannot be opened before a `merge` hot fix and then committed after it, which would remove that hot fix.
 Submissions for different publication contexts, or from different ORD providers, do not conflict because their contributions do not overlap.
 
-#### Status and Diagnostics
+#### Status and Issues
 
 A submission has one of the following states:
 
@@ -294,9 +303,12 @@ stateDiagram-v2
     published --> [*]: retention ends
 ```
 
-The status endpoint reports the state, artifact counts, diagnostic counts, and expiry time.
+The status endpoint reports the state, artifact counts, issue counts, and expiry time.
 The issues endpoint reports all errors, warnings, and information messages for the current staged revision.
-Each issue SHOULD identify the staged artifact and target to which it applies.
+Each issue that applies to one publication unit MUST identify its staged artifact through `artifactId`, the ID the provider assigned when staging that artifact, and the unit through exactly one of `ordId`, `groupId`, or `groupTypeId`.
+An issue about a resource definition MUST additionally carry the exact declared `definitionUrl`, so that two resources referencing the same URL produce distinguishable issues.
+An issue MAY include a `jsonPointer` for a precise location within the staged artifact.
+A submission-wide issue that cannot be confined to one publication unit MUST use `artifactKind: submission` and carries no unit identity.
 
 #### Operational Limits, Timeouts, Retries, and Rate Limiting
 

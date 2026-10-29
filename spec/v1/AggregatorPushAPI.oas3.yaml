@@ -127,7 +127,7 @@ paths:
       summary: Get submission state
       responses:
         "200":
-          description: Current submission state and diagnostic summary.
+          description: Current submission state and issue summary.
           headers:
             Retry-After:
               $ref: "#/components/headers/RetryAfter"
@@ -180,14 +180,14 @@ paths:
     get:
       tags: [Submissions]
       operationId: listSubmissionIssues
-      summary: List submission diagnostics
+      summary: List submission issues
       description: |-
         Returns errors, warnings, and information messages for the current staged revision.
-        Once validation finishes, the paginated collection contains the complete diagnostics
+        Once validation finishes, the paginated collection contains the complete issues
         for that commit attempt.
       responses:
         "200":
-          description: Submission diagnostics.
+          description: Submission issues.
           content:
             application/json:
               schema:
@@ -393,7 +393,7 @@ paths:
         publishes nothing, and preserves the staged artifacts so the provider can replace or
         remove them and commit again.
         A default-mode commit that has only unit-local errors becomes `published` after applying
-        its valid units; skipped units and their errors remain visible in the diagnostics.
+        its valid units; skipped units and their errors remain visible in the issues.
       responses:
         "202":
           description: Validation started or is still running.
@@ -632,6 +632,11 @@ components:
       properties:
         perspective:
           type: string
+          description: |-
+            Explicitly selects the submission's perspective and MUST be provided even when the
+            authenticated credential is restricted to one perspective. All staged ORD Documents
+            MUST describe this perspective and the same publication target; a submission MUST NOT
+            mix perspectives or targets.
           enum: [system-type, system-version, system-instance, system-independent]
         systemVersion:
           type: string
@@ -754,9 +759,30 @@ components:
           enum: [document, resource-definition, submission]
         artifactId:
           type: string
-        target:
+          description: |-
+            Identifier the provider assigned to the staged artifact the issue applies to.
+            Present for every unit-local issue; omitted only when `artifactKind` is `submission`.
+        ordId:
           type: string
-          description: JSON Pointer, ORD ID, or exact resource-definition URL associated with the issue.
+          description: |-
+            ORD ID of the publication unit the issue applies to, when that unit is a resource or
+            taxonomy object. Exactly one of `ordId`, `groupId`, or `groupTypeId` identifies the unit
+            of a unit-local issue.
+        groupId:
+          type: string
+          description: Group ID of the publication unit the issue applies to, when that unit is a Group.
+        groupTypeId:
+          type: string
+          description: Group Type ID of the publication unit the issue applies to, when that unit is a Group Type.
+        definitionUrl:
+          type: string
+          description: |-
+            Exact declared `resourceDefinitions[].url` of the resource definition the issue applies to.
+            MUST be present when the issue is about a resource definition, so that two resources
+            referencing the same URL produce distinguishable issues.
+        jsonPointer:
+          type: string
+          description: Optional JSON Pointer deep-linking to the exact location of the issue within the staged artifact.
     Problem:
       type: object
       description: Problem Details object as defined by RFC 9457.
