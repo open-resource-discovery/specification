@@ -1,0 +1,903 @@
+openapi: 3.1.0
+info:
+  title: Open Resource Discovery Aggregator Push API
+  version: 1.0.0
+  description: |-
+    ALPHA: this API may still change in breaking ways.
+
+    The ORD Aggregator Push API lets an authenticated ORD provider stage ORD Documents and
+    resource definitions in a submission and publish them after asynchronous validation.
+    The normative rules are defined in the ORD specification:
+    https://open-resource-discovery.org/spec-v1/#push-transport
+    Guidance on publication modes and capacity planning:
+    https://open-resource-discovery.org/spec-v1/concepts/push-transport
+
+    Staged artifacts are not discoverable.
+    Before a document is staged, it must be valid JSON and carry the identifiers and metadata that
+    push transport relies on.
+    Commit then validates the complete staged content, including semantic rules and references.
+    A commit publishes every valid publication unit and skips units with errors.
+    One ORD information object and every resource definition it declares form one publication
+    unit, so a resource is never published without all of its definitions.
+    An error that cannot be confined to one publication unit fails the entire commit. The
+    submission then remains available for correction until it expires.
+    In `replace` mode, omission removes the ORD provider's prior contributions in the publication
+    context. An ORD provider can have at most one active submission per publication context.
+
+    Every operation requires authentication.
+    One ORD provider may publish for multiple separately onboarded applications or services.
+    Each submission must resolve to one authorized publication target and perspective, based on
+    authoritative onboarding and authentication information. Each target has its own active
+    submission and replacement boundary, even when the ORD provider is the same.
+    The aggregator chooses the machine-to-machine authentication mechanism and communicates
+    its API base URL and credentials during onboarding.
+    An aggregator may rate limit any operation.
+    A rate-limited response includes `Retry-After`, so that a provider that retries knows when to do so.
+    During onboarding, the aggregator documents the supported request `Content-Encoding` values and
+    limits for encoded requests, decoded artifacts, aggregate staged content, artifact counts,
+    active submissions, request rate, and concurrency. See
+    https://open-resource-discovery.org/spec-v1/#operational-limits-timeouts-retries-and-rate-limiting
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+externalDocs:
+  description: Open Resource Discovery Specification
+  url: https://open-resource-discovery.org/spec-v1/#push-transport
+servers:
+  - url: https://aggregator.example.org/ord-push
+    description: Example base URL communicated by the aggregator.
+tags:
+  - name: Submissions
+    description: Open, commit, and discard submissions, and read their status and validation issues.
+  - name: Documents
+    description: Stage standard ORD Documents within a submission.
+  - name: ResourceDefinitions
+    description: Stage native resource-definition bytes within a submission.
+paths:
+  /v1/submissions:
+    post:
+      tags: [Submissions]
+      operationId: createSubmission
+      summary: Open a submission
+      description: |-
+        Opens a submission for the authenticated ORD provider and one publication context.
+        Content staged in the submission is not discoverable until it is committed and processed.
+        The publication mode defaults to `merge`. The `replace` mode must be selected explicitly,
+        because omission then removes prior contributions of this ORD provider in the
+        publication context.
+        An ORD provider can have at most one active (`open`, `validating`, or `rejected`) submission
+        per publication context. A request to open another one for that context is rejected with
+        `409 Conflict`, and `activeSubmissionId` in the problem details identifies the active
+        submission. A repeated request with the same `Idempotency-Key` returns the original
+        submission instead.
+        Commit validation accepts every valid publication unit and skips units with errors.
+        The response states when the submission expires if its staged content does not change.
+        See https://open-resource-discovery.org/spec-v1/#publication-context-and-removal
+        and https://open-resource-discovery.org/spec-v1/#concurrent-submissions
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSubmissionRequest"
+            examples:
+              merge:
+                summary: Merge into the ORD provider's contribution
+                value:
+                  context:
+                    perspective: system-type
+              replace:
+                summary: Replace the ORD provider's contribution in this context
+                value:
+                  publicationMode: replace
+                  context:
+                    perspective: system-type
+      responses:
+        "201":
+          description: Submission created.
+          headers:
+            Location:
+              $ref: "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          description: |-
+            Another submission is already active for this ORD provider and publication context,
+            or the idempotency key was reused with different request content. In the first case,
+            `activeSubmissionId` identifies the active submission.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /v1/submissions/{submissionId}:
+    parameters:
+      - $ref: "#/components/parameters/SubmissionId"
+    get:
+      tags: [Submissions]
+      operationId: getSubmission
+      summary: Get submission state
+      responses:
+        "200":
+          description: Current submission state and issue summary.
+          headers:
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags: [Submissions]
+      operationId: discardSubmission
+      summary: Discard a submission
+      description: |-
+        Discards the staged artifacts of an `open` or `rejected` submission.
+        A submission that is `validating` or `processed` cannot be discarded.
+      responses:
+        "204":
+          description: Submission discarded.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /v1/submissions/{submissionId}/issues:
+    parameters:
+      - $ref: "#/components/parameters/SubmissionId"
+      - $ref: "#/components/parameters/Cursor"
+      - $ref: "#/components/parameters/Limit"
+    get:
+      tags: [Submissions]
+      operationId: listSubmissionIssues
+      summary: List submission issues
+      description: |-
+        Returns errors, warnings, and information messages for the current staged revision.
+        Once validation finishes, the pages together contain all issues of that commit attempt.
+        See https://open-resource-discovery.org/spec-v1/#status-and-issues
+      responses:
+        "200":
+          description: Submission issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssuePage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /v1/submissions/{submissionId}/documents/{artifactId}:
+    parameters:
+      - $ref: "#/components/parameters/SubmissionId"
+      - $ref: "#/components/parameters/ArtifactId"
+    put:
+      tags: [Documents]
+      operationId: putSubmissionDocument
+      summary: Stage or replace an ORD Document
+      description: |-
+        Stages one standard ORD Document under an artifact ID assigned by the provider.
+        Reusing the artifact ID replaces the staged document.
+        Before accepting the upload, the aggregator MUST parse the body as JSON and MUST validate
+        at least the parts of the ORD Document JSON Schema that push transport relies on:
+        (1) the body is a JSON object;
+        (2) `openResourceDiscovery` and `perspective` are present;
+        (3) each processed collection is an array, and each of its items has an identifier
+        (`ordId`, `groupId`, or `groupTypeId`);
+        (4) for each definition entry (in `resourceDefinitions`, or in `definitions` for Entity Types
+        and Capabilities), `url` and `mediaType` are strings.
+        Malformed JSON returns `400`. A document that fails this validation returns `422`.
+        The response SHOULD identify failures through JSON Pointers into the request body.
+        A failed upload MUST NOT change the staged content, the submission state, or the expiry time.
+        The provider must correct or remove the failing objects before staging the document again.
+        The aggregator MAY validate more of the document, but it is not required to. Complete
+        content validation is the provider's responsibility.
+        Each `ordId`, `groupId`, and `groupTypeId` of ORD information (not counting tombstones) must
+        occur only once per submission, compared within its own kind. An upload that repeats an
+        identifier, or contains one that another staged ORD Document already contains, is rejected
+        with `422`. In `merge` mode, an upload is also rejected with `422` if a tombstone and staged
+        ORD information in the submission have the same identifier. The response identifies the
+        other artifact or, for a conflict within the uploaded document, points to one occurrence
+        with a JSON Pointer.
+        Resource-definition completeness, references, semantic rules, the publication context, and
+        current authorization are validated at commit, so successful staging does not guarantee a
+        successful commit. Nothing is published before commit processing completes.
+        Replacing an artifact in a `rejected` submission makes it ready for another commit attempt.
+        See https://open-resource-discovery.org/spec-v1/#staging
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './Document.schema.json'
+              description: An ORD Document. Before staging, the aggregator MUST validate at least the parts that push transport relies on (see the operation description); it MAY validate additional schema constraints.
+      responses:
+        "201":
+          description: Document artifact created.
+        "204":
+          description: Document artifact replaced.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "413":
+          $ref: "#/components/responses/ContentTooLarge"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags: [Documents]
+      operationId: deleteSubmissionDocument
+      summary: Remove a staged ORD Document
+      responses:
+        "204":
+          description: Document artifact removed or already absent.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /v1/submissions/{submissionId}/resource-definitions/{artifactId}:
+    parameters:
+      - $ref: "#/components/parameters/SubmissionId"
+      - $ref: "#/components/parameters/ArtifactId"
+    put:
+      tags: [ResourceDefinitions]
+      operationId: putSubmissionResourceDefinition
+      summary: Stage or replace a resource definition
+      description: |-
+        Stages a resource definition in its native format and associates it with one ORD resource
+        and the exact `url` of a definition entry declared by that resource (in `resourceDefinitions`,
+        or in `definitions` for Entity Types and Capabilities).
+        Reusing the artifact ID replaces the staged content and its association.
+        The request `Content-Type` must equal the `mediaType` of the definition entry.
+        The association and the media type are validated at commit.
+        See https://open-resource-discovery.org/spec-v1/#publication-units
+      parameters:
+        - $ref: "#/components/parameters/OrdId"
+        - $ref: "#/components/parameters/DefinitionUrl"
+        - $ref: "#/components/parameters/ContentDigest"
+      requestBody:
+        required: true
+        content:
+          "*/*":
+            schema:
+              type: string
+              format: binary
+      responses:
+        "201":
+          description: Resource-definition artifact created.
+        "204":
+          description: Resource-definition artifact replaced.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "413":
+          $ref: "#/components/responses/ContentTooLarge"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags: [ResourceDefinitions]
+      operationId: deleteSubmissionResourceDefinition
+      summary: Remove a staged resource definition
+      responses:
+        "204":
+          description: Resource-definition artifact removed or already absent.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /v1/submissions/{submissionId}/commit:
+    parameters:
+      - $ref: "#/components/parameters/SubmissionId"
+    post:
+      tags: [Submissions]
+      operationId: commitSubmission
+      summary: Validate and publish a submission
+      description: |-
+        Freezes the current staged content as one staged revision and starts asynchronous validation.
+        Upload already checked that each staged ORD Document is valid JSON and carries the
+        identifiers and metadata that push transport relies on.
+        Commit now validates the complete staged revision and decides whether each staged item is
+        valid. This validation MAY go beyond JSON Schema and covers resource-definition
+        completeness, reference resolution, semantic rules, the publication context, and current
+        authorization. A staged item can therefore pass upload and still fail here.
+
+        Publication units (https://open-resource-discovery.org/spec-v1/#publication-units):
+        Each top-level ORD information object is one publication unit. For an ORD resource, the
+        unit also contains every resource definition it declares, and its Package must be staged
+        in the same submission. Previously published definitions or Packages do not complete a
+        staged resource. A staged definition that matches no staged resource is not published and
+        is reported as a warning.
+
+        Outcome (https://open-resource-discovery.org/spec-v1/#commit-validation-and-outcome):
+        An error that can be confined to one publication unit skips that complete unit. The
+        aggregator publishes all remaining valid units atomically and reports every issue.
+        The submission then becomes `processed`, and the skipped units and their errors remain
+        visible in the issues.
+        An error that cannot be confined to one publication unit is a submission-wide error. It
+        moves the submission to `rejected` and publishes nothing. The staged artifacts are kept,
+        so the provider can replace or remove them and commit again.
+        Committing a `rejected` submission without changes validates the same staged revision
+        again, for example after authorization or a conflicting contribution outside the
+        submission changed.
+        Repeating this request while the same revision is validating returns its current state.
+        See https://open-resource-discovery.org/spec-v1/#correcting-a-submission
+
+        Removal (https://open-resource-discovery.org/spec-v1/#publication-context-and-removal):
+        In `replace` mode, a skipped unit is not treated as omitted, so its previously published
+        contribution is kept. A `replace` submission can remove all prior contributions of the ORD
+        provider in the publication context by staging at least one valid ORD Document that
+        contains no ORD resources or taxonomy.
+        In `replace` mode, tombstones are not processed: they have no effect and are neither
+        authorized nor validated, because omission alone determines removal.
+        In `merge` mode, tombstones apply only to contributions of this ORD provider in the submission's
+        publication context and must be authorized for those contributions.
+        Before publishing, the aggregator checks again that the ORD provider is authorized for the
+        publication context.
+      responses:
+        "202":
+          description: Validation started or is still running.
+          headers:
+            Location:
+              $ref: "#/components/headers/Location"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "200":
+          description: |-
+            The submission was already processed. It is not processed again; the response returns
+            the existing outcome, so a repeated commit request is idempotent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+components:
+  parameters:
+    SubmissionId:
+      name: submissionId
+      in: path
+      required: true
+      description: Aggregator-assigned submission identifier.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 255
+    ArtifactId:
+      name: artifactId
+      in: path
+      required: true
+      description: Provider-assigned identifier that is unique within this submission and artifact collection (documents or resource definitions). Any scheme matching the pattern works, including UUIDs, as long as the provider reuses the same ID when it retries or replaces an artifact. See https://open-resource-discovery.org/spec-v1/#staging
+      schema:
+        type: string
+        pattern: "^[A-Za-z0-9._~-]+$"
+        minLength: 1
+        maxLength: 128
+    OrdId:
+      name: ordId
+      in: query
+      required: true
+      description: ORD ID of the resource that declares the resource-definition URL.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 255
+    DefinitionUrl:
+      name: url
+      in: query
+      required: true
+      description: Exact `url` of the definition entry (in `resourceDefinitions`, or in `definitions` for Entity Types and Capabilities), as declared by the resource.
+      schema:
+        type: string
+        format: uri-reference
+        minLength: 1
+    ContentDigest:
+      name: Content-Digest
+      in: header
+      required: false
+      description: |-
+        Digest of the HTTP message content as defined by RFC 9530.
+        It covers the request content after any `Content-Encoding` is applied and before the
+        aggregator decodes it. When present, it must contain exactly one `sha-256` digest. A
+        malformed or mismatching value is rejected with `400 Bad Request`. The digest only protects
+        the integrity of this request. It is not a persistent artifact identifier and does not
+        grant permission to reuse stored content. See https://open-resource-discovery.org/spec-v1/#staging
+      schema:
+        type: string
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: Provider-generated key for safely retrying submission creation. A provider that retries creation must send the same key on every attempt. See https://open-resource-discovery.org/spec-v1/#operational-limits-timeouts-retries-and-rate-limiting
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 255
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor returned by the previous page.
+      schema:
+        type: string
+        minLength: 1
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of issues to return.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 100
+  headers:
+    Location:
+      description: URL of the submission status resource.
+      schema:
+        type: string
+        format: uri-reference
+    RetryAfter:
+      description: |-
+        Earliest time at which the provider should send a follow-up request, given either as
+        delay-seconds or as an HTTP-date as defined by RFC 9110. After a `429` response, a provider
+        that retries must not do so before this time. On a successful response for a `validating`
+        submission, it indicates when to poll again.
+        See https://open-resource-discovery.org/spec-v1/#operational-limits-timeouts-retries-and-rate-limiting
+      schema:
+        type: string
+        minLength: 1
+      examples:
+        delaySeconds:
+          value: "5"
+        httpDate:
+          value: Fri, 25 Sep 2026 12:00:00 GMT
+  responses:
+    BadRequest:
+      description: The request is malformed or has an invalid parameter combination.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    Unauthorized:
+      description: Authentication is missing or invalid.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    Forbidden:
+      description: The ORD provider is not authorized for the operation or publication context.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    NotFound:
+      description: The submission ID is unknown or not visible to this ORD provider. This also applies once the aggregator has removed its marker for an expired submission or for a processed submission whose retention period ended.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    Conflict:
+      description: The operation conflicts with the current submission state or reuses an idempotency key with different content.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    Gone:
+      description: |-
+        The submission is no longer available, but the aggregator still keeps a marker for it.
+        This happens when an `open` or `rejected` submission expired without being published, or
+        when the retention period of a `processed` submission ended.
+        The `outcome` member of the problem details states which case applies.
+        See https://open-resource-discovery.org/spec-v1/#expiry-and-retention
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    ContentTooLarge:
+      description: The encoded request body, decoded artifact, or aggregate staged content exceeds a limit documented by the aggregator.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    UnsupportedMediaType:
+      description: The request media type or content encoding is unsupported.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    UnprocessableContent:
+      description: The artifact cannot be staged, a documented limit on the number of artifacts per submission would be exceeded, or the submission has no staged ORD Documents.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    RateLimited:
+      description: The ORD provider exceeded a rate or concurrency limit and may retry later.
+      headers:
+        Retry-After:
+          $ref: "#/components/headers/RetryAfter"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    UnexpectedError:
+      description: An unexpected request or server failure.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+  schemas:
+    CreateSubmissionRequest:
+      type: object
+      required: [context]
+      additionalProperties: false
+      properties:
+        publicationMode:
+          type: string
+          description: Whether omission removes prior contributions of this ORD provider in the publication context (`replace`) or not (`merge`). Defaults to `merge`.
+          enum: [replace, merge]
+          default: merge
+        context:
+          $ref: "#/components/schemas/PublicationContext"
+    PublicationContext:
+      type: object
+      description: |-
+        Publication context of the submission. It must resolve to exactly one authorized
+        publication target and perspective.
+        The aggregator resolves the target from authoritative onboarding and authentication
+        information, so there is no request field for it. If the target is ambiguous, submission
+        creation is rejected.
+        One ORD provider may publish for multiple onboarded targets. The active-submission limit,
+        replacement, and tombstones apply separately per target and perspective.
+        `systemVersion` applies only to `system-version`, and `systemInstanceId` applies only to
+        `system-instance`.
+        See https://open-resource-discovery.org/spec-v1/#publication-context-and-removal
+      required: [perspective]
+      additionalProperties: false
+      properties:
+        perspective:
+          type: string
+          description: |-
+            Perspective of the submission. It MUST be provided even when the credential is
+            restricted to one perspective. All staged ORD Documents MUST describe this perspective
+            and the same publication target; a submission MUST NOT mix perspectives or targets.
+          enum: [system-type, system-version, system-instance, system-independent]
+        systemVersion:
+          type: string
+          minLength: 1
+          description: Required for `system-version` unless the credential identifies exactly one version.
+        systemInstanceId:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Aggregator-issued identifier required for `system-instance` unless the credential identifies exactly one instance.
+    Submission:
+      type: object
+      required:
+        - id
+        - status
+        - publicationMode
+        - context
+        - expiresAt
+        - artifactCounts
+        - issueCounts
+      additionalProperties: true
+      properties:
+        id:
+          type: string
+        status:
+          $ref: "#/components/schemas/SubmissionStatus"
+        publicationMode:
+          type: string
+          enum: [replace, merge]
+        context:
+          $ref: "#/components/schemas/PublicationContext"
+        expiresAt:
+          type: string
+          format: date-time
+          description: |-
+            For an `open` or `rejected` submission: the time at which the submission and its staged artifacts are discarded unless the staged content changes before then.
+            Successful staging changes extend this time; reading the status or issues does not.
+            Expiry is suspended during validation, and a `rejected` submission receives a new expiry time.
+            The aggregator defines and communicates the inactivity timeout; 15 minutes is the recommended default.
+            For a `processed` submission: the end of its retention period, after which its status and issues are no longer available.
+            The aggregator chooses and communicates the retention period; at least 24 hours is recommended.
+            See https://open-resource-discovery.org/spec-v1/#expiry-and-retention
+        artifactCounts:
+          $ref: "#/components/schemas/ArtifactCounts"
+        issueCounts:
+          $ref: "#/components/schemas/IssueCounts"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        processedAt:
+          type: string
+          format: date-time
+    SubmissionStatus:
+      type: string
+      description: |-
+        `open`: artifacts can be staged, replaced, or removed.
+        `validating`: the staged revision is being validated and cannot be changed.
+        `rejected`: a submission-wide error occurred; the staged artifacts are kept for correction.
+        `processed`: final state. Commit processing completed, all accepted publication units were applied atomically, and the submission can no longer be edited or processed again. A repeated commit request returns the existing outcome.
+        A `processed` submission can have errors for skipped publication units, so a provider MUST read its issues.
+      enum: [open, validating, rejected, processed]
+    ArtifactCounts:
+      type: object
+      required: [documents, resourceDefinitions]
+      additionalProperties: false
+      properties:
+        documents:
+          type: integer
+          minimum: 0
+        resourceDefinitions:
+          type: integer
+          minimum: 0
+    IssueCounts:
+      type: object
+      required: [error, warning, information]
+      additionalProperties: false
+      properties:
+        error:
+          type: integer
+          minimum: 0
+        warning:
+          type: integer
+          minimum: 0
+        information:
+          type: integer
+          minimum: 0
+    IssuePage:
+      type: object
+      required: [submissionStatus, items]
+      additionalProperties: false
+      properties:
+        submissionStatus:
+          $ref: "#/components/schemas/SubmissionStatus"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationIssue"
+        nextCursor:
+          type: string
+    ValidationIssue:
+      type: object
+      description: |-
+        Validation issue of a submission. For the identification rules, see
+        https://open-resource-discovery.org/spec-v1/#status-and-issues
+      required: [severity, message, artifactKind]
+      additionalProperties: true
+      properties:
+        severity:
+          type: string
+          enum: [error, warning, information]
+        code:
+          type: string
+        message:
+          type: string
+        artifactKind:
+          type: string
+          description: |-
+            Kind of staged artifact the issue applies to, or `submission` for a submission-wide
+            issue. It is always present, so the identification rules for each kind always apply.
+          enum: [document, resource-definition, submission]
+        artifactId:
+          type: string
+          description: |-
+            ID the provider assigned to the staged artifact the issue applies to.
+            Present unless `artifactKind` is `submission`.
+        ordId:
+          type: string
+          description: |-
+            ORD ID of the publication unit the issue applies to, if that unit is an ORD resource or
+            taxonomy. An issue about one publication unit identifies it through exactly one of
+            `ordId`, `groupId`, or `groupTypeId`. An issue that cannot be attributed to one unit
+            carries none of them.
+        groupId:
+          type: string
+          description: Group ID of the publication unit the issue applies to, if that unit is a Group.
+        groupTypeId:
+          type: string
+          description: Group Type ID of the publication unit the issue applies to, if that unit is a Group Type.
+        definitionUrl:
+          type: string
+          description: |-
+            Exact `url` of the definition entry the issue applies to.
+            MUST be present when the issue is about a resource definition, so that issues for two
+            resources that declare the same URL can be told apart.
+        jsonPointer:
+          type: string
+          description: JSON Pointer to the exact location of the issue within the staged artifact.
+      allOf:
+        # Submission-wide issues carry no unit identity.
+        - if:
+            properties:
+              artifactKind:
+                const: submission
+            required: [artifactKind]
+          then:
+            not:
+              anyOf:
+                - required: [ordId]
+                - required: [groupId]
+                - required: [groupTypeId]
+        # Unit-local issues identify their staged artifact and carry at most one unit identity.
+        # An issue that names a publication unit uses exactly one of ordId/groupId/groupTypeId; an
+        # artifact-level issue (for example a document-level publication context error) or an issue
+        # that cannot be attributed to one unit (a warning for a definition matching no staged
+        # resource) carries none, optionally with a jsonPointer.
+        - if:
+            properties:
+              artifactKind:
+                enum: [document, resource-definition]
+            required: [artifactKind]
+          then:
+            required: [artifactId]
+            not:
+              anyOf:
+                - required: [ordId, groupId]
+                - required: [ordId, groupTypeId]
+                - required: [groupId, groupTypeId]
+        # A resource-definition issue is always about a definition, so it MUST carry the definition URL.
+        - if:
+            properties:
+              artifactKind:
+                const: resource-definition
+            required: [artifactKind]
+          then:
+            required: [definitionUrl]
+    Problem:
+      type: object
+      description: Problem Details object as defined by RFC 9457.
+      required: [type, title]
+      additionalProperties: true
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 100
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference
+        outcome:
+          type: string
+          enum: [expired, processed]
+          description: |-
+            Present in `410 Gone` responses.
+            `expired`: the submission was discarded after inactivity without being published.
+            `processed`: the submission was processed and its retention period ended. The published ORD information is not affected.
+        activeSubmissionId:
+          type: string
+          description: ID of the active submission that prevents opening another submission for the same ORD provider and publication context.
+        issues:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationIssue"

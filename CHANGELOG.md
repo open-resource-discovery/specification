@@ -11,6 +11,18 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added alpha push transport and the ORD Aggregator Push API: providers stage ORD Documents and resource definitions in a submission, which is validated after commit and published in `merge` or `replace` mode.
+  Valid publication units are published atomically, and units with errors are skipped and reported.
+  In `replace` mode, omitted information is removed without tombstones, and tombstones are not processed.
+  The Package of each staged resource must be staged in the same submission.
+
+### Changed
+
+- A Package and all resources assigned to it MUST now be described by the same ORD provider; a Package MUST NOT be shared across multiple ORD providers.
+  Previously, this was only required by the SAP policy level.
+
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added

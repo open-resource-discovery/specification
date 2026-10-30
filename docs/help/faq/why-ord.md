@@ -42,7 +42,7 @@ There are all kinds of use cases that rely on having an aligned metadata view on
 > It is _not_ meant to replace existing open standards, but to complement them.**
 
 ORD is a **decentralized** standard. There is no single system of record.
-Instead, systems describe themselves using multiple common resource definition formats, and ORD adds the means for putting the system's resources into relation and makes them crawl-able with a single entry-point.
+Instead, systems describe themselves using common resource definition formats, and ORD relates those resources and standardizes how their metadata is pulled or pushed.
 The information may reflect system-generic capabilities, but may also reflect its current state at runtime, including customizations.
 
 ORD also specifies how the distributed metadata is brought together (by ORD aggregators), which will result in a combined bigger picture (system landscape metadata view).
