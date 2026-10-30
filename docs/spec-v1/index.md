@@ -170,39 +170,46 @@ See [Push Transport Guidance](./concepts/push-transport.md) for operational exam
 
 A push publication is assembled as a stateful submission:
 
-1. The provider opens a submission for one publication context, chooses whether strict validation is required, and can choose `replace` publication instead of the default `merge` mode.
+1. The provider opens a submission for one publication context, and can choose `replace` publication instead of the default `merge` mode.
 2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
 3. The provider commits the submission.
 4. The aggregator validates the staged set asynchronously and determines which publication units can be accepted.
 5. The provider polls the submission and its issues until validation finishes.
 
-When staging an ORD Document through `PUT`, the aggregator MUST parse the request body as JSON and validate the complete document against the supported ORD Document JSON Schema before creating or replacing the staged artifact.
-This includes every contained ORD information object, so every successfully staged publication unit has its required identifier.
+When staging an ORD Document through `PUT`, the aggregator MUST parse the request body as JSON and MUST perform JSON Schema validation at least against those parts of the ORD specification that push aggregation relies upon, before creating or replacing the staged artifact.
+Those parts are:
+
+1. the request body is a valid JSON object;
+2. `openResourceDiscovery` (the document is an ORD Document) and `perspective` (the aggregator matches it to the submission context) are present;
+3. each processed collection is an array, and each contained item has its identity (`ordId`, `groupId`, or `groupTypeId`);
+4. resource-definition association fields: for a resource that declares `resourceDefinitions`, each entry's `url` and `mediaType` is a string.
+
+This ensures every successfully staged publication unit has its required identifier and that the aggregator can process it.
+The aggregator MAY validate more of the document against the [ORD Document JSON Schema](#ord-document), but is not required to.
+Complete content validation is the provider's responsibility, and requiring the aggregator to enforce the full schema would couple every aggregator to each ORD Document schema revision.
 Malformed JSON MUST be rejected with `400 Bad Request`.
-A document that does not conform to the JSON Schema MUST be rejected with `422 Unprocessable Content`.
-The response SHOULD identify schema validation failures through JSON Pointers into the request body.
+A document that does not pass validation of the parts listed above MUST be rejected with `422 Unprocessable Content`.
+The response SHOULD identify failures through JSON Pointers into the request body.
 A failed PUT MUST NOT change the staged content, submission state, or expiry time.
-The provider MUST correct or remove schema-invalid objects before staging that document.
+The provider MUST correct or remove the offending objects before staging that document.
 Submission commit MUST perform complete validation of the staged set, including resource-definition completeness, reference resolution, semantic rules, publication context, and current authorization.
 Successful staging does not guarantee successful commit.
 
 Staged content MUST NOT be discoverable.
-By default, commit validation MUST accept every valid publication unit and skip each unit that has an error.
-The provider MAY set `strict` to `true` when opening the submission to require all-or-nothing validation.
-In strict mode, any error MUST fail the entire commit, publish nothing, and retain the previous published state unchanged.
+Commit validation MUST accept every valid publication unit and skip each unit that has an error.
 Warnings and information messages MUST NOT prevent publication.
-A default-mode commit with only unit-local errors MUST publish the accepted units and report the skipped units through issues.
+A commit with only unit-local errors MUST publish the accepted units and report the skipped units through issues.
 In a `processed` submission, a staged publication unit was skipped if and only if an issue of severity `error` identifies it after all issue pages are read, and was accepted otherwise.
 A `rejected` submission applies nothing: no staged unit is accepted, and the previously published state is unchanged, regardless of which units carry errors.
 An `error` that cannot be confined to one staged item MUST fail the entire commit, as stated below.
 This lets a provider read per-unit outcomes from the issues endpoint without a separate outcome list.
 All accepted units from one commit MUST become discoverable atomically, so consumers cannot observe an intermediate state.
-A validation or authorization error that cannot be confined safely to one publication unit MUST fail the entire commit in both modes.
+A validation or authorization error that cannot be confined safely to one publication unit MUST fail the entire commit.
 This includes a document-level semantic error that prevents its contained units from being isolated reliably.
 A `rejected` submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
 The provider MAY also commit a `rejected` submission without changes, and the aggregator MUST then validate the same staged revision again.
 This helps when the failure depends on state outside the submission, such as authorization, ORD ID namespace permissions, or a conflicting contribution from another ORD provider.
-A default-mode submission that publishes with skipped units is `processed` and cannot be edited or reprocessed, so the provider MUST use a new submission to correct those units.
+A submission that publishes with skipped units is `processed` and cannot be edited or reprocessed, so the provider MUST use a new submission to correct those units.
 A repeated commit request for a `processed` submission does not reprocess it and returns its existing outcome.
 The provider corrects only the skipped units by staging them, identified by the `ordId`, `groupId`, or `groupTypeId` reported for each, together with the definitions those units declare, and committing in `merge` mode.
 A `merge` submission upserts those units by identity and leaves the already accepted units unchanged.
@@ -308,15 +315,15 @@ A submission has one of the following states:
 
 - `open`: artifacts can be staged, replaced, or removed.
 - `validating`: the committed revision is immutable while validation runs.
-- `rejected`: a submission-wide error occurred, or strict validation found at least one error. The staged artifacts can be corrected, or the submission can be committed again unchanged.
-- `processed`: commit processing completed and the accepted publication units were applied atomically. A non-strict `processed` submission can contain errors for skipped units, so the provider MUST read its issues.
+- `rejected`: a submission-wide error occurred. The staged artifacts can be corrected, or the submission can be committed again unchanged.
+- `processed`: commit processing completed and the accepted publication units were applied atomically. A `processed` submission can contain errors for skipped units, so the provider MUST read its issues.
 
 ```mermaid
 stateDiagram-v2
     [*] --> open: create
     open --> validating: commit
     validating --> processed: accepted units applied
-    validating --> rejected: fatal or strict-mode error
+    validating --> rejected: submission-wide error
     rejected --> open: change staged artifact
     rejected --> validating: commit again
     open --> [*]: discard or expire

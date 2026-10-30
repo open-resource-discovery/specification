@@ -14,7 +14,6 @@ This page provides non-normative guidance for applying that protocol to common p
 ## Choosing a Publication Mode
 
 The publication mode determines whether omission means removal.
-It is independent of the submission's `strict` validation setting.
 Accepted changes are applied atomically in both publication modes.
 
 ### Routine Changes, Hot Fixes, and Transports
@@ -87,16 +86,15 @@ The provider and aggregator should ensure during onboarding that this complete c
 
 ## Choosing Validation Behavior
 
-Every ORD Document must pass complete JSON Schema validation when uploaded through PUT.
-A malformed JSON request is rejected with `400`, and a schema-invalid document is rejected with `422`.
+Every ORD Document uploaded through PUT must pass JSON Schema validation at least against the parts of the ORD specification that push aggregation relies upon: it is a valid JSON object, it carries `openResourceDiscovery` and `perspective`, each processed collection is an array whose items carry their identity, and every declared resource definition has a string `url` and `mediaType`.
+A malformed JSON request is rejected with `400`, and a document that fails validation of those parts is rejected with `422`.
+The aggregator does not have to validate the rest of the document; complete content validation is the provider's responsibility.
 A failed upload does not change staged content, submission state, or expiry time.
-Correct or remove the invalid objects and upload the document again before committing.
+Correct or remove the offending objects and upload the document again before committing.
 
 Commit performs complete validation of the staged set, including resource definitions, references, semantic rules, publication context, and current authorization.
-The default `strict: false` behavior publishes valid ORD information while reporting and skipping publication units with commit-time errors.
-Use this mode when a schema-valid resource with a semantic error or missing definition should not delay independent valid resources from the same ORD Document or submission.
+Commit publishes valid ORD information while reporting and skipping publication units with commit-time errors.
+This means a schema-valid resource with a semantic error or missing definition does not delay independent valid resources from the same ORD Document or submission.
 An ORD resource and all resource definitions it declares are one publication unit, so they are always accepted or skipped together.
 
-Set `strict: true` when all staged information must advance together.
-Any commit-time validation error then fails the complete commit and leaves the submission editable for correction.
-Errors that prevent the aggregator from safely isolating publication units fail the complete commit regardless of the `strict` setting.
+Errors that prevent the aggregator from safely isolating publication units fail the complete commit and leave the submission editable for correction.

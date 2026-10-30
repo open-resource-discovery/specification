@@ -11,12 +11,12 @@ info:
     resource definitions in a submission and publish them after asynchronous validation.
 
     Staged artifacts are not discoverable.
-    Document uploads must conform to the ORD Document JSON Schema before they are staged.
+    Document uploads must be valid JSON and carry the ORD metadata the aggregator relies on before they are staged.
     Commit performs complete validation of the staged set, including semantic rules and references.
-    By default, a commit publishes every valid publication unit and skips units with errors.
+    A commit publishes every valid publication unit and skips units with errors.
     One ORD information object and every resource definition it declares form one publication
     unit, so a resource is never published without all of its valid definitions.
-    A provider can opt into strict validation, in which any error publishes nothing and leaves
+    An error that cannot be confined to one publication unit fails the entire commit and leaves
     the submission available for correction until it expires.
     In `replace` mode, omission removes the authenticated ORD provider's prior contributions in the
     publication context. An ORD provider can have at most one active submission per publication
@@ -67,8 +67,7 @@ paths:
         submission. A repeated request with the same `Idempotency-Key` returns the original
         submission instead.
         Publication defaults to `merge`; destructive `replace` behavior must be selected explicitly.
-        Validation defaults to partial acceptance of valid publication units; strict
-        all-or-nothing validation must be selected explicitly.
+        Commit validation accepts every valid publication unit and skips units with errors.
         The response identifies when the submission expires unless its staged content changes.
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -88,12 +87,6 @@ paths:
                 summary: Replace the ORD provider's contribution in this context
                 value:
                   publicationMode: replace
-                  context:
-                    perspective: system-type
-              strictMerge:
-                summary: Require the complete submission to validate
-                value:
-                  strict: true
                   context:
                     perspective: system-type
       responses:
@@ -228,12 +221,22 @@ paths:
       description: |-
         Stages one standard ORD Document under a submission-local artifact identifier.
         Reusing the identifier replaces the staged document.
-        Before accepting the upload, the aggregator MUST parse the body as JSON and validate the
-        complete document, including every contained ORD information object, against the supported
-        ORD Document JSON Schema. Malformed JSON returns 400; schema-invalid documents return 422.
-        The response SHOULD identify schema failures through JSON Pointers into the request body.
+        Before accepting the upload, the aggregator MUST parse the body as JSON and MUST perform JSON
+        Schema validation at least against the parts of the ORD specification that push aggregation
+        relies upon:
+        (1) the body is a valid JSON object;
+        (2) `openResourceDiscovery` and `perspective` are present;
+        (3) each processed collection is an array whose items each carry their identity
+        (`ordId`, `groupId`, or `groupTypeId`);
+        (4) for a resource that declares `resourceDefinitions`, each entry's `url` and `mediaType`
+        is a string.
+        Malformed JSON returns 400; a document that fails validation of those parts returns 422.
+        The aggregator MAY validate more of the document against the ORD Document JSON Schema, but is
+        not required to, because complete content validation is the provider's responsibility and
+        coupling it to the aggregator would tie every aggregator to each ORD schema revision.
+        The response SHOULD identify failures through JSON Pointers into the request body.
         A failed PUT MUST NOT change staged content, submission state, or expiry time.
-        The provider must correct or remove schema-invalid objects before staging the document.
+        The provider must correct or remove the offending objects before staging the document.
         Complete validation of resource-definition completeness, references, semantic rules,
         publication context, and current authorization is performed when the submission is committed.
         Successful staging does not guarantee successful commit.
@@ -245,7 +248,7 @@ paths:
           application/json:
             schema:
               $ref: './Document.schema.json'
-              description: An ORD Document that must pass JSON Schema validation before being staged.
+              description: An ORD Document. The aggregator relies on its ORD identity, perspective, and the identifiers and resource-definition associations it processes; it need not fully schema-validate the document before staging.
       responses:
         "201":
           description: Document artifact created.
@@ -378,7 +381,7 @@ paths:
       summary: Validate and publish a submission
       description: |-
         Freezes the current staged revision and starts asynchronous validation.
-        ORD Documents have already passed JSON Schema validation during upload.
+        Staged ORD Documents have already been confirmed to be valid JSON and usable ORD Documents during upload.
         Commit performs complete validation of the staged set, including resource-definition
         completeness, reference resolution, semantic rules, publication context, and current authorization.
         Every definition declared by a staged ORD resource must have exactly one matching staged
@@ -387,13 +390,12 @@ paths:
         These completeness requirements apply in both publication modes.
         A merge may omit unrelated resources, but a staged resource and all definitions it declares
         form one complete publication unit and cannot be completed from previously published artifacts.
-        In the default mode, an error attributable to one publication unit skips that complete unit.
+        An error attributable to one publication unit skips that complete unit.
         The aggregator publishes all remaining valid units together and reports every issue.
         An error that prevents publication units from being isolated safely fails the entire commit.
         This includes an error in a staged Package, because ORD resources inherit from their Package.
         A resource whose `partOfPackage` resolves neither to a staged Package nor to a Package
         already published in the same perspective has an error.
-        When `strict` is `true`, any error fails the entire commit.
         A replace submission can remove every prior contribution of the ORD provider in the
         publication context by staging at least one valid ORD Document that contains no ORD
         information to retain.
@@ -407,10 +409,10 @@ paths:
         Committing a `rejected` submission without changes validates the same staged revision again,
         for example after authorization or a conflicting contribution outside the submission changed.
         Accepted publication units are applied atomically.
-        A submission-wide error, or any error in strict mode, moves the submission to `rejected`,
+        A submission-wide error moves the submission to `rejected`,
         publishes nothing, and preserves the staged artifacts so the provider can replace or
         remove them and commit again.
-        A default-mode commit that has only unit-local errors becomes `processed` after applying
+        A commit that has only unit-local errors becomes `processed` after applying
         its valid units; skipped units and their errors remain visible in the issues.
       responses:
         "202":
@@ -631,14 +633,6 @@ components:
           description: Whether omission removes prior contributions from this ORD provider in the publication context. Defaults to the non-destructive `merge` mode.
           enum: [replace, merge]
           default: merge
-        strict:
-          type: boolean
-          default: false
-          description: |-
-            Whether any validation error prevents the entire submission from being published.
-            When `false`, errors attributable to one publication unit skip that complete unit and
-            all other valid units are published.
-            Submission-wide errors always fail the commit.
         context:
           $ref: "#/components/schemas/PublicationContext"
     PublicationContext:
@@ -677,7 +671,6 @@ components:
         - id
         - status
         - publicationMode
-        - strict
         - context
         - expiresAt
         - artifactCounts
@@ -691,9 +684,6 @@ components:
         publicationMode:
           type: string
           enum: [replace, merge]
-        strict:
-          type: boolean
-          description: Whether validation errors prevent publication of the entire submission.
         context:
           $ref: "#/components/schemas/PublicationContext"
         expiresAt:
@@ -724,9 +714,9 @@ components:
       description: |-
         `open` accepts artifact changes.
         `validating` is an immutable staged revision undergoing commit validation.
-        `rejected` retains artifacts for correction after a submission-wide error or any error in strict mode.
+        `rejected` retains artifacts for correction after a submission-wide error.
         `processed` is a final state: commit processing completed, all accepted publication units were applied atomically, and the submission can no longer be edited or reprocessed. A repeated commit request returns its existing outcome.
-        A `processed` non-strict submission can have errors for skipped publication units, so a provider MUST read its issues.
+        A `processed` submission can have errors for skipped publication units, so a provider MUST read its issues.
       enum: [open, validating, rejected, processed]
     ArtifactCounts:
       type: object
