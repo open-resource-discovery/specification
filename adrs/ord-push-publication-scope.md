@@ -1,76 +1,229 @@
-## Problem
+# ORD Push Publication Scope
 
-Today, ORD removes information only through explicit tombstones. Providers that can list everything they currently publish, but don't keep track of what they deleted, need the aggregator to remove information by *omission*: whatever is missing from a complete set gets removed.
+## Status
 
-That only works if the aggregator knows the boundary of the complete set. An application or service is usually onboarded at the system type level, and its information can come from several ORD providers, deployment pipelines or teams. A complete set from one of them must not remove information that another one published.
+**Accepted: Option 3 — ORD provider contribution, configured through onboarding (#233).**
 
-This is a transport-neutral concern. It applies to pull transport today, and push transport (#187) shares it. This issue decides how ORD defines the boundary of an independently replaceable publication set.
+Options 1 and 2 were discussed and rejected.
 
-## Options
+## Context and problem
 
-| | Option 1: Publication-scope Group | Option 2: Package publication mode | Option 3: ORD provider contribution |
-| --- | --- | --- | --- |
-| PR | #230 | #232 | #233 |
-| Boundary | Resources assigned to an `ord:publication-scope` Group | Resources assigned to a Package with `publicationMode: replace` | Everything one ORD provider contributes to one perspective / described system |
-| Declared in | ORD Document (Group + `partOfGroups`) | ORD Document (Package property) | Aggregator onboarding |
-| New schema concept | Standardized Group Type | Package property | None |
-| Granularity | Any subset, can split a Package | Whole Packages | Whole ORD provider; finer only by onboarding more ORD providers |
-| Who enables replacement | Transport or onboarding (WIP) | Package declaration plus aggregator support | Onboarding |
-| Boundary retrievable through the ORD model | Yes, as Group membership | Yes, as Package membership and `publicationMode` | No, aggregator-specific |
+ORD uses explicit tombstones to remove information. Some providers can list their current content but cannot track deleted items. These providers need deletion by omission: a complete publication replaces the previous set.
 
-### Option 1: `ord:publication-scope` Group Type (#230)
+The aggregator needs a boundary for that set. An application can have several ORD providers, deployment pipelines, or teams. Omission from one provider's publication must not delete another provider's content.
 
-**Pros**
-- Keeps publication boundaries separate from Package catalog presentation, ownership attribution and inherited metadata.
-- Can partition one Package or one ORD provider's information without changing Package assignments.
-- The publication scope is explicit in the ORD model. Once an aggregator implements it, scope membership can be retrieved again through standard ORD information, for example from the ORD Discovery API, instead of being an unstandardized aggregator implementation detail.
-- Providers, aggregators and tools can check membership against the same model.
+For example, S/4HANA publishes APIs, while BDC publishes additional APIs for the same system. An S/4HANA replacement must preserve the BDC contribution.
 
-**Cons**
-- Adds a standardized Group Type and a second resource assignment that providers must keep consistent.
-- Covers only ORD resources (`partOfGroups`). Packages, Consumption Bundles and other taxonomy still need tombstones.
-- Membership alone does not enable replacement. Without a transport or onboarding binding it has no effect.
+Both pull and push need a clear replacement boundary. This decision establishes that boundary for push transport (#187). Pull-based replacement is a separate topic.
 
-### Option 2: `Package.publicationMode` (#232)
+## Decision
 
-**Pros**
-- Reuses the mandatory `partOfPackage` assignment and the existing idea of Packages as resources published together.
-- The replacement boundary and the intent to replace are explicit in the ORD model on the Package itself. Like option 1, they can be retrieved again through standard ORD information instead of being an aggregator implementation detail.
+### Accepted: Option 3 — ORD provider contribution
 
-**Cons**
-- Ties replacement boundaries to catalog Packages and their inherited metadata.
-- Cannot split a Package without changing its membership, and with it the catalog behavior.
-- Puts a destructive switch into the provider's self-description: editing one property turns omission into deletion.
-- Moving a resource between Packages looks like a deletion when only part of the set is retrieved.
-- An empty replacement set needs an empty Package, which goes against the existing advice to avoid empty Packages.
-- Package assignments would have to be enforced strictly. Today the schema requires `partOfPackage` to be a valid reference, but aggregators only SHOULD check references and MAY accept dangling ones. A boundary based on Packages needs that to become a MUST for all transports.
+The publication scope is the content assigned to one onboarded ORD provider for the publishing system and applicable perspective. The aggregator derives the provider identity from authentication and onboarding.
 
-### Option 3: ORD provider contribution, configured through onboarding (#233)
+A publishing system can supply content for several clients together. Those clients share a provider scope, while each item retains its own described-system context.
 
-**Pros**
-- No new schema concept. Providers don't need to change their documents.
-- Authority and boundary come from the same place, aggregator onboarding, and ORD information can't widen either.
-- ORD ID uniqueness within a perspective already keeps the contributions of different ORD providers disjoint.
-- Covers resources and taxonomy alike.
-- The aggregator needs to know which ORD provider contributed what anyway, so options 1 and 2 need this as well.
+The provider selects replace mode when it submits a complete publication. Onboarding determines the boundary of that replacement.
 
-**Cons**
-- Finer boundaries require onboarding more ORD providers (for example one per deployment pipeline), which costs setup work on the aggregator side.
-- The boundary is not part of the ORD model. Which ORD provider contributed what is an unstandardized aggregator implementation detail, so providers, consumers and tools cannot retrieve it through standard ORD information, and every aggregator implements it differently.
-- Moving information between ORD providers has to happen in order: remove it first, then publish it, or the aggregator reports a duplicate.
+- ORD documents need no new properties or resource labels.
+- The boundary covers resources, Packages, Consumption Bundles, and other taxonomy.
+- Separate replacement sets require separate onboarded ORD providers, for example one per deployment pipeline.
+- The boundary remains aggregator metadata. The standard ORD model does not expose provider attribution.
 
-## How the options relate
+Scope records which provider last published an item. It is not an authorization boundary or part of the item's identity.
 
-Option 3 is the baseline. Every option needs the aggregator to know which ORD provider contributed what, and options 1 and 2 also require exactly one authoritative ORD provider per scope or Package. So options 1 and 2 refine option 3 within one ORD provider rather than replace it.
-They also add something option 3 cannot provide on its own: an explicit, standardized representation of the boundary in the ORD model.
+### Rejected alternatives
 
-The decision is therefore:
-1. Adopt option 3 as the baseline.
-2. Decide whether ORD needs the boundary to be explicit in the ORD model, or a finer boundary *inside* one ORD provider. If so, choose option 1 or option 2, not both.
+| Option | Proposed boundary | Decision |
+| --- | --- | --- |
+| 1: `ord:publication-scope` Group (#230) | Resources assigned through `partOfGroups` | Rejected |
+| 2: `Package.publicationMode` (#232) | Resources in a Package with `publicationMode: replace` | Rejected |
 
-## Questions to decide
+**Option 1** makes the boundary visible in ORD and can divide a Package into smaller sets. It adds a Group Type and another assignment that providers must maintain.
 
-- Are there real cases where one ORD provider needs several independently replaceable sets that can't reasonably be onboarded as separate ORD providers?
-- Should the replacement boundary be explicit in the ORD model and retrievable through standard ORD information, or is it fine for it to remain an aggregator implementation detail established during onboarding?
-- Should the decision to replace sit with the provider (option 2) or with the transport / onboarding (options 1 and 3)?
+It covers resources with `partOfGroups`, but not Packages, Consumption Bundles, or other taxonomy. Group membership alone also needs a transport or onboarding binding to enable replacement.
 
+**Option 2** reuses Package membership and makes replacement intent visible in ORD. It couples deletion to catalog structure and inherited metadata. Smaller sets require different Package assignments.
+
+A Package property would turn omission into deletion. Partial retrieval complicates moves between Packages. An empty replacement requires an empty Package, contrary to the advice to avoid empty Packages.
+
+This option also requires strict Package reference checks. Existing reference rules allow aggregators to accept dangling references, which do not provide a reliable deletion boundary.
+
+Both alternatives still require provider attribution. Option 3 meets the requirement without adding scope concepts to the ORD model or changing Package semantics.
+
+### ORD specification boundary
+
+The ORD document schema remains unchanged. The push API accepts no `scopeId` or `providerId` supplied by the provider. The aggregator derives the scope from the authenticated provider's onboarding configuration.
+
+Aggregator-specific query APIs can expose provider attribution. For example, UMS uses the technical property `umsProvidedBy`. This property is not part of the ORD document schema.
+
+## Replace algorithm and provider attribution
+
+For the publishing system and applicable perspective, a replace submission has two logical steps:
+
+1. **Delete the current set.** Delete all content currently assigned to the authenticated provider's scope.
+2. **Publish the new set.** Merge the submitted content by ORD ID and assign it to that provider's scope.
+
+Item matching uses the ORD ID within the item's described-system and perspective context. The same ORD ID in two client contexts does not identify the same stored item.
+
+The second step creates new items and updates existing items. An existing item can have no scope or a different provider's scope. In both cases, the submission assigns the item to the current provider.
+
+These are logical steps within the push transaction. They do not require separate client calls or an intermediate, publicly visible deletion.
+
+The same algorithm applies to the first push. If the provider's scope is empty, step 1 deletes nothing. Step 2 assigns the submitted content to that scope.
+
+### Responsibility for conflicts
+
+**No strict ownership guardrails or explicit ownership-transfer APIs are required.** A provider can take over an existing item by publishing its ORD ID. No prior removal or separate ownership claim is necessary.
+
+The Line of Business (LOB) is responsible for configuring its ORD providers correctly. If configured providers conflict, the LOB must coordinate them and keep their publications consistent.
+
+For example, when `bar` takes over an API from `foo`, `foo` must stop publishing that API. Otherwise, the next publication from `foo` assigns it back to `foo`.
+
+Authentication and onboarding still determine who can publish for the application. Provider attribution does not add a separate permission check between its configured providers.
+
+### Example: from pull to push, then between providers
+
+All rows below belong to the same system and perspective context. The scope column shows aggregator metadata, not an ORD property. `Unassigned` means no provider scope exists for that item.
+
+#### 1. Initial pull content
+
+Pull supplies three application APIs and one BDC API. None has a scope.
+
+| ORD ID | Scope |
+| --- | --- |
+| `foo:apiResource:api1:v1` | Unassigned |
+| `foo:apiResource:api2:v1` | Unassigned |
+| `foo:apiResource:api3:v1` | Unassigned |
+| `sap.bdc.foo:apiResource:dpApi1:v1` | Unassigned (Pull from different provider) |
+
+#### 2. Provider `foo` replaces with API 1 and API 2
+
+The aggregator derives scope `foo` from onboarding. Its current set is empty, so nothing is deleted. The aggregator updates API 1 and API 2 and assigns both to `foo`.
+
+| ORD ID | Scope |
+| --- | --- |
+| `foo:apiResource:api1:v1` | `foo` |
+| `foo:apiResource:api2:v1` | `foo` |
+| `foo:apiResource:api3:v1` | Unassigned |
+| `sap.bdc.foo:apiResource:dpApi1:v1` | Unassigned |
+
+API 3 and the BDC API remain unchanged. Neither belonged to `foo`, and neither appears in this submission.
+
+#### 3. Provider `bar` replaces with API 2
+
+Scope `bar` is empty, so nothing is deleted. The aggregator updates API 2 and changes its scope from `foo` to `bar`. This is not a duplicate-ID conflict.
+
+| ORD ID | Scope |
+| --- | --- |
+| `foo:apiResource:api1:v1` | `foo` |
+| `foo:apiResource:api2:v1` | `bar` |
+| `foo:apiResource:api3:v1` | Unassigned |
+| `sap.bdc.foo:apiResource:dpApi1:v1` | Unassigned |
+
+The LOB coordinates the change so that `foo` stops publishing API 2.
+
+#### 4. Provider `foo` replaces with API 4
+
+The aggregator deletes API 1, the only item still assigned to `foo`. It then creates API 4 and assigns it to `foo`.
+
+| ORD ID | Scope |
+| --- | --- |
+| `foo:apiResource:api2:v1` | `bar` |
+| `foo:apiResource:api3:v1` | Unassigned |
+| `foo:apiResource:api4:v1` | `foo` |
+| `sap.bdc.foo:apiResource:dpApi1:v1` | Unassigned |
+
+API 2 remains under `bar`. API 3 and the BDC API remain unassigned. Omission deletes only content in the provider's current scope.
+
+## Legacy pulled content and scope for pull
+
+Replacement addresses a provider that knows its complete current content but does not know everything it published in the past. It does not support an incomplete current set: omission deletes items already assigned to its scope.
+
+A push assigns a scope only to the items it includes. It does not automatically remove obsolete pull content that it omits. API 3 in the example remains until someone explicitly removes it.
+
+**Replacement does not resolve this historical cleanup gap.** If API 3 no longer exists and the provider no longer knows about it, the provider cannot include it or name it in a tombstone. Later replacements also leave it unassigned.
+
+This limitation applies to all three discussed options. None can automatically identify unknown historical content outside its replacement boundary, whether that boundary is a Group, a Package, or an onboarded provider's contribution.
+
+The application can query existing ORD IDs and submit tombstones for obsolete content. For a clean start, it can identify and tombstone its previous content before the new publication.
+
+That cleanup must preserve content from other providers. An unassigned scope alone does not identify obsolete content: the example's BDC API is also unassigned.
+
+Queries reveal stored content, but do not establish which unassigned items belonged to this provider. Cleanup therefore requires enough information to identify its obsolete content. Without that information, stale content remains.
+
+Once content is assigned to the provider's scope, later replacements remove it by omission. The provider then needs only its complete current set, without a history of deleted items.
+
+Pull configuration remains unchanged. Scope assignment for pull endpoints and pull-based replacement belong in a separate feature or issue.
+
+## Reference model: MAP onboarding and S/4HANA
+
+This section describes the agreed MAP/UMS reference model. The configuration and technical query properties are aggregator-specific, not additions to the ORD schema.
+
+### Push provider configuration
+
+Each push provider has a mandatory `name`, unique within its MAP configuration. The name is a local identifier, such as `abap` or `bdc`. It does not need to contain a system or tenant ID.
+
+The following configuration excerpt shows two push providers. The certificate subject and issuer values are placeholders.
+
+```json
+{
+  "namespace": "sap.s4",
+  "openResourceDiscovery": {
+    "providers": [
+      {
+        "name": "abap",
+        "mode": ["push"],
+        "pushTransport": {
+          "trust": {
+            "subject": "<abap-certificate-subject>",
+            "issuer": "<abap-certificate-issuer>"
+          }
+        }
+      },
+      {
+        "name": "bdc",
+        "mode": ["push"],
+        "pushTransport": {
+          "trust": {
+            "subject": "<bdc-certificate-subject>",
+            "issuer": "<bdc-certificate-issuer>"
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+UMS matches the authenticated connection to the onboarded provider. The provider does not send its configured name or a scope identifier in each push request.
+
+### Provider attribution in UMS
+
+UMS exposes provider attribution through `umsProvidedBy`, a technical query property like `umsLastUpdate`. Its value combines the MAP namespace and provider name with a slash:
+
+```text
+<MAP namespace>/<provider name>
+```
+
+The example produces `sap.s4/abap` and `sap.s4/bdc`. These values help users inspect and filter content by provider without repeating the namespace in every configured name.
+
+The value identifies the configured provider, not a tenant or system instance. UMS retains the publishing-system and perspective boundary separately. The string alone does not define a global deletion boundary.
+
+### Example: one S/4HANA system, two clients
+
+S/4HANA system `ETX` has clients `000` and `100`. Its `abap` provider uses one certificate and publishes both clients' content together. It does not need a separate provider registration per client.
+
+The table shows a simplified UMS query result. `API 3` appears in two client contexts, so these rows are distinct even though they describe the same API.
+
+| API | `systemId` | `umsProvidedBy` |
+| --- | --- | --- |
+| API 1 | `etx000` | `sap.s4/abap` |
+| API 2 | `etx100` | `sap.s4/abap` |
+| API 3 | `etx000` | `sap.s4/bdc` |
+| API 3 | `etx100` | `sap.s4/bdc` |
+
+Both clients share the same provider attribution. Their `systemId` values distinguish the client contexts. A replace publication from `abap` covers its contribution across both clients of this publishing system.
+
+If the next complete publication contains API 1 but omits API 2, UMS removes API 2. Both BDC rows remain. Content from other publishing systems remains outside this replacement boundary.
