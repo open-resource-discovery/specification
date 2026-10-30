@@ -11,6 +11,8 @@ info:
     resource definitions in a submission and publish them after asynchronous validation.
 
     Staged artifacts are not discoverable.
+    Document uploads must conform to the ORD Document JSON Schema before they are staged.
+    Commit performs complete validation of the staged set, including semantic rules and references.
     By default, a commit publishes every valid publication unit and skips units with errors.
     One ORD information object and every resource definition it declares form one publication
     unit, so a resource is never published without all of its valid definitions.
@@ -222,10 +224,15 @@ paths:
       description: |-
         Stages one standard ORD Document under a submission-local artifact identifier.
         Reusing the identifier replaces the staged document.
-        The document is parsed as JSON when staged, while ORD schema and semantic validation
-        are performed when the submission is committed.
-        This allows one invalid ORD information object to be reported and skipped without
-        preventing other valid objects in the document from being published in the default mode.
+        Before accepting the upload, the aggregator MUST parse the body as JSON and validate the
+        complete document, including every contained ORD information object, against the supported
+        ORD Document JSON Schema. Malformed JSON returns 400; schema-invalid documents return 422.
+        The response SHOULD identify schema failures through JSON Pointers into the request body.
+        A failed PUT MUST NOT change staged content, submission state, or expiry time.
+        The provider must correct or remove schema-invalid objects before staging the document.
+        Complete validation of resource-definition completeness, references, semantic rules,
+        publication context, and current authorization is performed when the submission is committed.
+        Successful staging does not guarantee successful commit.
         Nothing is published before commit processing completes.
         Replacing an artifact in a `rejected` submission opens it for another commit attempt.
       requestBody:
@@ -233,8 +240,8 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              description: An ORD Document to validate against the ORD Document schema at commit time.
+              $ref: './Document.schema.json'
+              description: An ORD Document that must pass JSON Schema validation before being staged.
       responses:
         "201":
           description: Document artifact created.
@@ -367,6 +374,9 @@ paths:
       summary: Validate and publish a submission
       description: |-
         Freezes the current staged revision and starts asynchronous validation.
+        ORD Documents have already passed JSON Schema validation during upload.
+        Commit performs complete validation of the staged set, including resource-definition
+        completeness, reference resolution, semantic rules, publication context, and current authorization.
         Every definition declared by a staged ORD resource must have exactly one matching staged
         definition artifact, and every staged definition must match exactly one staged resource by
         ORD ID and the exact declared URL.
@@ -807,8 +817,8 @@ components:
                 - required: [groupTypeId]
         # Unit-local issues identify their staged artifact and carry at most one unit identity.
         # An issue that names a publication unit uses exactly one of ordId/groupId/groupTypeId; an
-        # artifact-level error (for example invalid JSON) or an error that cannot be attributed to
-        # one unit (an object missing its identifier, or a definition matching no staged resource)
+        # artifact-level error (for example a document-level publication context error) or an error
+        # that cannot be attributed to one unit (a definition matching no staged resource)
         # carries none, optionally with a jsonPointer.
         - if:
             properties:

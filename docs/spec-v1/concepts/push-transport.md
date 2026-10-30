@@ -82,10 +82,16 @@ The provider and aggregator should ensure during onboarding that this complete c
 
 ## Choosing Validation Behavior
 
-The default `strict: false` behavior publishes valid ORD information while reporting and skipping invalid publication units.
-Use this mode when one invalid resource should not delay independent valid resources from the same ORD Document or submission.
+Every ORD Document must pass complete JSON Schema validation when uploaded through PUT.
+A malformed JSON request is rejected with `400`, and a schema-invalid document is rejected with `422`.
+A failed upload does not change staged content, submission state, or expiry time.
+Correct or remove the invalid objects and upload the document again before committing.
+
+Commit performs complete validation of the staged set, including resource definitions, references, semantic rules, publication context, and current authorization.
+The default `strict: false` behavior publishes valid ORD information while reporting and skipping publication units with commit-time errors.
+Use this mode when a schema-valid resource with a semantic error or missing definition should not delay independent valid resources from the same ORD Document or submission.
 An ORD resource and all resource definitions it declares are one publication unit, so they are always accepted or skipped together.
 
 Set `strict: true` when all staged information must advance together.
-Any validation error then fails the complete commit and leaves the submission editable for correction.
+Any commit-time validation error then fails the complete commit and leaves the submission editable for correction.
 Errors that prevent the aggregator from safely isolating publication units fail the complete commit regardless of the `strict` setting.

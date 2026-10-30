@@ -52,8 +52,11 @@ Chosen option: **standardize optional push transport as a transactional submissi
 
 An aggregator that supports push implements the versioned ORD Aggregator Push API.
 A provider opens a submission, stages one or more standard ORD Documents and native resource definitions, and then commits the submission.
+Each ORD Document must pass complete JSON Schema validation during its PUT upload, including validation of every contained ORD information object and its required identifier.
+Malformed JSON is rejected with `400`, and a schema-invalid document is rejected with `422`, without changing staged content, submission state, or expiry time.
+The provider corrects or removes schema-invalid objects before staging that document.
 Staged content is not discoverable.
-The aggregator validates the complete staged set asynchronously after commit.
+The aggregator validates the complete staged set asynchronously after commit, including resource-definition completeness, reference resolution, semantic rules, publication context, and current authorization.
 By default, it publishes valid publication units and skips units with errors.
 The provider can opt into strict validation, in which the aggregator publishes nothing when any error occurs.
 All accepted changes from one commit become discoverable atomically.
@@ -115,10 +118,10 @@ This serializes the commits of one ORD provider to one publication context.
 Without it, a `replace` submission opened before a `merge` hot fix and committed after it would remove that hot fix.
 Optimistic concurrency control, such as a base revision checked at commit, was not chosen because it adds state to every submission for a case that serialization avoids.
 
-Validation defaults to partial acceptance independently of the publication mode.
+Commit validation defaults to partial acceptance independently of the publication mode.
 An error attributable to one publication unit skips that complete unit, including all definitions declared by an invalid resource.
 The aggregator publishes all remaining valid units together and reports every issue.
-A document-envelope, authorization, or other error that prevents publication units from being isolated safely fails the complete commit.
+A document-level semantic, authorization, or other error that prevents publication units from being isolated safely fails the complete commit.
 The provider can set `strict` to `true` when opening a submission.
 In strict mode, any error fails the complete commit and the previously published state remains unchanged.
 A `rejected` submission remains available for correction until it expires.
@@ -152,7 +155,7 @@ These limits must allow an onboarded provider to publish its complete contributi
 ### Consequences
 
 - ✅ ORD Documents remain transport-neutral and definitions remain in their native media types.
-- ✅ Independent valid resources are not blocked by an invalid resource in the same ORD Document or submission.
+- ✅ Independent valid resources in schema-valid documents are not blocked by commit-time errors in another publication unit.
 - ✅ A resource and every definition it declares are always accepted or skipped together.
 - ✅ Strict submissions can make several requests form one all-or-nothing publication.
 - ✅ Providers can correct a `rejected` submission and commit it again.
@@ -161,6 +164,7 @@ These limits must allow an onboarded provider to publish its complete contributi
 - ✅ Asynchronous validation does not keep an upload request open while a large submission is processed.
 - ✅ Status, diagnostics, expiry, and discard behavior are interoperable.
 - ⚠️ Aggregators must operate temporary storage and a submission lifecycle.
+- ⚠️ A schema-invalid information object rejects the whole document upload until the provider corrects or removes it.
 - ⚠️ Aggregators must document supported content encodings and capacity limits so providers can plan submissions that fit.
 - ⚠️ Aggregators must retain ORD provider and publication-context provenance for every published contribution.
 - ⚠️ Providers that require dependent resources to advance together must opt into strict validation.

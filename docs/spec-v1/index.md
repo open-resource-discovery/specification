@@ -176,6 +176,16 @@ A push publication is assembled as a stateful submission:
 4. The aggregator validates the staged set asynchronously and determines which publication units can be accepted.
 5. The provider polls the submission and its issues until validation finishes.
 
+When staging an ORD Document through `PUT`, the aggregator MUST parse the request body as JSON and validate the complete document against the supported ORD Document JSON Schema before creating or replacing the staged artifact.
+This includes every contained ORD information object, so every successfully staged publication unit has its required identifier.
+Malformed JSON MUST be rejected with `400 Bad Request`.
+A document that does not conform to the JSON Schema MUST be rejected with `422 Unprocessable Content`.
+The response SHOULD identify schema validation failures through JSON Pointers into the request body.
+A failed PUT MUST NOT change the staged content, submission state, or expiry time.
+The provider MUST correct or remove schema-invalid objects before staging that document.
+Submission commit MUST perform complete validation of the staged set, including resource-definition completeness, reference resolution, semantic rules, publication context, and current authorization.
+Successful staging does not guarantee successful commit.
+
 Staged content MUST NOT be discoverable.
 By default, commit validation MUST accept every valid publication unit and skip each unit that has an error.
 The provider MAY set `strict` to `true` when opening the submission to require all-or-nothing validation.
@@ -184,12 +194,11 @@ Warnings and information messages MUST NOT prevent publication.
 A default-mode commit with only unit-local errors MUST publish the accepted units and report the skipped units through issues.
 In a `processed` submission, a staged publication unit was skipped if and only if an issue of severity `error` identifies it after all issue pages are read, and was accepted otherwise.
 A `rejected` submission applies nothing: no staged unit is accepted, and the previously published state is unchanged, regardless of which units carry errors.
-An `error` confined to one staged item that carries no unit identity, such as an item missing its required ORD ID, still skips that one item in the default mode and is identified by a `jsonPointer`.
 An `error` that cannot be confined to one staged item MUST fail the entire commit, as stated below.
 This lets a provider read per-unit outcomes from the issues endpoint without a separate outcome list.
 All accepted units from one commit MUST become discoverable atomically, so consumers cannot observe an intermediate state.
 A validation or authorization error that cannot be confined safely to one publication unit MUST fail the entire commit in both modes.
-This includes an error in the ORD Document envelope that prevents its contained units from being isolated reliably.
+This includes a document-level semantic error that prevents its contained units from being isolated reliably.
 A `rejected` submission remains editable, so the provider can replace or remove staged artifacts and commit it again.
 The provider MAY also commit a `rejected` submission without changes, and the aggregator MUST then validate the same staged revision again.
 This helps when the failure depends on state outside the submission, such as authorization, ORD ID namespace permissions, or a conflicting contribution from another ORD provider.
@@ -316,9 +325,8 @@ The issues endpoint reports all errors, warnings, and information messages for t
 Each issue that applies to one publication unit MUST identify its staged artifact through `artifactId`, the ID the provider assigned when staging that artifact, and the unit through exactly one of `ordId`, `groupId`, or `groupTypeId`.
 An issue about a resource definition MUST additionally carry the exact declared `definitionUrl`, so that two resources referencing the same URL produce distinguishable issues.
 An issue MAY include a `jsonPointer` for a precise location within the staged artifact.
-An issue that applies to a whole staged artifact rather than one unit, such as an ORD Document that is not valid JSON, uses the artifact's `artifactId` and carries no unit identity.
+An issue that applies to a whole staged artifact rather than one unit, such as a document-level publication context error, uses the artifact's `artifactId` and carries no unit identity.
 A submission-wide issue that cannot be confined to one publication unit MUST use `artifactKind: submission` and carries no unit identity.
-A staged object that is missing its own required identifier fails item schema validation; because it has no ORD ID to report, the aggregator MUST identify that error through the document's `artifactId` and a `jsonPointer` to the object, and the publication unit is skipped in the default mode like any other item with an error.
 A staged resource definition whose declared `ordId` and `url` match no staged resource is reported with its `artifactId` and `definitionUrl` and no unit identity; such an error cannot be attributed to an accepted unit, so it never denotes a per-unit accepted or skipped outcome.
 
 #### Operational Limits, Timeouts, Retries, and Rate Limiting
