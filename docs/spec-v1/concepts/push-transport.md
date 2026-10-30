@@ -9,92 +9,92 @@ description: Operational guidance for choosing ORD push publication modes and pl
 > 🚧 Push transport is an <span className="feature-status-alpha">ALPHA</span> feature proposed in [specification PR #187](https://github.com/open-resource-discovery/specification/pull/187) and may still change in breaking ways.
 
 The normative push protocol is defined in the [ORD specification](../index.md#push-transport) and the [ORD Aggregator Push API](../interfaces/aggregator-push-api.mdx).
-This page provides non-normative guidance for applying that protocol to common publication lifecycles.
+This page gives non-normative guidance on how to apply that protocol to common publication scenarios.
 
 ## Choosing a Publication Mode
 
-The publication mode determines whether omission means removal.
-Accepted changes are applied atomically in both publication modes.
+The publication mode determines whether omitting information removes it.
+In both modes, the accepted changes are applied atomically.
 
-### Routine Changes, Hot Fixes, and Transports
+### Routine Changes and Hot Fixes
 
-Use `merge` when the provider knows which resources changed.
-Stage each changed ORD resource together with every resource definition it declares.
-Unrelated resources may be omitted and remain published.
+Use `merge` when the provider knows which resources have changed.
+Stage each changed ORD resource together with its Package and every resource definition it declares.
+Unchanged resources can be omitted and remain published.
 
-This pattern avoids sending a complete inventory for small daily changes, hot fixes, or transported development content.
-The provider needs durable bookkeeping of successfully published resource bundles to determine what changed.
+This avoids sending a complete inventory for small daily changes, hot fixes, or changes delivered through a transport management system.
+To determine what has changed, the provider needs to keep a durable record of the publication units it has published successfully.
 
 ### Known Removals
 
-Use `merge` with tombstones when the provider knows which previously published ORD IDs were removed.
-The tombstones remove matching contributions only from the submitting ORD provider in the submission's publication context.
+Use `merge` with tombstones when the provider knows which previously published ORD IDs have been removed.
+These tombstones remove only matching contributions of the submitting ORD provider in the submission's publication context.
 
-This pattern is appropriate when a source system or publishing pipeline records deletions explicitly.
+This pattern fits when a source system or publishing pipeline records deletions explicitly.
 
 ### Upgrades and Full Reconciliation
 
 Use `replace` when the provider publishes its complete current contribution for one publication context.
-This is useful after a major upgrade, for periodic reconciliation, or when many resources changed together.
-The aggregator derives removals by comparing the successfully validated submission with that ORD provider's prior contributions in the same context.
-It must retain ORD provider and context provenance for accepted `merge` publications so later `replace` operations can identify the ORD provider's complete contribution.
+This is useful after a major upgrade, for periodic reconciliation, or when many resources have changed at once.
+The aggregator derives removals by comparing the validated submission with the ORD provider's prior contributions in the same publication context.
+To make this possible, the aggregator records the ORD provider and publication context of every accepted contribution, including those published in `merge` mode.
 
-### Providers Without Deletion Bookkeeping
+### Providers Without Deletion Tracking
 
-Use `replace` when the provider can enumerate its complete current contribution but cannot reliably identify which previously published resources were deleted.
-Omitted contributions are removed only after the replacement validates successfully.
-This avoids requiring tombstones for deletions the provider no longer remembers.
+Use `replace` when the provider can list its complete current contribution but cannot reliably tell which previously published resources were deleted.
+The aggregator removes omitted contributions only after the replacement has been validated successfully.
+The provider therefore does not need tombstones for deletions it no longer knows about.
+Tombstones in a `replace` submission are ignored, so the provider can stage the same ORD Documents it serves through pull transport.
 
 ## Removing a Complete Contribution
 
-The protocol requires every committed submission to contain at least one valid ORD Document.
-To remove everything previously published by this ORD provider in a publication context, stage a valid ORD Document for the context that contains no ORD information to retain and commit it in `replace` mode.
+Every committed submission must contain at least one valid ORD Document.
+To remove everything that the ORD provider has published in a publication context, stage a valid ORD Document for that context that contains no ORD resources or taxonomy, and commit it in `replace` mode.
 
-An empty replacement removes only contributions attributed to that ORD provider in that context.
-It does not remove contributions owned by another ORD provider or published in another context.
-
-This operation removes published ORD contributions.
-It does not delete an aggregator's authoritative system-version or system-instance record, which is outside the ORD push protocol.
+Such an empty replacement removes only that ORD provider's contributions in that publication context.
+It also does not delete the aggregator's own record of the system version or system instance, which is outside the scope of the ORD push protocol.
 
 ## Combining Push and Pull
 
 An application or service can be described by several ORD providers.
-For example, one part can be submitted from a deployment pipeline through push transport while another part is served through an ORD Provider API and retrieved through pull transport.
-This works the same way as an application described by several pull-based ORD providers.
+For example, one part can be submitted from a deployment pipeline through push transport, while another part is served through an ORD Provider API and retrieved through pull transport.
+This works the same way as an application that is described by several pull-based ORD providers.
 
-One ORD provider may also publish for multiple separately onboarded applications or services.
-Each submission resolves to one authorized target and perspective using onboarding and authentication information.
-Different targets have separate active-submission slots, replacement boundaries, and tombstone effects, even when the provider identity is shared.
-No additional target selector is introduced in the request's `context` object.
+One ORD provider can also publish for multiple separately onboarded applications or services.
+The aggregator resolves each submission to one authorized publication target and perspective, based on onboarding and authentication information.
+Each target has its own active submission, replacement boundary, and tombstone scope, even when the ORD provider is the same.
+The request's `context` object does not contain a field for selecting the target.
 
 The contributions of these ORD providers must not overlap, because each ORD ID is described at most once within a perspective.
 A push submission, including one in `replace` mode, changes only the contribution of the submitting ORD provider.
-To move ORD information from one ORD provider to another, remove it from the first ORD provider before the second one publishes it.
+To move ORD information from one ORD provider to another, first remove it from the original ORD provider, then publish it from the new one.
 
 ## Planning for Aggregator Limits
 
-An aggregator documents its supported request content encodings and operational limits during onboarding.
+During onboarding, an aggregator documents its supported request content encodings and operational limits.
 These include encoded and decoded artifact size, aggregate decoded submission size, artifact count, active submissions, concurrent requests, and request rate.
-The aggregator also communicates its submission inactivity timeout and how long it retains processed submissions for status and issues.
+The aggregator also communicates its submission inactivity timeout and how long it retains processed submissions for reading their status and issues.
 
-A provider should check these limits before opening a submission.
-An ORD provider can have only one active submission per publication context, so it commits or discards a submission before opening the next one for that context.
-Routine changes can be divided into several `merge` submissions, committed one after another, when their resource bundles do not need one atomic publication boundary.
+A provider should check these limits before it opens a submission.
+An ORD provider can have only one active submission per publication context, so it must commit or discard a submission before it opens the next one for that context.
+Routine changes can be split into several `merge` submissions that are committed one after another, as long as their publication units do not need to be published together atomically.
 
-A `replace` submission represents the ORD provider's complete contribution in its publication context and cannot be divided into sequential partial replacements without changing its meaning.
-The provider and aggregator should ensure during onboarding that this complete contribution fits within the aggregator's documented limits.
+A `replace` submission represents the ORD provider's complete contribution in its publication context.
+It cannot be split into a sequence of partial replacements, because each commit would remove everything omitted from that submission.
+The provider and aggregator should therefore make sure during onboarding that the complete contribution fits within the aggregator's documented limits.
 
-## Choosing Validation Behavior
+## Validation at Staging and Commit
 
-Every ORD Document uploaded through PUT must pass JSON Schema validation at least against the parts of the ORD specification that push aggregation relies upon: it is a valid JSON object, it carries `openResourceDiscovery` and `perspective`, each processed collection is an array whose items carry their identity, and every declared resource definition has a string `url` and `mediaType`.
-A malformed JSON request is rejected with `400`, and a document that fails validation of those parts is rejected with `422`.
-The aggregator does not have to validate the rest of the document; complete content validation is the provider's responsibility.
-A failed upload does not change staged content, submission state, or expiry time.
-Correct or remove the offending objects and upload the document again before committing.
+When an ORD Document is staged through `PUT`, the aggregator validates at least the parts that push transport relies on: the body is a JSON object, `openResourceDiscovery` and `perspective` are present, each processed collection is an array whose items have an identifier, and every declared resource definition has a `url` and a `mediaType` of type string.
+Malformed JSON is rejected with `400`, and a document that fails these checks is rejected with `422`.
+The aggregator does not have to validate the rest of the document at this point; complete content validation is the provider's responsibility.
+A failed upload does not change the staged content, the submission state, or the expiry time.
+Correct or remove the failing objects and upload the document again before committing.
 
-Commit performs complete validation of the staged set, including resource definitions, references, semantic rules, publication context, and current authorization.
-Commit publishes valid ORD information while reporting and skipping publication units with commit-time errors.
-This means a schema-valid resource with a semantic error or missing definition does not delay independent valid resources from the same ORD Document or submission.
-An ORD resource and all resource definitions it declares are one publication unit, so they are always accepted or skipped together.
+Commit validates the complete staged content, including resource definitions, references, semantic rules, the publication context, and current authorization.
+The aggregator publishes all valid ORD information and reports and skips publication units that have errors.
+A resource with a semantic error or a missing definition therefore does not hold back independent valid resources in the same ORD Document or submission.
+An ORD resource and all resource definitions it declares form one publication unit, so they are always accepted or skipped together.
 
-An error that cannot be confined to one publication unit is a submission-wide error: it fails the complete commit and leaves the submission editable for correction.
+An error that cannot be confined to one publication unit is a submission-wide error.
+It fails the complete commit, and the submission remains editable so that the provider can correct it.

@@ -87,9 +87,10 @@ Please note that you may need to [protect the API access](#protect-ord-provider-
 
 > 🔗 See [./examples/implementation/no-auth](https://github.com/open-resource-discovery/specification/tree/main/examples/implementation/no-auth) for an example node.js implementation without authentication.
 
-#### Option 3: Push metadata
+#### Option 3: Push metadata to an aggregator
 
-Publish metadata at design-time or deploy-time following [Transactional Submission](../../spec-v1/index.md#transactional-submission); see [aggregator onboarding](#integrate-with-ord-aggregators) for the prerequisites.
+Publish the metadata at design-time or deploy-time, for example from a CI/CD pipeline, by submitting it to the aggregator as described in [Transactional Submission](../../spec-v1/index.md#transactional-submission).
+See [Integrate with ORD Aggregators](#integrate-with-ord-aggregators) for the prerequisites.
 
 ### Dynamic Metadata
 
@@ -125,7 +126,7 @@ You may not want to openly expose the ORD information and related metadata to ev
 For pull transport, the ORD Provider API needs to be protected in this case.
 The specification makes no assumptions on how this is done, but the [ORD Aggregators](../../spec-v1/index.md#ord-aggregator) will likely define the [Access Strategies](../../spec-extensions/access-strategies/) it supports.
 
-For push transport, authenticate using the [aggregator's credentials](../../spec-v1/index.md#authentication-and-api-location).
+For push transport, the provider authenticates with [credentials issued by the aggregator](../../spec-v1/index.md#authentication-and-api-location).
 
 ### Integrate with ORD Aggregators
 

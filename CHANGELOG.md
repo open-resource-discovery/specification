@@ -13,12 +13,17 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added transactional push transport and the ORD Aggregator Push API.
-  Providers can stage several ORD Documents and resource definitions for asynchronous validation in `replace` or `merge` mode.
-  Replace mode applies to the submitting ORD provider's complete contribution in one publication context and is the only exception to removal through tombstones.
+- Added push transport and the ORD Aggregator Push API (alpha).
+  Providers stage several ORD Documents and resource definitions in a submission, which is validated asynchronously after commit and published in `merge` or `replace` mode.
+  In `replace` mode, the submission is the ORD provider's complete contribution in one publication context, and omitted information is removed. This is the only exception to removal through tombstones, and tombstones in such a submission are ignored.
   An ORD provider can have at most one active submission per publication context, so its commits to that context are applied in order.
-  Valid publication units are accepted by default while invalid units are skipped, and providers can opt into strict all-or-nothing validation.
-  An ORD resource and every resource definition it declares are always processed as one publication unit.
+  Valid publication units are published, and invalid units are skipped and reported.
+  An ORD resource and every resource definition it declares always form one publication unit, and its Package must be staged in the same submission.
+
+### Changed
+
+- A Package and all resources assigned to it MUST now be described by the same ORD provider; a Package MUST NOT be shared across multiple ORD providers.
+  Previously, this was only required by the SAP policy level.
 
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 

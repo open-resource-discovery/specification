@@ -36,7 +36,7 @@ ORD is [open source](https://github.com/open-resource-discovery/specification) u
 
 **A:** This depends on the transport and the ORD aggregator.
 [Pull transport](../../spec-v1/index.md#pull-transport) relies on periodic fetching, so propagation is bounded by the polling interval.
-With [push transport](../../spec-v1/index.md#push-transport), a provider can publish when metadata changes; propagation then depends on submission validation and processing.
+With [push transport](../../spec-v1/index.md#push-transport), a provider can publish as soon as metadata changes, and the changes become available once the aggregator has validated and processed the submission.
 
 #### Q: Does ORD work for On-Premises Software?
 
