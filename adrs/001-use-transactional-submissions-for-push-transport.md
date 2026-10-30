@@ -84,7 +84,9 @@ The URL is an association key during push and is not fetched from the provider.
 Each submission belongs to the ORD provider established by its authenticated credential and to exactly one publication context.
 The aggregator identifies the ORD provider as the technical integration behind the authenticated client, as agreed during onboarding.
 Several ORD providers can together describe one application or service, using push or pull transport, as long as their contributions do not overlap.
-The context consists of one perspective and any required system version or aggregator-issued system instance identifier.
+The context identifies one authorized target and one perspective, including any required system version or aggregator-issued system instance identifier.
+The target is resolved from authoritative onboarding and authentication information rather than an additional request field.
+One ORD provider may publish for several separately onboarded applications or services, while each submission remains scoped to exactly one authorized target.
 The aggregator validates the submitted context and document claims against authoritative state.
 Permission to publish particular ORD ID namespaces is checked separately from ORD provider identity.
 
@@ -115,6 +117,7 @@ A complete replacement cannot be split into sequential partial replacement submi
 An ORD provider can have at most one active submission per publication context, where `open`, `validating` and `rejected` submissions are active.
 A request to open another one is rejected with `409 Conflict`, and the problem details identify the active submission so the provider can continue or discard it.
 This serializes the commits of one ORD provider to one publication context.
+The boundary includes the target, so the same provider can have active submissions for different onboarded targets concurrently.
 Without it, a `replace` submission opened before a `merge` hot fix and committed after it would remove that hot fix.
 Optimistic concurrency control, such as a base revision checked at commit, was not chosen because it adds state to every submission for a case that serialization avoids.
 
@@ -145,8 +148,10 @@ The issues endpoint reports all errors, warnings, and information messages.
 A unit-local issue identifies the affected staged artifact through `artifactId` and its publication unit through exactly one of `ordId`, `groupId`, or `groupTypeId`, adds the `definitionUrl` when it concerns a resource definition, and uses `artifactKind: submission` without a unit identity for submission-wide errors.
 
 Every operation uses HTTPS and authentication.
-Each credential identifies exactly one ORD provider in authoritative aggregator state, and that ORD provider describes exactly one system type or only system-independent information.
-An aggregator can further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
+Each credential identifies exactly one ORD provider in authoritative aggregator state.
+That provider can publish for multiple onboarded applications or services.
+Each submission must resolve to exactly one authorized target and perspective; an ambiguous target is rejected at creation.
+An aggregator can further restrict a credential to particular publication targets, perspectives, system versions, system instances, or ORD ID namespaces.
 The aggregator authorizes each operation against the ORD provider, publication context, and any additional restrictions configured for the credential.
 The concrete machine-to-machine authentication mechanism, credential issuance, and API base URL are communicated by the aggregator during onboarding.
 The onboarding information also states supported request content encodings, maximum encoded and decoded artifact sizes, aggregate decoded submission size, artifact counts, active submissions per ORD provider, concurrency, rate limits, and decompression limits.

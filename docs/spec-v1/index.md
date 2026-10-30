@@ -254,7 +254,9 @@ A `410 Gone` response MUST state the outcome in its problem details: `expired` w
 
 Each submission belongs to the ORD provider established by its authenticated credential and to exactly one publication context.
 The aggregator identifies the ORD provider as the technical integration behind the authenticated client, as agreed during onboarding.
-The publication context contains one [perspective](#perspectives) and any required system version or aggregator-issued system instance identifier.
+The publication context identifies one authorized publication target and one [perspective](#perspectives), including any required system version or aggregator-issued system instance identifier.
+The aggregator resolves the target from authoritative onboarding and authentication information; it is not an additional field in the request's `context` object.
+An ORD provider MAY publish for multiple separately onboarded applications or services, but each submission MUST resolve to exactly one authorized target.
 The provider MUST supply `perspective` explicitly when creating a submission, even when the authenticated credential is restricted to one perspective.
 The provider MAY omit `systemVersion` for `system-version` or `systemInstanceId` for `system-instance` only when the credential unambiguously identifies the required version or instance.
 The aggregator MUST verify that the staged ORD Documents describe the same authorized context.
@@ -267,7 +269,7 @@ Their contributions MUST NOT overlap, as already required by [ORD ID uniqueness]
 Push submissions only change the contribution of the submitting ORD provider.
 They never change information retrieved through pull transport or submitted by another ORD provider.
 
-The aggregator MUST retain the ORD provider and publication context as provenance for published contributions.
+The aggregator MUST retain the ORD provider and resolved publication context, including its target, as provenance for published contributions.
 This lets it associate later `merge` updates and tombstones with the ORD provider that submitted them.
 
 `merge` is the default publication mode when no mode is specified.
@@ -289,6 +291,8 @@ Request data MUST NOT establish authority to change a contribution; authorizatio
 #### Concurrent Submissions
 
 An ORD provider MUST NOT have more than one active submission for the same publication context.
+The active-submission boundary is the ORD provider together with the resolved target, perspective, and any required system version or system instance identifier.
+The same ORD provider MAY have active submissions for different onboarded targets at the same time.
 A submission is active while it is `open`, `validating`, or `rejected`.
 If the ORD provider requests another submission for that context, the aggregator MUST reject it with `409 Conflict` and identify the active submission in the problem details.
 The provider can then continue, commit, or discard the active submission.
@@ -365,8 +369,10 @@ An aggregator MUST return the original submission for a repeated key with the sa
 
 The push API MUST use HTTPS and authenticate every operation.
 Each credential MUST identify exactly one ORD provider in authoritative aggregator state.
-That ORD provider describes exactly one system type or only system-independent information.
-An aggregator MAY further restrict a credential to particular perspectives, system versions, system instances, or ORD ID namespaces.
+An ORD provider MAY publish for multiple onboarded applications or services.
+The aggregator MUST resolve each submission to exactly one authorized publication target and perspective using authoritative onboarding and authentication information.
+If that target cannot be resolved unambiguously, the aggregator MUST reject submission creation.
+An aggregator MAY further restrict a credential to particular publication targets, perspectives, system versions, system instances, or ORD ID namespaces.
 The aggregator MUST authorize each operation against the ORD provider, publication context, and any additional restrictions configured for the credential.
 Identifiers supplied by a request MUST NOT establish authority by themselves.
 

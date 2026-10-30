@@ -63,6 +63,11 @@ An application or service can be described by several ORD providers.
 For example, one part can be submitted from a deployment pipeline through push transport while another part is served through an ORD Provider API and retrieved through pull transport.
 This works the same way as an application described by several pull-based ORD providers.
 
+One ORD provider may also publish for multiple separately onboarded applications or services.
+Each submission resolves to one authorized target and perspective using onboarding and authentication information.
+Different targets have separate active-submission slots, replacement boundaries, and tombstone effects, even when the provider identity is shared.
+No additional target selector is introduced in the request's `context` object.
+
 The contributions of these ORD providers must not overlap, because each ORD ID is described at most once within a perspective.
 A push submission, including one in `replace` mode, changes only the contribution of the submitting ORD provider.
 To move ORD information from one ORD provider to another, remove it from the first ORD provider before the second one publishes it.

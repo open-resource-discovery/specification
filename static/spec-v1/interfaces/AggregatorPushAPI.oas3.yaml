@@ -23,6 +23,10 @@ info:
     context.
 
     Every operation requires authentication.
+    One ORD provider may publish for multiple separately onboarded applications or services.
+    Each submission must resolve to one authorized target and perspective using authoritative
+    onboarding and authentication information. Different targets have separate active-submission
+    slots and replacement boundaries even when their ORD provider identity is the same.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
     its API base URL and credentials during onboarding.
     An aggregator may rate limit any operation.
@@ -641,6 +645,10 @@ components:
       type: object
       description: |-
         Context that must resolve to exactly one authorized publication target.
+        The target is resolved from authoritative onboarding and authentication information,
+        not an additional request field. Submission creation is rejected if it is ambiguous.
+        One ORD provider may publish for multiple onboarded targets; active-submission slots,
+        replacement, and tombstones are isolated by resolved target and perspective.
         `systemVersion` applies only to `system-version`, and `systemInstanceId` applies only to
         `system-instance`.
       required: [perspective]
