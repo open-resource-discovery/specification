@@ -8,19 +8,6 @@ export type Usage = "external" | "local";
  * Defines whether and how the resource can be extended.
  */
 export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
-/**
- * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
- * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
- * Information omitted from a [push transport](../index.md#push-transport) submission in `replace` mode is an exception and is removed without a tombstone; tombstones in such a submission are not processed.
- *
- * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
- *
- * The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
- */
-export type Tombstone = Tombstone1 & Tombstone2;
-export type Tombstone1 = {
-  [k: string]: unknown;
-};
 
 /**
  * The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
@@ -4837,7 +4824,16 @@ export interface GroupType {
   visibility?: "public" | "internal" | "private";
   [k: string]: unknown;
 }
-export interface Tombstone2 {
+/**
+ * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
+ * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
+ * Information omitted from a [push transport](../index.md#push-transport) submission in `replace` mode is an exception and is removed without a tombstone; tombstones in such a submission are not processed.
+ *
+ * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
+ *
+ * The tombstone MUST be kept sufficiently long (at least 31 days) so that all ORD aggregators can learn about the tombstone.
+ */
+export interface Tombstone {
   /**
    * [ORD ID](../concepts/identifiers.md#ord-id) of the ORD resource/taxonomy that has been removed.
    */

@@ -153,7 +153,7 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 
 ### Push Transport
 
-> 🚧 Push transport and the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx) are an <span className="feature-status-alpha">ALPHA</span> feature proposed in [specification PR #187](https://github.com/open-resource-discovery/specification/pull/187). The contract may still change in breaking ways.
+> 🚧 Push transport and the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx) are an <span className="feature-status-alpha">ALPHA</span> feature. The contract may still change in breaking ways.
 
 In push transport mode, an [ORD provider](#ord-provider) publishes ORD information to an [ORD aggregator](#ord-aggregator) through the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx).
 Push transport is optional for both ORD providers and ORD aggregators.
@@ -215,7 +215,8 @@ Complete content validation is the provider's responsibility.
 
 Each `ordId`, `groupId`, and `groupTypeId` of ORD information MUST occur only once per submission, compared within its own kind; tombstones are not counted.
 If an uploaded ORD Document repeats an identifier, or contains one that another staged ORD Document already contains, the aggregator MUST reject the upload with `422 Unprocessable Content`.
-The response identifies the other artifact, or, for a repetition within the uploaded document, points to one of the occurrences with a JSON Pointer.
+In `merge` mode, a tombstone MUST NOT have the same identifier as ORD information staged in the same submission, and an upload that would create such a conflict MUST also be rejected with `422 Unprocessable Content`.
+The response identifies the other artifact, or, for a conflict within the uploaded document, points to one of the occurrences with a JSON Pointer.
 To move ORD information to another staged document, the provider first stages the source document without it.
 For push transport, this is stricter than the general [ORD ID uniqueness](#ord-id-uniqueness-and-aggregation) rule, which lets an aggregator retain one of two equivalent descriptions.
 
@@ -326,6 +327,7 @@ Because the same ORD ID can legitimately occur in different perspectives, scopin
 Several ORD providers can together describe one application or service, and each of them can use push or [pull transport](#pull-transport).
 Their contributions MUST NOT overlap, as already required by [ORD ID uniqueness](#ord-id-uniqueness-and-aggregation) within a perspective.
 A push submission changes only the submitting ORD provider's contribution, never information retrieved through pull transport or submitted by another ORD provider.
+This specification does not define how ORD information is handed over from one ORD provider to another; an aggregator may allow a takeover or require a dedicated handover.
 
 For every published contribution, the aggregator MUST record the ORD provider and the resolved publication context, including its target.
 This lets it associate later `merge` updates and tombstones with the ORD provider that submitted them.

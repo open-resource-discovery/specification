@@ -6021,13 +6021,6 @@ definitions:
           The description of a Tombstone MAY be added to the changelog of the removed resource by an ORD aggregator.
     required:
       - removalDate
-    oneOf:
-      - type: object
-        required: [ordId]
-      - type: object
-        required: [groupId]
-      - type: object
-        required: [groupTypeId]
     examples:
       - ordId: "sap.s4:apiResource:API_RFQ_PROCESS_SRV:v2"
         removalDate: "2020-12-02T14:12:59Z"

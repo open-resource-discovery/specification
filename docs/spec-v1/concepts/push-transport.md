@@ -6,7 +6,7 @@ description: Operational guidance for choosing ORD push publication modes and pl
 
 # Push Transport Guidance
 
-> 🚧 Push transport is an <span className="feature-status-alpha">ALPHA</span> feature proposed in [specification PR #187](https://github.com/open-resource-discovery/specification/pull/187) and may still change in breaking ways.
+> 🚧 Push transport is an <span className="feature-status-alpha">ALPHA</span> feature and may still change in breaking ways.
 
 The normative push protocol is defined in the [ORD specification](../index.md#push-transport) and the [ORD Aggregator Push API](../interfaces/aggregator-push-api.mdx).
 This page gives non-normative guidance on how to apply that protocol to common publication scenarios.
@@ -58,7 +58,8 @@ One ORD provider can also publish for several separately onboarded applications 
 
 The contributions of these ORD providers must not overlap, because each ORD ID is described at most once within a perspective.
 A push submission, including one in `replace` mode, changes only the contribution of the submitting ORD provider.
-To move ORD information from one ORD provider to another, first remove it from the original ORD provider, then publish it from the new one.
+How ORD information is handed over from one ORD provider to another, for example when a system switches from pull to push transport, is not defined yet.
+An aggregator may allow the new ORD provider to take over the content, or require a dedicated handover, for example by removing the content from the original ORD provider first.
 
 ## Planning for Aggregator Limits
 

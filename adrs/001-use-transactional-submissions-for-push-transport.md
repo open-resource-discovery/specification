@@ -69,7 +69,7 @@ Complete content validation remains the provider's responsibility, so that aggre
 Commit then decides validity for the complete staged revision, including references, semantic rules, the publication context, and current authorization.
 
 Each identifier of ORD information can be staged only once per submission.
-An upload that would duplicate one is rejected with `422`, because staged artifacts have no reliable order and the aggregator should not have to choose between two copies at commit.
+An upload that would duplicate one, or that would add a tombstone for staged ORD information in `merge` mode, is rejected with `422`, because staged artifacts have no reliable order and the aggregator should not have to choose between conflicting entries at commit.
 
 ### Publication Units and Partial Acceptance
 
@@ -115,6 +115,8 @@ The limits must allow an onboarded provider to publish its complete contribution
 - **All-or-nothing (`strict`) validation:** an opt-in mode in which any error fails the complete commit was considered and not included, for the reason given under partial acceptance.
 - **Publication scopes finer than the ORD provider:** replacing only part of one ORD provider's contribution in a publication context is not defined.
   This concern is shared with pull transport and is decided separately in [PR #236](https://github.com/open-resource-discovery/specification/pull/236), based on the options compared in [issue #234](https://github.com/open-resource-discovery/specification/issues/234).
+- **Handover between ORD providers:** how ORD information moves from one ORD provider to another, for example when a system switches from pull to push transport, is not defined.
+  An aggregator may allow a takeover or require a dedicated handover, for example by removing the content from the original ORD provider first.
 
 ### Consequences
 
