@@ -220,13 +220,13 @@ If that state is lost, the provider MUST discard the submission and start a new 
 
 Each top-level ORD information object in a staged ORD Document is one publication unit.
 Document-level properties inherited by that object are part of its validation.
-Because ORD resources inherit properties from their Package, an error in a staged Package cannot be confined to one publication unit and MUST fail the entire commit.
-The `partOfPackage` assignment of a staged ORD resource MUST resolve to a Package that is staged in the same submission or already published in the same perspective.
-Otherwise, the resource has an error and its publication unit is skipped in the default mode.
+Because ORD resources inherit properties from their Package, a staged Package with an error is skipped like any other publication unit, and every resource whose `partOfPackage` points at that skipped Package is also skipped.
+The `partOfPackage` assignment of a staged ORD resource MUST resolve to a valid Package that is staged in the same submission or already published in the same perspective.
+Otherwise, the resource has an error and its publication unit is skipped, with an error identifying the Package as the reason.
 For an ORD resource that declares resource definitions, its publication unit also contains all of those definitions.
 Every resource-definition entry declared by a staged ORD resource MUST have exactly one matching staged resource-definition artifact in the same submission.
 Every staged resource-definition artifact MUST match exactly one staged resource by ORD ID and the exact declared `url` value.
-If the resource or any declared definition has an error, the aggregator MUST skip the complete publication unit in the default mode.
+If the resource or any declared definition has an error, the aggregator MUST skip the complete publication unit.
 The aggregator MUST NOT publish the resource, any of its definitions, or an update to either independently.
 If the resource or one of its definitions changes, the provider MUST stage the resource and all of its declared definitions, including unchanged definitions.
 In `merge` mode, unrelated ORD resources MAY be omitted and remain published.

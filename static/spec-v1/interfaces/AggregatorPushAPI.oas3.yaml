@@ -393,9 +393,12 @@ paths:
         An error attributable to one publication unit skips that complete unit.
         The aggregator publishes all remaining valid units together and reports every issue.
         An error that cannot be confined to one publication unit is a submission-wide error and fails the entire commit.
-        This includes an error in a staged Package, because ORD resources inherit from their Package.
-        A resource whose `partOfPackage` resolves neither to a staged Package nor to a Package
-        already published in the same perspective has an error.
+        A staged Package with an error is skipped like any other publication unit; it is not a
+        submission-wide error. Because ORD resources inherit properties from their Package, every
+        resource whose `partOfPackage` points at that skipped Package is also skipped, and each such
+        resource gets its own error identifying the Package as the reason it could not be published.
+        A resource whose `partOfPackage` resolves neither to a valid staged Package nor to a Package
+        already published in the same perspective likewise has an error and is skipped.
         A replace submission can remove every prior contribution of the ORD provider in the
         publication context by staging at least one valid ORD Document that contains no ORD
         information to retain.
