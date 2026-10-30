@@ -381,9 +381,12 @@ paths:
       summary: Validate and publish a submission
       description: |-
         Freezes the current staged revision and starts asynchronous validation.
-        Staged ORD Documents have already been confirmed to be valid JSON and usable ORD Documents during upload.
-        Commit performs complete validation of the staged set, including resource-definition
-        completeness, reference resolution, semantic rules, publication context, and current authorization.
+        Staged ORD Documents have already been confirmed at upload to be valid JSON and to carry the
+        identity and transport metadata the aggregator relies upon.
+        Commit performs complete validation of the staged set in bulk and produces the final issues.
+        This decides whether each staged item is valid and MAY go beyond JSON Schema, including
+        resource-definition completeness, reference resolution, semantic rules, publication context,
+        and current authorization. A staged item can pass upload yet fail here.
         Every definition declared by a staged ORD resource must have exactly one matching staged
         definition artifact, and every staged definition must match exactly one staged resource by
         ORD ID and the exact declared URL.

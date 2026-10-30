@@ -185,8 +185,11 @@ Those parts are:
 4. resource-definition association fields: for a resource that declares `resourceDefinitions`, each entry's `url` and `mediaType` is a string.
 
 This ensures every successfully staged publication unit has its required identifier and that the aggregator can process it.
-The aggregator MAY validate more of the document against the [ORD Document JSON Schema](#ord-document), but is not required to.
-Complete content validation is the provider's responsibility, and requiring the aggregator to enforce the full schema would couple every aggregator to each ORD Document schema revision.
+PUT validates only the parts needed to establish identity and make the push transport work; it does not decide whether the content is valid ORD.
+Whether a staged item is valid is decided at commit, when the complete staged set is validated in bulk, and that validation MAY go beyond JSON Schema (for example semantic rules, reference resolution, and registry checks).
+A staged item, including a Package, can therefore pass `PUT` yet fail at commit.
+The aggregator MAY also validate more of the document against the [ORD Document JSON Schema](#ord-document) at `PUT`, but is not required to.
+Complete content validation is the provider's responsibility, and requiring the aggregator to enforce the full schema at `PUT` would couple every aggregator to each ORD Document schema revision.
 Malformed JSON MUST be rejected with `400 Bad Request`.
 A document that does not pass validation of the parts listed above MUST be rejected with `422 Unprocessable Content`.
 The response SHOULD identify failures through JSON Pointers into the request body.
