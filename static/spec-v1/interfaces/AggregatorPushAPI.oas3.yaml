@@ -9,6 +9,10 @@ info:
 
     The ORD Aggregator Push API lets an authenticated ORD provider stage ORD Documents and
     resource definitions in a submission and publish them after asynchronous validation.
+    The normative rules are defined in the ORD specification:
+    https://open-resource-discovery.org/spec-v1/#push-transport
+    Guidance on publication modes and capacity planning:
+    https://open-resource-discovery.org/spec-v1/concepts/push-transport
 
     Staged artifacts are not discoverable.
     Before a document is staged, it must be valid JSON and carry the identifiers and metadata that
@@ -33,7 +37,8 @@ info:
     A rate-limited response includes `Retry-After`, so that a provider that retries knows when to do so.
     During onboarding, the aggregator documents the supported request `Content-Encoding` values and
     limits for encoded requests, decoded artifacts, aggregate staged content, artifact counts,
-    active submissions, request rate, and concurrency.
+    active submissions, request rate, and concurrency. See
+    https://open-resource-discovery.org/spec-v1/#operational-limits-timeouts-retries-and-rate-limiting
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -69,6 +74,8 @@ paths:
         submission instead.
         Commit validation accepts every valid publication unit and skips units with errors.
         The response states when the submission expires if its staged content does not change.
+        See https://open-resource-discovery.org/spec-v1/#publication-context-and-removal
+        and https://open-resource-discovery.org/spec-v1/#concurrent-submissions
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
       requestBody:
@@ -187,6 +194,7 @@ paths:
       description: |-
         Returns errors, warnings, and information messages for the current staged revision.
         Once validation finishes, the pages together contain all issues of that commit attempt.
+        See https://open-resource-discovery.org/spec-v1/#status-and-issues
       responses:
         "200":
           description: Submission issues.
@@ -220,36 +228,37 @@ paths:
       description: |-
         Stages one standard ORD Document under an artifact ID assigned by the provider.
         Reusing the artifact ID replaces the staged document.
-        Each `ordId`, `groupId`, or `groupTypeId` of ORD information (not counting tombstones) must occur
-        only once in a submission. An upload that repeats an identifier, or contains one that another
-        staged ORD Document already contains, is rejected with `422`, identifying the artifact that
-        already contains it.
         Before accepting the upload, the aggregator MUST parse the body as JSON and MUST validate
         at least the parts of the ORD Document JSON Schema that push transport relies on:
         (1) the body is a JSON object;
         (2) `openResourceDiscovery` and `perspective` are present;
         (3) each processed collection is an array, and each of its items has an identifier
         (`ordId`, `groupId`, or `groupTypeId`);
-        (4) for each resource that declares `resourceDefinitions`, every entry has a `url` and a
-        `mediaType` of type string.
+        (4) for each definition entry (in `resourceDefinitions`, or in `definitions` for Entity Types
+        and Capabilities), `url` and `mediaType` are strings.
         Malformed JSON returns `400`. A document that fails this validation returns `422`.
-        The response SHOULD identify each failure with a JSON Pointer into the request body.
+        The response SHOULD identify failures through JSON Pointers into the request body.
         A failed upload MUST NOT change the staged content, the submission state, or the expiry time.
         The provider must correct or remove the failing objects before staging the document again.
         The aggregator MAY validate more of the document, but it is not required to. Complete
-        content validation is the provider's responsibility, and requiring it here would tie every
-        aggregator to each revision of the ORD Document schema.
+        content validation is the provider's responsibility.
+        Each `ordId`, `groupId`, and `groupTypeId` of ORD information (not counting tombstones) must
+        occur only once per submission, compared within its own kind. An upload that repeats an
+        identifier, or contains one that another staged ORD Document already contains, is rejected
+        with `422`. The response identifies the other artifact or, for a repetition within the
+        uploaded document, points to one occurrence with a JSON Pointer.
         Resource-definition completeness, references, semantic rules, the publication context, and
         current authorization are validated at commit, so successful staging does not guarantee a
         successful commit. Nothing is published before commit processing completes.
         Replacing an artifact in a `rejected` submission makes it ready for another commit attempt.
+        See https://open-resource-discovery.org/spec-v1/#staging
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: './Document.schema.json'
-              description: An ORD Document. Before staging, the aggregator validates only the parts that push transport relies on (see the operation description), not necessarily the complete schema.
+              description: An ORD Document. Before staging, the aggregator MUST validate at least the parts that push transport relies on (see the operation description); it MAY validate additional schema constraints.
       responses:
         "201":
           description: Document artifact created.
@@ -309,10 +318,12 @@ paths:
       summary: Stage or replace a resource definition
       description: |-
         Stages a resource definition in its native format and associates it with one ORD resource
-        and the exact `resourceDefinitions[].url` value declared by that resource.
+        and the exact `url` of a definition entry declared by that resource (in `resourceDefinitions`,
+        or in `definitions` for Entity Types and Capabilities).
         Reusing the artifact ID replaces the staged content and its association.
-        The request `Content-Type` must equal the `mediaType` declared by the resource-definition entry.
+        The request `Content-Type` must equal the `mediaType` of the definition entry.
         The association and the media type are validated at commit.
+        See https://open-resource-discovery.org/spec-v1/#publication-units
       parameters:
         - $ref: "#/components/parameters/OrdId"
         - $ref: "#/components/parameters/DefinitionUrl"
@@ -389,19 +400,14 @@ paths:
         completeness, reference resolution, semantic rules, the publication context, and current
         authorization. A staged item can therefore pass upload and still fail here.
 
-        Publication units:
+        Publication units (https://open-resource-discovery.org/spec-v1/#publication-units):
         Each top-level ORD information object is one publication unit. For an ORD resource, the
-        unit also contains every resource definition it declares.
-        Every definition declared by a staged ORD resource must have exactly one matching staged
-        definition artifact, and every staged definition must match exactly one staged resource by
-        ORD ID and the exact declared URL. This applies in both publication modes.
-        A `merge` submission may omit unrelated resources, but a staged resource cannot be completed
-        with previously published definitions or a previously published Package.
-        A resource whose `partOfPackage` does not resolve to a valid Package staged in the same
-        submission has an error that names the Package and is skipped. This includes every
-        resource of a staged Package that is skipped because of its own error.
+        unit also contains every resource definition it declares, and its Package must be staged
+        in the same submission. Previously published definitions or Packages do not complete a
+        staged resource. A staged definition that matches no staged resource is not published and
+        is reported as a warning.
 
-        Outcome:
+        Outcome (https://open-resource-discovery.org/spec-v1/#commit-validation-and-outcome):
         An error that can be confined to one publication unit skips that complete unit. The
         aggregator publishes all remaining valid units atomically and reports every issue.
         The submission then becomes `processed`, and the skipped units and their errors remain
@@ -413,13 +419,15 @@ paths:
         again, for example after authorization or a conflicting contribution outside the
         submission changed.
         Repeating this request while the same revision is validating returns its current state.
+        See https://open-resource-discovery.org/spec-v1/#correcting-a-submission
 
-        Removal:
+        Removal (https://open-resource-discovery.org/spec-v1/#publication-context-and-removal):
         In `replace` mode, a skipped unit is not treated as omitted, so its previously published
         contribution is kept. A `replace` submission can remove all prior contributions of the ORD
         provider in the publication context by staging at least one valid ORD Document that
         contains no ORD resources or taxonomy.
-        In `replace` mode, tombstones are ignored, because omission alone determines removal.
+        In `replace` mode, tombstones are not processed: they have no effect and are neither
+        authorized nor validated, because omission alone determines removal.
         In `merge` mode, tombstones apply only to contributions of this ORD provider in the submission's
         publication context and must be authorized for those contributions.
         Before publishing, the aggregator checks again that the ORD provider is authorized for the
@@ -476,7 +484,7 @@ components:
       name: artifactId
       in: path
       required: true
-      description: Provider-assigned identifier that is unique within this submission and artifact collection (documents or resource definitions).
+      description: Provider-assigned identifier that is unique within this submission and artifact collection (documents or resource definitions). Any scheme matching the pattern works, including UUIDs, as long as the provider reuses the same ID when it retries or replaces an artifact. See https://open-resource-discovery.org/spec-v1/#staging
       schema:
         type: string
         pattern: "^[A-Za-z0-9._~-]+$"
@@ -495,7 +503,7 @@ components:
       name: url
       in: query
       required: true
-      description: Exact `url` value of the `resourceDefinitions` entry, as declared by the resource.
+      description: Exact `url` of the definition entry (in `resourceDefinitions`, or in `definitions` for Entity Types and Capabilities), as declared by the resource.
       schema:
         type: string
         format: uri-reference
@@ -510,14 +518,14 @@ components:
         aggregator decodes it. When present, it must contain exactly one `sha-256` digest. A
         malformed or mismatching value is rejected with `400 Bad Request`. The digest only protects
         the integrity of this request. It is not a persistent artifact identifier and does not
-        grant permission to reuse stored content.
+        grant permission to reuse stored content. See https://open-resource-discovery.org/spec-v1/#staging
       schema:
         type: string
     IdempotencyKey:
       name: Idempotency-Key
       in: header
       required: false
-      description: Provider-generated key for safely retrying submission creation. A provider that retries creation must send the same key on every attempt.
+      description: Provider-generated key for safely retrying submission creation. A provider that retries creation must send the same key on every attempt. See https://open-resource-discovery.org/spec-v1/#operational-limits-timeouts-retries-and-rate-limiting
       schema:
         type: string
         minLength: 1
@@ -552,6 +560,7 @@ components:
         delay-seconds or as an HTTP-date as defined by RFC 9110. After a `429` response, a provider
         that retries must not do so before this time. On a successful response for a `validating`
         submission, it indicates when to poll again.
+        See https://open-resource-discovery.org/spec-v1/#operational-limits-timeouts-retries-and-rate-limiting
       schema:
         type: string
         minLength: 1
@@ -597,6 +606,7 @@ components:
         This happens when an `open` or `rejected` submission expired without being published, or
         when the retention period of a `processed` submission ended.
         The `outcome` member of the problem details states which case applies.
+        See https://open-resource-discovery.org/spec-v1/#expiry-and-retention
       content:
         application/problem+json:
           schema:
@@ -659,6 +669,7 @@ components:
         replacement, and tombstones apply separately per target and perspective.
         `systemVersion` applies only to `system-version`, and `systemInstanceId` applies only to
         `system-instance`.
+        See https://open-resource-discovery.org/spec-v1/#publication-context-and-removal
       required: [perspective]
       additionalProperties: false
       properties:
@@ -709,6 +720,7 @@ components:
             The aggregator defines and communicates the inactivity timeout; 15 minutes is the recommended default.
             For a `processed` submission: the end of its retention period, after which its status and issues are no longer available.
             The aggregator chooses and communicates the retention period; at least 24 hours is recommended.
+            See https://open-resource-discovery.org/spec-v1/#expiry-and-retention
         artifactCounts:
           $ref: "#/components/schemas/ArtifactCounts"
         issueCounts:
@@ -771,6 +783,9 @@ components:
           type: string
     ValidationIssue:
       type: object
+      description: |-
+        Validation issue of a submission. For the identification rules, see
+        https://open-resource-discovery.org/spec-v1/#status-and-issues
       required: [severity, message, artifactKind]
       additionalProperties: true
       properties:
@@ -808,7 +823,7 @@ components:
         definitionUrl:
           type: string
           description: |-
-            Exact declared `resourceDefinitions[].url` of the resource definition the issue applies to.
+            Exact `url` of the definition entry the issue applies to.
             MUST be present when the issue is about a resource definition, so that issues for two
             resources that declare the same URL can be told apart.
         jsonPointer:
@@ -829,9 +844,9 @@ components:
                 - required: [groupTypeId]
         # Unit-local issues identify their staged artifact and carry at most one unit identity.
         # An issue that names a publication unit uses exactly one of ordId/groupId/groupTypeId; an
-        # artifact-level error (for example a document-level publication context error) or an error
-        # that cannot be attributed to one unit (a definition matching no staged resource)
-        # carries none, optionally with a jsonPointer.
+        # artifact-level issue (for example a document-level publication context error) or an issue
+        # that cannot be attributed to one unit (a warning for a definition matching no staged
+        # resource) carries none, optionally with a jsonPointer.
         - if:
             properties:
               artifactKind:

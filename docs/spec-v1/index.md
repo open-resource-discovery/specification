@@ -158,22 +158,21 @@ This is implemented by providing an [ORD Provider API](#ord-provider-api).
 In push transport mode, an [ORD provider](#ord-provider) publishes ORD information to an [ORD aggregator](#ord-aggregator) through the [ORD Aggregator Push API](./interfaces/aggregator-push-api.mdx).
 Push transport is optional for both ORD providers and ORD aggregators.
 
-For static metadata, we recommend push transport when the aggregator supports it.
-The provider can then publish from a CI/CD pipeline or a CLI and does not need to run a continuously reachable server.
-No provider endpoint has to be hosted, protected, patched, or monitored, which reduces TCO, security effort, and maintenance.
+For static metadata, we recommend push transport when the aggregator supports it, because the provider can publish from a CI/CD pipeline without a continuously reachable provider API.
 Push transport is also useful when a provider can publish runtime metadata as soon as it changes.
 
 Push transport uses the standard [ORD Document](#ord-document) without transport-specific properties.
 Resource definitions are uploaded separately in their native media types.
-Within a submission, their `url` values only associate each definition with the resource that declares it; the aggregator does not fetch them from the provider.
+In this section, a **definition entry** is an entry in a resource's `resourceDefinitions` array, or in its `definitions` array for Entity Types and Capabilities.
+Within a submission, the `url` of a definition entry only associates the uploaded definition with the resource that declares it; the aggregator does not fetch it from the provider.
 See [Push Transport Guidance](./concepts/push-transport.md) for publication patterns, removing a complete contribution, and capacity planning.
 
 ##### Push Transport - Pros
 
-- No continuously reachable provider API is needed; publication can run from a CI/CD pipeline or CLI
+- No provider API has to be hosted, protected, patched, and monitored, which reduces TCO and maintenance
 - Changes can be published as soon as they occur
 - Direct feedback on validation errors through submission issues
-- Several ORD Documents and resource definitions are published atomically
+- Accepted publication units from several ORD Documents become discoverable atomically
 - `replace` mode lets the aggregator derive removals without tombstones
 
 ##### Push Transport - Cons
@@ -189,7 +188,7 @@ A provider publishes through a submission that collects ORD Documents and resour
 
 1. The provider opens a submission for one [publication context](#publication-context-and-removal), using the default `merge` publication mode or selecting `replace`.
 2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
-3. The provider commits the submission, which freezes the staged content as one staged revision.
+3. The provider commits the submission, which freezes the staged content as the staged revision.
 4. The aggregator validates the staged revision asynchronously and decides which publication units it accepts.
 5. The provider polls the submission status and reads its issues until validation finishes.
 
@@ -197,24 +196,32 @@ Staged content MUST NOT be discoverable.
 
 ##### Staging
 
+The provider assigns each staged artifact an ID that is unique within its collection (documents or resource definitions) and matches the `artifactId` pattern of the [OpenAPI definition](./interfaces/aggregator-push-api.mdx).
+Staging an artifact with an existing ID replaces it.
+Any ID scheme works, including UUIDs, as long as the provider reuses the same ID when it retries or replaces an artifact.
+
 When the provider stages an ORD Document through `PUT`, the aggregator MUST parse the request body as JSON before creating or replacing the staged artifact.
 It MUST also perform JSON Schema validation of at least the parts of the ORD specification that push transport relies on:
 
 1. The request body is a JSON object.
 2. `openResourceDiscovery` and `perspective` are present, so the body is recognized as an ORD Document and can be matched to the submission's publication context.
 3. Each processed collection is an array, and each of its items has an identifier (`ordId`, `groupId`, or `groupTypeId`).
-4. For each resource that declares `resourceDefinitions`, every entry has a `url` and a `mediaType` of type string.
+4. For each definition entry, `url` and `mediaType` are strings.
 
 This ensures that every staged publication unit has an identifier and can be processed.
-Each `ordId`, `groupId`, or `groupTypeId` of ORD information MUST occur only once in a submission; tombstones are not counted.
-If an uploaded ORD Document repeats an identifier, or contains one that another staged ORD Document already contains, the aggregator MUST reject the upload with `422 Unprocessable Content` and identify the artifact that already contains it.
 `PUT` does not decide whether the content is valid ORD.
 The aggregator MAY validate more of the document against the [ORD Document JSON Schema](#ord-document), but it is not required to.
-Complete content validation is the provider's responsibility; requiring the full schema at `PUT` would tie every aggregator to each schema revision.
+Complete content validation is the provider's responsibility.
+
+Each `ordId`, `groupId`, and `groupTypeId` of ORD information MUST occur only once per submission, compared within its own kind; tombstones are not counted.
+If an uploaded ORD Document repeats an identifier, or contains one that another staged ORD Document already contains, the aggregator MUST reject the upload with `422 Unprocessable Content`.
+The response identifies the other artifact, or, for a repetition within the uploaded document, points to one of the occurrences with a JSON Pointer.
+To move ORD information to another staged document, the provider first stages the source document without it.
+For push transport, this is stricter than the general [ORD ID uniqueness](#ord-id-uniqueness-and-aggregation) rule, which lets an aggregator retain one of two equivalent descriptions.
 
 Malformed JSON MUST be rejected with `400 Bad Request`.
 A document that fails the validation listed above MUST be rejected with `422 Unprocessable Content`.
-The response SHOULD identify each failure with a JSON Pointer into the request body.
+The response SHOULD identify failures through JSON Pointers into the request body.
 A failed `PUT` MUST NOT change the staged content, the submission state, or the expiry time.
 The provider MUST correct or remove the failing objects before staging the document again.
 
@@ -228,21 +235,19 @@ The aggregator MUST verify it and reject a malformed or mismatching digest with 
 
 Each top-level ORD information object in a staged ORD Document is one **publication unit**.
 Document-level properties that the object inherits are validated as part of it.
-For an ORD resource that declares resource definitions, the publication unit also contains all of those definitions:
+For an ORD resource with definition entries, the publication unit also contains all of their definitions:
 
-- Every resource-definition entry declared by a staged ORD resource MUST have exactly one matching staged resource-definition artifact in the same submission.
-- Every staged resource-definition artifact MUST match exactly one staged resource by ORD ID and the exact declared `url` value.
+- Every definition entry of a staged ORD resource MUST have exactly one matching staged resource-definition artifact in the same submission.
+- Every staged resource-definition artifact MUST match exactly one staged resource by ORD ID and the exact `url` of a definition entry.
 - Previously published artifacts MUST NOT be used to complete a staged resource, and the aggregator MUST NOT fetch the declared URL to complete a submission.
 
 If a resource or one of its definitions changes, the provider MUST stage the resource together with all of its declared definitions, including unchanged ones.
 In `merge` mode, the provider MAY omit unrelated ORD resources, which then remain published.
 
 ORD resources inherit properties from their Package.
-The `partOfPackage` assignment of a staged ORD resource MUST therefore resolve to a valid Package that is staged in the same submission, also in `merge` mode.
-A previously published Package does not satisfy this requirement.
+The `partOfPackage` assignment of a staged ORD resource MUST therefore resolve to a valid Package that is staged in the same submission, also in `merge` mode; a previously published Package does not satisfy this requirement.
 Because a [Package](./concepts/grouping-and-bundling.md#package) cannot be shared across ORD providers, the ORD provider can always stage it.
-If it does not, the resource has an error that names the Package as the reason, and its publication unit is skipped.
-This also applies when the Package is staged but skipped because of its own error.
+If the Package is not staged, or is staged but skipped because of its own error, the resource has an error that names the Package, and its publication unit is skipped.
 
 ##### Commit Validation and Outcome
 
@@ -250,10 +255,9 @@ Validity is decided at commit, which MUST validate the complete staged revision,
 This validation MAY go beyond JSON Schema, for example with registry checks.
 A staged item, including a Package, can therefore pass `PUT` and still fail at commit.
 
-The aggregator MUST accept every valid publication unit and skip every unit that has an error.
+The aggregator MUST accept every valid publication unit, skip every unit that has an error, and report the skipped units through issues.
 If a resource or any of its declared definitions has an error, the aggregator MUST skip the complete publication unit and MUST NOT publish the resource, any of its definitions, or an update to either on its own.
 Warnings and information messages MUST NOT prevent publication.
-A commit with only errors confined to publication units MUST publish the accepted units and report the skipped units through issues.
 All accepted units of one commit MUST become discoverable atomically, so consumers never observe an intermediate state.
 
 An error that cannot be confined to one publication unit is a **submission-wide error** and MUST fail the entire commit.
@@ -294,15 +298,15 @@ Expiry is suspended while a submission is `validating`.
 If validation results in a `rejected` submission, the aggregator MUST communicate a new expiry time for it.
 When an `open` or `rejected` submission reaches its expiry time without further changes, the aggregator MUST discard its staged content.
 The provider MAY also discard such a submission explicitly.
-While the aggregator still keeps a marker for an expired submission, every operation on it MUST return `410 Gone`.
-After the aggregator removes that marker, requests return `404 Not Found`, as they do for any unknown or inaccessible submission ID.
 
 The aggregator retains a `processed` submission for a period it chooses, so that the provider can read the final status and issues, including the errors of skipped units.
 The aggregator communicates this retention period during onboarding and returns its end as the expiry time of the `processed` submission.
 The retention period is RECOMMENDED to be at least 24 hours.
 When it ends, the aggregator discards the submission; the published ORD information is not affected.
-Requests for the submission then return `410 Gone` while the aggregator keeps a marker, and `404 Not Found` afterwards.
-A `410 Gone` response MUST state the reason in its problem details: `expired` when the submission was discarded without being published, or `processed` when the retention period of a processed submission ended.
+
+After an `open` or `rejected` submission expires, or the retention period of a `processed` submission ends, every operation on it MUST return `410 Gone` while the aggregator keeps a marker for it.
+After the aggregator removes that marker, requests return `404 Not Found`, as they do for any unknown or inaccessible submission ID.
+The problem details of a `410 Gone` response MUST state the reason: `expired` when the submission was discarded without being published, or `processed` when its retention period ended.
 
 #### Publication Context and Removal
 
@@ -336,9 +340,8 @@ To remove its entire contribution in a publication context, the provider commits
 Such an empty replacement MUST NOT remove contributions of another ORD provider or in another publication context.
 
 Tombstones remain available for explicit removals in `merge` mode and in other transport modes.
-In `replace` mode, the aggregator MUST ignore tombstones in staged ORD Documents, because omission alone determines removal.
-In push transport, a tombstone MUST affect only matching contributions of the submitting ORD provider in the submission's publication context.
-The aggregator MUST authorize each tombstone against these contributions.
+In `merge` mode, a tombstone MUST affect only matching contributions of the submitting ORD provider in the submission's publication context, and the aggregator MUST authorize each tombstone against these contributions.
+In `replace` mode, the aggregator MUST NOT process tombstones: they have no effect and are neither authorized nor validated, because omission alone determines removal.
 In both publication modes, the accepted changes and removals MUST be applied atomically.
 
 This API does not define finer-grained replacement boundaries within one ORD provider's contribution to one publication context.
@@ -386,8 +389,9 @@ Each issue identifies what it applies to:
 - An issue about one publication unit MUST identify the staged artifact through `artifactId`, the ID the provider assigned when staging it, and the unit through exactly one of `ordId`, `groupId`, or `groupTypeId`.
 - An issue about a resource definition MUST also carry the exact declared `definitionUrl`, so that issues for two resources that declare the same URL can be told apart.
 - An issue about a whole staged artifact rather than one unit, such as a document-level publication context error, carries the `artifactId` but no unit identifier.
-- A staged resource definition whose `ordId` and `url` match no staged resource is reported with its `artifactId` and `definitionUrl` but no unit identifier.
-  Because the error cannot be attributed to a publication unit, it does not mark any unit as skipped.
+- A staged resource definition whose `ordId` and `url` match no staged resource is not published.
+  It is reported as a `warning` with its `artifactId` and `definitionUrl` but no unit identifier, so it does not mark any unit as skipped.
+  The resource it was meant for is usually skipped anyway, because one of its definition entries has no matching artifact.
 - A submission-wide issue MUST use `artifactKind: submission` and carries no unit identifier.
 
 An issue MAY include a `jsonPointer` to the exact location within the staged artifact.

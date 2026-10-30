@@ -13,12 +13,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added push transport and the ORD Aggregator Push API (alpha).
-  Providers stage several ORD Documents and resource definitions in a submission, which is validated asynchronously after commit and published in `merge` or `replace` mode.
-  In `replace` mode, the submission is the ORD provider's complete contribution in one publication context, and omitted information is removed. This is the only exception to removal through tombstones, and tombstones in such a submission are ignored.
-  An ORD provider can have at most one active submission per publication context, so its commits to that context are applied in order.
-  Valid publication units are published, and invalid units are skipped and reported.
-  An ORD resource and every resource definition it declares always form one publication unit, and its Package must be staged in the same submission.
+- Added alpha push transport and the ORD Aggregator Push API: providers stage ORD Documents and resource definitions in a submission, which is validated after commit and published in `merge` or `replace` mode.
+  Valid publication units are published atomically, and units with errors are skipped and reported.
+  In `replace` mode, omitted information is removed without tombstones, and tombstones are not processed.
+  The Package of each staged resource must be staged in the same submission.
 
 ### Changed
 

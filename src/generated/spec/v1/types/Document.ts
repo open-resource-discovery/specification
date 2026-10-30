@@ -11,7 +11,7 @@ export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
 /**
  * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
  * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
- * Information omitted from a [push transport](../index.md#push-transport) submission in `replace` mode is an exception and is removed without a tombstone; tombstones in such a submission are ignored.
+ * Information omitted from a [push transport](../index.md#push-transport) submission in `replace` mode is an exception and is removed without a tombstone; tombstones in such a submission are not processed.
  *
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *
@@ -196,7 +196,7 @@ export interface OrdDocument {
   /**
    * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
    * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
-   * The only exception is a [push transport](../index.md#push-transport) submission in `replace` mode, which removes information omitted from the ORD provider's complete contribution and ignores tombstones.
+   * The only exception is a [push transport](../index.md#push-transport) submission in `replace` mode, which removes information omitted from the ORD provider's complete contribution and does not process tombstones.
    *
    * A tombstone entry MAY be removed after a grace period of 31 days.
    */

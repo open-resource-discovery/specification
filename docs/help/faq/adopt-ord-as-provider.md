@@ -126,7 +126,7 @@ You may not want to openly expose the ORD information and related metadata to ev
 For pull transport, the ORD Provider API needs to be protected in this case.
 The specification makes no assumptions on how this is done, but the [ORD Aggregators](../../spec-v1/index.md#ord-aggregator) will likely define the [Access Strategies](../../spec-extensions/access-strategies/) it supports.
 
-For push transport, the provider authenticates with [credentials issued by the aggregator](../../spec-v1/index.md#authentication-and-api-location).
+For push transport, the provider authenticates with [credentials communicated during aggregator onboarding](../../spec-v1/index.md#authentication-and-api-location).
 
 ### Integrate with ORD Aggregators
 
