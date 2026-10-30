@@ -343,8 +343,13 @@ The provider SHOULD also respect `Retry-After` on a successful submission status
 Providers SHOULD bound their number of retries and maximum delay so that prolonged failures are surfaced to their operators.
 
 Providers SHOULD set a finite timeout for every request and treat a timeout or network failure as an indeterminate outcome.
-They MAY safely retry artifact `PUT` and `DELETE` operations because those operations are idempotent.
-They MAY safely retry commit because repeating commit for the same staged revision returns its current state, or validates a failed revision again.
+Artifact `PUT` and `DELETE` operations are idempotent when repeated with the same request content for the same staged artifact.
+Providers MAY retry such an operation while the submission remains editable, provided no conflicting change to that artifact has been issued.
+Idempotence does not prevent a delayed `PUT` from overwriting a later replacement or a delayed `DELETE` from removing a recreated artifact.
+Providers MUST serialize conflicting staging operations and MUST NOT commit while a staging request or retry might still change the intended staged content.
+A request timeout does not establish that the aggregator cancelled the request.
+If a provider cannot ensure that the submission contains its intended staged revision, it MUST discard the submission and start a new one.
+Providers MAY retry commit for the same unchanged staged revision to retrieve its current state or validate a rejected revision again.
 To retry submission creation safely, a provider MUST send the same `Idempotency-Key` value on every attempt.
 An aggregator MUST return the original submission for a repeated key with the same ORD provider and request content, and MUST reject reuse of that key with different request content.
 
