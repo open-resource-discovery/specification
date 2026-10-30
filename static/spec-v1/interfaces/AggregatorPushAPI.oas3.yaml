@@ -392,7 +392,7 @@ paths:
         form one complete publication unit and cannot be completed from previously published artifacts.
         An error attributable to one publication unit skips that complete unit.
         The aggregator publishes all remaining valid units together and reports every issue.
-        An error that prevents publication units from being isolated safely fails the entire commit.
+        An error that cannot be confined to one publication unit is a submission-wide error and fails the entire commit.
         This includes an error in a staged Package, because ORD resources inherit from their Package.
         A resource whose `partOfPackage` resolves neither to a staged Package nor to a Package
         already published in the same perspective has an error.

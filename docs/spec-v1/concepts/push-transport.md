@@ -97,4 +97,4 @@ Commit publishes valid ORD information while reporting and skipping publication 
 This means a schema-valid resource with a semantic error or missing definition does not delay independent valid resources from the same ORD Document or submission.
 An ORD resource and all resource definitions it declares are one publication unit, so they are always accepted or skipped together.
 
-Errors that prevent the aggregator from safely isolating publication units fail the complete commit and leave the submission editable for correction.
+An error that cannot be confined to one publication unit is a submission-wide error: it fails the complete commit and leaves the submission editable for correction.
