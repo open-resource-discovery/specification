@@ -42,7 +42,7 @@ Scope records which provider last published an item. It is not an authorization 
 | 1: `ord:publication-scope` Group (#230) | Resources assigned through `partOfGroups` | Rejected |
 | 2: `Package.publicationMode` (#232) | Resources in a Package with `publicationMode: replace` | Rejected |
 
-**Option 1** makes the boundary visible in ORD and can divide a Package into smaller sets. It adds a Group Type and another assignment that providers must maintain.
+**Option 1** makes the publication scope boundary explicit in ORD and can assigns it on each ORD resoruce and taxonomy. It standardizes a Group Type for this and the ORD Provider must maintain and assign the Group (instances) and their assignments.
 
 It covers resources with `partOfGroups`, but not Packages, Consumption Bundles, or other taxonomy. Group membership alone also needs a transport or onboarding binding to enable replacement.
 
