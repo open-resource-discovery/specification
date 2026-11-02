@@ -79,7 +79,7 @@ The same algorithm applies to the first push. If the provider's scope is empty, 
 
 **No strict ownership guardrails or explicit ownership-transfer APIs are required.** A provider can take over an existing item by publishing its ORD ID. No prior removal or separate ownership claim is necessary.
 
-The Line of Business (LOB) is responsible for configuring its ORD providers correctly. If configured providers conflict, the LOB must coordinate them and keep their publications consistent.
+The applicaton / service is responsible for configuring its ORD providers correctly. If configured providers conflict, it must coordinate them and keep their publications consistent.
 
 For example, when `bar` takes over an API from `foo`, `foo` must stop publishing that API. Otherwise, the next publication from `foo` assigns it back to `foo`.
 
