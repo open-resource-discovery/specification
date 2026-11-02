@@ -161,7 +161,7 @@ Pull configuration remains unchanged. Scope assignment for pull endpoints and pu
 
 ## Reference model: MAP onboarding and S/4HANA
 
-This section describes the agreed MAP/UMS reference model. The configuration and technical query properties are aggregator-specific, not additions to the ORD schema.
+This section shows a potential ORD Aggregator onboarding model (not yet standardized). The configuration and technical query properties are aggregator-specific, not additions to the ORD schema.
 
 ### Push provider configuration
 
