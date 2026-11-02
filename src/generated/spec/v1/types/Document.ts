@@ -183,6 +183,7 @@ export interface OrdDocument {
   /**
    * List of ORD information (resources or taxonomy) that have been "tombstoned", indicating removal or archival.
    * This MUST be indicated explicitly, just removing the ORD information itself is not sufficient.
+   * The only exception is a [push transport](../index.md#push-transport) submission in `replace` mode, which removes information omitted from the ORD provider's complete contribution and does not process tombstones.
    *
    * A tombstone entry MAY be removed after a grace period of 31 days.
    */
@@ -4225,6 +4226,9 @@ export interface Product {
  *
  * A Package SHOULD contain at least one resource. Avoid empty Packages.
  *
+ * A Package and all resources assigned to it MUST be described by the same [ORD provider](../index.md#ord-provider).
+ * A Package MUST NOT be shared across multiple ORD providers.
+ *
  * The Package assignment of a resource MAY change, so consumers MUST not rely on this to be stable.
  *
  * A Package does not have a `visibility` property.
@@ -4823,6 +4827,7 @@ export interface GroupType {
 /**
  * A tombstone indicates that a previously published ORD resource or taxonomy has been removed / decommissioned / archived.
  * This MUST be indicated explicitly, so ORD aggregators and consumers can learn about the removal.
+ * Information omitted from a [push transport](../index.md#push-transport) submission in `replace` mode is an exception and is removed without a tombstone; tombstones in such a submission are not processed.
  *
  * Exactly one of the IDs MUST be provided to state which ORD resource or taxonomy item the Tombstone addresses.
  *

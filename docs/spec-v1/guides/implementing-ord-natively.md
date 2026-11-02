@@ -1,13 +1,13 @@
 ---
 sidebar_position: 5
 title: Implementing ORD Natively
-description: Guidance for developers implementing an ORD Provider API inside an application or service.
+description: Guidance for developers generating ORD metadata inside an application or service and publishing through pull or push transport.
 ---
 
 # Implementing ORD Natively
 
 This page explains how to implement ORD directly inside an application or service.
-It is written for developers who need to expose an [ORD Provider API](../index.md#ord-provider-api).
+It is written for developers who need to generate ORD metadata and publish it through [pull or push transport](../index.md#ord-transport-modes).
 
 Ideally, ORD support is provided at the framework level so that individual applications get it automatically.
 For example, the [CAP ORD plugin](https://github.com/cap-js/ord) adds ORD to any CAP-based application.
@@ -15,7 +15,9 @@ When no framework plugin exists, the patterns below show how to implement ORD na
 
 This guide is accompanied by the [ORD Reference Application](https://github.com/open-resource-discovery/reference-application), a working Fastify/TypeScript implementation of the patterns described here.
 
-The main implementation task is to transform the metadata your application already knows into:
+For static metadata, prefer [push transport](../index.md#push-transport) when the target aggregator supports it.
+The metadata generation and perspective rules below apply to both transports; the HTTP examples implement pull.
+The main implementation task for pull transport is to transform the metadata your application already knows into:
 
 - an [ORD configuration](../index.md#ord-configuration-endpoint), served from `/.well-known/open-resource-discovery`
 - one or more [ORD documents](../index.md#ord-document), served via `GET` endpoints
@@ -23,7 +25,7 @@ The main implementation task is to transform the metadata your application alrea
 
 ## Start Simple: Static ORD
 
-The simplest provider is only a small HTTP API that serves static JSON.
+The simplest pull provider is only a small HTTP API that serves static JSON.
 If you only need to publish static metadata documents, the [ORD Provider Server](https://github.com/open-resource-discovery/provider-server) could be used instead of implementing a provider API inside your application.
 To understand how this is implemented, the [no-auth implementation example](https://github.com/open-resource-discovery/specification/tree/main/examples/implementation/no-auth) demonstrates:
 
@@ -88,9 +90,8 @@ Most real applications, however, need to generate at least part of the response 
 ## Static and Dynamic Perspectives
 
 An ORD provider can expose both static and dynamic metadata.
-The static document describes what a system type or version provides in general, and it is fetched once.
-The dynamic document describes what a concrete system instance provides at runtime, including tenant-specific state, and it is fetched per system instance.
-Providers advertise these separately in the ORD configuration so that aggregators can handle them differently.
+The static document describes what a system type or version provides in general, while the dynamic document describes a concrete system instance at runtime.
+Providers advertise these separately in the ORD configuration for pull transport or select the appropriate [publication context](../index.md#publication-context-and-removal) for push transport.
 
 Static documents MUST NOT contain tenant context or tenant-specific customizations.
 A `system-version` document MUST include `describedSystemVersion.version`.

@@ -57,6 +57,8 @@ Metadata here includes both the ORD documents and the metadata definitions that 
 The metadata is static, if it can be fully determined at design-time or deploy-time.
 The application / service that is described usually stays the same at run-time and there are no tenant-specific changes / extensions or they are not documented via metadata.
 
+We recommend [push transport](../../spec-v1/index.md#push-transport) for static metadata publishing when the target aggregator supports it.
+
 #### Option 1: Serve as static files
 
 This option is not recommended, but let's look at it anyway, just to make a point how simple an ORD implementation can be.
@@ -72,7 +74,7 @@ Please consider whether the information [need to be protected](#protect-ord-prov
 
 #### Option 2: Implement a simple REST API
 
-We recommend implementing the ORD Provider API just like any other API that your application / service exposes.
+When using pull transport, implement the ORD Provider API just like any other API that your application / service exposes.
 How you do this may depend on your programming language, framework and backend architecture.
 
 The API itself consists just of three different types of API GET operations:
@@ -85,20 +87,17 @@ Please note that you may need to [protect the API access](#protect-ord-provider-
 
 > 🔗 See [./examples/implementation/no-auth](https://github.com/open-resource-discovery/specification/tree/main/examples/implementation/no-auth) for an example node.js implementation without authentication.
 
-#### Future Options
+#### Option 3: Push metadata to an aggregator
 
-We are aware that publishing static metadata can be made even more convenient.
-Currently it is necessary to serve the metadata by a service at runtime.
-If the metadata is purely static, it would also be possible to publish it at design-time or deploy-time, e.g. via a CI/CD pipeline job or CLI utility.
-
-This is an option we're considering to standardize in ORD, as a [push transport](../../spec-v1/index.md#push-transport) mode. If this pattern is of practical use to you, please reach out to us.
+Publish the metadata at design-time or deploy-time, for example from a CI/CD pipeline, by submitting it to the aggregator as described in [Transactional Submission](../../spec-v1/index.md#transactional-submission).
+See [Integrate with ORD Aggregators](#integrate-with-ord-aggregators) for the prerequisites.
 
 ### Dynamic Metadata
 
 If some of the metadata is dynamic (changes at run-time or different per tenant), the static solutions will not be sufficient.
 
-Now becomes a necessity to implement ORD as a REST API, where the GET operations return metadata dynamically.
-The response (of at least some requests) will depend on tenant context, customizations and extensions.
+A run-time implementation must then generate ORD metadata dynamically and either expose it through pull transport or submit it through push transport.
+At least some generated documents will depend on tenant context, customizations, and extensions.
 
 Publish the static baseline through `system-type`, `system-version`, or both, and additionally publish a complete `system-instance` perspective when metadata differs per tenant.
 The tenant perspective includes all resources available on that tenant, including those unchanged from the static baseline.
@@ -110,7 +109,7 @@ See [perspectives](../../spec-v1/concepts/perspectives.md) for the publication a
 
 ## Shared Concerns
 
-The following concerns apply the same to the different scenarios and should always be considered.
+The following concerns apply to all publication scenarios.
 
 ### Validate ORD and other Metadata
 
@@ -124,14 +123,18 @@ Industry standard metadata formats usually come with validators, too. Consider f
 ### Protect ORD Provider API Access
 
 You may not want to openly expose the ORD information and related metadata to everyone.
-If this is the case, the ORD Provider API needs to be protected.
+For pull transport, the ORD Provider API needs to be protected in this case.
 The specification makes no assumptions on how this is done, but the [ORD Aggregators](../../spec-v1/index.md#ord-aggregator) will likely define the [Access Strategies](../../spec-extensions/access-strategies/) it supports.
+
+For push transport, the provider authenticates with [credentials communicated during aggregator onboarding](../../spec-v1/index.md#authentication-and-api-location).
 
 ### Integrate with ORD Aggregators
 
 An ORD Provider implementation alone will not be very useful, because the information also need to be made available to other Consumers. This is done by integrating with one (or multiple) [ORD Aggregators](../../spec-v1/index.md#ord-aggregator).
 
 How this is done is defined by the onboarding of the aggregators.
+For pull transport, provide the configuration endpoint location and the supported access strategy.
+For push transport, obtain the aggregator's [API URL and credentials](../../spec-v1/index.md#authentication-and-api-location) and [operational limits](../../spec-v1/index.md#operational-limits-timeouts-retries-and-rate-limiting).
 
 To avoid detecting issues late (when publishing to the ORD aggregator), we highly RECOMMEND to locally [validate ORD and other metadata](#validate-ord-and-other-metadata) first.
 

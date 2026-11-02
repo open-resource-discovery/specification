@@ -101,7 +101,8 @@ The Package `vendor` is authoritative for current ownership attribution and MUST
 The granularity of Packages is driven by all of the following concerns:
 
 - The resources are created by the same vendor or customer, exposed by the same described system.
-- The resources are published together. They share the same publishing ownership.
+- The resources are published together and share the same publishing ownership.
+  A Package and all resources assigned to it MUST be described by the same [ORD provider](../index.md#ord-provider); a Package MUST NOT be shared across multiple ORD providers.
 - The resources share certain aspects/taxonomy that is inherited down to them (e.g. `vendor`).
 - If applicable: The resources are meant to be used by only a particular target platform / software.
 
