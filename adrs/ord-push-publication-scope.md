@@ -56,7 +56,7 @@ Both alternatives still require provider attribution. Option 3 meets the require
 
 ### ORD specification boundary
 
-The ORD document schema remains unchanged. The push API accepts no `scopeId` or `providerId` supplied by the provider. The aggregator derives the scope from the authenticated provider's onboarding configuration.
+The ORD document schema remains unchanged. The [push API](https://github.com/open-resource-discovery/specification/pull/187) accepts no `scopeId` or `providerId` supplied by the provider. The aggregator derives the scope from the authenticated provider's onboarding configuration.
 
 Aggregator-specific query APIs can expose provider attribution. For example, UMS uses the technical property `umsProvidedBy`. This property is not part of the ORD document schema.
 
