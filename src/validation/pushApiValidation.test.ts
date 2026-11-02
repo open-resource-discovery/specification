@@ -24,6 +24,8 @@ let contextValidator: ValidateFunction;
 let requestValidator: ValidateFunction;
 let issueValidator: ValidateFunction;
 let unsupportedFormatValidator: ValidateFunction;
+let uploadProblemValidator: ValidateFunction;
+let issuePageValidator: ValidateFunction;
 let documentSchema: {
   properties: Record<string, { items?: { $ref?: string } }>;
   definitions: Record<string, { properties?: Record<string, unknown> }>;
@@ -51,6 +53,12 @@ before(async () => {
   contextValidator = component("PublicationContext");
   requestValidator = component("CreateSubmissionRequest");
   issueValidator = component("ValidationIssue");
+  issuePageValidator = component("IssuePage");
+  uploadProblemValidator = ajv.compile({
+    $ref:
+      id +
+      "#/components/responses/UnprocessableContent/content/application~1problem+json/schema",
+  });
   unsupportedFormatValidator = ajv.compile({
     $ref:
       id +
@@ -128,6 +136,52 @@ describe("Push OpenAPI 3.1 contract", () => {
         }),
       );
     }
+  });
+
+  it("supports upload-time context rejection with artifact-level diagnostics", () => {
+    assert.equal(
+      openapi.paths["/v1/submissions/{submissionId}/documents/{artifactId}"].put
+        .responses["422"].$ref,
+      "#/components/responses/UnprocessableContent",
+    );
+    const issue = {
+      severity: "error",
+      code: "publication.context",
+      message: "The document does not match the authorized context",
+      artifactKind: "document",
+      artifactId: "doc",
+      jsonPointer: "/describedSystemVersion/version",
+    };
+    assert.ok(issueValidator(issue));
+    assert.ok(
+      uploadProblemValidator({
+        type: "https://example.org/problems/invalid-document-context",
+        title: "Unprocessable Content",
+        status: 422,
+        issues: [issue],
+      }),
+    );
+  });
+
+  it("supports rejected Package-removal outcomes with unit and submission diagnostics", () => {
+    const items = [
+      {
+        severity: "error",
+        message: "The staged resource's Package is missing",
+        artifactKind: "document",
+        artifactId: "doc",
+        ordId: "example:apiResource:resource:v1",
+        jsonPointer: "/apiResources/0/partOfPackage",
+      },
+      {
+        severity: "error",
+        code: "publication.package-removal",
+        message: "Removal would break a retained resource's Package reference",
+        artifactKind: "submission",
+      },
+    ];
+    for (const item of items) assert.ok(issueValidator(item));
+    assert.ok(issuePageValidator({ submissionStatus: "rejected", items }));
   });
 
   it("covers every schema collection that declares resource definition entries", () => {

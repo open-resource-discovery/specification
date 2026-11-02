@@ -236,6 +236,11 @@ paths:
         (`ordId`, `groupId`, or `groupTypeId`);
         (4) for each definition entry (in `resourceDefinitions`, or in `definitions` for Entity Types,
         Capabilities, and Overlays), `url` and `mediaType` are strings.
+        (5) the document matches the submission's authorized perspective and described system
+        context known through onboarding. A document-level context or authorization mismatch
+        detectable from the submission and current onboarding is rejected before staging with
+        `422`, with the artifact ID and no unit identifier. These checks are repeated at commit
+        because authoritative state can change.
         Malformed JSON returns `400`. A document that fails this validation returns `422`.
         The response SHOULD identify failures through JSON Pointers into the request body.
         A failed upload MUST NOT change the staged content, the submission state, or the expiry time.
@@ -426,7 +431,11 @@ paths:
 
         Removal (https://open-resource-discovery.org/spec-v1/#publication-context-and-removal):
         In `replace` mode, a skipped unit is not treated as omitted, so its previously published
-        contribution is kept. A `replace` submission can remove all prior contributions of the ORD
+        contribution is kept. If omission would remove a Package still referenced by a retained
+        contribution, the complete commit is rejected with a submission-wide dependency-removal
+        error and applies no changes. The aggregator does not silently retain the omitted Package
+        or remove the skipped resource. The provider can repair the rejected submission.
+        A `replace` submission can remove all prior contributions of the ORD
         provider in the publication context by staging at least one valid ORD Document that
         contains no ORD resources or taxonomy.
         In `replace` mode, tombstones are not processed: they have no effect and are neither
@@ -665,9 +674,12 @@ components:
       description: |-
         Publication context of the submission. It must resolve to exactly one authorized
         publication target and perspective.
-        The aggregator resolves the target from authoritative onboarding and authentication
-        information, so there is no request field for it. If the target is ambiguous, submission
-        creation is rejected.
+        Each credential identifies one onboarding and its authorized target. The aggregator
+        resolves the target from authoritative onboarding and authentication information, so
+        there is no request field for it. Creation is rejected if its context remains ambiguous.
+        Version and instance selectors are optional: known values are resolved from onboarding
+        without requiring the provider to repeat them. Providers should omit already-known values.
+        Supplied selectors cannot override authoritative information or grant authority.
         One ORD provider may publish for multiple onboarded targets. The active-submission limit,
         replacement, and tombstones apply separately per target and perspective.
         `systemVersion` applies only to `system-version`, and `systemInstanceId` applies only to
@@ -686,12 +698,12 @@ components:
         systemVersion:
           type: string
           minLength: 1
-          description: Required for `system-version` unless the credential identifies exactly one version.
+          description: Optional selector for system-version publication within the credential's onboarding. Omit when the aggregator knows the version. A supplied value must match authoritative onboarding permissions and cannot override them.
         systemInstanceId:
           type: string
           minLength: 1
           maxLength: 255
-          description: Aggregator-issued identifier required for `system-instance` unless the credential identifies exactly one instance.
+          description: Optional aggregator-issued instance selector within the credential's onboarding. Omit when the aggregator knows the instance. A supplied value must match authoritative onboarding permissions and cannot override them.
       allOf:
         - if:
             properties:

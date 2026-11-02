@@ -60,6 +60,7 @@ A [system type](#system-type) can implement multiple roles, e.g. an ORD Consumer
 
 An **ORD provider** is a system instance (of an application or service) that exposes ORD information for self-description.
 The **provider role** applies to business applications/services that want to describe themselves ([described system instance](#described-system-instance)).
+For push transport, the aggregator determines the provider identity and onboarding boundaries as described in [Publication Context and Removal](#publication-context-and-removal).
 
 #### Described System Instance
 
@@ -207,7 +208,11 @@ It MUST also perform JSON Schema validation of at least the parts of the ORD spe
 2. `openResourceDiscovery` and `perspective` are present, so the body is recognized as an ORD Document and can be matched to the submission's publication context.
 3. Each processed collection is an array, and each of its items has an identifier (`ordId`, `groupId`, or `groupTypeId`).
 4. For each definition entry, `url` and `mediaType` are strings.
+5. The document matches the submission's authorized publication context, including its perspective and the described system context known through onboarding.
 
+Before creating or replacing the artifact, the aggregator MUST reject a document-level publication context or authorization mismatch that it can determine from the submission and current onboarding information with `422 Unprocessable Content`.
+The error identifies the document artifact and SHOULD include a JSON Pointer, but carries no unit identifier.
+Context and authorization MUST be checked again at commit because authoritative state may change after upload.
 This ensures that every staged publication unit has an identifier and can be processed.
 `PUT` does not decide whether the content is valid ORD.
 The aggregator MAY validate more of the document against the [ORD Document JSON Schema](#ord-document), but it is not required to.
@@ -314,14 +319,21 @@ The problem details of a `410 Gone` response MUST state the reason: `expired` wh
 #### Publication Context and Removal
 
 Each submission belongs to one ORD provider, which the aggregator determines from the authenticated credential, and to exactly one publication context.
-The ORD provider is the technical integration behind the authenticated client, as agreed during onboarding.
+The aggregator determines the ORD provider identity from authoritative onboarding state.
+How it assigns this identity and groups onboardings of the same technical ORD provider is implementation-specific.
+Each credential MUST identify exactly one onboarding and its authorized publication target.
+The same technical ORD provider MAY have several onboardings, each with its own credentials and authorization boundary; authority from one onboarding MUST NOT grant access to another.
 
 The **publication context** consists of one authorized publication target and one [perspective](#perspectives), including any required system version or aggregator-issued system instance ID.
 The aggregator resolves the target from authoritative onboarding and authentication information, so the request's `context` object has no field for it.
 An ORD provider MAY publish for multiple separately onboarded applications or services, but each submission MUST resolve to exactly one authorized target.
 
 The provider MUST specify `perspective` when it creates a submission, even if its credential is restricted to one perspective.
-It MAY omit `systemVersion` (for `system-version`) or `systemInstanceId` (for `system-instance`) only if the credential identifies the required version or instance unambiguously.
+The request fields `systemVersion` and `systemInstanceId` are optional selectors within that onboarding.
+The aggregator MUST resolve known values from authoritative onboarding information without requiring the provider to repeat them.
+The provider SHOULD omit a selector when the aggregator already knows the applicable value.
+A supplied selector MUST NOT override authoritative information or establish authority; the aggregator MUST reject a conflicting or unauthorized value.
+If the authorized context remains ambiguous after resolving the optional selectors, the aggregator MUST reject creation rather than choose an arbitrary version or instance or infer it from document metadata.
 All staged ORD Documents MUST describe the submission's perspective and target; a submission MUST NOT mix perspectives or targets.
 The aggregator MUST verify that the staged ORD Documents match the authorized publication context.
 Because the same ORD ID can legitimately occur in different perspectives, scoping each submission to one perspective and one target keeps validation, replacement, and removal unambiguous.
@@ -340,6 +352,9 @@ In `replace` mode, the staged revision is the ORD provider's complete current co
 After successful validation, the aggregator MUST remove that ORD provider's prior contributions in the context that are absent from the submission.
 This removal by omission is an exception to the general rule that [removals are indicated through tombstones](#removal-of-resourcesinformation).
 A staged publication unit that is skipped because of an error MUST NOT be treated as omitted and MUST NOT remove its previously published contribution.
+If removal by omission would remove a Package still referenced by a retained contribution, the aggregator MUST reject the complete commit with a submission-wide dependency-removal error and apply no changes.
+The aggregator MUST NOT silently retain the omitted Package or remove the skipped resource to resolve this conflict.
+The provider can repair the rejected submission by staging the required Package or correcting the resource inventory.
 To remove its entire contribution in a publication context, the provider commits a `replace` submission with at least one valid ORD Document for that context that contains no ORD resources or taxonomy.
 Such an empty replacement MUST NOT remove contributions of another ORD provider or in another publication context.
 
@@ -392,7 +407,9 @@ Each issue identifies what it applies to:
 
 - An issue about one publication unit MUST identify the staged artifact through `artifactId`, the ID the provider assigned when staging it, and the unit through exactly one of `ordId`, `groupId`, or `groupTypeId`.
 - An issue about a resource definition MUST also carry the exact declared `definitionUrl`, so that issues for two resources that declare the same URL can be told apart.
-- An issue about a whole staged artifact rather than one unit, such as a document-level publication context error, carries the `artifactId` but no unit identifier.
+- An issue about a whole staged artifact rather than one unit carries the `artifactId` but no unit identifier.
+  A publication-context mismatch detected at upload is returned in the `422` problem details and leaves the existing staged revision and its issues unchanged.
+  A document-level error discovered only at commit that cannot be confined to one publication unit rejects the complete commit; it does not imply acceptance of the document's units.
 - A staged resource definition whose `ordId` and `url` match no staged resource is not published.
   It is reported as a `warning` with its `artifactId` and `definitionUrl` but no unit identifier, so it does not mark any unit as skipped.
   The resource it was meant for is usually skipped anyway, because one of its definition entries has no matching artifact.

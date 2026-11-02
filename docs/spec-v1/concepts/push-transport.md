@@ -54,7 +54,8 @@ It also does not delete the aggregator's own record of the system version or sys
 An application or service can be described by several ORD providers.
 For example, one part can be submitted from a deployment pipeline through push transport, while another part is served through an ORD Provider API and retrieved through pull transport.
 This works the same way as an application that is described by several pull-based ORD providers.
-One ORD provider can also publish for several separately onboarded applications or services, as described in [Publication Context and Removal](../index.md#publication-context-and-removal).
+One technical ORD provider can publish through several separate onboardings, each with its own credentials and authorization boundary, as described in [Publication Context and Removal](../index.md#publication-context-and-removal).
+The aggregator resolves known versions and instances from onboarding; providers should omit those optional request selectors when the values are already known.
 
 The contributions of these ORD providers must not overlap, because each ORD ID is described at most once within a perspective.
 A push submission, including one in `replace` mode, changes only the contribution of the submitting ORD provider.
