@@ -20,7 +20,9 @@ Both pull and push need a clear replacement boundary. This decision establishes 
 
 ### Accepted: Option 3 — ORD provider contribution
 
-The publication scope is the content assigned to one onboarded ORD provider for the publishing system and applicable perspective. The aggregator derives the provider identity from authentication and onboarding.
+The publication scope is assigned to onboarded ORD providers for the publishing system. 
+The publication scope is not the same as the provider identity from authentication and onboarding, but is related and can be checked by it.
+A publication scope further subdivides the scope that is already established with the ORD perspectives. 
 
 A publishing system can supply content for several clients together. Those clients share a provider scope, while each item retains its own described-system context.
 
