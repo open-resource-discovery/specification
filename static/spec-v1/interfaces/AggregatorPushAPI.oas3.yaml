@@ -121,6 +121,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
         "410":
           $ref: "#/components/responses/Gone"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
         "429":
           $ref: "#/components/responses/RateLimited"
         default:
@@ -232,8 +234,8 @@ paths:
         (2) `openResourceDiscovery` and `perspective` are present;
         (3) each processed collection is an array, and each of its items has an identifier
         (`ordId`, `groupId`, or `groupTypeId`);
-        (4) for each definition entry (in `resourceDefinitions`, or in `definitions` for Entity Types
-        and Capabilities), `url` and `mediaType` are strings.
+        (4) for each definition entry (in `resourceDefinitions`, or in `definitions` for Entity Types,
+        Capabilities, and Overlays), `url` and `mediaType` are strings.
         Malformed JSON returns `400`. A document that fails this validation returns `422`.
         The response SHOULD identify failures through JSON Pointers into the request body.
         A failed upload MUST NOT change the staged content, the submission state, or the expiry time.
@@ -319,7 +321,7 @@ paths:
       description: |-
         Stages a resource definition in its native format and associates it with one ORD resource
         and the exact `url` of a definition entry declared by that resource (in `resourceDefinitions`,
-        or in `definitions` for Entity Types and Capabilities).
+        or in `definitions` for Entity Types, Capabilities, and Overlays).
         Reusing the artifact ID replaces the staged content and its association.
         The request `Content-Type` must equal the `mediaType` of the definition entry.
         The association and the media type are validated at commit.
@@ -416,8 +418,9 @@ paths:
         moves the submission to `rejected` and publishes nothing. The staged artifacts are kept,
         so the provider can replace or remove them and commit again.
         Committing a `rejected` submission without changes validates the same staged revision
-        again, for example after authorization or a conflicting contribution outside the
-        submission changed.
+        again, for example after submission-level authorization changed. A namespace permission
+        failure or conflicting contribution confined to one unit skips only that unit; correcting
+        it after external state changes requires a new submission.
         Repeating this request while the same revision is validating returns its current state.
         See https://open-resource-discovery.org/spec-v1/#correcting-a-submission
 
@@ -503,7 +506,7 @@ components:
       name: url
       in: query
       required: true
-      description: Exact `url` of the definition entry (in `resourceDefinitions`, or in `definitions` for Entity Types and Capabilities), as declared by the resource.
+      description: Exact `url` of the definition entry (in `resourceDefinitions`, or in `definitions` for Entity Types, Capabilities, and Overlays), as declared by the resource.
       schema:
         type: string
         format: uri-reference
@@ -689,6 +692,25 @@ components:
           minLength: 1
           maxLength: 255
           description: Aggregator-issued identifier required for `system-instance` unless the credential identifies exactly one instance.
+      allOf:
+        - if:
+            properties:
+              perspective:
+                not:
+                  const: system-version
+            required: [perspective]
+          then:
+            not:
+              required: [systemVersion]
+        - if:
+            properties:
+              perspective:
+                not:
+                  const: system-instance
+            required: [perspective]
+          then:
+            not:
+              required: [systemInstanceId]
     Submission:
       type: object
       required:

@@ -163,7 +163,7 @@ Push transport is also useful when a provider can publish runtime metadata as so
 
 Push transport uses the standard [ORD Document](#ord-document) without transport-specific properties.
 Resource definitions are uploaded separately in their native media types.
-In this section, a **definition entry** is an entry in a resource's `resourceDefinitions` array, or in its `definitions` array for Entity Types and Capabilities.
+In this section, a **definition entry** is an entry in a resource's `resourceDefinitions` array, or in its `definitions` array for Entity Types, Capabilities, and Overlays.
 Within a submission, the `url` of a definition entry only associates the uploaded definition with the resource that declares it; the aggregator does not fetch it from the provider.
 See [Push Transport Guidance](./concepts/push-transport.md) for publication patterns, removing a complete contribution, and capacity planning.
 
@@ -277,7 +277,9 @@ A commit ends in one of two states:
 A `rejected` submission remains editable.
 The provider can replace or remove staged artifacts and commit the submission again.
 The provider MAY also commit a `rejected` submission without changes, and the aggregator MUST then validate the same staged revision again.
-This helps when the failure depends on state outside the submission, such as authorization, ORD ID namespace permissions, or a conflicting contribution from another ORD provider.
+This helps when a submission-wide failure depends on state outside the submission, such as authorization for its publication target or perspective.
+An ORD ID namespace permission failure or a conflicting contribution that can be confined to one publication unit skips only that unit.
+Correcting such a skipped unit requires a new submission after the external state changes.
 
 A `processed` submission cannot be edited or processed again, so the provider MUST use a new submission to correct skipped units.
 A repeated commit request for a `processed` submission returns its existing outcome.

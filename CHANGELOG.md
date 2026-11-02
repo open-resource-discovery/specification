@@ -17,6 +17,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   Valid publication units are published atomically, and units with errors are skipped and reported.
   In `replace` mode, omitted information is removed without tombstones, and tombstones are not processed.
   The Package of each staged resource must be staged in the same submission.
+  Definition entries cover Entity Types, Capabilities, and Overlays as well as API and Event Resources.
+  The OpenAPI schema enforces perspective-specific context fields and documents unsupported request formats at creation.
 
 ### Changed
 
