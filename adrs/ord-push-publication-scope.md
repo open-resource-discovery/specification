@@ -115,7 +115,7 @@ API 3 and the BDC API remain unchanged. Neither belonged to `foo`, and neither a
 
 #### 3. Provider `bar` replaces with API 2
 
-Scope `bar` is empty, so nothing is deleted. The aggregator updates API 2 and changes its scope from `foo` to `bar`. This is not a duplicate-ID conflict.
+Scope `bar` is empty, so nothing is deleted. The aggregator updates API 2 and changes its scope from `foo` to `bar`. This is not a duplicate-ID conflict, only the publishing scope gets reassigned.
 
 | ORD ID | Scope |
 | --- | --- |
