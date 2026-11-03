@@ -265,7 +265,8 @@ It MUST be constructed as defined here:
 
 - The ORD ID MUST be unique within the [scope defined above](#ord-id), including the customer scope for `customer.*` and `c.*` namespaces.
 
-- The ORD ID is immutable and MUST not change after it has been published.
+- The ORD ID is immutable and MUST not change after it has been published, except for an identity correction or migration that preserves the same resource or taxonomy and retains all previous ORD IDs through [`ord:redirectFrom`](#forwarding-previous-ord-ids).
+  This exception MUST NOT be used to redirect an old major version to an incompatible successor.
 
 - The ORD ID MUST not exceed 255 characters in total.
 
@@ -291,6 +292,44 @@ Resolving an ORD ID can serve multiple purposes, for example, by having an ID we
 Or we can construct the API request to an [ORD aggregator](../index.md#ord-aggregator) where the ORD resource can be accessed.
 
 The rules about how an ORD ID is resolved to the customer's own URLs/APIs SHOULD be provided by the ORD aggregator.
+
+#### Forwarding Previous ORD IDs
+
+The standardized label `ord:redirectFrom` lists previous ORD IDs that resolve to the current `ordId` of the entry declaring the label.
+It supports forwarding and backward compatibility after an identity correction or migration, while only the entry with the current ORD ID is published.
+The previous ORD IDs are aliases, not references to separately published entries.
+
+For example, the following API Resource fragment declares two previous identifiers for the same API contract:
+
+```json
+{
+  "ordId": "foo.bar:apiResource:ProductCatalog:v1",
+  "labels": {
+    "ord:redirectFrom": [
+      "foo.bar:apiResource:LegacyProductCatalog:v1",
+      "foo.bar.legacy:apiResource:ProductCatalog:v1"
+    ]
+  }
+}
+```
+
+- The label MAY be declared on any ORD resource or taxonomy entry that supports both `ordId` and `labels`.
+  It MUST be declared directly on the entry whose `ordId` is the forwarding target.
+  Unlike generic labels, `ord:redirectFrom` MUST NOT be inherited from a Package to its resources.
+- Each value MUST be a valid [ORD ID](#ord-id-construction) for the same ORD concept as the current `ordId`, and MUST identify the same resource or taxonomy.
+  Values MUST be unique and MUST NOT equal the current `ordId`, using ORD's case-insensitive comparison rules.
+- A previous ORD ID MUST NOT identify another published entry or redirect to multiple current ORD IDs within the same resolution scope.
+  Providers MUST retain authority over the previous identifiers they declare.
+- Aggregators and consumers that support this label MUST resolve each previous ORD ID directly to the declaring entry's current `ordId`.
+  Resolution MUST retain the applicable system type, system version, system instance and customer scope, as well as the target entry's visibility and access restrictions.
+  Conflicting declarations MUST be rejected rather than resolved arbitrarily.
+- If the current ORD ID changes again, the provider MUST retain all earlier identifiers in `ord:redirectFrom` on the newest entry.
+  Forwarding MUST NOT depend on chains through entries that are no longer published.
+
+The label expresses identifier forwarding, not an HTTP redirect for an API endpoint or resource definition URL.
+It does not change the API contract or grant compatibility with a different major version.
+Relationships such as `relatedApiResources` and `relatedEventResources` describe associations between existing entries and MUST NOT be used to declare these aliases.
+For a distinct successor resource, use the existing [versioning and lifecycle](./versioning-and-lifecycle.md) mechanisms instead.
 
 ## Correlation ID
 
