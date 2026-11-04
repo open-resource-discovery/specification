@@ -147,7 +147,9 @@ flowchart LR
 
 ### Advertise both perspectives
 
-The `.well-known` response tells the aggregator that static metadata can be fetched once, while dynamic metadata must be fetched per tenant.
+The `.well-known` response tells the aggregator that static metadata can be fetched once, while `system-instance` metadata must be fetched per tenant.
+The alpha `system-deployment` perspective can be fetched once per authorized deployment when runtime metadata is shared by all its tenants.
+Before using it, establish aggregator support for [deployment identity and effective tenant resolution](../concepts/perspectives.md#system-deployment-perspective-alpha).
 The dynamic endpoint uses the [basic-auth access strategy](../../spec-extensions/access-strategies/basic-auth.md), which also defines the optional tenant headers used below.
 
 ```js

@@ -111,7 +111,7 @@ definitions:
           The effective static view looks up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
           If both contain the ORD ID, the complete `system-version` representation takes precedence and properties MUST NOT be merged across the layers.
 
-          Systems with dynamic metadata MUST be described in a complete system-instance perspective and SHOULD additionally be described in at least one static perspective.
+          Systems with dynamic metadata MUST be described in a complete system-instance perspective or, when identical across all tenants of a deployment, a complete system-deployment perspective. They SHOULD additionally be described in at least one static perspective.
 
           If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
 
@@ -136,15 +136,25 @@ definitions:
               If both contain the ORD ID, the complete system-version representation takes precedence without property merging.
               Automatic latest selection MUST exclude Semantic Versioning prereleases, which may still be selected for an exact-version lookup, including when it is the known version of a tenant.
               Providers MUST NOT publish multiple system-version perspectives whose versions have equal Semantic Versioning precedence and differ only in build metadata.
+          - const: "system-deployment"
+            x-feature-status: alpha
+            description: |-
+              ALPHA: Describes the complete dynamic [system-deployment](../index.md#system-deployment) perspective shared by all tenants of one running deployment.
+              Metadata MAY differ between deployments of the same system type and version, but MUST NOT contain tenant-specific context or customizations.
+              All documents for one deployment MUST collectively form a complete valid perspective, including when it is empty.
+              When no system-instance perspective is published for a tenant, an aggregator MUST use its deployment perspective before considering static metadata.
+              An ORD ID absent from a selected deployment perspective MUST NOT fall through to static metadata.
+              Deployment identity and tenant membership MUST be resolved from authoritative onboarding or landscape information; ambiguous membership MUST NOT be guessed.
+              Providers MUST establish that the receiving aggregator supports deployment-aware resolution before publishing this alpha perspective.
           - const: "system-instance"
             description: |-
               Describes the complete dynamic [system-instance](../index.md#system-instance) (tenant) perspective as known at run-time.
               This allows to also reflect tenant specific extensions, customizations and runtime configuration.
 
               All documents published for one tenant MUST collectively form that tenant's complete `system-instance` perspective.
-              If published for a tenant, it completely replaces the effective static view when metadata about that system instance is requested.
+              If published for a tenant, it completely replaces deployment and static views when metadata about that system instance is requested.
               Whether a complete valid perspective is published MUST be determined independently for each tenant.
-              A resource omitted from the complete `system-instance` perspective MUST NOT be inherited from a static perspective.
+              A resource omitted from the complete `system-instance` perspective MUST NOT be inherited from a deployment or static perspective.
           # - const: "system-instance-delta"
           #   description: |-
           #     TODO: As future optimization we could also provide this perspective, which only describes the actual difference between the system-instance and system-version perspective.

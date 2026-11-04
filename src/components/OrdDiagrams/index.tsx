@@ -696,8 +696,8 @@ export function PerspectivesDiagram() {
         </section>
         <section className="ord-perspective ord-perspective--dynamic">
           <span>Dynamic</span>
-          <h3>System instance</h3>
-          <p>Complete view of one running tenant.</p>
+          <h3>System instance / deployment</h3>
+          <p>Complete tenant view, or an alpha shared deployment view.</p>
           <div>
             <b>active APIs</b>
             <b>extensions</b>
@@ -1689,12 +1689,19 @@ export function PerspectiveResolutionSummaryDiagram() {
           <strong>Use only the runtime perspective</strong>
           <p>
             An absent ORD ID is unavailable on that instance. Do not fill it
-            from static metadata.
+            from deployment or static metadata.
           </p>
         </section>
         <section className="no">
           <span>No</span>
-          <strong>Resolve the effective static view</strong>
+          <strong>Check the tenant's deployment perspective (alpha)</strong>
+          <p>
+            Resolve authoritative tenant membership. If a complete deployment
+            perspective is published, use only it, including when empty. An
+            absent ORD ID does not fall through to static metadata. Report
+            unresolved deployment context if a deployment view could apply.
+          </p>
+          <strong>Otherwise, resolve the effective static view</strong>
           <p>
             Known tenant version: select that exact version. Otherwise, select
             the greatest published stable SemVer; if none is published, use

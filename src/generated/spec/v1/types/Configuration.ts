@@ -68,13 +68,13 @@ export interface OrdV1DocumentDescription {
    * The effective static view looks up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
    * If both contain the ORD ID, the complete `system-version` representation takes precedence and properties MUST NOT be merged across the layers.
    *
-   * Systems with dynamic metadata MUST be described in a complete system-instance perspective and SHOULD additionally be described in at least one static perspective.
+   * Systems with dynamic metadata MUST be described in a complete system-instance perspective or, when identical across all tenants of a deployment, a complete system-deployment perspective. They SHOULD additionally be described in at least one static perspective.
    *
    * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
    *
    * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
    */
-  perspective?: "system-type" | "system-version" | "system-instance" | "system-independent";
+  perspective?: "system-type" | "system-version" | "system-deployment" | "system-instance" | "system-independent";
   /**
    * Whether the information in the ORD document is **system-instance-aware**.
    * This is the case when the provided ORD document potentially differs between **system instances** (e.g. due to multi-tenancy, configuration or extensibility).
