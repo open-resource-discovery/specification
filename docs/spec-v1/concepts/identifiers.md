@@ -265,7 +265,7 @@ It MUST be constructed as defined here:
 
 - The ORD ID MUST be unique within the [scope defined above](#ord-id), including the customer scope for `customer.*` and `c.*` namespaces.
 
-- The ORD ID is immutable and MUST not change after it has been published, except for an identity correction or migration that preserves the same resource or taxonomy and retains all previous ORD IDs through [`ord:redirectFrom`](#forwarding-previous-ord-ids).
+- The ORD ID is immutable and MUST not change after it has been published. If (and only if) the ORD aggregator supports ORD ID forwarding, old IDs can be forwarded to the new ORD ID via a standardized [`ord:redirectFrom`](#forwarding-previous-ord-ids) label.
   This exception MUST NOT be used to redirect an old major version to an incompatible successor.
 
 - The ORD ID MUST not exceed 255 characters in total.
