@@ -159,13 +159,13 @@ Once content is assigned to the provider's scope, later replacements remove it b
 
 Pull configuration remains unchanged. Scope assignment for pull endpoints and pull-based replacement belong in a separate feature or issue.
 
-## Reference/Example implementation model: With UMS MAP onboarding and S/4HANA
+## Reference/Example implementation model: With UMS application's onbording config and S/4HANA
 
 This section shows a potential ORD Aggregator onboarding model (not yet standardized). The configuration and technical query properties are aggregator-specific, not additions to the ORD specification.
 
 ### Push provider configuration
 
-Each push provider has a mandatory `name`, unique within its MAP configuration. The name is a local identifier, such as `abap` or `bdc`. It does not need to contain a system or tenant ID.
+Each push provider has a mandatory `name`, unique within its application's onbording config. The name is a local identifier, such as `abap` or `bdc`. It does not need to contain a system or tenant ID.
 
 The following configuration excerpt shows two push providers. The certificate subject and issuer values are placeholders.
 
@@ -203,10 +203,10 @@ UMS matches the authenticated connection to the onboarded provider. The provider
 
 ### Provider attribution in UMS
 
-UMS exposes provider attribution through `umsProvidedBy`, a technical query property like `umsLastUpdate`. Its value combines the MAP namespace and provider name with a slash:
+UMS exposes provider attribution through `umsProvidedBy`, a technical query property like `umsLastUpdate`. Its value combines the application's onbording config namespace and provider name with a slash:
 
 ```text
-<MAP namespace>/<provider name>
+<application's onbording config namespace>/<provider name>
 ```
 
 The example produces `sap.s4/abap` and `sap.s4/bdc`. These values help users inspect and filter content by provider without repeating the namespace in every configured name.
