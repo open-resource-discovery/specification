@@ -8,7 +8,7 @@ Options 1 and 2 were discussed and rejected.
 
 ## Context and problem
 
-ORD uses explicit tombstones to remove information. Some providers can list their current content but cannot track deleted items. These providers need deletion by omission: a complete publication replaces the previous set.
+ORD uses explicit tombstones to remove information. Some providers can list their current content but cannot track deleted ORD resources. These providers need deletion by omission: a complete publication replaces the previous set.
 
 The aggregator needs a boundary for that set. An application can have several ORD providers, deployment pipelines, or teams. Omission from one provider's publication must not delete another provider's content.
 
@@ -20,11 +20,11 @@ Both pull and push need a clear replacement boundary. This decision establishes 
 
 ### Accepted: Option 3 — ORD provider contribution
 
-The publication scope is assigned to onboarded ORD providers for the publishing system. 
+The publication scope is assigned to onboarded ORD providers for the publishing system.
 The publication scope is not the same as the provider identity from authentication and onboarding, but is related and can be checked by it.
-A publication scope further subdivides the scope that is already established with the ORD perspectives. 
+A publication scope further subdivides the scope that is already established with the ORD perspectives.
 
-A publishing system can supply content for several clients together. Those clients share a provider scope, while each item retains its own described-system context.
+A publishing system can supply content for several system instances/tenants together. Those systems share a provider scope, while each ORD resource retains its own described-system context and perspective.
 
 The provider selects replace mode when it submits a complete publication. Onboarding determines the boundary of that replacement.
 
@@ -33,7 +33,7 @@ The provider selects replace mode when it submits a complete publication. Onboar
 - Separate replacement sets require separate onboarded ORD providers, for example one per deployment pipeline.
 - The boundary remains aggregator metadata. The standard ORD model does not expose provider attribution.
 
-Scope records which provider last published an item. It is not an authorization boundary or part of the item's identity.
+Scope records which provider last published an ORD resource. It is not an authorization boundary or part of the ORD resource's identity.
 
 ### Rejected alternatives
 
@@ -44,7 +44,7 @@ Scope records which provider last published an item. It is not an authorization 
 
 **Option 1** makes the publication scope boundary explicit in ORD and can assigns it on each ORD resoruce and taxonomy. It standardizes a Group Type for this and the ORD Provider must maintain and assign the Group (instances) and their assignments.
 
-It covers resources with `partOfGroups`, but not Packages, Consumption Bundles, or other taxonomy. Group membership alone also needs a transport or onboarding binding to enable replacement.
+It covers ORD resources with `partOfGroups`, ORD resources / taxonomies like Packages, Consumption Bundles, need to be enhanced by the property. Group membership alone also needs a transport or onboarding binding to enable replacement.
 
 **Option 2** reuses Package membership and makes replacement intent visible in ORD. It couples deletion to catalog structure and inherited metadata. Smaller sets require different Package assignments.
 
@@ -62,22 +62,22 @@ Aggregator-specific query APIs can expose provider attribution. For example, UMS
 
 ## Replace algorithm and provider attribution
 
-For the publishing system and applicable perspective, a replace submission has two logical steps:
+For the publishing system and applicable perspective, a replace submission has two _logical_ steps (ORD aggregator implementations can optimize the algorithm):
 
 1. **Delete the current set.** Delete all content currently assigned to the authenticated provider's scope.
 2. **Publish the new set.** Merge the submitted content by ORD ID and assign it to that provider's scope.
 
-Item matching uses the ORD ID within the item's described-system and perspective context. The same ORD ID in two client contexts does not identify the same stored item.
+ORD resource matching uses the ORD ID within the ORD resource's described-system and perspective context. The same ORD ID in two system instance contexts does not identify the same stored ORD resource.
 
-The second step creates new items and updates existing items. An existing item can have no scope or a different provider's scope. In both cases, the submission assigns the item to the current provider.
+The second step creates new ORD resources and updates existing ORD resources. An existing ORD resource can have no scope or a different provider's scope. In both cases, the submission assigns the ORD resource to the current provider.
 
-These are logical steps within the push transaction. They do not require separate client calls or an intermediate, publicly visible deletion.
+These are logical steps within the push transaction. They do not require separate ORD Provider calls or an intermediate, publicly visible deletion.
 
 The same algorithm applies to the first push. If the provider's scope is empty, step 1 deletes nothing. Step 2 assigns the submitted content to that scope.
 
 ### Responsibility for conflicts
 
-**No strict ownership guardrails or explicit ownership-transfer APIs are required.** A provider can take over an existing item by publishing its ORD ID. No prior removal or separate ownership claim is necessary.
+**No strict ownership guardrails or explicit ownership-transfer APIs are required.** A provider can take over an existing ORD resource by publishing its ORD ID. No prior removal or separate ownership claim is necessary.
 
 The applicaton / service is responsible for configuring its ORD providers correctly. If configured providers conflict, it must coordinate them and keep their publications consistent.
 
@@ -87,7 +87,7 @@ Authentication and onboarding still determine who can publish for the applicatio
 
 ### Example: from pull to push, then between providers
 
-All rows below belong to the same system and perspective context. The scope column shows aggregator metadata, not an ORD property. `Unassigned` means no provider scope exists for that item.
+All rows below belong to the same system and perspective context. The scope column shows aggregator metadata, not an ORD property. `Unassigned` means no provider scope exists for that ORD resource.
 
 #### 1. Initial pull content
 
@@ -128,7 +128,7 @@ The LOB coordinates the change so that `foo` stops publishing API 2.
 
 #### 4. Provider `foo` replaces with API 4
 
-The aggregator deletes API 1, the only item still assigned to `foo`. It then creates API 4 and assigns it to `foo`.
+The aggregator deletes API 1, the only ORD resource still assigned to `foo`. It then creates API 4 and assigns it to `foo`.
 
 | ORD ID | Scope |
 | --- | --- |
@@ -141,9 +141,9 @@ API 2 remains under `bar`. API 3 and the BDC API remain unassigned. Omission del
 
 ## Legacy pulled content and scope for pull
 
-Replacement addresses a provider that knows its complete current content but does not know everything it published in the past. It does not support an incomplete current set: omission deletes items already assigned to its scope.
+Replacement addresses a provider that knows its complete current content but does not know everything it published in the past. It does not support an incomplete current set: omission deletes ORD resources already assigned to its scope.
 
-A push assigns a scope only to the items it includes. It does not automatically remove obsolete pull content that it omits. API 3 in the example remains until someone explicitly removes it.
+A push assigns a scope only to the ORD resources it includes. It does not automatically remove obsolete pull content that it omits. API 3 in the example remains until someone explicitly removes it.
 
 **Replacement does not resolve this historical cleanup gap.** If API 3 no longer exists and the provider no longer knows about it, the provider cannot include it or name it in a tombstone. Later replacements also leave it unassigned.
 
@@ -153,15 +153,15 @@ The application can query existing ORD IDs and submit tombstones for obsolete co
 
 That cleanup must preserve content from other providers. An unassigned scope alone does not identify obsolete content: the example's BDC API is also unassigned.
 
-Queries reveal stored content, but do not establish which unassigned items belonged to this provider. Cleanup therefore requires enough information to identify its obsolete content. Without that information, stale content remains.
+Queries reveal stored content, but do not establish which unassigned ORD resources belonged to this provider. Cleanup therefore requires enough information to identify its obsolete content. Without that information, stale content remains.
 
-Once content is assigned to the provider's scope, later replacements remove it by omission. The provider then needs only its complete current set, without a history of deleted items.
+Once content is assigned to the provider's scope, later replacements remove it by omission. The provider then needs only its complete current set, without a history of deleted ORD resources.
 
 Pull configuration remains unchanged. Scope assignment for pull endpoints and pull-based replacement belong in a separate feature or issue.
 
-## Reference model: MAP onboarding and S/4HANA
+## Reference/Example implementation model: With UMS MAP onboarding and S/4HANA
 
-This section shows a potential ORD Aggregator onboarding model (not yet standardized). The configuration and technical query properties are aggregator-specific, not additions to the ORD schema.
+This section shows a potential ORD Aggregator onboarding model (not yet standardized). The configuration and technical query properties are aggregator-specific, not additions to the ORD specification.
 
 ### Push provider configuration
 
