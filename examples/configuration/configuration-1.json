@@ -33,6 +33,11 @@
             "customDescription": "The metadata information is openly accessible but system instance aware.\nThe tenant is selected by providing a global or local tenant ID header."
           }
         ]
+      },
+      {
+        "url": "/ord/documents/deployment.json",
+        "perspective": "system-deployment",
+        "accessStrategies": [{ "type": "open" }]
       }
     ],
     "capabilities": {

@@ -2910,7 +2910,7 @@ export interface DataProduct {
   /**
    * Lifecycle status of the Data Product as a whole.
    *
-   * MUST be provided when describing either dynamic (system-instance or alpha system-deployment) perspective.
+   * MUST be provided when describing the system-instance-aware (run-time) perspective.
    * SHOULD NOT be provided in static (design-time) perspective. Static aggregators MUST ignore this property.
    */
   lifecycleStatus?:

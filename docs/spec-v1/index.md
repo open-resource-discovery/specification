@@ -35,9 +35,8 @@ Start with static metadata, then decide whether publishing a runtime-specific vi
 
 1. **Identify what the application exposes and requires.** Describe its APIs, Events, Data Products, Capabilities, Agents, and Integration Dependencies, and link their native resource definitions where applicable.
 2. **Publish a static description first.** Choose the appropriate `system-type` or `system-version` [perspective](./concepts/perspectives.md#static-perspective), then expose the ORD configuration, ORD documents, and referenced definitions by following [Implementing ORD Natively](./guides/implementing-ord-natively.md#start-simple-static-ord).
-3. **Evaluate whether a dynamic view adds value.** Add `system-instance` publishing when resources or metadata differ at runtime because of tenant configuration, feature activation, extensions, user-created resources, or dynamic endpoints.
+3. **Evaluate whether a system-instance view adds value.** Add `system-instance` publishing when resources or metadata differ at runtime because of tenant configuration, feature activation, extensions, user-created resources, or dynamic endpoints.
    A published `system-instance` perspective is a complete description of that instance, not a patch over the static baseline.
-   When runtime metadata is shared by all tenants of a deployment but differs between deployments, the alpha `system-deployment` perspective can describe it once after aggregator support is established.
 4. **Add structure and lifecycle guidance as needed.** Use the [System Landscape Model](./concepts/system-landscape-model.md), [Grouping and Bundling](./concepts/grouping-and-bundling.md), [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md), and [Versioning, Compatibility, and Lifecycle](./concepts/versioning-and-lifecycle.md) to refine the description.
 
 The normative requirements remain in the specification sections and the generated [interfaces and schemas](/spec-v1/interfaces/).
@@ -82,7 +81,7 @@ The aggregator itself MAY represent a [static perspective](#static-perspective) 
 
 The ORD information MUST be made available to [ORD Consumers](#ord-consumer) through a higher-quality API, for example via an [ORD Discovery API](#ord-discovery-api) that allows for more advanced consumption patterns.
 Consumers MUST NOT be required to understand how an ORD provider distributes metadata across perspectives.
-The aggregator MUST expose an effective view by selecting a complete `system-instance` perspective, an applicable complete alpha `system-deployment` perspective, or by composing the applicable static layers by ORD ID.
+The aggregator MUST expose an effective view by selecting a complete `system-instance` or applicable alpha `system-deployment` perspective, or by composing the applicable static layers by ORD ID.
 
 An ORD aggregator MUST ensure that information that has `visibility` of `private` or `internal` is not made available to consumers that don't have the corresponding permissions to get such information (e.g. external consumers). If ORD consumers get private or internal information, they inherit the responsibility of protecting it.
 
@@ -97,12 +96,11 @@ In case of an ORD aggregator that supports the [dynamic perspective](#dynamic-pe
 - the aggregator MUST support [system-instance-aware](#system-instance-aware) information and MAY support further [system instance](#system-instance) grouping concepts, such as accounts etc.
 - If it needs to reflect system-instance-aware information it MUST be system-instance-aware itself.
 - In the ORD Discovery API for accessing `system-instance` perspective information, the aggregator MUST determine whether a `system-instance` perspective is published for the tenant before filtering for an ORD ID.
-  - When a complete `system-instance` perspective is published, it replaces deployment and static views and an omitted resource MUST NOT be inherited from either.
+  - When a complete `system-instance` perspective is published, it replaces the effective static view and an omitted resource MUST NOT be inherited from deployment or static metadata.
   - If the `system-instance` perspective omits the requested ORD ID, the resource is not available on that tenant.
-  - When no `system-instance` perspective is published, an aggregator accepting the alpha deployment feature MUST select the tenant's complete `system-deployment` perspective when published.
-  - An omitted ORD ID in a selected deployment perspective MUST NOT fall through to static metadata.
-  - Only when neither applicable dynamic perspective is published may the aggregator fall back to the effective static view.
-  - Deployment selection requires authoritative tenant membership; unresolved context that could hide an applicable deployment perspective MUST be reported as an error.
+  - When no `system-instance` perspective is published, an aggregator accepting the alpha deployment feature MUST use the tenant's complete deployment perspective if published, without per-resource fallback.
+  - Only when neither applicable dynamic perspective is published may it use the effective static view.
+  - See [deployment identity and support requirements](./concepts/perspectives.md#system-deployment-perspective-alpha).
   - The aggregator performs this resolution so consumers do not have to query and compose perspectives themselves.
 - See chapter on [perspectives](#perspectives) and the [perspectives concept page](./concepts/perspectives.md) for details.
 - It SHOULD support the proposed optimizations for the transport modes, e.g. make use of `perspectives` (replaces deprecated `systemInstanceAware`), `lastUpdate` properties and support the proposed HTTP cache mechanisms. This has the potential to significantly reduce overall TCO.
@@ -128,7 +126,6 @@ The specification makes a distinction between how [ORD information](#ord-informa
 
 An [ORD Provider](#ord-provider) MUST implement at least one of the defined transport modes.
 If the ORD information is [system-instance-aware](#system-instance-aware), the implementation of the transport mode MUST support providing it **per system instance**.
-The alpha `system-deployment` perspective MAY instead be provided once per deployment when its runtime metadata is identical across all tenants; it requires deployment-aware aggregator support and authorization for that deployment.
 
 ### Pull Transport
 
@@ -212,9 +209,9 @@ It is therefore RECOMMENDED to use American English for human-readable titles an
 
 #### Considerations on the ORD Content
 
-Dynamic ORD documents MUST describe the current state of a concrete, running [system instance](#system-instance) or, for the alpha deployment perspective, one [system deployment](#system-deployment).
+The ORD documents MUST describe the current state of a concrete, running [system instance](#system-instance).
 
-All resources within one document MUST describe the same target of its perspective: system type, exact system version, deployment, or tenant; system-independent documents have no system target.
+All resources within a dynamic document MUST describe the same tenant or, for the alpha deployment perspective, the same deployment.
 
 An ORD ID MUST NOT be described more than once within or across ORD documents that belong to the same [perspective](./concepts/perspectives.md#identifying-a-perspective), including documents exposed by different ORD Providers.
 See [Shared Taxonomy, Resources and Contracts](./concepts/shared-resources.md) for content reused across perspectives or systems.
@@ -223,9 +220,8 @@ The [validation rules](#validation-rules) MUST be considered.
 
 If the [resources](#resource) that are described through ORD are [system-instance-aware](#system-instance-aware) (they differ between system instances), the ORD document MUST reflect this.
 Tenant-specific metadata MUST be provided for each system instance.
-Runtime metadata shared by all tenants of a deployment MAY instead use the alpha deployment perspective after receiving aggregator support is established.
-Static information can represent a system type or version as a whole.
-Runtime metadata shared only within one deployment can be published as a complete alpha `system-deployment` perspective, but MUST NOT be misrepresented as static information.
+Runtime metadata shared by all tenants of one deployment MAY instead use the alpha `system-deployment` perspective after aggregator support is established.
+Only if the information is [system-instance-unaware](#system-instance-unaware) (the system behaves the same for each instance), a single ORD document can represent the system as a whole.
 
 Differences between system instances are possible, for example, when the system has configuration or extensibility capabilities that result in resources being activated, deactivated, added, or modified.
 This might happen at config time, deploy time, or even at run-time.
@@ -310,7 +306,7 @@ The base URL used for resolving base-URL-relative URLs (leading slash) depends o
 | URL type | Resolved against | Declared via |
 |---|---|---|
 | **Metadata files**: `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`, `APIEventResourceLink.url`, `DataProductLink.url` | Provider base URL | Document root `baseUrl` |
-| **Entry points**: `entryPoints[]` | Described system base URL | `describedSystemInstance.baseUrl` or the alpha `describedSystemDeployment.baseUrl` |
+| **Entry points**: `entryPoints[]` | Described system base URL | `describedSystemInstance.baseUrl` |
 
 This distinction matters when the ORD provider and the described system differ (e.g., a central aggregator describing multiple systems on its behalf).
 In the common case where the provider *is* the described system, both base URLs are identical and the distinction has no practical effect.
@@ -332,8 +328,7 @@ Their base-URL-relative URLs are resolved against the described system base URL:
 
 1. **Aggregator-authoritative URL** — ORD aggregators that hold authoritative knowledge of the described system's base URL (e.g., from landscape configuration or service discovery) MAY prefer that over the document-provided value. This is an aggregator decision, appropriate when the aggregator has more reliable or up-to-date information than the provider.
 2. **`describedSystemInstance.baseUrl`** — the value declared in the document.
-3. **`describedSystemDeployment.baseUrl`** — the alpha shared deployment URL, when no more specific instance URL is known.
-   This fallback MUST NOT be used to invent tenant-specific entry points.
+3. **`describedSystemDeployment.baseUrl`** — the alpha shared deployment URL when no more specific instance URL is known; it MUST NOT be used to invent tenant-specific entry points.
 
 > **The asymmetry is intentional.** Aggregators commonly have landscape authority over the systems they describe (rule 1 above), but not over the system that merely *serves* ORD documents. For the described system, deferring to the aggregator's landscape knowledge is appropriate; for the provider, the document is the authoritative source, especially in push scenarios where no fetch context exists.
 
@@ -422,7 +417,6 @@ All of the [common REST characteristics](#common-rest-characteristics) MUST be m
 If the ORD document is [system-instance-aware](#system-instance-aware) (different between system instances), the ORD document endpoint MUST ensure that the response describes the correct/chosen instance specifically.
 This can be implemented, for example, via authentication (multi tenancy) or by having different URLs per system instance.
 In this case, the ORD documents MUST be provided and fetched for _each_ system instance.
-Documents with the alpha `system-deployment` perspective MUST instead be provided and fetched once per authorized deployment; access MUST NOT expose one deployment's metadata to unauthorized tenants of another deployment.
 For more details, please see the [considerations on the ORD content](#considerations-on-the-ord-content) section.
 
 The rules for [ORD Provider Cache Handling](#ord-provider-cache-handling) apply.
@@ -518,8 +512,7 @@ Referenced definition files MUST be fetched or revalidated if they have not been
 The aggregator MAY skip reprocessing and refetching only when none of the available signals changed, but MAY revalidate a definition independently at any time.
 
 Documents and resources published through a `system-instance` perspective MUST be fetched and cached separately for each system instance / tenant.
-Documents and resources published through the alpha `system-deployment` perspective MUST be fetched and cached separately for each authoritative deployment and authorization scope.
-Cached effective tenant views MUST account for current tenant-to-deployment membership and be invalidated when it changes.
+The alpha `system-deployment` perspective MUST be fetched and cached separately per authoritative deployment and authorization scope.
 Documents and resources from static perspectives SHOULD be fetched once per applicable system type or system version scope, while `system-independent` information SHOULD be fetched once globally.
 
 For its own metadata cache, an aggregator MUST scope entries by the document or resource identity, the authoritative perspective scope, and every part of the request context that selects the representation.
@@ -642,7 +635,7 @@ There is a `perspective` attribute, which allows setting the following values:
 
 - `system-type`: The <a href="#static-perspective">static perspective</a> that is version independent (`"perspective": "system-type"`). This perspective describes the current, version-agnostic state of a <a href="#system-type">system type</a>. Use this when the system is not versioned (continuous delivery) or resources are not tied to a specific system version. Exclusively publishing a `system-type` perspective is adequate when treating every system instance as running the latest effective static view.
 - `system-version`: The <a href="#static-perspective">static perspective</a> on the granularity of <a href="#system-version">system versions</a> (`"perspective": "system-version"`) for <a href="#system-instance-unaware">system-instance-unaware</a> information (usually known at deploy-time).
-- `system-deployment` (alpha): The complete <a href="#dynamic-perspective">dynamic perspective</a> shared by every tenant of one <a href="#system-deployment">system deployment</a>, while allowing differences between deployments of the same type and version.
+- `system-deployment` (alpha): The complete runtime metadata shared by all tenants of one <a href="#system-deployment">system deployment</a>, allowing differences between deployments of the same type and version.
 - `system-instance`: The <a href="#dynamic-perspective">dynamic perspective</a> on the granularity of <a href="#system-instance">system-instances</a> (`"perspective": "system-instance"`), for <a href="#system-instance-aware">system-instance-aware</a> information (only known at run-time).
 - `system-independent`: Describes content that is independent of system versions or system instances and can be shared across multiple systems.
 
@@ -659,21 +652,15 @@ There is a `perspective` attribute, which allows setting the following values:
 - Each ORD ID published in a static perspective MUST have a complete representation.
 - The effective static view MUST look up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
   If both layers contain the ORD ID, the complete `system-version` representation takes precedence and its properties MUST NOT be merged with the `system-type` representation.
-- Systems with tenant-specific dynamic metadata MUST use a complete `system-instance` perspective.
-- Systems whose runtime metadata is identical across all tenants of a deployment MAY use a complete alpha `system-deployment` perspective instead, after establishing receiving aggregator support.
-  - Deployment documents MUST NOT contain tenant-specific context or customizations, including `describedSystemInstance`.
-  - Deployment identity and tenant membership MUST be unambiguous and authoritative.
-  - Each deployment perspective MUST collectively be complete; a published empty perspective blocks static fallback.
-  - The alpha status does not make the feature safe for older aggregators; accepting aggregators MUST implement deployment-aware resolution before exposing effective tenant views.
-- Systems publishing either dynamic perspective SHOULD also provide at least one applicable static perspective.
+- Systems with dynamic metadata MUST use a complete `system-instance` perspective or, when shared by all tenants of a deployment, a complete alpha `system-deployment` perspective.
+  - Deployment documents MUST NOT contain tenant-specific context or customizations and require the [deployment identity and support requirements](./concepts/perspectives.md#system-deployment-perspective-alpha).
+  - They SHOULD also provide at least one applicable static perspective.
   - The static and dynamic perspectives MAY be provided through different technical implementations, for example a static ORD Provider or publishing pipeline for the static perspective and an application-native ORD Provider API for the `system-instance` perspective.
     In this case, both perspectives MUST use the same ORD IDs for the same logical resources, and any differences MUST reflect perspective-specific state.
 - Whether a complete `system-instance` perspective is published MUST be determined independently for each tenant.
 - A published `system-instance` perspective fully describes that tenant and MUST NOT inherit resources from deployment or static perspectives.
-  When it is absent, an accepting aggregator MUST select the complete perspective of that tenant's deployment if published.
-  A selected deployment perspective MUST NOT inherit absent resources from static perspectives.
-  Only when neither applicable dynamic perspective is published may an aggregator fall back to the effective static view.
-  See [effective system-instance resolution](./concepts/perspectives.md#effective-system-instance-resolution).
+  When it is absent, use the complete perspective of that tenant's deployment if published, without per-resource fallback.
+  Only when neither applicable dynamic perspective is published may an aggregator use the effective static view.
 - Content that is independent of systems (like Taxonomies, Products, Vendors) SHOULD use the `system-independent` perspective.
   A `system-independent` document MUST NOT contain system or tenant context or system-specific or tenant-specific customizations.
   It is outside the system-scoped fallback chain.
@@ -780,10 +767,9 @@ This is useful, e.g. to describe potential resources users / customers _could_ u
 
 #### Dynamic Perspective
 
-The **dynamic perspective** describes a [system instance](#system-instance), or a deployment shared by all its tenants through the alpha `system-deployment` perspective, at **run-time** and can therefore reflect how it is currently configured, customized or extended. This is also referred to as [system-instance-aware](#system-instance-aware).
+The **dynamic perspective** describes a [system instance](#system-instance) at **run-time** and can therefore reflect how it is currently configured, customized or extended. This is also referred to as [system-instance-aware](#system-instance-aware).
 
-- This can be explicitly set with `perspective`: `system-instance` or the alpha `system-deployment` scope.
-  Deployment metadata MUST be identical across all tenants within the deployment, while tenant metadata may differ.
+- This can be explicitly set with `perspective`: `system-instance`, or the alpha `system-deployment` scope when shared by every tenant of one deployment.
 - This is also referred to as [system-instance-aware](#system-instance-aware) information.
   system-instance-aware information is allowed to be different between system instances of the same [system type](#system-type).
 
