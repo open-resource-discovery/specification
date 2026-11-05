@@ -1,0 +1,56 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
+  "openResourceDiscovery": "1.17",
+  "perspective": "system-deployment",
+  "description": "Alpha complete runtime metadata shared by every tenant of one on-premise deployment. Publication requires deployment-aware aggregator support.",
+  "describedSystemType": {
+    "systemNamespace": "sap.foo"
+  },
+  "describedSystemVersion": {
+    "version": "1.0.0"
+  },
+  "describedSystemDeployment": {
+    "localId": "on-premise-installation-1",
+    "baseUrl": "https://installation.example.com"
+  },
+  "packages": [
+    {
+      "ordId": "sap.foo.sub:package:ord-reference-app:v0",
+      "title": "Open Resource Discovery Reference Application",
+      "shortDescription": "This is a reference application for the Open Resource Discovery standard",
+      "description": "This reference application demonstrates how Open Resource Discovery (ORD) can be implemented, demonstrating different resources and discovery aspects",
+      "version": "0.3.0",
+      "vendor": "sap:vendor:SAP:"
+    }
+  ],
+  "apiResources": [
+    {
+      "ordId": "sap.foo:apiResource:astronomy:v1",
+      "title": "Astronomy API",
+      "shortDescription": "The API allows you to discover...",
+      "description": "A longer description of this API with **markdown** \n## headers\n etc...",
+      "version": "1.0.3",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "partOfPackage": "sap.foo.sub:package:ord-reference-app:v0",
+      "apiProtocol": "rest",
+      "resourceDefinitions": [
+        {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "url": "/ord/metadata/astronomy-v1.oas3.json",
+          "visibility": "public",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ],
+      "entryPoints": [
+        "https://installation.example.com/api/astronomy"
+      ]
+    }
+  ],
+  "baseUrl": "https://installation.example.com"
+}

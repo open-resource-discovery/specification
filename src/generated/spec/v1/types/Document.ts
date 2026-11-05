@@ -83,15 +83,17 @@ export interface OrdDocument {
    * The effective static view looks up an ORD ID in the applicable `system-version` layer first and then in `system-type`.
    * If both contain the ORD ID, the complete `system-version` representation takes precedence and properties MUST NOT be merged across the layers.
    *
-   * Systems with dynamic metadata MUST be described in a complete system-instance perspective and SHOULD additionally be described in at least one static perspective.
+   * Systems with dynamic metadata MUST be described in a complete system-instance perspective or, when identical across all tenants of a deployment, a complete system-deployment perspective. They SHOULD additionally be described in at least one static perspective.
    *
    * If not provided, this defaults to `system-instance`, which is the most precise description but also the most costly to replicate.
    *
    * Please read the [article on perspectives](../concepts/perspectives) for more explanations.
    */
-  perspective?: ("system-type" | "system-version" | "system-instance" | "system-independent") & string;
+  perspective?: ("system-type" | "system-version" | "system-deployment" | "system-instance" | "system-independent") &
+    string;
   describedSystemType?: SystemType;
   describedSystemVersion?: SystemVersion;
+  describedSystemDeployment?: SystemDeployment;
   describedSystemInstance?: SystemInstance;
   /**
    * The [policy level](../../spec-extensions/policy-levels/) (aka. compliance level) that the described resources need to be compliant with.
@@ -304,6 +306,28 @@ export interface SystemVersion {
    * Tags that are assigned to a `Package` are inherited to all of the ORD resources it contains.
    */
   tags?: string[];
+}
+/**
+ * Identity and shared base URL of the [system deployment](../index.md#system-deployment).
+ * MUST identify the deployment in a system-deployment perspective unless authoritative onboarding or landscape information already identifies it unambiguously.
+ * MAY associate a system-instance document with its deployment, but MUST NOT override authoritative tenant membership.
+ * MUST NOT occur in static or system-independent documents.
+ */
+export interface SystemDeployment {
+  /**
+   * Stable provider-local deployment identifier, unique within the described system type and the responsible deployment authority.
+   */
+  localId?: string;
+  /**
+   * Globally unique stable deployment identifier assigned by the responsible deployment authority. The provider MUST NOT invent an authority-assigned value.
+   */
+  globalId?: string;
+  /**
+   * Shared absolute base URL of the deployment, without a trailing slash.
+   * MAY resolve relative entry points when no more specific authoritative system-instance base URL is available.
+   * Tenant-specific entry points MUST NOT be included in a system-deployment perspective.
+   */
+  baseUrl?: string;
 }
 /**
  * Information on the [system-instance](../index.md#system-instance) that this ORD document describes.

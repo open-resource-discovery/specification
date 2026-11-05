@@ -33,6 +33,15 @@ const contexts = [
     }),
   },
   {
+    name: "ORD Document deployment identity (alpha)",
+    schema: "Document",
+    document: (deployment: object) => ({
+      openResourceDiscovery: "1.17",
+      perspective: "system-deployment",
+      describedSystemDeployment: deployment,
+    }),
+  },
+  {
     name: "ORD Overlay describedSystemInstance",
     schema: "OrdOverlay",
     document: (instance: object) => ({

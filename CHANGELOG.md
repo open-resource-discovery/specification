@@ -11,6 +11,12 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added the alpha `system-deployment` perspective and `describedSystemDeployment` for complete runtime metadata shared by a deployment's tenants.
+  Tenant views resolve system-instance, then deployment, then static metadata; neither dynamic view permits per-resource fallback.
+  Publication requires updated schemas and deployment-aware aggregators with authoritative tenant membership.
+
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added
