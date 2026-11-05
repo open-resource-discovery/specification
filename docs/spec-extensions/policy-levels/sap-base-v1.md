@@ -49,4 +49,4 @@ Usually SAP applications and services will use the more complete and opinionated
 
 ### Workflow Capabilities
 
-For workflow capabilities published by SAP applications and services, if the `definitions` property is provided, it MUST contain at least one definition with `type: "arazzo-v1"`. All entries in that array MUST use this type.
+For workflow capabilities published by SAP applications and services, if the `definitions` property is provided, it SHOULD contain at least one definition with `type: "arazzo-v1"`. 
