@@ -135,24 +135,11 @@ The following diagram shows how an aggregator resolves a request:
 
 The detailed decision flow below covers the individual outcomes and error cases.
 
-```mermaid
-flowchart TD
-  Request[Effective tenant view] --> Instance{Complete tenant perspective published?}
-  Instance -->|Yes| Tenant[Use only system-instance]
-  Instance -->|No| Membership{Authoritative deployment context resolved?}
-  Membership -->|Unresolved and deployment cannot be ruled out| Error[Report unresolved deployment context]
-  Membership -->|Yes or no deployment applies| Deployment{Complete applicable deployment perspective published?}
-  Deployment -->|Yes| Shared[Use only system-deployment]
-  Deployment -->|No| Version{Exact tenant system version known?}
-  Version -->|Yes| Exact{Exact version perspective published?}
-  Exact -->|No| Missing[Report missing system version]
-  Exact -->|Yes| Static[Resolve system-version then system-type by ORD ID]
-  Version -->|No| Latest[Select greatest stable version or system-type if none]
-  Latest --> Static
-  Tenant --> Filter[Filter selected view: absent ORD ID means not found]
-  Shared --> Filter
-  Static --> Filter
-```
+<div className="img-box" style={{aspectRatio: "1203/1594"}}>
+
+![Perspective resolution](/img/perspective-resolution.drawio.svg "Perspective resolution")
+
+</div>
 
 Neither dynamic perspective permits fallback for an absent ORD ID, even when the published perspective is empty.
 
