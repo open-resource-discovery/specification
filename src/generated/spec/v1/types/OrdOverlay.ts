@@ -102,6 +102,7 @@ export type OverlayPatchAction = "update" | "remove" | "merge";
 export type OverlaySelector =
   | OverlaySelectorByRoot
   | OverlaySelectorByJsonPath
+  | OverlaySelectorByORDID
   | OverlaySelectorByOperation
   | OverlaySelectorByEntityType
   | OverlaySelectorByComplexType
@@ -197,8 +198,10 @@ export interface ORDOverlay {
   $schema?: (string | "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#") & string;
   /**
    * Version of the ORD Overlay specification.
+   * New overlays SHOULD use `0.2`.
+   * Overlays that use the [`ordId` selector](#overlay-selector-by-ord-id) MUST use `0.2`.
    */
-  ordOverlay: "0.1";
+  ordOverlay: "0.1" | "0.2";
   /**
    * Optional ORD ID of this overlay document.
    */
@@ -481,6 +484,23 @@ export interface OverlaySelectorByJsonPath {
    * where no concept-level selector covers the target location.
    */
   jsonPath: string;
+}
+export interface OverlaySelectorByORDID {
+  /**
+   * ORD ID of the ORD resource to patch, such as an API Resource, Event Resource, or Data Product.
+   * MUST be a valid [ORD ID](../../spec-v1/concepts/identifiers.md#ord-id).
+   *
+   * The patch applies to the metadata of the ORD resource itself (e.g. `title`, `description`, `tags`),
+   * not to a resource definition file that the resource references.
+   * The resource type is derived from the ORD ID.
+   *
+   * An overlay that uses this selector:
+   * - MUST use it in all of its patches, and MAY patch several ORD resources with different `ordId` values.
+   * - MUST set `ordOverlay` to `0.2`.
+   * - SHOULD omit `target`, because each patch identifies its own resource.
+   * - MUST be published as an [ORD Document Resource](#as-an-ord-document-resource), not attached as a `resourceDefinitions` entry.
+   */
+  ordId: string;
 }
 export interface OverlaySelectorByOperation {
   /**

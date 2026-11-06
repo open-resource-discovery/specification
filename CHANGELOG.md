@@ -11,6 +11,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added the `ordId` selector to ORD Overlay, so overlays can patch ORD resource metadata directly.
+  - One overlay can patch several ORD resources, and `target` should be omitted.
+  - These overlays must be published as ORD Document Resources, not attached as `resourceDefinitions` entries.
+  - ORD Aggregators that support ORD Overlays must apply permitted overlays of this kind to their ORD Discovery API and related indexes.
+- Added ORD Overlay version `0.2`, which is required for the `ordId` selector. Version `0.1` remains valid.
+
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
 ### Changed

@@ -55,6 +55,26 @@
           "url": "/open-resource-discovery/v1/overlays/astronomy-api.overlay.yaml"
         }
       ]
+    },
+    {
+      "ordId": "sap.foo:overlay:document-1-ord:v1",
+      "title": "ORD Resource Metadata Overlay",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "internal",
+      "relatedApiResources": [
+        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
+      ],
+      "relatedEventResources": [
+        { "ordId": "sap.foo:eventResource:BillingDocumentEvents:v1", "relationType": "ord:patches" }
+      ],
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/ord-document-1.overlay.json"
+        }
+      ]
     }
   ]
 }
