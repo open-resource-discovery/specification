@@ -461,7 +461,7 @@ Every ORD resource that carries machine-readable definitions (API Resource, Even
 Within a single resource, the list MAY still hold several entries, but they must all describe the same underlying resource. Additional entries beyond the default exist to carry complementary artifacts (overlays, AI-enriched variants, agent-security-permissions views, …) and, where supported, are distinguished via the `purpose` property.
 
 The entry *without* a `purpose` is the primary / default definition, and there SHOULD be exactly one per `(type, mediaType, visibility)` combination.
-This permits the same logical definition to be published in alternative serialization formats, such as JSON-LD and Turtle representations of an ontology.
+This allows the same definition to be published in several serialization formats, such as JSON-LD and Turtle.
 Consumers that don't explicitly ask for a specific `purpose` MUST fall back to the default entry with the highest `visibility` they are entitled to see.
 Values under the `ord:` namespace are reserved for the ORD specification; custom purposes MUST use their own namespace prefix.
 

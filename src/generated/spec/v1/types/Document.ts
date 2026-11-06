@@ -687,7 +687,7 @@ export interface ApiResource {
    *
    * Every entry MUST describe the *same* underlying resource.
    * Allowed variations are alternative representations and complementary artifacts.
-   * Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * Each entry's role MUST be identified by its `type` and, if the type alone is not sufficient, by its `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
@@ -1087,8 +1087,8 @@ export interface ApiResourceDefinition {
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
-   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the definitions list.
+   * Together with `type` (or `customType`), `mediaType`, and `visibility`, `purpose` forms the
+   * uniqueness key for entries in the definitions list.
    *
    * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
@@ -1598,7 +1598,7 @@ export interface EventResource {
    *
    * Every entry MUST describe the *same* underlying resource.
    * Allowed variations are alternative representations and complementary artifacts.
-   * Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * Each entry's role MUST be identified by its `type` and, if the type alone is not sufficient, by its `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
@@ -1868,8 +1868,8 @@ export interface EventResourceDefinition {
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
-   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the definitions list.
+   * Together with `type` (or `customType`), `mediaType`, and `visibility`, `purpose` forms the
+   * uniqueness key for entries in the definitions list.
    *
    * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
@@ -2275,10 +2275,10 @@ export interface Capability {
   type: (string | "agent-skill" | "agent-plugin" | "sap.mdo:mdi-capability:v1" | "workflow" | "ontology" | "custom") &
     string;
   /**
-   * Optional list of model layers described by an ontology published as a Capability.
+   * Optional list of the model layers that the ontology describes.
    * This property SHOULD only be used when `type` is `ontology`.
    *
-   * A single ontology can span more than one layer.
+   * An ontology can span several layers.
    * The layer MUST NOT be inferred from the definition language alone.
    * For example, SHACL shapes can constrain either a conceptual RDF graph or a concrete data representation.
    *
@@ -2514,7 +2514,7 @@ export interface Capability {
    *
    * Every entry MUST describe the *same* underlying resource.
    * Allowed variations are alternative representations and complementary artifacts.
-   * Their roles MUST be distinguished by `type` and, where the type alone is insufficient, by `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
+   * Each entry's role MUST be identified by its `type` and, if the type alone is not sufficient, by its `purpose` (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
@@ -2739,8 +2739,8 @@ export interface CapabilityDefinition {
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
-   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the definitions list.
+   * Together with `type` (or `customType`), `mediaType`, and `visibility`, `purpose` forms the
+   * uniqueness key for entries in the definitions list.
    *
    * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or
@@ -3722,8 +3722,8 @@ export interface OverlayDefinition {
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
-   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the definitions list.
+   * Together with `type` (or `customType`), `mediaType`, and `visibility`, `purpose` forms the
+   * uniqueness key for entries in the definitions list.
    *
    * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
    * values standardized by the ORD specification itself; custom values MUST use a vendor- or

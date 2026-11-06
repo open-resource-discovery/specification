@@ -57,8 +57,8 @@ without conflicting with each other or the original definition.
 
 Within the same aggregation scope, the combination of `purpose` and `visibility` MUST be unique across
 overlay entries (`type: "ord:overlay:v1"`) on the same resource.
-This follows directly from the general resource definition uniqueness rule: no two entries in a
-`resourceDefinitions` list may share the same `type`, `purpose`, and `visibility`.
+This is stricter than the general resource definition uniqueness rule, which also includes `mediaType`:
+two overlay entries cannot differ by `mediaType` alone.
 When a consumer applies multiple overlays to the same target,
 the processing order is not defined by this specification and MUST be established by the ORD Aggregator or ORD Provider.
 

@@ -79,9 +79,9 @@
   <rect x="48" y="240" width="308" height="49" rx="11" fill="#f7f3fa" stroke="#c991d9" stroke-dasharray="4 3"/>
   <rect x="410" y="240" width="308" height="49" rx="11" fill="#f7f3fa" stroke="#c991d9" stroke-dasharray="4 3"/>
   <text class="label" x="62" y="257">DEFINITIONS</text>
-  <text x="62" y="279" font-size="13" font-weight="700">OWL · RDFS · RDF</text>
+  <text x="62" y="279" font-size="13" font-weight="700">RDF · RDFS · OWL · SHACL · CSN Interop</text>
   <text class="label" x="424" y="257">DEFINITIONS</text>
-  <text x="424" y="279" font-size="13" font-weight="700">SHACL · RDF · CSN Interop</text>
+  <text x="424" y="279" font-size="13" font-weight="700">RDF · RDFS · OWL · SHACL · CSN Interop</text>
 
   <g filter="url(#shadow)">
     <rect x="410" y="317" width="308" height="48" rx="13" fill="#f7f9fa" stroke="#dfe4ec"/>
