@@ -4395,6 +4395,7 @@ definitions:
 
       correlationIds:
         <<: *correlationIds
+        x-introduced-in-version: "1.17.1"
 
       partners:
         # Note: It's a bit unclear how and whether we actually use this
