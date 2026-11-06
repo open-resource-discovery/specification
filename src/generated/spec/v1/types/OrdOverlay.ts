@@ -102,6 +102,9 @@ export type OverlayPatchAction = "update" | "remove" | "merge";
 export type OverlaySelector =
   | OverlaySelectorByRoot
   | OverlaySelectorByJsonPath
+  | OverlaySelectorByORDID
+  | OverlaySelectorByGroupID
+  | OverlaySelectorByGroupTypeID
   | OverlaySelectorByOperation
   | OverlaySelectorByEntityType
   | OverlaySelectorByComplexType
@@ -197,8 +200,10 @@ export interface ORDOverlay {
   $schema?: (string | "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#") & string;
   /**
    * Version of the ORD Overlay specification.
+   * New overlays SHOULD use `0.2`.
+   * Overlays that use [ORD-level selectors](#patching-ord-metadata) MUST use `0.2`.
    */
-  ordOverlay: "0.1";
+  ordOverlay: "0.1" | "0.2";
   /**
    * Optional ORD ID of this overlay document.
    */
@@ -481,6 +486,34 @@ export interface OverlaySelectorByJsonPath {
    * where no concept-level selector covers the target location.
    */
   jsonPath: string;
+}
+export interface OverlaySelectorByORDID {
+  /**
+   * ORD ID of the [ORD resource](../../spec-v1/index.md#ord-resource) to patch, such as an API Resource, Event Resource, or Data Product.
+   * MUST be a valid [ORD ID](../../spec-v1/concepts/identifiers.md#ord-id).
+   *
+   * The patch applies to the ORD metadata of the resource (e.g. `title`, `description`, `tags`),
+   * not to a resource definition file that the resource references.
+   *
+   * See [Patching ORD Metadata](#patching-ord-metadata) for the rules that apply to this selector.
+   */
+  ordId: string;
+}
+export interface OverlaySelectorByGroupID {
+  /**
+   * Group ID of the [Group](../../spec-v1/interfaces/Document.md#group) to patch.
+   *
+   * See [Patching ORD Metadata](#patching-ord-metadata) for the rules that apply to this selector.
+   */
+  groupId: string;
+}
+export interface OverlaySelectorByGroupTypeID {
+  /**
+   * Group Type ID of the [Group Type](../../spec-v1/interfaces/Document.md#group-type) to patch.
+   *
+   * See [Patching ORD Metadata](#patching-ord-metadata) for the rules that apply to this selector.
+   */
+  groupTypeId: string;
 }
 export interface OverlaySelectorByOperation {
   /**
