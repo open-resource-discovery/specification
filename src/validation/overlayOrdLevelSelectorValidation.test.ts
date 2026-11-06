@@ -14,30 +14,39 @@ const ajv = new Ajv({ strict: false, allErrors: true });
 addFormats(ajv);
 const validate = ajv.compile(schema);
 
-function ordIdOverlay(ordId: string) {
+function ordLevelOverlay(selector: Record<string, string>) {
   return {
     ordOverlay: "0.2",
     patches: [
       {
         action: "merge",
-        selector: { ordId },
+        selector,
         data: { shortDescription: "Enriched description" },
       },
     ],
   };
 }
 
-describe("ORD Overlay ordId selector validation", () => {
-  it("accepts an overlay without target that patches an ORD resource", () => {
-    assert.equal(
-      validate(ordIdOverlay("sap.foo:apiResource:astronomy:v1")),
-      true,
-    );
-  });
+describe("ORD Overlay ORD-level selector validation", () => {
+  for (const selector of [
+    { ordId: "sap.foo:apiResource:astronomy:v1" },
+    { groupId: "sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue" },
+    { groupTypeId: "sap.foo:groupTypeAbc" },
+  ]) {
+    it(`accepts ${Object.keys(selector)[0]} without target`, () => {
+      assert.equal(validate(ordLevelOverlay(selector)), true);
+    });
+  }
 
-  it("rejects an invalid ORD ID", () => {
-    assert.equal(validate(ordIdOverlay("not-an-ord-id")), false);
-  });
+  for (const selector of [
+    { ordId: "not-an-ord-id" },
+    { groupId: "sap.foo:groupTypeAbc" },
+    { groupTypeId: "not-a-group-type-id" },
+  ]) {
+    it(`rejects an invalid ${Object.keys(selector)[0]}`, () => {
+      assert.equal(validate(ordLevelOverlay(selector)), false);
+    });
+  }
 
   it("accepts the ORD resource metadata example", () => {
     const example = JSON.parse(

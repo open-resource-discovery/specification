@@ -146,7 +146,7 @@ export interface OrdDocument {
    * Array of all metadata overlays described in this ORD document.
    *
    * An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
-   * resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) or ORD resource metadata without modifying the originals.
+   * resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) or ORD metadata without modifying the originals.
    *
    * For overlays that are tightly coupled to a single API or Event resource, consider attaching them directly
    * as a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.
@@ -3536,7 +3536,7 @@ export interface ExposedAPIResource {
 }
 /**
  * An Overlay Resource is a standalone, versioned resource that references a metadata patch file.
- * Overlays enrich / patch resource definition files (e.g. OpenAPI) or ORD resource metadata without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
+ * Overlays enrich / patch resource definition files (e.g. OpenAPI) or ORD metadata without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
  *
  * Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
  * For producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.

@@ -78,7 +78,7 @@ In that case, distributing it as an `OrdOverlayResource` in a separate ORD Docum
 #### Prefer an ORD Document Resource when
 
 - the overlay is created by someone other than the original resource provider
-- the overlay patches ORD resource metadata, which requires this approach
+- the overlay patches ORD metadata, which requires this approach
 - the overlay is cross-cutting and applies to multiple resources
 - the overlay should be published independently from the lifecycle of one concrete API or Event resource
 - the overlay provider needs its own publication channel and cannot modify the target resource entry
@@ -184,6 +184,7 @@ The `purpose` field on the overlay's resource-definition entry can help aggregat
 
 - Overlays replace string values as complete values. If you need to refine a summary or description, compute the final string in the patch payload and apply it with `update` or `merge`.
 - The specification defines patch order within one overlay file. If multiple overlay documents apply to the same target, providers and aggregators should define and document a deterministic processing order outside this specification.
+- Permissions and processing order for [ORD-level merging](#ord-level-merging) are defined per ORD Aggregator, so the same overlays can produce different results on different aggregators.
 - For OData, prefer the dedicated selectors in this spec: `entityType`, `complexType`, `enumType`, `propertyType`, `entitySet`, `namespace`, `parameter`, and `returnType`.
 - In OData, `entityType` targets the type definition itself. EntityContainer-bound annotations such as `Capabilities` belong on `entitySet`; use `jsonPath` only when no dedicated selector fits.
 - OData patch values MUST use CSDL JSON annotation format (`@TermName` keys). After applying an overlay, validate the merged result with format-specific tooling before publication.

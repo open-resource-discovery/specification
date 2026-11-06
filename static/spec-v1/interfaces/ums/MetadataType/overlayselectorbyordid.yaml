@@ -18,7 +18,7 @@ spec:
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId'
       type: 'string'
-      description: "ORD ID of the ORD resource to patch, such as an API Resource, Event Resource, or Data Product.\nMUST be a valid [ORD ID](../../spec-v1/concepts/identifiers.md#ord-id).\n\nThe patch applies to the metadata of the ORD resource itself (e.g. `title`, `description`, `tags`),\nnot to a resource definition file that the resource references.\nThe resource type is derived from the ORD ID.\n\nAn overlay that uses this selector:\n- MUST use it in all of its patches, and MAY patch several ORD resources with different `ordId` values.\n- MUST set `ordOverlay` to `0.2`.\n- SHOULD omit `target`, because each patch identifies its own resource.\n- MUST be published as an [ORD Document Resource](#as-an-ord-document-resource), not attached as a `resourceDefinitions` entry."
+      description: "ORD ID of the [ORD resource](../../spec-v1/index.md#ord-resource) to patch, such as an API Resource, Event Resource, or Data Product.\nMUST be a valid [ORD ID](../../spec-v1/concepts/identifiers.md#ord-id).\n\nThe patch applies to the ORD metadata of the resource (e.g. `title`, `description`, `tags`),\nnot to a resource definition file that the resource references.\n\nSee [Patching ORD Metadata](#patching-ord-metadata) for the rules that apply to this selector."
       mandatory: true
       constraints:
         maxLength: 255

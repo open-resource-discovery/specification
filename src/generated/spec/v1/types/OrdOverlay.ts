@@ -103,6 +103,8 @@ export type OverlaySelector =
   | OverlaySelectorByRoot
   | OverlaySelectorByJsonPath
   | OverlaySelectorByORDID
+  | OverlaySelectorByGroupID
+  | OverlaySelectorByGroupTypeID
   | OverlaySelectorByOperation
   | OverlaySelectorByEntityType
   | OverlaySelectorByComplexType
@@ -199,7 +201,7 @@ export interface ORDOverlay {
   /**
    * Version of the ORD Overlay specification.
    * New overlays SHOULD use `0.2`.
-   * Overlays that use the [`ordId` selector](#overlay-selector-by-ord-id) MUST use `0.2`.
+   * Overlays that use [ORD-level selectors](#patching-ord-metadata) MUST use `0.2`.
    */
   ordOverlay: "0.1" | "0.2";
   /**
@@ -487,20 +489,31 @@ export interface OverlaySelectorByJsonPath {
 }
 export interface OverlaySelectorByORDID {
   /**
-   * ORD ID of the ORD resource to patch, such as an API Resource, Event Resource, or Data Product.
+   * ORD ID of the [ORD resource](../../spec-v1/index.md#ord-resource) to patch, such as an API Resource, Event Resource, or Data Product.
    * MUST be a valid [ORD ID](../../spec-v1/concepts/identifiers.md#ord-id).
    *
-   * The patch applies to the metadata of the ORD resource itself (e.g. `title`, `description`, `tags`),
+   * The patch applies to the ORD metadata of the resource (e.g. `title`, `description`, `tags`),
    * not to a resource definition file that the resource references.
-   * The resource type is derived from the ORD ID.
    *
-   * An overlay that uses this selector:
-   * - MUST use it in all of its patches, and MAY patch several ORD resources with different `ordId` values.
-   * - MUST set `ordOverlay` to `0.2`.
-   * - SHOULD omit `target`, because each patch identifies its own resource.
-   * - MUST be published as an [ORD Document Resource](#as-an-ord-document-resource), not attached as a `resourceDefinitions` entry.
+   * See [Patching ORD Metadata](#patching-ord-metadata) for the rules that apply to this selector.
    */
   ordId: string;
+}
+export interface OverlaySelectorByGroupID {
+  /**
+   * Group ID of the [Group](../../spec-v1/interfaces/Document.md#group) to patch.
+   *
+   * See [Patching ORD Metadata](#patching-ord-metadata) for the rules that apply to this selector.
+   */
+  groupId: string;
+}
+export interface OverlaySelectorByGroupTypeID {
+  /**
+   * Group Type ID of the [Group Type](../../spec-v1/interfaces/Document.md#group-type) to patch.
+   *
+   * See [Patching ORD Metadata](#patching-ord-metadata) for the rules that apply to this selector.
+   */
+  groupTypeId: string;
 }
 export interface OverlaySelectorByOperation {
   /**

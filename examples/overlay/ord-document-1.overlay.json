@@ -2,7 +2,7 @@
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.2",
   "ordId": "sap.foo:overlay:document-1-ord:v1",
-  "description": "Patches ORD resource metadata from document-1.json using the ordId selector.",
+  "description": "Patches ORD metadata from document-1.json using ORD-level selectors.",
   "visibility": "internal",
   "patches": [
     {
@@ -39,6 +39,24 @@
             "billing-events"
           ]
         }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "groupId": "sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue"
+      },
+      "data": {
+        "description": "Group description added by the overlay."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "groupTypeId": "sap.foo:groupTypeAbc"
+      },
+      "data": {
+        "description": "Group Type description added by the overlay."
       }
     }
   ]
