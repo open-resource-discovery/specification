@@ -61,6 +61,45 @@ properties:
         This overlay adds descriptive metadata for AI use-cases
         without modifying the original resource definition.
 
+  purpose:
+    type: string
+    x-feature-status: alpha
+    x-introduced-in-version: "1.17.1"
+    description: |-
+      Optional classification of the overlay's intent, i.e. *why* this overlay exists and what kind of
+      enrichment or adaptation it applies as a whole.
+
+      This complements the free-text `description` by providing a machine-readable value that registries
+      and tooling can filter, group, and report on (e.g. "show all AI-enrichment overlays for this resource").
+      It is purely informational and has no effect on patch application.
+
+      This reuses the same vocabulary as the ORD Document
+      [API Resource Definition](../../spec-v1/interfaces/Document.md#api-resource-definition) `purpose`, so that an
+      overlay's intent aligns with the `purpose` of the `resourceDefinitions` entry it is attached to.
+
+      MUST be a valid [Concept ID](../../spec-v1/concepts/identifiers.md#concept-id). The `ord:` namespace is
+      reserved for values standardized by the ORD specification itself; custom values MUST use a vendor- or
+      product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
+    anyOf: # Extensible enum. See https://opensource.zalando.com/restful-api-guidelines/#112
+      - type: string
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+)$
+        description: |-
+          Any valid [Concept ID](../../spec-v1/concepts/identifiers.md#concept-id).
+      - const: ord:ai-enrichment
+        description: |-
+          The overlay enriches the target with additional metadata specifically for AI/agent consumption.
+          This may include enhanced descriptions, examples, or semantic annotations that help AI systems
+          better understand and utilize the API or event resource.
+        x-introduced-in-version: "1.17.1"
+      - const: ord:agent-security-permissions
+        description: |-
+          The overlay describes the security permissions an AI agent requires to access the resource.
+          This allows agent runtimes and consent flows to discover and request the appropriate
+          authorizations before the agent invokes the resource.
+        x-introduced-in-version: "1.17.1"
+    examples:
+      - ord:ai-enrichment
+
   perspective:
     description: |-
       Overlay-specific [perspective](../../spec-v1/index.md#perspectives) that scopes where this overlay should be applied.
