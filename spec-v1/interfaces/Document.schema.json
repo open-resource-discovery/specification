@@ -6504,7 +6504,8 @@
             [
               "foo.bar:conceptName:localIdentifier"
             ]
-          ]
+          ],
+          "x-introduced-in-version": "1.17.1"
         },
         "partners": {
           "type": "array",

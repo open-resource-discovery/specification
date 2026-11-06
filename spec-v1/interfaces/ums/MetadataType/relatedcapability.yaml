@@ -9,20 +9,20 @@ spec:
   key:
     - 'id'
   visibility: 'public'
-  embedded: !!bool 'true'
+  embedded: true
   description: 'Defines a relation to another Capability (via its ORD ID).'
   metadataProperties:
     - name: 'id'
       type: 'guid'
-      mandatory: !!bool 'true'
-      unique: !!bool 'true'
+      mandatory: true
+      unique: true
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId_ID'
       type: 'guid'
       description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type."
-      mandatory: !!bool 'true'
+      mandatory: true
       constraints:
-        maxLength: !!int '255'
+        maxLength: 255
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
     - name: 'relationType'
       type: 'string'
@@ -32,9 +32,9 @@ spec:
     - propertyName: 'ordId'
       relatedTypeName: 'Capability'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      propertyBased: !!bool 'true'
+      propertyBased: true
       managedByProperty: 'ordId_ID'
       description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type."
-      mandatory: !!bool 'true'
+      mandatory: true
       reverseRelation:
         relationPropertyName: 'inverseRelatedCapabilities'
