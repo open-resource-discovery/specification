@@ -1358,19 +1358,19 @@ definitions:
             description: |-
               [OData Version 2.0](https://www.odata.org/documentation/odata-version-2-0/) API.
               An API Resource definition of type `edmx` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `oas-overlay-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: odata-v4
             description: |-
               [OData Version 4](https://www.odata.org/documentation/) API.
               An OData V4 API MUST be described via a Common Schema Definition Language (CSDL).
               An API Resource definition of type `edmx` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `edmx`, `csdl-json`, `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `oas-overlay-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: rest
             description: |-
               Generic [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API.
               Please not that while OData is also a REST API, the most precise/opinionated `apiProtocol` MUST be chosen.
               An API Resource definition of type `openapi-v3` (RECOMMENDED) or another appropriate option SHOULD be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `openapi-v2`, `openapi-v3`, `openapi-v3.1+`, `raml-v1`, `oas-overlay-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: graphql
             description: |-
               [GraphQL](https://graphql.org/) API.
