@@ -14,6 +14,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 ### Changed
 
 - Removed the requirement for case-insensitive ORD ID comparison, lookup and deduplication.
+- Allowed different resource visibility levels within the same Package under SAP Core. Resources and their definitions remain subject to their individual visibility rules.
 
 ### Added
 
