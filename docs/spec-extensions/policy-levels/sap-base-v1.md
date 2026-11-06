@@ -44,3 +44,9 @@ Usually SAP applications and services will use the more complete and opinionated
 - Although `Vendor` is technically not validated by a policy level, we need to ensure that within SAP we don't define the SAP vendor multiple times or reference it differently.
   - The SAP `Vendor` MUST NOT be defined by any SAP application or service, as this is done centrally.
   - The correct value for a SAP vendor reference is `sap:vendor:SAP:`.
+
+## Capabilities
+
+### Workflow Capabilities
+
+For workflow capabilities published by SAP applications and services, if the `definitions` property is provided, it SHOULD contain at least one definition with `type: "arazzo-v1"`. 
