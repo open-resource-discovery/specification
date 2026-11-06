@@ -11,6 +11,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Removed the requirement for case-insensitive ORD ID comparison, lookup and deduplication.
+
 ### Added
 
 - Added optional `correlationIds` to Vendors to correlate a vendor with identifiers in external systems using the existing ORD Correlation ID format.
