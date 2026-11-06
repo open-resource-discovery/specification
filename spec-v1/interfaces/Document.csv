@@ -384,6 +384,7 @@ System Type Integration Aspect,minSystemVersion,false,string
 Capability Integration Aspect Subset,skillName,true,string
 Vendor,ordId,true,string
 Vendor,title,true,string
+Vendor,correlationIds,false,array<string>
 Vendor,partners,false,array<string>
 Vendor,tags,false,array<string>
 Vendor,labels,false,Labels
