@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: !!bool 'false'
-  description: "An **Agent** provides a high-level description of an AI-powered autonomous system that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals.\n\nAn Agent can relate to specific entity types it works with, declare integration dependencies on external systems it requires, and expose its capabilities through APIs using protocols like A2A (Agent-to-Agent).\n\nAgents enable intelligent automation and decision-making within business processes by providing semantic understanding and context-aware capabilities beyond traditional API-based integrations.\n\nFor more details, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols.md)."
+  description: "An **Agent** provides a high-level description of an AI-powered autonomous system that can perform tasks, make decisions, and interact with users or other systems to achieve specific business goals.\n\nAn Agent can relate to specific entity types it works with, declare integration dependencies on external systems it requires, and expose its capabilities through APIs using protocols like A2A (Agent-to-Agent).\n\nAgents enable intelligent automation and decision-making within business processes by providing semantic understanding and context-aware capabilities beyond traditional API-based integrations.\n\nAn Agent can also declare which Capabilities it implements and which other Agents it delegates tasks to through typed, agent-owned relationships.\n\nFor more details, see [AI Agents and Protocols](../concepts/ai-agents-and-protocols.md)."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -254,9 +254,22 @@ spec:
       relatedTypeName: 'ExposedApiResourcesTarget'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       description: "Optional list of API Resources that expose the functionality of the agent. Typically using the A2A protocol, but other protocols are possible as well.\n\nMUST be a valid reference to an [API Resource](#api-resource) ORD ID."
+    - propertyName: 'relatedCapabilities'
+      relatedTypeName: 'RelatedCapability'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of Capability Resources related to the described Agent.\n\nUse `ord:implementsCapability` to identify a Capability whose ability or feature the Agent implements.\nThe publisher of the described Agent owns this declaration. Consumers MAY derive inverse navigation without a reciprocal property on the Capability.\n\nCapabilities consumed or required by the Agent MUST be described through `integrationDependencies` instead of duplicating that requirement here.\nIf `relationType` is omitted, the reference does not imply implementation or consumption."
+    - propertyName: 'relatedAgents'
+      relatedTypeName: 'RelatedAgent'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional list of Agent Resources related to the described Agent.\n\nUse `ord:delegatesTo` to declare that the described Agent delegates tasks or subtasks to the referenced Agent.\nThe publisher of the described Agent owns this declaration. Consumers MAY derive inverse navigation without requiring the referenced Agent to publish a matching relationship.\n\nRequirements on the referenced Agent's interaction APIs MUST be described through `integrationDependencies`.\nThis property identifies an agent-level role in the source Agent's behavior, not a duplicate list of required APIs or an assertion that a runtime connection exists.\nIf `relationType` is omitted, the reference does not imply delegation."
     - propertyName: 'integrationDependencies'
       relatedTypeName: 'IntegrationDependency'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
       propertyBased: !!bool 'true'
       managedByProperty: 'integrationDependencies_ID'
       description: "Optional list of integration dependencies that the agent relies on.\n\nMUST be a valid reference to an [Integration Dependency](#integration-dependency) ORD ID."
+    - propertyName: 'inverseRelatedAgents'
+      relatedTypeName: 'RelatedAgent'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: 'Published relationships that reference this Agent.'
+      mandatory: !!bool 'false'
