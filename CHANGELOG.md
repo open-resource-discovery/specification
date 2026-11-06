@@ -11,10 +11,13 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
+
 ### Changed
 
 - Removed the requirement for case-insensitive ORD ID comparison, lookup and deduplication.
 - Allowed different resource visibility levels within the same Package under SAP Core. Resources and their definitions remain subject to their individual visibility rules.
+- Documented `oas-overlay-v1` as a valid API Resource definition type for the `odata-v2`, `odata-v4`, and `rest` protocols, aligning the protocol definition-type lists with the OpenAPI Overlay support added in 1.17.0.
 
 ### Added
 
