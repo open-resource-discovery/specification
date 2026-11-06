@@ -581,6 +581,9 @@
                 "const": "Banking"
               },
               {
+                "const": "Building Materials"
+              },
+              {
                 "const": "Chemicals"
               },
               {
@@ -600,6 +603,9 @@
               },
               {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Fashion"
               },
               {
                 "const": "Financial Services"
@@ -645,6 +651,9 @@
               },
               {
                 "const": "Public Services"
+              },
+              {
+                "const": "Real Estate"
               },
               {
                 "const": "Retail"
@@ -1592,6 +1601,9 @@
                 "const": "Banking"
               },
               {
+                "const": "Building Materials"
+              },
+              {
                 "const": "Chemicals"
               },
               {
@@ -1611,6 +1623,9 @@
               },
               {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Fashion"
               },
               {
                 "const": "Financial Services"
@@ -1656,6 +1671,9 @@
               },
               {
                 "const": "Public Services"
+              },
+              {
+                "const": "Real Estate"
               },
               {
                 "const": "Retail"
@@ -2322,6 +2340,9 @@
                 "const": "Banking"
               },
               {
+                "const": "Building Materials"
+              },
+              {
                 "const": "Chemicals"
               },
               {
@@ -2341,6 +2362,9 @@
               },
               {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Fashion"
               },
               {
                 "const": "Financial Services"
@@ -2386,6 +2410,9 @@
               },
               {
                 "const": "Public Services"
+              },
+              {
+                "const": "Real Estate"
               },
               {
                 "const": "Retail"
@@ -3460,6 +3487,9 @@
                 "const": "Banking"
               },
               {
+                "const": "Building Materials"
+              },
+              {
                 "const": "Chemicals"
               },
               {
@@ -3479,6 +3509,9 @@
               },
               {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Fashion"
               },
               {
                 "const": "Financial Services"
@@ -3524,6 +3557,9 @@
               },
               {
                 "const": "Public Services"
+              },
+              {
+                "const": "Real Estate"
               },
               {
                 "const": "Retail"
@@ -4481,6 +4517,9 @@
                 "const": "Banking"
               },
               {
+                "const": "Building Materials"
+              },
+              {
                 "const": "Chemicals"
               },
               {
@@ -4500,6 +4539,9 @@
               },
               {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Fashion"
               },
               {
                 "const": "Financial Services"
@@ -4545,6 +4587,9 @@
               },
               {
                 "const": "Public Services"
+              },
+              {
+                "const": "Real Estate"
               },
               {
                 "const": "Retail"
@@ -5561,6 +5606,9 @@
                 "const": "Banking"
               },
               {
+                "const": "Building Materials"
+              },
+              {
                 "const": "Chemicals"
               },
               {
@@ -5580,6 +5628,9 @@
               },
               {
                 "const": "Engineering Construction and Operations"
+              },
+              {
+                "const": "Fashion"
               },
               {
                 "const": "Financial Services"
@@ -5625,6 +5676,9 @@
               },
               {
                 "const": "Public Services"
+              },
+              {
+                "const": "Real Estate"
               },
               {
                 "const": "Retail"
