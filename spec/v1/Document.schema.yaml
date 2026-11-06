@@ -4390,6 +4390,9 @@ definitions:
         examples:
           - SAP
 
+      correlationIds:
+        <<: *correlationIds
+
       partners:
         # Note: It's a bit unclear how and whether we actually use this
         type: array

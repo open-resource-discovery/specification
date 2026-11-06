@@ -15,6 +15,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Removed the requirement for case-insensitive ORD ID comparison, lookup and deduplication.
 
+### Added
+
+- Added optional `correlationIds` to Vendors to correlate a vendor with identifiers in external systems using the existing ORD Correlation ID format.
+
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
 ### Added
