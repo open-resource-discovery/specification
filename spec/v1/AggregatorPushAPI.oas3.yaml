@@ -17,9 +17,11 @@ info:
     push transport relies on.
     Commit then validates the complete staged content, including semantic rules and references.
     A commit publishes every valid publication unit and skips units with errors.
-    For a multi-context submission, a unit must be valid for every selected version or instance
-    to be accepted; an error for any context skips that unit for all of them and identifies the
-    affected context in the issue message. Accepted changes are atomic across the selection.
+    For a multi-context submission, identical shared content should be validated once and shared
+    content errors reported once. Authorization and checks against existing published contributions
+    cover every selected context. A unit must be valid for every selected version or instance to
+    be accepted; an error skips that unit for all of them. Only context-specific errors identify
+    the affected context in the issue message. Accepted changes are atomic across the selection.
     One ORD information object and every resource definition it declares form one publication
     unit, so a resource is never published without all of its definitions.
     An error that cannot be confined to one publication unit fails the entire commit. The
@@ -440,6 +442,11 @@ paths:
         in the same submission. Previously published definitions or Packages do not complete a
         staged resource. A staged definition that matches no staged resource is not published and
         is reported as a warning.
+        For a multi-context submission, validation results for identical shared content apply to
+        the entire selection and should be computed once. Shared content errors should be reported
+        once without an affected-context label. Authorization and checks against existing published
+        contributions cover each selected context; context-specific errors identify that context.
+        An error confined to one unit skips it for the entire selection.
 
         Outcome (https://open-resource-discovery.org/spec-v1/#commit-validation-and-outcome):
         An error that can be confined to one publication unit skips that complete unit. The
@@ -714,6 +721,8 @@ components:
         applies only to `system-instance`. All staged artifacts apply to every selected context.
         Version batches may omit `describedSystemVersion`; the aggregator constructs and validates
         each per-version representation using the selected version and its correlation IDs.
+        Validation of identical shared content may be reused across completed representations;
+        only identity-dependent or publication-state-dependent checks need separate evaluation.
         If provided, document-level version information must apply to every selected version.
         Shared documents must omit `describedSystemInstance` information that does not apply
         to every selected instance; the selection supplies each instance's identity.

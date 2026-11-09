@@ -102,6 +102,9 @@ For example:
 Every staged resource applies to both listed releases; resources with different version coverage need separate submissions, typically in `merge` mode.
 For metadata that applies unchanged to every release, prefer `system-type`.
 Shared version documents can omit `describedSystemVersion` at staging; the aggregator supplies each selected version and its correlation IDs before complete validation and publication.
+Shared document and definition content can be validated once for the selection, and shared content errors are reported once.
+Authorization and checks against existing published contributions still cover every selected target.
+Only context-specific errors need to identify the affected tenant or version.
 Resource contract versions remain unchanged.
 Authorization, partial acceptance, replacement, and concurrency follow the same per-context rules as tenant batches; unlisted releases are untouched.
 A `replace` submission still represents the complete contribution for each selected release.

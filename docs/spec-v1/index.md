@@ -361,13 +361,18 @@ For version submissions, staged documents MAY omit `describedSystemVersion` as a
 Before complete ORD validation and publication, the aggregator MUST construct a separate document representation for each selected version, supplying `describedSystemVersion.version` from that selection and its `correlationIds` when supplied.
 All other document content MUST remain unchanged; supplied document-level `describedSystemVersion` information MUST agree with every selected version.
 The completed representations MUST satisfy the ordinary ORD Document requirements, including the required described system version; this exception applies only to staging.
+Validation of identical content MAY be reused across the completed representations; only checks whose outcomes depend on the selected identity or existing publication state need to be performed separately.
 Resource contract versions inside the shared metadata MUST NOT be rewritten to the selected system release version.
 
 The provider stages each shared ORD Document and resource definition only once; the aggregator MUST apply the same accepted units to every selected version or instance.
 All staged metadata MUST be applicable to every selected context, including native resource-definition content and version-specific or instance-specific URLs or customizations.
 A shared document MUST omit `describedSystemInstance` information that does not apply to every selected instance; the submission selection supplies each instance's identity without changing the uploaded document.
 Detectable mismatches MUST be rejected at upload as described in [Staging](#staging), and context and authorization MUST be checked again for every selected context at commit.
-A publication unit MUST be valid for every selected context to be accepted; an error for any context skips that unit for all selected contexts and MUST identify the affected version or instance in the issue message.
+Validation results for identical shared content apply to the entire selection and SHOULD be computed once.
+Shared content errors SHOULD be reported once; they do not require identifying an affected version or instance.
+Authorization and checks against existing published contributions MUST cover every selected context.
+A publication unit MUST be valid for every selected context to be accepted; an error skips that unit for all selected contexts.
+Context-specific errors MUST identify the affected version or instance in the issue message.
 A submission-wide error for any selected context MUST reject the complete commit.
 All accepted changes and removals across the selected contexts MUST become discoverable atomically.
 
