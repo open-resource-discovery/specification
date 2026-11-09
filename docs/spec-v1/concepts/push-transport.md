@@ -49,13 +49,39 @@ To remove everything that the ORD provider has published in a publication contex
 Such an empty replacement removes only that ORD provider's contributions in that publication context.
 It also does not delete the aggregator's own record of the system version or system instance, which is outside the scope of the ORD push protocol.
 
+## Publishing Shared Metadata for Several Tenants
+
+When several tenants expose the same metadata, select them with `context.systemInstances` and upload the shared ORD Documents and native definitions once.
+Each entry uses the usual ORD `localId`, `globalId`, and `correlationIds` identity fields; supply at least one identity that onboarding can resolve and authorize.
+For example:
+
+```json
+{
+  "context": {
+    "perspective": "system-instance",
+    "systemInstances": [
+      { "localId": "tenant-42" },
+      { "localId": "tenant-43" }
+    ]
+  }
+}
+```
+
+Both tenants receive the same accepted units in one atomic commit.
+Use separate submissions when their metadata or definitions differ, and omit tenant-specific `describedSystemInstance` information from shared documents.
+A unit invalid for either tenant is skipped for both, with the affected tenant identified in the issue message.
+In `replace` mode, each listed tenant's contribution is replaced independently; unlisted tenants retain their contributions.
+An active batch blocks another submission that overlaps any of its tenants, even if the lists differ.
+Omitting the list selects one instance resolved from onboarding, never all authorized tenants.
+See [Publication Context and Removal](../index.md#publication-context-and-removal) for the normative rules.
+
 ## Combining Push and Pull
 
 An application or service can be described by several ORD providers.
 For example, one part can be submitted from a deployment pipeline through push transport, while another part is served through an ORD Provider API and retrieved through pull transport.
 This works the same way as an application that is described by several pull-based ORD providers.
 One technical ORD provider can publish through several separate onboardings, each with its own credentials and authorization boundary, as described in [Publication Context and Removal](../index.md#publication-context-and-removal).
-The aggregator resolves known versions and instances from onboarding; providers should omit those optional request selectors when the values are already known.
+The aggregator resolves a uniquely known version or instance from onboarding; providers should omit those optional request selectors when the selection is unambiguous.
 
 The contributions of these ORD providers must not overlap, because each ORD ID is described at most once within a perspective.
 A push submission, including one in `replace` mode, changes only the contribution of the submitting ORD provider.

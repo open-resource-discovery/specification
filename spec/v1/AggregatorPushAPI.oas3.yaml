@@ -17,6 +17,9 @@ info:
     push transport relies on.
     Commit then validates the complete staged content, including semantic rules and references.
     A commit publishes every valid publication unit and skips units with errors.
+    For a multi-instance submission, a unit must be valid for every selected instance to be
+    accepted; an error for any instance skips that unit for all of them and identifies the
+    affected instance in the issue message. Accepted changes are atomic across the selection.
     One ORD information object and every resource definition it declares form one publication
     unit, so a resource is never published without all of its definitions.
     An error that cannot be confined to one publication unit fails the entire commit. The
@@ -27,8 +30,9 @@ info:
     Every operation requires authentication.
     One ORD provider may publish for multiple separately onboarded applications or services.
     Each submission must resolve to one authorized publication target and perspective, based on
-    authoritative onboarding and authentication information. Each target has its own active
-    submission and replacement boundary, even when the ORD provider is the same.
+    authoritative onboarding and authentication information. A system-instance submission can
+    select several tenants through `context.systemInstances` and transmit shared artifacts once.
+    Each selected tenant retains its own active-submission and replacement boundary.
     The aggregator chooses the machine-to-machine authentication mechanism and communicates
     its API base URL and credentials during onboarding.
     An aggregator may rate limit any operation.
@@ -60,13 +64,15 @@ paths:
       operationId: createSubmission
       summary: Open a submission
       description: |-
-        Opens a submission for the authenticated ORD provider and one publication context.
+        Opens a submission for the authenticated ORD provider and its selected publication contexts.
+        Multiple contexts are allowed only for system instances of the same authorized target.
+        The same staged metadata applies to every selected instance.
         Content staged in the submission is not discoverable until it is committed and processed.
         The publication mode defaults to `merge`. The `replace` mode must be selected explicitly,
         because omission then removes prior contributions of this ORD provider in the
         publication context.
         An ORD provider can have at most one active (`open`, `validating`, or `rejected`) submission
-        per publication context. A request to open another one for that context is rejected with
+        per publication context. A request overlapping any selected instance is rejected with
         `409 Conflict`, and `activeSubmissionId` in the problem details identifies the active
         submission. A repeated request with the same `Idempotency-Key` returns the original
         submission instead.
@@ -88,6 +94,16 @@ paths:
                 value:
                   context:
                     perspective: system-type
+              sharedTenants:
+                summary: Publish shared metadata for two tenants with one upload set
+                value:
+                  context:
+                    perspective: system-instance
+                    systemInstances:
+                      - localId: tenant-42
+                        globalId: c6c80b52-ecc1-47f8-9303-0d55fb67fd41
+                        correlationIds: ["sap.cld:tenant:741234567"]
+                      - localId: tenant-43
               replace:
                 summary: Replace the ORD provider's contribution in this context
                 value:
@@ -112,7 +128,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "409":
           description: |-
-            Another submission is already active for this ORD provider and publication context,
+            Another submission is already active for this ORD provider in any selected publication context,
             or the idempotency key was reused with different request content. In the first case,
             `activeSubmissionId` identifies the active submission.
           content:
@@ -672,18 +688,22 @@ components:
     PublicationContext:
       type: object
       description: |-
-        Publication context of the submission. It must resolve to exactly one authorized
-        publication target and perspective.
+        Publication selection of the submission. It must resolve to exactly one authorized
+        publication target and perspective, with one or more instances for `system-instance`.
         Each credential identifies one onboarding and its authorized target. The aggregator
         resolves the target from authoritative onboarding and authentication information, so
         there is no request field for it. Creation is rejected if its context remains ambiguous.
-        Version and instance selectors are optional: known values are resolved from onboarding
+        Version and instance selectors are optional: a uniquely known context is resolved from onboarding
         without requiring the provider to repeat them. Providers should omit already-known values.
         Supplied selectors cannot override authoritative information or grant authority.
         One ORD provider may publish for multiple onboarded targets. The active-submission limit,
-        replacement, and tombstones apply separately per target and perspective.
-        `systemVersion` applies only to `system-version`, and `systemInstanceId` applies only to
-        `system-instance`.
+        replacement, and tombstones apply separately per target, perspective, and selected instance.
+        `systemVersion` applies only to `system-version`, and `systemInstances` applies only to
+        `system-instance`. All staged artifacts apply to every selected instance.
+        Shared documents must omit `describedSystemInstance` information that does not apply
+        to every selected instance; the selection supplies each instance's identity.
+        A supplied list is non-empty and must resolve to distinct authorized instances.
+        Omitting the list is allowed only when onboarding resolves exactly one instance.
         See https://open-resource-discovery.org/spec-v1/#publication-context-and-removal
       required: [perspective]
       additionalProperties: false
@@ -699,11 +719,18 @@ components:
           type: string
           minLength: 1
           description: Optional selector for system-version publication within the credential's onboarding. Omit when the aggregator knows the version. A supplied value must match authoritative onboarding permissions and cannot override them.
-        systemInstanceId:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: Optional aggregator-issued instance selector within the credential's onboarding. Omit when the aggregator knows the instance. A supplied value must match authoritative onboarding permissions and cannot override them.
+        systemInstances:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          description: |-
+            Optional instance selection using ORD identity fields. Each entry must resolve to
+            one distinct instance authorized by the credential's onboarding. Upload shared
+            ORD Documents and resource definitions once for all entries. The aggregator checks
+            aliases for duplicate instances and rejects conflicting or unauthorized identities.
+            Omit only when onboarding unambiguously identifies one instance.
+          items:
+            $ref: "#/components/schemas/SystemInstanceIdentity"
       allOf:
         - if:
             properties:
@@ -722,7 +749,40 @@ components:
             required: [perspective]
           then:
             not:
-              required: [systemInstanceId]
+              required: [systemInstances]
+    SystemInstanceIdentity:
+      type: object
+      description: |-
+        Identity of a selected system instance, using the same semantics and identifier bounds
+        as ORD Document `describedSystemInstance`. At least one non-empty identity is required.
+        All supplied identifiers must refer to the same instance. A `globalId` is assigned by
+        the responsible tenant authority and must not be invented by the provider; it is not
+        an arbitrary aggregator-internal instance ID.
+        See https://open-resource-discovery.org/spec-v1/interfaces/document#system-instance
+      additionalProperties: false
+      anyOf:
+        - required: [localId]
+        - required: [globalId]
+        - required: [correlationIds]
+      properties:
+        localId:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Instance ID local to the described system, equivalent to its local tenant ID.
+        globalId:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Globally unique and stable tenant ID assigned by the responsible tenant authority.
+        correlationIds:
+          type: array
+          minItems: 1
+          description: Correlation IDs that identify the same instance in other repositories.
+          items:
+            type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-\/]+):([a-zA-Z0-9._\-\/]+)$
+            maxLength: 255
     Submission:
       type: object
       required:

@@ -79,7 +79,9 @@ describe("Push OpenAPI 3.1 contract", () => {
           const context = {
             perspective,
             ...(version ? { systemVersion: "1.0.0" } : {}),
-            ...(instance ? { systemInstanceId: "tenant-42" } : {}),
+            ...(instance
+              ? { systemInstances: [{ localId: "tenant-42" }] }
+              : {}),
           };
           const valid =
             (!version || perspective === "system-version") &&
@@ -109,16 +111,94 @@ describe("Push OpenAPI 3.1 contract", () => {
       {},
       { perspective: "unknown" },
       { perspective: "system-version", systemVersion: "" },
-      { perspective: "system-instance", systemInstanceId: "" },
-      { perspective: "system-instance", systemInstanceId: "a".repeat(256) },
+      { perspective: "system-instance", systemInstances: [{ localId: "" }] },
+      {
+        perspective: "system-instance",
+        systemInstances: [{ localId: "a".repeat(256) }],
+      },
       { perspective: "system-type", target: "request-supplied-authority" },
     ])
       assert.equal(contextValidator(context), false);
     assert.ok(
       contextValidator({
         perspective: "system-instance",
-        systemInstanceId: "a".repeat(255),
+        systemInstances: [{ localId: "a".repeat(255) }],
       }),
+    );
+  });
+
+  it("accepts shared tenant batches using each ORD identity form", () => {
+    for (const publicationMode of ["merge", "replace"]) {
+      assert.ok(
+        requestValidator({
+          publicationMode,
+          context: {
+            perspective: "system-instance",
+            systemInstances: [
+              { localId: "tenant-42" },
+              { globalId: "c6c80b52-ecc1-47f8-9303-0d55fb67fd41" },
+              { correlationIds: ["sap.cld:tenant:741234567"] },
+              {
+                localId: "tenant-43",
+                globalId: "global-43",
+                correlationIds: ["sap.cld:tenant:43"],
+              },
+            ],
+          },
+        }),
+      );
+    }
+  });
+
+  it("rejects empty, malformed, duplicate, and legacy instance selections", () => {
+    for (const systemInstances of [
+      [],
+      [{}],
+      ["tenant-42"],
+      [{ localId: "" }],
+      [{ globalId: "" }],
+      [{ globalId: "a".repeat(256) }],
+      [{ correlationIds: [] }],
+      [{ correlationIds: ["invalid"] }],
+      [{ correlationIds: [`sap.cld:tenant:${"a".repeat(256)}`] }],
+      [{ localId: "tenant-42", extra: "unknown" }],
+      [{ localId: "tenant-42" }, { localId: "tenant-42" }],
+    ]) {
+      assert.equal(
+        contextValidator({ perspective: "system-instance", systemInstances }),
+        false,
+      );
+    }
+    assert.equal(
+      contextValidator({
+        perspective: "system-instance",
+        systemInstanceId: "tenant-42",
+      }),
+      false,
+    );
+  });
+
+  it("keeps instance identity bounds aligned with the ORD Document", () => {
+    const identity = openapi.components.schemas.SystemInstanceIdentity as {
+      properties: Record<
+        string,
+        { maxLength?: number; items?: { pattern?: string; maxLength?: number } }
+      >;
+    };
+    const instance = documentSchema.definitions.SystemInstance
+      .properties as typeof identity.properties;
+    for (const field of ["localId", "globalId"])
+      assert.equal(
+        identity.properties[field].maxLength,
+        instance[field].maxLength,
+      );
+    assert.equal(
+      identity.properties.correlationIds.items?.pattern,
+      instance.correlationIds.items?.pattern,
+    );
+    assert.equal(
+      identity.properties.correlationIds.items?.maxLength,
+      instance.correlationIds.items?.maxLength,
     );
   });
 

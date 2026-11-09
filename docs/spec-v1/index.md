@@ -172,6 +172,7 @@ See [Push Transport Guidance](./concepts/push-transport.md) for publication patt
 
 - No provider API has to be hosted, protected, patched, and monitored, which reduces TCO and maintenance
 - Changes can be published as soon as they occur
+- Shared metadata can be uploaded once for several tenants
 - Direct feedback on validation errors through submission issues
 - Accepted publication units from several ORD Documents become discoverable atomically
 - `replace` mode lets the aggregator derive removals without tombstones
@@ -187,7 +188,7 @@ See [Push Transport Guidance](./concepts/push-transport.md) for publication patt
 
 A provider publishes through a submission that collects ORD Documents and resource definitions for joint validation and publication:
 
-1. The provider opens a submission for one [publication context](#publication-context-and-removal), using the default `merge` publication mode or selecting `replace`.
+1. The provider opens a submission for its selected [publication contexts](#publication-context-and-removal), using the default `merge` publication mode or selecting `replace`.
 2. The provider stages one or more ORD Documents and their resource definitions through separate, idempotent requests.
 3. The provider commits the submission, which freezes the staged content as the staged revision.
 4. The aggregator validates the staged revision asynchronously and decides which publication units it accepts.
@@ -318,25 +319,46 @@ The problem details of a `410 Gone` response MUST state the reason: `expired` wh
 
 #### Publication Context and Removal
 
-Each submission belongs to one ORD provider, which the aggregator determines from the authenticated credential, and to exactly one publication context.
+Each submission belongs to one ORD provider, which the aggregator determines from the authenticated credential, and selects one or more publication contexts.
+Multiple contexts are permitted only for system instances of the same authorized target, as described below.
 The aggregator determines the ORD provider identity from authoritative onboarding state.
 How it assigns this identity and groups onboardings of the same technical ORD provider is implementation-specific.
 Each credential MUST identify exactly one onboarding and its authorized publication target.
 The same technical ORD provider MAY have several onboardings, each with its own credentials and authorization boundary; authority from one onboarding MUST NOT grant access to another.
 
-The **publication context** consists of one authorized publication target and one [perspective](#perspectives), including any required system version or aggregator-issued system instance ID.
+The **publication context** consists of one authorized publication target and one [perspective](#perspectives), including any required system version or resolved system instance identity.
 The aggregator resolves the target from authoritative onboarding and authentication information, so the request's `context` object has no field for it.
 An ORD provider MAY publish for multiple separately onboarded applications or services, but each submission MUST resolve to exactly one authorized target.
 
 The provider MUST specify `perspective` when it creates a submission, even if its credential is restricted to one perspective.
-The request fields `systemVersion` and `systemInstanceId` are optional selectors within that onboarding.
+The request fields `systemVersion` and `systemInstances` are optional selectors within that onboarding.
+`systemVersion` MUST be used only with `system-version`, and `systemInstances` MUST be used only with `system-instance`.
 The aggregator MUST resolve known values from authoritative onboarding information without requiring the provider to repeat them.
-The provider SHOULD omit a selector when the aggregator already knows the applicable value.
+The provider SHOULD omit a selector when onboarding already resolves exactly one applicable version or instance.
 A supplied selector MUST NOT override authoritative information or establish authority; the aggregator MUST reject a conflicting or unauthorized value.
 If the authorized context remains ambiguous after resolving the optional selectors, the aggregator MUST reject creation rather than choose an arbitrary version or instance or infer it from document metadata.
 All staged ORD Documents MUST describe the submission's perspective and target; a submission MUST NOT mix perspectives or targets.
 The aggregator MUST verify that the staged ORD Documents match the authorized publication context.
 Because the same ORD ID can legitimately occur in different perspectives, scoping each submission to one perspective and one target keeps validation, replacement, and removal unambiguous.
+
+For `system-instance`, the provider MAY supply a non-empty `context.systemInstances` list to publish the same metadata for several tenants in one submission.
+Each entry uses the ORD [System Instance](./interfaces/Document.md#system-instance) identity fields `localId`, `globalId`, and `correlationIds`, with the same meanings and identifier bounds as `describedSystemInstance`.
+At least one non-empty identity MUST be supplied per entry; all identifiers in an entry MUST identify the same instance.
+The `globalId` is assigned by the responsible tenant authority and MUST NOT be invented by the provider or interpreted as an arbitrary aggregator-internal instance ID.
+The aggregator MUST resolve every entry to a distinct instance authorized within the credential's onboarding and MUST reject creation if any entry is conflicting, unauthorized, ambiguous, or duplicates another resolved instance, including through different aliases.
+Omitting `systemInstances` MUST resolve to exactly one instance from onboarding; omission MUST NOT implicitly select all authorized tenants.
+The resolved instance selection MUST remain fixed for the lifetime of the submission.
+
+The provider stages each shared ORD Document and resource definition only once; the aggregator MUST apply the same accepted units to every selected instance.
+All staged metadata MUST be applicable to every selected instance, including native resource-definition content and instance-specific URLs or customizations.
+A shared document MUST omit `describedSystemInstance` information that does not apply to every selected instance; the submission selection supplies each instance's identity without changing the uploaded document.
+Detectable mismatches MUST be rejected at upload as described in [Staging](#staging), and context and authorization MUST be checked again for every selected instance at commit.
+A publication unit MUST be valid for every selected instance to be accepted; an error for any instance skips that unit for all selected instances and MUST identify the affected instance in the issue message.
+A submission-wide error for any selected instance MUST reject the complete commit.
+All accepted changes and removals across the selected instances MUST become discoverable atomically.
+
+Replacement and tombstones MUST be evaluated separately against the provider's contribution in each selected instance's publication context.
+An instance omitted from `systemInstances` MUST NOT be changed or removed by the submission, including in `replace` mode.
 
 Several ORD providers can together describe one application or service, and each of them can use push or [pull transport](#pull-transport).
 Their contributions MUST NOT overlap, as already required by [ORD ID uniqueness](#ord-id-uniqueness-and-aggregation) within a perspective.
@@ -370,14 +392,16 @@ Request data MUST NOT establish authority to change a contribution; the aggregat
 
 An ORD provider MUST NOT have more than one active submission for the same publication context.
 A submission is active while it is `open`, `validating`, or `rejected`.
-Because the publication context includes the resolved target, perspective, and any required system version or system instance ID, the same ORD provider MAY have active submissions for different onboarded targets at the same time.
-If the ORD provider requests another submission for a context that already has an active one, the aggregator MUST reject the request with `409 Conflict` and identify the active submission in the problem details.
+Because the publication context includes the resolved target, perspective, and any required system version or resolved system instance identity, the same ORD provider MAY have active submissions for different onboarded targets at the same time.
+A multi-instance submission occupies the active-submission slot of every selected instance.
+The aggregator MUST check and reserve these slots atomically at creation.
+If the ORD provider requests another submission for any context that already has an active one, the aggregator MUST reject the request with `409 Conflict` and identify the active submission in the problem details.
 The provider can then continue, commit, or discard the active submission.
 A repeated creation request with the same `Idempotency-Key` returns the original submission instead.
 
 This rule ensures that an ORD provider's commits to one publication context are applied in order.
 Without it, a `replace` submission opened before a `merge` hot fix and committed after it would remove that hot fix.
-Submissions for different publication contexts, or from different ORD providers, do not conflict, because their contributions do not overlap.
+Submissions with disjoint publication contexts, or from different ORD providers, do not conflict, because their contributions do not overlap.
 
 #### Status and Issues
 

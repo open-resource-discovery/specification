@@ -19,6 +19,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   The Package of each staged resource must be staged in the same submission.
   Definition entries cover Entity Types, Capabilities, and Overlays as well as API and Event Resources.
   The OpenAPI schema enforces perspective-specific context fields and documents unsupported request formats at creation.
+  Shared system-instance metadata can be transmitted once for several tenants selected through `context.systemInstances`, using ORD `localId`, `globalId`, and `correlationIds`.
+  Replacement remains scoped to each selected tenant, and overlapping active batches are rejected.
   Known version and instance selectors are resolved from trusted onboarding without requiring repeated request values.
   Detectable document-context mismatches are rejected at upload.
   Removing a Package still required by retained resources rejects the complete replacement.
