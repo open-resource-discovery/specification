@@ -320,7 +320,7 @@ The problem details of a `410 Gone` response MUST state the reason: `expired` wh
 #### Publication Context and Removal
 
 Each submission belongs to one ORD provider, which the aggregator determines from the authenticated credential, and selects one or more publication contexts.
-Multiple contexts are permitted only for system instances of the same authorized target, as described below.
+Multiple contexts are permitted only for system versions or system instances of the same authorized target, as described below.
 The aggregator determines the ORD provider identity from authoritative onboarding state.
 How it assigns this identity and groups onboardings of the same technical ORD provider is implementation-specific.
 Each credential MUST identify exactly one onboarding and its authorized publication target.
@@ -331,8 +331,8 @@ The aggregator resolves the target from authoritative onboarding and authenticat
 An ORD provider MAY publish for multiple separately onboarded applications or services, but each submission MUST resolve to exactly one authorized target.
 
 The provider MUST specify `perspective` when it creates a submission, even if its credential is restricted to one perspective.
-The request fields `systemVersion` and `systemInstances` are optional selectors within that onboarding.
-`systemVersion` MUST be used only with `system-version`, and `systemInstances` MUST be used only with `system-instance`.
+The request fields `systemVersions` and `systemInstances` are optional selectors within that onboarding.
+`systemVersions` MUST be used only with `system-version`, and `systemInstances` MUST be used only with `system-instance`.
 The aggregator MUST resolve known values from authoritative onboarding information without requiring the provider to repeat them.
 The provider SHOULD omit a selector when onboarding already resolves exactly one applicable version or instance.
 A supplied selector MUST NOT override authoritative information or establish authority; the aggregator MUST reject a conflicting or unauthorized value.
@@ -349,16 +349,30 @@ The aggregator MUST resolve every entry to a distinct instance authorized within
 Omitting `systemInstances` MUST resolve to exactly one instance from onboarding; omission MUST NOT implicitly select all authorized tenants.
 The resolved instance selection MUST remain fixed for the lifetime of the submission.
 
-The provider stages each shared ORD Document and resource definition only once; the aggregator MUST apply the same accepted units to every selected instance.
-All staged metadata MUST be applicable to every selected instance, including native resource-definition content and instance-specific URLs or customizations.
-A shared document MUST omit `describedSystemInstance` information that does not apply to every selected instance; the submission selection supplies each instance's identity without changing the uploaded document.
-Detectable mismatches MUST be rejected at upload as described in [Staging](#staging), and context and authorization MUST be checked again for every selected instance at commit.
-A publication unit MUST be valid for every selected instance to be accepted; an error for any instance skips that unit for all selected instances and MUST identify the affected instance in the issue message.
-A submission-wide error for any selected instance MUST reject the complete commit.
-All accepted changes and removals across the selected instances MUST become discoverable atomically.
+For `system-version`, the provider MAY supply a non-empty `context.systemVersions` list to publish the same metadata for several specific releases in one submission.
+Each entry uses the ORD [System Version](./interfaces/Document.md#system-version) fields `version` and optional `correlationIds`.
+The `version` MUST be an exact Semantic Versioning 2.0.0 value, and supplied correlation IDs MUST identify that same release.
+The aggregator MUST authorize every version within the credential's onboarding and reject conflicting identifiers, repeated versions even when their correlation IDs differ, and versions that differ only in build metadata, as required by [Static Perspective Resolution](./concepts/perspectives.md#static-perspective-resolution).
+Omitting `systemVersions` MUST resolve to exactly one version from onboarding; omission MUST NOT implicitly select all authorized versions.
+The resolved version selection MUST remain fixed for the lifetime of the submission.
+Version batching is useful for resources available in a selected set of releases; metadata that applies unchanged to every system version SHOULD use `system-type`.
 
-Replacement and tombstones MUST be evaluated separately against the provider's contribution in each selected instance's publication context.
-An instance omitted from `systemInstances` MUST NOT be changed or removed by the submission, including in `replace` mode.
+For version submissions, staged documents MAY omit `describedSystemVersion` as a push transport optimization.
+Before complete ORD validation and publication, the aggregator MUST construct a separate document representation for each selected version, supplying `describedSystemVersion.version` from that selection and its `correlationIds` when supplied.
+All other document content MUST remain unchanged; supplied document-level `describedSystemVersion` information MUST agree with every selected version.
+The completed representations MUST satisfy the ordinary ORD Document requirements, including the required described system version; this exception applies only to staging.
+Resource contract versions inside the shared metadata MUST NOT be rewritten to the selected system release version.
+
+The provider stages each shared ORD Document and resource definition only once; the aggregator MUST apply the same accepted units to every selected version or instance.
+All staged metadata MUST be applicable to every selected context, including native resource-definition content and version-specific or instance-specific URLs or customizations.
+A shared document MUST omit `describedSystemInstance` information that does not apply to every selected instance; the submission selection supplies each instance's identity without changing the uploaded document.
+Detectable mismatches MUST be rejected at upload as described in [Staging](#staging), and context and authorization MUST be checked again for every selected context at commit.
+A publication unit MUST be valid for every selected context to be accepted; an error for any context skips that unit for all selected contexts and MUST identify the affected version or instance in the issue message.
+A submission-wide error for any selected context MUST reject the complete commit.
+All accepted changes and removals across the selected contexts MUST become discoverable atomically.
+
+Replacement and tombstones MUST be evaluated separately against the provider's contribution in each selected version's or instance's publication context.
+A version or instance omitted from the applicable selection list MUST NOT be changed or removed by the submission, including in `replace` mode.
 
 Several ORD providers can together describe one application or service, and each of them can use push or [pull transport](#pull-transport).
 Their contributions MUST NOT overlap, as already required by [ORD ID uniqueness](#ord-id-uniqueness-and-aggregation) within a perspective.
@@ -393,7 +407,7 @@ Request data MUST NOT establish authority to change a contribution; the aggregat
 An ORD provider MUST NOT have more than one active submission for the same publication context.
 A submission is active while it is `open`, `validating`, or `rejected`.
 Because the publication context includes the resolved target, perspective, and any required system version or resolved system instance identity, the same ORD provider MAY have active submissions for different onboarded targets at the same time.
-A multi-instance submission occupies the active-submission slot of every selected instance.
+A multi-context submission occupies the active-submission slot of every selected version or instance.
 The aggregator MUST check and reserve these slots atomically at creation.
 If the ORD provider requests another submission for any context that already has an active one, the aggregator MUST reject the request with `409 Conflict` and identify the active submission in the problem details.
 The provider can then continue, commit, or discard the active submission.

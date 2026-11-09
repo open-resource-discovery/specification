@@ -90,6 +90,8 @@ Only an error that cannot be confined to one publication unit fails the complete
 Each submission belongs to the ORD provider identified by its credential and selects one authorized target and one perspective.
 For `system-instance`, a `context.systemInstances` list can select several tenants of that target, using ORD `localId`, `globalId`, and `correlationIds`.
 This lets the provider stage identical metadata once for all selected tenants, while each tenant retains its own publication context for replacement and concurrency.
+For `system-version`, `context.systemVersions` provides the same optimization for selected releases, using `version` and optional `correlationIds` objects.
+The aggregator completes each version's document representation with its selected system version before ORD validation and publication.
 The aggregator resolves the target from onboarding and authentication information rather than from a request field, because request data must not establish authority.
 The aggregator records the ORD provider and publication context of every published contribution, so that a later `replace` can identify that ORD provider's complete contribution.
 
@@ -102,7 +104,7 @@ A skipped unit is not treated as omitted, so an error never removes previously p
 ### Concurrent Submissions
 
 An ORD provider can have at most one active submission per publication context.
-For a multi-instance submission, this applies to every selected instance, so overlapping batches conflict.
+For a multi-context submission, this applies to every selected version or instance, so overlapping batches conflict.
 This serializes its commits to that context: without it, a `replace` submission opened before a `merge` hot fix and committed after it would remove that hot fix.
 Optimistic concurrency control, such as a base revision checked at commit, was not chosen, because it adds state to every submission for a case that serialization already prevents.
 

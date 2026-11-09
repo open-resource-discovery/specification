@@ -21,6 +21,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   The OpenAPI schema enforces perspective-specific context fields and documents unsupported request formats at creation.
   Shared system-instance metadata can be transmitted once for several tenants selected through `context.systemInstances`, using ORD `localId`, `globalId`, and `correlationIds`.
   Replacement remains scoped to each selected tenant, and overlapping active batches are rejected.
+  The same optimization supports selected releases through `context.systemVersions` objects with `version` and optional `correlationIds`, replacing the alpha `systemVersion` selector.
+  Both lists are restricted to their matching perspective; each completed version representation receives its selected system version before validation and publication.
   Known version and instance selectors are resolved from trusted onboarding without requiring repeated request values.
   Detectable document-context mismatches are rejected at upload.
   Removing a Package still required by retained resources rejects the complete replacement.

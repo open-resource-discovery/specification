@@ -75,6 +75,38 @@ An active batch blocks another submission that overlaps any of its tenants, even
 Omitting the list selects one instance resolved from onboarding, never all authorized tenants.
 See [Publication Context and Removal](../index.md#publication-context-and-removal) for the normative rules.
 
+## Publishing Shared Metadata for Selected System Versions
+
+Use `context.systemVersions` when resources and their definitions apply unchanged to several specific releases, but not to every release.
+Each entry contains an exact Semantic Versioning `version` and optional `correlationIds` that identify that release.
+For example:
+
+```json
+{
+  "context": {
+    "perspective": "system-version",
+    "systemVersions": [
+      {
+        "version": "1.2.0",
+        "correlationIds": ["example.product:release:release-120"]
+      },
+      {
+        "version": "1.2.1",
+        "correlationIds": ["example.product:release:release-121"]
+      }
+    ]
+  }
+}
+```
+
+Every staged resource applies to both listed releases; resources with different version coverage need separate submissions, typically in `merge` mode.
+For metadata that applies unchanged to every release, prefer `system-type`.
+Shared version documents can omit `describedSystemVersion` at staging; the aggregator supplies each selected version and its correlation IDs before complete validation and publication.
+Resource contract versions remain unchanged.
+Authorization, partial acceptance, replacement, and concurrency follow the same per-context rules as tenant batches; unlisted releases are untouched.
+A `replace` submission still represents the complete contribution for each selected release.
+The JSON Schema permits `systemVersions` only for `system-version` and `systemInstances` only for `system-instance`, so the lists cannot be combined.
+
 ## Combining Push and Pull
 
 An application or service can be described by several ORD providers.

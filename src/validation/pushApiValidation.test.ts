@@ -78,7 +78,7 @@ describe("Push OpenAPI 3.1 contract", () => {
         it(`${perspective}, version=${version}, instance=${instance}`, () => {
           const context = {
             perspective,
-            ...(version ? { systemVersion: "1.0.0" } : {}),
+            ...(version ? { systemVersions: [{ version: "1.0.0" }] } : {}),
             ...(instance
               ? { systemInstances: [{ localId: "tenant-42" }] }
               : {}),
@@ -110,7 +110,7 @@ describe("Push OpenAPI 3.1 contract", () => {
     for (const context of [
       {},
       { perspective: "unknown" },
-      { perspective: "system-version", systemVersion: "" },
+      { perspective: "system-version", systemVersions: [{ version: "" }] },
       { perspective: "system-instance", systemInstances: [{ localId: "" }] },
       {
         perspective: "system-instance",
@@ -175,6 +175,80 @@ describe("Push OpenAPI 3.1 contract", () => {
         systemInstanceId: "tenant-42",
       }),
       false,
+    );
+  });
+
+  it("accepts exact system versions with optional release correlation IDs", () => {
+    for (const publicationMode of ["merge", "replace"]) {
+      assert.ok(
+        requestValidator({
+          publicationMode,
+          context: {
+            perspective: "system-version",
+            systemVersions: [
+              {
+                version: "1.2.0",
+                correlationIds: ["example.product:release:release-120"],
+              },
+              { version: "1.2.1" },
+              { version: "2.0.0-rc.1" },
+            ],
+          },
+        }),
+      );
+    }
+  });
+
+  it("rejects invalid version batches and the legacy singular selector", () => {
+    for (const systemVersions of [
+      [],
+      [{}],
+      ["1.2.0"],
+      [{ correlationIds: ["example.product:release:120"] }],
+      [{ version: "1.2" }],
+      [{ version: "01.2.0" }],
+      [{ version: "^1.2.0" }],
+      [{ version: "1.2.0", correlationIds: ["invalid"] }],
+      [
+        {
+          version: "1.2.0",
+          correlationIds: ["example.product:release:".concat("a".repeat(256))],
+        },
+      ],
+      [{ version: "1.2.0", localId: "release-120" }],
+      [{ version: "1.2.0" }, { version: "1.2.0" }],
+    ]) {
+      assert.equal(
+        contextValidator({ perspective: "system-version", systemVersions }),
+        false,
+      );
+    }
+    assert.equal(
+      contextValidator({
+        perspective: "system-version",
+        systemVersion: "1.2.0",
+      }),
+      false,
+    );
+  });
+
+  it("keeps version identity validation aligned with the ORD Document", () => {
+    const identity = openapi.components.schemas.SystemVersionIdentity as {
+      properties: Record<
+        string,
+        { pattern?: string; items?: { pattern?: string; maxLength?: number } }
+      >;
+    };
+    const version = documentSchema.definitions.SystemVersion
+      .properties as typeof identity.properties;
+    assert.equal(identity.properties.version.pattern, version.version.pattern);
+    assert.equal(
+      identity.properties.correlationIds.items?.pattern,
+      version.correlationIds.items?.pattern,
+    );
+    assert.equal(
+      identity.properties.correlationIds.items?.maxLength,
+      version.correlationIds.items?.maxLength,
     );
   });
 

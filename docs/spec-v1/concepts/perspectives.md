@@ -225,6 +225,7 @@ Content that is independent of systems, rather than only independent of system v
 If the system has dynamic metadata, the provider MUST publish a complete `system-instance` perspective.
 
 If the `system-version` perspective is used, the described version MUST be provided via the ORD `describedSystemVersion`.`version` property.
+For [push submissions](../index.md#publication-context-and-removal), the staged document MAY omit `describedSystemVersion`; the aggregator supplies it from the selected version before complete ORD validation and publication.
 For the `system-type` perspective, the version property is NOT required as this perspective is version-independent.
 Ideally, ORD providers SHOULD define the `describedSystemVersion`.`version` property on both the `system-version` and `system-instance` perspectives.
 

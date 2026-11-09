@@ -278,6 +278,8 @@ export interface SystemVersion {
    * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
    *
    * MUST be provided if the ORD document is `perspective`: `system-version`.
+   * As a [push staging optimization](../index.md#publication-context-and-removal), the staged document MAY omit
+   * `describedSystemVersion`; the aggregator MUST supply the selected version before complete ORD validation and publication.
    *
    * For continuous-delivery systems, the version MAY be fixed to the same value, e.g. `1.0.0`, but be aware that phased rollouts may benefit from a more precise versioning like adding a build number.
    */
