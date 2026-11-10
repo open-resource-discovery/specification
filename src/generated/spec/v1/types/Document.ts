@@ -833,6 +833,7 @@ export interface ApiResource {
     | "Agribusiness"
     | "Automotive"
     | "Banking"
+    | "Building Materials"
     | "Chemicals"
     | "Consumer Industries"
     | "Consumer Products"
@@ -840,6 +841,7 @@ export interface ApiResource {
     | "Discrete Industries"
     | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Fashion"
     | "Financial Services"
     | "Future Cities"
     | "Healthcare"
@@ -855,6 +857,7 @@ export interface ApiResource {
     | "Professional Services"
     | "Public Sector"
     | "Public Services"
+    | "Real Estate"
     | "Retail"
     | "Service Industries"
     | "Sports and Entertainment"
@@ -1733,6 +1736,7 @@ export interface EventResource {
     | "Agribusiness"
     | "Automotive"
     | "Banking"
+    | "Building Materials"
     | "Chemicals"
     | "Consumer Industries"
     | "Consumer Products"
@@ -1740,6 +1744,7 @@ export interface EventResource {
     | "Discrete Industries"
     | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Fashion"
     | "Financial Services"
     | "Future Cities"
     | "Healthcare"
@@ -1755,6 +1760,7 @@ export interface EventResource {
     | "Professional Services"
     | "Public Sector"
     | "Public Services"
+    | "Real Estate"
     | "Retail"
     | "Service Industries"
     | "Sports and Entertainment"
@@ -2569,6 +2575,7 @@ export interface Capability {
     | "Agribusiness"
     | "Automotive"
     | "Banking"
+    | "Building Materials"
     | "Chemicals"
     | "Consumer Industries"
     | "Consumer Products"
@@ -2576,6 +2583,7 @@ export interface Capability {
     | "Discrete Industries"
     | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Fashion"
     | "Financial Services"
     | "Future Cities"
     | "Healthcare"
@@ -2591,6 +2599,7 @@ export interface Capability {
     | "Professional Services"
     | "Public Sector"
     | "Public Services"
+    | "Real Estate"
     | "Retail"
     | "Service Industries"
     | "Sports and Entertainment"
@@ -3005,6 +3014,7 @@ export interface DataProduct {
     | "Agribusiness"
     | "Automotive"
     | "Banking"
+    | "Building Materials"
     | "Chemicals"
     | "Consumer Industries"
     | "Consumer Products"
@@ -3012,6 +3022,7 @@ export interface DataProduct {
     | "Discrete Industries"
     | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Fashion"
     | "Financial Services"
     | "Future Cities"
     | "Healthcare"
@@ -3027,6 +3038,7 @@ export interface DataProduct {
     | "Professional Services"
     | "Public Sector"
     | "Public Services"
+    | "Real Estate"
     | "Retail"
     | "Service Industries"
     | "Sports and Entertainment"
@@ -3451,6 +3463,7 @@ export interface Agent {
     | "Agribusiness"
     | "Automotive"
     | "Banking"
+    | "Building Materials"
     | "Chemicals"
     | "Consumer Industries"
     | "Consumer Products"
@@ -3458,6 +3471,7 @@ export interface Agent {
     | "Discrete Industries"
     | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Fashion"
     | "Financial Services"
     | "Future Cities"
     | "Healthcare"
@@ -3473,6 +3487,7 @@ export interface Agent {
     | "Professional Services"
     | "Public Sector"
     | "Public Services"
+    | "Real Estate"
     | "Retail"
     | "Service Industries"
     | "Sports and Entertainment"
@@ -4134,6 +4149,16 @@ export interface Vendor {
    */
   title: string;
   /**
+   * Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).
+   *
+   * They express an "identity" / "equals" / "mappable" relationship to the target ID.
+   *
+   * If a "part of" relationship needs to be expressed, use the `partOfGroups` assignment instead.
+   *
+   * MUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id).
+   */
+  correlationIds?: string[];
+  /**
    * Optional list of partner vendors, referenced through their ORD ID.
    *
    * MUST be a valid reference to a [Vendor](#vendor) ORD ID.
@@ -4433,6 +4458,7 @@ export interface Package {
     | "Agribusiness"
     | "Automotive"
     | "Banking"
+    | "Building Materials"
     | "Chemicals"
     | "Consumer Industries"
     | "Consumer Products"
@@ -4440,6 +4466,7 @@ export interface Package {
     | "Discrete Industries"
     | "Energy and Natural Resources"
     | "Engineering Construction and Operations"
+    | "Fashion"
     | "Financial Services"
     | "Future Cities"
     | "Healthcare"
@@ -4455,6 +4482,7 @@ export interface Package {
     | "Professional Services"
     | "Public Sector"
     | "Public Services"
+    | "Real Estate"
     | "Retail"
     | "Service Industries"
     | "Sports and Entertainment"

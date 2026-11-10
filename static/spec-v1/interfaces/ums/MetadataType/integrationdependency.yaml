@@ -9,63 +9,63 @@ spec:
   key:
     - 'id'
   visibility: 'public'
-  embedded: !!bool 'false'
+  embedded: false
   description: "An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.\nThe purpose could be to enable a certain feature or integration scenario, but it could also be a mandatory prerequisite for the described system to work.\n\nThe integration dependency includes a list of individual **aspects** that the integration consists of.\nAspects are an \"ingredient\" for the integration scenario (and are logically combined with AND condition).\nEach aspect can express alternatives (OR condition) on what API and event resources can be used to achieve the same outcome.\n\nThe direction of connection establishment, data flow is not directly implied and needs to be inferred from the referenced resources.\n\nIt is not in scope for the Integration Dependency to describe scenarios that external consumers have with the own exposed resources.\nThis would overstep the boundary of self-description.\n\nIf an integration scenario consists of two sides integration with each other, each need to describe its own part in it as an Integration Dependency.\nTherefore, if an integration with multiple types of systems need to be setup, this SHOULD be separated into distinct Integration Dependencies.\n\nAn integration dependency is also not meant to describe a bigger process.\nInstead it focuses on the technical necessaries to create an integration for one particular purpose.\n\nTo learn more about the concept, see [Integration Dependency](../concepts/integration-dependency)."
   metadataProperties:
     - name: 'id'
       type: 'guid'
-      mandatory: !!bool 'true'
-      unique: !!bool 'true'
+      mandatory: true
+      unique: true
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'ordId'
       type: 'string'
       description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type."
-      mandatory: !!bool 'true'
+      mandatory: true
       constraints:
-        maxLength: !!int '255'
+        maxLength: 255
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(integrationDependency):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
     - name: 'localId'
       type: 'string'
       description: "The locally unique ID under which this resource can be looked up / resolved in the described system itself.\nUnlike the ORD ID it's not globally unique, but it may be useful to document the original ID / technical name.\n\nIt MAY also be used as the `<resourceName>` fragment in the ORD ID, IF it can fulfill the charset and length limitations within the ORD ID.\nBut since this is not always possible, no assumptions MUST be made about the local ID being the same as the `<resourceName>` fragment in the ORD ID."
       constraints:
-        maxLength: !!int '255'
+        maxLength: 255
     - name: 'correlationIds'
       type: 'string'
-      array: !!bool 'true'
+      array: true
       description: "Correlation IDs can be used to create a reference to related data in other repositories (especially to the system of record).\n\nThey express an \"identity\" / \"equals\" / \"mappable\" relationship to the target ID.\n\nIf a \"part of\" relationship needs to be expressed, use the `partOfGroups` assignment instead.\n\nMUST be a valid [Correlation ID](../concepts/identifiers.md#correlation-id)."
     - name: 'title'
       type: 'string'
       description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
-      mandatory: !!bool 'true'
+      mandatory: true
       constraints:
-        minLength: !!int '1'
-        maxLength: !!int '255'
+        minLength: 1
+        maxLength: 255
     - name: 'shortDescription'
       type: 'string'
       description: "Plain text short description.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
       constraints:
-        minLength: !!int '1'
-        maxLength: !!int '255'
+        minLength: 1
+        maxLength: 255
     - name: 'description'
       type: 'string'
       description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
       constraints:
-        minLength: !!int '1'
+        minLength: 1
     - name: 'partOfPackage_ID'
       type: 'guid'
       description: "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package."
-      mandatory: !!bool 'true'
+      mandatory: true
       constraints:
-        maxLength: !!int '255'
+        maxLength: 255
         pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(package):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
     - name: 'partOfGroups_ID'
       type: 'guid'
-      array: !!bool 'true'
+      array: true
       description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together.\n\n**Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose\ngroup assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.\nSee [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types)."
     - name: 'version'
       type: 'string'
       description: "The complete [SemVer](https://semver.org/) version string.\n\nIt MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.\nIt SHOULD be changed if the ORD information or referenced resource definitions changed.\nIt SHOULD express minor and patch changes that don't lead to incompatible changes.\n\nWhen the `version` major version changes, the [ORD ID](../concepts/identifiers.md#ord-id) `<majorVersion>` fragment SHOULD be updated to be identical.\nIf a resource definition file also contains a version number (e.g. [OpenAPI `info.version`](https://spec.openapis.org/oas/v3.1.1.html#info-object)), it SHOULD match the resource `version` whenever possible.\nIf the native version does not follow SemVer, it MUST be converted to valid SemVer for ORD, preserving its ordering and compatibility semantics as closely as possible.\n\nIf the resource has been extended by the user, the change MUST be indicated via `lastUpdate`.\nThe `version` MUST not be bumped for changes in extensions.\n\nThe general [Version and Lifecycle](../concepts/versioning-and-lifecycle.md) flow MUST be followed.\n\nNote: A change is only relevant for a version increment, if it affects the ORD resource or ORD taxonomy directly.\nFor example: If a resource within a `Package` changes, but the Package itself did not, the Package version does not need to be incremented."
-      mandatory: !!bool 'true'
+      mandatory: true
       constraints:
         pattern: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
     - name: 'lastUpdate'
@@ -74,39 +74,39 @@ spec:
     - name: 'visibility'
       type: 'string'
       description: "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences."
-      mandatory: !!bool 'true'
+      mandatory: true
     - name: 'releaseStatus'
       type: 'string'
       description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details."
-      mandatory: !!bool 'true'
+      mandatory: true
     - name: 'sunsetDate'
       type: 'string'
       description: "The sunset date defines when the resource is scheduled to be decommissioned / removed / archived.\n\nIf the `releaseStatus` is set to `deprecated`, the `sunsetDate` SHOULD be provided (if already known).\nOnce the sunset date is known and ready to be communicated externally, it MUST be provided here.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)."
     - name: 'successors_ID'
       type: 'guid'
-      array: !!bool 'true'
+      array: true
       description: "The successor resource(s).\n\nMUST be a valid reference to an ORD ID.\n\nIf the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.\nIf `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`."
     - name: 'mandatory'
       type: 'boolean'
       description: 'If true, the Integration Dependency is mandatory for the described system to function.'
-      mandatory: !!bool 'true'
+      mandatory: true
     - name: 'aspects'
       type: 'custom'
       customTypeName: 'IntegrationAspect'
-      array: !!bool 'true'
+      array: true
       description: "List of integration aspects that make up the Integration Dependency.\n\nEach mandatory aspect is a dedicated, constituent part that needs to be fulfilled (AND condition).\nSystem-type aspects can be combined with more detailed API-resource, event-resource or capability aspects."
     - name: 'relatedIntegrationDependencies_ID'
       type: 'guid'
-      array: !!bool 'true'
+      array: true
       description: "If an Integration Dependency conceptually belongs or related to another Integration Dependency, this can be indicated here.\nOne situation would be where two systems each have an Integration Dependency to describe a two-sided integration from each side."
     - name: 'links'
       type: 'custom'
       customTypeName: 'Link'
-      array: !!bool 'true'
+      array: true
       description: 'Generic Links with arbitrary meaning and content.'
     - name: 'tags'
       type: 'string'
-      array: !!bool 'true'
+      array: true
       description: "List of free text style tags.\nNo special characters are allowed except `-`, `_`, `.`, `/` and ` `.\n\nTags that are assigned to a `Package` are inherited to all of the ORD resources it contains."
     - name: 'labels'
       type: 'custom'
@@ -123,39 +123,39 @@ spec:
           type: 'string'
           description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."
           constraints:
-            minLength: !!int '1'
-            maxLength: !!int '255'
+            minLength: 1
+            maxLength: 255
         - name: 'description'
           type: 'string'
           description: "Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).\n\nThe description SHOULD not be excessive in length and is not meant to provide full documentation.\nDetailed documentation SHOULD be attached as (typed) links."
           constraints:
-            minLength: !!int '1'
+            minLength: 1
         - name: 'mandatory'
           type: 'boolean'
           description: 'If true, the aspect is mandatory to realize the Integration Dependency it contains.'
-          mandatory: !!bool 'true'
+          mandatory: true
         - name: 'supportMultipleProviders'
           type: 'boolean'
           description: "If true, the references resources can be provided by multiple system instances.\nIf not, only one integration target is supported."
         - name: 'apiResources'
           type: 'custom'
           customTypeName: 'ApiResourceIntegrationAspect'
-          array: !!bool 'true'
+          array: true
           description: 'List of API Resource Dependencies.'
         - name: 'eventResources'
           type: 'custom'
           customTypeName: 'EventResourceIntegrationAspect'
-          array: !!bool 'true'
+          array: true
           description: 'List of Event Resource Dependencies.'
         - name: 'capabilities'
           type: 'custom'
           customTypeName: 'CapabilityIntegrationAspect'
-          array: !!bool 'true'
+          array: true
           description: 'List of Capability Dependencies.'
         - name: 'systemTypes'
           type: 'custom'
           customTypeName: 'SystemTypeIntegrationAspect'
-          array: !!bool 'true'
+          array: true
           description: "List of alternative system types that can fulfill this aspect without requiring a specific API resource, event resource or capability (OR condition).\n\nEach entry identifies a [system type](../index.md#system-type) by its system namespace and can optionally require a minimum system version.\nUse separate aspects when multiple system types are required (AND condition).\nSystem-type aspects can be combined with more detailed resource or capability aspects in the same Integration Dependency."
         - name: 'labels'
           type: 'custom'
@@ -166,9 +166,9 @@ spec:
         - name: 'ordId'
           type: 'string'
           description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type."
-          mandatory: !!bool 'true'
+          mandatory: true
           constraints:
-            maxLength: !!int '255'
+            maxLength: 255
             pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(apiResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
         - name: 'minVersion'
           type: 'string'
@@ -178,7 +178,7 @@ spec:
         - name: 'subset'
           type: 'custom'
           customTypeName: 'ApiResourceIntegrationAspectSubset'
-          array: !!bool 'true'
+          array: true
           description: "Narrows the dependency to only the listed API operations (or MCP tools) that are required to achieve the aspect.\n\nIf `subset` is not provided, the dependency implies that all operations of the referenced resource may be used.\nIf `subset` is provided, only the listed operations are required — consumers MUST NOT assume that other operations are available or permitted.\n\nFor more details and examples, see [Integration Dependency](../concepts/integration-dependency)."
         - name: 'labels'
           type: 'custom'
@@ -189,7 +189,7 @@ spec:
         - name: 'operationId'
           type: 'string'
           description: "The ID of the individual API operation or tool.\n\nThis MUST be an ID that is understood by the used protocol and resource definition format.\nE.g. for OpenAPI this is the `operationId`, for MCP this is the tool `name`."
-          mandatory: !!bool 'true'
+          mandatory: true
     - name: 'Labels'
       metadataProperties:
         - name: 'key'
@@ -201,9 +201,9 @@ spec:
         - name: 'ordId'
           type: 'string'
           description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type."
-          mandatory: !!bool 'true'
+          mandatory: true
           constraints:
-            maxLength: !!int '255'
+            maxLength: 255
             pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(eventResource):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
         - name: 'minVersion'
           type: 'string'
@@ -213,11 +213,11 @@ spec:
         - name: 'subset'
           type: 'custom'
           customTypeName: 'EventResourceIntegrationAspectSubset'
-          array: !!bool 'true'
+          array: true
           description: 'List of individual events or messages that are sufficient to achieve the aspect.'
         - name: 'systemTypeRestriction'
           type: 'string'
-          array: !!bool 'true'
+          array: true
           description: "In case that the event subscriptions are limited to known [system types](../index.md#system-type), they can be listed here as [system namespaces](../concepts/identifiers.md#system-namespace).\n\nIf given, only system types of the defined namespaces are supported as integration partners.\nIf not given, there is no restriction which system type provides the events."
         - name: 'labels'
           type: 'custom'
@@ -228,15 +228,15 @@ spec:
         - name: 'eventType'
           type: 'string'
           description: "The type ID of the individual event or message.\n\nThis MUST be an ID that is understood by the used protocol and resource definition format.\nE.g. for CloudEvents, the [type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#type) can be used."
-          mandatory: !!bool 'true'
+          mandatory: true
     - name: 'CapabilityIntegrationAspect'
       metadataProperties:
         - name: 'ordId'
           type: 'string'
           description: "The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.\n\nIt MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type."
-          mandatory: !!bool 'true'
+          mandatory: true
           constraints:
-            maxLength: !!int '255'
+            maxLength: 255
             pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(capability):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$'
         - name: 'minVersion'
           type: 'string'
@@ -246,7 +246,7 @@ spec:
         - name: 'subset'
           type: 'custom'
           customTypeName: 'CapabilityIntegrationAspectSubset'
-          array: !!bool 'true'
+          array: true
           description: "List of skills within the referenced capability that are required.\n\nThis is primarily intended for bundling capabilities such as `agent-plugin`, which package multiple agent skills.\nIf `subset` is not provided, the dependency implies the whole capability (e.g. the consumer installs the entire plugin).\nIf `subset` is provided, only the listed skills are required, letting consumers load only the minimal surface area into the harness / context."
         - name: 'labels'
           type: 'custom'
@@ -257,15 +257,15 @@ spec:
         - name: 'skillName'
           type: 'string'
           description: "The name of the individual skill within the referenced capability.\n\nThis MUST be a name that is understood within the referenced capability's definition (e.g. the skill `name` inside an `agent-plugin` bundle).\nWhere the referenced capability uses the Agent Skills format, `skillName` MUST match the `name` field in the referenced skill's `SKILL.md` frontmatter."
-          mandatory: !!bool 'true'
+          mandatory: true
     - name: 'SystemTypeIntegrationAspect'
       metadataProperties:
         - name: 'systemNamespace'
           type: 'string'
           description: 'The [system namespace](../concepts/identifiers.md#system-namespace) that identifies the required system type.'
-          mandatory: !!bool 'true'
+          mandatory: true
           constraints:
-            maxLength: !!int '32'
+            maxLength: 32
             pattern: '^[a-z0-9]+(?:[.][a-z0-9]+){1}$'
         - name: 'minSystemVersion'
           type: 'string'
@@ -277,18 +277,18 @@ spec:
         - name: 'title'
           type: 'string'
           description: "Human readable title of the link.\n\nMUST be unique within the collection of links provided."
-          mandatory: !!bool 'true'
+          mandatory: true
           constraints:
-            minLength: !!int '1'
+            minLength: 1
         - name: 'url'
           type: 'string'
           description: "[URL](https://tools.ietf.org/html/rfc3986) of the link.\n\nThe link target MUST be absolute and SHOULD be openly accessible."
-          mandatory: !!bool 'true'
+          mandatory: true
         - name: 'description'
           type: 'string'
           description: 'Full description, notated in [CommonMark](https://spec.commonmark.org/) (Markdown).'
           constraints:
-            minLength: !!int '1'
+            minLength: 1
     - name: 'DocumentationLabels'
       metadataProperties:
         - name: 'key'
@@ -299,16 +299,16 @@ spec:
     - propertyName: 'partOfPackage'
       relatedTypeName: 'Package'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      propertyBased: !!bool 'true'
+      propertyBased: true
       managedByProperty: 'partOfPackage_ID'
       description: "Defines which Package the resource is part of.\n\nMUST be a valid reference to a [Package](#package) ORD ID.\n\nEvery resource MUST be part of one package."
-      mandatory: !!bool 'true'
+      mandatory: true
       reverseRelation:
         relationPropertyName: 'integrationDependencies'
     - propertyName: 'partOfGroups'
       relatedTypeName: 'Group'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      propertyBased: !!bool 'true'
+      propertyBased: true
       managedByProperty: 'partOfGroups_ID'
       description: "Defines which groups the resource is assigned to.\n\nThe property is optional, but if given the value MUST be an array of valid Group IDs.\n\nGroups are a lightweight custom taxonomy concept.\nThey express a \"part of\" relationship to the chosen group concept.\nIf an \"identity / equals\" relationship needs to be expressed, use the `correlationIds` instead.\n\nAll resources that share the same group ID assignment are effectively grouped together.\n\n**Visibility:** Groups and Group Types may carry a `visibility`. Aggregators and consumers MUST NOT expose\ngroup assignments to audiences whose access level exceeds the referenced Group's (or Group Type's) visibility.\nSee [Visibility of Groups and Group Types](../concepts/grouping-and-bundling#visibility-of-groups-and-group-types)."
       reverseRelation:
@@ -316,15 +316,15 @@ spec:
     - propertyName: 'successors'
       relatedTypeName: 'IntegrationDependency'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      propertyBased: !!bool 'true'
+      propertyBased: true
       managedByProperty: 'successors_ID'
       description: "The successor resource(s).\n\nMUST be a valid reference to an ORD ID.\n\nIf the `releaseStatus` is set to `deprecated`, `successors` MUST be provided if one exists.\nIf `successors` is given, the described resource SHOULD set its `releaseStatus` to `deprecated`."
     - propertyName: 'relatedIntegrationDependencies'
       relatedTypeName: 'IntegrationDependency'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      propertyBased: !!bool 'true'
+      propertyBased: true
       managedByProperty: 'relatedIntegrationDependencies_ID'
       description: "If an Integration Dependency conceptually belongs or related to another Integration Dependency, this can be indicated here.\nOne situation would be where two systems each have an Integration Dependency to describe a two-sided integration from each side."
     - propertyName: 'apiResources'
       description: "All API resources this integration dependency lists, across all of its aspects.\nCalculated by UMS."
-      array: !!bool 'true'
+      array: true
