@@ -715,17 +715,24 @@ components:
         Version and instance selectors are optional: a uniquely known context is resolved from onboarding
         without requiring the provider to repeat them. Providers should omit already-known values.
         Supplied selectors cannot override authoritative information or grant authority.
+        The resolved submission context determines the targets. Document identity fields may repeat
+        matching identities but cannot select, add, or change targets. Every supplied identity field
+        must agree with every selected target; detectable conflicts reject the upload rather than
+        silently overriding an identity. Other system metadata may remain when shared by all targets.
         One ORD provider may publish for multiple onboarded targets. The active-submission limit,
         replacement, and tombstones apply separately per target, perspective, and selected version
         or instance. `systemVersions` applies only to `system-version`, and `systemInstances`
         applies only to `system-instance`. All staged artifacts apply to every selected context.
-        Version batches may omit `describedSystemVersion`; the aggregator constructs and validates
-        each per-version representation using the selected version and its correlation IDs.
+        Version submissions may omit `describedSystemVersion` or its `version` field while retaining
+        metadata shared by all selected releases; the aggregator completes each per-version
+        representation using the selected version and its correlation IDs before full validation.
         Validation of identical shared content may be reused across completed representations;
         only identity-dependent or publication-state-dependent checks need separate evaluation.
         If provided, document-level version information must apply to every selected version.
         Shared documents must omit `describedSystemInstance` information that does not apply
         to every selected instance; the selection supplies each instance's identity.
+        In a system-instance submission, describedSystemVersion describes the instances' running
+        release, not system-version publication targets, and may remain when shared by all instances.
         A supplied list is non-empty and must resolve to distinct authorized versions or instances.
         Omitting the list is allowed only when onboarding resolves exactly one version or instance.
         See https://open-resource-discovery.org/spec-v1/#publication-context-and-removal

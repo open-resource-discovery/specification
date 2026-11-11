@@ -339,6 +339,10 @@ A supplied selector MUST NOT override authoritative information or establish aut
 If the authorized context remains ambiguous after resolving the optional selectors, the aggregator MUST reject creation rather than choose an arbitrary version or instance or infer it from document metadata.
 All staged ORD Documents MUST describe the submission's perspective and target; a submission MUST NOT mix perspectives or targets.
 The aggregator MUST verify that the staged ORD Documents match the authorized publication context.
+The resolved submission context determines the publication targets; document metadata MUST NOT select, add, or change those targets.
+Document-level identity fields MAY repeat matching information from the resolved context; they are consistency assertions, not an alternative target-selection mechanism.
+Any supplied identity field MUST agree with every selected target, and a detectable conflict MUST reject the upload rather than silently override either identity.
+For multiple targets, differing identity fields MUST be omitted from the shared document; other system metadata MAY remain when it applies to every selected target.
 Because the same ORD ID can legitimately occur in different perspectives, scoping each submission to one perspective and one target keeps validation, replacement, and removal unambiguous.
 
 For `system-instance`, the provider MAY supply a non-empty `context.systemInstances` list to publish the same metadata for several tenants in one submission.
@@ -357,7 +361,8 @@ Omitting `systemVersions` MUST resolve to exactly one version from onboarding; o
 The resolved version selection MUST remain fixed for the lifetime of the submission.
 Version batching is useful for resources available in a selected set of releases; metadata that applies unchanged to every system version SHOULD use `system-type`.
 
-For version submissions, staged documents MAY omit `describedSystemVersion` as a push transport optimization.
+For version submissions, staged documents MAY omit `describedSystemVersion` or its `version` field as a push transport optimization.
+Other `describedSystemVersion` metadata MAY remain when it applies to every selected release.
 Before complete ORD validation and publication, the aggregator MUST construct a separate document representation for each selected version, supplying `describedSystemVersion.version` from that selection and its `correlationIds` when supplied.
 All other document content MUST remain unchanged; supplied document-level `describedSystemVersion` information MUST agree with every selected version.
 The completed representations MUST satisfy the ordinary ORD Document requirements, including the required described system version; this exception applies only to staging.
@@ -367,6 +372,7 @@ Resource contract versions inside the shared metadata MUST NOT be rewritten to t
 The provider stages each shared ORD Document and resource definition only once; the aggregator MUST apply the same accepted units to every selected version or instance.
 All staged metadata MUST be applicable to every selected context, including native resource-definition content and version-specific or instance-specific URLs or customizations.
 A shared document MUST omit `describedSystemInstance` information that does not apply to every selected instance; the submission selection supplies each instance's identity without changing the uploaded document.
+In a `system-instance` submission, document-level `describedSystemVersion` describes the running release of the selected instances; it does not select system-version publication targets and MAY remain when it applies to every selected instance.
 Detectable mismatches MUST be rejected at upload as described in [Staging](#staging), and context and authorization MUST be checked again for every selected context at commit.
 Validation results for identical shared content apply to the entire selection and SHOULD be computed once.
 Shared content errors SHOULD be reported once; they do not require identifying an affected version or instance.
