@@ -1386,12 +1386,12 @@ definitions:
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.
               An API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: soap-outbound
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides/describes outbound interfaces for async communication.
               An API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: mcp
             description: |-
               [MCP](https://modelcontextprotocol.io) is an open protocol that standardizes how applications provide context to LLMs, based on JSON-RPC message format.
@@ -1402,7 +1402,7 @@ definitions:
             description: |-
               Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.
               Since WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.
-              The API Resource definitions `type` MUST ONLY be set to `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
+              The API Resource definitions `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: a2a
             x-introduced-in-version: "1.12.2"
             description: |-
@@ -1415,7 +1415,7 @@ definitions:
               [SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html) (Remote Function Call)  is the standard SAP interface for communication between SAP systems.
               RFC calls a function to be executed in a remote system.
               An API Resource definition of type `sap-rfc-metadata-v1` MUST be provided.
-              For each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
+              For each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: sap-sql-api-v1
             x-introduced-in-version: "1.9.2"
             description: |-
@@ -2878,7 +2878,10 @@ definitions:
           - const: sap-csn-interop-effective-v1
             description: |-
               [CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.
-              The `mediaType` MUST be be set to `application/json`.
+              This definition MAY be provided as complementary metadata for any `apiProtocol` that permits API Resource definitions.
+              It describes the same underlying API Resource and complements any definition required by that protocol; those requirements still apply.
+              Protocols that prohibit API Resource definitions, such as `sap-ina-api-v1`, remain excluded.
+              The `mediaType` MUST be set to `application/json`.
             x-introduced-in-version: "1.9.4"
           - const: ord:overlay:v1
             x-feature-status: alpha
