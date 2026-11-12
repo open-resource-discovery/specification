@@ -13,7 +13,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Fixed
 
-- Removed Package `labels` inheritance to preserve the scope of technical metadata. Labels apply only to the object on which they are published; providers must publish labels directly on resources where they are needed.
+- Corrected the Package inheritance rules by removing `labels`. Inheritance added unnecessary merging complexity for ORD aggregators and prevented technical labels from applying only to a Package. Labels now apply only to the object on which they are published. Aggregators must stop propagating Package labels, and providers relying on inheritance must publish the relevant labels directly on resources.
 
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
