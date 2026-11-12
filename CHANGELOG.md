@@ -11,9 +11,9 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
-### Changed
+### Fixed
 
-- Made inheritance of Package `labels` optional for ORD aggregators. Aggregators that apply label inheritance must still merge values for the same key and remove duplicates.
+- Removed Package `labels` inheritance to preserve the scope of technical metadata. Labels apply only to the object on which they are published; providers must publish labels directly on resources where they are needed.
 
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
