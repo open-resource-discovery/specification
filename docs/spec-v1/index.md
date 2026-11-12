@@ -556,11 +556,9 @@ The following rules need to be implemented by ORD aggregators:
   - Ideally this situation doesn't happen and the ORD Providers update `lastUpdate`. Then the date can also better reflect the time when the change happened, not when it was detected.
 - The aggregator MUST apply all defined inheritances from root document properties to all the ORD information that it contains.
   - `policyLevels` MUST be inherited to the resource / Package level, with the latter taking precedence.
-- The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains, except for optional `labels` inheritance.
+- The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
   - `vendor`, `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
-  - The aggregator MAY inherit `labels` from a `Package` to the resources it contains. Support for label inheritance is an ORD aggregator decision.
-    - If the aggregator applies label inheritance, values of the same label key MUST be merged and duplicate values MUST be removed.
-    - Providers and consumers cannot assume that Package labels are inherited to resources.
+- Labels apply only to the ORD object on which they are published. The aggregator MUST NOT inherit `labels` from a `Package` to the resources it contains.
 - The aggregator MUST rewrite all URLs for [hosted resource definitions](#hosting-resource-definitions) to point to their own hosted URLs.
 - The aggregator MUST convert all relative URLs to absolute URLs.
   See [Relative URL Resolution](#relative-url-resolution) for the full resolution rules, including the ordering for provider base URL and described system base URL.
