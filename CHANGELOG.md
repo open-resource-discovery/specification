@@ -11,6 +11,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Made inheritance of Package `labels` optional for ORD aggregators. Aggregators that apply label inheritance must still merge values for the same key and remove duplicates.
+
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
 ### Changed

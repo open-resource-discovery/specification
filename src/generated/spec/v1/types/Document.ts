@@ -230,10 +230,12 @@ export interface SystemType {
  * If multiple parties rely on the existence of certain label information,
  * standardization through ORD SHOULD be preferred.
  *
- * All labels attached to a `Package` will be inherited to the resources they contain.
- * Duplicate labels will be merged by the ORD aggregator according to the following rules:
- * * Values of the same label key will be merged.
- * * Duplicate values of the same label key will be removed.
+ * An ORD aggregator MAY inherit labels attached to a `Package` to the resources it contains.
+ * Support for label inheritance is an ORD aggregator decision.
+ * Providers and consumers cannot assume that Package labels are inherited to resources.
+ * If an aggregator applies label inheritance, it MUST merge Package and resource labels according to the following rules:
+ * * Values of the same label key MUST be merged.
+ * * Duplicate values of the same label key MUST be removed.
  *
  * **RECOMMENDATION**: Use a [Concept ID](../concepts/identifiers.md#concept-id) as the label key to indicate ownership and avoid naming conflicts.
  * The namespace in the Concept ID clearly identifies who owns and defines the label's semantics.
