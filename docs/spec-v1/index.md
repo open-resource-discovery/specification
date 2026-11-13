@@ -558,7 +558,7 @@ The following rules need to be implemented by ORD aggregators:
   - `policyLevels` MUST be inherited to the resource / Package level, with the latter taking precedence.
 - The aggregator MUST apply all defined inheritances from `Package` properties to all the ORD resources that it contains.
   - `vendor`, `partOfProducts`, `tags`, `countries`, `industry`, and `lineOfBusiness` MUST be merged without duplicates.
-  - `labels` MUST be merged without duplicated values.
+  - `labels` MUST be merged without duplicated values, except for [`ord:redirectFrom`](./concepts/identifiers.md#forwarding-previous-ord-ids), which MUST NOT be inherited.
     - Values of the same label key will be merged.
     - Duplicate values of the same label key will be removed.
 - The aggregator MUST rewrite all URLs for [hosted resource definitions](#hosting-resource-definitions) to point to their own hosted URLs.
