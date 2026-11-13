@@ -46,8 +46,8 @@ A complete namespace MUST match the following [regular expression](https://en.wi
 Namespaces MUST follow the below structure:
 
 ```xml
-<vendorNamespace> := <vendorId>
-    <vendorId> := identifier for the vendor / organization.
+<vendorNamespace> := <vendorNamespaceId>
+    <vendorNamespaceId> := top-level identifier for a vendor namespace.
     `customer` is a reserved vendor ID for [customer content / systems](#customer-namespace).
 
 <systemNamespace> := <vendorNamespace>.<systemTypeId>
@@ -80,11 +80,13 @@ The vendor owns this top-level namespace and is responsible for governing this n
 
 A vendor namespace MUST be constructed according to the following rules:
 
-`<vendorNamespace>` := `<vendorId>`
+`<vendorNamespace>` := `<vendorNamespaceId>`
 
-- `<vendorId>` is a registered ID of a vendor.
+- `<vendorNamespaceId>` is the registered, top-level identifier of a vendor namespace.
   - MUST only consist of lower case ASCII letters (`a-z`) and digits (`0-9`).
-  - The organization using ORD MUST ensure that `<vendorId>` is uniquely registered, e.g. in a namespace registry.
+  - The organization using ORD MUST ensure that `<vendorNamespaceId>` is uniquely registered, e.g. in a namespace registry.
+  - It is not a [Vendor](../interfaces/Document.md#vendor) ORD ID. A Vendor ORD ID has the form
+    `<namespace>:vendor:<resourceName>:`.
   - There are reserved vendor namespaces:
     - `customer`: Used for ORD content whose identity is governed within a customer scope. This avoids requiring each customer to register a vendor namespace.
     - `c`: A shorter alias of `customer`, with identical semantics. Useful when the [namespace length limit](#namespace-constraints) is tight.
@@ -94,6 +96,24 @@ A vendor namespace MUST be constructed according to the following rules:
 **Examples**: For SAP, we chose and registered `sap`.
 
 > 🚧 There is currently no global namespace registry where we can ensure that there are no conflicts across different vendors.
+
+#### Vendor Registration
+
+A [Vendor](../interfaces/Document.md#vendor) entity can be registered in either of two ways:
+
+- **Namespace-aligned Vendor**: Its ORD ID uses its vendor namespace, for example `sap:vendor:SAP:`.
+  The vendor namespace acts as the authority that registers the Vendor entity. The Vendor therefore implies responsibility
+  for `sap`. If it includes `vendorNamespace`, the value MUST be `sap`.
+- **Authority-registered Vendor**: Its ORD ID uses an [authority namespace](#authority-namespace), for example
+  `example.prm:vendor:partner-123:`. The authority namespace identifies the authority that registers the Vendor entity.
+  The optional `vendorNamespace` property independently declares a top-level vendor namespace for which the Vendor is responsible.
+
+An authority-registered Vendor without `vendorNamespace` makes no vendor namespace claim. Its ORD ID remains globally
+unique, and ownership is stated through the Vendor references of Packages and Products.
+
+Each declared or implied vendor namespace MUST resolve to exactly one Vendor entity in an ORD aggregation. ORD aggregators
+MUST reject an aggregation where more than one Vendor entity resolves to the same vendor namespace. The authority that
+registers a Vendor entity is responsible for ensuring the uniqueness of a declared vendor namespace.
 
 ### System Namespace
 
@@ -172,7 +192,7 @@ The reserved authority namespace `customer.ext` can be used for customer in-app 
 Customer namespaces MUST NOT be used for content published in a global marketplace or otherwise shared globally unless the platform allocating the ORD IDs guarantees their global uniqueness across customer scopes.
 Partner content MAY be developed under a customer namespace while it remains within a customer scope.
 It MAY retain those ORD IDs when published globally if such a global uniqueness guarantee exists.
-Otherwise, before that content is offered in a global marketplace or otherwise shared globally, it MUST be exported with ORD IDs under the registered vendor namespace of the partner.
+Otherwise, before that content is offered in a global marketplace or otherwise shared globally, it MUST be exported with ORD IDs under a namespace that the publishing platform guarantees to be globally unique, such as the registered vendor namespace of the partner.
 This export creates the globally published identity and does not rename the customer-scoped ORD IDs.
 
 The uniqueness scope of a `customer.*` or `c.*` ORD ID is the applicable customer scope.
@@ -224,8 +244,12 @@ It MUST be constructed as defined here:
     - MUST be a valid [system namespace](#system-namespace), [authority namespace](#authority-namespace) or [sub-context namespace](#sub-context-namespace) thereof
     - A [system namespace](#system-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item is specific to a single system type.
     - An [authority namespace](#authority-namespace) SHOULD be used when the resource, resource grouping, access grouping or taxonomy item represents a shared contract, definition or governance model across multiple [system types](../index.md#system-type). See [Shared Taxonomy, Resources and Contracts](./shared-resources.md).
-  - For `Vendor` and `Product`:
-    - MUST be a valid [vendor namespace](#vendor-namespace) for `Vendor` and `Product`
+  - For `Vendor`:
+    - MUST be a valid [vendor namespace](#vendor-namespace) or [authority namespace](#authority-namespace).
+      The namespace identifies the authority that registers the Vendor entity. A vendor namespace acts as its own
+      authority when used for a namespace-aligned Vendor.
+  - For `Product`:
+    - MUST be a valid [vendor namespace](#vendor-namespace)
   - For system-namespaced ORD IDs, the provider is the system hosting the described resource.
     In advanced cases, the provider could be an embedded system / sidecar with its own system namespace.
     This can lead to multiple system namespaces within one system.
