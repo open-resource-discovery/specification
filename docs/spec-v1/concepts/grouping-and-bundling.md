@@ -95,7 +95,7 @@ Every ORD Resource MUST be assigned to exactly one [**Package**](../interfaces/D
 The Package is primarily motivated by publishing and API catalog presentation concerns, including human-readable documentation and presentation.
 It can also express information about the resource providers, terms of use of the APIs, pricing for the usage of the packages, APIs, Events, etc.
 
-Several Package properties — such as `vendor`, `partOfProducts`, `tags`, `labels` and `policyLevels` — are **inherited** by all resources within the Package. This makes the Package a convenient place to define shared metadata once, rather than repeating it on every resource.
+Several Package properties — such as `vendor`, `partOfProducts`, `tags` and `policyLevels` — are **inherited** by all resources within the Package. This makes the Package a convenient place to define shared metadata once, rather than repeating it on every resource. Labels apply only to the object on which they are published and are not inherited.
 The Package `vendor` is authoritative for current ownership attribution and MUST NOT be inferred from the namespaces of the resource ORD IDs.
 
 The granularity of Packages is driven by all of the following concerns:
@@ -184,7 +184,9 @@ Since they are usually used for enhancing search or navigation, the simplicity o
 
 [**Labels**](../interfaces/Document#labels) are similar to [Tags](#tags), but define key-value pairs instead of plain strings.
 They are optimized for machine-readability and can be used to query, select and filter resources programmatically (similar to [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)).
-Labels defined on a [Package](#package) are inherited by all resources it contains (duplicate keys are merged).
+Labels apply only to the ORD object on which they are published.
+An ORD aggregator MUST NOT inherit labels defined on a [Package](#package) to the resources it contains, because a technical label may describe only the Package itself.
+To apply a label to a resource, publish it directly on that resource.
 
 ### Groups
 
