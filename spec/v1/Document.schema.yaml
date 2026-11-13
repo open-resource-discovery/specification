@@ -4398,8 +4398,11 @@ definitions:
         x-introduced-in-version: "1.17.1"
 
       partners:
-        # Note: It's a bit unclear how and whether we actually use this
         type: array
+        x-deprecated-in-version: "1.18.0"
+        x-deprecation-text: |-
+          Deprecated without replacement. New ORD documents SHOULD omit this property. Partner relationships are typically managed outside the scope of ORD. If you need to make the relationships discoverable, make sure the vendor ORD-ID or `correlationIds` point allow to reach the correct record in the partnership management systems.
+          Existing documents using `partners` remain valid.
         description: |-
           Optional list of partner vendors, referenced through their ORD ID.
 
