@@ -11,6 +11,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added the ORD-level selectors `ordId`, `groupId`, and `groupTypeId` to ORD Overlay, so overlays can patch ORD resources, Groups, and Group Types directly.
+  - One overlay can patch several targets, and `target` should be omitted.
+  - These overlays must be published as ORD Document Resources, not attached as `resourceDefinitions` entries.
+  - Merging these overlays is an optional feature capability of an ORD Aggregator, which defines the permissions and the processing order.
+- Added ORD Overlay version `0.2`, which is required for ORD-level selectors. Version `0.1` remains valid.
+
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
 ### Changed
