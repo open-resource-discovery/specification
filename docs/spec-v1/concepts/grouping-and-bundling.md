@@ -114,7 +114,7 @@ This is the case, when:
 - Ownership of the resources is attributed to the customer (user) of the system.
 - Ownership of the resources is attributed to partners or third parties.
   All such resources MUST be assigned to a dedicated Package for each partner / third party.
-  The `vendor` MUST be set to a registered, matching Vendor ID.
+   The `vendor` MUST be set to a registered, matching Vendor ORD ID.
 
 > ℹ At SAP, the [Business Accelerator Hub](https://api.sap.com/) defines how the Package concept is to be used to fit its publishing flow and Catalog UI/UX.
 > See [sap:core:v1 policy level](../../spec-extensions/policy-levels/sap-core-v1.md) for additional SAP specific constraints.

@@ -53,7 +53,7 @@ spec:
       mandatory: true
       constraints:
         maxLength: 256
-        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\-]+):()$'
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)?):(vendor):([a-zA-Z0-9._\-]+):()$'
     - name: 'parent_ID'
       type: 'guid'
       description: "Optional product parent ORD ID, if a hierarchical product structure needs to be expressed.\n\nMUST be a valid reference to a [Product](#product) ORD ID."
