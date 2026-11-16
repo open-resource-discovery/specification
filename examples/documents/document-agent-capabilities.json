@@ -1,0 +1,107 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json",
+  "openResourceDiscovery": "1.17",
+  "description": "Order Assistance provider metadata. The Fulfillment Agent references these external Capabilities; the skill and plugin declare their own dependency on the Orders provider.",
+  "perspective": "system-version",
+  "policyLevels": [],
+  "describedSystemVersion": {
+    "version": "1.0.0"
+  },
+  "capabilities": [
+    {
+      "ordId": "foo.bar.skill:capability:orderSummarization:v1",
+      "title": "Order Summarization Skill",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "foo.bar:package:orderAssistance:v1",
+      "shortDescription": "Summarizes an order and its fulfillment status",
+      "description": "Reads order details through the external Orders MCP API and produces a concise summary.",
+      "type": "agent-skill",
+      "integrationDependencies": [
+        "foo.bar:integrationDependency:OrderLookup:v1"
+      ],
+      "definitions": [
+        {
+          "type": "agent-skill-zip",
+          "mediaType": "application/zip",
+          "url": "/capabilities/orderSummarization/skill.zip",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ordId": "foo.bar:capability:orderManagementPlugin:v1",
+      "title": "Order Management Plugin",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "foo.bar:package:orderAssistance:v1",
+      "shortDescription": "Bundles order summarization and other reusable order skills",
+      "type": "agent-plugin",
+      "integrationDependencies": [
+        "foo.bar:integrationDependency:OrderLookup:v1"
+      ],
+      "definitions": [
+        {
+          "type": "agent-plugin-zip",
+          "mediaType": "application/zip",
+          "url": "/capabilities/orderManagementPlugin/plugin.zip",
+          "accessStrategies": [
+            {
+              "type": "open"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "integrationDependencies": [
+    {
+      "ordId": "foo.bar:integrationDependency:OrderLookup:v1",
+      "title": "Order Lookup Integration",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "public",
+      "partOfPackage": "foo.bar:package:orderAssistance:v1",
+      "shortDescription": "Read-only order tools required by the skill and plugin",
+      "mandatory": true,
+      "aspects": [
+        {
+          "description": "Retrieve the order details to summarize",
+          "mandatory": true,
+          "apiResources": [
+            {
+              "ordId": "foo.orders:apiResource:OrderToolsMCPServer:v1",
+              "subset": [
+                {
+                  "operationId": "getOrder"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "vendors": [
+    {
+      "ordId": "foo:vendor:OrderAssistance:",
+      "title": "Example Order Assistance Provider"
+    }
+  ],
+  "packages": [
+    {
+      "ordId": "foo.bar:package:orderAssistance:v1",
+      "title": "Order Assistance",
+      "shortDescription": "Reusable skills and plugins for working with orders",
+      "description": "Contains order skills, plugins, and their external integration requirements.",
+      "version": "1.0.0",
+      "vendor": "foo:vendor:OrderAssistance:"
+    }
+  ]
+}

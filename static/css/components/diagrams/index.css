@@ -404,6 +404,11 @@ html[data-theme="dark"] .ord-diagram {
 .ord-ai-enrichment footer span { color: var(--ord-muted); font-size: 0.75rem; }
 .ord-ai-enrichment figcaption { grid-column: 1 / -1; border-radius: 8px; background: var(--ord-card); color: var(--ord-muted); padding: 0.75rem 1rem; text-align: center; }
 .ord-overlay { display: flex; flex-direction: column; gap: 0.9rem; }
+.ord-overlay__overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+.ord-overlay__overview > section { display: flex; flex-direction: column; gap: 0.3rem; border-left: 3px solid var(--ord-brand-2); background: var(--ord-teal-soft); padding: 0.7rem; }
+.ord-overlay__overview strong { color: var(--ord-text); font-size: 0.85rem; }
+.ord-overlay__overview span, .ord-overlay__comparison, .ord-id-scope-note { color: var(--ord-muted); font-size: 0.78rem; line-height: 1.4; }
+.ord-lifecycle-exception { display: block; margin-top: 0.3rem; font-size: 0.78rem; }
 .ord-overlay__flow { display: grid; grid-template-columns: 1fr 34px 1fr 34px 1fr; align-items: stretch; }
 .ord-overlay__flow > section { display: flex; min-width: 0; flex-direction: column; gap: 0.6rem; border: 1px solid var(--ord-border); border-radius: 8px; background: var(--ord-card); padding: 1rem; }
 .ord-overlay__flow > section.patch { border: 2px solid var(--ord-brand-2); background: var(--ord-teal-soft); }
@@ -432,34 +437,37 @@ html[data-theme="dark"] .ord-diagram {
 .ord-integration-scenario figcaption { grid-column: 1 / -1; color: var(--ord-muted); font-size: 0.78rem; text-align: center; }
 
 /* Agent connectivity */
+.ord-agent-example__scroll { overflow-x: auto; }
+.ord-agent-example svg { display: block; width: 100%; min-width: 800px; }
+.ord-agent-example text { fill: var(--ord-text); font-family: var(--lp-font-family-base); }
+.ord-agent-example :is(.agent-node, .api-node, .event-node, .capability-node, .dependency-node) rect { stroke-width: 2; }
+.ord-agent-example .agent-node rect { fill: var(--ord-coral-soft); stroke: #f3c4b6; }
+.ord-agent-example .api-node rect { fill: var(--ord-sky-soft); stroke: var(--ord-sky); }
+.ord-agent-example .event-node rect { fill: var(--ord-teal-soft); stroke: var(--ord-teal); }
+.ord-agent-example .capability-node rect { fill: var(--ord-violet-soft); stroke: #8061bd; }
+.ord-agent-example .dependency-node rect { fill: var(--ord-card); stroke: var(--ord-border); }
+.ord-agent-example .column-label { fill: var(--ord-muted); font-size: 17px; font-weight: 650; }
+.ord-agent-example .kind { fill: var(--ord-muted); font-size: 16px; font-weight: 650; }
+.ord-agent-example .capability-node .kind { fill: #6b49bc; }
+html[data-theme="dark"] .ord-agent-example .capability-node .kind { fill: #b7a0ff; }
+.ord-agent-example .name { font-size: 23px; font-weight: 750; }
+.ord-agent-example .detail { fill: var(--ord-muted); font-size: 17px; }
+.ord-agent-example .field-label { font-family: var(--ifm-font-family-monospace); font-size: 15px; }
+.ord-agent-example :is(.interaction-edge, .dependency-edge) { fill: none; stroke-width: 2; stroke-linejoin: round; }
+.ord-agent-example .interaction-edge { stroke: var(--ord-faint); }
+.ord-agent-example .interaction-head { fill: var(--ord-faint); }
+.ord-agent-example .interaction-label { fill: var(--ord-muted); }
+.ord-agent-example .dependency-edge { stroke: #c6503b; }
+.ord-agent-example .dependency-head { fill: #c6503b; }
+html[data-theme="dark"] .ord-agent-example .dependency-edge { stroke: var(--ord-coral); }
+html[data-theme="dark"] .ord-agent-example .dependency-head { fill: var(--ord-coral); }
+.ord-agent-example .dependency-label { fill: #ac4432; }
+html[data-theme="dark"] .ord-agent-example .dependency-label { fill: var(--ord-coral); }
+.ord-agent-example figcaption { margin-top: 0.8rem; color: var(--ord-muted); font-size: 0.75rem; text-align: center; }
+
 .ord-agent-connectivity { display: flex; flex-direction: column; gap: 0.8rem; }
-.ord-agent-model { display: grid; grid-template-columns: minmax(190px, 0.8fr) minmax(170px, 0.7fr) minmax(360px, 1.6fr); grid-template-areas: "classification agent technical" "domain agent technical"; align-items: stretch; gap: 0.7rem; }
-.ord-agent-model section { min-width: 0; border: 1px solid var(--ord-sep); border-radius: 8px; padding: 0.85rem; }
-.ord-agent-model section header { display: flex; flex-direction: column; gap: 0.15rem; }
-.ord-agent-model section header > small, .ord-agent-card > small { color: var(--ord-faint); font-size: 0.6rem; font-weight: 750; text-transform: uppercase; }
-.ord-agent-model section header > strong, .ord-agent-card > strong { color: var(--ord-text); font-size: 0.9rem; }
-.ord-agent-relations { display: flex; flex-direction: column; gap: 0.45rem; border-top: 4px solid var(--ord-violet) !important; background: var(--ord-violet-soft); }
-.ord-agent-classification { grid-area: classification; }
-.ord-agent-domain { grid-area: domain; border-top-color: var(--ord-teal) !important; background: var(--ord-teal-soft); }
-.ord-agent-relations > div { display: grid; grid-template-columns: minmax(98px, 1.35fr) 14px minmax(50px, 0.65fr); align-items: center; gap: 0.15rem; border-top: 1px solid var(--ord-sep); padding-top: 0.45rem; }
-.ord-agent-relations code, .ord-agent-path header code { background: transparent; color: var(--ord-brand); font-size: 0.56rem; padding: 0; white-space: nowrap; }
-.ord-agent-relations i, .ord-agent-path i { color: var(--ord-brand); font-style: normal; text-align: center; }
-.ord-agent-relations b { font-size: 0.68rem; }
-.ord-agent-relations b small, .ord-agent-path header small, .ord-agent-path b small { color: var(--ord-faint); font-size: 0.55rem; font-weight: 650; white-space: nowrap; }
-.ord-agent-card { grid-area: agent; display: flex; flex-direction: column; justify-content: center; gap: 0.35rem; border-top: 4px solid var(--ord-coral) !important; background: var(--ord-coral-soft); text-align: center; }
-.ord-agent-card > strong { font-size: 1.25rem; }
-.ord-agent-card > span { color: var(--ord-muted); font-size: 0.72rem; }
-.ord-agent-card > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem; margin-top: 0.35rem; }
-.ord-agent-card > div code { border: 1px solid var(--ord-border); border-radius: 4px; background: var(--ord-panel); color: var(--ord-muted); font-size: 0.56rem; padding: 0.25rem 0.35rem; }
-.ord-agent-technical { grid-area: technical; display: grid; gap: 0.7rem; }
-.ord-agent-path { display: flex; flex-direction: column; gap: 0.5rem; border-top: 4px solid var(--ord-provider) !important; background: var(--ord-provider-soft); }
-.ord-agent-dependencies { border-top-color: var(--ord-coral) !important; background: var(--ord-coral-soft); }
-.ord-agent-path header { flex-direction: row !important; align-items: baseline; justify-content: space-between; }
-.ord-agent-path > div { display: grid; grid-template-columns: minmax(92px, 1fr) 18px minmax(105px, 1fr) 18px minmax(105px, 1fr); align-items: stretch; gap: 0.25rem; }
-.ord-agent-dependencies > div { grid-template-columns: minmax(110px, 1.2fr) 14px repeat(3, minmax(70px, 0.8fr)); gap: 0.2rem; }
-.ord-agent-path b { display: flex; align-items: center; flex-direction: column; justify-content: center; gap: 0.1rem; border: 1px solid var(--ord-border); border-radius: 5px; background: var(--ord-panel); color: var(--ord-muted); font-size: 0.62rem; padding: 0.45rem; text-align: center; }
-.ord-agent-path p { color: var(--ord-muted); font-size: 0.65rem; line-height: 1.35; }
-.ord-agent-path p code { background: transparent; color: var(--ord-text); font-size: 0.6rem; padding: 0; }
+.ord-agent-connectivity > a { display: block; overflow: hidden; border-radius: 8px; background: #fff; }
+.ord-agent-connectivity img { display: block; width: 100%; height: auto; margin: 0; }
 .ord-agent-connectivity figcaption { color: var(--ord-muted); font-size: 0.75rem; line-height: 1.4; text-align: center; }
 
 /* Perspectives */
@@ -621,11 +629,6 @@ html[data-theme="dark"] .ord-diagram {
 .ord-sap-architecture figcaption { display: flex; flex-direction: column; gap: 0.25rem; color: var(--ord-muted); font-size: 0.75rem; }
 .ord-sap-architecture figcaption strong { color: var(--ord-text); font-size: 0.9rem; }
 
-/* The Agent overview needs more room than the other card diagrams. */
-@container ord-diagrams (max-width: 800px) {
-  .ord-agent-model { grid-template-columns: 1fr; grid-template-areas: "agent" "classification" "domain" "technical"; }
-}
-
 /* Sidebars can make the article narrow even on a desktop or tablet. */
 @container ord-diagrams (max-width: 660px) {
   .ord-alignment, .ord-spec-map, .ord-namespace, .ord-data-model, .ord-taxonomy-scope__grid, .ord-perspectives__grid, .ord-id-fragments, .ord-identifier-grid, .ord-change-grid, .ord-resolution-summary .branches, .ord-ai-enrichment { grid-template-columns: 1fr; }
@@ -661,11 +664,8 @@ html[data-theme="dark"] .ord-diagram {
   .ord-id-construction .ord-id-pattern i { padding: 0.2rem 0; }
   .ord-id-fragments section, .ord-identifier-card header { min-height: 0; }
   .ord-resolution-summary figcaption, .ord-overlay figcaption, .ord-pull-sequence figcaption { grid-template-columns: 1fr; }
-  .ord-overlay__flow { grid-template-columns: 1fr; gap: 0.5rem; }
+  .ord-overlay__overview, .ord-overlay__flow { grid-template-columns: 1fr; gap: 0.5rem; }
   .ord-overlay__flow > i { transform: rotate(90deg); }
   .ord-integration-scenario { grid-template-columns: 1fr; }
   .ord-integration-scenario .needs i { transform: rotate(90deg); }
-  .ord-agent-model { grid-template-columns: 1fr; grid-template-areas: "agent" "classification" "domain" "technical"; }
-  .ord-agent-path > div, .ord-agent-dependencies > div { grid-template-columns: 1fr; }
-  .ord-agent-path > div i { transform: rotate(90deg); }
 }

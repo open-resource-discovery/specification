@@ -1,5 +1,9 @@
 import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import unifiedMetadata from "../../../diagrams/unified-metadata.json";
+import overlay from "../../../diagrams/overlay.json";
+
+export { AgentExampleDiagram } from "./AgentExampleDiagram";
 
 const consumers = [
   "Joule",
@@ -125,9 +129,9 @@ export function ProviderDiagram() {
         <title id="ord-provider-title">ORD provider overview</title>
         <desc id="ord-provider-desc">
           An application or service exposes resources and capabilities through
-          ORD, including Agent Skills, Agent Plugins, and Workflows, and declares
-          dependencies on external resources. The protocols and formats shown
-          are examples.
+          ORD, including Agent Skills, Agent Plugins, and Workflows, and
+          declares dependencies on external resources. The protocols and formats
+          shown are examples.
         </desc>
         <g className="provided">
           <path d="M330 200V132" />
@@ -1103,6 +1107,11 @@ export function OrdIdDiagram() {
         <i>=</i>
         <span>a unique resource instance at runtime</span>
       </figcaption>
+      <p className="ord-id-scope-note">
+        For <code>customer.*</code> / <code>c.*</code> IDs, retain the customer
+        scope. Matching ID strings in different customer scopes do not identify
+        the same resource.
+      </p>
     </figure>
   );
 }
@@ -1406,8 +1415,9 @@ export function LifecycleDiagram() {
             <b>active</b>
           </div>
           <p>
-            Link the successor. When the old resource is decommissioned, mark it
-            sunset and publish a tombstone.
+            Link the successor; deprecation is a separate decision. On
+            retirement, publish a tombstone; remove the resource or retain it as
+            sunset with a sunsetDate.
           </p>
         </section>
       </div>
@@ -1415,6 +1425,10 @@ export function LifecycleDiagram() {
         <strong>Keep three signals separate:</strong> identity in the ORD ID,
         contract state in <code>version</code>, and maturity in{" "}
         <code>releaseStatus</code>.
+        <span className="ord-lifecycle-exception">
+          Development and beta resources may break without a new major ID;
+          tenant extensions update <code>lastUpdate</code>.
+        </span>
       </figcaption>
     </figure>
   );
@@ -1424,7 +1438,7 @@ export function ApiLifecycleDiagram() {
   return (
     <figure
       className="ord-diagram ord-api-lifecycle"
-      aria-label="An API evolves under one ORD ID until an incompatible contract creates a successor identity"
+      aria-label="An incompatible API gets a new ORD ID while the old API stays available during a consumer migration window, before retirement"
     >
       <div className="ord-api-lifecycle__scroll">
         <svg
@@ -1437,8 +1451,9 @@ export function ApiLifecycleDiagram() {
           </title>
           <desc id="ord-api-lifecycle-desc">
             An API evolves compatibly under the same ORD ID. A breaking contract
-            creates a new major ORD ID while the old resource is deprecated,
-            then sunset with a tombstone.
+            creates a new major ORD ID. The old API stays available alongside
+            the new API during a consumer migration window, then is retired with
+            a tombstone.
           </desc>
           <defs>
             <marker
@@ -1478,7 +1493,7 @@ export function ApiLifecycleDiagram() {
               02 · Compatible update
             </text>
             <text x="608" y="24">
-              03 · Breaking contract
+              03 · Migration window
             </text>
             <text x="912" y="24">
               04 · Retire old API
@@ -1551,7 +1566,7 @@ export function ApiLifecycleDiagram() {
           >
             <rect width="224" height="136" rx="8" />
             <text x="18" y="30" className="name">
-              Retained contract
+              Old API stays available
             </text>
             <text x="18" y="62" className="id">
               …:Order:v1
@@ -1575,7 +1590,7 @@ export function ApiLifecycleDiagram() {
               …:Order:v1
             </text>
             <text x="18" y="91">
-              Record sunsetDate
+              If retained: sunsetDate
             </text>
             <text x="18" y="116">
               Remove or keep as sunset
@@ -1634,15 +1649,20 @@ export function ApiLifecycleDiagram() {
             Create a successor with a new major ID.
           </text>
           <text x="618" y="225" className="ord-api-lifecycle__coexist">
-            Both contracts coexist during migration
+            Keep v1 running while consumers migrate
           </text>
         </svg>
       </div>
       <figcaption>
-        Deprecation is an explicit decision: link <code>successors</code> and
-        provide migration dates. Development and beta resources may break
-        without a new major ID; tenant extensions update <code>lastUpdate</code>
-        .
+        <strong>
+          Give the new API a new ORD ID. Keep the old API running during a
+          migration window so consumers can move.
+        </strong>{" "}
+        Link <code>successors</code> and provide migration dates. On retirement,
+        publish a tombstone; remove the resource or retain it as{" "}
+        <code>sunset</code> with a <code>sunsetDate</code>. Development and beta
+        resources may break without a new major ID; tenant extensions update{" "}
+        <code>lastUpdate</code>.
       </figcaption>
     </figure>
   );
@@ -1765,6 +1785,14 @@ export function OverlayDiagram() {
       className="ord-diagram ord-overlay"
       aria-label="An ORD Overlay enriches a resource definition without modifying its source"
     >
+      <div className="ord-overlay__overview">
+        {overlay.overview.map((item) => (
+          <section key={item.title}>
+            <strong>{item.title}</strong>
+            <span>{item.text}</span>
+          </section>
+        ))}
+      </div>
       <div className="ord-overlay__flow">
         <section>
           <small>Source definition</small>
@@ -1800,16 +1828,13 @@ export function OverlayDiagram() {
         </section>
       </div>
       <figcaption>
-        <span>
-          <b>Target</b> definition
-        </span>
-        <span>
-          <b>Select</b> an element
-        </span>
-        <span>
-          <b>Patch</b> merge, update, or remove
-        </span>
+        {overlay.steps.map((step) => (
+          <span key={step.title}>
+            <b>{step.title}</b> {step.text}
+          </span>
+        ))}
       </figcaption>
+      <p className="ord-overlay__comparison">{overlay.comparison}</p>
     </figure>
   );
 }
@@ -1856,117 +1881,27 @@ export function IntegrationScenarioDiagram() {
 }
 
 export function AgentConnectivityDiagram() {
+  const modelUrl = useBaseUrl("/img/ord-ai-agent.drawio.svg");
   return (
     <figure
       className="ord-diagram ord-agent-connectivity"
-      aria-label="Complete overview of the Agent relationships defined by ORD"
+      aria-label="Agent relationships defined by ORD"
     >
-      <div className="ord-agent-model">
-        <section className="ord-agent-relations ord-agent-classification">
-          <header>
-            <small>Placement and classification</small>
-            <strong>Where the Agent belongs</strong>
-          </header>
-          <div>
-            <code>partOfPackage</code>
-            <i>→</i>
-            <b>
-              Package <small>exactly 1</small>
-            </b>
-          </div>
-          <div>
-            <code>partOfProducts</code>
-            <i>→</i>
-            <b>
-              Products <small>0..n</small>
-            </b>
-          </div>
-          <div>
-            <code>partOfGroups</code>
-            <i>→</i>
-            <b>
-              Groups <small>0..n</small>
-            </b>
-          </div>
-        </section>
-
-        <section className="ord-agent-card">
-          <small>ORD resource</small>
-          <strong>Agent</strong>
-          <span>Autonomous task execution</span>
-          <div>
-            <code>ordId</code>
-            <code>version</code>
-            <code>visibility</code>
-            <code>releaseStatus</code>
-          </div>
-        </section>
-
-        <div className="ord-agent-technical">
-          <section className="ord-agent-path ord-agent-exposure">
-            <header>
-              <code>exposedApiResources</code>
-              <small>0..n</small>
-            </header>
-            <div>
-              <b>API Resource</b>
-              <i>→</i>
-              <b>Resource Definition</b>
-              <i>→</i>
-              <b>
-                A2A Agent Card <small>example</small>
-              </b>
-            </div>
-            <p>
-              <code>apiProtocol: a2a</code> and{" "}
-              <code>type: a2a-agent-card</code> describe one supported
-              interaction contract.
-            </p>
-          </section>
-          <section className="ord-agent-path ord-agent-dependencies">
-            <header>
-              <code>integrationDependencies</code>
-              <small>0..n</small>
-            </header>
-            <div>
-              <b>Integration Dependency</b>
-              <i>→</i>
-              <b>API Resources</b>
-              <b>Event Resources</b>
-              <b>Capabilities</b>
-            </div>
-            <p>
-              Dependency aspects identify required external resources. An MCP
-              API and selected tools are one example.
-            </p>
-          </section>
-        </div>
-
-        <section className="ord-agent-relations ord-agent-domain">
-          <header>
-            <small>Domain and evolution</small>
-            <strong>What the Agent relates to</strong>
-          </header>
-          <div>
-            <code>relatedEntityTypes</code>
-            <i>→</i>
-            <b>
-              Entity Types <small>0..n</small>
-            </b>
-          </div>
-          <div>
-            <code>successors</code>
-            <i>→</i>
-            <b>
-              Successor Agents <small>0..n</small>
-            </b>
-          </div>
-        </section>
-      </div>
+      <a href={modelUrl} target="_blank" rel="noopener noreferrer">
+        <img
+          src={modelUrl}
+          alt="Agent relationships: one Package, optional Products, Groups, Entity Types, successor Agents, interaction APIs, and Integration Dependencies."
+          style={{ backgroundColor: "#fff" }}
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
       <figcaption>
-        These are the Agent's explicit ORD relationships. Generic metadata such
-        as links, labels, tags, responsibility, and correlation IDs adds context
-        but is not another resource relation.
+        Product assignments can also be inherited from the Package. Generic
+        metadata such as links, labels, and tags is omitted.{" "}
+        <a href={modelUrl} target="_blank" rel="noopener noreferrer">
+          Open the full-size diagram.
+        </a>
       </figcaption>
     </figure>
   );

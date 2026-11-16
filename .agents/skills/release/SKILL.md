@@ -24,6 +24,7 @@ Documentation corrections that do not change the contract do not require a relea
 
 - Never commit, push, merge, tag, publish, or dispatch a workflow unless the user explicitly authorizes it.
 - Never push to main or merge locally into main.
+- Never merge the release pull request. The user always merges it themselves, even after they authorize the rest of the release.
 - Start release/vX.Y.Z from the current origin/main and preserve unrelated work.
 - Commit with git commit --signoff and verify the Signed-off-by trailer before pushing.
 - Do not create a tag manually in the normal release path.
@@ -54,7 +55,20 @@ Exclude routine tooling, dependency, generated-file, test, and CI changes unless
 
 Check new schema objects, properties, and enum values under spec/v1/ and spec-extension/models/ for the correct x-introduced-in-version value.
 
-Leave the notes under ## [unreleased] because the workflow creates the dated version section later.
+A property that reuses a shared anchor with `<<: *anchor` still needs its own x-introduced-in-version, because the merge does not supply one.
+
+New values in extensible enums (anyOf `const` lists) follow the surrounding convention and are usually not individually tagged.
+
+Finalize the dated version header in the release pull request itself, do not leave the notes under ## [unreleased] for the workflow to date later.
+
+Rename ## [unreleased] to the dated version section and leave a new empty ## [unreleased] above it, matching the exact format the release action produces:
+
+    ## [unreleased]
+
+    ## [[X.Y.Z](https://github.com/open-resource-discovery/specification/releases/tag/vX.Y.Z)] - YYYY-MM-DD
+
+Use the planned release date for YYYY-MM-DD, and update it if the release slips to another day before publishing.
+The version in the link and heading MUST match package.json, and the tag MUST be vX.Y.Z.
 
 ## Prepare the release pull request
 
@@ -85,35 +99,30 @@ Investigate unexpected generated changes.
 
 Commit approved release changes with signoff, push the branch, and open it into main.
 
-Describe the release scope and corrections in the pull request body, but do not add the finalized changelog section.
+Describe the release scope and corrections in the pull request body, but do not paste the changelog section into the body itself.
+The finalized dated changelog section belongs in CHANGELOG.md on the branch, not in the pull request description.
 
-Wait for checks and review, and do not merge without explicit user authorization.
+Wait for checks and review. The user merges the release pull request themselves, so never merge it, and continue to the publish step only after it has merged.
 
-## Generate the changelog pull request
+## Why the changelog header is finalized in the release pull request
 
-After the preparation pull request merges, confirm main contains X.Y.Z.
+The release action rewrites the changelog only when it cannot find the version already present.
+When CHANGELOG.md already contains the dated ## [[X.Y.Z](...)] section, the action takes its no-change branch: it reuses that section as the release body and skips opening a changelog pull request.
+When the version is absent, the action instead opens a separate changelog pull request and stops, requiring a second workflow run after that pull request merges.
 
-Run only the GitHub release job first.
-
-    gh workflow run release.yml --ref main -f npm=false -f githubRelease=true
-
-This run creates release-changelog-update/X.Y.Z and opens a pull request that moves unreleased notes into a dated version section.
-
-The action then intentionally stops pending that pull request.
-
-Review the generated notes for completeness, categorization, release link, and accidental tooling-only entries.
-
-Do not merge without explicit user authorization.
+Finalizing the header in the release pull request therefore avoids the fragile two-run handshake.
+It keeps the changelog correct at the moment the release pull request merges, removes the window where main describes a released state that has no tag yet, and avoids release-body drift if other changes merge between runs.
+The separate GitHub-release-only run (-f npm=false -f githubRelease=true) is then unnecessary.
 
 ## Publish and verify
 
-After the changelog pull request merges, run both jobs.
+After the release pull request merges, confirm main contains X.Y.Z and the dated CHANGELOG.md section, then run both jobs.
 
     gh workflow run release.yml --ref main -f npm=true -f githubRelease=true
 
-The workflow publishes @open-resource-discovery/specification, then creates the vX.Y.Z tag and GitHub release from main.
+Because the changelog already contains X.Y.Z, the action skips the changelog pull request and proceeds to publish @open-resource-discovery/specification, then creates the vX.Y.Z tag and GitHub release from main.
 
-Never publish NPM on the first run because publishing before the changelog merge leaves a partially completed release and makes the same package version impossible to republish.
+Confirm the tag and GitHub release do not already exist before this run, because the action fails if the release for the tag is already present.
 
     gh run list --workflow=release.yml --limit 5
     gh release view vX.Y.Z
