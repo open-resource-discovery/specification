@@ -15,9 +15,6 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Added `opensharing` as an `apiProtocol` ([OpenSharing](https://opensharing.io), an open standard under the Linux Foundation AI & Data).
   OpenSharing is the vendor-neutral successor to Delta Sharing and a superset of its protocol.
-  Existing Delta Sharing clients remain compatible, so consumers that support `delta-sharing` MAY treat `opensharing` the same way.
-  The RECOMMENDED `implementationStandard` for it is `sap:opensharing:v1`.
-  ORD retains `delta-sharing` as a valid protocol without deprecation.
 
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 

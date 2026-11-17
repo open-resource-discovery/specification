@@ -43,8 +43,6 @@ The following aspects of the definition are essential: (1) [data](#data-aspect),
   For example, SAP uses [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) and its vendor-neutral successor, [OpenSharing](https://opensharing.io).
   We additionally describe these APIs with [CSN Interop](https://sap.github.io/csn-interop-specification/) for richer metadata.
   OpenSharing is a superset of Delta Sharing, so existing Delta Sharing clients remain compatible.
-  ORD supports both `delta-sharing` and `opensharing` without deprecating either protocol.
-  Each Data Product provider decides whether and when to deprecate its Delta Sharing APIs.
 - Data Products are also expected to describe their data lineage. This is done via Data Product input ports, which are described in details as an ORD [Integration Dependency](../interfaces/Document#integration-dependency)
 
 ### Metadata Aspect
