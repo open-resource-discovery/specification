@@ -11,6 +11,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added `opensharing` as an `apiProtocol` ([OpenSharing](https://opensharing.io), an open standard under the Linux Foundation AI & Data).
+  OpenSharing is the vendor-neutral successor to Delta Sharing and a superset of its protocol.
+
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
 ### Changed
