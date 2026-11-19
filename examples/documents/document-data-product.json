@@ -618,7 +618,7 @@
           "ordId": "sap.foo:consumptionBundle:someAuth:v1"
         }
       ],
-      "entryPoints": ["https://example.com/opensharing"],
+      "entryPoints": ["https://example.com/opensharing/shares/customer-orders"],
       "apiProtocol": "opensharing",
       "implementationStandard": "sap:opensharing:v1",
       "resourceDefinitions": [
