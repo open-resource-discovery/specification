@@ -37,3 +37,5 @@ docs/spec-extensions/models/*.md
 .codex
 .DS_Store
 grounding/
+
+.idea/
