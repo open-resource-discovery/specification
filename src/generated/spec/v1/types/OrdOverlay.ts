@@ -185,9 +185,9 @@ export type OverlayPatchValue =
  * internal structure, making them resilient to format changes.
  * A `jsonPath` selector is available as a generic fallback.
  *
- * Overlay files can be provided through the
- * [ORD Configuration endpoint](../../spec-v1/index.md#ord-configuration-endpoint),
- * or attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`.
+ * Overlay files MUST be published through Overlay Resources in an ORD Document,
+ * referenced by `overlays[].definitions[]` with type `ord:overlay:v1`.
+ * Attaching overlays to API or Event `resourceDefinitions` is deprecated.
  */
 export interface ORDOverlay {
   /**
