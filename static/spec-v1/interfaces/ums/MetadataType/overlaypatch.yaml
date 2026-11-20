@@ -9,13 +9,13 @@ spec:
   key:
     - 'id'
   visibility: 'public'
-  embedded: true
+  embedded: !!bool 'true'
   description: 'A single patch action to apply to the element identified by the [Overlay Selector](#overlay-selector).'
   metadataProperties:
     - name: 'id'
       type: 'guid'
-      mandatory: true
-      unique: true
+      mandatory: !!bool 'true'
+      unique: !!bool 'true'
       description: 'UMS ID (globally unique), used for relations.'
     - name: 'description'
       type: 'string'
@@ -23,17 +23,17 @@ spec:
     - name: 'action'
       type: 'string'
       description: 'The patch operation to perform on the selected element.'
-      mandatory: true
+      mandatory: !!bool 'true'
     - name: 'tags'
       type: 'string'
-      array: true
+      array: !!bool 'true'
       description: "String labels associated with the patched element.\nUseful for classification, domain tagging, and filtering in registries or tooling.\n\nThese are purely informational and have no effect on patch application or on the\ntarget document."
   customTypeDefinitions: []
   metadataRelations:
     - propertyName: 'selector'
       relatedTypeName: 'OverlaySelector'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      mandatory: true
+      mandatory: !!bool 'true'
     - propertyName: 'data'
       relatedTypeName: 'OverlayPatchValue'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
