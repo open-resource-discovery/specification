@@ -279,26 +279,28 @@
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "public",
-      "relatedApiResources": [
-        {
-          "ordId": "sap.foo:apiResource:astronomy:v1",
-          "relationType": "ord:patches"
-        }
-      ],
       "definitions": [
         {
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
           "url": "/ord/overlays/astronomy-api-ai-enrichment.overlay.json",
-          "visibility": "public",
-          "purpose": "ord:ai-enrichment",
           "accessStrategies": [
             {
               "type": "open"
             }
           ]
         }
-      ]
+      ],
+      "description": "Enriches the Astronomy API with AI-optimized descriptions, usage hints, and examples that help LLMs and AI agents understand and correctly invoke each operation.",
+      "target": {
+        "ordId": "sap.foo:apiResource:astronomy:v1",
+        "resourceDefinition": {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      },
+      "purpose": "ord:ai-enrichment"
     },
     {
       "ordId": "sap.foo:overlay:astronomy-api-governance:v1",
@@ -306,26 +308,28 @@
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "internal",
-      "relatedApiResources": [
-        {
-          "ordId": "sap.foo:apiResource:astronomy:v1",
-          "relationType": "ord:patches"
-        }
-      ],
       "definitions": [
         {
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
           "url": "/ord/overlays/astronomy-api-governance.overlay.json",
-          "visibility": "internal",
-          "purpose": "foo.bar:governance",
           "accessStrategies": [
             {
               "type": "open"
             }
           ]
         }
-      ]
+      ],
+      "description": "Adds platform governance metadata to the Astronomy API: data classification labels, rate-limit documentation, and deprecation timeline for legacy operations. Managed by the platform team independently of the API owner.",
+      "target": {
+        "ordId": "sap.foo:apiResource:astronomy:v1",
+        "resourceDefinition": {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      },
+      "purpose": "foo.bar:governance"
     }
   ]
 }

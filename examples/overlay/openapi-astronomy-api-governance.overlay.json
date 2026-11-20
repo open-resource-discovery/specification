@@ -1,16 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
-  "ordId": "sap.foo:overlay:astronomy-api-governance:v1",
-  "description": "Adds platform governance metadata to the Astronomy API: data classification labels, rate-limit documentation, and deprecation timeline for legacy operations. Managed by the platform team independently of the API owner.",
-  "describedSystemType": {
-    "systemNamespace": "sap.foo"
-  },
-  "visibility": "internal",
-  "target": {
-    "ordId": "sap.foo:apiResource:astronomy:v1",
-    "definitionType": "openapi-v3"
-  },
   "patches": [
     {
       "action": "merge",

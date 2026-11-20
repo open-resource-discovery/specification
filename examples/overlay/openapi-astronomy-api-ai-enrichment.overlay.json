@@ -1,16 +1,6 @@
 {
   "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
   "ordOverlay": "0.1",
-  "ordId": "sap.foo:overlay:astronomy-api-ai-enrichment:v1",
-  "description": "Enriches the Astronomy API with AI-optimized descriptions, usage hints, and examples that help LLMs and AI agents understand and correctly invoke each operation.",
-  "describedSystemType": {
-    "systemNamespace": "sap.foo"
-  },
-  "visibility": "public",
-  "target": {
-    "ordId": "sap.foo:apiResource:astronomy:v1",
-    "definitionType": "openapi-v3"
-  },
   "patches": [
     {
       "action": "merge",

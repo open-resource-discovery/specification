@@ -1,0 +1,9 @@
+overlay: 1.0.0
+info:
+  title: Astronomy Governance Annotations
+  version: 1.0.0
+actions:
+  - target: $.info
+    description: Add governance review metadata after AI enrichment.
+    update:
+      x-governance-reviewed: true
