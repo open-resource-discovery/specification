@@ -9,17 +9,28 @@
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "public",
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
-      ],
       "definitions": [
         {
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
-          "url": "/open-resource-discovery/v1/overlays/astronomy-api-ai-enrichment.overlay.json",
-          "purpose": "ord:ai-enrichment"
+          "url": "/open-resource-discovery/v1/overlays/astronomy-api-ai-enrichment.overlay.json"
+        },
+        {
+          "type": "oas-overlay-v1",
+          "mediaType": "application/yaml",
+          "url": "/open-resource-discovery/v1/overlays/astronomy-api.overlay.yaml"
         }
-      ]
+      ],
+      "description": "Enriches the Astronomy API with AI-optimized descriptions, usage hints, and examples that help LLMs and AI agents understand and correctly invoke each operation.",
+      "target": {
+        "ordId": "sap.foo:apiResource:astronomy:v1",
+        "resourceDefinition": {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      },
+      "purpose": "ord:ai-enrichment"
     },
     {
       "ordId": "sap.foo:overlay:astronomy-api-governance:v1",
@@ -27,17 +38,23 @@
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "internal",
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
-      ],
       "definitions": [
         {
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
-          "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json",
-          "purpose": "foo.bar:governance"
+          "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json"
         }
-      ]
+      ],
+      "description": "Adds platform governance metadata to the Astronomy API: data classification labels, rate-limit documentation, and deprecation timeline for legacy operations. Managed by the platform team independently of the API owner.",
+      "target": {
+        "ordId": "sap.foo:apiResource:astronomy:v1",
+        "resourceDefinition": {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      },
+      "purpose": "foo.bar:governance"
     },
     {
       "ordId": "sap.foo:overlay:astronomy-api-openapi-overlay:v1",
@@ -45,16 +62,213 @@
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "public",
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
-      ],
       "definitions": [
         {
           "type": "oas-overlay-v1",
           "mediaType": "application/yaml",
           "url": "/open-resource-discovery/v1/overlays/astronomy-api.overlay.yaml"
         }
-      ]
+      ],
+      "target": {
+        "ordId": "sap.foo:apiResource:astronomy:v1",
+        "resourceDefinition": {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      }
+    },
+    {
+      "ordId": "sap.foo:overlay:astronomy-api-openapi:v1",
+      "title": "Astronomy Api Openapi",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "internal",
+      "purpose": "ord:ai-enrichment",
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/openapi-astronomy-api.overlay.json"
+        }
+      ],
+      "description": "Adds deprecation notices and supplementary documentation to the Astronomy REST API without modifying the original OpenAPI specification.\n\nThe first patch uses the 'operation' concept-level selector, which maps to the OpenAPI 'operationId' field.",
+      "target": {
+        "ordId": "sap.foo:apiResource:astronomy:v1",
+        "resourceDefinition": {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      }
+    },
+    {
+      "ordId": "sap.foo:overlay:all-odata-selectors:v1",
+      "title": "All Odata Selectors",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "internal",
+      "purpose": "ord:ai-enrichment",
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/edmx-all-selectors.overlay.json"
+        }
+      ],
+      "description": "Demonstrates all OData-specific selectors in a single overlay.\n\nThis example shows:\n- namespace: Schema-level annotations\n- entityType: EntityType definitions\n- complexType: ComplexType definitions (OData-specific)\n- enumType: EnumType definitions (OData-specific)\n- propertyType: Properties, navigation properties, and enum members\n- entitySet: EntitySets in EntityContainer\n- operation: Actions and Functions\n- parameter: Action/Function parameters\n- returnType: Action/Function return types",
+      "target": {
+        "ordId": "sap.foo:apiResource:HRService:v1",
+        "resourceDefinition": {
+          "type": "edmx",
+          "mediaType": "application/xml",
+          "visibility": "public"
+        }
+      }
+    },
+    {
+      "ordId": "sap.foo:overlay:airline-csn-interop:v1",
+      "title": "Airline Csn Interop",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "internal",
+      "purpose": "ord:ai-enrichment",
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/csn-interop-airline.overlay.json"
+        }
+      ],
+      "description": "Enriches the CSN Interop Airline service with AI-facing descriptions and vocabulary annotations.\n\nFor CSN Interop targets (sap-csn-interop-effective-v1), patch data is plain CSN JSON merged\ndirectly into the matched definition or element object. Use 'doc' for human-readable descriptions\nand '@AnnotationName' keys for vocabulary annotations (e.g. @EndUserText.label).\nentityType selectors use the fully qualified definitions key (e.g. 'AirlineService.Airline').\nSee: https://sap.github.io/csn-interop-specification/",
+      "target": {
+        "ordId": "sap.foo:apiResource:AirlineService:v1",
+        "resourceDefinition": {
+          "type": "sap-csn-interop-effective-v1",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      }
+    },
+    {
+      "ordId": "sap.foo:overlay:weather-mcp-server:v1",
+      "title": "Weather Mcp Server",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "internal",
+      "purpose": "ord:ai-enrichment",
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/mcp-weather-server.overlay.json"
+        }
+      ],
+      "description": "Enriches an MCP server's tool metadata with extended descriptions for AI agent consumption.\n\nThe 'operation' selector maps to MCP tool names (tools[].name).\nMCP targets use a Specification ID as definitionType (e.g., 'sap.foo:weather-server:v1').",
+      "target": {
+        "ordId": "sap.foo:apiResource:WeatherMCPServer:v1",
+        "resourceDefinition": {
+          "type": "sap.foo:weather-server:v1",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      }
+    },
+    {
+      "ordId": "sap.foo:overlay:dispute-agent-a2a:v1",
+      "title": "Dispute Agent A2A",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "private",
+      "purpose": "ord:ai-enrichment",
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/a2a-dispute-agent.overlay.json"
+        }
+      ],
+      "description": "Enriches the Dispute Resolution Agent Card (A2A format) with extended descriptions, usage guidance, and classification metadata without modifying the original Agent Card file.\n\nThe 'operation' selector maps to A2A Agent Card skill IDs (skills[].id).",
+      "target": {
+        "ordId": "sap.foo:apiResource:FICADisputeResolutionAgent:v1",
+        "resourceDefinition": {
+          "type": "a2a-agent-card",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      }
+    },
+    {
+      "ordId": "sap.foo:overlay:astronomy-api-openapi-jsonpath:v1",
+      "title": "Astronomy Api Openapi Jsonpath",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "internal",
+      "purpose": "ord:ai-enrichment",
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/openapi-astronomy-api-jsonpath.overlay.json"
+        }
+      ],
+      "description": "Patches the sample Astronomy OpenAPI metadata using JSONPath selectors only.",
+      "target": {
+        "ordId": "sap.foo:apiResource:astronomy:v1",
+        "resourceDefinition": {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      }
+    },
+    {
+      "ordId": "sap.foo:overlay:example-service-odata:v1",
+      "title": "Example Service Odata",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "internal",
+      "purpose": "ord:ai-enrichment",
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/edmx-example-service.overlay.json"
+        }
+      ],
+      "description": "Enriches the OData.Demo example service with AI-facing descriptions and deprecation annotations.\n\nPatch data for OData targets (edmx / csdl-json) is expressed in CSDL JSON annotation format:\nhttps://docs.oasis-open.org/odata/odata-csdl-json/v4.01/odata-csdl-json-v4.01.html\nAnnotation keys use the @TermName convention (e.g. @Core.Description).\nThis applies to both XML (edmx) and JSON (csdl-json) target files. When the target is EDMX XML,\nthe overlay merge implementation converts the CSDL JSON patch to equivalent <Annotation> elements.",
+      "target": {
+        "ordId": "sap.foo:apiResource:ODataDemoService:v1",
+        "resourceDefinition": {
+          "type": "edmx",
+          "mediaType": "application/xml",
+          "visibility": "public"
+        }
+      }
+    },
+    {
+      "ordId": "sap.foo:overlay:business-partner-odata:v1",
+      "title": "Business Partner Odata",
+      "version": "1.0.0",
+      "releaseStatus": "active",
+      "visibility": "internal",
+      "purpose": "ord:ai-enrichment",
+      "definitions": [
+        {
+          "type": "ord:overlay:v1",
+          "mediaType": "application/json",
+          "url": "/open-resource-discovery/v1/overlays/edmx-business-partner.overlay.json"
+        }
+      ],
+      "description": "Enriches OData Business Partner API metadata with extended descriptions and deprecation annotations using concept-level selectors.",
+      "target": {
+        "ordId": "sap.foo:apiResource:BusinessPartnerODataV2:v1",
+        "resourceDefinition": {
+          "type": "edmx",
+          "mediaType": "application/xml",
+          "visibility": "public"
+        }
+      }
     }
   ]
 }

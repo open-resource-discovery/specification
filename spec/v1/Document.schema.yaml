@@ -3318,7 +3318,7 @@ definitions:
       An Overlay Resource is a standalone, versioned resource that references a metadata patch file.
       Overlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
 
-      Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
+      Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently.
       Providers MUST use an Overlay Resource for every published overlay, including producer-owned overlays
       that patch a single resource. Attaching overlays to API or Event `resourceDefinitions` is deprecated.
     properties:
@@ -3346,47 +3346,46 @@ definitions:
 
       visibility:
         <<: *visibility
+        description: |-
+          Visibility of this Overlay Resource, all its patch files, and the projected resource definition.
+          Definition entries MUST inherit this visibility; they cannot override it.
+          Aggregators MUST enforce this audience on the overlay and the result, and MUST NOT expose
+          restricted input metadata to a broader audience without explicit authorization.
 
       releaseStatus:
         <<: *releaseStatus
 
-      relatedApiResources:
-        <<: *relatedApiResources
-        x-introduced-in-version: "1.15.0"
+      purpose:
+        <<: *resourceDefinitionPurpose
         description: |-
-          Optional list of API Resources whose definition files this overlay patches.
+          Purpose of this Overlay Resource and of the projected resource definition produced by applying it.
+          MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id).
+          When omitted, the projected definition also has no purpose.
 
-          SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
-          as it enables efficient indexing without requiring the aggregator to parse each overlay file.
-          Use `relationType: ord:patches` to express the patching relationship.
 
-          May be omitted when the target resource is not described in an accessible ORD document,
-          or when the overlay is cross-cutting and patches resources from multiple providers.
-
-      relatedEventResources:
-        <<: *relatedEventResources
-        x-introduced-in-version: "1.15.0"
+      target:
+        $ref: "#/definitions/OverlayTarget"
         description: |-
-          Optional list of Event Resources whose definition files this overlay patches.
-
-          SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
-          as it enables efficient indexing without requiring the aggregator to parse each overlay file.
-          Use `relationType: ord:patches` to express the patching relationship.
-
-          May be omitted when the target resource is not described in an accessible ORD document,
-          or when the overlay is cross-cutting and patches resources from multiple providers.
+          Selects the ORD resource and the concrete input resource definition patched by every entry in `definitions`.
+          This is the sole source of target identification for the projection.
 
       definitions:
         type: array
+        minItems: 1
         description: |-
-          List of overlay definition files referenced by this ORD Overlay Resource.
-          Each entry points to an overlay document that contains the actual patches.
+          Ordered list of patch files contributing to this projection.
+          Every entry MUST have a unique combination of `type` and `mediaType` within this list.
+          The files are not necessarily alternative representations of the same operations.
+          Consumers MUST apply every entry in array order, preserving patch order within each file.
+          Each file operates on the result of the preceding file; later operations act on the modified state.
+          A consumer that cannot process an entry MUST report an error rather than silently skip it.
+          Visibility and purpose are defined exclusively on this Overlay Resource.
         items:
           $ref: "#/definitions/OverlayDefinition"
 
       tags:
-        <<: *tags 
-        
+        <<: *tags
+
       labels:
         <<: *labels
 
@@ -3396,6 +3395,8 @@ definitions:
       - version
       - releaseStatus
       - visibility
+      - target
+      - definitions
     x-recommended:
       - lastUpdate
 
@@ -3408,7 +3409,8 @@ definitions:
     x-introduced-in-version: "1.15.0"
     x-feature-status: alpha
     description: |-
-      Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.
+      Link to a machine-readable patch file contributing to the containing Overlay Resource's projection.
+      Its visibility is inherited from the Overlay Resource. Target, applicability, and purpose are defined on the entity.
     properties:
       type:
         description: Type of the overlay definition
@@ -3440,17 +3442,88 @@ definitions:
       accessStrategies:
         <<: *accessStrategies
 
-      visibility:
-        <<: *definitionVisibility
-
-      purpose:
-        <<: *resourceDefinitionPurpose
-
     additionalProperties: false
     required:
       - type
       - mediaType
       - url
+
+  ############################################################################################################
+
+  OverlayTarget:
+    type: object
+    title: Overlay Target
+    x-ums-type: embedded
+    description: |-
+      Selects one ORD resource and one concrete input resource definition.
+      Matching is performed in the ORD aggregation context.
+      Resolution MUST identify exactly one input definition; zero or multiple matches MUST error.
+      Relationships to the patched resource are derived from `ordId` and MUST NOT be duplicated in related-resource lists.
+    additionalProperties: false
+    required:
+      - ordId
+      - resourceDefinition
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        description: |-
+          ORD ID of the resource whose definition is patched (e.g. API Resource, Event Resource, or Capability).
+      resourceDefinition:
+        $ref: "#/definitions/OverlayTargetResourceDefinition"
+
+  OverlayTargetResourceDefinition:
+    type: object
+    title: Overlay Target Resource Definition
+    x-ums-type: embedded
+    description: |-
+      Matching criteria for the input resource definition, independent of the output visibility and purpose.
+      `type`, `mediaType`, and effective `visibility` MUST match the input definition exactly.
+      Effective visibility includes visibility inherited from the target resource.
+      If `purpose` is omitted, select a primary definition without a purpose; omission is not a wildcard.
+      Custom formats MUST be identified directly by a Specification ID in `type`.
+      Resolution MUST identify exactly one input definition.
+    additionalProperties: false
+    required:
+      - type
+      - mediaType
+      - visibility
+    properties:
+      type:
+        type: string
+        description: Type of the input resource definition, using its resource-definition type vocabulary.
+        anyOf:
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+            description: |-
+              Any valid [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id).
+          - const: openapi-v2
+          - const: openapi-v3
+          - const: openapi-v3.1+
+          - const: raml-v1
+          - const: edmx
+          - const: csdl-json
+          - const: graphql-sdl
+          - const: wsdl-v1
+          - const: wsdl-v2
+          - const: a2a-agent-card
+          - const: sap-rfc-metadata-v1
+          - const: sap-sql-api-definition-v1
+          - const: sap-csn-interop-effective-v1
+          - const: asyncapi-v2
+          - const: sap.mdo:mdi-capability-definition:v1
+          - const: oas-overlay-v1
+            x-introduced-in-version: "1.17.0"
+          - const: arazzo-v1
+            x-introduced-in-version: "1.17.0"
+      mediaType:
+        <<: *mediaType
+      visibility:
+        <<: *visibility
+        description: Effective visibility of the input definition to select, including inheritance from its resource.
+      purpose:
+        <<: *resourceDefinitionPurpose
+        description: Optional purpose of the input definition to select; omit to select the primary definition without a purpose.
 
   ############################################################################################################
 

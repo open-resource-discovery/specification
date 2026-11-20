@@ -68,8 +68,7 @@ Rule of thumb:
 ### Deep Dive: Overlay Publication and Migration
 
 Every published overlay MUST be represented by an `OrdOverlayResource` in an ORD Document.
-Its `definitions` entries reference the actual patch files and carry their format, access strategies,
-visibility, and purpose. The overlay entity supplies identity, version, release status, and resource relationships.
+Its `definitions` entries reference the actual patch files and carry their format, media type, and access strategies. The overlay entity supplies identity, version, release status, target, visibility, and purpose.
 This gives producer-owned and independently managed overlays the same discovery and lifecycle model.
 
 Attaching overlays directly to API or Event `resourceDefinitions` is deprecated as of ORD 1.18.0.
@@ -77,19 +76,20 @@ The legacy type values remain accepted for compatibility, but MUST NOT be used f
 
 To migrate an attached overlay:
 
-1. Create an entry in the ORD Document's `overlays` array with its own `ordId`, `version`, `releaseStatus`, and `visibility`.
-2. Move the overlay file reference from the target resource's `resourceDefinitions` into the overlay entity's `definitions`, preserving its URL, type, media type, access strategies, purpose, and effective visibility.
-3. Add `relatedApiResources` or `relatedEventResources` with `relationType: ord:patches` where the target is available to the aggregator.
-4. Keep or provide explicit target identification in the patch file so consumers can resolve the definition being patched.
+1. Create an entry in the ORD Document's `overlays` array with its own `ordId`, `version`, `releaseStatus`, `visibility`, and projection `purpose` if applicable.
+2. Move target identification to the entity's `target`. Specify the input ORD ID and required resource-definition type, media type, and effective visibility; include its purpose where applicable. Identify custom formats directly through a Specification ID in `type`.
+3. Remove perspective and described-system objects from overlays; resolve system context through ORD discovery and aggregation. Remove related API/Event resource lists; the target ORD ID supplies the relationship.
+4. Move file references into `definitions`, preserving URL, type, media type, and access strategies. Remove per-definition visibility and purpose. Split files into separate overlay entities if they require different audiences or purposes.
+5. Remove document-level metadata from native patch files, retaining only the format-version envelope and patches. Order definition entries in their intended application order and ensure their `(type, mediaType)` keys are unique.
 
-When an attached definition inherited its visibility or access strategies, preserve those effective values
-explicitly if the new containing overlay resource or ORD Document would otherwise change them.
+When a legacy definition inherited visibility or access strategies, preserve the effective audience on the entity
+and preserve effective access strategies on its file references if moving them would change access.
 
 ### Appendix: Relation to the OpenAPI Initiative Overlay Specification
 
 The [OpenAPI Initiative Overlay Specification](https://spec.openapis.org/overlay/v1.0.0.html) (OAS Overlay) inspired the overall idea of ORD Overlay:
 express metadata enrichment as a separate document that patches a target file, without modifying that file.
-ORD Overlay reuses that core pattern, and even preserves 1:1-compatible fields like `actions[].description` on individual patches to allow lossless round-tripping of OpenAPI-only overlays.
+ORD Overlay reuses that core pattern, and even preserves 1:1-compatible fields like `actions[].description` on individual patches to preserve action descriptions during conversion of OpenAPI patch operations.
 
 However, ORD Overlay is intentionally a **dedicated, ORD-opinionated model** rather than a thin wrapper around OAS Overlay.
 This section explains what motivated a dedicated model and where the two specifications differ.
@@ -105,11 +105,11 @@ This section explains what motivated a dedicated model and where the two specifi
   ORD Overlay defines concept-level selectors (`operation`, `entityType`, `entitySet`, `parameter`, `returnType`, ...)
   that are resilient to structural changes (e.g. OpenAPI 3.0 to 3.1, EDMX to CSDL JSON).
   `jsonPath` is still available as a generic fallback.
-- **Integration with ORD identifiers.** ORD Overlay's `target.ordId` and `target.definitionType` connect an overlay
+- **Integration with ORD identifiers.** ORD Overlay's `target.ordId` and `target.resourceDefinition` connect an overlay
   directly to the ORD resource graph, so ORD Aggregators can resolve, authorize, and merge overlays without
   format-specific heuristics.
-- **`purpose` and `visibility` on overlays and their patches.** ORD Overlay carries first-class `purpose`
-  (e.g. `ord:ai-enrichment`, `ord:agent-security-permissions`) and `visibility` on the overlay entity's definition entry.
+- **`purpose` and `visibility` on Overlay Resources.** ORD Overlay carries first-class `purpose`
+  (e.g. `ord:ai-enrichment`, `ord:agent-security-permissions`) and `visibility` on the overlay entity itself, and transfers them to the projected output.
   This enables audience-scoped variants and governance decisions that OAS Overlay does not model.
 - **Explicit patch actions.** OAS Overlay expresses removal via an `remove: true` flag and updates via `update` payloads.
   ORD Overlay uses three explicit actions — `update`, `merge`, `remove` — with well-defined semantics per action
@@ -118,21 +118,21 @@ This section explains what motivated a dedicated model and where the two specifi
 - **First-class publishing model.** Overlays are published as standalone `OrdOverlayResource` entries
   in an ORD Document, with patch files referenced through `definitions`. This model participates in
   normal ORD discovery, authorization, and lifecycle handling.
-- **Overlay-specific perspective.** The overlay `perspective` (`system-type`, `system-version`, `system-instance`)
-  scopes *where the patch applies*, which has no analogue in OAS Overlay.
+
 
 #### Where the two specifications overlap
 
 - Both keep overlays as a separate file from the target, to preserve the original source.
 - Both support enrichment (adding descriptions, annotations, examples) as the primary use case.
 - ORD Overlay `patches[].description` maps 1:1 to OAS Overlay `actions[].description`, enabling
-  lossless round-trip conversion for OpenAPI-only overlays.
+  preservation of action descriptions when converting OpenAPI patch operations.
 
 #### Interoperability with OAS Overlay documents
 
 Publishers who prefer authoring their overlays in the OpenAPI Initiative Overlay format can still expose them
 through an `OrdOverlayResource` whose `definitions` entry uses `type: oas-overlay-v1`.
 This keeps OAS Overlay documents discoverable through ORD without forcing them into the ORD Overlay format.
+Published OAS Overlay files MUST omit `extends`; the containing Overlay Resource is authoritative for target resolution.
 
 Conversion between the two formats is possible for the OpenAPI subset of targets, but not required by this specification.
 
@@ -159,12 +159,12 @@ Examples of changes that are typically **inappropriate**:
 - Contradicting the original meaning of the resource (e.g. changing a resource's title to describe something else entirely)
 
 Enforcement of these expectations is left to ORD Aggregators and overlay governance processes.
-The `purpose` field on the overlay entity's definition entry can help aggregators decide which changes are acceptable for a given overlay source.
+The `purpose` field on the overlay entity can help aggregators decide which changes are acceptable for a given overlay source.
 
 ## Current Constraints
 
 - Overlays replace string values as complete values. If you need to refine a summary or description, compute the final string in the patch payload and apply it with `update` or `merge`.
-- The specification defines patch order within one overlay file. If multiple overlay documents apply to the same target, providers and aggregators should define and document a deterministic processing order outside this specification.
+- Within one Overlay Resource, files are applied in definition-array order and patches in each file are applied in their listed order. Ordering between separate Overlay Resources remains an aggregator or provider policy.
 - For OData, prefer the dedicated selectors in this spec: `entityType`, `complexType`, `enumType`, `propertyType`, `entitySet`, `namespace`, `parameter`, and `returnType`.
 - In OData, `entityType` targets the type definition itself. EntityContainer-bound annotations such as `Capabilities` belong on `entitySet`; use `jsonPath` only when no dedicated selector fits.
 - OData patch values MUST use CSDL JSON annotation format (`@TermName` keys). After applying an overlay, validate the merged result with format-specific tooling before publication.

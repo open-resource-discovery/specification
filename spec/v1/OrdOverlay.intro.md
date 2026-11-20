@@ -27,7 +27,6 @@ See [Overlay Definition](../../spec-v1/interfaces/Document.md#overlay-definition
 ```json
 {
   "ordOverlay": "0.1",
-  "target": { "ordId": "sap.foo:apiResource:astronomy:v1", "definitionType": "openapi-v3" },
   "patches": [
     {
       "action": "merge",
@@ -52,11 +51,9 @@ The legacy `ord:overlay:v1` and `oas-overlay-v1` resource-definition types remai
 but providers MUST NOT use them for new overlay publications.
 See [Overlay Publication and Migration](#deep-dive-overlay-publication-and-migration) for migration guidance.
 
-When a consumer applies multiple overlays to the same target, the processing order is not defined by this
-specification and MUST be established by the ORD Aggregator or ORD Provider.
-
-The ORD Overlay Resource acts as any other ORD resource: it has its own `ordId`, `version`, `releaseStatus`, and `visibility`,
-and references the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`.
+The Overlay Resource defines one projection: its identity, lifecycle, target, visibility, and purpose.
+The top-level `visibility` and `purpose` describe both the entity and its projected output.
+All referenced patch files inherit the entity's visibility; definition entries cannot override visibility or purpose.
 
 ```json
 {
@@ -66,16 +63,26 @@ and references the actual overlay file via a `definitions` entry with `type: ord
       "title": "Astronomy API AI Enrichment Overlay",
       "version": "1.0.0",
       "releaseStatus": "active",
-      "visibility": "public",
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
-      ],
+      "visibility": "internal",
+      "purpose": "ord:ai-enrichment",
+      "target": {
+        "ordId": "sap.foo:apiResource:astronomy:v1",
+        "resourceDefinition": {
+          "type": "openapi-v3",
+          "mediaType": "application/json",
+          "visibility": "public"
+        }
+      },
       "definitions": [
         {
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
-          "url": "/ord/overlays/ai-enrichment.overlay.json",
-          "purpose": "ord:ai-enrichment"
+          "url": "/ord/overlays/ai-enrichment.overlay.json"
+        },
+        {
+          "type": "oas-overlay-v1",
+          "mediaType": "application/yaml",
+          "url": "/ord/overlays/astronomy-api.overlay.yaml"
         }
       ]
     }
@@ -85,23 +92,36 @@ and references the actual overlay file via a `definitions` entry with `type: ord
 
 ## Target Resolution
 
-The optional [`target`](#overlay-target) object narrows which document the overlay applies to.
-When omitted, all patches in the file are context-free and each patch's [`selector`](#overlay-selector) alone identifies the element.
-Omitting `target` is only appropriate when the association between the overlay and its target definition file
-is established by external convention (e.g. a pipeline that always merges a fixed overlay into a fixed file).
-For all other cases, specifying `target.ordId` is strongly recommended to make patch resolution unambiguous.
+The required `target` belongs exclusively to the [Overlay Resource](../../spec-v1/interfaces/Document.md#overlay).
+Its `ordId` selects the ORD resource whose concrete definition is patched.
+The nested `resourceDefinition` identifies the input using required `type`, `mediaType`, and `visibility`.
+Custom formats are identified directly by a Specification ID in `type`; `customType` is not supported.
+Optional `purpose` selects a complementary input variant; omitting it selects the primary definition without a purpose.
+Target visibility matches the input's effective visibility, including inheritance from its resource.
+Consumers MUST resolve exactly one input definition. Zero or multiple matches MUST error.
+Target visibility and purpose select the input; the entity's visibility and purpose describe the output.
 
-Key fields on `target`:
+Consumers resolve the target in the ORD aggregation context.
+Overlay Resources MUST NOT carry `perspective`, `describedSystemType`, `describedSystemVersion`, or `describedSystemInstance`.
+System context is supplied by ORD discovery and aggregation.
+`relatedApiResources` and `relatedEventResources` are not supported on Overlay Resources;
+the patching relationship is derived from `target.ordId`.
 
-| Field | Purpose |
-|---|---|
-| `ordId` | Identifies the ORD resource whose attached definition file is being patched. Used together with `url` or `definitionType` to disambiguate. |
-| `url` | Direct URL to the specific metadata definition file (e.g. an OpenAPI JSON file). |
-| `definitionType` | Declares the format of the file (e.g. `openapi-v3`, `a2a-agent-card`). Disambiguates when a resource has multiple definitions attached. |
+Patch files MUST NOT contain target, resource identity, perspective, visibility, or purpose metadata.
+Native ORD Overlay files contain only `$schema` (optional), `ordOverlay`, and `patches`.
+Selectors identify elements within the already selected input file.
+Standalone patch-processing tools receive the input and format context from their caller.
 
-Example of ambiguity: an OData API resource may expose both `edmx` and `openapi-v3` definitions.
-Provide `definitionType` and/or `url` to make the concrete patch target explicit.
+## Definition Uniqueness and Application Order
 
+An Overlay Resource MUST reference at least one patch file.
+Each `definitions` entry MUST have a unique combination of `type` and `mediaType` within that entity.
+Files may contribute different operations; they are not necessarily alternative representations of the projection.
+Consumers MUST apply all files in array order, preserving the listed patch order within each file.
+Each file operates on the result of the previous file. Later operations act on the already modified state.
+Unsupported patch formats MUST produce an error rather than being silently skipped.
+
+Ordering between separate Overlay Resources that affect the same input remains an aggregator or provider policy.
 
 ## Selectors
 
@@ -186,8 +206,9 @@ See [Compatibility Expectations](#compatibility-expectations) for rules on what 
 
 ## Tooling
 
-A [reference implementation](https://github.com/open-resource-discovery/overlay-tools) for merging, validating, and converting ORD Overlays is provided as a separate package.
-It supports all selector types and patch actions defined in this specification, including EDMX XML targets.
+A [patch-processing implementation](https://github.com/open-resource-discovery/overlay-tools) for merging, validating, and converting ORD Overlays is provided as a separate package.
+Its integration must supply the target context from the Overlay Resource. Published tools may require updates
+to support the entity-based projection model; see their respective documentation.
 
 Additionally a [set of React components](https://github.com/open-resource-discovery/overlay-editor) for viewing Open Resource Discovery Overlay documents and a [reusable library](https://github.com/open-resource-discovery/overlay-golang) written in Go.
 
@@ -200,15 +221,11 @@ An ORD Aggregator SHOULD support merging ORD Overlays into the resource definiti
 so that individual consumers do not need to implement overlay processing themselves.
 
 When an ORD Aggregator performs the merge, it SHOULD produce a new resource definition entry with the merged content.
-The new entry takes over the `type` from the original resource definition,
-the `visibility` from the overlay document,
-and the `purpose` from the overlay's definition entry.
-
-## Overlay Document Metadata
-
-Note on `perspective`: unlike its use in ORD Documents (which scopes transport),
-`perspective` on an overlay declares *where the patch should be applied* — at system-type, system-version, or system-instance level.
-See the field description for details.
+The new entry preserves the input definition's `type` and `mediaType`.
+Its `visibility` and `purpose` MUST come from the Overlay Resource itself.
+If the entity omits `purpose`, the output also has no purpose.
+Aggregators MUST enforce the entity's visibility on the entity, patch files, and output, and MUST NOT
+expose restricted input metadata to a broader audience without explicit authorization.
 
 ## Outlook: Patching ORD Resource Metadata Directly
 
