@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
+import { validateOverlayDefinitionUniqueness } from "./overlayValidation";
 
 /**
  * Tests that validate example files against their JSON schemas.
@@ -29,6 +30,12 @@ const schemaMappings: SchemaMapping[] = [
     schemaName: "Document",
     schemaPath: "./src/generated/spec/v1/schemas/Document.schema.json",
     examplesPath: "./examples/documents",
+    filePattern: /\.json$/,
+  },
+  {
+    schemaName: "OrdOverlay",
+    schemaPath: "./src/generated/spec/v1/schemas/OrdOverlay.schema.json",
+    examplesPath: "./examples/overlay",
     filePattern: /\.json$/,
   },
 ];
@@ -138,6 +145,21 @@ describe("Example Validation", async () => {
           }
 
           assert.ok(valid, `${exampleFile} should be valid`);
+          if (mapping.schemaName === "Document") {
+            const overlays = (
+              example as {
+                overlays?: {
+                  definitions: { type: string; mediaType: string }[];
+                }[];
+              }
+            ).overlays;
+            for (const overlay of overlays ?? []) {
+              assert.deepEqual(
+                validateOverlayDefinitionUniqueness(overlay.definitions),
+                [],
+              );
+            }
+          }
         });
       }
     });

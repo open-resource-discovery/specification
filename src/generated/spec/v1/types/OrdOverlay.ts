@@ -1,76 +1,6 @@
 // AUTO-GENERATED definition files. Do not modify directly.
 
 /**
- * Overlay-specific [perspective](../../spec-v1/index.md#perspectives) that scopes where this overlay should be applied.
- *
- * Use this together with `describedSystemType`, `describedSystemVersion`, and `describedSystemInstance`
- * to describe whether the overlay applies broadly to a system type, to one released system version,
- * or only to a specific system instance.
- */
-export type OverlayPerspective = ("system-type" | "system-version" | "system-instance") & string;
-/**
- * Correlation ID identifying related records in external systems of record.
- * MUST be a valid [Correlation ID](../../spec-v1/concepts/identifiers.md#correlation-id).
- */
-export type OverlayCorrelationID = string;
-/**
- * Correlation ID identifying related records in external systems of record.
- * MUST be a valid [Correlation ID](../../spec-v1/concepts/identifiers.md#correlation-id).
- */
-export type OverlayCorrelationID1 = string;
-/**
- * Correlation ID identifying related records in external systems of record.
- * MUST be a valid [Correlation ID](../../spec-v1/concepts/identifiers.md#correlation-id).
- */
-export type OverlayCorrelationID2 = string;
-/**
- * Controls which consumers can discover and access this overlay document.
- *
- * It does NOT control runtime access to the resources being patched — that is managed separately through authentication and authorization mechanisms.
- *
- * Use this to prevent exposing internal overlay enrichments to inappropriate consumer audiences.
- */
-export type OverlayVisibility = ("public" | "internal" | "private") & string;
-/**
- * Optional, but RECOMMENDED type of the target definition being patched.
- * If provided, this SHOULD match the `type` of the referenced metadata definition
- * (as used in API/Event/Capability resource definitions).
- * This is especially useful when target `ordId` resolves to a resource with multiple attached definitions.
- *
- * This can be used to disambiguate how selectors are interpreted for the target.
- *
- * MUST be either:
- * - any valid [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id), or
- * - one of the pre-defined values reused from:
- *   - API Resource Definition `type`
- *   - Event Resource Definition `type`
- *   - Capability Definition `type`
- *
- * The literal value `custom` is deprecated for `definitionType` and MUST NOT be used.
- * In such cases, use a concrete [Specification ID](../../spec-v1/concepts/identifiers.md#specification-id) instead.
- */
-export type OverlayDefinitionType = (
-  | string
-  | "openapi-v2"
-  | "openapi-v3"
-  | "openapi-v3.1+"
-  | "raml-v1"
-  | "edmx"
-  | "csdl-json"
-  | "graphql-sdl"
-  | "wsdl-v1"
-  | "wsdl-v2"
-  | "a2a-agent-card"
-  | "sap-rfc-metadata-v1"
-  | "sap-sql-api-definition-v1"
-  | "sap-csn-interop-effective-v1"
-  | "asyncapi-v2"
-  | "sap.mdo:mdi-capability-definition:v1"
-  | "oas-overlay-v1"
-  | "arazzo-v1"
-) &
-  string;
-/**
  * The patch operation to perform on the selected element.
  */
 export type OverlayPatchAction = "update" | "remove" | "merge";
@@ -185,9 +115,11 @@ export type OverlayPatchValue =
  * internal structure, making them resilient to format changes.
  * A `jsonPath` selector is available as a generic fallback.
  *
- * Overlay files can be provided through the
- * [ORD Configuration endpoint](../../spec-v1/index.md#ord-configuration-endpoint),
- * or attached as `resourceDefinitions` entries on API or Event resources with type `ord:overlay:v1`.
+ * Overlay files MUST be published through Overlay Resources in an ORD Document,
+ * referenced by `overlays[].definitions[]` with type `ord:overlay:v1`.
+ * The patch file contains only the format-version envelope and patches. Identity, target, visibility,
+ * and purpose belong to the containing Overlay Resource.
+ * Attaching overlays to API or Event `resourceDefinitions` is deprecated.
  */
 export interface ORDOverlay {
   /**
@@ -200,23 +132,7 @@ export interface ORDOverlay {
    */
   ordOverlay: "0.1";
   /**
-   * Optional ORD ID of this overlay document.
-   */
-  ordId?: string;
-  /**
-   * Optional description of the overlay document itself.
-   *
-   * Notated in [CommonMark](https://spec.commonmark.org/) (Markdown).
-   */
-  description?: string;
-  perspective?: OverlayPerspective;
-  describedSystemType?: OverlaySystemType;
-  describedSystemVersion?: OverlaySystemVersion;
-  describedSystemInstance?: OverlaySystemInstance;
-  visibility?: OverlayVisibility;
-  target?: OverlayTarget;
-  /**
-   * Ordered sequence of patches to apply to the targeted resource(s).
+   * Ordered sequence of patches to apply to the input definition selected by the containing Overlay Resource.
    * Patches are applied strictly in the order they are listed.
    * If two patches target the same document element, both are applied in sequence —
    * the later patch supersedes the earlier one.
@@ -224,165 +140,6 @@ export interface ORDOverlay {
    * @minItems 1
    */
   patches: [OverlayPatch, ...OverlayPatch[]];
-  meta?: OverlayMeta1;
-}
-/**
- * Information on the [system type](../../spec-v1/index.md#system-type) this overlay describes.
- * This object is identical to the ORD Document `describedSystemType` object; see [System Type](../../spec-v1/interfaces/Document.md#system-type).
- *
- * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
- * This is the primary context object for `perspective: system-type`, and also the parent context
- * for more specific `system-version` and `system-instance` overlays.
- *
- * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
- */
-export interface OverlaySystemType {
-  /**
-   * The [system namespace](../../spec-v1/concepts/identifiers.md#system-namespace) is a unique identifier for the system type.
-   */
-  systemNamespace?: string;
-  /**
-   * Correlation IDs for linking this system type to external systems of record.
-   *
-   * @minItems 1
-   */
-  correlationIds?: [OverlayCorrelationID, ...OverlayCorrelationID[]];
-}
-/**
- * Information on the [system version](../../spec-v1/index.md#system-version) this overlay describes.
- * This object is identical to the ORD Document `describedSystemVersion` object; see [System Version](../../spec-v1/interfaces/Document.md#system-version).
- *
- * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
- * Use this when the overlay should only patch metadata for one specific released system version.
- *
- * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
- */
-export interface OverlaySystemVersion {
-  /**
-   * The version of the system instance (run-time) or the version of the described system-version perspective.
-   *
-   * It MUST follow the [Semantic Versioning 2.0.0](https://semver.org/) standard.
-   */
-  version?: string;
-  /**
-   * Human-readable title of the system version.
-   */
-  title?: string;
-  /**
-   * Correlation IDs for linking this system version to external systems of record.
-   *
-   * @minItems 1
-   */
-  correlationIds?: [OverlayCorrelationID1, ...OverlayCorrelationID1[]];
-}
-/**
- * Information on the [system instance](../../spec-v1/index.md#system-instance) this overlay describes.
- * This object is identical to the ORD Document `describedSystemInstance` object; see [System Instance](../../spec-v1/interfaces/Document.md#system-instance).
- *
- * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
- * Use this when the overlay should only patch metadata for one concrete tenant / runtime instance.
- *
- * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
- */
-export interface OverlaySystemInstance {
-  /**
-   * Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.
-   * By providing the base URL, relative URLs in the overlay are resolved relative to it.
-   *
-   * The `baseUrl` MUST NOT contain a trailing slash.
-   */
-  baseUrl?: string;
-  /**
-   * Optional local ID for the system instance (usually tenant ID), as known by the described system.
-   */
-  localId?: string;
-  /**
-   * Optional globally unique and stable ID of the system instance (tenant), assigned by the authority responsible
-   * for that tenant identity.
-   *
-   * Unlike `localId`, which is only unique within the described system, `globalId` is intended for correlation
-   * across participating systems. It is the same identity that can be passed as the `Global-Tenant-Id`
-   * header in the [`open`](../../spec-extensions/access-strategies/open.md#global-tenant-id) and
-   * [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#global-tenant-id) access strategies.
-   *
-   * The provider MUST NOT invent this value. It MAY receive the value from an authoritative tenant or landscape
-   * service, including through aggregator onboarding, and include it when it can reliably correlate the described
-   * system instance with that authority's record.
-   */
-  globalId?: string;
-  /**
-   * Correlation IDs for linking this system instance to external systems of record.
-   *
-   * @minItems 1
-   */
-  correlationIds?: [OverlayCorrelationID2, ...OverlayCorrelationID2[]];
-}
-/**
- * Optional target context identifying the resource or definition file being patched.
- * See [Overlay Target](#overlay-target) for details on identifier requirements and disambiguation.
- */
-export interface OverlayTarget {
-  /**
-   * ORD ID of the target being patched (e.g. an API Resource, Event Resource, Data Product).
-   * MUST be a valid [ORD ID](../../spec-v1/concepts/identifiers.md#ord-id).
-   */
-  ordId?: string;
-  /**
-   * URL or URI pointing directly to the file being patched.
-   * This is typically a resource definition file (e.g. OpenAPI, AsyncAPI, OData CSDL),
-   * but can also point to any JSON/YAML-based target document.
-   */
-  url?: string;
-  /**
-   * Correlation IDs referencing the target resource in external registries or systems of record.
-   * Reuses the ORD correlation ID format: `namespace:type:localId`.
-   * All listed IDs are treated as pointing to the same resource.
-   *
-   * @minItems 1
-   */
-  correlationIds?: [string, ...string[]];
-  definitionType?: OverlayDefinitionType;
-  systemInstance?: OverlaySystemInstance1;
-}
-/**
- * A [system instance](../../spec-v1/index.md#system-instance) is a concrete, running instance of a system type.
- * This object is identical to the ORD Document `describedSystemInstance` object; see [System Instance](../../spec-v1/interfaces/Document.md#system-instance).
- *
- * Its purpose is to link the overlay to the same system landscape model as ORD resources, if needed.
- * Usually this is not necessary for static overlays if the patched resource is already selected via ORD ID.
- */
-export interface OverlaySystemInstance1 {
-  /**
-   * Optional [base URL](../../spec-v1/index.md#base-url) of the system instance.
-   * By providing the base URL, relative URLs in the overlay are resolved relative to it.
-   *
-   * The `baseUrl` MUST NOT contain a trailing slash.
-   */
-  baseUrl?: string;
-  /**
-   * Optional local ID for the system instance (usually tenant ID), as known by the described system.
-   */
-  localId?: string;
-  /**
-   * Optional globally unique and stable ID of the system instance (tenant), assigned by the authority responsible
-   * for that tenant identity.
-   *
-   * Unlike `localId`, which is only unique within the described system, `globalId` is intended for correlation
-   * across participating systems. It is the same identity that can be passed as the `Global-Tenant-Id`
-   * header in the [`open`](../../spec-extensions/access-strategies/open.md#global-tenant-id) and
-   * [`basic-auth`](../../spec-extensions/access-strategies/basic-auth.md#global-tenant-id) access strategies.
-   *
-   * The provider MUST NOT invent this value. It MAY receive the value from an authoritative tenant or landscape
-   * service, including through aggregator onboarding, and include it when it can reliably correlate the described
-   * system instance with that authority's record.
-   */
-  globalId?: string;
-  /**
-   * Correlation IDs for linking this system instance to external systems of record.
-   *
-   * @minItems 1
-   */
-  correlationIds?: [OverlayCorrelationID2, ...OverlayCorrelationID2[]];
 }
 /**
  * A single patch action to apply to the element identified by the [Overlay Selector](#overlay-selector).
@@ -398,8 +155,8 @@ export interface OverlayPatch {
    * - References to tickets or decisions that motivated the change.
    *
    * Maps 1:1 to the `actions[].description` field in the
-   * [OpenAPI Overlay spec](https://spec.openapis.org/overlay/v1.1.0.html), enabling lossless
-   * round-trip conversion between OpenAPI overlays and ORD overlays.
+   * [OpenAPI Overlay spec](https://spec.openapis.org/overlay/v1.1.0.html), enabling
+   * preservation of action descriptions when converting patch operations between the two formats.
    */
   description?: string;
   action: OverlayPatchAction;
@@ -507,9 +264,9 @@ export interface OverlaySelectorByOperation {
    *   Empty parentheses select a zero-parameter operation, so `OData.Demo.Ping()` is distinct
    *   from the name-only selector `OData.Demo.Ping`.
    *
-   * When `definitionType` is set on `target`, the format is known and the selector resolves unambiguously.
-   * When `definitionType` is absent, the implementation SHOULD infer the format from the target
-   * document's content (e.g. the `openapi` field, `$schema`, or `$kind` markers).
+   * The containing Overlay Resource declares the input format through
+   * `target.resourceDefinition.type`.
+   * Patch processors MUST receive this target context from the entity or their caller.
    */
   operation: string;
 }
@@ -685,23 +442,10 @@ export interface OverlaySelectorByReturnType {
  * Optional arbitrary metadata for use by overlay consumers, tooling, and registries.
  * The contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.
  *
- * When used at the document level, this carries information about the overlay as a whole (e.g. provenance, approval status, processing instructions).
- * When used at the patch level, this carries information specific to the patched element (e.g. confidence scores, source references).
+ * This carries information specific to the patched element (e.g. confidence scores, source references).
  *
  * This is an open/extensible object — any properties are allowed.
  */
 export interface OverlayMeta {
-  [k: string]: unknown;
-}
-/**
- * Optional arbitrary metadata for use by overlay consumers, tooling, and registries.
- * The contents of this block are **never applied to the target document** — they are strictly out-of-band and ignored by the patch merge process.
- *
- * When used at the document level, this carries information about the overlay as a whole (e.g. provenance, approval status, processing instructions).
- * When used at the patch level, this carries information specific to the patched element (e.g. confidence scores, source references).
- *
- * This is an open/extensible object — any properties are allowed.
- */
-export interface OverlayMeta1 {
   [k: string]: unknown;
 }

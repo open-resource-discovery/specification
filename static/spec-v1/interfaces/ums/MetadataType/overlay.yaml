@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.\nFor producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`."
+  description: "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently.\nProviders MUST use an Overlay Resource for every published overlay, including producer-owned overlays\nthat patch a single resource. Attaching overlays to API or Event `resourceDefinitions` is deprecated."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -46,17 +46,21 @@ spec:
       description: "Optional, but RECOMMENDED indicator when (date-time) the last change to the resource (including its definitions) happened.\n\nThe date format MUST comply with [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).\n\nWhen retrieved from an ORD aggregator, `lastUpdate` will be reliable there and reflect either the provider based update time or the aggregator processing time.\nTherefore consumers MAY rely on it to detect changes to the metadata and the attached resource definition files.\n\nIf the resource has attached definitions, either the `version` or `lastUpdate` property MUST be defined and updated to let the ORD aggregator know that they need to be fetched again.\n\nTogether with `perspectives`, this property SHOULD be used to optimize the metadata crawling process of the ORD aggregators."
     - name: 'visibility'
       type: 'string'
-      description: "Defines metadata access control - which categories of consumers are allowed to discover and access the resource and its metadata.\n\nThis controls who can see that the resource exists and retrieve its metadata level information.\nIt does NOT control runtime access to the resource itself - that is managed separately through authentication and authorization mechanisms.\n\nUse this to prevent exposing internal implementation details to inappropriate consumer audiences."
+      description: "Visibility of this Overlay Resource, all its patch files, and the projected resource definition.\nDefinition entries MUST inherit this visibility; they cannot override it.\nAggregators MUST enforce this audience on the overlay and the result, and MUST NOT expose\nrestricted input metadata to a broader audience without explicit authorization."
       mandatory: true
     - name: 'releaseStatus'
       type: 'string'
       description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details."
       mandatory: true
+    - name: 'purpose'
+      type: 'string'
+      description: "Purpose of this Overlay Resource and of the projected resource definition produced by applying it.\nMUST be a valid [Concept ID](../concepts/identifiers.md#concept-id).\nWhen omitted, the projected definition also has no purpose."
     - name: 'definitions'
       type: 'custom'
       customTypeName: 'OverlayDefinition'
       array: true
-      description: "List of overlay definition files referenced by this ORD Overlay Resource.\nEach entry points to an overlay document that contains the actual patches."
+      description: "Ordered list of patch files contributing to this projection.\nEvery entry MUST have a unique combination of `type` and `mediaType` within this list.\nThe files are not necessarily alternative representations of the same operations.\nConsumers MUST apply every entry in array order, preserving patch order within each file.\nEach file operates on the result of the preceding file; later operations act on the modified state.\nA consumer that cannot process an entry MUST report an error rather than silently skip it.\nVisibility and purpose are defined exclusively on this Overlay Resource."
+      mandatory: true
     - name: 'tags'
       type: 'string'
       array: true
@@ -87,12 +91,6 @@ spec:
           customTypeName: 'AccessStrategy'
           array: true
           description: "List of supported access strategies for retrieving metadata from the ORD provider.\nAn ORD Consumer/ORD Aggregator MAY choose any of the strategies.\n\nThe access strategies only apply to the metadata access and not the actual API access.\nThe actual access to the APIs for clients is described via Consumption Bundles.\n\nIf this property is not provided, the definition URL will be available through the same access strategy as this ORD document.\nIt is RECOMMENDED anyway that the attached metadata definitions are available with the same access strategies, to simplify the aggregator crawling process."
-        - name: 'visibility'
-          type: 'string'
-          description: "The visibility states who is allowed to \"see\" and access the resource definition, in case it differs from the resource visibility.\n\nIf not given, the resource definition has the same visibility as the resource it describes.\nThe visibility of a resource definition MUST be lower (more restrictive) than the visibility of the resource it describes.\nE.g. a public resource can have metadata definitions that are internal only. An internal resource can't declare to have a public metadata definition.\n\nThis makes it also possible to provide both a public and an internal metadata description of the resource,\nin case that some metadata must only be made accessible to internal consumers."
-        - name: 'purpose'
-          type: 'string'
-          description: "Marks a resource definition as a *complementary* variant of the resource's default definition,\nfor example an overlay, an AI-enriched variant, or an agent-security-permissions view.\nAll entries in the definitions list, with or without `purpose`, MUST describe the same\nunderlying resource; see the list property for the full modelling rules.\n\nTogether with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness\nkey for entries in the definitions list.\n\nMUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for\nvalues standardized by the ORD specification itself; custom values MUST use a vendor- or\nproduct-specific namespace prefix (e.g. `foo.bar:my-purpose`)."
     - name: 'AccessStrategy'
       metadataProperties:
         - name: 'type'
@@ -117,11 +115,8 @@ spec:
         - name: 'value'
           type: 'string'
   metadataRelations:
-    - propertyName: 'relatedApiResources'
-      relatedTypeName: 'RelatedApiResource'
+    - propertyName: 'target'
+      relatedTypeName: 'OverlayTarget'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Optional list of API Resources whose definition files this overlay patches.\n\nSHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,\nas it enables efficient indexing without requiring the aggregator to parse each overlay file.\nUse `relationType: ord:patches` to express the patching relationship.\n\nMay be omitted when the target resource is not described in an accessible ORD document,\nor when the overlay is cross-cutting and patches resources from multiple providers."
-    - propertyName: 'relatedEventResources'
-      relatedTypeName: 'RelatedEventResource'
-      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Optional list of Event Resources whose definition files this overlay patches.\n\nSHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,\nas it enables efficient indexing without requiring the aggregator to parse each overlay file.\nUse `relationType: ord:patches` to express the patching relationship.\n\nMay be omitted when the target resource is not described in an accessible ORD document,\nor when the overlay is cross-cutting and patches resources from multiple providers."
+      description: "Selects the ORD resource and the concrete input resource definition patched by every entry in `definitions`.\nThis is the sole source of target identification for the projection."
+      mandatory: true

@@ -7,7 +7,7 @@ import addFormats from "ajv-formats";
 const ajv = new Ajv({ strict: false, allErrors: true });
 addFormats(ajv);
 
-for (const name of ["Document", "OrdOverlay"]) {
+for (const name of ["Document"]) {
   const schema = JSON.parse(
     fs.readFileSync(
       `./src/generated/spec/v1/schemas/${name}.schema.json`,
@@ -17,12 +17,6 @@ for (const name of ["Document", "OrdOverlay"]) {
   ajv.addSchema(schema, name);
 }
 
-const patch = {
-  action: "merge",
-  selector: { jsonPath: "$.info" },
-  data: { description: "Tenant-specific metadata" },
-};
-
 const contexts = [
   {
     name: "ORD Document",
@@ -30,24 +24,6 @@ const contexts = [
     document: (instance: object) => ({
       openResourceDiscovery: "1.16",
       describedSystemInstance: instance,
-    }),
-  },
-  {
-    name: "ORD Overlay describedSystemInstance",
-    schema: "OrdOverlay",
-    document: (instance: object) => ({
-      ordOverlay: "0.1",
-      describedSystemInstance: instance,
-      patches: [patch],
-    }),
-  },
-  {
-    name: "ORD Overlay target.systemInstance",
-    schema: "OrdOverlay",
-    document: (instance: object) => ({
-      ordOverlay: "0.1",
-      target: { definitionType: "openapi-v3", systemInstance: instance },
-      patches: [patch],
     }),
   },
 ];
