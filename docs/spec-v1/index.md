@@ -302,7 +302,7 @@ The base URL used for resolving base-URL-relative URLs (leading slash) depends o
 
 | URL type | Resolved against | Declared via |
 |---|---|---|
-| **Metadata files**: `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`, `APIEventResourceLink.url`, `DataProductLink.url` | Provider base URL | Document root `baseUrl` |
+| **Metadata files**: `resourceDefinitions[].url`, `overlays[].definitions[].url`, `File.url`, `APIEventResourceLink.url`, `DataProductLink.url` | Provider base URL | Document root `baseUrl` |
 | **Entry points**: `entryPoints[]` | Described system base URL | `describedSystemInstance.baseUrl` |
 
 This distinction matters when the ORD provider and the described system differ (e.g., a central aggregator describing multiple systems on its behalf).
@@ -362,7 +362,7 @@ The motivation behind the ORD configuration endpoint is to:
 - Define where and how the ORD information can be accessed
   - Which transport mode is available (URLs to ORD document(s) indicate the [pull transport mode](#pull-transport))
   - Which [access strategies](../spec-extensions/access-strategies/index.mdx) are available
-- Optionally provide discoverable ORD Overlay files via `openResourceDiscoveryV1.overlays` (see [ORD Overlay](./interfaces/OrdOverlay.md))
+- Discover ORD Overlay Resources through the referenced ORD Documents' `overlays` arrays (see [ORD Overlay](./interfaces/OrdOverlay.md))
 
 The idea behind the configuration endpoint is inspired by the [well-known URI](https://datatracker.ietf.org/doc/html/rfc8615) discovery mechanism.
 
@@ -458,11 +458,11 @@ ORD does not aim to replace these standards. Instead, it discovers and transport
 
 Every ORD resource that carries machine-readable definitions (API Resource, Event Resource, Capability, Entity Type) describes exactly one logical resource. Its definitions list (`resourceDefinitions`, or `definitions` on Capability and Entity Type) is NOT a bundling mechanism: multiple distinct resources (different feature areas, endpoint groups, or lifecycles) MUST each be modelled as their own ORD resource, so ORD-level properties like `version`, `visibility`, `releaseStatus`, ownership, and taxonomy stay meaningful.
 
-Within a single resource, the list MAY still hold several entries, but they must all describe the same underlying resource. Additional entries beyond the default exist to carry complementary artifacts (overlays, AI-enriched variants, agent-security-permissions views, …) and, where supported, are distinguished via the `purpose` property.
+Within a single resource, the list MAY still hold several entries, but they must all describe the same underlying resource. Additional entries beyond the default exist to carry complementary artifacts (AI-enriched variants, agent-security-permissions views, …) and, where supported, are distinguished via the `purpose` property.
 
 The entry *without* a `purpose` is the primary / default definition, and there SHOULD be exactly one per `(type, visibility)` combination. Consumers that don't explicitly ask for a specific `purpose` MUST fall back to the default entry with the highest `visibility` they are entitled to see. Values under the `ord:` namespace are reserved for the ORD specification; custom purposes MUST use their own namespace prefix.
 
-An ORD resource can also reference an ORD Overlay as an additional `resourceDefinitions` entry with type `ord:overlay:v1`. The same overlay files can optionally be discovered independently via the [ORD configuration endpoint](#ord-configuration-endpoint). For details, see [ORD Overlay](./interfaces/OrdOverlay.md).
+Providers MUST publish overlays as Overlay Resources in an ORD Document's `overlays` array, referencing patch files through `definitions`. Attaching overlays to API or Event `resourceDefinitions` is deprecated as of ORD 1.18.0 and MUST NOT be used for new overlay publications. For details and migration guidance, see [ORD Overlay](./interfaces/OrdOverlay.md).
 
 For details on how resource definitions are referenced, see the `resourceDefinitions` property on [API Resource](./interfaces/Document.md#api-resource) and [Event Resource](./interfaces/Document.md#event-resource) in the interface documentation.
 When consumed via an [ORD aggregator](#ord-aggregator), the aggregator may [host the resource definitions](#hosting-resource-definitions) for easier access.
