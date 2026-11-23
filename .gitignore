@@ -12,12 +12,13 @@ node_modules/
 
 # Build
 dist/
-build/
+/build/
 
 # Generated
 src/generated/**/*.md
 src/generated/**/*.schema.json
 src/generated/**/plugin/
+src/generated/policy-levels.json
 docs/spec-v1/interfaces/Configuration.md
 docs/spec-v1/interfaces/Document.md
 docs/spec-v1/interfaces/OrdOverlay.md

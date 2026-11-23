@@ -35,7 +35,7 @@
     "deploy": "npm run build && gh-pages -d ./build",
     "pregenerate": "npm run clean",
     "generate": "npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json",
-    "postgenerate": "npm run build:ts && node ./dist/helper/copyGeneratedToDestination.js",
+    "postgenerate": "npm run build:ts && node ./dist/helper/copyGeneratedToDestination.js && node ./dist/build/compilePolicyLevels.js",
     "generate:llm-notebook": "npm run generate && node ./dist/helper/exportForNotebookLM.js"
   },
   "devDependencies": {

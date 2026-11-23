@@ -1,0 +1,240 @@
+policyId: sap:documentation:v1
+slug: sap-documentation-v1
+title: SAP Documentation Policy Level (v1.0)
+shortTitle: SAP Documentation v1
+description: SAP Documentation v1 policy level
+sidebarPosition: 2
+status: active
+extends:
+  - sap:base:v1
+summary: |
+  This policy level `sap:documentation:v1` is based on the [`sap:base:v1`](./sap-base-v1.md) policy level and inherits all its expectations.
+
+  This policy level is based on various SAP guidelines and rules — most of which are already established. It defines the core rules and guidelines for human-readable descriptions within metadata formats, although more specific rules and guidelines MAY be applied on top in a specific product line.
+rules:
+  - id: title.max-length
+    scope: propertyName
+    section: Title Constraints
+    propertyNames:
+      - title
+    requirement: mandatory
+    title: Title length limit
+    note: |
+      All `title` values (except link titles) MUST NOT exceed 120 characters.
+    exceptions:
+      - link titles
+
+  - id: title.forbidden-status-terms
+    scope: propertyName
+    section: Title Constraints
+    propertyNames:
+      - title
+    requirement: forbidden
+    title: Forbidden status terms in titles
+    note: |
+      All `title` values (except link titles) MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
+    exceptions:
+      - link titles
+
+  - id: title.charset
+    scope: propertyName
+    section: Title Constraints
+    propertyNames:
+      - title
+    requirement: recommended
+    title: Title charset
+    note: |
+      All `title` values (except link titles) SHOULD use the following charset.
+
+      **package** `title` values MAY use the additional characters listed below.
+    exceptions:
+      - link titles
+    tables:
+      - columns:
+          - Chars
+          - Description
+        rows:
+          - ["`A-Z`, `a-z`", "Latin letters"]
+          - ["`0-9`", "Numbers"]
+          - ["` `", "Space"]
+          - ["`-` `—` `–`", "Different hyphens"]
+          - ["`,`", "Comma"]
+          - ["`(` `)`", "Parentheses"]
+      - caption: "**package** `title` values MAY use the following additional characters:"
+        columns:
+          - Char
+          - Description
+        rows:
+          - ["`/`", "Forward slash"]
+
+  - id: title.discouraged-terms
+    scope: propertyName
+    section: Title Constraints
+    propertyNames:
+      - title
+    requirement: recommended
+    title: Discouraged terms in titles
+    note: |
+      All `title` values (except link titles) SHOULD NOT contain the following terms.
+    exceptions:
+      - link titles
+    tables:
+      - columns:
+          - Term
+          - Description
+        rows:
+          - ["`create`<br/>`read`<br/>`delete`<br/>`update`", "Operation words"]
+          - ["`v1`, `v2`, etc.", "Versions"]
+
+  - id: title.approved-terms
+    scope: propertyName
+    section: Title Constraints
+    propertyNames:
+      - title
+    requirement: optional
+    title: Specially approved terms in titles
+    note: |
+      All `title` values (except link titles) MAY use the following specially approved terms.
+    exceptions:
+      - link titles
+    tables:
+      - columns:
+          - Approved Term
+          - Description
+        rows:
+          - ["`S/4HANA`", "Approved product name"]
+          - ["`country/region`<br/>`Country/Region`", "Approved name"]
+          - ["`G/L`", "General ledger. Approved abbreviation."]
+
+  - id: description.no-short-description
+    scope: propertyName
+    section: Description Constraints
+    propertyNames:
+      - description
+    requirement: forbidden
+    title: Description must not repeat the short description
+    note: |
+      All `description` values MUST NOT contain the short description.
+      They are complementary to the short description and should not just be a longer replacement.
+
+  - id: description.max-length
+    scope: propertyName
+    section: Description Constraints
+    propertyNames:
+      - description
+    requirement: mandatory
+    title: Description length limit
+    note: |
+      The `description` MUST NOT exceed 4000 characters.
+      In general, more extensive documentation SHOULD NOT be put into the `description` but instead be added as (typed) links.
+
+  - id: shortdescription.max-length
+    scope: propertyName
+    section: Short Description Constraints
+    propertyNames:
+      - shortDescription
+    requirement: recommended
+    title: Short description length limit
+    note: |
+      All `shortDescription` values SHOULD NOT exceed 180 characters.
+
+  - id: shortdescription.no-object-name
+    scope: propertyName
+    section: Short Description Constraints
+    propertyNames:
+      - shortDescription
+    requirement: forbidden
+    title: Short description must not repeat the object name
+    note: |
+      All `shortDescription` values MUST NOT repeat or start with the object name.
+
+  - id: shortdescription.charset
+    scope: propertyName
+    section: Short Description Constraints
+    propertyNames:
+      - shortDescription
+    requirement: recommended
+    title: Short description charset
+    note: |
+      All `shortDescription` values SHOULD use the following charset.
+    tables:
+      - columns:
+          - Chars
+          - Description
+        rows:
+          - ["`A-Z`, `a-z`", "Latin letters"]
+          - ["`0-9`", "Numbers"]
+          - ["` `", "Space"]
+          - ["`_`", "Underscores"]
+          - ["`-` `—` `–`", "Different hyphens"]
+          - ["`.`", "Fullstop (Period)"]
+          - ["`,`", "Comma"]
+          - ["`(` `)`", "Parentheses"]
+          - ["`'s`", "Possessive apostrophe for nouns"]
+          - ["`s'`", "Possessive apostrophe is added to plural proper nouns that ends in `s`"]
+
+  - id: shortdescription.approved-terms
+    scope: propertyName
+    section: Short Description Constraints
+    propertyNames:
+      - shortDescription
+    requirement: optional
+    title: Specially approved terms in short descriptions
+    note: |
+      All `shortDescription` values MAY use the following specially approved terms.
+    tables:
+      - columns:
+          - Approved Name
+          - Description
+        rows:
+          - ["`S/4HANA`", "Approved product name"]
+          - ["`country/region`<br/>`Country/Region`", "Approved name"]
+          - ["`G/L`", "General ledger. Approved abbreviation."]
+
+  - id: api-compatibility.rules
+    scope: general
+    section: Misc Constraints
+    requirement: mandatory
+    title: API Compatibility rules
+    note: |
+      For setting and incrementing API versions and major versions, the SAP API Compatibility rules MUST be followed.
+
+  - id: deprecationdate.when-deprecated
+    scope: propertyName
+    section: Misc Constraints
+    propertyNames:
+      - deprecationDate
+    requirement: conditional
+    appliesWhen: the API or Event Resource has been deprecated
+    title: Deprecation date for deprecated resources
+    note: |
+      If an API or event resource has been deprecated, the `deprecationDate` MUST be provided.
+
+  - id: releasestatus.changelog
+    scope: propertyName
+    section: Misc Constraints
+    propertyNames:
+      - releaseStatus
+    requirement: recommended
+    title: Changelog entry for release status changes
+    note: |
+      For all `releaseStatus` changes, a changelog entry SHOULD be created.
+
+  - id: taxonomy.recommended-values
+    scope: propertyName
+    section: Misc Constraints
+    propertyNames:
+      - lineOfBusiness
+      - industry
+    requirement: mandatory
+    title: Recommended taxonomy values
+    note: |
+      For the taxonomy properties `lineOfBusiness` and `industry`: Only the recommended values MUST be chosen.
+
+  - id: openapi.x-sap-extensions
+    scope: general
+    section: Misc Constraints
+    requirement: mandatory
+    title: Keep existing `x-sap-` OpenAPI extensions
+    note: |
+      For OpenAPI documents which are already published on Business Accelerator Hub, the existing `x-sap-` extension properties MUST be kept even if the information is now also in the ORD Document. This is to not break end-consumers that only have access to the OpenAPI file. We MAY remove this requirement in the future, by automatically post-processing the ORD information into the OpenAPI files centrally (feature request).

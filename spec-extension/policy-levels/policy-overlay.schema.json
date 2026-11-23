@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://open-resource-discovery.org/spec-extension/policy-overlay.schema.json",
+  "title": "ORD Policy Level Overlay",
+  "description": "An overlay layered on top of the ORD Document schema that expresses one policy level's extra rules. Validated at build time by src/build/compilePolicyLevels.ts. Keep in sync with src/build/policyOverlay/types.ts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["policyId", "slug", "title", "shortTitle", "description", "sidebarPosition", "status", "summary", "rules"],
+  "properties": {
+    "policyId": {
+      "type": "string",
+      "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$",
+      "description": "Canonical Specification-ID form, e.g. 'sap:core:v1'. Unique across overlay files."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Must equal the filename stem, e.g. 'sap-core-v1'. Used for the page path and ?policy= value."
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "shortTitle": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "sidebarPosition": { "type": "integer", "minimum": 0 },
+    "status": { "enum": ["active", "draft"] },
+    "summary": { "type": "string", "minLength": 1 },
+    "extends": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\\-]+):(v0|v[1-9][0-9]*)$"
+      },
+      "description": "Ordered list of parent policyIds, merged before this level's own rules."
+    },
+    "rules": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/rule" }
+    }
+  },
+  "definitions": {
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "scope", "title", "note"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "description": "Unique within the merged rule set. Convention: <defslug>.<prop>.<what>."
+        },
+        "scope": { "enum": ["property", "propertyName", "definition", "general"] },
+        "requirement": { "enum": ["mandatory", "recommended", "optional", "forbidden", "conditional"] },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^[a-z0-9-]+_[a-z0-9]+$" },
+          "description": "scope: property — explicit property anchor ids."
+        },
+        "propertyNames": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "scope: propertyName — property names to expand across all definitions."
+        },
+        "definitions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "description": "scope: definition — definition heading slugs."
+        },
+        "section": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "note": { "type": "string", "minLength": 1 },
+        "admonition": { "enum": ["note", "tip", "info", "warning", "danger"] },
+        "appliesWhen": { "type": "string", "minLength": 1 },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["text", "href"],
+            "properties": {
+              "text": { "type": "string", "minLength": 1 },
+              "href": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "tables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["columns", "rows"],
+            "properties": {
+              "caption": { "type": "string" },
+              "columns": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+              "rows": {
+                "type": "array",
+                "items": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "exceptions": { "type": "array", "items": { "type": "string" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "scope": { "const": "property" } } },
+          "then": { "required": ["targets"], "not": { "anyOf": [{ "required": ["propertyNames"] }, { "required": ["definitions"] }] } }
+        },
+        {
+          "if": { "properties": { "scope": { "const": "propertyName" } } },
+          "then": { "required": ["propertyNames"], "not": { "anyOf": [{ "required": ["targets"] }, { "required": ["definitions"] }] } }
+        },
+        {
+          "if": { "properties": { "scope": { "const": "definition" } } },
+          "then": { "required": ["definitions"], "not": { "anyOf": [{ "required": ["targets"] }, { "required": ["propertyNames"] }] } }
+        },
+        {
+          "if": { "properties": { "scope": { "const": "general" } } },
+          "then": { "not": { "anyOf": [{ "required": ["targets"] }, { "required": ["propertyNames"] }, { "required": ["definitions"] }] } }
+        }
+      ]
+    }
+  }
+}

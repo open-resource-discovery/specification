@@ -1,0 +1,26 @@
+policyId: sap:dp:v1
+slug: sap-dp-v1
+title: SAP Data Product Policy Level (v1.0)
+shortTitle: SAP Data Product v1
+description: SAP Data Products v1 policy level
+sidebarPosition: 4
+status: draft
+extends:
+  - sap:base:v1
+summary: |
+  This policy level `sap:dp:v1`:
+
+  - is based on the [`sap:base:v1`](./sap-base-v1.md) policy level and inherits _all_ its expectations.
+  - inherits _most_ of the [`sap:core:v1`](./sap-core-v1.md) policy level rules.
+  - MUST be fulfilled by all SAP Data Products and is based on the AP Data Product guidelines and rules..
+
+  > TODO: This is a DRAFT proposal and subject to changes and additions.
+  > There may be additional, complementary policy levels in the future.
+rules:
+  - id: perspectives.static
+    scope: general
+    section: General Policies
+    requirement: mandatory
+    title: Publish at least one static perspective
+    note: |
+      SAP applications and services publishing Data Products under this policy MUST publish at least one applicable static perspective (`system-type`, `system-version`, or both).

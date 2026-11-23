@@ -1,0 +1,362 @@
+/*
+ - Policy-Level overlay feature styles
+ - Switcher control + summary panel
+ - Injected `.policy-note` callouts, `.policy-badge` markers, `.policy-forbidden` badge
+ - Dark + light theme, reusing the look of the markdown badges.
+*/
+
+/* ------------------------------------------------------------------ */
+/* Switcher control                                                   */
+/* ------------------------------------------------------------------ */
+.policy-switcher {
+  margin: 0 0 24px 0;
+  padding: 12px 16px;
+  border: 1px solid #d7dde6;
+  border-radius: 8px;
+  background: #f6f8fb;
+}
+.policy-switcher__control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.policy-switcher__label {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.policy-switcher__select {
+  appearance: auto;
+  min-width: 220px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  border: 1px solid #a1b2cb;
+  border-radius: 6px;
+  background: #fff;
+  color: inherit;
+  cursor: pointer;
+}
+.policy-switcher__hint {
+  margin: 8px 0 0 0;
+  font-size: 0.82rem;
+  color: #5a6472;
+}
+
+.policy-pill {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: #9669e4;
+}
+
+/* ------------------------------------------------------------------ */
+/* Summary panel                                                      */
+/* ------------------------------------------------------------------ */
+.policy-panel {
+  margin-top: 14px;
+  border: 1px solid #d7dde6;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+.policy-panel--draft {
+  border-color: #9669e4;
+}
+.policy-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #eef2f8;
+  border-bottom: 1px solid #d7dde6;
+}
+.policy-panel__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  color: inherit;
+  padding: 0;
+}
+.policy-panel__chevron {
+  font-size: 0.8em;
+  color: #5a6472;
+}
+.policy-panel__deeplink {
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+.policy-panel__body {
+  padding: 12px 16px;
+  font-size: 0.9rem;
+}
+.policy-panel__draft-banner {
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: color-mix(in oklab, #9669e4 14%, transparent);
+  border-left: 4px solid #9669e4;
+  font-size: 0.85rem;
+}
+.policy-panel__summary {
+  display: block;
+  margin-bottom: 8px;
+}
+.policy-panel__ancestry {
+  margin-bottom: 12px;
+  font-size: 0.82rem;
+  color: #5a6472;
+  font-style: italic;
+}
+.policy-panel__group {
+  margin-top: 10px;
+}
+.policy-panel__group h4 {
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+}
+.policy-rule-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.policy-rule {
+  margin: 0 0 10px 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #f6f8fb;
+  border: 1px solid #e2e8f0;
+}
+.policy-rule__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.policy-rule__note,
+.policy-rule__applies-when,
+.policy-rule__exceptions {
+  display: block;
+  font-size: 0.85rem;
+}
+.policy-rule__applies-when,
+.policy-rule__exceptions {
+  margin-top: 4px;
+  color: #5a6472;
+}
+
+/* ------------------------------------------------------------------ */
+/* Badge legend + requirement badges                                  */
+/* ------------------------------------------------------------------ */
+.policy-panel__legend ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.policy-panel__legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+.policy-legend-badge,
+.policy-badge-req {
+  display: inline-block;
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 5px 2px 5px;
+  font-size: 0.72em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.policy-legend-badge.mandatory,
+.policy-badge-req--mandatory {
+  background-color: #ae2020;
+}
+.policy-legend-badge.recommended,
+.policy-badge-req--recommended {
+  background-color: #3a7fc0;
+}
+.policy-legend-badge.optional,
+.policy-badge-req--optional {
+  background-color: #999;
+}
+.policy-legend-badge.policy-forbidden,
+.policy-badge-req--forbidden {
+  background-color: #6b1f1f;
+}
+.policy-badge-req--conditional {
+  background-color: #5cad9f;
+}
+
+/* ------------------------------------------------------------------ */
+/* Forbidden badge injected into the spec (matches `.mandatory` etc.) */
+/* ------------------------------------------------------------------ */
+.markdown .policy-forbidden {
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 3px 2px 3px;
+  font-size: 0.72em;
+  font-weight: bold;
+  background-color: #6b1f1f;
+}
+
+/* Provenance marker appended to an annotated property name */
+.markdown .policy-badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 0.64em;
+  font-weight: 700;
+  color: #35506e;
+  background: color-mix(in oklab, #3a7fc0 18%, transparent);
+  border: 1px solid color-mix(in oklab, #3a7fc0 35%, transparent);
+  vertical-align: middle;
+  cursor: help;
+}
+
+/* Value-constraint chip: distinct from the blue provenance marker so it does not
+   read as a presence badge. Signals "this property's VALUE has extra policy rules". */
+.markdown .policy-badge--constraint {
+  color: #7a5b16;
+  background: color-mix(in oklab, #d99a1c 20%, transparent);
+  border-color: color-mix(in oklab, #d99a1c 42%, transparent);
+  text-transform: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Injected `.policy-note` callouts (inline rows + definition blocks) */
+/* ------------------------------------------------------------------ */
+.policy-note-row > td {
+  padding: 0 !important;
+}
+.policy-note-row > td::before {
+  display: none !important;
+}
+.policy-note-block {
+  margin: 8px 0 12px 0;
+}
+.markdown .policy-note {
+  margin: 6px 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 4px solid #a1b2cb;
+  background: #f1f4f8;
+  font-size: 0.88rem;
+}
+.markdown .policy-note--tip {
+  border-left-color: #2aa775;
+  background: color-mix(in oklab, #2aa775 10%, transparent);
+}
+.markdown .policy-note--info {
+  border-left-color: #3a7fc0;
+  background: color-mix(in oklab, #3a7fc0 10%, transparent);
+}
+.markdown .policy-note--warning {
+  border-left-color: #d9a21b;
+  background: color-mix(in oklab, #d9a21b 12%, transparent);
+}
+.markdown .policy-note--danger {
+  border-left-color: #ae2020;
+  background: color-mix(in oklab, #ae2020 10%, transparent);
+}
+.policy-note__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.policy-note__label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5a6472;
+}
+.policy-note__title {
+  font-weight: 700;
+}
+.policy-note__body {
+  display: block;
+}
+.policy-note__applies-when,
+.policy-note__exceptions {
+  margin-top: 4px;
+  font-size: 0.85em;
+  color: #5a6472;
+}
+.policy-note__links {
+  margin-top: 6px;
+  font-size: 0.85em;
+}
+.markdown .policy-note__table {
+  margin: 6px 0 0 0;
+  font-size: 0.82em;
+  background: #fff;
+}
+
+/* ------------------------------------------------------------------ */
+/* Dark theme                                                         */
+/* ------------------------------------------------------------------ */
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-switcher {
+  background: var(--c-bg-elev);
+  border-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-switcher__hint {
+  color: var(--c-text-dim);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-switcher__select {
+  background: var(--c-card);
+  border-color: var(--c-sep);
+  color: var(--c-text);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-panel {
+  background: var(--c-card);
+  border-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-panel__header {
+  background: var(--c-bg-elev);
+  border-bottom-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-panel__chevron,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-panel__ancestry,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule__applies-when,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule__exceptions,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__label,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__applies-when,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__exceptions {
+  color: var(--c-text-dim);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule {
+  background: var(--c-bg-elev);
+  border-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-note {
+  background: #25262b;
+  border-left-color: rgba(255, 255, 255, 0.2);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-note__table {
+  background: transparent;
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-badge {
+  color: var(--c-text-strong);
+  background: color-mix(in oklab, var(--c-accent) 18%, transparent);
+  border-color: color-mix(in oklab, var(--c-accent) 35%, transparent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-badge--constraint {
+  color: #f0c674;
+  background: color-mix(in oklab, #d99a1c 24%, transparent);
+  border-color: color-mix(in oklab, #d99a1c 46%, transparent);
+}

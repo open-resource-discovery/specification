@@ -3,6 +3,7 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import OriginalRoot from "@theme-original/Root";
 import type React from "react";
 import { useEffect, useRef } from "react";
+import { forceAlignToHashTarget, runWhenContentStable } from "./contentStable";
 
 // Keep published deep links working after moving the normative detail sections.
 const movedIdentifierAnchors = new Set([
@@ -43,77 +44,6 @@ function enhanceTables(root: Document | HTMLElement = document) {
       });
     });
   });
-}
-
-/** Run last */
-function runWhenContentStable(
-  run: () => void,
-  opts?: { quietMs?: number; maxMs?: number },
-) {
-  if (typeof document === "undefined") return;
-  const root =
-    document.querySelector<HTMLElement>(".theme-doc-markdown, .markdown") ||
-    document.body;
-  const quietMs = opts?.quietMs ?? 120;
-  const maxMs = opts?.maxMs ?? 2000;
-
-  let settledTimer: number | null = null;
-  let hardStopTimer: number | null = null;
-
-  const finish = () => {
-    if (settledTimer) window.clearTimeout(settledTimer);
-    if (hardStopTimer) window.clearTimeout(hardStopTimer);
-    try {
-      mo.disconnect();
-    } catch {}
-    run();
-  };
-
-  const afterPaint = (cb: () => void) =>
-    requestAnimationFrame(() => requestAnimationFrame(cb));
-  let mo: MutationObserver;
-
-  afterPaint(() => {
-    const debouncedSettle = () => {
-      if (settledTimer) window.clearTimeout(settledTimer);
-      settledTimer = window.setTimeout(() => finish(), quietMs);
-    };
-
-    try {
-      mo = new MutationObserver(debouncedSettle);
-      mo.observe(root, { childList: true, subtree: true, characterData: true });
-    } catch {
-      setTimeout(finish, quietMs);
-      return;
-    }
-
-    // initial settle kick + hard cap
-    debouncedSettle();
-    hardStopTimer = window.setTimeout(() => finish(), maxMs);
-  });
-}
-
-function forceAlignToHashTarget() {
-  if (typeof window === "undefined") return;
-  const raw = window.location.hash?.slice(1);
-  if (!raw) return;
-  const id = decodeURIComponent(raw);
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  const prev = document.documentElement.style.scrollBehavior;
-  document.documentElement.style.scrollBehavior = "auto";
-
-  const nav = document.querySelector<HTMLElement>(".navbar");
-  const offset = (nav?.getBoundingClientRect().height ?? 0) + 8;
-
-  const rect = el.getBoundingClientRect();
-  const y = window.scrollY + rect.top - offset;
-
-  window.scrollTo({ top: y, left: 0 });
-  el.classList?.add("is-target");
-
-  document.documentElement.style.scrollBehavior = prev;
 }
 
 /** Step detection */
