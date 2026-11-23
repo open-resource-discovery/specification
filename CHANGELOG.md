@@ -8,8 +8,20 @@ but omits the **patch** level in the spec version number.
 
 For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMAP.md)
 
-
 ## [unreleased]
+
+## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
+
+### Changed
+
+- Removed the requirement for case-insensitive ORD ID comparison, lookup and deduplication.
+- Allowed different resource visibility levels within the same Package under SAP Core. Resources and their definitions remain subject to their individual visibility rules.
+- Documented `oas-overlay-v1` as a valid API Resource definition type for the `odata-v2`, `odata-v4`, and `rest` protocols, aligning the protocol definition-type lists with the OpenAPI Overlay support added in 1.17.0.
+
+### Added
+
+- Added optional `correlationIds` to Vendors to correlate a vendor with identifiers in external systems using the existing ORD Correlation ID format.
+- Added `Building Materials`, `Fashion`, and `Real Estate` to the standardized `industry` values.
 
 ## [[1.17.0](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.0)] - 2026-10-12
 
@@ -39,7 +51,6 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Clarified native resource-definition version alignment: versions SHOULD match ORD versions where possible; non-SemVer versions must be converted while preserving ordering and compatibility semantics as closely as possible. Aligned the schema description with the existing overview and concept guidance.
 - Clarified identifier and lifecycle guidance: Specification IDs do not allow `/` in the specification identifier, runtime extensions MAY use SemVer build metadata but MUST update `lastUpdate`, and decommissioned resources or unused taxonomy require tombstones; resources may be removed or retained with `releaseStatus: sunset` and a `sunsetDate`.
 - `sap:core:v1` now requires all ORD Overlays to have effective `internal` or `private` visibility and requires SAP publishers to use `ord:overlay:v1` rather than `oas-overlay-v1` for published overlays.
-
 
 ## [1.16.4]
 
@@ -107,7 +118,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- Relaxed the rule that `<majorVersion>` in the ORD ID and the major of `version` MUST be identical to a SHOULD (recommended). Strict enforcement created an unresolvable conflict with the ORD ID stability requirement: when a provider bumps the semver major without creating a new resource — whether because no breaking change occurred, or because they simply didn't follow best practice — the old MUST rule would have required changing the published ORD ID of an existing resource, breaking every downstream consumer that references it. Even when a breaking change did happen, forcing an ID change compounds the provider's mistake rather than containing it. The `<majorVersion>` is now explicitly defined as tracking *breaking API changes*, with `version` major as a strong signal that should be kept in sync but does not override ID stability. Validators SHOULD warn on a mismatch but MUST NOT treat it as a hard failure.
+- Relaxed the rule that `<majorVersion>` in the ORD ID and the major of `version` MUST be identical to a SHOULD (recommended). Strict enforcement created an unresolvable conflict with the ORD ID stability requirement: when a provider bumps the semver major without creating a new resource — whether because no breaking change occurred, or because they simply didn't follow best practice — the old MUST rule would have required changing the published ORD ID of an existing resource, breaking every downstream consumer that references it. Even when a breaking change did happen, forcing an ID change compounds the provider's mistake rather than containing it. The `<majorVersion>` is now explicitly defined as tracking _breaking API changes_, with `version` major as a strong signal that should be kept in sync but does not override ID stability. Validators SHOULD warn on a mismatch but MUST NOT treat it as a hard failure.
 - Documented the three URL reference types used in ORD documents:
   - **Absolute URLs** (`https://...`) — used as-is.
   - **Base-URL-relative URLs** (leading slash, e.g., `/path/file.json`) — resolved by appending to the applicable base URL (`baseUrl + "/" + path`). Note: this is an ORD-specific convention; it differs from RFC 3986 root-relative resolution, which strips the base path.

@@ -965,7 +965,10 @@ export function UnifiedMetadataDiagram() {
         </span>
       </section>
       <i className="ord-flow-arrow" aria-hidden="true" />
-      <section className="ord-unified-metadata__consumers">
+      <section
+        className="ord-unified-metadata__discovery"
+        aria-label="An aggregator's Discovery API serves consumers"
+      >
         <header>
           <span>One interface</span>
           <h3>Discovery API</h3>
