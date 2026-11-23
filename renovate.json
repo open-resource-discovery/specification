@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "timezone": "Europe/Berlin",
   "schedule": ["before 6am on monday"],
   "prConcurrentLimit": 5,
@@ -40,9 +40,8 @@
     }
   ],
   "vulnerabilityAlerts": {
-    "description": "Prod-dependency security fixes: no delay, immediate PR, automerge on green",
-    "matchDepTypes": ["dependencies"],
-    "groupName": "SECURITY (prod)",
+    "description": "Dependency security fixes: no delay, immediate PR, automerge on green",
+    "groupName": "SECURITY",
     "minimumReleaseAge": null,
     "labels": ["security", "priority"],
     "automerge": true,
