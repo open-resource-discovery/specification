@@ -51,4 +51,6 @@ jobs:
           target-repo: open-resource-discovery/pr-preview
           pages-base-url: https://open-resource-discovery.github.io/pr-preview
           umbrella-dir: specification
+          # Pages publication can exceed the action's three-minute default.
+          wait-poll-attempts: 72
           token: ${{ secrets.PR_PREVIEW_TOKEN }}
