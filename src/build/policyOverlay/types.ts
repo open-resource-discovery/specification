@@ -116,19 +116,18 @@ export interface CompiledLevel {
   /** Badge to force per property-row anchor id. From `property`-scope rules only (genuine presence changes). */
   badgeByAnchor: Record<string, Requirement>;
   /**
-   * Property-row anchor ids carrying value-level constraints from `propertyName` rules
-   * (e.g. title charset/length). The UI marks these rows with a subtle chip rather than a
-   * presence badge; the detail is rendered once in `propertyNameGroups` (the panel).
+   * Inline note callouts to inject under a property row, keyed by anchor id.
+   * Includes `property`-scope rules and every expanded `propertyName`-scope rule,
+   * so a requirement authored for e.g. "title" renders in place at every title row.
    */
-  constraintAnchors: string[];
-  /** Inline note callouts to inject under a property row, keyed by anchor id (`property` scope only). */
   noteRulesByAnchor: Record<string, CompiledRule[]>;
   /** Note callouts to inject under a definition `###` heading, keyed by definition slug. */
   definitionRules: Record<string, CompiledRule[]>;
-  /** General (non-property) rules, in order, for the summary panel + prose page. */
+  /**
+   * Document-wide (`general`) rules, in order. The UI injects these at the root
+   * "Ord Document" section (their natural in-place home); the prose page lists them too.
+   */
   generalRules: CompiledRule[];
-  /** `propertyName`-scope rules (deduped) for the grouped panel section. */
-  propertyNameGroups: CompiledRule[];
 }
 
 export interface PolicyLevelsData {

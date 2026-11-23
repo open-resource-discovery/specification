@@ -112,10 +112,28 @@
   margin-bottom: 8px;
 }
 .policy-panel__ancestry {
-  margin-bottom: 12px;
+  margin-bottom: 0;
   font-size: 0.82rem;
   color: #5a6472;
   font-style: italic;
+}
+.policy-panel__inline-hint {
+  margin: 0 0 10px 0;
+  font-size: 0.86rem;
+  color: #40484f;
+}
+.policy-panel__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  margin-bottom: 12px;
+}
+.policy-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
 }
 .policy-panel__group {
   margin-top: 10px;
@@ -157,18 +175,10 @@
 /* ------------------------------------------------------------------ */
 /* Badge legend + requirement badges                                  */
 /* ------------------------------------------------------------------ */
-.policy-panel__legend ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 6px;
-}
-.policy-panel__legend li {
+.policy-panel__legend {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
+  flex-wrap: wrap;
+  gap: 6px 16px;
 }
 .policy-legend-badge,
 .policy-badge-req {
@@ -229,13 +239,6 @@
 
 /* Value-constraint chip: distinct from the blue provenance marker so it does not
    read as a presence badge. Signals "this property's VALUE has extra policy rules". */
-.markdown .policy-badge--constraint {
-  color: #7a5b16;
-  background: color-mix(in oklab, #d99a1c 20%, transparent);
-  border-color: color-mix(in oklab, #d99a1c 42%, transparent);
-  text-transform: none;
-}
-
 /* ------------------------------------------------------------------ */
 /* Injected `.policy-note` callouts (inline rows + definition blocks) */
 /* ------------------------------------------------------------------ */
@@ -354,9 +357,4 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .polic
   color: var(--c-text-strong);
   background: color-mix(in oklab, var(--c-accent) 18%, transparent);
   border-color: color-mix(in oklab, var(--c-accent) 35%, transparent);
-}
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-badge--constraint {
-  color: #f0c674;
-  background: color-mix(in oklab, #d99a1c 24%, transparent);
-  border-color: color-mix(in oklab, #d99a1c 46%, transparent);
 }

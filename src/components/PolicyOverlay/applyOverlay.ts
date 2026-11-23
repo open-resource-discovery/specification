@@ -298,30 +298,31 @@ function applyDefinitionNotes(doc: Document, level: CompiledLevel): void {
   }
 }
 
-function applyConstraintMarkers(doc: Document, level: CompiledLevel): void {
-  for (const anchor of level.constraintAnchors) {
-    const nameEl = doc.getElementById(anchor);
-    if (!nameEl) continue;
-    // Skip if this row already carries any policy marker (e.g. a presence badge
-    // from a `property` rule) to avoid a double chip.
-    if (
-      nameEl.querySelector(
-        '[data-policy-overlay="marker"], [data-policy-overlay="constraint"]',
-      )
-    ) {
+/**
+ * Inject document-wide (`general`) rules at the root "Ord Document" section, their
+ * natural in-place home. Falls back to no-op if that heading is absent.
+ */
+function applyGeneralNotes(doc: Document, level: CompiledLevel): void {
+  if (level.generalRules.length === 0) return;
+  const heading = doc.getElementById("ord-document");
+  if (!heading) return;
+
+  let anchorNode: Element = heading;
+  for (const rule of level.generalRules) {
+    const exists = doc.querySelector(
+      `[data-policy-overlay="general-note"][data-rule-id="${CSS.escape(rule.id)}"]`,
+    );
+    if (exists) {
+      anchorNode = exists;
       continue;
     }
-    const marker = doc.createElement("span");
-    marker.className = "policy-badge policy-badge--constraint";
-    marker.setAttribute("data-policy-overlay", "constraint");
-    marker.textContent = "value constraints";
-    marker.title = `${level.shortTitle}: extra value constraints apply — see the policy panel at the top of the page`;
-    const badge = nameEl.querySelector<HTMLElement>(BADGE_SELECTOR);
-    if (badge && badge.parentNode === nameEl) {
-      badge.insertAdjacentElement("afterend", marker);
-    } else {
-      nameEl.appendChild(marker);
-    }
+    const block = doc.createElement("div");
+    block.className = "policy-note-block";
+    block.setAttribute("data-policy-overlay", "general-note");
+    block.setAttribute("data-rule-id", rule.id);
+    block.appendChild(buildCallout(doc, rule));
+    anchorNode.insertAdjacentElement("afterend", block);
+    anchorNode = block;
   }
 }
 
@@ -338,9 +339,9 @@ export function applyOverlay(
 ): void {
   if (!doc) return;
   applyBadges(doc, level);
-  applyConstraintMarkers(doc, level);
   applyInlineNotes(doc, level);
   applyDefinitionNotes(doc, level);
+  applyGeneralNotes(doc, level);
   forceAlignToHashTarget();
 }
 

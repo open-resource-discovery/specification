@@ -55,9 +55,6 @@ export function compileToData(
     const noteRulesByAnchor: Record<string, CompiledRule[]> = {};
     const definitionRules: Record<string, CompiledRule[]> = {};
     const generalRules: CompiledRule[] = [];
-    const propertyNameGroups: CompiledRule[] = [];
-    const constraintAnchorSet = new Set<string>();
-    const seenPropertyNameRuleIds = new Set<string>();
 
     for (const rule of level.rules) {
       switch (rule.scope) {
@@ -73,21 +70,18 @@ export function compileToData(
           break;
         }
         case "propertyName": {
+          // A value-format requirement authored for a property name (e.g. "title")
+          // renders IN PLACE at every property row that carries that name. It does
+          // NOT drive the presence badge (that would mislabel a required property
+          // as e.g. OPTIONAL); the highlighted inline note is the indicator.
           for (const name of rule.propertyNames ?? []) {
             const expanded = anchors.propertyNameIndex.get(name);
             if (!expanded) {
               reportDangling(policyId, rule.id, name);
               continue;
             }
-            // propertyName rules are VALUE-format constraints, not presence
-            // requirements, so they do NOT drive the OPTIONAL/MANDATORY presence
-            // badge (that would misleadingly render a required property as e.g.
-            // OPTIONAL). Instead they mark affected rows; detail lives in the panel.
-            for (const anchor of expanded) constraintAnchorSet.add(anchor);
-          }
-          if (!seenPropertyNameRuleIds.has(rule.id)) {
-            seenPropertyNameRuleIds.add(rule.id);
-            propertyNameGroups.push(rule);
+            for (const anchor of expanded)
+              pushRule(noteRulesByAnchor, anchor, rule);
           }
           break;
         }
@@ -122,11 +116,9 @@ export function compileToData(
       extends: level.overlay.extends ?? [],
       ancestry: level.ancestry,
       badgeByAnchor,
-      constraintAnchors: [...constraintAnchorSet],
       noteRulesByAnchor,
       definitionRules,
       generalRules,
-      propertyNameGroups,
     });
   }
 

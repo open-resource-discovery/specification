@@ -2,7 +2,6 @@ import { useHistory, useLocation } from "@docusaurus/router";
 import useIsBrowser from "@docusaurus/useIsBrowser";
 import type {
   CompiledLevel,
-  CompiledRule,
   PolicyLevelsData,
   Requirement,
 } from "@site/src/build/policyOverlay/types";
@@ -11,7 +10,7 @@ import {
   forceAlignToHashTarget,
   runWhenContentStable,
 } from "@site/src/theme/contentStable";
-import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useMemo, useRef } from "react";
 import { applyOverlay, clearOverlay, renderInlineHtml } from "./applyOverlay";
 
 const data = policyLevelsData as unknown as PolicyLevelsData;
@@ -68,171 +67,52 @@ function Markdown({ md, className }: { md: string; className?: string }) {
   );
 }
 
-function RuleTableView({ rule }: { rule: CompiledRule }) {
-  if (!rule.tables || rule.tables.length === 0) return null;
-  return (
-    <>
-      {rule.tables.map((table) => {
-        const tableKey = table.caption ?? table.columns.join("|");
-        return (
-          <table className="policy-note__table" key={tableKey}>
-            {table.caption ? <caption>{table.caption}</caption> : null}
-            <thead>
-              <tr>
-                {table.columns.map((col) => (
-                  <th key={col}>
-                    <Markdown md={col} />
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {table.rows.map((row) => {
-                const rowKey = row.join("¦");
-                return (
-                  <tr key={rowKey}>
-                    {row.map((cell) => (
-                      <td key={`${rowKey}:${cell}`}>
-                        <Markdown md={cell} />
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        );
-      })}
-    </>
-  );
-}
-
-function RuleView({ rule }: { rule: CompiledRule }) {
-  return (
-    <li className="policy-rule">
-      <div className="policy-rule__title">
-        {rule.requirement ? (
-          <span
-            className={`policy-badge-req policy-badge-req--${rule.requirement}`}
-          >
-            {rule.requirement}
-          </span>
-        ) : null}
-        <strong>{rule.title}</strong>
-      </div>
-      {rule.note ? (
-        <Markdown className="policy-rule__note" md={rule.note} />
-      ) : null}
-      {rule.appliesWhen ? (
-        <div className="policy-rule__applies-when">
-          <strong>Applies when:</strong> <Markdown md={rule.appliesWhen} />
-        </div>
-      ) : null}
-      {rule.exceptions && rule.exceptions.length > 0 ? (
-        <div className="policy-rule__exceptions">
-          <strong>Except:</strong> {rule.exceptions.join(", ")}
-        </div>
-      ) : null}
-      <RuleTableView rule={rule} />
-    </li>
-  );
-}
-
-function SummaryPanel({ level }: { level: CompiledLevel }) {
-  const [open, setOpen] = useState(true);
+function PolicyInfoBar({ level }: { level: CompiledLevel }) {
   const isDraft = level.status === "draft";
-
-  // General rules grouped by `section`.
-  const groups = useMemo(() => {
-    const map = new Map<string, CompiledRule[]>();
-    for (const rule of level.generalRules) {
-      const key = rule.section ?? "General Policies";
-      const bucket = map.get(key);
-      if (bucket) bucket.push(rule);
-      else map.set(key, [rule]);
-    }
-    return Array.from(map.entries());
-  }, [level]);
-
   return (
     <section
       className={`policy-panel${isDraft ? " policy-panel--draft" : ""}`}
-      aria-label={`${level.shortTitle} policy summary`}
+      aria-label={`${level.shortTitle} policy`}
     >
-      <header className="policy-panel__header">
-        <button
-          type="button"
-          className="policy-panel__toggle"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span className="policy-panel__chevron" aria-hidden="true">
-            {open ? "▾" : "▸"}
-          </span>
-          <span className="policy-panel__name">{level.shortTitle}</span>
-          {isDraft ? <span className="policy-pill">DRAFT</span> : null}
-        </button>
-        <a
-          className="policy-panel__deeplink"
-          href={`/spec-extensions/policy-levels/${level.slug}`}
-        >
-          Full policy level →
-        </a>
-      </header>
-
-      {open ? (
-        <div className="policy-panel__body">
-          {isDraft ? (
-            <div className="policy-panel__draft-banner">
-              This policy level is a <strong>draft</strong> and may change.
-            </div>
-          ) : null}
-
-          <Markdown className="policy-panel__summary" md={level.summary} />
-
-          {level.ancestry.length > 0 ? (
-            <div className="policy-panel__ancestry">
-              Includes {level.ancestry.join(" → ")}
-            </div>
-          ) : null}
-
-          {groups.map(([section, rules]) => (
-            <div className="policy-panel__group" key={section}>
-              <h4>{section}</h4>
-              <ul className="policy-rule-list">
-                {rules.map((rule) => (
-                  <RuleView key={rule.id} rule={rule} />
-                ))}
-              </ul>
-            </div>
-          ))}
-
-          {level.propertyNameGroups.length > 0 ? (
-            <div className="policy-panel__group">
-              <h4>Property-name policies</h4>
-              <ul className="policy-rule-list">
-                {level.propertyNameGroups.map((rule) => (
-                  <RuleView key={rule.id} rule={rule} />
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          <div className="policy-panel__legend">
-            <h4>Badge legend</h4>
-            <ul>
-              {LEGEND.map((item) => (
-                <li key={item.requirement}>
-                  <span className={`policy-legend-badge ${item.cls}`}>
-                    {item.requirement.toUpperCase()}
-                  </span>
-                  <span>{item.label}</span>
-                </li>
-              ))}
-            </ul>
+      <div className="policy-panel__body">
+        {isDraft ? (
+          <div className="policy-panel__draft-banner">
+            This policy level is a <strong>draft</strong> and may change.
           </div>
+        ) : null}
+
+        <Markdown className="policy-panel__summary" md={level.summary} />
+
+        <p className="policy-panel__inline-hint">
+          Its additional requirements are <strong>highlighted inline</strong>{" "}
+          throughout the spec below, next to what they apply to.
+        </p>
+
+        <div className="policy-panel__meta">
+          {level.ancestry.length > 1 ? (
+            <span className="policy-panel__ancestry">
+              Includes {level.ancestry.join(" → ")}
+            </span>
+          ) : null}
+          <a
+            className="policy-panel__deeplink"
+            href={`/spec-extensions/policy-levels/${level.slug}`}
+          >
+            Full policy level →
+          </a>
         </div>
-      ) : null}
+
+        <div className="policy-panel__legend">
+          {LEGEND.map((item) => (
+            <span className="policy-legend-item" key={item.requirement}>
+              <span className={`policy-legend-badge ${item.cls}`}>
+                {item.requirement.toUpperCase()}
+              </span>
+              <span>{item.label}</span>
+            </span>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -309,7 +189,7 @@ export function PolicySwitcher() {
       <p className="policy-switcher__hint">
         Choose a policy level to annotate the spec below with its requirements.
       </p>
-      {selected ? <SummaryPanel level={selected} /> : null}
+      {selected ? <PolicyInfoBar level={selected} /> : null}
     </div>
   );
 }
