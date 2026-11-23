@@ -6,7 +6,9 @@
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
   "addLabels": ["renovate"],
-  "lockFileMaintenance": { "enabled": true },
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "description": "Prod dependencies: group non-major, hold new releases 3 days, automerge on green CI",
