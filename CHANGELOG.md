@@ -12,7 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- BREAKING: The npm package now requires Node.js 26.13.1 or later, aligning package metadata with the CI tooling runtime.
+- BREAKING: The npm package now requires Node.js 26 or later, aligning package metadata with the CI tooling runtime.
 
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
