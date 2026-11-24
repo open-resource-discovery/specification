@@ -10,14 +10,6 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
-### Changed
-
-- Harden repository installs with engine enforcement, explicit dependency lifecycle-script approvals, a short release-age cutoff, and strict peer-dependency checks.
-- Request npm provenance when publishing and use npm 11.20 or later for development, preserving the published package's existing Node.js 24 and npm 11 minimums.
-- Align Biome configuration and editor defaults, and disable recurring Renovate lockfile-maintenance PRs.
-
-- CI and publishing use Node.js 26 while the published schema package supports Node.js 24 and later with npm 11 and later.
-
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
 ### Changed
