@@ -47,12 +47,13 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/consumer-package"
           npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP/consumer-package"
+          cp .github/tests/package-consumer.test.mjs "$RUNNER_TEMP/consumer-package/"
 
       - name: Upload packed npm package
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: consumer-package
-          path: ${{ runner.temp }}/consumer-package/*.tgz
+          path: ${{ runner.temp }}/consumer-package/
           retention-days: 1
           if-no-files-found: error
 
@@ -96,34 +97,10 @@ jobs:
           name: consumer-package
           path: ${{ runner.temp }}/consumer-artifact
 
-      - name: Check strict package install and exports
-        shell: bash
+      - name: Test package installation and exports
         env:
           EXPECT_SUPPORTED: ${{ matrix.supported }}
-        run: |
-          shopt -s nullglob
-          packages=("$RUNNER_TEMP"/consumer-artifact/*.tgz)
-          test "${#packages[@]}" -eq 1
-          cd "$(mktemp -d)"
-          install_flags=(--engine-strict --ignore-scripts --offline --no-audit --no-fund)
-
-          if [[ "$EXPECT_SUPPORTED" == "false" ]]; then
-            if npm install "${install_flags[@]}" --json "${packages[0]}" > install.json; then
-              echo "Expected npm to refuse this Node version"
-              exit 1
-            fi
-            node -e 'if (require("./install.json").error?.code !== "EBADENGINE") process.exit(1);'
-          else
-            npm install "${install_flags[@]}" "${packages[0]}"
-            node - <<'NODE'
-          const schemas = require("@open-resource-discovery/specification");
-          for (const name of ["ordDocumentSchema", "ordConfigurationSchema", "ordOverlaySchema"]) {
-            if (typeof schemas[name]?.$schema !== "string") {
-              throw new Error(`Missing public schema export: ${name}`);
-            }
-          }
-          NODE
-          fi
+        run: node --test "$RUNNER_TEMP/consumer-artifact/package-consumer.test.mjs"
 
   deploy-build:
     needs: build
