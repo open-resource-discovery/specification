@@ -12,6 +12,9 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
+- Update Biome to 2.6.8 and refresh compatible development-tool dependencies.
+- Use patched Tinypool 2.x and Serialize JavaScript 7.x in Docusaurus tooling, and scope UUID 11.x overrides to ExcelJS and SockJS.
+
 - Harden repository installs with engine enforcement, explicit dependency lifecycle-script approvals, a short release-age cutoff, and strict peer-dependency checks.
 - Request npm provenance when publishing and use npm 11.20 or later for development, preserving the published package's existing Node.js 24 and npm 11 minimums.
 - Align Biome configuration and editor defaults, and disable recurring Renovate lockfile-maintenance PRs.
