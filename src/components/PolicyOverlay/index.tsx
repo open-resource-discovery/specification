@@ -68,7 +68,7 @@ function PolicyDetail({ level }: { level: CompiledLevel }) {
       </p>
       <a
         className="policy-panel__deeplink"
-        href={`/spec-extensions/policy-levels/${level.slug}`}
+        href={`../../spec-extensions/policy-levels/${level.slug}`}
       >
         Full policy level →
       </a>

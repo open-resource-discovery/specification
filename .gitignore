@@ -28,6 +28,12 @@ docs/spec-v1/diagrams/*
 !docs/spec-v1/diagrams/index.mdx
 docs/spec-extensions/models/*.md
 
+# Generated from spec-extension/policy-levels/*.overlay.yaml (overlays are the source of truth)
+docs/spec-extensions/policy-levels/sap-base-v1.md
+docs/spec-extensions/policy-levels/sap-core-v1.md
+docs/spec-extensions/policy-levels/sap-documentation-v1.md
+docs/spec-extensions/policy-levels/sap-dp-v1.md
+
 /static/spec-v1/interfaces/*.schema.json
 /static/spec-v1/interfaces/*.csv
 /static/spec-v1/interfaces/*.xlsx
