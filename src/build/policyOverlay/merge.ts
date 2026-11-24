@@ -118,6 +118,7 @@ export function mergeOverlays(
         ordered.set(rule.id, {
           ...rule,
           inheritedFrom: isSelf ? "self" : ancestorId,
+          sourceTitle: ancestor.shortTitle,
         });
       }
     }

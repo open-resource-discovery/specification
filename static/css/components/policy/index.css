@@ -243,7 +243,7 @@
 /* Injected `.policy-note` callouts (inline rows + definition blocks) */
 /* ------------------------------------------------------------------ */
 .policy-note-row > td {
-  padding: 0 !important;
+  padding: 2px 10px 10px 10px !important;
 }
 .policy-note-row > td::before {
   display: none !important;
@@ -282,11 +282,15 @@
   margin-bottom: 4px;
 }
 .policy-note__label {
-  font-size: 0.66rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #5a6472;
+  letter-spacing: 0.02em;
+  color: #35506e;
+  background: color-mix(in oklab, #3a7fc0 14%, transparent);
+  border: 1px solid color-mix(in oklab, #3a7fc0 32%, transparent);
+  border-radius: 3px;
+  padding: 0 5px;
+  white-space: nowrap;
 }
 .policy-note__title {
   font-weight: 700;
@@ -341,6 +345,11 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__la
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__applies-when,
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__exceptions {
   color: var(--c-text-dim);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__label {
+  color: var(--c-text-strong);
+  background: color-mix(in oklab, var(--c-accent) 20%, transparent);
+  border-color: color-mix(in oklab, var(--c-accent) 38%, transparent);
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule {
   background: var(--c-bg-elev);

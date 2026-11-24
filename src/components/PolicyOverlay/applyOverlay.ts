@@ -153,7 +153,9 @@ function buildCallout(doc: Document, rule: CompiledRule): HTMLElement {
   head.className = "policy-note__head";
   const label = doc.createElement("span");
   label.className = "policy-note__label";
-  label.textContent = admonition.toUpperCase();
+  // Label with the authoring policy level (e.g. "SAP Base v1") so the reader sees
+  // which level the extra requirement comes from, not a generic "NOTE".
+  label.textContent = rule.sourceTitle;
   head.appendChild(label);
   const title = doc.createElement("span");
   title.className = "policy-note__title";

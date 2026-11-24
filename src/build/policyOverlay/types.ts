@@ -98,6 +98,8 @@ export interface PolicyOverlay {
 export interface CompiledRule extends OverlayRule {
   /** policyId of the level that authored this rule, or "self". */
   inheritedFrom: string;
+  /** shortTitle of the authoring level (e.g. "SAP Base v1"), resolved for display. */
+  sourceTitle: string;
 }
 
 export interface CompiledLevel {
