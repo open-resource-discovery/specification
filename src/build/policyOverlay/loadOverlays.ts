@@ -1,7 +1,8 @@
 // Loads and validates every policy-level overlay YAML file in a directory.
 //
 // Validation happens in two layers:
-//   1. Structural — each file is checked against policy-overlay.schema.json (Ajv 8).
+//   1. Structural — each file is checked against policy-overlay.schema.json
+//      (Ajv 8, JSON Schema 2020-12 dialect).
 //   2. Cross-file / semantic invariants Ajv cannot express:
 //        * `slug` must equal the file's stem (`sap-core-v1.overlay.yaml` -> "sap-core-v1")
 //        * `policyId` must be unique across all files
@@ -12,7 +13,7 @@
 
 import { readFileSync, readdirSync } from "node:fs";
 import { basename, join } from "node:path";
-import Ajv from "ajv";
+import Ajv2020 from "ajv/dist/2020";
 import { parse } from "yaml";
 import type { PolicyOverlay } from "./types";
 
@@ -34,7 +35,7 @@ export interface LoadedOverlays {
 export function loadOverlays(
   dir = "spec-extension/policy-levels",
 ): LoadedOverlays {
-  const ajv = new Ajv({ allErrors: true });
+  const ajv = new Ajv2020({ allErrors: true });
   const schema = JSON.parse(
     readFileSync(join(dir, SCHEMA_FILE), "utf8"),
   ) as object;
