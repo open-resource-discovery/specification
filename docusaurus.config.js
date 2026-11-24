@@ -98,6 +98,7 @@ const config = {
   scripts: [`${baseUrl}js/custom.js`],
 
   plugins: [
+    require.resolve("./src/plugins/policyLevelsWatch.js"),
     [
       "@docusaurus/plugin-client-redirects",
       {

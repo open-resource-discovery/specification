@@ -8,14 +8,9 @@ status: draft
 extends:
   - sap:base:v1
 summary: |
-  This policy level `sap:dp:v1`:
+  This policy level MUST be fulfilled by all SAP Data Products and is based on the SAP Data Product guidelines and rules.
 
-  - is based on the [`sap:base:v1`](./sap-base-v1.md) policy level and inherits _all_ its expectations.
-  - inherits _most_ of the [`sap:core:v1`](./sap-core-v1.md) policy level rules.
-  - MUST be fulfilled by all SAP Data Products and is based on the AP Data Product guidelines and rules..
-
-  > TODO: This is a DRAFT proposal and subject to changes and additions.
-  > There may be additional, complementary policy levels in the future.
+  It builds on [SAP Base v1](./sap-base-v1.md) and inherits _all_ its expectations, and additionally adopts _most_ of the [SAP Core v1](./sap-core-v1.md) rules.
 rules:
   - id: perspectives.static
     scope: general

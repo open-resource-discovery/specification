@@ -9,15 +9,11 @@ extends:
   - sap:base:v1
   - sap:documentation:v1
 summary: |
-  This policy level `sap:core:v1` is based on the [`sap:base:v1`](./sap-base-v1.md) and [`sap:documentation:v1`](./sap-documentation-v1.md) policy levels and inherits all its expectations.
+  This policy level MUST be fulfilled by all SAP applications and services; exceptions are allowed only on a case-by-case basis.
 
-  It MUST be fulfilled by all SAP applications and services.
-  Exceptions are only allowed on a case by case basis.
+  It builds on [SAP Base v1](./sap-base-v1.md) and [SAP Documentation v1](./sap-documentation-v1.md) and inherits all their expectations.
 
-  This policy level is based on various SAP guidelines and rules - most of them which are already established.
-  It defines the core rules and guidelines that are shared across SAP, although more specific rules and guidelines MAY be applied on top.
-
-  **All constraints of the ORD specification itself still apply (valid ORD document). The constraints described here come on top and may be stricter than the base spec where the base spec intentionally leaves room for exceptional use cases.**
+  It defines the core rules and guidelines shared across SAP, although more specific rules and guidelines MAY be applied on top. All constraints of the ORD specification itself still apply (the document must remain a valid ORD document); the constraints here come on top and may be stricter than the base spec where it intentionally leaves room for exceptional use cases.
 rules:
   - id: access-strategies.sap-specific
     scope: general

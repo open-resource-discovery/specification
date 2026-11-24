@@ -6,10 +6,10 @@ description: SAP Base v1 policy level
 sidebarPosition: 1
 status: active
 summary: |
-  This policy level `sap:base:v1` MUST be fulfilled by all SAP applications and services.
+  This policy level MUST be fulfilled by all SAP applications and services.
   It includes the **essential** validations that ensure proper metadata discovery and aggregation.
 
-  Usually SAP applications and services will use the more complete and opinionated [`sap:core:v1`](./sap-core-v1.md) policy level.
+  Most SAP applications and services will instead use the more complete and opinionated [SAP Core v1](./sap-core-v1.md) policy level, which builds on this one.
 rules:
   - id: policy-levels.custom-namespaced
     scope: propertyName

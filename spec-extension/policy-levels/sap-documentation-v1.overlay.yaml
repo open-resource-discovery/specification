@@ -8,9 +8,9 @@ status: draft
 extends:
   - sap:base:v1
 summary: |
-  This policy level `sap:documentation:v1` is based on the [`sap:base:v1`](./sap-base-v1.md) policy level and inherits all its expectations.
+  This policy level builds on [SAP Base v1](./sap-base-v1.md) and inherits all its expectations.
 
-  This policy level is based on various SAP guidelines and rules — most of which are already established. It defines the core rules and guidelines for human-readable descriptions within metadata formats, although more specific rules and guidelines MAY be applied on top in a specific product line.
+  It defines the rules and guidelines for human-readable descriptions within metadata formats. More specific rules and guidelines MAY be applied on top in a particular product line.
 rules:
   - id: title.max-length
     scope: propertyName
@@ -247,8 +247,9 @@ rules:
       For the taxonomy properties `lineOfBusiness` and `industry`: Only the recommended values MUST be chosen.
 
   - id: openapi.x-sap-extensions
-    scope: general
-    section: Misc Constraints
+    scope: property
+    targets:
+      - api-resource-definition_type
     requirement: mandatory
     title: Keep existing `x-sap-` OpenAPI extensions
     note: |

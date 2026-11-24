@@ -60,13 +60,18 @@ function safeHref(href: string): string {
   return /^(https?:|mailto:|\/|\.|#)/i.test(href.trim()) ? href : "#";
 }
 
-/** Render a small subset of CommonMark inline syntax to safe HTML. */
+/** Render a small subset of CommonMark INLINE syntax to safe HTML. */
 export function renderInlineHtml(md: string): string {
   let s = escapeHtml(md);
   // inline code `code`
   s = s.replace(/`([^`]+)`/g, (_m, c: string) => `<code>${c}</code>`);
   // bold **text**
   s = s.replace(/\*\*([^*]+)\*\*/g, (_m, b: string) => `<strong>${b}</strong>`);
+  // italic _text_ (bounded so it doesn't catch underscores inside identifiers)
+  s = s.replace(
+    /(^|[^\w])_([^_\n]+)_(?=[^\w]|$)/g,
+    (_m, p: string, t: string) => `${p}<em>${t}</em>`,
+  );
   // links [text](href) — href is already HTML-escaped; scheme is also restricted
   s = s.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
@@ -78,6 +83,53 @@ export function renderInlineHtml(md: string): string {
   // soft line breaks
   s = s.replace(/\n/g, "<br/>");
   return s;
+}
+
+/**
+ * Render a small block-level markdown subset to safe HTML: paragraphs,
+ * unordered lists (`- `/`* `) and blockquotes (`> `), with inline syntax inside.
+ * Used for multi-line description/summary and note bodies.
+ */
+export function renderMarkdown(md: string): string {
+  const lines = md.replace(/\r/g, "").split("\n");
+  const blocks: string[] = [];
+  const inline = (text: string) => renderInlineHtml(text);
+  let i = 0;
+  while (i < lines.length) {
+    if (!lines[i].trim()) {
+      i++;
+      continue;
+    }
+    if (/^\s*[-*]\s+/.test(lines[i])) {
+      const items: string[] = [];
+      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\s*[-*]\s+/, ""));
+        i++;
+      }
+      blocks.push(
+        `<ul>${items.map((it) => `<li>${inline(it)}</li>`).join("")}</ul>`,
+      );
+    } else if (/^\s*>\s?/.test(lines[i])) {
+      const quote: string[] = [];
+      while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
+        quote.push(lines[i].replace(/^\s*>\s?/, ""));
+        i++;
+      }
+      blocks.push(`<blockquote>${inline(quote.join("\n"))}</blockquote>`);
+    } else {
+      const para: string[] = [];
+      while (
+        i < lines.length &&
+        lines[i].trim() &&
+        !/^\s*([-*]\s+|>\s?)/.test(lines[i])
+      ) {
+        para.push(lines[i]);
+        i++;
+      }
+      blocks.push(`<p>${inline(para.join("\n"))}</p>`);
+    }
+  }
+  return blocks.join("");
 }
 
 // ---------------------------------------------------------------------------
@@ -121,7 +173,9 @@ function buildLinks(doc: Document, links: RuleLink[]): HTMLElement {
   links.forEach((link, i) => {
     if (i > 0) wrap.appendChild(doc.createTextNode(" · "));
     const a = doc.createElement("a");
-    a.href = safeHref(link.href);
+    // Keep the authored href raw so rewriteDocLinks can resolve it; property
+    // assignment would resolve against the Document page immediately.
+    a.setAttribute("href", safeHref(link.href));
     a.textContent = link.text;
     if (/^https?:/i.test(link.href)) {
       a.target = "_blank";
@@ -132,6 +186,36 @@ function buildLinks(doc: Document, links: RuleLink[]): HTMLElement {
   return wrap;
 }
 
+/**
+ * Overlay content links are authored relative to the policy-pages directory
+ * (docs/spec-extensions/policy-levels/). When injected onto the Document page
+ * those relative hrefs would resolve against the wrong base and keep their `.md`
+ * extension. Resolve each against the live, deployment-aware policy-pages URL
+ * (derived from window.location, so it carries any base path) and map `.md` to
+ * its route. External/anchor/mailto links are left untouched.
+ */
+export function rewriteDocLinks(root: HTMLElement): void {
+  if (typeof window === "undefined") return;
+  let base: string;
+  try {
+    base = new URL("../../spec-extensions/policy-levels/", window.location.href)
+      .href;
+  } catch {
+    return;
+  }
+  for (const a of root.querySelectorAll<HTMLAnchorElement>("a[href]")) {
+    const raw = a.getAttribute("href") || "";
+    if (!raw || /^(https?:|mailto:|#)/i.test(raw)) continue;
+    try {
+      const u = new URL(raw, base);
+      const path = u.pathname.endsWith("/index.md")
+        ? u.pathname.slice(0, -"index.md".length)
+        : u.pathname.replace(/\.md$/, "");
+      a.setAttribute("href", path + u.search + u.hash);
+    } catch {}
+  }
+}
+
 const ADMONITIONS = new Set<Admonition>([
   "note",
   "tip",
@@ -140,7 +224,7 @@ const ADMONITIONS = new Set<Admonition>([
   "danger",
 ]);
 
-/** Build the inner `.policy-note` callout element for a rule. */
+/** Build the `.policy-note` callout element for a single rule. */
 function buildCallout(
   doc: Document,
   rule: CompiledRule,
@@ -179,38 +263,27 @@ function buildCallout(
   if (rule.note) {
     const body = doc.createElement("div");
     body.className = "policy-note__body";
-    body.innerHTML = renderInlineHtml(rule.note);
+    body.innerHTML = renderMarkdown(rule.note);
     callout.appendChild(body);
   }
-
   if (rule.appliesWhen) {
     const aw = doc.createElement("div");
     aw.className = "policy-note__applies-when";
-    aw.innerHTML = `<strong>Applies when:</strong> ${renderInlineHtml(
-      rule.appliesWhen,
-    )}`;
+    aw.innerHTML = `<strong>Applies when:</strong> ${renderInlineHtml(rule.appliesWhen)}`;
     callout.appendChild(aw);
   }
-
   if (rule.exceptions && rule.exceptions.length > 0) {
     const ex = doc.createElement("div");
     ex.className = "policy-note__exceptions";
-    ex.innerHTML = `<strong>Except:</strong> ${renderInlineHtml(
-      rule.exceptions.join(", "),
-    )}`;
+    ex.innerHTML = `<strong>Except:</strong> ${renderInlineHtml(rule.exceptions.join(", "))}`;
     callout.appendChild(ex);
   }
-
-  if (rule.tables) {
-    for (const table of rule.tables) {
-      callout.appendChild(buildTable(doc, table));
-    }
-  }
-
-  if (rule.links && rule.links.length > 0) {
+  for (const table of rule.tables ?? [])
+    callout.appendChild(buildTable(doc, table));
+  if (rule.links && rule.links.length > 0)
     callout.appendChild(buildLinks(doc, rule.links));
-  }
 
+  rewriteDocLinks(callout);
   return callout;
 }
 

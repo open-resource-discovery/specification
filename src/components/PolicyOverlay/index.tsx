@@ -14,8 +14,9 @@ import {
   applyOverlay,
   captureViewportAnchor,
   clearOverlay,
-  renderInlineHtml,
+  renderMarkdown,
   restoreViewportAnchor,
+  rewriteDocLinks,
 } from "./applyOverlay";
 
 const data = policyLevelsData as unknown as PolicyLevelsData;
@@ -44,18 +45,25 @@ function policyFromSearch(search: string): string | null {
 
 function Markdown({ md, className }: { md: string; className?: string }) {
   return (
-    <span
+    <div
       className={className}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: first-party content, escaped and limited to a safe inline subset by renderInlineHtml
-      dangerouslySetInnerHTML={{ __html: renderInlineHtml(md) }}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: first-party content, escaped and limited to a safe markdown subset by renderMarkdown
+      dangerouslySetInnerHTML={{ __html: renderMarkdown(md) }}
     />
   );
 }
 
 function PolicyDetail({ level }: { level: CompiledLevel }) {
   const isDraft = level.status === "draft";
+  const ref = useRef<HTMLDivElement>(null);
+  // The summary may reference other policy levels with links authored relative to
+  // the policy-pages directory; resolve them for this (Document) page + base path.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-run when the selected level (and thus the rendered summary) changes
+  useEffect(() => {
+    if (ref.current) rewriteDocLinks(ref.current);
+  }, [level]);
   return (
-    <div className="policy-switcher__detail">
+    <div className="policy-switcher__detail" ref={ref}>
       {isDraft ? (
         <div className="policy-panel__draft-banner">
           This policy level is a <strong>draft</strong> and may change.
