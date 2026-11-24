@@ -80,8 +80,9 @@ rules:
           - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }`
 
   - id: ord-spec-version.recent
-    scope: general
-    section: General Policies
+    scope: property
+    targets:
+      - ord-document_openresourcediscovery
     requirement: recommended
     title: Use a recent ORD specification version
     note: |
@@ -145,10 +146,9 @@ rules:
       The [`extensible`](../../spec-v1/interfaces/Document.md#api-resource_extensible) property MUST be provided.
 
   - id: api-resource.resource-definitions
-    scope: definition
-    section: Context Specific Policies
-    definitions:
-      - api-resource
+    scope: property
+    targets:
+      - api-resource_resourcedefinitions
     requirement: conditional
     appliesWhen: visibility is public or internal
     title: Required resource definitions per API protocol
@@ -162,10 +162,9 @@ rules:
       - SOAP APIs MUST have a resource definition of `"type": "wsdl-v2"` (RECOMMENDED) or `"type": "wsdl-v1"`.
 
   - id: api-resource.openapi-validation
-    scope: definition
-    section: Context Specific Policies
-    definitions:
-      - api-resource
+    scope: property
+    targets:
+      - api-resource-definition_type
     requirement: recommended
     title: Validate OpenAPI definitions
     note: |
@@ -203,10 +202,9 @@ rules:
       The `extensible` property MUST be provided.
 
   - id: event-resource.resource-definitions
-    scope: definition
-    section: Context Specific Policies
-    definitions:
-      - event-resource
+    scope: property
+    targets:
+      - event-resource_resourcedefinitions
     requirement: conditional
     appliesWhen: visibility is public or internal
     title: Required resource definitions for Event Resources
@@ -285,10 +283,9 @@ rules:
       SAP applications and services MUST use `type: "ord:overlay:v1"` as the overlay format for all published overlays. The `oas-overlay-v1` type is supported by the ORD specification for interoperability with the OpenAPI Initiative Overlay ecosystem, but within SAP we standardize on ORD Overlay because it works uniformly across all metadata formats we publish (OpenAPI, AsyncAPI, OData EDMX/CSDL, A2A, MCP, CSN Interop) and integrates with ORD identifiers, `purpose`, and `visibility`.
 
   - id: overlay.visibility
-    scope: definition
-    section: Context Specific Policies
-    definitions:
-      - overlay
+    scope: property
+    targets:
+      - overlay_visibility
     requirement: mandatory
     title: Overlay visibility
     note: |
