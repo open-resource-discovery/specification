@@ -254,30 +254,27 @@ function applyInlineNotes(doc: Document, level: CompiledLevel): void {
     if (!nameEl) continue;
     const row = nameEl.closest("tr");
     if (!row) continue;
-    const colspan = Math.max(1, row.children.length);
+    // Append the requirement into the property's DESCRIPTION cell (3rd column),
+    // so it reads as extra description content rather than a full-width row
+    // spanning all three columns.
+    const descEl = row.querySelector(".interface-property-description");
+    const cell: Element | null = descEl
+      ? descEl.closest("td")
+      : row.lastElementChild;
+    if (!cell) continue;
 
-    let anchorNode: Element = row;
     for (const rule of rules) {
-      const exists = doc.querySelector(
-        `tr[data-policy-overlay="note-row"][data-anchor="${CSS.escape(
+      const exists = cell.querySelector(
+        `[data-policy-overlay="note"][data-anchor="${CSS.escape(
           anchor,
         )}"][data-rule-id="${CSS.escape(rule.id)}"]`,
       );
-      if (exists) {
-        anchorNode = exists;
-        continue;
-      }
-      const noteRow = doc.createElement("tr");
-      noteRow.className = "policy-note-row";
-      noteRow.setAttribute("data-policy-overlay", "note-row");
-      noteRow.setAttribute("data-anchor", anchor);
-      noteRow.setAttribute("data-rule-id", rule.id);
-      const td = doc.createElement("td");
-      td.colSpan = colspan;
-      td.appendChild(buildCallout(doc, rule, level.shortTitle));
-      noteRow.appendChild(td);
-      anchorNode.insertAdjacentElement("afterend", noteRow);
-      anchorNode = noteRow;
+      if (exists) continue;
+      const callout = buildCallout(doc, rule, level.shortTitle);
+      callout.setAttribute("data-policy-overlay", "note");
+      callout.setAttribute("data-anchor", anchor);
+      callout.setAttribute("data-rule-id", rule.id);
+      cell.appendChild(callout);
     }
   }
 }

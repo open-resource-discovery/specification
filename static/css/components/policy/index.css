@@ -242,14 +242,12 @@
 /* ------------------------------------------------------------------ */
 /* Injected `.policy-note` callouts (inline rows + definition blocks) */
 /* ------------------------------------------------------------------ */
-.policy-note-row > td {
-  padding: 2px 10px 10px 10px !important;
-}
-.policy-note-row > td::before {
-  display: none !important;
-}
 .policy-note-block {
   margin: 8px 0 12px 0;
+}
+/* Requirement callout appended inside a property's description cell. */
+.markdown .interface-property-description .policy-note {
+  margin: 8px 0 2px 0;
 }
 .markdown .policy-note {
   margin: 6px 0;
