@@ -53,9 +53,9 @@ rules:
       - The root `sap:` prefix MUST NOT be used for application-specific values. Applications and services MUST use a sub-namespace such as `sap.foo:...` instead (e.g. `sap.s4:...` is allowed, `sap:...` is not).
 
   - id: package.vendor
-    scope: definition
-    definitions:
-      - package
+    scope: property
+    targets:
+      - package_vendor
     requirement: mandatory
     title: Package vendor
     note: |

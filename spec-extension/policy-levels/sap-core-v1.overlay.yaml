@@ -232,16 +232,13 @@ rules:
       SAP Event Catalogs SHOULD be validated via the SAP API Metadata Validator, using `sap:core:v1` compliance level.
 
   - id: entity-type.definition-visibility
-    scope: definition
-    section: Context Specific Policies
-    definitions:
-      - entity-type
+    scope: property
+    targets:
+      - entity-type_visibility
     requirement: mandatory
     title: Entity Type definition visibility
     note: |
-      For [Entity Types](../../spec-v1/interfaces/Document.md#entity-type):
-
-      - Entity Type definitions MUST have `visibility` set to either `private` or `internal` (stricter than the base spec, which permits `public` for exceptional open-standardization cases).
+      Entity Type definitions MUST have `visibility` set to either `private` or `internal` (stricter than the base spec, which permits `public` for exceptional open-standardization cases).
 
   - id: extensible.description.tg12
     scope: property
