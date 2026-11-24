@@ -292,6 +292,12 @@
   padding: 0 5px;
   white-space: nowrap;
 }
+.policy-note__inherited {
+  font-size: 0.68rem;
+  font-style: italic;
+  color: #6a7483;
+  white-space: nowrap;
+}
 .policy-note__title {
   font-weight: 700;
 }
@@ -343,7 +349,8 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule__ap
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule__exceptions,
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__label,
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__applies-when,
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__exceptions {
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__exceptions,
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__inherited {
   color: var(--c-text-dim);
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__label {

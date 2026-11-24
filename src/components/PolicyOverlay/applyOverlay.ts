@@ -140,7 +140,11 @@ const ADMONITIONS = new Set<Admonition>([
 ]);
 
 /** Build the inner `.policy-note` callout element for a rule. */
-function buildCallout(doc: Document, rule: CompiledRule): HTMLElement {
+function buildCallout(
+  doc: Document,
+  rule: CompiledRule,
+  currentTitle: string,
+): HTMLElement {
   const admonition: Admonition =
     rule.admonition && ADMONITIONS.has(rule.admonition)
       ? rule.admonition
@@ -151,12 +155,18 @@ function buildCallout(doc: Document, rule: CompiledRule): HTMLElement {
 
   const head = doc.createElement("div");
   head.className = "policy-note__head";
+  // Primary tag: the currently selected policy level (e.g. "SAP Core v1").
   const label = doc.createElement("span");
   label.className = "policy-note__label";
-  // Label with the authoring policy level (e.g. "SAP Base v1") so the reader sees
-  // which level the extra requirement comes from, not a generic "NOTE".
-  label.textContent = rule.sourceTitle;
+  label.textContent = currentTitle;
   head.appendChild(label);
+  // When the requirement is inherited, name the level it comes from.
+  if (rule.inheritedFrom !== "self") {
+    const inherited = doc.createElement("span");
+    inherited.className = "policy-note__inherited";
+    inherited.textContent = `inherited from ${rule.sourceTitle}`;
+    head.appendChild(inherited);
+  }
   const title = doc.createElement("span");
   title.className = "policy-note__title";
   title.textContent = rule.title;
@@ -264,7 +274,7 @@ function applyInlineNotes(doc: Document, level: CompiledLevel): void {
       noteRow.setAttribute("data-rule-id", rule.id);
       const td = doc.createElement("td");
       td.colSpan = colspan;
-      td.appendChild(buildCallout(doc, rule));
+      td.appendChild(buildCallout(doc, rule, level.shortTitle));
       noteRow.appendChild(td);
       anchorNode.insertAdjacentElement("afterend", noteRow);
       anchorNode = noteRow;
@@ -293,7 +303,7 @@ function applyDefinitionNotes(doc: Document, level: CompiledLevel): void {
       block.setAttribute("data-policy-overlay", "def-note");
       block.setAttribute("data-def", defSlug);
       block.setAttribute("data-rule-id", rule.id);
-      block.appendChild(buildCallout(doc, rule));
+      block.appendChild(buildCallout(doc, rule, level.shortTitle));
       anchorNode.insertAdjacentElement("afterend", block);
       anchorNode = block;
     }
@@ -322,7 +332,7 @@ function applyGeneralNotes(doc: Document, level: CompiledLevel): void {
     block.className = "policy-note-block";
     block.setAttribute("data-policy-overlay", "general-note");
     block.setAttribute("data-rule-id", rule.id);
-    block.appendChild(buildCallout(doc, rule));
+    block.appendChild(buildCallout(doc, rule, level.shortTitle));
     anchorNode.insertAdjacentElement("afterend", block);
     anchorNode = block;
   }
