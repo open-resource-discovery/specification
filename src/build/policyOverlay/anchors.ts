@@ -52,8 +52,16 @@ function readDefinitionAnchorsFromMd(documentMdPath: string): Set<string> {
   for (const line of md.split("\n")) {
     const h = /^(#{1,6})\s+(.*?)\s*$/.exec(line);
     if (!h) continue;
-    // Strip inline MDX/HTML (e.g. the DRAFT <span>) before slugging, matching Docusaurus.
-    const text = h[2].replace(/<[^>]+>/g, "").trim();
+    // Strip inline MDX/HTML (e.g. the DRAFT <span>) before slugging, matching
+    // Docusaurus. Loop to a fixpoint so nested/split tags cannot leave a partial
+    // "<tag" behind (CodeQL: incomplete multi-character sanitization).
+    let text = h[2];
+    let prev: string;
+    do {
+      prev = text;
+      text = text.replace(/<[^>]*>/g, "");
+    } while (text !== prev);
+    text = text.trim();
     const slug = slugger.slug(text);
     if (h[1].length === 3) anchors.add(slug);
   }
