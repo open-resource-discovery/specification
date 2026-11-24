@@ -295,7 +295,11 @@
 .policy-note__inherited {
   font-size: 0.68rem;
   font-style: italic;
-  color: #6a7483;
+  color: #5a6472;
+  background: color-mix(in oklab, #6a7483 14%, transparent);
+  border: 1px solid color-mix(in oklab, #6a7483 28%, transparent);
+  border-radius: 3px;
+  padding: 0 5px;
   white-space: nowrap;
 }
 .policy-note__title {
@@ -357,6 +361,11 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__la
   color: var(--c-text-strong);
   background: color-mix(in oklab, var(--c-accent) 20%, transparent);
   border-color: color-mix(in oklab, var(--c-accent) 38%, transparent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__inherited {
+  color: var(--c-text-dim);
+  background: color-mix(in oklab, var(--c-text-dim) 16%, transparent);
+  border-color: color-mix(in oklab, var(--c-text-dim) 30%, transparent);
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule {
   background: var(--c-bg-elev);
