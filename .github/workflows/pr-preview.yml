@@ -4,11 +4,15 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, closed]
 
+permissions: {}
+
 jobs:
   pr-preview:
+    # Fork previews are paused until the shared action safely handles artifacts.
+    # Fork contributions continue to run Main and Verify Generated Files.
+    if: github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: read
-      actions: write
       pull-requests: read
 
     runs-on: ubuntu-latest
@@ -18,13 +22,13 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Setup Node
         if: github.event.action != 'closed'
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "26"
 
@@ -42,10 +46,11 @@ jobs:
           npm run build:docusaurus
 
       - name: PR preview
-        uses: open-resource-discovery/pr-preview-action@2abf52396925f6bb4d0a82e27bd6f060260d09ae # main
+        uses: open-resource-discovery/pr-preview-action@2abf52396925f6bb4d0a82e27bd6f060260d09ae
         with:
-          fork: true
           target-repo: open-resource-discovery/pr-preview
           pages-base-url: https://open-resource-discovery.github.io/pr-preview
           umbrella-dir: specification
+          # Pages publication can exceed the action's three-minute default.
+          wait-poll-attempts: 72
           token: ${{ secrets.PR_PREVIEW_TOKEN }}

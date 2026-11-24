@@ -1,12 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "timezone": "Europe/Berlin",
   "schedule": ["before 6am on monday"],
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
   "addLabels": ["renovate"],
-  "lockFileMaintenance": { "enabled": true },
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "description": "Prod dependencies: group non-major, hold new releases 3 days, automerge on green CI",
@@ -40,9 +42,8 @@
     }
   ],
   "vulnerabilityAlerts": {
-    "description": "Prod-dependency security fixes: no delay, immediate PR, automerge on green",
-    "matchDepTypes": ["dependencies"],
-    "groupName": "SECURITY (prod)",
+    "description": "Dependency security fixes: no delay, immediate PR, automerge on green",
+    "groupName": "SECURITY",
     "minimumReleaseAge": null,
     "labels": ["security", "priority"],
     "automerge": true,
