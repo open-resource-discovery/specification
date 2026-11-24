@@ -50,6 +50,8 @@ export interface OverlayRule {
   targets?: string[];
   /** scope: propertyName — property names, e.g. ["title","shortDescription"]; expanded by the build. */
   propertyNames?: string[];
+  /** scope: propertyName — anchor ids to drop from the expanded set (e.g. ["package_title"] when a definition has its own override rule). */
+  excludeTargets?: string[];
   /** scope: definition — definition heading slugs, e.g. ["entity-type"]. */
   definitions?: string[];
 

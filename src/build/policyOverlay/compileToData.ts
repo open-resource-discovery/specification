@@ -74,14 +74,21 @@ export function compileToData(
           // renders IN PLACE at every property row that carries that name. It does
           // NOT drive the presence badge (that would mislabel a required property
           // as e.g. OPTIONAL); the highlighted inline note is the indicator.
+          const excluded = new Set(rule.excludeTargets ?? []);
+          for (const excl of excluded) {
+            if (!anchors.propertyAnchors.has(excl))
+              reportDangling(policyId, rule.id, excl);
+          }
           for (const name of rule.propertyNames ?? []) {
             const expanded = anchors.propertyNameIndex.get(name);
             if (!expanded) {
               reportDangling(policyId, rule.id, name);
               continue;
             }
-            for (const anchor of expanded)
+            for (const anchor of expanded) {
+              if (excluded.has(anchor)) continue;
               pushRule(noteRulesByAnchor, anchor, rule);
+            }
           }
           break;
         }

@@ -17,7 +17,6 @@ import type {
   RuleLink,
   RuleTable,
 } from "../../build/policyOverlay/types";
-import { forceAlignToHashTarget } from "../../theme/contentStable";
 
 const BADGE_SELECTOR = "span.optional, span.mandatory, span.recommended";
 
@@ -74,6 +73,8 @@ export function renderInlineHtml(md: string): string {
     (_m, t: string, h: string) =>
       `<a href="${safeHref(h)}" target="_blank" rel="noopener noreferrer">${t}</a>`,
   );
+  // allow explicit <br>, <br/>, <br /> line breaks authored in the content
+  s = s.replace(/&lt;br\s*\/?&gt;/gi, "<br/>");
   // soft line breaks
   s = s.replace(/\n/g, "<br/>");
   return s;
@@ -356,7 +357,48 @@ export function applyOverlay(
   applyInlineNotes(doc, level);
   applyDefinitionNotes(doc, level);
   applyGeneralNotes(doc, level);
-  forceAlignToHashTarget();
+}
+
+// ---------------------------------------------------------------------------
+// Scroll anchoring — keep the property the reader is looking at fixed in the
+// viewport when switching policy levels (notes added/removed above it would
+// otherwise shift the whole page).
+// ---------------------------------------------------------------------------
+
+export interface ScrollAnchor {
+  el: Element;
+  top: number;
+}
+
+/**
+ * Pick a stable reference: the first element with an `id` in the spec whose top
+ * is at or just below the sticky switcher bar (i.e. the topmost thing the reader
+ * currently sees), and record its viewport offset.
+ */
+export function captureViewportAnchor(
+  doc: Document | undefined = typeof document !== "undefined"
+    ? document
+    : undefined,
+): ScrollAnchor | null {
+  if (!doc) return null;
+  const bar = doc.querySelector<HTMLElement>(".policy-switcher");
+  const topLine = bar ? bar.getBoundingClientRect().bottom : 0;
+  const nodes = doc.querySelectorAll<HTMLElement>(
+    ".theme-doc-markdown [id], .markdown [id]",
+  );
+  for (const el of nodes) {
+    const top = el.getBoundingClientRect().top;
+    if (top >= topLine - 1) return { el, top };
+  }
+  return null;
+}
+
+/** Re-scroll so the captured element sits at its original viewport offset. */
+export function restoreViewportAnchor(anchor: ScrollAnchor | null): void {
+  if (!anchor || typeof window === "undefined" || !anchor.el.isConnected)
+    return;
+  const delta = anchor.el.getBoundingClientRect().top - anchor.top;
+  if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
 }
 
 /**

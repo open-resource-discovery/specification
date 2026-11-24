@@ -1,12 +1,12 @@
 ---
 title: "SAP Documentation Policy Level (v1.0)"
 description: "SAP Documentation v1 policy level"
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 {/* AUTO-GENERATED from spec-extension/policy-levels/sap-documentation-v1.overlay.yaml — do not edit */}
 
-# SAP Documentation Policy Level (v1.0)
+# SAP Documentation Policy Level (v1.0) <span className="feature-status-draft" title="This feature is in DRAFT status and subject to potential changes.">DRAFT</span>
 
 ## Description
 
@@ -28,8 +28,6 @@ All `title` values (except link titles) MUST NOT contain the term "Deprecated" o
 
 All `title` values (except link titles) SHOULD use the following charset.
 
-**package** `title` values MAY use the additional characters listed below.
-
 | Chars | Description |
 | --- | --- |
 | `A-Z`, `a-z` | Latin letters |
@@ -39,10 +37,18 @@ All `title` values (except link titles) SHOULD use the following charset.
 | `,` | Comma |
 | `(` `)` | Parentheses |
 
-_**package** `title` values MAY use the following additional characters:_
+### Title charset
 
-| Char | Description |
+**package** `title` values (except link titles) SHOULD use the following charset, which adds the forward slash (`/`) to the general title charset.
+
+| Chars | Description |
 | --- | --- |
+| `A-Z`, `a-z` | Latin letters |
+| `0-9` | Numbers |
+| ` ` | Space |
+| `-` `—` `–` | Different hyphens |
+| `,` | Comma |
+| `(` `)` | Parentheses |
 | `/` | Forward slash |
 
 ### Discouraged terms in titles

@@ -1,6 +1,6 @@
 $schema: "http://json-schema.org/draft-07/schema#"
 $id: https://open-resource-discovery.org/spec-v1/interfaces/Document.schema.json#
-title: Ord Document
+title: ORD Document
 description: |-
   The [ORD Document](../index.md#ord-document) object serves as a wrapper for the **ORD resources** and **ORD taxonomy** and adds further top-level information
   that is specific to the document/the service it describes.
@@ -948,7 +948,7 @@ definitions:
 
   ApiResource:
     type: object
-    title: Api Resource
+    title: API Resource
     x-ums-type: root
     x-ums-implements: "#/definitions/OrdResource"
     description: |-
@@ -2796,7 +2796,7 @@ definitions:
 
   ApiResourceDefinition:
     type: object
-    title: Api Resource Definition
+    title: API Resource Definition
     description: |-
       Link and categorization of a machine-readable API definition.
       For example, OpenAPI definition, OData Metadata, etc.
@@ -4107,7 +4107,7 @@ definitions:
 
   ApiResourceIntegrationAspect:
     type: object
-    title: Api Resource Integration Aspect
+    title: API Resource Integration Aspect
     x-introduced-in-version: "1.7.0"
     x-ums-type: "custom"
     description: |-
@@ -4658,7 +4658,7 @@ definitions:
 
   APIEventResourceLink:
     type: object
-    title: Api and Event Resource Link
+    title: API and Event Resource Link
     x-ums-type: "custom"
     description: |-
       Links with specific semantic meaning that are related to API or event resources.
@@ -5533,7 +5533,7 @@ definitions:
   ############################################################################################################
 
   ApiModelSelectorOData:
-    title: Api Model Selector (Odata)
+    title: API Model Selector (OData)
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
     x-hide: true
@@ -5575,7 +5575,7 @@ definitions:
   ############################################################################################################
 
   ApiModelSelectorJsonPointer:
-    title: Api Model Selector (Json Pointer)
+    title: API Model Selector (JSON Pointer)
     x-introduced-in-version: "1.6.0"
     x-deprecated-in-version: "1.11.0"
     x-hide: true
@@ -6116,7 +6116,7 @@ definitions:
 
   OrdResource:
     type: object
-    title: Ord Resource (abstract)
+    title: ORD Resource (abstract)
     x-abstract: true
     x-ums-type: root
     description: |-

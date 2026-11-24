@@ -8,12 +8,24 @@
 /* ------------------------------------------------------------------ */
 /* Switcher control                                                   */
 /* ------------------------------------------------------------------ */
+.policy-switcher__sentinel {
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
 .policy-switcher {
+  position: sticky;
+  top: calc(var(--ifm-navbar-height, 60px) + 6px);
+  z-index: 10;
   margin: 0 0 24px 0;
   padding: 12px 16px;
   border: 1px solid #d7dde6;
   border-radius: 8px;
   background: #f6f8fb;
+}
+/* When stuck under the navbar, lift it with a shadow for separation. */
+.policy-switcher--stuck {
+  box-shadow: 0 6px 16px rgba(4, 13, 18, 0.1);
 }
 .policy-switcher__control {
   display: flex;
@@ -21,18 +33,44 @@
   gap: 10px;
   flex-wrap: wrap;
 }
+.policy-switcher__toggle {
+  margin-left: auto;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #35506e;
+  background: transparent;
+  border: 1px solid #c4d0e0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.policy-switcher__toggle:hover {
+  background: color-mix(in oklab, #3a7fc0 10%, transparent);
+}
+.policy-switcher__detail {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+.policy-switcher__detail .policy-panel__summary {
+  display: block;
+  margin-bottom: 8px;
+}
 .policy-switcher__label {
   font-weight: 700;
   font-size: 0.95rem;
 }
 .policy-switcher__select {
-  appearance: auto;
+  appearance: none;
+  -webkit-appearance: none;
   min-width: 220px;
-  padding: 6px 10px;
+  padding: 6px 34px 6px 10px;
   font-size: 0.9rem;
   border: 1px solid #a1b2cb;
   border-radius: 6px;
-  background: #fff;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6472' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
   color: inherit;
   cursor: pointer;
 }
@@ -114,12 +152,6 @@
 .policy-panel__summary {
   display: block;
   margin-bottom: 8px;
-}
-.policy-panel__ancestry {
-  margin-bottom: 0;
-  font-size: 0.82rem;
-  color: #5a6472;
-  font-style: italic;
 }
 .policy-panel__inline-hint {
   margin: 0 0 10px 0;
@@ -279,9 +311,35 @@
   font-size: 0.85em;
 }
 .markdown .policy-note__table {
-  margin: 6px 0 0 0;
+  margin: 8px 0 0 0;
   font-size: 0.82em;
   background: #fff;
+  border-collapse: collapse;
+  width: auto;
+  max-width: 100%;
+}
+.markdown .policy-note__table caption {
+  text-align: left;
+  font-style: italic;
+  color: #5a6472;
+  padding: 0 0 2px 0;
+}
+.markdown .policy-note__table :is(th, td) {
+  border: 1px solid #d7dde6;
+  padding: 2px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+.markdown .policy-note__table th {
+  background: #eef2f7;
+  font-weight: 600;
+}
+/* Char tokens in these tables must not wrap mid-token (overflow-wrap set on the
+   description cell for long regex/URLs would otherwise split e.g. `A-Z`). */
+.markdown .policy-note__table code {
+  overflow-wrap: normal;
+  word-break: normal;
+  white-space: nowrap;
 }
 
 /* ------------------------------------------------------------------ */
@@ -291,13 +349,18 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-switcher
   background: var(--c-bg-elev);
   border-color: var(--c-sep);
 }
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-switcher__toggle {
+  color: var(--c-text);
+  border-color: var(--c-sep);
+}
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-switcher__hint {
   color: var(--c-text-dim);
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-switcher__select {
-  background: var(--c-card);
+  background-color: var(--c-card);
   border-color: var(--c-sep);
   color: var(--c-text);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a9b4c0' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-panel {
   background: var(--c-card);
@@ -307,10 +370,6 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-panel__h
   background: var(--c-bg-elev);
   border-bottom-color: var(--c-sep);
 }
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-panel__chevron,
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-panel__ancestry,
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule__applies-when,
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule__exceptions,
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__label,
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__applies-when,
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__exceptions,
@@ -337,6 +396,12 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .polic
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-note__table {
   background: transparent;
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-note__table :is(th, td) {
+  border-color: var(--c-sep);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-note__table th {
+  background: var(--c-bg-elev);
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-badge {
   color: var(--c-text-strong);

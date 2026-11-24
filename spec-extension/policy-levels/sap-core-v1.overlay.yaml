@@ -3,7 +3,7 @@ slug: sap-core-v1
 title: SAP Core Policy Level (v1.0)
 shortTitle: SAP Core v1
 description: SAP Core v1 policy level
-sidebarPosition: 3
+sidebarPosition: 2
 status: active
 extends:
   - sap:base:v1

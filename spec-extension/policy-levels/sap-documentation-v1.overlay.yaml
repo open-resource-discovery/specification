@@ -3,8 +3,8 @@ slug: sap-documentation-v1
 title: SAP Documentation Policy Level (v1.0)
 shortTitle: SAP Documentation v1
 description: SAP Documentation v1 policy level
-sidebarPosition: 2
-status: active
+sidebarPosition: 3
+status: draft
 extends:
   - sap:base:v1
 summary: |
@@ -41,12 +41,12 @@ rules:
     section: Title Constraints
     propertyNames:
       - title
+    excludeTargets:
+      - package_title
     requirement: recommended
     title: Title charset
     note: |
       All `title` values (except link titles) SHOULD use the following charset.
-
-      **package** `title` values MAY use the additional characters listed below.
     exceptions:
       - link titles
     tables:
@@ -60,11 +60,29 @@ rules:
           - ["`-` `—` `–`", "Different hyphens"]
           - ["`,`", "Comma"]
           - ["`(` `)`", "Parentheses"]
-      - caption: "**package** `title` values MAY use the following additional characters:"
-        columns:
-          - Char
+
+  - id: package.title.charset
+    scope: property
+    section: Title Constraints
+    targets:
+      - package_title
+    requirement: recommended
+    title: Title charset
+    note: |
+      **package** `title` values (except link titles) SHOULD use the following charset, which adds the forward slash (`/`) to the general title charset.
+    exceptions:
+      - link titles
+    tables:
+      - columns:
+          - Chars
           - Description
         rows:
+          - ["`A-Z`, `a-z`", "Latin letters"]
+          - ["`0-9`", "Numbers"]
+          - ["` `", "Space"]
+          - ["`-` `—` `–`", "Different hyphens"]
+          - ["`,`", "Comma"]
+          - ["`(` `)`", "Parentheses"]
           - ["`/`", "Forward slash"]
 
   - id: title.discouraged-terms

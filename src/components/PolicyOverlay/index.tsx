@@ -9,8 +9,14 @@ import {
   forceAlignToHashTarget,
   runWhenContentStable,
 } from "@site/src/theme/contentStable";
-import { type ChangeEvent, useEffect, useMemo, useRef } from "react";
-import { applyOverlay, clearOverlay, renderInlineHtml } from "./applyOverlay";
+import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  applyOverlay,
+  captureViewportAnchor,
+  clearOverlay,
+  renderInlineHtml,
+  restoreViewportAnchor,
+} from "./applyOverlay";
 
 const data = policyLevelsData as unknown as PolicyLevelsData;
 
@@ -46,42 +52,27 @@ function Markdown({ md, className }: { md: string; className?: string }) {
   );
 }
 
-function PolicyInfoBar({ level }: { level: CompiledLevel }) {
+function PolicyDetail({ level }: { level: CompiledLevel }) {
   const isDraft = level.status === "draft";
   return (
-    <section
-      className={`policy-panel${isDraft ? " policy-panel--draft" : ""}`}
-      aria-label={`${level.shortTitle} policy`}
-    >
-      <div className="policy-panel__body">
-        {isDraft ? (
-          <div className="policy-panel__draft-banner">
-            This policy level is a <strong>draft</strong> and may change.
-          </div>
-        ) : null}
-
-        <Markdown className="policy-panel__summary" md={level.summary} />
-
-        <p className="policy-panel__inline-hint">
-          Its additional requirements are <strong>highlighted inline</strong>{" "}
-          throughout the spec below, next to what they apply to.
-        </p>
-
-        <div className="policy-panel__meta">
-          {level.ancestry.length > 1 ? (
-            <span className="policy-panel__ancestry">
-              Includes {level.ancestry.join(" → ")}
-            </span>
-          ) : null}
-          <a
-            className="policy-panel__deeplink"
-            href={`/spec-extensions/policy-levels/${level.slug}`}
-          >
-            Full policy level →
-          </a>
+    <div className="policy-switcher__detail">
+      {isDraft ? (
+        <div className="policy-panel__draft-banner">
+          This policy level is a <strong>draft</strong> and may change.
         </div>
-      </div>
-    </section>
+      ) : null}
+      <Markdown className="policy-panel__summary" md={level.summary} />
+      <p className="policy-panel__inline-hint">
+        Its additional requirements are <strong>highlighted inline</strong>{" "}
+        throughout the spec below, next to what they apply to.
+      </p>
+      <a
+        className="policy-panel__deeplink"
+        href={`/spec-extensions/policy-levels/${level.slug}`}
+      >
+        Full policy level →
+      </a>
+    </div>
   );
 }
 
@@ -89,6 +80,9 @@ export function PolicySwitcher() {
   const loc = useLocation();
   const history = useHistory();
   const navSeq = useRef(0);
+  // Tracks the page+hash of the previous apply so we can tell a policy-only
+  // change (same page, only ?policy= changed) from real navigation.
+  const prevNavKeyRef = useRef<string | null>(null);
   // Docusaurus statically renders this page with no query string. Deriving the
   // selection from `?policy=` during the first (hydration) render would diverge
   // from the server HTML and cause a React hydration mismatch, so until the
@@ -98,6 +92,27 @@ export function PolicySwitcher() {
   const levels = useMemo(() => orderedLevels(), []);
   const currentSlug = isBrowser ? policyFromSearch(loc.search) : null;
   const selected = levelBySlug(currentSlug);
+
+  // Sticky-collapse behaviour: a sentinel directly above the sticky bar tells us
+  // when the bar has stuck under the navbar. When stuck we collapse the detailed
+  // description; the user can still expand it on demand (override wins).
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [stuck, setStuck] = useState(false);
+  const [override, setOverride] = useState<boolean | null>(null);
+  const expanded = override ?? !stuck;
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => setStuck(!entries[0].isIntersecting),
+      // Treat the bar as "stuck" once the sentinel passes under the navbar,
+      // matching the sticky top offset so the detail collapses right on time.
+      { threshold: 0, rootMargin: "-66px 0px 0px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const onSelect = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -114,11 +129,23 @@ export function PolicySwitcher() {
   useEffect(() => {
     if (typeof document === "undefined") return;
     const seq = ++navSeq.current;
+    const navKey = `${loc.pathname}#${loc.hash}`;
+    // Same page + hash as last time => only the policy changed. Preserve the
+    // reader's scroll position instead of jumping to the hash target.
+    const policyOnlyChange = prevNavKeyRef.current === navKey;
+    prevNavKeyRef.current = navKey;
     runWhenContentStable(() => {
       if (seq !== navSeq.current) return;
-      clearOverlay();
-      if (selected) applyOverlay(selected);
-      forceAlignToHashTarget();
+      if (policyOnlyChange) {
+        const anchor = captureViewportAnchor();
+        clearOverlay();
+        if (selected) applyOverlay(selected);
+        restoreViewportAnchor(anchor);
+      } else {
+        clearOverlay();
+        if (selected) applyOverlay(selected);
+        forceAlignToHashTarget();
+      }
     });
   }, [loc.pathname, loc.search, loc.hash, selected]);
 
@@ -131,34 +158,64 @@ export function PolicySwitcher() {
   }, []);
 
   return (
-    <div className="policy-switcher" data-policy-switcher="">
-      <div className="policy-switcher__control">
-        <label className="policy-switcher__label" htmlFor="policy-level-select">
-          Policy Level
-        </label>
-        <select
-          id="policy-level-select"
-          className="policy-switcher__select"
-          value={selected?.slug ?? NONE_VALUE}
-          onChange={onSelect}
-        >
-          <option value={NONE_VALUE}>None (base spec)</option>
-          {levels.map((lvl) => (
-            <option key={lvl.policyId} value={lvl.slug}>
-              {lvl.shortTitle}
-              {lvl.status === "draft" ? " (DRAFT)" : ""}
-            </option>
-          ))}
-        </select>
-        {selected?.status === "draft" ? (
-          <span className="policy-pill">DRAFT</span>
-        ) : null}
+    <>
+      <div
+        className="policy-switcher__sentinel"
+        aria-hidden="true"
+        ref={sentinelRef}
+      />
+      <div
+        className={`policy-switcher${stuck ? " policy-switcher--stuck" : ""}`}
+        data-policy-switcher=""
+      >
+        <div className="policy-switcher__control">
+          <label
+            className="policy-switcher__label"
+            htmlFor="policy-level-select"
+          >
+            Policy Level
+          </label>
+          <select
+            id="policy-level-select"
+            className="policy-switcher__select"
+            value={selected?.slug ?? NONE_VALUE}
+            onChange={onSelect}
+          >
+            <option value={NONE_VALUE}>None (base spec)</option>
+            {levels.map((lvl) => (
+              <option key={lvl.policyId} value={lvl.slug}>
+                {lvl.shortTitle}
+                {lvl.status === "draft" ? " (DRAFT)" : ""}
+              </option>
+            ))}
+          </select>
+          {selected?.status === "draft" ? (
+            <span className="policy-pill">DRAFT</span>
+          ) : null}
+          {selected ? (
+            <button
+              type="button"
+              className="policy-switcher__toggle"
+              aria-expanded={expanded}
+              onClick={() => setOverride(!expanded)}
+            >
+              {expanded ? "Hide details ▴" : "Show details ▾"}
+            </button>
+          ) : null}
+        </div>
+
+        {selected ? (
+          expanded ? (
+            <PolicyDetail level={selected} />
+          ) : null
+        ) : (
+          <p className="policy-switcher__hint">
+            Choose a policy level to annotate the spec below with its
+            requirements.
+          </p>
+        )}
       </div>
-      <p className="policy-switcher__hint">
-        Choose a policy level to annotate the spec below with its requirements.
-      </p>
-      {selected ? <PolicyInfoBar level={selected} /> : null}
-    </div>
+    </>
   );
 }
 

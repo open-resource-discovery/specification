@@ -1,7 +1,7 @@
 ---
 title: "SAP Core Policy Level (v1.0)"
 description: "SAP Core v1 policy level"
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 {/* AUTO-GENERATED from spec-extension/policy-levels/sap-core-v1.overlay.yaml — do not edit */}
