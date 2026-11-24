@@ -3,7 +3,6 @@ import useIsBrowser from "@docusaurus/useIsBrowser";
 import type {
   CompiledLevel,
   PolicyLevelsData,
-  Requirement,
 } from "@site/src/build/policyOverlay/types";
 import policyLevelsData from "@site/src/generated/policy-levels.json";
 import {
@@ -16,26 +15,6 @@ import { applyOverlay, clearOverlay, renderInlineHtml } from "./applyOverlay";
 const data = policyLevelsData as unknown as PolicyLevelsData;
 
 const NONE_VALUE = "";
-
-const LEGEND: { requirement: Requirement; label: string; cls: string }[] = [
-  { requirement: "mandatory", label: "Mandatory (MUST)", cls: "mandatory" },
-  {
-    requirement: "recommended",
-    label: "Recommended (SHOULD)",
-    cls: "recommended",
-  },
-  { requirement: "optional", label: "Optional (MAY)", cls: "optional" },
-  {
-    requirement: "forbidden",
-    label: "Forbidden (MUST NOT)",
-    cls: "policy-forbidden",
-  },
-  {
-    requirement: "conditional",
-    label: "Conditional (see note)",
-    cls: "optional",
-  },
-];
 
 /** Levels in display order, ignoring any missing lookups. */
 function orderedLevels(): CompiledLevel[] {
@@ -100,17 +79,6 @@ function PolicyInfoBar({ level }: { level: CompiledLevel }) {
           >
             Full policy level →
           </a>
-        </div>
-
-        <div className="policy-panel__legend">
-          {LEGEND.map((item) => (
-            <span className="policy-legend-item" key={item.requirement}>
-              <span className={`policy-legend-badge ${item.cls}`}>
-                {item.requirement.toUpperCase()}
-              </span>
-              <span>{item.label}</span>
-            </span>
-          ))}
         </div>
       </div>
     </section>

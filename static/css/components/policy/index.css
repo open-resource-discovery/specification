@@ -99,6 +99,10 @@
   padding: 12px 16px;
   font-size: 0.9rem;
 }
+/* Keep top/bottom padding balanced: drop the trailing child's bottom margin. */
+.policy-panel__body > *:last-child {
+  margin-bottom: 0;
+}
 .policy-panel__draft-banner {
   margin-bottom: 10px;
   padding: 6px 10px;
@@ -128,12 +132,6 @@
   align-items: center;
   gap: 6px 16px;
   margin-bottom: 12px;
-}
-.policy-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
 }
 .policy-panel__group {
   margin-top: 10px;
@@ -170,44 +168,6 @@
 .policy-rule__exceptions {
   margin-top: 4px;
   color: #5a6472;
-}
-
-/* ------------------------------------------------------------------ */
-/* Badge legend + requirement badges                                  */
-/* ------------------------------------------------------------------ */
-.policy-panel__legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 16px;
-}
-.policy-legend-badge,
-.policy-badge-req {
-  display: inline-block;
-  color: #fff;
-  border-radius: 3px;
-  padding: 1px 5px 2px 5px;
-  font-size: 0.72em;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-.policy-legend-badge.mandatory,
-.policy-badge-req--mandatory {
-  background-color: #ae2020;
-}
-.policy-legend-badge.recommended,
-.policy-badge-req--recommended {
-  background-color: #3a7fc0;
-}
-.policy-legend-badge.optional,
-.policy-badge-req--optional {
-  background-color: #999;
-}
-.policy-legend-badge.policy-forbidden,
-.policy-badge-req--forbidden {
-  background-color: #6b1f1f;
-}
-.policy-badge-req--conditional {
-  background-color: #5cad9f;
 }
 
 /* ------------------------------------------------------------------ */
