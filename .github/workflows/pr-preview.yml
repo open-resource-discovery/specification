@@ -32,6 +32,10 @@ jobs:
         with:
           node-version: "26"
 
+      - name: Select npm install policy tooling
+        if: github.event.action != 'closed'
+        run: npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
+
       - name: Build preview
         if: github.event.action != 'closed'
         env:

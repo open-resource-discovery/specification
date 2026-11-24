@@ -46,6 +46,24 @@ The published npm package contains JSON schemas and TypeScript contracts, with n
 It supports Node.js 24 and later with npm 11 and later.
 CI, documentation generation, and publishing use Node.js 26.
 
+## Development Install Policy
+
+The published package retains its Node.js 24 and npm 11 minimums.
+Repository development requires npm 11.20 or later to enforce install-script approvals; CI selects npm 11.20.0 on Node.js 26.
+Run `npm ci` to install the committed lockfile.
+
+Install-time scripts are approved only for the reviewed versions of SWC (native compiler bindings), fsevents (native file watching), and Lefthook (local hook installation).
+The core-js funding notification script is denied.
+Before approving a new script or version, inspect it with `npm install-scripts ls` and review the corresponding `allowScripts` entry in `package.json`.
+The repository's own generation pre- and post-scripts continue to run normally.
+
+Ordinary dependency resolution has a one-day release-age cutoff, and installs fail on engine or peer-dependency mismatches.
+For an urgent reviewed security fix blocked by that cutoff, pass `--min-release-age-exclude=<package>` only for the affected package and document the exception in the update PR.
+Renovate retains its separate three-day ordinary-update policy and immediate security-alert policy.
+
+Publishing requests npm provenance through `publishConfig` and needs a supported provenance provider.
+The existing GitHub release workflow already grants OIDC permission to the npm publishing job.
+
 ## History
 
 For detailed and recent changes, please refer to the [CHANGELOG.md](CHANGELOG.md).

@@ -57,5 +57,22 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "typescript": "7.0.2"
+  },
+  "packageManager": "npm@11.20.0",
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": ">=11.20.0",
+      "onFail": "error"
+    }
+  },
+  "allowScripts": {
+    "@swc/core@1.16.13": true,
+    "core-js": false,
+    "fsevents@2.3.3": true,
+    "lefthook@2.2.2": true
+  },
+  "publishConfig": {
+    "provenance": true
   }
 }

@@ -23,6 +23,9 @@ jobs:
         with:
           node-version: "26"
 
+      - name: Select npm install policy tooling
+        run: npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
+
       - name: Install NPM dependencies
         run: npm ci
 
