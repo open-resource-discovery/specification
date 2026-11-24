@@ -12,7 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
-- BREAKING: The npm package now requires Node.js 26 or later, aligning package metadata with the CI tooling runtime.
+- CI and publishing use Node.js 26 while the published schema package supports Node.js 22 and later with npm 10 and later.
 
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 

@@ -40,6 +40,12 @@ The [reference application source](https://github.com/open-resource-discovery/re
 
 See [diagram sources and synchronization](./diagrams/README.md) for the shared graph data and the matching React and Vue diagrams in the specification site and presentation.
 
+## Package Compatibility
+
+The published npm package contains JSON schemas and TypeScript contracts, with no production dependencies.
+It supports Node.js 22 and later with npm 10 and later.
+CI, documentation generation, and publishing use Node.js 26.
+
 ## History
 
 For detailed and recent changes, please refer to the [CHANGELOG.md](CHANGELOG.md).
