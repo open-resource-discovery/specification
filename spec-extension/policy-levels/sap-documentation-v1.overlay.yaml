@@ -65,7 +65,6 @@ rules:
     section: Title Constraints
     targets:
       - package_title
-    requirement: recommended
     title: Title charset
     note: |
       **package** `title` values SHOULD use the following charset, which adds the forward slash (`/`) to the general title charset.
@@ -207,9 +206,10 @@ rules:
           - ["`G/L`", "General ledger. Approved abbreviation."]
 
   - id: api-compatibility.rules
-    scope: general
-    section: Misc Constraints
-    requirement: mandatory
+    scope: property
+    targets:
+      - api-resource_version
+      - event-resource_version
     title: API Compatibility rules
     note: |
       For setting and incrementing API versions and major versions, the SAP API Compatibility rules MUST be followed.
@@ -250,7 +250,6 @@ rules:
     scope: property
     targets:
       - api-resource-definition_type
-    requirement: mandatory
     title: Keep existing `x-sap-` OpenAPI extensions
     note: |
       For OpenAPI documents which are already published on Business Accelerator Hub, the existing `x-sap-` extension properties MUST be kept even if the information is now also in the ORD Document. This is to not break end-consumers that only have access to the OpenAPI file. We MAY remove this requirement in the future, by automatically post-processing the ORD information into the OpenAPI files centrally (feature request).

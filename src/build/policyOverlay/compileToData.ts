@@ -64,6 +64,8 @@ export function compileToData(
               reportDangling(policyId, rule.id, target);
               continue;
             }
+            // `requirement` drives the presence badge; omit it for value/usage
+            // rules so the base spec badge is preserved.
             if (rule.requirement) badgeByAnchor[target] = rule.requirement;
             pushRule(noteRulesByAnchor, target, rule);
           }

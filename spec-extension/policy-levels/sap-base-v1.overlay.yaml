@@ -56,7 +56,6 @@ rules:
     scope: property
     targets:
       - package_vendor
-    requirement: mandatory
     title: Package vendor
     note: |
       The vendor of a Package MUST be set to `sap:vendor:SAP:`, `customer:vendor:Customer:`, or the registered Vendor of the partner to which ownership is attributed.

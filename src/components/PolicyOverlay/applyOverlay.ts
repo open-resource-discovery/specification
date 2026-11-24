@@ -292,11 +292,13 @@ function buildCallout(
 // ---------------------------------------------------------------------------
 
 function applyBadges(doc: Document, level: CompiledLevel): void {
+  // Only genuine presence changes (rules with an explicit `requirement`) rewrite
+  // a property's badge. Value/usage rules keep the base spec badge; their inline
+  // note (and the TOC accent bar) are the indicators.
   for (const [anchor, requirement] of Object.entries(level.badgeByAnchor)) {
     const nameEl = doc.getElementById(anchor);
     if (!nameEl) continue;
     const badge = nameEl.querySelector<HTMLElement>(BADGE_SELECTOR);
-
     const nextClass = REQ_CLASS[requirement];
     // `conditional` / empty -> keep the base badge untouched.
     if (badge && nextClass && !badge.hasAttribute("data-policy-orig-class")) {
@@ -305,21 +307,6 @@ function applyBadges(doc: Document, level: CompiledLevel): void {
       badge.setAttribute("data-policy-overlay", "badge");
       badge.className = nextClass;
       badge.textContent = REQ_LABEL[requirement];
-    }
-
-    // Append a small provenance marker (idempotent).
-    if (!nameEl.querySelector('[data-policy-overlay="marker"]')) {
-      const marker = doc.createElement("span");
-      marker.className = "policy-badge";
-      marker.setAttribute("data-policy-overlay", "marker");
-      marker.textContent = level.shortTitle;
-      marker.title = `${level.shortTitle} policy level`;
-      // Place the marker after the badge when present, else at the end.
-      if (badge && badge.parentNode === nameEl) {
-        badge.insertAdjacentElement("afterend", marker);
-      } else {
-        nameEl.appendChild(marker);
-      }
     }
   }
 }

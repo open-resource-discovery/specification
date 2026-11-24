@@ -16,28 +16,38 @@ summary: |
   It defines the core rules and guidelines shared across SAP, although more specific rules and guidelines MAY be applied on top. All constraints of the ORD specification itself still apply (the document must remain a valid ORD document); the constraints here come on top and may be stricter than the base spec where it intentionally leaves room for exceptional use cases.
 rules:
   - id: access-strategies.sap-specific
-    scope: general
-    section: General Policies
-    requirement: mandatory
+    scope: property
+    targets:
+      - api-resource-definition_accessstrategies
+      - event-resource-definition_accessstrategies
+      - entity-type-definition_accessstrategies
+      - capability-definition_accessstrategies
+      - overlay-definition_accessstrategies
+      - metadata-definition-access-strategy_type
     title: SAP specific access strategies
     note: |
       SAP applications and services MUST support SAP specific access strategies:
 
       - [`sap.businesshub:basic-auth:v1`](../access-strategies/sap-businesshub-basic-v1.md) for the [SAP Business Accelerator Hub](https://api.sap.com/).
-        - The use of "mixed" access strategies is not supported, so both the ORD documents AND the attached resource definitions MUST be available through the same access strategy.
       - [`sap:cmp-mtls:v1`](../access-strategies/sap-cmp-mtls-v1.md) for the Unified Customer Landscape.
+      - The use of "mixed" access strategies is not supported, so both the ORD documents AND the attached resource definitions MUST be available through the same access strategy.
 
   - id: access-strategies.open-forbidden
-    scope: general
-    section: General Policies
-    requirement: forbidden
+    scope: property
+    targets:
+      - metadata-definition-access-strategy_type
     title: Open access strategy requires explicit consent
     note: |
       The `accessStrategy` [`open`](../access-strategies/open.md) MUST NOT be used without explicit consent by the responsible security experts, especially when the metadata could expose tenant (customer) specific information.
 
   - id: access-strategies.resource-definitions
-    scope: general
-    section: General Policies
+    scope: property
+    targets:
+      - api-resource-definition_accessstrategies
+      - event-resource-definition_accessstrategies
+      - entity-type-definition_accessstrategies
+      - capability-definition_accessstrategies
+      - overlay-definition_accessstrategies
     requirement: conditional
     appliesWhen: the access strategy for retrieving the document differs from the retrieval of the resource definitions
     title: Access strategy for resource definitions
@@ -71,19 +81,19 @@ rules:
     note: |
       IF the resources have already been published to the public [SAP Business Accelerator Hub](https://api.sap.com/) we MUST somehow keep a correlation between their ORD ID and already existing Business Hub ID. This is necessary to keep existing URLs stable and to ensure we update the existing entries, not create new ones.
 
-      - **Preferred Approach**:
-        - Get in touch with the Business Hub colleagues, to clarify which existing packages need to be associated with the registered [namespace](../../spec-v1/index.md#namespaces) (from step above).
-        - Keep the `<resourceId>` fragment of the [ORD ID](../../spec-v1/index.md#ord-id) identical to the ID that was previously published on the Business Accelerator Hub.
-        - Alternatively, add a [Correlation ID](../../spec-v1/index.md#correlation-id) to the resource:
-          - Add a `correlationIds` entry, that starts with `sap.businesshub` namespace and then the Business Accelerator Hub concept name (that is also part of the Old URL), e.g. `api` or `package`
-          - Package Example: `{ "ordId": "sap.s4:package:SomeName:v1", "correlationIds": ["sap.businesshub:package:SAPS4HANACloud"] }`
-          - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }`
+      **Preferred Approach:**
+
+      - Get in touch with the Business Hub colleagues, to clarify which existing packages need to be associated with the registered [namespace](../../spec-v1/index.md#namespaces) (from step above).
+      - Keep the `<resourceId>` fragment of the [ORD ID](../../spec-v1/index.md#ord-id) identical to the ID that was previously published on the Business Accelerator Hub.
+      - Alternatively, add a [Correlation ID](../../spec-v1/index.md#correlation-id) to the resource:
+        - Add a `correlationIds` entry, that starts with `sap.businesshub` namespace and then the Business Accelerator Hub concept name (that is also part of the Old URL), e.g. `api` or `package`
+        - Package Example: `{ "ordId": "sap.s4:package:SomeName:v1", "correlationIds": ["sap.businesshub:package:SAPS4HANACloud"] }`
+        - API Example: `{ "ordId": "sap.s4:apiResource:AccountingDocumentRead:v1", "correlationIds": ["sap.businesshub:api:API_OPLACCTGDOCITEMCUBE_SRV"] }`
 
   - id: ord-spec-version.recent
     scope: property
     targets:
       - ord-document_openresourcediscovery
-    requirement: recommended
     title: Use a recent ORD specification version
     note: |
       ORD documents SHOULD use a recent ORD specification version in `openResourceDiscovery`.
@@ -165,7 +175,6 @@ rules:
     scope: property
     targets:
       - api-resource-definition_type
-    requirement: recommended
     title: Validate OpenAPI definitions
     note: |
       OpenAPI definitions SHOULD be validated via the SAP API Metadata Validator, using `sap:core:v1` compliance level.
@@ -233,7 +242,6 @@ rules:
     scope: property
     targets:
       - entity-type_visibility
-    requirement: mandatory
     title: Entity Type definition visibility
     note: |
       Entity Type definitions MUST have `visibility` set to either `private` or `internal` (stricter than the base spec, which permits `public` for exceptional open-standardization cases).
@@ -286,7 +294,6 @@ rules:
     scope: property
     targets:
       - overlay_visibility
-    requirement: mandatory
     title: Overlay visibility
     note: |
       All ORD Overlays governed by this policy MUST have an effective `visibility` of `internal` or `private`, regardless of their purpose or publishing mechanism.

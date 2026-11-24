@@ -1,7 +1,7 @@
 /*
  - Policy-Level overlay feature styles
  - Switcher control + summary panel
- - Injected `.policy-note` callouts, `.policy-badge` markers, `.policy-forbidden` badge
+ - Injected `.policy-note` callouts, `.policy-forbidden` badge
  - Dark + light theme, reusing the look of the markdown badges.
 */
 
@@ -213,23 +213,6 @@
   background-color: #6b1f1f;
 }
 
-/* Provenance marker appended to an annotated property name */
-.markdown .policy-badge {
-  display: inline-block;
-  margin-left: 4px;
-  padding: 0 5px;
-  border-radius: 3px;
-  font-size: 0.64em;
-  font-weight: 700;
-  color: #35506e;
-  background: color-mix(in oklab, #3a7fc0 18%, transparent);
-  border: 1px solid color-mix(in oklab, #3a7fc0 35%, transparent);
-  vertical-align: middle;
-  cursor: help;
-}
-
-/* Value-constraint chip: distinct from the blue provenance marker so it does not
-   read as a presence badge. Signals "this property's VALUE has extra policy rules". */
 /* ------------------------------------------------------------------ */
 /* Injected `.policy-note` callouts (inline rows + definition blocks) */
 /* ------------------------------------------------------------------ */
@@ -470,11 +453,6 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .polic
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-note__table th {
   background: var(--c-bg-elev);
-}
-html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .policy-badge {
-  color: var(--c-text-strong);
-  background: color-mix(in oklab, var(--c-accent) 18%, transparent);
-  border-color: color-mix(in oklab, var(--c-accent) 35%, transparent);
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .table-of-contents__link.policy-toc-affected::before {
   background: var(--c-accent);

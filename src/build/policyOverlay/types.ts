@@ -117,7 +117,7 @@ export interface CompiledLevel {
   /** Full resolved ancestry in application order, ending with this level's own policyId. */
   ancestry: string[];
 
-  /** Badge to force per property-row anchor id. From `property`-scope rules only (genuine presence changes). */
+  /** Badge to force per property-row anchor id. Only from `property`-scope rules that carry an explicit `requirement` (genuine presence changes). Value/usage rules omit `requirement` and keep the base badge. */
   badgeByAnchor: Record<string, Requirement>;
   /**
    * Inline note callouts to inject under a property row, keyed by anchor id.
