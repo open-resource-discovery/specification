@@ -437,8 +437,14 @@ function definitionCounts(level: CompiledLevel): Map<string, number> {
 
 /**
  * Annotate the in-page table of contents: each concept (heading) that gains
- * requirements gets a blue dot that expands to the requirement count on hover
- * (or when hovering the whole TOC), giving a visual map of affected sections.
+ * requirements under the active level is marked with a left accent bar (drawn in
+ * CSS from `.policy-toc-affected`), giving a visual map of affected sections.
+ * The count is exposed via the link `title` (shown on hover).
+ *
+ * The marker is applied in place (class + title on the existing link) rather than
+ * by injecting a node: the bar is an absolute `::before`, so no TOC text shifts —
+ * the sidebar matches other pages until a level is selected and never reflows when
+ * switching between levels. Reversed by `clearOverlay()` via the orig-class/title.
  */
 function applyTocCounts(doc: Document, level: CompiledLevel): void {
   const counts = definitionCounts(level);
@@ -451,16 +457,17 @@ function applyTocCounts(doc: Document, level: CompiledLevel): void {
     const slug = decodeURIComponent(href.slice(1));
     const n = counts.get(slug);
     if (!n) continue;
-    if (link.querySelector('[data-policy-overlay="toc-dot"]')) continue;
-    const dot = doc.createElement("span");
-    dot.className = "policy-toc-dot";
-    dot.setAttribute("data-policy-overlay", "toc-dot");
-    dot.title = `${n} additional requirement${n === 1 ? "" : "s"} from ${level.shortTitle}`;
-    const count = doc.createElement("span");
-    count.className = "policy-toc-count";
-    count.textContent = String(n);
-    dot.appendChild(count);
-    link.insertBefore(dot, link.firstChild);
+    if (link.classList.contains("policy-toc-affected")) continue;
+    // Stash originals so clearOverlay() can restore the link untouched.
+    link.setAttribute("data-policy-orig-class", link.className);
+    link.setAttribute(
+      "data-policy-orig-title",
+      link.getAttribute("title") ?? "",
+    );
+    link.setAttribute("data-policy-overlay", "toc");
+    link.setAttribute("data-policy-count", String(n));
+    link.classList.add("policy-toc-affected");
+    link.title = `${n} additional requirement${n === 1 ? "" : "s"} from ${level.shortTitle}`;
   }
 }
 
@@ -543,8 +550,15 @@ export function clearOverlay(
       if (cls !== null) el.className = cls;
       const txt = el.getAttribute("data-policy-orig-text");
       if (txt !== null) el.textContent = txt;
+      const title = el.getAttribute("data-policy-orig-title");
+      if (title !== null) {
+        if (title === "") el.removeAttribute("title");
+        else el.setAttribute("title", title);
+      }
       el.removeAttribute("data-policy-orig-class");
       el.removeAttribute("data-policy-orig-text");
+      el.removeAttribute("data-policy-orig-title");
+      el.removeAttribute("data-policy-count");
       el.removeAttribute("data-policy-overlay");
     });
   // Remove all remaining injected nodes (markers, note rows, def notes).

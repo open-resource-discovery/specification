@@ -277,7 +277,6 @@
   letter-spacing: 0.02em;
   color: #35506e;
   background: color-mix(in oklab, #3a7fc0 14%, transparent);
-  border: 1px solid color-mix(in oklab, #3a7fc0 32%, transparent);
   border-radius: 3px;
   padding: 0 5px;
   white-space: nowrap;
@@ -287,7 +286,6 @@
   font-style: italic;
   color: #5a6472;
   background: color-mix(in oklab, #6a7483 14%, transparent);
-  border: 1px solid color-mix(in oklab, #6a7483 28%, transparent);
   border-radius: 3px;
   padding: 0 5px;
   white-space: nowrap;
@@ -370,47 +368,49 @@
 /* ------------------------------------------------------------------ */
 /* In-page TOC requirement map                                        */
 /* ------------------------------------------------------------------ */
-/* Reserve a left gutter on every TOC item whenever the policy switcher is on the
-   page (not only when dots exist), so the sidebar does not shift horizontally
-   when switching between levels with and without requirements. */
-body.policy-has-switcher .table-of-contents__link {
+/* A left accent bar marks each TOC entry whose concept gains requirements under
+   the active policy level. Drawn as an absolute `::before` positioned in the
+   list's left whitespace, so NO text shifts — affected or not. The sidebar is
+   therefore identical to other pages until a level is selected, and never
+   reflows when switching between levels (with requirements vs. without). */
+.table-of-contents__link.policy-toc-affected {
   position: relative;
-  padding-left: 24px;
+  padding-right: 1.9rem;
 }
-.policy-toc-dot {
+.table-of-contents__link.policy-toc-affected::before {
+  content: "";
   position: absolute;
-  left: 0;
+  left: -0.6rem;
+  top: 3px;
+  bottom: 3px;
+  width: 3px;
+  border-radius: 2px;
+  background: #3a7fc0;
+}
+/* Count of additional requirements, right-aligned on the row. Hidden until the
+   reader hovers the TOC panel (or the row), so the sidebar stays uncluttered;
+   the right padding is reserved regardless so revealing it never reflows text. */
+.table-of-contents__link.policy-toc-affected::after {
+  content: attr(data-policy-count);
+  position: absolute;
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 8px;
-  height: 8px;
+  min-width: 1.1rem;
+  padding: 0 5px;
   border-radius: 999px;
-  background: #3a7fc0;
-  color: #fff;
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  line-height: 1;
-  overflow: hidden;
-  transition: width 0.1s ease, height 0.1s ease;
+  line-height: 1.5;
+  text-align: center;
+  color: #35506e;
+  background: color-mix(in oklab, #3a7fc0 16%, transparent);
+  opacity: 0;
+  transition: opacity 0.12s ease;
 }
-.policy-toc-count {
-  display: none;
-}
-/* Hovering a single item — or anywhere in the TOC — expands the dots to counts. */
-.table-of-contents__link:hover .policy-toc-dot,
-.table-of-contents:hover .policy-toc-dot {
-  width: auto;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 3px;
-}
-.table-of-contents__link:hover .policy-toc-count,
-.table-of-contents:hover .policy-toc-count {
-  display: block;
+.table-of-contents:hover .policy-toc-affected::after,
+.table-of-contents__link.policy-toc-affected:hover::after {
+  opacity: 1;
 }
 
 /* ------------------------------------------------------------------ */
@@ -450,12 +450,10 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__in
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__label {
   color: var(--c-text-strong);
   background: color-mix(in oklab, var(--c-accent) 20%, transparent);
-  border-color: color-mix(in oklab, var(--c-accent) 38%, transparent);
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-note__inherited {
   color: var(--c-text-dim);
   background: color-mix(in oklab, var(--c-text-dim) 16%, transparent);
-  border-color: color-mix(in oklab, var(--c-text-dim) 30%, transparent);
 }
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-rule {
   background: var(--c-bg-elev);
@@ -478,4 +476,11 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .markdown .polic
   color: var(--c-text-strong);
   background: color-mix(in oklab, var(--c-accent) 18%, transparent);
   border-color: color-mix(in oklab, var(--c-accent) 35%, transparent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .table-of-contents__link.policy-toc-affected::before {
+  background: var(--c-accent);
+}
+html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .table-of-contents__link.policy-toc-affected::after {
+  color: var(--c-text-strong);
+  background: color-mix(in oklab, var(--c-accent) 20%, transparent);
 }
