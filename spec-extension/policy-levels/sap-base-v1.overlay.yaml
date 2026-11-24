@@ -20,8 +20,8 @@ rules:
       SAP applications and services MAY define custom policy levels, but they MUST be namespaced under their application-specific namespace, e.g. `sap.s4:core:v1`.
 
   - id: policy-levels.sap-namespace-reserved
-    scope: general
-    section: General Policies
+    scope: propertyName
+    propertyNames: [policyLevels]
     requirement: forbidden
     title: Root `sap` namespace reserved for aligned policy levels
     note: |

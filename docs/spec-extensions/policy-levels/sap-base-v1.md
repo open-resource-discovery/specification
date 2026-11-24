@@ -21,6 +21,10 @@ Usually SAP applications and services will use the more complete and opinionated
 
 SAP applications and services MAY define custom policy levels, but they MUST be namespaced under their application-specific namespace, e.g. `sap.s4:core:v1`.
 
+### Root `sap` namespace reserved for aligned policy levels
+
+Only centrally aligned policy levels (such as `sap:base:v1` or `sap:core:v1`) MAY use the root `sap` namespace. Custom policy levels MUST NOT use the root `sap` namespace, e.g. `sap:s4:v1` is not allowed.
+
 ### Package vendor
 
 The vendor of a Package MUST be set to `sap:vendor:SAP:`, `customer:vendor:Customer:`, or the registered Vendor of the partner to which ownership is attributed.
@@ -33,10 +37,6 @@ Although `Vendor` is technically not validated by a policy level, we need to ens
 - The correct value for a SAP vendor reference is `sap:vendor:SAP:`.
 
 ## General Policies
-
-### Root `sap` namespace reserved for aligned policy levels
-
-Only centrally aligned policy levels (such as `sap:base:v1` or `sap:core:v1`) MAY use the root `sap` namespace. Custom policy levels MUST NOT use the root `sap` namespace, e.g. `sap:s4:v1` is not allowed.
 
 ### Namespaces must be registered
 
