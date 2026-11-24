@@ -17,24 +17,24 @@ rules:
     section: Title Constraints
     propertyNames:
       - title
+    excludeTargets:
+      - link_title
     requirement: mandatory
     title: Title length limit
     note: |
-      All `title` values (except link titles) MUST NOT exceed 120 characters.
-    exceptions:
-      - link titles
+      All `title` values MUST NOT exceed 120 characters.
 
   - id: title.forbidden-status-terms
     scope: propertyName
     section: Title Constraints
     propertyNames:
       - title
+    excludeTargets:
+      - link_title
     requirement: forbidden
     title: Forbidden status terms in titles
     note: |
-      All `title` values (except link titles) MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
-    exceptions:
-      - link titles
+      All `title` values MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
 
   - id: title.charset
     scope: propertyName
@@ -43,12 +43,11 @@ rules:
       - title
     excludeTargets:
       - package_title
+      - link_title
     requirement: recommended
     title: Title charset
     note: |
-      All `title` values (except link titles) SHOULD use the following charset.
-    exceptions:
-      - link titles
+      All `title` values SHOULD use the following charset.
     tables:
       - columns:
           - Chars
@@ -69,9 +68,7 @@ rules:
     requirement: recommended
     title: Title charset
     note: |
-      **package** `title` values (except link titles) SHOULD use the following charset, which adds the forward slash (`/`) to the general title charset.
-    exceptions:
-      - link titles
+      **package** `title` values SHOULD use the following charset, which adds the forward slash (`/`) to the general title charset.
     tables:
       - columns:
           - Chars
@@ -90,12 +87,12 @@ rules:
     section: Title Constraints
     propertyNames:
       - title
+    excludeTargets:
+      - link_title
     requirement: recommended
     title: Discouraged terms in titles
     note: |
-      All `title` values (except link titles) SHOULD NOT contain the following terms.
-    exceptions:
-      - link titles
+      All `title` values SHOULD NOT contain the following terms.
     tables:
       - columns:
           - Term
@@ -109,12 +106,12 @@ rules:
     section: Title Constraints
     propertyNames:
       - title
+    excludeTargets:
+      - link_title
     requirement: optional
     title: Specially approved terms in titles
     note: |
-      All `title` values (except link titles) MAY use the following specially approved terms.
-    exceptions:
-      - link titles
+      All `title` values MAY use the following specially approved terms.
     tables:
       - columns:
           - Approved Term

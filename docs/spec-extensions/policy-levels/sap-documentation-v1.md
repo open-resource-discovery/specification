@@ -18,15 +18,15 @@ This policy level is based on various SAP guidelines and rules — most of which
 
 ### Title length limit
 
-All `title` values (except link titles) MUST NOT exceed 120 characters.
+All `title` values MUST NOT exceed 120 characters.
 
 ### Forbidden status terms in titles
 
-All `title` values (except link titles) MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
+All `title` values MUST NOT contain the term "Deprecated" or "Decommissioned". Use `releaseStatus` to indicate this instead, if available.
 
 ### Title charset
 
-All `title` values (except link titles) SHOULD use the following charset.
+All `title` values SHOULD use the following charset.
 
 | Chars | Description |
 | --- | --- |
@@ -39,7 +39,7 @@ All `title` values (except link titles) SHOULD use the following charset.
 
 ### Title charset
 
-**package** `title` values (except link titles) SHOULD use the following charset, which adds the forward slash (`/`) to the general title charset.
+**package** `title` values SHOULD use the following charset, which adds the forward slash (`/`) to the general title charset.
 
 | Chars | Description |
 | --- | --- |
@@ -53,7 +53,7 @@ All `title` values (except link titles) SHOULD use the following charset.
 
 ### Discouraged terms in titles
 
-All `title` values (except link titles) SHOULD NOT contain the following terms.
+All `title` values SHOULD NOT contain the following terms.
 
 | Term | Description |
 | --- | --- |
@@ -62,7 +62,7 @@ All `title` values (except link titles) SHOULD NOT contain the following terms.
 
 ### Specially approved terms in titles
 
-All `title` values (except link titles) MAY use the following specially approved terms.
+All `title` values MAY use the following specially approved terms.
 
 | Approved Term | Description |
 | --- | --- |
