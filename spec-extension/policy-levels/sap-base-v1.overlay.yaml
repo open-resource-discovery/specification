@@ -12,8 +12,8 @@ summary: |
   Usually SAP applications and services will use the more complete and opinionated [`sap:core:v1`](./sap-core-v1.md) policy level.
 rules:
   - id: policy-levels.custom-namespaced
-    scope: general
-    section: General Policies
+    scope: propertyName
+    propertyNames: [policyLevels]
     requirement: mandatory
     title: Custom policy levels must be namespaced
     note: |

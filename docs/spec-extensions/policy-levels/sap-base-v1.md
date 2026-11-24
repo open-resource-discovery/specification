@@ -15,11 +15,24 @@ It includes the **essential** validations that ensure proper metadata discovery 
 
 Usually SAP applications and services will use the more complete and opinionated [`sap:core:v1`](./sap-core-v1.md) policy level.
 
-## General Policies
+## Context Specific Policies
 
 ### Custom policy levels must be namespaced
 
 SAP applications and services MAY define custom policy levels, but they MUST be namespaced under their application-specific namespace, e.g. `sap.s4:core:v1`.
+
+### Package vendor
+
+The vendor of a Package MUST be set to `sap:vendor:SAP:`, `customer:vendor:Customer:`, or the registered Vendor of the partner to which ownership is attributed.
+
+### SAP Vendor is defined centrally
+
+Although `Vendor` is technically not validated by a policy level, we need to ensure that within SAP we don't define the SAP vendor multiple times or reference it differently.
+
+- The SAP `Vendor` MUST NOT be defined by any SAP application or service, as this is done centrally.
+- The correct value for a SAP vendor reference is `sap:vendor:SAP:`.
+
+## General Policies
 
 ### Root `sap` namespace reserved for aligned policy levels
 
@@ -41,16 +54,3 @@ This applies to any value that is a [Specification ID](../../spec-v1/index.md#sp
 
 - The `ord:` prefix MUST NOT be used by vendors (reserved for the ORD specification itself).
 - The root `sap:` prefix MUST NOT be used for application-specific values. Applications and services MUST use a sub-namespace such as `sap.foo:...` instead (e.g. `sap.s4:...` is allowed, `sap:...` is not).
-
-## Context Specific Policies
-
-### Package vendor
-
-The vendor of a Package MUST be set to `sap:vendor:SAP:`, `customer:vendor:Customer:`, or the registered Vendor of the partner to which ownership is attributed.
-
-### SAP Vendor is defined centrally
-
-Although `Vendor` is technically not validated by a policy level, we need to ensure that within SAP we don't define the SAP vendor multiple times or reference it differently.
-
-- The SAP `Vendor` MUST NOT be defined by any SAP application or service, as this is done centrally.
-- The correct value for a SAP vendor reference is `sap:vendor:SAP:`.
