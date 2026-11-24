@@ -415,6 +415,56 @@ function applyGeneralNotes(doc: Document, level: CompiledLevel): void {
 }
 
 /**
+ * Count how many requirements apply within each definition (property-row notes +
+ * definition notes), plus the document-wide (general) rules under "ord-document".
+ * Used to annotate the in-page table of contents.
+ */
+function definitionCounts(level: CompiledLevel): Map<string, number> {
+  const counts = new Map<string, number>();
+  const add = (slug: string, n: number) =>
+    counts.set(slug, (counts.get(slug) ?? 0) + n);
+  for (const [anchor, rules] of Object.entries(level.noteRulesByAnchor)) {
+    const sep = anchor.lastIndexOf("_");
+    if (sep > 0) add(anchor.slice(0, sep), rules.length);
+  }
+  for (const [defSlug, rules] of Object.entries(level.definitionRules)) {
+    add(defSlug, rules.length);
+  }
+  if (level.generalRules.length > 0)
+    add("ord-document", level.generalRules.length);
+  return counts;
+}
+
+/**
+ * Annotate the in-page table of contents: each concept (heading) that gains
+ * requirements gets a blue dot that expands to the requirement count on hover
+ * (or when hovering the whole TOC), giving a visual map of affected sections.
+ */
+function applyTocCounts(doc: Document, level: CompiledLevel): void {
+  const counts = definitionCounts(level);
+  if (counts.size === 0) return;
+  for (const link of doc.querySelectorAll<HTMLAnchorElement>(
+    ".table-of-contents__link",
+  )) {
+    const href = link.getAttribute("href") ?? "";
+    if (!href.startsWith("#")) continue;
+    const slug = decodeURIComponent(href.slice(1));
+    const n = counts.get(slug);
+    if (!n) continue;
+    if (link.querySelector('[data-policy-overlay="toc-dot"]')) continue;
+    const dot = doc.createElement("span");
+    dot.className = "policy-toc-dot";
+    dot.setAttribute("data-policy-overlay", "toc-dot");
+    dot.title = `${n} additional requirement${n === 1 ? "" : "s"} from ${level.shortTitle}`;
+    const count = doc.createElement("span");
+    count.className = "policy-toc-count";
+    count.textContent = String(n);
+    dot.appendChild(count);
+    link.insertBefore(dot, link.firstChild);
+  }
+}
+
+/**
  * Apply all annotations for `level` onto the rendered spec DOM.
  * Idempotent: re-running without an intervening `clearOverlay()` will not
  * duplicate nodes. No-op during SSR or when target nodes are absent.
@@ -430,6 +480,7 @@ export function applyOverlay(
   applyInlineNotes(doc, level);
   applyDefinitionNotes(doc, level);
   applyGeneralNotes(doc, level);
+  applyTocCounts(doc, level);
 }
 
 // ---------------------------------------------------------------------------

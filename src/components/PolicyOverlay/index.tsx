@@ -157,11 +157,18 @@ export function PolicySwitcher() {
     });
   }, [loc.pathname, loc.search, loc.hash, selected]);
 
-  // Clean up annotations when the switcher unmounts (e.g. SPA navigation away).
+  // Mark the page while the switcher is mounted so the TOC reserves its gutter
+  // (stable layout), and clean up annotations when it unmounts (SPA navigation).
   useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.body.classList.add("policy-has-switcher");
+    }
     return () => {
       navSeq.current++;
       clearOverlay();
+      if (typeof document !== "undefined") {
+        document.body.classList.remove("policy-has-switcher");
+      }
     };
   }, []);
 

@@ -368,6 +368,52 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* In-page TOC requirement map                                        */
+/* ------------------------------------------------------------------ */
+/* Reserve a left gutter on every TOC item whenever the policy switcher is on the
+   page (not only when dots exist), so the sidebar does not shift horizontally
+   when switching between levels with and without requirements. */
+body.policy-has-switcher .table-of-contents__link {
+  position: relative;
+  padding-left: 24px;
+}
+.policy-toc-dot {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #3a7fc0;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+  overflow: hidden;
+  transition: width 0.1s ease, height 0.1s ease;
+}
+.policy-toc-count {
+  display: none;
+}
+/* Hovering a single item — or anywhere in the TOC — expands the dots to counts. */
+.table-of-contents__link:hover .policy-toc-dot,
+.table-of-contents:hover .policy-toc-dot {
+  width: auto;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+}
+.table-of-contents__link:hover .policy-toc-count,
+.table-of-contents:hover .policy-toc-count {
+  display: block;
+}
+
+/* ------------------------------------------------------------------ */
 /* Dark theme                                                         */
 /* ------------------------------------------------------------------ */
 html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .policy-switcher {
