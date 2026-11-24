@@ -43,7 +43,7 @@ See [diagram sources and synchronization](./diagrams/README.md) for the shared g
 ## Package Compatibility
 
 The published npm package contains JSON schemas and TypeScript contracts, with no production dependencies.
-It supports Node.js 22 and later with npm 10 and later.
+It supports Node.js 24 and later with npm 11 and later.
 CI, documentation generation, and publishing use Node.js 26.
 
 ## History
