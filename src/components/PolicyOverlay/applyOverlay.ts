@@ -167,11 +167,13 @@ function buildCallout(
     inherited.textContent = `inherited from ${rule.sourceTitle}`;
     head.appendChild(inherited);
   }
-  const title = doc.createElement("span");
+  callout.appendChild(head);
+
+  // Requirement title on its own line, below the policy-level label(s).
+  const title = doc.createElement("div");
   title.className = "policy-note__title";
   title.textContent = rule.title;
-  head.appendChild(title);
-  callout.appendChild(head);
+  callout.appendChild(title);
 
   if (rule.note) {
     const body = doc.createElement("div");
@@ -254,17 +256,19 @@ function applyInlineNotes(doc: Document, level: CompiledLevel): void {
     if (!nameEl) continue;
     const row = nameEl.closest("tr");
     if (!row) continue;
-    // Append the requirement into the property's DESCRIPTION cell (3rd column),
-    // so it reads as extra description content rather than a full-width row
-    // spanning all three columns.
+    // Target the property's DESCRIPTION cell so the requirement reads as extra
+    // description content (not a full-width row across all three columns).
     const descEl = row.querySelector(".interface-property-description");
-    const cell: Element | null = descEl
-      ? descEl.closest("td")
-      : row.lastElementChild;
-    if (!cell) continue;
+    const container: Element | null = descEl ?? row.lastElementChild;
+    if (!container) continue;
+    // Within the description cell an <hr/> separates the prose/default
+    // requirements from the schema constraints (Regex Pattern, Introduced in
+    // Version, Example Values…). Insert the requirement just before that <hr/>
+    // so it sits below the default requirements but above the constraints.
+    const hr = descEl ? descEl.querySelector("hr") : null;
 
     for (const rule of rules) {
-      const exists = cell.querySelector(
+      const exists = container.querySelector(
         `[data-policy-overlay="note"][data-anchor="${CSS.escape(
           anchor,
         )}"][data-rule-id="${CSS.escape(rule.id)}"]`,
@@ -274,7 +278,8 @@ function applyInlineNotes(doc: Document, level: CompiledLevel): void {
       callout.setAttribute("data-policy-overlay", "note");
       callout.setAttribute("data-anchor", anchor);
       callout.setAttribute("data-rule-id", rule.id);
-      cell.appendChild(callout);
+      if (hr?.parentNode === container) container.insertBefore(callout, hr);
+      else container.appendChild(callout);
     }
   }
 }

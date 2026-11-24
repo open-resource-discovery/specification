@@ -301,6 +301,8 @@
   white-space: nowrap;
 }
 .policy-note__title {
+  display: block;
+  margin-top: 4px;
   font-weight: 700;
 }
 .policy-note__body {
