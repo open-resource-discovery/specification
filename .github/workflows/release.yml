@@ -37,6 +37,9 @@ jobs:
           # registry-url is required for releasing packages
           registry-url: ${{ vars.NPM_REGISTRY }}
 
+      - name: Install pinned npm for dependency policy
+        run: npm install --global --ignore-scripts npm@11.20.0 --registry=https://registry.npmjs.org/
+
       - name: Select npm install policy tooling
         run: npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
 
@@ -82,4 +85,4 @@ jobs:
           persist-credentials: true
 
       - name: Create GitHub Release
-        uses: open-resource-discovery/github-release@2d8817b7382966b490d5c78125d97da14ee918bc # main @ 2026-11-14
+        uses: open-resource-discovery/github-release@7f824f3c258951b8d5e775e6c9a0aa7dfb508f41 # main @ 2026-11-14

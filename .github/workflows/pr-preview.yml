@@ -32,6 +32,9 @@ jobs:
         with:
           node-version: "26"
 
+      - name: Install pinned npm for dependency policy
+        run: npm install --global --ignore-scripts npm@11.20.0 --registry=https://registry.npmjs.org/
+
       - name: Select npm install policy tooling
         if: github.event.action != 'closed'
         run: npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
@@ -50,7 +53,7 @@ jobs:
           npm run build:docusaurus
 
       - name: PR preview
-        uses: open-resource-discovery/pr-preview-action@2abf52396925f6bb4d0a82e27bd6f060260d09ae
+        uses: open-resource-discovery/pr-preview-action@245fafc76cbc9b14ca2b6a2b61b9ca64b1d89c98
         with:
           target-repo: open-resource-discovery/pr-preview
           pages-base-url: https://open-resource-discovery.github.io/pr-preview
