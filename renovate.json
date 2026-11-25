@@ -6,7 +6,9 @@
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
   "addLabels": ["renovate"],
-  "lockFileMaintenance": { "enabled": true },
+  "lockFileMaintenance": {
+    "enabled": false
+  },
   "packageRules": [
     {
       "description": "Prod dependencies: group non-major, hold new releases 3 days, automerge on green CI",
@@ -19,7 +21,7 @@
     {
       "description": "Tooling (non-runtime): devDependencies (npm) grouped with GitHub Actions; build-time only, doesn't ship",
       "matchManagers": ["npm"],
-      "matchDepTypes": ["devDependencies"],
+      "matchDepTypes": ["devDependencies", "packageManager"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "tooling (non-runtime)",
       "minimumReleaseAge": "3 days",

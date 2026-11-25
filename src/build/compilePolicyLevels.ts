@@ -8,7 +8,7 @@
 //   5. Write src/generated/policy-levels.json (PolicyLevelsData).
 //   6. Regenerate the prose page for each level.
 //
-// Run automatically from the `postgenerate` npm script. Exits non-zero on any error.
+// Run from the explicit `generate` pipeline. Exits non-zero on any error.
 
 import { writeFileSync } from "node:fs";
 import { log } from "../helper/log";

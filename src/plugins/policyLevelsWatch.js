@@ -6,7 +6,7 @@
 // (via getPathsToWatch) and recompiles in loadContent, so Docusaurus hot-reloads
 // the regenerated JSON (the switcher) and the regenerated `.md` policy pages.
 //
-// Production builds already regenerate via the `postgenerate` npm hook, so this
+// Production builds already regenerate via the explicit `generate` pipeline, so this
 // plugin only recompiles in development to avoid writing files mid-build.
 
 const fs = require("node:fs");
@@ -34,7 +34,7 @@ module.exports = function policyLevelsWatchPlugin(context) {
     },
 
     async loadContent() {
-      // Build/CI already compiles via `postgenerate`; only recompile in dev.
+      // Build/CI already compiles via `generate`; only recompile in dev.
       if (process.env.NODE_ENV === "production") return;
       if (!fs.existsSync(compilerPath)) {
         console.warn(
