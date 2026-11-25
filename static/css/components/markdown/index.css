@@ -349,12 +349,17 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .clean-btn {
 }
 
 html {
-  /* Native anchor offset for in-page links */
-  scroll-padding-top: calc(var(--doc-header-offset) + 8px);
+  /* Native anchor offset for in-page links. --policy-switcher-offset is set by
+     the policy switcher (0 when absent) so TOC jumps clear the sticky toolbar. */
+  scroll-padding-top: calc(
+    var(--doc-header-offset) + var(--policy-switcher-offset, 0px) + 8px
+  );
 }
 
 .markdown :is(h1, h2, h3, h4, h5, h6, dfn, .interface-property-name, .interface-property-type) {
-  scroll-margin-top: calc(var(--doc-header-offset) + 8px);
+  scroll-margin-top: calc(
+    var(--doc-header-offset) + var(--policy-switcher-offset, 0px) + 8px
+  );
 }
 
 .markdown :is(h1, h2, h3, h4, h5, h6):target .hash-link,

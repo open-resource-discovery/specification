@@ -79,7 +79,13 @@ export function forceAlignToHashTarget(): void {
   document.documentElement.style.scrollBehavior = "auto";
 
   const nav = document.querySelector<HTMLElement>(".navbar");
-  const offset = (nav?.getBoundingClientRect().height ?? 0) + 8;
+  const switcher = document.querySelector<HTMLElement>(
+    "[data-policy-switcher]",
+  );
+  const offset =
+    (nav?.getBoundingClientRect().height ?? 0) +
+    (switcher?.getBoundingClientRect().height ?? 0) +
+    8;
 
   const rect = el.getBoundingClientRect();
   const y = window.scrollY + rect.top - offset;

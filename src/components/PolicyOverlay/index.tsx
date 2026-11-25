@@ -88,9 +88,11 @@ export function PolicySwitcher() {
   const loc = useLocation();
   const history = useHistory();
   const navSeq = useRef(0);
-  // Tracks the page+hash of the previous apply so we can tell a policy-only
-  // change (same page, only ?policy= changed) from real navigation.
-  const prevNavKeyRef = useRef<string | null>(null);
+  // Tracks the pathname of the previous apply so we can tell a policy-only change
+  // (same page, only ?policy= changed) from real page navigation. Deliberately
+  // excludes the hash: a hash-only change (clicking a TOC entry) must NOT rebuild
+  // the overlay — that layout shift would land the target behind the toolbar.
+  const prevPathnameRef = useRef<string | null>(null);
   // Docusaurus statically renders this page with no query string. Deriving the
   // selection from `?policy=` during the first (hydration) render would diverge
   // from the server HTML and cause a React hydration mismatch, so until the
@@ -105,6 +107,7 @@ export function PolicySwitcher() {
   // when the bar has stuck under the navbar. When stuck we collapse the detailed
   // description; the user can still expand it on demand (override wins).
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const switcherRef = useRef<HTMLDivElement>(null);
   const [stuck, setStuck] = useState(false);
   const [override, setOverride] = useState<boolean | null>(null);
   const expanded = override ?? !stuck;
@@ -122,6 +125,27 @@ export function PolicySwitcher() {
     return () => io.disconnect();
   }, []);
 
+  // Publish the sticky bar's live height as a CSS variable so anchor scroll
+  // offsets (scroll-margin-top / scroll-padding-top and the JS re-align) can
+  // clear it — otherwise a TOC jump lands the heading behind the toolbar.
+  useEffect(() => {
+    const el = switcherRef.current;
+    const root = document.documentElement;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const publish = () =>
+      root.style.setProperty(
+        "--policy-switcher-offset",
+        `${Math.round(el.getBoundingClientRect().height)}px`,
+      );
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty("--policy-switcher-offset");
+    };
+  }, []);
+
   const onSelect = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     const params = new URLSearchParams(loc.search);
@@ -137,11 +161,11 @@ export function PolicySwitcher() {
   useEffect(() => {
     if (typeof document === "undefined") return;
     const seq = ++navSeq.current;
-    const navKey = `${loc.pathname}#${loc.hash}`;
-    // Same page + hash as last time => only the policy changed. Preserve the
-    // reader's scroll position instead of jumping to the hash target.
-    const policyOnlyChange = prevNavKeyRef.current === navKey;
-    prevNavKeyRef.current = navKey;
+    // Same pathname as last apply => only the policy changed (this effect re-runs
+    // only on pathname/policy change, never on a hash-only TOC click). Preserve
+    // the reader's scroll position instead of jumping to the hash target.
+    const policyOnlyChange = prevPathnameRef.current === loc.pathname;
+    prevPathnameRef.current = loc.pathname;
     runWhenContentStable(() => {
       if (seq !== navSeq.current) return;
       if (policyOnlyChange) {
@@ -155,7 +179,7 @@ export function PolicySwitcher() {
         forceAlignToHashTarget();
       }
     });
-  }, [loc.pathname, loc.search, loc.hash, selected]);
+  }, [loc.pathname, loc.search, selected]);
 
   // Clear annotations when the switcher unmounts (SPA navigation away).
   useEffect(() => {
@@ -175,6 +199,7 @@ export function PolicySwitcher() {
       <div
         className={`policy-switcher${stuck ? " policy-switcher--stuck" : ""}`}
         data-policy-switcher=""
+        ref={switcherRef}
       >
         <div className="policy-switcher__control">
           <label
