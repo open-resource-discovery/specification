@@ -85,4 +85,4 @@ jobs:
           persist-credentials: true
 
       - name: Create GitHub Release
-        uses: open-resource-discovery/github-release@7f824f3c258951b8d5e775e6c9a0aa7dfb508f41 # main @ 2026-11-14
+        uses: open-resource-discovery/github-release@70fcf9f5444e0e83420754d19850b06f8831236e # main @ 2026-11-14
