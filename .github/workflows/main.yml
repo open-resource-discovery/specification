@@ -23,6 +23,9 @@ jobs:
         with:
           node-version: "26"
 
+      - name: Select npm install policy tooling
+        run: npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
+
       - name: Install NPM dependencies
         run: npm ci
 
@@ -40,6 +43,20 @@ jobs:
         env:
           BANNER_SERVER_BASE_URL: ${{vars.BANNER_SERVER_BASE_URL}}
 
+      - name: Pack the generated npm package
+        run: |
+          mkdir -p "$RUNNER_TEMP/consumer-package"
+          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP/consumer-package"
+          cp .github/tests/package-consumer.test.mjs "$RUNNER_TEMP/consumer-package/"
+
+      - name: Upload packed npm package
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: consumer-package
+          path: ${{ runner.temp }}/consumer-package/
+          retention-days: 1
+          if-no-files-found: error
+
       - name: Upload deployment build
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -48,6 +65,42 @@ jobs:
           path: build
           retention-days: 1
           if-no-files-found: error
+
+  consumer-compatibility:
+    name: Package compatibility (Node ${{ matrix.node-version }})
+    needs: build
+    runs-on: ubuntu-latest
+    permissions: {}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Node 22 stays outside this package's existing Node 24 minimum.
+          - node-version: "22"
+            supported: false
+          - node-version: "24"
+            supported: true
+          - node-version: "26"
+            supported: true
+    steps:
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          package-manager-cache: false
+
+      - name: Use the same npm version as the build
+        run: npm install --global --ignore-scripts npm@11.20.0
+
+      - name: Download packed npm package
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: consumer-package
+          path: ${{ runner.temp }}/consumer-artifact
+
+      - name: Test package installation and exports
+        env:
+          EXPECT_SUPPORTED: ${{ matrix.supported }}
+        run: node --test "$RUNNER_TEMP/consumer-artifact/package-consumer.test.mjs"
 
   deploy-build:
     needs: build

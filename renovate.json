@@ -7,7 +7,7 @@
   "prHourlyLimit": 2,
   "addLabels": ["renovate"],
   "lockFileMaintenance": {
-    "enabled": true
+    "enabled": false
   },
   "packageRules": [
     {
@@ -21,7 +21,7 @@
     {
       "description": "Tooling (non-runtime): devDependencies (npm) grouped with GitHub Actions; build-time only, doesn't ship",
       "matchManagers": ["npm"],
-      "matchDepTypes": ["devDependencies"],
+      "matchDepTypes": ["devDependencies", "packageManager"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "tooling (non-runtime)",
       "minimumReleaseAge": "3 days",

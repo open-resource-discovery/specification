@@ -4,3 +4,6 @@
 /package.json @open-resource-discovery/specification-admin
 /package-lock.json @open-resource-discovery/specification-admin
 /.lefthook.yml @open-resource-discovery/specification-admin
+/.npmrc @open-resource-discovery/specification-admin
+/biome.json @open-resource-discovery/specification-admin
+/.vscode/ @open-resource-discovery/specification-admin
