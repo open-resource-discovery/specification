@@ -44,7 +44,7 @@ jobs:
         run: npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Generate
         run: npm run generate

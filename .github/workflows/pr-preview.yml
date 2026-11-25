@@ -46,7 +46,7 @@ jobs:
           BASE_URL: /pr-preview/specification/pr-${{ github.event.pull_request.number }}/
         run: |
           set -euo pipefail
-          npm ci
+          npm ci --ignore-scripts
           npm run generate
           npm run lint
           npm test
