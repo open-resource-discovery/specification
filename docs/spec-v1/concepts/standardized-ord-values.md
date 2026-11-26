@@ -12,6 +12,9 @@ Vendors MUST NOT define custom values in this namespace.
 This page registers standardized `ord:` identifiers and other reserved ORD entries.
 An identifier is not standardized merely because it uses the `ord:` namespace.
 
+General namespace, Vendor, and Product registration belongs in separate registries.
+This page covers only specification-defined identifiers and reserved entries, including `customer:vendor:Customer:`.
+
 ## Concept IDs
 
 | Property | Value | Meaning |
