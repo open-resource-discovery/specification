@@ -1,0 +1,63 @@
+{
+  "$schema": "https://open-resource-discovery.org/spec-v1/interfaces/OrdOverlay.schema.json#",
+  "ordOverlay": "0.2",
+  "ordId": "sap.foo:overlay:document-1-ord:v1",
+  "description": "Patches ORD metadata from document-1.json using ORD-level selectors.",
+  "visibility": "internal",
+  "patches": [
+    {
+      "action": "merge",
+      "selector": {
+        "ordId": "sap.foo:apiResource:astronomy:v1"
+      },
+      "data": {
+        "shortDescription": "Astronomy API (overlay-enriched)",
+        "labels": {
+          "overlay": [
+            "ord-document-example"
+          ]
+        }
+      }
+    },
+    {
+      "action": "remove",
+      "selector": {
+        "ordId": "sap.foo:apiResource:astronomy:v1"
+      },
+      "data": {
+        "description": null
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "ordId": "sap.foo:eventResource:BillingDocumentEvents:v1"
+      },
+      "data": {
+        "labels": {
+          "overlay": [
+            "billing-events"
+          ]
+        }
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "groupId": "sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue"
+      },
+      "data": {
+        "description": "Group description added by the overlay."
+      }
+    },
+    {
+      "action": "merge",
+      "selector": {
+        "groupTypeId": "sap.foo:groupTypeAbc"
+      },
+      "data": {
+        "description": "Group Type description added by the overlay."
+      }
+    }
+  ]
+}
