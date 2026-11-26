@@ -33,9 +33,7 @@
     "serve": "docusaurus serve",
     "start": "docusaurus start",
     "deploy": "npm run build && gh-pages -d ./build",
-    "pregenerate": "npm run clean",
-    "generate": "npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json",
-    "postgenerate": "npm run build:ts && node ./dist/helper/copyGeneratedToDestination.js",
+    "generate": "npm run clean && npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json && npm run build:ts && node ./dist/helper/copyGeneratedToDestination.js",
     "generate:llm-notebook": "npm run generate && node ./dist/helper/exportForNotebookLM.js"
   },
   "devDependencies": {
@@ -68,9 +66,9 @@
   },
   "allowScripts": {
     "core-js": false,
-    "fsevents@2.3.3": true,
-    "lefthook@2.2.2": true,
-    "@swc/core@1.16.22": true
+    "fsevents@2.3.3": false,
+    "lefthook@2.2.2": false,
+    "@swc/core@1.16.22": false
   },
   "publishConfig": {
     "provenance": true
