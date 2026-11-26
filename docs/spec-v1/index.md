@@ -467,13 +467,15 @@ Attaching `ord:overlay:v1` or `oas-overlay-v1` files as API or Event resource de
 This deprecation changes the recommended publication model; the ORD Overlay file format and its optional metadata remain unchanged.
 For publication guidance and existing attached examples, see [ORD Overlay](./interfaces/OrdOverlay.md#publishing).
 
-An Overlay Resource MAY provide `targets` to select one input definition explicitly by ORD ID, definition type, media type, effective visibility, and optional purpose.
-Currently, `targets` is limited to one entry.
+An Overlay Resource MUST provide `targets` with exactly one entry to select the input definition explicitly by ORD ID, definition type, media type, effective visibility, and optional purpose.
 Input visibility is required in that entry and matches the definition's effective visibility, including inheritance from its resource.
+There is no default visibility for target selection.
 Omitting the input purpose selects the primary definition without a purpose; it does not match every purpose.
 Consumers MUST resolve exactly one input definition and report an error for zero or multiple matches.
-When `targets` is omitted, the target continues to be supplied by the overlay file or external context.
+An Overlay Resource without `targets` is invalid; consumers can rely on target identification in the ORD Document.
 If the overlay file also declares target metadata, it MUST identify the same input.
+Requiring `targets` is an intentional incompatible change to the alpha Overlay Resource model.
+Existing standalone Overlay Resources must add the explicit target selection.
 
 The Overlay Resource's `visibility` governs access to the overlay, and its optional `purpose` supplies the default purpose of the merged output.
 Existing `definitions[].visibility` and `definitions[].purpose` remain valid, retain their meaning, and take precedence over the resource-level defaults.

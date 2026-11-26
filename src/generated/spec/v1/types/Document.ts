@@ -3537,7 +3537,7 @@ export interface ExposedAPIResource {
  * An Overlay Resource is a standalone, versioned resource that references a metadata patch file.
  * Overlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
  *
- * Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
+ * Use an Overlay Resource for independently managed enrichment, governance annotations, or audience-specific adaptations.
  * New overlay publications SHOULD use an Overlay Resource, including producer-owned overlays that patch a single resource.
  * Attaching overlays as API or Event resource definitions is deprecated; existing publications remain valid.
  */
@@ -3623,15 +3623,14 @@ export interface Overlay {
    */
   purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
   /**
-   * Optional explicit selection of the input resource definition patched by the referenced overlay files.
-   * Currently limited to one target.
-   * When omitted, consumers continue to resolve the target from the overlay file or externally supplied context.
+   * Required explicit selection of the input resource definition patched by the referenced overlay files.
+   * MUST contain exactly one target so consumers can resolve the input from the ORD Document.
    * If an overlay file also provides target metadata, it MUST identify the same input.
    *
    * @minItems 1
    * @maxItems 1
    */
-  targets?: [OverlayResourceTarget];
+  targets: [OverlayResourceTarget];
   /**
    * Optional list of API Resources whose definition files this overlay patches.
    *
@@ -3723,7 +3722,8 @@ export interface OverlayTargetResourceDefinition {
    */
   mediaType: string;
   /**
-   * Effective visibility of the input definition, including inheritance from its resource.
+   * Required effective visibility of the input definition, including inheritance from its resource.
+   * MUST be provided explicitly; there is no default visibility for target selection.
    */
   visibility: "public" | "internal" | "private";
   /**

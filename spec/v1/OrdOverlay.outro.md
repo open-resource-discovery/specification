@@ -80,7 +80,7 @@ In that case, distributing it as an `OrdOverlayResource` in a separate ORD Docum
 #### Prefer an ORD Document Resource when
 
 - the overlay is created by someone other than the original resource provider
-- the overlay is cross-cutting and applies to multiple resources
+- a cross-cutting enrichment is published as a separate Overlay Resource for each input definition
 - the overlay should be published independently from the lifecycle of one concrete API or Event resource
 - the overlay provider needs its own publication channel and cannot modify the target resource entry
 
@@ -107,7 +107,8 @@ Rule of thumb:
 - retain support for existing attached resource definitions
 
 To migrate an attached overlay, create an Overlay Resource and reference the same patch file through `definitions`, preserving its URL, type, media type, purpose, effective visibility, and access strategies.
-Preserve the patch file's optional metadata and target-resolution behavior.
+Provide its required `targets` entry with the target resource ORD ID and the input definition's type, media type, and explicit effective visibility.
+Preserve the patch file's optional metadata; any file-level target metadata MUST identify the same input.
 
 ### Appendix: Relation to the OpenAPI Initiative Overlay Specification
 

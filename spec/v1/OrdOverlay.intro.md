@@ -88,6 +88,7 @@ and overlays managed by a different team than the resource provider.
 
 The ORD Overlay Resource acts as any other ORD resource: it has its own `ordId`, `version`, `releaseStatus`, and `visibility`,
 and references the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`.
+Its required `targets` array selects exactly one input definition, including explicit input visibility.
 
 ```json
 {
@@ -98,6 +99,16 @@ and references the actual overlay file via a `definitions` entry with `type: ord
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "public",
+      "targets": [
+        {
+          "ordId": "sap.foo:apiResource:astronomy:v1",
+          "resourceDefinition": {
+            "type": "openapi-v3",
+            "mediaType": "application/json",
+            "visibility": "public"
+          }
+        }
+      ],
       "relatedApiResources": [
         { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
       ],

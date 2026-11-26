@@ -42,19 +42,33 @@ const target = {
   },
 };
 
-describe("Overlay publication compatibility", () => {
-  it("keeps targets, purpose, and definitions optional for existing resources", () => {
+describe("Overlay publication contract", () => {
+  it("requires targets on standalone Overlay Resources", () => {
+    assert.equal(validateResource(overlay), false);
     assert.ok(
-      validateResource(overlay),
+      validateResource.errors?.some(
+        (error) =>
+          error.keyword === "required" &&
+          error.params.missingProperty === "targets",
+      ),
+    );
+  });
+
+  it("keeps purpose and definitions optional with the required target", () => {
+    assert.ok(
+      validateResource({ ...overlay, targets: [target] }),
       JSON.stringify(validateResource.errors),
     );
-    assert.ok(validateResource({ ...overlay, definitions: [] }));
+    assert.ok(
+      validateResource({ ...overlay, targets: [target], definitions: [] }),
+    );
   });
 
   it("accepts legacy relationships and definition metadata", () => {
     assert.ok(
       validateResource({
         ...overlay,
+        targets: [target],
         relatedApiResources: [
           { ordId: target.ordId, relationType: "ord:patches" },
         ],
@@ -98,7 +112,7 @@ describe("Overlay publication compatibility", () => {
     );
   });
 
-  it("requires explicit input visibility when targets are supplied", () => {
+  it("requires explicit input visibility without a default", () => {
     const { visibility: _visibility, ...input } = target.resourceDefinition;
     assert.equal(
       validateResource({
@@ -108,7 +122,11 @@ describe("Overlay publication compatibility", () => {
       false,
     );
     assert.ok(
-      validateResource.errors?.some((error) => error.keyword === "required"),
+      validateResource.errors?.some(
+        (error) =>
+          error.keyword === "required" &&
+          error.params.missingProperty === "visibility",
+      ),
     );
   });
 

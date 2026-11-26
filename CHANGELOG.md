@@ -12,8 +12,15 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added optional `Overlay.targets`, limited to one explicit input-definition selection, and optional resource-level `Overlay.purpose`.
+- Added `Overlay.targets`, limited to one explicit input-definition selection, and optional resource-level `Overlay.purpose`.
   Input visibility is explicit; omitted input purpose selects the primary definition without a purpose.
+
+### Changed
+
+- Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.
+- Alpha Overlay Resources now require `targets` with exactly one input-definition selection.
+  This is an intentional incompatible change: existing standalone Overlay Resources must supply the target resource ORD ID and input definition's type, media type, and explicit visibility.
+  The ORD Overlay file format and its optional metadata remain unchanged.
 
 ### Deprecated
 
@@ -21,12 +28,8 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   New publications SHOULD use the standalone model; existing attached definitions remain valid and supported.
   No schema properties or enum values were removed, and the ORD Overlay file format and optional metadata are unchanged.
 - Deprecated `Overlay.relatedApiResources`, `Overlay.relatedEventResources`, `OverlayDefinition.visibility`, and `OverlayDefinition.purpose` while retaining their existing meaning and validity.
-  No existing properties or enum values were removed, no existing properties became required, and the ORD Overlay file format is unchanged.
+  Deprecated properties remain accepted, and the ORD Overlay file format is unchanged.
 - Deprecated `Vendor.partners` without replacement. New ORD documents SHOULD omit this property; existing documents using it remain valid.
-
-### Changed
-
-- Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.
 
 ### Fixed
 

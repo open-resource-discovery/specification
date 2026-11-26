@@ -29,7 +29,7 @@ spec:
         pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
     - name: 'visibility'
       type: 'string'
-      description: 'Effective visibility of the input definition, including inheritance from its resource.'
+      description: "Required effective visibility of the input definition, including inheritance from its resource.\nMUST be provided explicitly; there is no default visibility for target selection."
       mandatory: true
     - name: 'purpose'
       type: 'string'

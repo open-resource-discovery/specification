@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.\nNew overlay publications SHOULD use an Overlay Resource, including producer-owned overlays that patch a single resource.\nAttaching overlays as API or Event resource definitions is deprecated; existing publications remain valid."
+  description: "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.\n\nUse an Overlay Resource for independently managed enrichment, governance annotations, or audience-specific adaptations.\nNew overlay publications SHOULD use an Overlay Resource, including producer-owned overlays that patch a single resource.\nAttaching overlays as API or Event resource definitions is deprecated; existing publications remain valid."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -123,7 +123,8 @@ spec:
     - propertyName: 'targets'
       relatedTypeName: 'OverlayResourceTarget'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Optional explicit selection of the input resource definition patched by the referenced overlay files.\nCurrently limited to one target.\nWhen omitted, consumers continue to resolve the target from the overlay file or externally supplied context.\nIf an overlay file also provides target metadata, it MUST identify the same input."
+      description: "Required explicit selection of the input resource definition patched by the referenced overlay files.\nMUST contain exactly one target so consumers can resolve the input from the ORD Document.\nIf an overlay file also provides target metadata, it MUST identify the same input."
+      mandatory: true
     - propertyName: 'relatedApiResources'
       relatedTypeName: 'RelatedApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
