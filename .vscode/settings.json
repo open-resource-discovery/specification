@@ -1,7 +1,17 @@
 {
-    "cSpell.words": [
-        "CSDL",
-        "EDMX",
-        "tslog"
-    ]
+  "cSpell.words": [
+    "CSDL",
+    "EDMX",
+    "tslog"
+  ],
+  "editor.defaultFormatter": "biomejs.biome",
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }

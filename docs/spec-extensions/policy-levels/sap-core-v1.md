@@ -61,6 +61,12 @@ IF the resources have already been published to the public [SAP Business Acceler
   - The correct value for a SAP vendor reference is `sap:vendor:SAP:`.
 - For OpenAPI documents which are already published on Business Accelerator Hub, the existing `x-sap-` extension properties MUST be kept even if the information is now also in the ORD Document. This is to not break end-consumers that only have access to the OpenAPI file. We MAY remove this requirement in the future, by automatically post-processing the ORD information into the OpenAPI files centrally (feature request).
 
+### ORD Specification Version
+
+ORD documents SHOULD use a recent ORD specification version in `openResourceDiscovery`.
+Validators SHOULD report a warning when the declared version is more than three minor versions behind the latest ORD version they support.
+This recommendation does not invalidate documents that conform to an older supported ORD version.
+
 ## Context Specific Policies
 
 ### Package

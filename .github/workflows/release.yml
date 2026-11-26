@@ -12,9 +12,11 @@ on:
         required: false
         type: boolean
         default: true
+permissions: {}
+
 jobs:
   npm:
-    if: inputs.npm
+    if: github.ref == 'refs/heads/main' && inputs.npm
     runs-on: ubuntu-latest
     environment: npmjs-registry
     permissions:
@@ -22,19 +24,27 @@ jobs:
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "26"
+          package-manager-cache: false
           # registry-url is required for releasing packages
           registry-url: ${{ vars.NPM_REGISTRY }}
 
+      - name: Install pinned npm for dependency policy
+        run: npm install --global --ignore-scripts npm@11.20.0 --registry=https://registry.npmjs.org/
+
+      - name: Select npm install policy tooling
+        run: npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
+
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Generate
         run: npm run generate
@@ -54,6 +64,7 @@ jobs:
   githubRelease:
     needs: [npm]
     if: |
+      github.ref == 'refs/heads/main' &&
       always() &&
       !contains(needs.*.result, 'cancelled') &&
       !contains(needs.*.result, 'failure') &&
@@ -67,9 +78,11 @@ jobs:
       statuses: write # Mirror CI job results as Commit Statuses on the changelog PR
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # The release action pushes changelog branches and release tags.
+          persist-credentials: true
 
       - name: Create GitHub Release
-        uses: open-resource-discovery/github-release@v0.1.0
+        uses: open-resource-discovery/github-release@70fcf9f5444e0e83420754d19850b06f8831236e # main @ 2026-11-14
