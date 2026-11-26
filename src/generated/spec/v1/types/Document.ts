@@ -17,7 +17,7 @@ export type ExtensibilitySupportLevel = "no" | "manual" | "automatic";
  *
  * This JSON Schema describes the [ORD document interface](https://open-resource-discovery.org/spec-v1/interfaces/Document) of the [ORD specification](https://open-resource-discovery.org/).
  */
-export interface ORDDocument {
+export interface OrdDocument {
   /**
    * Optional [URL](https://tools.ietf.org/html/rfc3986) to the Open Resource Discovery document schema (defined as a JSON Schema).
    * If provided, this enables code intelligence and validation in supported editors (like VSCode) and tools.
@@ -121,7 +121,7 @@ export interface ORDDocument {
   /**
    * Array of all API Resources that are described in this ORD document.
    */
-  apiResources?: APIResource[];
+  apiResources?: ApiResource[];
   /**
    * Array of all event resources that are described in this ORD document.
    */
@@ -385,7 +385,7 @@ export interface SystemInstance {
  *
  * If the API is created or owned by the user of the system or by third parties such as partners, it MUST be assigned to dedicated [Packages](#package) that state this ownership via the `vendor` property.
  */
-export interface APIResource {
+export interface ApiResource {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
@@ -702,7 +702,7 @@ export interface APIResource {
    * If the definitions are added or changed, the `version` MUST be incremented.
    * An ORD aggregator MAY only (re)fetch the definitions again when the `version` was incremented.
    */
-  resourceDefinitions?: APIResourceDefinition[];
+  resourceDefinitions?: ApiResourceDefinition[];
   /**
    * Declares this API to be a valid implementation of an externally standardized API contract, sub-protocol or protocol variant.
    *
@@ -770,7 +770,7 @@ export interface APIResource {
   /**
    * Links with semantic meaning that are specific to API Resources.
    */
-  apiResourceLinks?: APIAndEventResourceLink[];
+  apiResourceLinks?: ApiAndEventResourceLink[];
   /**
    * Generic Links with arbitrary meaning and content.
    *
@@ -1010,7 +1010,7 @@ export interface ChangelogEntry {
  * Link and categorization of a machine-readable API definition.
  * For example, OpenAPI definition, OData Metadata, etc.
  */
-export interface APIResourceDefinition {
+export interface ApiResourceDefinition {
   /**
    * Type of the API Resource Definition
    * If "custom" is chosen, a customType MUST be provided
@@ -1182,7 +1182,7 @@ export interface EntityTypeMapping {
    * Depending on the chosen API protocol and the available resource definition formats,
    * different kind of selectors need to be used.
    */
-  apiModelSelectors?: (APIModelSelectorOData | APIModelSelectorJSONPointer)[];
+  apiModelSelectors?: (ApiModelSelectorOdata | ApiModelSelectorJsonPointer)[];
   /**
    * List of entity types the ORD resource maps to.
    * If `apiModelSelectors` are given, the mapping is more precise by also pointing to the specific model in the API.
@@ -1204,7 +1204,7 @@ export interface EntityTypeMapping {
  *
  * MUST only be used if the API Resource provides an API Resource Definition of type `edmx`.
  */
-export interface APIModelSelectorOData {
+export interface ApiModelSelectorOdata {
   /**
    * The type for OData selectors is fixed to `odata`.
    */
@@ -1225,7 +1225,7 @@ export interface APIModelSelectorOData {
  *
  * MUST only be used if the API Resource provides an API Resource Definition of media type `application/json` or `text/yaml`.
  */
-export interface APIModelSelectorJSONPointer {
+export interface ApiModelSelectorJsonPointer {
   /**
    * The type for generic JSON Pointer selectors is fixed to `json-pointer`.
    */
@@ -1276,7 +1276,7 @@ export interface ExposedEntityType {
  *
  * If a generic [Link](#link) can also be expressed via an API / Event Resource Link, the latter MUST be chosen.
  */
-export interface APIAndEventResourceLink {
+export interface ApiAndEventResourceLink {
   /**
    * See also: [WADG0001 WebAPI type extension](https://webapi-discovery.github.io/rfcs/rfc0001.html)
    */
@@ -1675,7 +1675,7 @@ export interface EventResource {
    *
    * If applicable, `eventResourceLinks` MUST be used instead of generic `links`.
    */
-  eventResourceLinks?: APIAndEventResourceLink[];
+  eventResourceLinks?: ApiAndEventResourceLink[];
   /**
    * Generic Links with arbitrary meaning and content.
    */
@@ -3943,7 +3943,7 @@ export interface Aspect {
   /**
    * List of API Resource Dependencies.
    */
-  apiResources?: APIResourceIntegrationAspect[];
+  apiResources?: ApiResourceIntegrationAspect[];
   /**
    * List of Event Resource Dependencies.
    */
@@ -3967,7 +3967,7 @@ export interface Aspect {
 /**
  * API resource related integration aspect
  */
-export interface APIResourceIntegrationAspect {
+export interface ApiResourceIntegrationAspect {
   /**
    * The ORD ID is a stable, globally unique ID for ORD resources or taxonomy.
    *
