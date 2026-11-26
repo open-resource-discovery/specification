@@ -185,6 +185,8 @@ Since they are usually used for enhancing search or navigation, the simplicity o
 [**Labels**](../interfaces/Document#labels) are similar to [Tags](#tags), but define key-value pairs instead of plain strings.
 They are optimized for machine-readability and can be used to query, select and filter resources programmatically (similar to [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)).
 Labels defined on a [Package](#package) are inherited by all resources it contains (duplicate keys are merged).
+The standardized label [`ord:redirectFrom`](./identifiers.md#forwarding-previous-ord-ids) is an exception: it applies only to the declaring entry and MUST NOT be inherited.
+It lists previous ORD IDs that resolve to that entry's current `ordId`.
 
 ### Groups
 
