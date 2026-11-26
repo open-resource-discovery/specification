@@ -52,6 +52,9 @@ spec:
       type: 'string'
       description: "Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).\n\nThis indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk\nof depending on the resource and whether it's suitable for production use.\n\nNote: This is independent of `visibility` and does not imply availability guarantees or SLAs - it concerns only the API contract stability.\n\nSee [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details."
       mandatory: true
+    - name: 'purpose'
+      type: 'string'
+      description: "Optional default purpose of the resource definition produced by applying this overlay.\nThis describes the output; `targets[].resourceDefinition.purpose` selects the input.\nA legacy `definitions[].purpose`, when provided, continues to apply to that definition.\nIf neither property is provided, the output definition has no purpose."
     - name: 'definitions'
       type: 'custom'
       customTypeName: 'OverlayDefinition'
@@ -117,6 +120,10 @@ spec:
         - name: 'value'
           type: 'string'
   metadataRelations:
+    - propertyName: 'targets'
+      relatedTypeName: 'OverlayResourceTarget'
+      relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
+      description: "Optional explicit selection of the input resource definition patched by the referenced overlay files.\nCurrently limited to one target.\nWhen omitted, consumers continue to resolve the target from the overlay file or externally supplied context.\nIf an overlay file also provides target metadata, it MUST identify the same input."
     - propertyName: 'relatedApiResources'
       relatedTypeName: 'RelatedApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'

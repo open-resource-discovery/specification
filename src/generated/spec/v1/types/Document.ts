@@ -3616,6 +3616,23 @@ export interface Overlay {
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
+   * Optional default purpose of the resource definition produced by applying this overlay.
+   * This describes the output; `targets[].resourceDefinition.purpose` selects the input.
+   * A legacy `definitions[].purpose`, when provided, continues to apply to that definition.
+   * If neither property is provided, the output definition has no purpose.
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
+  /**
+   * Optional explicit selection of the input resource definition patched by the referenced overlay files.
+   * Currently limited to one target.
+   * When omitted, consumers continue to resolve the target from the overlay file or externally supplied context.
+   * If an overlay file also provides target metadata, it MUST identify the same input.
+   *
+   * @minItems 1
+   * @maxItems 1
+   */
+  targets?: [OverlayResourceTarget];
+  /**
    * Optional list of API Resources whose definition files this overlay patches.
    *
    * SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
@@ -3650,6 +3667,69 @@ export interface Overlay {
    */
   tags?: string[];
   labels?: Labels;
+}
+/**
+ * Selects one ORD resource and one concrete input resource definition in the aggregation context.
+ * Consumers MUST resolve exactly one input definition; zero or multiple matches MUST report an error.
+ * This selection does not change the target resource's identity or the overlay's output visibility and purpose.
+ */
+export interface OverlayResourceTarget {
+  /**
+   * ORD ID of the resource whose definition is patched.
+   */
+  ordId: string;
+  resourceDefinition: OverlayTargetResourceDefinition;
+}
+/**
+ * Exact matching criteria for the input definition, independent of the overlay's output visibility and purpose.
+ * `type`, `mediaType`, and effective `visibility` MUST match the input definition.
+ * Effective visibility includes visibility inherited from the target resource.
+ * If `purpose` is omitted, select the primary definition without a purpose; omission is not a wildcard.
+ * For legacy input definitions with `type: custom`, match `type` against the input's `customType`.
+ */
+export interface OverlayTargetResourceDefinition {
+  /**
+   * Type of the input resource definition, using its resource-definition type vocabulary.
+   */
+  type: (
+    | string
+    | "openapi-v2"
+    | "openapi-v3"
+    | "openapi-v3.1+"
+    | "raml-v1"
+    | "edmx"
+    | "csdl-json"
+    | "graphql-sdl"
+    | "wsdl-v1"
+    | "wsdl-v2"
+    | "a2a-agent-card"
+    | "sap-rfc-metadata-v1"
+    | "sap-sql-api-definition-v1"
+    | "sap-csn-interop-effective-v1"
+    | "asyncapi-v2"
+    | "sap.mdo:mdi-capability-definition:v1"
+    | "oas-overlay-v1"
+    | "arazzo-v1"
+  ) &
+    string;
+  /**
+   * The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.
+   * A consuming application can use this information to know which file format parser it needs to use.
+   * For example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.
+   *
+   * If no Media Type is registered for the referenced file,
+   * `text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.
+   *
+   */
+  mediaType: string;
+  /**
+   * Effective visibility of the input definition, including inheritance from its resource.
+   */
+  visibility: "public" | "internal" | "private";
+  /**
+   * Optional purpose of the input definition; omit to select a definition without a purpose.
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * Link to a machine-readable [ORD Overlay](../../spec-v1/interfaces/OrdOverlay) document.

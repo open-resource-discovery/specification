@@ -1,0 +1,38 @@
+apiVersion: 'metadata-service.resource.api.sap/v6alpha1'
+type: 'MetadataType'
+metadata:
+  name: 'overlaytargetresourcedefinition'
+  path: '/sap/core/ucl/metadata/ord/v1'
+  labels: {}
+spec:
+  typeName: 'OverlayTargetResourceDefinition'
+  key:
+    - 'id'
+  visibility: 'public'
+  embedded: true
+  description: "Exact matching criteria for the input definition, independent of the overlay's output visibility and purpose.\n`type`, `mediaType`, and effective `visibility` MUST match the input definition.\nEffective visibility includes visibility inherited from the target resource.\nIf `purpose` is omitted, select the primary definition without a purpose; omission is not a wildcard.\nFor legacy input definitions with `type: custom`, match `type` against the input's `customType`."
+  metadataProperties:
+    - name: 'id'
+      type: 'guid'
+      mandatory: true
+      unique: true
+      description: 'UMS ID (globally unique), used for relations.'
+    - name: 'type'
+      type: 'string'
+      description: 'Type of the input resource definition, using its resource-definition type vocabulary.'
+      mandatory: true
+    - name: 'mediaType'
+      type: 'string'
+      description: "The [Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) of the definition serialization format.\nA consuming application can use this information to know which file format parser it needs to use.\nFor example, for OpenAPI 3, it's valid to express the same definition in both YAML and JSON.\n\nIf no Media Type is registered for the referenced file,\n`text/plain` MAY be used for arbitrary plain-text and `application/octet-stream` for arbitrary binary data.\n"
+      mandatory: true
+      constraints:
+        pattern: '^(application|text)\/[a-zA-Z0-9][a-zA-Z0-9.+\-]*$'
+    - name: 'visibility'
+      type: 'string'
+      description: 'Effective visibility of the input definition, including inheritance from its resource.'
+      mandatory: true
+    - name: 'purpose'
+      type: 'string'
+      description: 'Optional purpose of the input definition; omit to select a definition without a purpose.'
+  customTypeDefinitions: []
+  metadataRelations: []
