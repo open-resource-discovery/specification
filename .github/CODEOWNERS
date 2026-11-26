@@ -7,3 +7,4 @@
 /.npmrc @open-resource-discovery/specification-admin
 /biome.json @open-resource-discovery/specification-admin
 /.vscode/ @open-resource-discovery/specification-admin
+/npmrc @open-resource-discovery/specification-admin

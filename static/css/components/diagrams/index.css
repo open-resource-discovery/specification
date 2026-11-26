@@ -516,8 +516,8 @@ html[data-theme="dark"] .ord-agent-example .dependency-label { fill: var(--ord-c
 .ord-unified-metadata > section { min-width: 0; border: 1px solid var(--ord-sep); border-radius: 8px; background: var(--ord-card); padding: 1rem; }
 .ord-unified-metadata header span { color: var(--ord-muted); font-size: 0.62rem; font-weight: 700; text-transform: uppercase; }
 .ord-unified-metadata header h3 { margin-top: 0.25rem; font-size: 1rem; }
-.ord-unified-metadata__sources > div, .ord-unified-metadata__consumers > div { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.8rem; }
-.ord-unified-metadata__sources b, .ord-unified-metadata__consumers b { display: flex; flex-direction: column; border: 1px solid var(--ord-sep); border-left: 4px solid var(--ord-sky); border-radius: 5px; background: var(--ord-panel); font-size: 0.72rem; padding: 0.45rem; }
+.ord-unified-metadata__sources > div, .ord-unified-metadata__discovery > div { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.8rem; }
+.ord-unified-metadata__sources b, .ord-unified-metadata__discovery b { display: flex; flex-direction: column; border: 1px solid var(--ord-sep); border-left: 4px solid var(--ord-sky); border-radius: 5px; background: var(--ord-panel); font-size: 0.72rem; padding: 0.45rem; }
 .ord-unified-metadata__sources b:nth-child(1) { border-left-color: var(--ord-lime); }
 .ord-unified-metadata__sources b:nth-child(3) { border-left-color: var(--ord-teal); }
 .ord-unified-metadata__sources b:nth-child(4) { border-left-color: var(--ord-violet); }
@@ -542,10 +542,10 @@ html[data-theme="dark"] .ord-agent-example .dependency-label { fill: var(--ord-c
 .ord-graph .entity { border: 2px solid var(--ord-brand); background: var(--ord-teal-soft); }
 .ord-graph .taxonomy { border: 2px solid var(--ord-violet); }
 .ord-unified-metadata__caption { color: var(--ord-muted); font-size: 0.62rem; text-align: center; }
-.ord-unified-metadata__consumers { border-top: 5px solid var(--ord-consumer) !important; }
-.ord-unified-metadata__consumers > strong { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; margin-top: 0.8rem; border: 1px solid var(--ord-aggregator); border-radius: 6px; background: var(--ord-aggregator-soft); font-size: 0.72rem; padding: 0.8rem 0.4rem; text-align: center; }
-.ord-unified-metadata__consumers > strong small { color: var(--ord-muted); font-size: 0.55rem; }
-.ord-unified-metadata__consumers b { border-left-color: var(--ord-consumer); }
+.ord-unified-metadata__discovery { box-shadow: 0 3px 12px rgba(10, 15, 18, 0.05); }
+.ord-unified-metadata__discovery > strong { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; margin-top: 0.8rem; border: 1px solid var(--ord-aggregator); border-radius: 6px; background: var(--ord-aggregator-soft); font-size: 0.72rem; padding: 0.8rem 0.4rem; text-align: center; }
+.ord-unified-metadata__discovery > strong small { color: var(--ord-muted); font-size: 0.55rem; }
+.ord-unified-metadata__discovery b { border-left-color: var(--ord-consumer); }
 .ord-unified-metadata figcaption { grid-column: 1 / -1; color: var(--ord-muted); font-size: 0.75rem; text-align: center; }
 
 /* Namespaces */

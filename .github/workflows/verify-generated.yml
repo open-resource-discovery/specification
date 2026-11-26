@@ -28,11 +28,14 @@ jobs:
           node-version: "26"
           cache: "npm"
 
+      - name: Install pinned npm for dependency policy
+        run: npm install --global --ignore-scripts npm@11.20.0 --registry=https://registry.npmjs.org/
+
       - name: Select npm install policy tooling
         run: npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Generate files
         run: npm run generate

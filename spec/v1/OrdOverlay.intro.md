@@ -43,17 +43,48 @@ See [Overlay Definition](../../spec-v1/interfaces/Document.md#overlay-definition
 
 ## Publishing
 
-Providers MUST publish overlays as standalone `OrdOverlayResource` entries in an
-[ORD Document](../../spec-v1/index.md#ord-document), with patch files referenced through `definitions`.
-This applies to every overlay, including producer-owned overlays that patch a single API or Event resource.
+New overlay publications SHOULD use standalone Overlay Resources in an ORD Document.
+Attaching `ord:overlay:v1` or `oas-overlay-v1` files as API or Event resource definitions is deprecated; existing publications remain valid and supported.
+The ORD Overlay file format and its optional metadata are unchanged.
 
-Attaching overlay files to API or Event `resourceDefinitions` is deprecated as of ORD 1.18.0.
-The legacy `ord:overlay:v1` and `oas-overlay-v1` resource-definition types remain accepted for compatibility,
-but providers MUST NOT use them for new overlay publications.
-See [Overlay Publication and Migration](#deep-dive-overlay-publication-and-migration) for migration guidance.
+Decision guidance for choosing a publishing approach is collected in the
+[Appendix: ORD Document Resource vs. Attached Resource Definition](#deep-dive-ord-document-resource-vs-attached-resource-definition).
 
-When a consumer applies multiple overlays to the same target, the processing order is not defined by this
-specification and MUST be established by the ORD Aggregator or ORD Provider.
+### Attached to an ORD Resource
+
+Overlays can be attached directly to an API or Event resource as a `resourceDefinitions` entry with type `ord:overlay:v1`.
+This keeps the overlay co-located with the resource it patches and remains supported for existing publications.
+
+A single resource can have multiple overlays with different `purpose` values.
+This allows independent concerns (e.g. AI enrichment, platform governance) to be managed by different teams
+without conflicting with each other or the original definition.
+
+Within the same aggregation scope, the combination of `purpose` and `visibility` MUST be unique across
+overlay entries (`type: "ord:overlay:v1"`) on the same resource.
+This follows directly from the general resource definition uniqueness rule: no two entries in a
+`resourceDefinitions` list may share the same `type`, `purpose`, and `visibility`.
+When a consumer applies multiple overlays to the same target,
+the processing order is not defined by this specification and MUST be established by the ORD Aggregator or ORD Provider.
+
+```json
+{
+  "apiResources": [{
+    "ordId": "sap.foo:apiResource:astronomy:v1",
+    "resourceDefinitions": [
+      { "type": "openapi-v3", "url": "/ord/metadata/my-api.oas3.json", "visibility": "public" },
+      { "type": "edmx", "url": "/ord/metadata/my-api.edmx.xml", "visibility": "public" },
+      { "type": "ord:overlay:v1", "url": "/ord/overlays/ai-enrichment.overlay.json", "visibility": "public", "purpose": "ord:ai-enrichment" },
+      { "type": "ord:overlay:v1", "url": "/ord/overlays/governance.overlay.json", "visibility": "internal", "purpose": "foo.bar:governance" }
+    ]
+  }]
+}
+```
+
+### As an ORD Document Resource
+
+Overlays can be described as standalone `OrdOverlayResource` entries inside an [ORD Document](../../spec-v1/index.md#ord-document).
+This is the preferred approach for new publications, including producer-owned overlays that patch a single resource
+and overlays managed by a different team than the resource provider.
 
 The ORD Overlay Resource acts as any other ORD resource: it has its own `ordId`, `version`, `releaseStatus`, and `visibility`,
 and references the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`.

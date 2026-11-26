@@ -362,7 +362,7 @@ The motivation behind the ORD configuration endpoint is to:
 - Define where and how the ORD information can be accessed
   - Which transport mode is available (URLs to ORD document(s) indicate the [pull transport mode](#pull-transport))
   - Which [access strategies](../spec-extensions/access-strategies/index.mdx) are available
-- Discover ORD Overlay Resources through the referenced ORD Documents' `overlays` arrays (see [ORD Overlay](./interfaces/OrdOverlay.md))
+- Discover Overlay Resources through the referenced ORD Documents' `overlays` arrays (see [ORD Overlay](./interfaces/OrdOverlay.md))
 
 The idea behind the configuration endpoint is inspired by the [well-known URI](https://datatracker.ietf.org/doc/html/rfc8615) discovery mechanism.
 
@@ -458,11 +458,14 @@ ORD does not aim to replace these standards. Instead, it discovers and transport
 
 Every ORD resource that carries machine-readable definitions (API Resource, Event Resource, Capability, Entity Type) describes exactly one logical resource. Its definitions list (`resourceDefinitions`, or `definitions` on Capability and Entity Type) is NOT a bundling mechanism: multiple distinct resources (different feature areas, endpoint groups, or lifecycles) MUST each be modelled as their own ORD resource, so ORD-level properties like `version`, `visibility`, `releaseStatus`, ownership, and taxonomy stay meaningful.
 
-Within a single resource, the list MAY still hold several entries, but they must all describe the same underlying resource. Additional entries beyond the default exist to carry complementary artifacts (AI-enriched variants, agent-security-permissions views, …) and, where supported, are distinguished via the `purpose` property.
+Within a single resource, the list MAY still hold several entries, but they must all describe the same underlying resource. Additional entries beyond the default exist to carry complementary artifacts (overlays, AI-enriched variants, agent-security-permissions views, …) and, where supported, are distinguished via the `purpose` property.
 
 The entry *without* a `purpose` is the primary / default definition, and there SHOULD be exactly one per `(type, visibility)` combination. Consumers that don't explicitly ask for a specific `purpose` MUST fall back to the default entry with the highest `visibility` they are entitled to see. Values under the `ord:` namespace are reserved for the ORD specification; custom purposes MUST use their own namespace prefix.
 
-Providers MUST publish overlays as Overlay Resources in an ORD Document's `overlays` array, referencing patch files through `definitions`. Attaching overlays to API or Event `resourceDefinitions` is deprecated as of ORD 1.18.0 and MUST NOT be used for new overlay publications. For details and migration guidance, see [ORD Overlay](./interfaces/OrdOverlay.md).
+New overlay publications SHOULD use standalone [Overlay Resources](./interfaces/Document.md#overlay) in an ORD Document's `overlays` array, with patch files referenced through `definitions`.
+Attaching `ord:overlay:v1` or `oas-overlay-v1` files as API or Event resource definitions is deprecated; existing publications remain valid and supported.
+This deprecation changes the recommended publication model; the ORD Overlay file format and its optional metadata remain unchanged.
+For publication guidance and existing attached examples, see [ORD Overlay](./interfaces/OrdOverlay.md#publishing).
 
 For details on how resource definitions are referenced, see the `resourceDefinitions` property on [API Resource](./interfaces/Document.md#api-resource) and [Event Resource](./interfaces/Document.md#event-resource) in the interface documentation.
 When consumed via an [ORD aggregator](#ord-aggregator), the aggregator may [host the resource definitions](#hosting-resource-definitions) for easier access.

@@ -148,8 +148,8 @@ export interface OrdDocument {
    * An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
    * resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
    *
-   * Providers MUST publish overlays as Overlay Resources with patch files referenced through `definitions`.
-   * Attaching overlays to API or Event `resourceDefinitions` is deprecated.
+   * New overlay publications SHOULD use standalone Overlay Resources with patch files referenced through `definitions`.
+   * Attaching overlays as API or Event resource definitions is deprecated; existing publications remain valid.
    */
   overlays?: Overlay[];
   /**
@@ -687,7 +687,7 @@ export interface ApiResource {
    *
    * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
    * representations (different formats) and complementary artifacts distinguished by `purpose`
-   * (e.g. AI-enriched variants, agent-security-permissions views).
+   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
@@ -1086,7 +1086,7 @@ export interface ApiResourceDefinition {
   accessStrategies?: [MetadataDefinitionAccessStrategy, ...MetadataDefinitionAccessStrategy[]];
   /**
    * Marks a resource definition as a *complementary* variant of the resource's default definition,
-   * for example an AI-enriched variant or an agent-security-permissions view.
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
@@ -1601,7 +1601,7 @@ export interface EventResource {
    *
    * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
    * representations (different formats) and complementary artifacts distinguished by `purpose`
-   * (e.g. AI-enriched variants, agent-security-permissions views).
+   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
@@ -1870,7 +1870,7 @@ export interface EventResourceDefinition {
   visibility?: "public" | "internal" | "private";
   /**
    * Marks a resource definition as a *complementary* variant of the resource's default definition,
-   * for example an AI-enriched variant or an agent-security-permissions view.
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
@@ -2499,7 +2499,7 @@ export interface Capability {
    *
    * Every entry MUST describe the *same* underlying resource. Allowed variations are alternative
    * representations (different formats) and complementary artifacts distinguished by `purpose`
-   * (e.g. AI-enriched variants, agent-security-permissions views).
+   * (e.g. overlays, AI-enriched variants, agent-security-permissions views).
    * This list MUST NOT be used to bundle multiple distinct resources under a single ORD resource.
    * Model those as separate ORD resources instead.
    *
@@ -2713,7 +2713,7 @@ export interface CapabilityDefinition {
   visibility?: "public" | "internal" | "private";
   /**
    * Marks a resource definition as a *complementary* variant of the resource's default definition,
-   * for example an AI-enriched variant or an agent-security-permissions view.
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
@@ -3539,8 +3539,8 @@ export interface ExposedAPIResource {
  * Overlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
  *
  * Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
- * Providers MUST use an Overlay Resource for every published overlay, including producer-owned overlays
- * that patch a single resource. Attaching overlays to API or Event `resourceDefinitions` is deprecated.
+ * New overlay publications SHOULD use an Overlay Resource, including producer-owned overlays that patch a single resource.
+ * Attaching overlays as API or Event resource definitions is deprecated; existing publications remain valid.
  */
 export interface Overlay {
   /**
@@ -3703,7 +3703,7 @@ export interface OverlayDefinition {
   visibility?: "public" | "internal" | "private";
   /**
    * Marks a resource definition as a *complementary* variant of the resource's default definition,
-   * for example an AI-enriched variant or an agent-security-permissions view.
+   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
    * All entries in the definitions list, with or without `purpose`, MUST describe the same
    * underlying resource; see the list property for the full modelling rules.
    *
