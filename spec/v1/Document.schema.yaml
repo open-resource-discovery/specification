@@ -1382,6 +1382,16 @@ definitions:
               [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md) Protocol, where one API Resource corresponds to a share.
               For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
               For delta-sharing APIs the resource definition MAY be omitted, as the protocol itself allows for metadata discovery at runtime.
+          - const: opensharing
+            x-introduced-in-version: "1.18.0"
+            description: |-
+              [OpenSharing](https://opensharing.io) Protocol, where one API Resource corresponds to a share.
+
+              OpenSharing is the vendor-neutral successor to [Delta Sharing](https://github.com/delta-io/delta-sharing/blob/main/PROTOCOL.md). The Linux Foundation AI & Data governs it as an open standard (Apache 2.0).
+              OpenSharing is a superset of Delta Sharing and remains compatible with existing Delta Sharing clients.
+              OpenSharing additionally covers AI asset types (volumes, models, agent skills) beyond structured tables.
+
+              For each API Resource definition: `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id).
           - const: soap-inbound
             description: |-
               [SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.

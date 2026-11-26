@@ -671,6 +671,7 @@ export interface ApiResource {
     | "rest"
     | "graphql"
     | "delta-sharing"
+    | "opensharing"
     | "soap-inbound"
     | "soap-outbound"
     | "mcp"
