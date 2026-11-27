@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added optional `purpose` metadata to Entity Type definitions using the shared definition-purpose model.
+
 ### Changed
 
 - Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.

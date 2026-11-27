@@ -32,6 +32,43 @@
         {
           "ordId": "sap.vdm.sot:entityType:BusinessPartner:v1"
         }
+      ],
+      "definitions": [
+        {
+          "type": "sap-csn-interop-effective-v1",
+          "mediaType": "application/json",
+          "url": "/entityTypes/BusinessPartner/model.json",
+          "visibility": "internal"
+        },
+        {
+          "type": "sap-csn-interop-effective-v1",
+          "mediaType": "application/json",
+          "url": "/entityTypes/BusinessPartner/model.ai-enriched.json",
+          "visibility": "internal",
+          "purpose": "ord:ai-enrichment"
+        }
+      ]
+    },
+    {
+      "ordId": "sap.odm:entityType:WorkforcePerson:v1",
+      "localId": "WorkforcePerson",
+      "level": "aggregate",
+      "title": "Workforce Person",
+      "shortDescription": "An individual who works for an organization.",
+      "description": "Represents an individual whose work engagement is of interest to the organization, including employees, contractors, and other personnel.",
+      "version": "1.0.0",
+      "lastUpdate": "2023-03-18T15:30:04+00:00",
+      "partOfPackage": "sap.odm:package:OdmEntities:v1",
+      "visibility": "public",
+      "releaseStatus": "active",
+      "definitions": [
+        {
+          "type": "sap.example:entity-model-definition:v1",
+          "mediaType": "application/json",
+          "url": "/entityTypes/WorkforcePerson/model-agent-permissions.json",
+          "visibility": "internal",
+          "purpose": "ord:agent-security-permissions"
+        }
       ]
     }
   ]
