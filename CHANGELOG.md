@@ -3,8 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) rules,
-but omits the **patch** level in the spec version number.
+Release versions use [Semantic Versioning](https://semver.org/spec/v2.0.0.html) notation, with compatibility exceptions explained in the release notes.
+The `openResourceDiscovery` version in ORD documents omits the **patch** component.
 
 For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMAP.md)
 
@@ -14,22 +14,16 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Added
 
-- Added `Overlay.targets`, limited to one explicit input-definition selection, and optional resource-level `Overlay.purpose`.
+- Added `Overlay.targets` to select exactly one resource definition to patch, and optional resource-level `Overlay.purpose`.
   Input visibility is explicit; omitted input purpose selects the primary definition without a purpose.
-- Added SAP Core guidance to use recent ORD specification versions.
-  Validators SHOULD warn when the declared version is more than three minor versions behind the latest version they support; older supported documents remain valid.
 
 ### Changed
 
 - Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.
-- Alpha Overlay Resources now require `targets` with exactly one input-definition selection.
+- Standalone Overlay Resources now require `targets` with exactly one entry.
   The standalone Overlay Resource interface in ORD is still in alpha, where incompatible changes remain possible.
   This is an intentional incompatible change: existing standalone Overlay Resources must supply the target resource ORD ID and input definition's type, media type, and explicit visibility.
   The ORD Overlay file format and its optional metadata remain unchanged.
-- Removed `OverlayDefinition.purpose` from the alpha standalone Overlay Resource model.
-  Move an existing `definitions[].purpose` to the containing `Overlay.purpose`; `targets[].resourceDefinition.purpose` continues to select the input definition independently.
-- Aligned SAP Core overlay target identification with the standalone resource model.
-  Standalone Overlay Resources MUST identify their input through `targets`; legacy attached overlays MUST still provide the overlay file's `target.ordId`.
 
 ### Deprecated
 
@@ -39,6 +33,11 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Deprecated `Overlay.relatedApiResources`, `Overlay.relatedEventResources`, and `OverlayDefinition.visibility` while retaining their existing meaning and validity.
   Deprecated properties remain accepted, and the ORD Overlay file format is unchanged.
 - Deprecated `Vendor.partners` without replacement. New ORD documents SHOULD omit this property; existing documents using it remain valid.
+
+### Removed
+
+- Removed `OverlayDefinition.purpose` from the alpha standalone Overlay Resource interface in ORD.
+  Move an existing `definitions[].purpose` to the containing `Overlay.purpose`; `targets[].resourceDefinition.purpose` continues to select the input definition independently.
 
 ### Fixed
 
