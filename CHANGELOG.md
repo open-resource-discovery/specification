@@ -19,6 +19,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 - Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.
 - Alpha Overlay Resources now require `targets` with exactly one input-definition selection.
+  The standalone Overlay Resource interface in ORD is still in alpha, where incompatible changes remain possible.
   This is an intentional incompatible change: existing standalone Overlay Resources must supply the target resource ORD ID and input definition's type, media type, and explicit visibility.
   The ORD Overlay file format and its optional metadata remain unchanged.
 - Removed `OverlayDefinition.purpose` from the alpha standalone Overlay Resource model.
