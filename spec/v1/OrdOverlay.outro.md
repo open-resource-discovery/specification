@@ -80,7 +80,7 @@ In that case, distributing it as an `OrdOverlayResource` in a separate ORD Docum
 #### Prefer an ORD Document Resource when
 
 - the overlay is created by someone other than the original resource provider
-- the overlay is cross-cutting and applies to multiple resources
+- a cross-cutting enrichment is published as a separate Overlay Resource for each input definition
 - the overlay should be published independently from the lifecycle of one concrete API or Event resource
 - the overlay provider needs its own publication channel and cannot modify the target resource entry
 
@@ -106,8 +106,10 @@ Rule of thumb:
 - use ORD Document Resources for new overlay publications
 - retain support for existing attached resource definitions
 
-To migrate an attached overlay, create an Overlay Resource and reference the same patch file through `definitions`, preserving its URL, type, media type, purpose, effective visibility, and access strategies.
-Preserve the patch file's optional metadata and target-resolution behavior.
+To migrate an attached overlay, create an Overlay Resource with the attached overlay's `purpose` and effective `visibility` at the resource level.
+Reference the same patch file through `definitions`, preserving its URL, type, media type, and access strategies.
+Provide its required `targets` entry with the target resource ORD ID and the input definition's type, media type, explicit effective visibility, and purpose when applicable.
+Preserve the patch file's optional metadata; any file-level target metadata MUST identify the same input.
 
 ### Appendix: Relation to the OpenAPI Initiative Overlay Specification
 
@@ -132,8 +134,8 @@ This section explains what motivated a dedicated model and where the two specifi
 - **Integration with ORD identifiers.** ORD Overlay's `target.ordId` and `target.definitionType` connect an overlay
   directly to the ORD resource graph, so ORD Aggregators can resolve, authorize, and merge overlays without
   format-specific heuristics.
-- **`purpose` and `visibility` on overlays and their patches.** ORD Overlay carries first-class `purpose`
-  (e.g. `ord:ai-enrichment`, `ord:agent-security-permissions`) and `visibility` on the overlay resource definition entry.
+- **`purpose` and `visibility` on Overlay Resources.** A standalone Overlay Resource carries first-class `purpose` (e.g. `ord:ai-enrichment`, `ord:agent-security-permissions`) and `visibility`.
+  Its target selection can separately identify the input definition's purpose and visibility.
   This enables audience-scoped variants and governance decisions that OAS Overlay does not model.
 - **Explicit patch actions.** OAS Overlay expresses removal via an `remove: true` flag and updates via `update` payloads.
   ORD Overlay uses three explicit actions — `update`, `merge`, `remove` — with well-defined semantics per action
@@ -184,7 +186,7 @@ Examples of changes that are typically **inappropriate**:
 - Contradicting the original meaning of the resource (e.g. changing a resource's title to describe something else entirely)
 
 Enforcement of these expectations is left to ORD Aggregators and overlay governance processes.
-The `purpose` field on the overlay's resource-definition entry can help aggregators decide which changes are acceptable for a given overlay source.
+The Overlay Resource's `purpose` field can help aggregators decide which changes are acceptable for a given overlay source.
 
 ## Current Constraints
 

@@ -9,15 +9,22 @@
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "public",
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
+      "purpose": "ord:ai-enrichment",
+      "targets": [
+        {
+          "ordId": "sap.foo:apiResource:astronomy:v1",
+          "resourceDefinition": {
+            "type": "openapi-v3",
+            "mediaType": "application/json",
+            "visibility": "public"
+          }
+        }
       ],
       "definitions": [
         {
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
-          "url": "/open-resource-discovery/v1/overlays/astronomy-api-ai-enrichment.overlay.json",
-          "purpose": "ord:ai-enrichment"
+          "url": "/open-resource-discovery/v1/overlays/astronomy-api-ai-enrichment.overlay.json"
         }
       ]
     },
@@ -27,15 +34,22 @@
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "internal",
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
+      "purpose": "foo.bar:governance",
+      "targets": [
+        {
+          "ordId": "sap.foo:apiResource:astronomy:v1",
+          "resourceDefinition": {
+            "type": "openapi-v3",
+            "mediaType": "application/json",
+            "visibility": "public"
+          }
+        }
       ],
       "definitions": [
         {
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
-          "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json",
-          "purpose": "foo.bar:governance"
+          "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json"
         }
       ]
     },
@@ -45,8 +59,15 @@
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "public",
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
+      "targets": [
+        {
+          "ordId": "sap.foo:apiResource:astronomy:v1",
+          "resourceDefinition": {
+            "type": "openapi-v3",
+            "mediaType": "application/json",
+            "visibility": "public"
+          }
+        }
       ],
       "definitions": [
         {

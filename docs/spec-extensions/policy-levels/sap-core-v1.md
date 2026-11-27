@@ -130,7 +130,8 @@ This recommendation does not invalidate documents that conform to an older suppo
 
 ### ORD Overlays
 
-- [ORD Overlays](../../spec-v1/interfaces/OrdOverlay.md) MUST always provide a [`target.ordId`](../../spec-v1/interfaces/OrdOverlay.md#overlay-target_ordid) to identify the ORD resource being patched.
+- Standalone [Overlay Resources](../../spec-v1/interfaces/Document.md#overlay) MUST identify the input through their required [`targets`](../../spec-v1/interfaces/Document.md#overlay-resource-target) entry, including explicit input visibility.
+  Legacy attached [ORD Overlays](../../spec-v1/interfaces/OrdOverlay.md) MUST identify the resource being patched through the overlay file's [`target.ordId`](../../spec-v1/interfaces/OrdOverlay.md#overlay-target).
 - SAP applications and services MUST use `type: "ord:overlay:v1"` as the overlay format for all published overlays. The `oas-overlay-v1` type is supported by the ORD specification for interoperability with the OpenAPI Initiative Overlay ecosystem, but within SAP we standardize on ORD Overlay because it works uniformly across all metadata formats we publish (OpenAPI, AsyncAPI, OData EDMX/CSDL, A2A, MCP, CSN Interop) and integrates with ORD identifiers, `purpose`, and `visibility`.
 
 - All ORD Overlays governed by this policy MUST have an effective `visibility`

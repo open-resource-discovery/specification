@@ -2884,7 +2884,7 @@ definitions:
               The `mediaType` MUST be set to `application/json`.
             x-introduced-in-version: "1.9.4"
           - const: ord:overlay:v1
-            x-deprecated-in-version: "1.18.0"
+            x-deprecated-in-version: "1.17.2"
             x-deprecation-text: |-
               New publications SHOULD reference this file through an Overlay Resource in `overlays[].definitions[]`.
               Existing attached resource definitions remain valid and supported.
@@ -2895,7 +2895,7 @@ definitions:
               For details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).
               The `mediaType` MUST be set to `application/json`.
           - const: oas-overlay-v1
-            x-deprecated-in-version: "1.18.0"
+            x-deprecated-in-version: "1.17.2"
             x-deprecation-text: |-
               New publications SHOULD reference this file through an Overlay Resource in `overlays[].definitions[]`.
               Existing attached resource definitions remain valid and supported.
@@ -3056,7 +3056,7 @@ definitions:
 
               The `mediaType` MUST be be set to `application/json`.
           - const: ord:overlay:v1
-            x-deprecated-in-version: "1.18.0"
+            x-deprecated-in-version: "1.17.2"
             x-deprecation-text: |-
               New publications SHOULD reference this file through an Overlay Resource in `overlays[].definitions[]`.
               Existing attached resource definitions remain valid and supported.
@@ -3312,7 +3312,7 @@ definitions:
       An Overlay Resource is a standalone, versioned resource that references a metadata patch file.
       Overlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
 
-      Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
+      Use an Overlay Resource for independently managed enrichment, governance annotations, or audience-specific adaptations.
       New overlay publications SHOULD use an Overlay Resource, including producer-owned overlays that patch a single resource.
       Attaching overlays as API or Event resource definitions is deprecated; existing publications remain valid.
     properties:
@@ -3341,34 +3341,54 @@ definitions:
       visibility:
         <<: *visibility
 
+      purpose:
+        <<: *resourceDefinitionPurpose
+        x-introduced-in-version: "1.17.2"
+        description: |-
+          Optional purpose of the resource definition produced by applying this overlay.
+          This describes the output; `targets[].resourceDefinition.purpose` selects the input.
+          If omitted, the output definition has no purpose.
+
       releaseStatus:
         <<: *releaseStatus
+
+      targets:
+        type: array
+        minItems: 1
+        maxItems: 1
+        x-introduced-in-version: "1.17.2"
+        description: |-
+          Required explicit selection of the input resource definition patched by the referenced overlay files.
+          MUST contain exactly one target so consumers can resolve the input from the ORD Document.
+          If an overlay file also provides target metadata, it MUST identify the same input.
+        items:
+          $ref: "#/definitions/OverlayResourceTarget"
 
       relatedApiResources:
         <<: *relatedApiResources
         x-introduced-in-version: "1.15.0"
+        x-deprecated-in-version: "1.17.2"
+        x-deprecation-text: |-
+          Use `targets` for explicit input-definition selection in new publications.
+          Existing related-resource lists remain valid.
         description: |-
-          Optional list of API Resources whose definition files this overlay patches.
-
-          SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
-          as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+          Optional legacy list of API Resources whose definition files this overlay patches.
+          Consumers use the required `targets` entry for input-definition selection.
+          Existing related-resource lists remain valid but do not replace that selection.
           Use `relationType: ord:patches` to express the patching relationship.
-
-          May be omitted when the target resource is not described in an accessible ORD document,
-          or when the overlay is cross-cutting and patches resources from multiple providers.
 
       relatedEventResources:
         <<: *relatedEventResources
         x-introduced-in-version: "1.15.0"
+        x-deprecated-in-version: "1.17.2"
+        x-deprecation-text: |-
+          Use `targets` for explicit input-definition selection in new publications.
+          Existing related-resource lists remain valid.
         description: |-
-          Optional list of Event Resources whose definition files this overlay patches.
-
-          SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
-          as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+          Optional legacy list of Event Resources whose definition files this overlay patches.
+          Consumers use the required `targets` entry for input-definition selection.
+          Existing related-resource lists remain valid but do not replace that selection.
           Use `relationType: ord:patches` to express the patching relationship.
-
-          May be omitted when the target resource is not described in an accessible ORD document,
-          or when the overlay is cross-cutting and patches resources from multiple providers.
 
       definitions:
         type: array
@@ -3390,6 +3410,7 @@ definitions:
       - version
       - releaseStatus
       - visibility
+      - targets
     x-recommended:
       - lastUpdate
 
@@ -3436,15 +3457,96 @@ definitions:
 
       visibility:
         <<: *definitionVisibility
-
-      purpose:
-        <<: *resourceDefinitionPurpose
+        x-deprecated-in-version: "1.17.2"
+        x-deprecation-text: |-
+          Prefer the containing Overlay Resource's `visibility` in new publications.
+          Existing definition-level visibility continues to apply, including its inheritance and restriction rules.
 
     additionalProperties: false
     required:
       - type
       - mediaType
       - url
+
+  ############################################################################################################
+
+  OverlayResourceTarget:
+    type: object
+    title: Overlay Resource Target
+    x-ums-type: embedded
+    x-introduced-in-version: "1.17.2"
+    description: |-
+      Selects one ORD resource and one concrete input resource definition in the aggregation context.
+      Consumers MUST resolve exactly one input definition; zero or multiple matches MUST report an error.
+      This selection does not change the target resource's identity or the overlay's output visibility and purpose.
+    additionalProperties: false
+    properties:
+      ordId:
+        <<: *ordId
+        pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+        description: ORD ID of the resource whose definition is patched.
+        x-introduced-in-version: "1.17.2"
+      resourceDefinition:
+        $ref: "#/definitions/OverlayTargetResourceDefinition"
+        x-introduced-in-version: "1.17.2"
+    required:
+      - ordId
+      - resourceDefinition
+
+  OverlayTargetResourceDefinition:
+    type: object
+    title: Overlay Target Resource Definition
+    x-ums-type: embedded
+    x-introduced-in-version: "1.17.2"
+    description: |-
+      Exact matching criteria for the input definition, independent of the overlay's output visibility and purpose.
+      `type`, `mediaType`, and effective `visibility` MUST match the input definition.
+      Effective visibility includes visibility inherited from the target resource.
+      If `purpose` is omitted, select the primary definition without a purpose; omission is not a wildcard.
+      For legacy input definitions with `type: custom`, match `type` against the input's `customType`.
+    additionalProperties: false
+    properties:
+      type:
+        type: string
+        description: Type of the input resource definition, using its resource-definition type vocabulary.
+        x-introduced-in-version: "1.17.2"
+        anyOf:
+          - type: string
+            pattern: ^([a-z0-9]+(?:[.][a-z0-9]+)*):([a-zA-Z0-9._\-]+):(v0|v[1-9][0-9]*)$
+          - const: openapi-v2
+          - const: openapi-v3
+          - const: openapi-v3.1+
+          - const: raml-v1
+          - const: edmx
+          - const: csdl-json
+          - const: graphql-sdl
+          - const: wsdl-v1
+          - const: wsdl-v2
+          - const: a2a-agent-card
+          - const: sap-rfc-metadata-v1
+          - const: sap-sql-api-definition-v1
+          - const: sap-csn-interop-effective-v1
+          - const: asyncapi-v2
+          - const: sap.mdo:mdi-capability-definition:v1
+          - const: oas-overlay-v1
+          - const: arazzo-v1
+      mediaType:
+        <<: *mediaType
+        x-introduced-in-version: "1.17.2"
+      visibility:
+        <<: *visibility
+        x-introduced-in-version: "1.17.2"
+        description: |-
+          Required effective visibility of the input definition, including inheritance from its resource.
+          MUST be provided explicitly; there is no default visibility for target selection.
+      purpose:
+        <<: *resourceDefinitionPurpose
+        description: Optional purpose of the input definition; omit to select a definition without a purpose.
+        x-introduced-in-version: "1.17.2"
+    required:
+      - type
+      - mediaType
+      - visibility
 
   ############################################################################################################
 

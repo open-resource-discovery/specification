@@ -10,16 +10,29 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
-### Deprecated
+### Added
 
-- Deprecated attaching `ord:overlay:v1` and `oas-overlay-v1` files as API or Event resource definitions in favor of standalone Overlay Resources.
-  New publications SHOULD use the standalone model; existing attached definitions remain valid and supported.
-  No schema properties or enum values were removed, and the ORD Overlay file format and optional metadata are unchanged.
-- Deprecated `Vendor.partners` without replacement. New ORD documents SHOULD omit this property; existing documents using it remain valid.
+- Added `Overlay.targets`, limited to one explicit input-definition selection, and optional resource-level `Overlay.purpose`.
+  Input visibility is explicit; omitted input purpose selects the primary definition without a purpose.
 
 ### Changed
 
 - Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.
+- Alpha Overlay Resources now require `targets` with exactly one input-definition selection.
+  The standalone Overlay Resource interface in ORD is still in alpha, where incompatible changes remain possible.
+  This is an intentional incompatible change: existing standalone Overlay Resources must supply the target resource ORD ID and input definition's type, media type, and explicit visibility.
+  The ORD Overlay file format and its optional metadata remain unchanged.
+- Removed `OverlayDefinition.purpose` from the alpha standalone Overlay Resource model.
+  Move an existing `definitions[].purpose` to the containing `Overlay.purpose`; `targets[].resourceDefinition.purpose` continues to select the input definition independently.
+
+### Deprecated
+
+- Deprecated attaching `ord:overlay:v1` and `oas-overlay-v1` files as API or Event resource definitions in favor of standalone Overlay Resources.
+  New publications SHOULD use the standalone model; existing attached definitions remain valid and supported.
+  Existing attached definitions retain their schema, and the ORD Overlay file format and optional metadata are unchanged.
+- Deprecated `Overlay.relatedApiResources`, `Overlay.relatedEventResources`, and `OverlayDefinition.visibility` while retaining their existing meaning and validity.
+  Deprecated properties remain accepted, and the ORD Overlay file format is unchanged.
+- Deprecated `Vendor.partners` without replacement. New ORD documents SHOULD omit this property; existing documents using it remain valid.
 
 ### Fixed
 
