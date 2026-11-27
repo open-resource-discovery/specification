@@ -24,6 +24,8 @@ This page covers only specification-defined identifiers and reserved entries, in
 | `relationType` | `ord:orchestrates` | A workflow Capability orchestrates the target API Resource as part of a multi-step workflow. |
 | `relationType` | `ord:patches` | The source ORD Overlay patches the related resource. |
 
+## Labels (on ORD Resources)
+
 No label key in the `ord:` namespace is currently standardized.
 Future standardized label keys MUST be registered on this page before providers use them.
 
