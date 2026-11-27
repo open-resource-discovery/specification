@@ -1278,11 +1278,11 @@
             },
             {
               "const": "soap-inbound",
-              "description": "[SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.\nAn API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
+              "description": "[SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides inbound interfaces.\nAn API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "soap-outbound",
-              "description": "[SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides/describes outbound interfaces for async communication.\nAn API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
+              "description": "[SOAP](https://en.wikipedia.org/wiki/SOAP) API that provides/describes outbound interfaces for async communication.\nAn API Resource definition of type `wsdl-v2` (RECOMMENDED) or `wsdl-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `wsdl-v1`, `wsdl-v2`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "mcp",
@@ -1290,7 +1290,7 @@
             },
             {
               "const": "websocket",
-              "description": "Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.\nSince WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.\nThe API Resource definitions `type` MUST ONLY be set to `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
+              "description": "Generic [WebSocket](https://datatracker.ietf.org/doc/html/rfc6455) Protocol.\nSince WebSocket is very generic, it is important to also define or least describe which semantics are concretely used, e.g. via an `implementationStandard`.\nThe API Resource definitions `type` MUST ONLY be set to `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "a2a",
@@ -1300,7 +1300,7 @@
             {
               "const": "sap-rfc",
               "x-introduced-in-version": "1.5.0",
-              "description": "[SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html) (Remote Function Call)  is the standard SAP interface for communication between SAP systems.\nRFC calls a function to be executed in a remote system.\nAn API Resource definition of type `sap-rfc-metadata-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
+              "description": "[SAP RFC](https://help.sap.com/viewer/753088fc00704d0a80e7fbd6803c8adb/202009.000/en-US/4888068ad9134076e10000000a42189d.html) (Remote Function Call)  is the standard SAP interface for communication between SAP systems.\nRFC calls a function to be executed in a remote system.\nAn API Resource definition of type `sap-rfc-metadata-v1` MUST be provided.\nFor each API Resource definition: `type` MUST ONLY be set to `sap-rfc-metadata-v1`, `sap-csn-interop-effective-v1`, `custom` or any valid [Specification ID](../concepts/identifiers.md#specification-id)."
             },
             {
               "const": "sap-sql-api-v1",
@@ -3907,7 +3907,7 @@
             },
             {
               "const": "sap-csn-interop-effective-v1",
-              "description": "[CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.\nThe `mediaType` MUST be be set to `application/json`.",
+              "description": "[CSN Interop Effective](https://sap.github.io/csn-interop-specification/) is a standardized and interoperable [CSN](https://cap.cloud.sap/docs/cds/csn) export, used to describe [CDS](https://cap.cloud.sap/docs/cds/) models.\nThis definition MAY be provided as complementary metadata for any `apiProtocol` that permits API Resource definitions.\nIt describes the same underlying API Resource and complements any definition required by that protocol; those requirements still apply.\nProtocols that prohibit API Resource definitions, such as `sap-ina-api-v1`, remain excluded.\nThe `mediaType` MUST be set to `application/json`.",
               "x-introduced-in-version": "1.9.4"
             },
             {
