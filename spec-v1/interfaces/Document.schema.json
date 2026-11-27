@@ -6692,7 +6692,7 @@
         },
         "partners": {
           "type": "array",
-          "x-deprecated-in-version": "1.18.0",
+          "x-deprecated-in-version": "1.17.2",
           "x-deprecation-text": "Deprecated without replacement. New ORD documents SHOULD omit this property. Partner relationships are typically managed outside the scope of ORD. If you need to make the relationships discoverable, make sure the vendor ORD-ID or `correlationIds` point allow to reach the correct record in the partnership management systems.\nExisting documents using `partners` remain valid.",
           "description": "Optional list of partner vendors, referenced through their ORD ID.\n\nMUST be a valid reference to a [Vendor](#vendor) ORD ID.\n\nThis property can be used to indicate partnership relations between vendors.",
           "items": {
