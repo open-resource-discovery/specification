@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Added
+
+- Added the [Standardized ORD Identifiers](https://open-resource-discovery.org/spec-v1/concepts/standardized-ord-values) registry, listing the identifiers and keys that the ORD specification standardizes or reserves in the `ord:` namespace and the reserved Vendor entries.
+
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
 ### Changed
