@@ -3631,25 +3631,17 @@ export interface Overlay {
    */
   targets: [OverlayResourceTarget];
   /**
-   * Optional list of API Resources whose definition files this overlay patches.
-   *
-   * SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
-   * as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+   * Optional legacy list of API Resources whose definition files this overlay patches.
+   * Consumers use the required `targets` entry for input-definition selection.
+   * Existing related-resource lists remain valid but do not replace that selection.
    * Use `relationType: ord:patches` to express the patching relationship.
-   *
-   * May be omitted when the target resource is not described in an accessible ORD document,
-   * or when the overlay is cross-cutting and patches resources from multiple providers.
    */
   relatedApiResources?: RelatedAPIResource[];
   /**
-   * Optional list of Event Resources whose definition files this overlay patches.
-   *
-   * SHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,
-   * as it enables efficient indexing without requiring the aggregator to parse each overlay file.
+   * Optional legacy list of Event Resources whose definition files this overlay patches.
+   * Consumers use the required `targets` entry for input-definition selection.
+   * Existing related-resource lists remain valid but do not replace that selection.
    * Use `relationType: ord:patches` to express the patching relationship.
-   *
-   * May be omitted when the target resource is not described in an accessible ORD document,
-   * or when the overlay is cross-cutting and patches resources from multiple providers.
    */
   relatedEventResources?: RelatedEventResource[];
   /**

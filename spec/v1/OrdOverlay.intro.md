@@ -113,9 +113,6 @@ For example, an overlay with `purpose: "foo.bar:governance"` can select an AI-en
           }
         }
       ],
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
-      ],
       "definitions": [
         {
           "type": "ord:overlay:v1",

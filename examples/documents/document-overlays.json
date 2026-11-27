@@ -45,9 +45,6 @@
           }
         }
       ],
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
-      ],
       "definitions": [
         {
           "type": "ord:overlay:v1",
@@ -71,9 +68,6 @@
             "visibility": "public"
           }
         }
-      ],
-      "relatedApiResources": [
-        { "ordId": "sap.foo:apiResource:astronomy:v1", "relationType": "ord:patches" }
       ],
       "definitions": [
         {

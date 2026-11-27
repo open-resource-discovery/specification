@@ -143,22 +143,43 @@ describe("Overlay publication contract", () => {
     );
   });
 
-  it("requires explicit input visibility without a default", () => {
-    const { visibility: _visibility, ...input } = target.resourceDefinition;
-    assert.equal(
-      validateResource({
-        ...overlay,
-        targets: [{ ...target, resourceDefinition: input }],
-      }),
-      false,
-    );
-    assert.ok(
-      validateResource.errors?.some(
-        (error) =>
-          error.keyword === "required" &&
-          error.params.missingProperty === "visibility",
-      ),
-    );
+  it("requires target identity and input-definition selection", () => {
+    for (const property of ["ordId", "resourceDefinition"] as const) {
+      const { [property]: _omitted, ...selection } = target;
+      assert.equal(
+        validateResource({ ...overlay, targets: [selection] }),
+        false,
+      );
+      assert.ok(
+        validateResource.errors?.some(
+          (error) =>
+            error.instancePath === "/targets/0" &&
+            error.keyword === "required" &&
+            error.params.missingProperty === property,
+        ),
+      );
+    }
+  });
+
+  it("requires explicit input type, media type, and visibility without defaults", () => {
+    for (const property of ["type", "mediaType", "visibility"] as const) {
+      const { [property]: _omitted, ...input } = target.resourceDefinition;
+      assert.equal(
+        validateResource({
+          ...overlay,
+          targets: [{ ...target, resourceDefinition: input }],
+        }),
+        false,
+      );
+      assert.ok(
+        validateResource.errors?.some(
+          (error) =>
+            error.instancePath === "/targets/0/resourceDefinition" &&
+            error.keyword === "required" &&
+            error.params.missingProperty === property,
+        ),
+      );
+    }
   });
 
   it("retains self-contained and minimal ORD Overlay files", () => {

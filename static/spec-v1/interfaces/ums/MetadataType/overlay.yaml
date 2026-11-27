@@ -125,8 +125,8 @@ spec:
     - propertyName: 'relatedApiResources'
       relatedTypeName: 'RelatedApiResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Optional list of API Resources whose definition files this overlay patches.\n\nSHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,\nas it enables efficient indexing without requiring the aggregator to parse each overlay file.\nUse `relationType: ord:patches` to express the patching relationship.\n\nMay be omitted when the target resource is not described in an accessible ORD document,\nor when the overlay is cross-cutting and patches resources from multiple providers."
+      description: "Optional legacy list of API Resources whose definition files this overlay patches.\nConsumers use the required `targets` entry for input-definition selection.\nExisting related-resource lists remain valid but do not replace that selection.\nUse `relationType: ord:patches` to express the patching relationship."
     - propertyName: 'relatedEventResources'
       relatedTypeName: 'RelatedEventResource'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Optional list of Event Resources whose definition files this overlay patches.\n\nSHOULD be provided when the target resource is described in an ORD document accessible to the same aggregator,\nas it enables efficient indexing without requiring the aggregator to parse each overlay file.\nUse `relationType: ord:patches` to express the patching relationship.\n\nMay be omitted when the target resource is not described in an accessible ORD document,\nor when the overlay is cross-cutting and patches resources from multiple providers."
+      description: "Optional legacy list of Event Resources whose definition files this overlay patches.\nConsumers use the required `targets` entry for input-definition selection.\nExisting related-resource lists remain valid but do not replace that selection.\nUse `relationType: ord:patches` to express the patching relationship."
