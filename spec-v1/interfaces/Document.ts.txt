@@ -3622,14 +3622,14 @@ export interface Overlay {
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
   /**
-   * Required explicit selection of the input resource definitions patched by the referenced overlay files.
-   * MUST contain at least one target so consumers can resolve each input from the ORD Document.
-   * Each target MUST resolve exactly one input resource definition.
-   * If an overlay file also provides target metadata, it MUST agree with each selected input.
+   * Required explicit selection of the input resource definition patched by the referenced overlay files.
+   * MUST contain exactly one target so consumers can resolve the input from the ORD Document.
+   * If an overlay file also provides target metadata, it MUST identify the same input.
    *
    * @minItems 1
+   * @maxItems 1
    */
-  targets: [OverlayResourceTarget, ...OverlayResourceTarget[]];
+  targets: [OverlayResourceTarget];
   /**
    * Optional legacy list of API Resources whose definition files this overlay patches.
    * Consumers use the required `targets` entry for input-definition selection.
