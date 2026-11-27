@@ -12,6 +12,7 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ### Changed
 
+- Deprecated `Vendor.partners` without replacement. New ORD documents SHOULD omit this property; existing documents using it remain valid.
 - Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.
 
 ### Fixed
