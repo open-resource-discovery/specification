@@ -88,7 +88,7 @@ and overlays managed by a different team than the resource provider.
 
 The ORD Overlay Resource acts as any other ORD resource: it has its own `ordId`, `version`, `releaseStatus`, and `visibility`,
 and references the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`.
-Its required `targets` array selects exactly one input definition, including explicit input visibility.
+Its required `targets` array selects one or more input definitions, each with explicit input visibility.
 The Overlay Resource's optional `purpose` belongs next to its `visibility` and supplies the purpose of the merged output.
 The separate `targets[].resourceDefinition.purpose` selects the input definition's purpose; omit it to select the primary definition without a purpose.
 For example, an overlay with `purpose: "foo.bar:governance"` can select an AI-enriched input using `targets[0].resourceDefinition.purpose: "ord:ai-enrichment"`.
