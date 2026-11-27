@@ -26,7 +26,7 @@ Usually SAP applications and services will use the more complete and opinionated
   - All ORD resources owned by SAP MUST use the `sap` vendor namespace
   - ORD resources or extensions created or governed within a customer scope SHOULD use the `customer` vendor namespace or its shorter alias `c`.
   - The `customer` and `c` namespaces MUST NOT be used for content published in a global marketplace or otherwise shared globally unless the platform allocating the ORD IDs guarantees their global uniqueness across customer scopes.
-  - If that guarantee does not exist, partner content MUST be exported with ORD IDs under the partner's registered vendor namespace before it is offered globally.
+  - If that guarantee does not exist, partner content MUST be exported with ORD IDs under a namespace that the publishing platform guarantees to be globally unique, such as the partner's registered vendor namespace, before it is offered globally.
 
 ### Extensible Enums
 

@@ -10,7 +10,7 @@ spec:
     - 'id'
   visibility: 'public'
   embedded: false
-  description: "The vendor of a product or a package, usually a corporation or a customer / user.\n\nThe vendor of a `Package` is the authoritative statement of the current ownership attribution for the content of the Package.\nIt is independent of the namespaces of the resource ORD IDs and MUST NOT be derived from them.\nThe vendor of a `Product` is the owner of the product.\n\nIf ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.\n\nEvery Vendor ORD ID contains its [vendor namespace](../concepts/identifiers.md#vendor-namespace).\nThe `Vendor` entity provides more details about that vendor namespace.\nExactly one `Vendor` ORD entity MUST describe each vendor namespace.\n\nFor example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`."
+  description: "The vendor of a product or a package, usually a corporation or a customer / user.\n\nThe vendor of a `Package` is the authoritative statement of the current ownership attribution for the content of the Package.\nIt is independent of the namespaces of the resource ORD IDs and MUST NOT be derived from them.\nThe vendor of a `Product` is the owner of the product.\n\nIf ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.\n\nA Vendor can be registered either under its [vendor namespace](../concepts/identifiers.md#vendor-namespace)\nor under an [authority namespace](../concepts/identifiers.md#authority-namespace).\nThe namespace of the Vendor ORD ID identifies the authority that registers the Vendor entity.\nA vendor namespace acts as its own authority when it is used as the namespace of a Vendor ORD ID.\n\nA Vendor registered under an authority namespace MAY declare the vendor namespace for which it is responsible\nthrough `vendorNamespace`. A Vendor registered under a vendor namespace implies that vendor namespace;\nif it declares `vendorNamespace`, the value MUST equal the namespace of its ORD ID.\n\nEach declared or implied vendor namespace MUST resolve to exactly one Vendor entity in an ORD aggregate.\nThe authority that registers the Vendor entity is responsible for ensuring this uniqueness.\n\nFor example, the SAP Vendor is `sap:vendor:SAP:`. An authority-registered partner Vendor can use\n`example.prm:vendor:partner-123:`."
   metadataProperties:
     - name: 'id'
       type: 'guid'
@@ -23,7 +23,12 @@ spec:
       mandatory: true
       constraints:
         maxLength: 255
-        pattern: '^([a-z0-9]+):(vendor):([a-zA-Z0-9._\-]+):()$'
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)?):(vendor):([a-zA-Z0-9._\-]+):()$'
+    - name: 'vendorNamespace'
+      type: 'string'
+      description: "Optional top-level vendor namespace for which this Vendor is responsible.\n\nMUST be a valid [vendor namespace](../concepts/identifiers.md#vendor-namespace).\nWhen the Vendor ORD ID uses a vendor namespace, this value, if provided, MUST equal that namespace.\nWhen the Vendor ORD ID uses an authority namespace, this value identifies the vendor namespace independently\nof the authority namespace.\n\nIf this property is absent, an authority-registered Vendor makes no vendor namespace claim.\nThe Vendor remains globally identified by its ORD ID and its ownership attribution is expressed through\nreferences from `Package.vendor` or `Product.vendor`."
+      constraints:
+        pattern: '^[a-z0-9]+$'
     - name: 'title'
       type: 'string'
       description: "Human-readable title.\n\nMUST NOT exceed 255 chars.\nMUST NOT contain line breaks."

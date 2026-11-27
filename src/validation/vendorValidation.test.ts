@@ -18,6 +18,51 @@ assert.ok(validate);
 
 const vendor = { ordId: "example:vendor:Example:", title: "Example Vendor" };
 
+describe("Vendor identifiers", () => {
+  it("accepts a namespace-aligned Vendor", () => {
+    assert.ok(validate(vendor), JSON.stringify(validate.errors));
+    assert.ok(
+      validate({ ...vendor, vendorNamespace: "example" }),
+      JSON.stringify(validate.errors),
+    );
+  });
+
+  it("accepts an authority-registered Vendor with or without a vendor namespace", () => {
+    const authorityRegisteredVendor = {
+      ordId: "example.prm:vendor:partner-123:",
+      title: "Partner 123",
+    };
+
+    assert.ok(
+      validate(authorityRegisteredVendor),
+      JSON.stringify(validate.errors),
+    );
+    assert.ok(
+      validate({ ...authorityRegisteredVendor, vendorNamespace: "partner123" }),
+      JSON.stringify(validate.errors),
+    );
+  });
+
+  it("rejects a Vendor ID under a sub-context namespace", () => {
+    assert.equal(
+      validate({
+        ...vendor,
+        ordId: "example.prm.internal:vendor:partner-123:",
+      }),
+      false,
+    );
+    assert.ok(validate.errors?.some((error) => error.keyword === "pattern"));
+  });
+
+  it("requires vendorNamespace to use the top-level vendor namespace syntax", () => {
+    assert.equal(
+      validate({ ...vendor, vendorNamespace: "example.partner" }),
+      false,
+    );
+    assert.ok(validate.errors?.some((error) => error.keyword === "pattern"));
+  });
+});
+
 describe("Vendor correlation IDs", () => {
   it("keeps correlationIds optional for existing vendors", () => {
     assert.ok(validate(vendor), JSON.stringify(validate.errors));

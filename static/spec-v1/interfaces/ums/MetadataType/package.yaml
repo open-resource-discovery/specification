@@ -103,7 +103,7 @@ spec:
       mandatory: true
       constraints:
         maxLength: 256
-        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)*):(vendor):([a-zA-Z0-9._\-]+):()$'
+        pattern: '^([a-z0-9]+(?:[.][a-z0-9]+)?):(vendor):([a-zA-Z0-9._\-]+):()$'
     - name: 'partOfProducts_ID'
       type: 'guid'
       array: true

@@ -54,7 +54,8 @@ They are described in more detail behind the link.
 
 It should be pointed out that the:
 
-- [vendor namespace](./identifiers.md#vendor-namespace) corresponds to the [ORD Vendor](../interfaces/Document.md#vendor).
+- A [vendor namespace](./identifiers.md#vendor-namespace) can be declared or implied by an [ORD Vendor](../interfaces/Document.md#vendor).
+  An authority namespace can instead register the Vendor entity without claiming a vendor namespace.
 - [system namespace](./identifiers.md#system-namespace) corresponds to the [ORD System Type](../index.md#system-type).
 - [sub-context namespaces](./identifiers.md#sub-context-namespace) have no corresponding ORD concept.
 

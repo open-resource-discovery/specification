@@ -4120,11 +4120,20 @@ export interface SystemTypeIntegrationAspect {
  *
  * If ownership of the Package contents is attributed to the customer / user of the described system, `customer:vendor:Customer:` MUST be used as vendor.
  *
- * Every Vendor ORD ID contains its [vendor namespace](../concepts/identifiers.md#vendor-namespace).
- * The `Vendor` entity provides more details about that vendor namespace.
- * Exactly one `Vendor` ORD entity MUST describe each vendor namespace.
+ * A Vendor can be registered either under its [vendor namespace](../concepts/identifiers.md#vendor-namespace)
+ * or under an [authority namespace](../concepts/identifiers.md#authority-namespace).
+ * The namespace of the Vendor ORD ID identifies the authority that registers the Vendor entity.
+ * A vendor namespace acts as its own authority when it is used as the namespace of a Vendor ORD ID.
  *
- * For example: The only correct value for a SAP vendor reference is `sap:vendor:SAP:`.
+ * A Vendor registered under an authority namespace MAY declare the vendor namespace for which it is responsible
+ * through `vendorNamespace`. A Vendor registered under a vendor namespace implies that vendor namespace;
+ * if it declares `vendorNamespace`, the value MUST equal the namespace of its ORD ID.
+ *
+ * Each declared or implied vendor namespace MUST resolve to exactly one Vendor entity in an ORD aggregate.
+ * The authority that registers the Vendor entity is responsible for ensuring this uniqueness.
+ *
+ * For example, the SAP Vendor is `sap:vendor:SAP:`. An authority-registered partner Vendor can use
+ * `example.prm:vendor:partner-123:`.
  */
 export interface Vendor {
   /**
@@ -4133,6 +4142,19 @@ export interface Vendor {
    * It MUST be a valid [ORD ID](../concepts/identifiers.md#ord-id) of the appropriate ORD type.
    */
   ordId: string;
+  /**
+   * Optional top-level vendor namespace for which this Vendor is responsible.
+   *
+   * MUST be a valid [vendor namespace](../concepts/identifiers.md#vendor-namespace).
+   * When the Vendor ORD ID uses a vendor namespace, this value, if provided, MUST equal that namespace.
+   * When the Vendor ORD ID uses an authority namespace, this value identifies the vendor namespace independently
+   * of the authority namespace.
+   *
+   * If this property is absent, an authority-registered Vendor makes no vendor namespace claim.
+   * The Vendor remains globally identified by its ORD ID and its ownership attribution is expressed through
+   * references from `Package.vendor` or `Product.vendor`.
+   */
+  vendorNamespace?: string;
   /**
    * Human-readable title.
    *
