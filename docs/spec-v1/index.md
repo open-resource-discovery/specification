@@ -467,7 +467,7 @@ Attaching `ord:overlay:v1` or `oas-overlay-v1` files as API or Event resource de
 This deprecation changes the recommended publication model; the ORD Overlay file format and its optional metadata remain unchanged.
 For publication guidance and existing attached examples, see [ORD Overlay](./interfaces/OrdOverlay.md#publishing).
 
-An Overlay Resource MUST provide exactly one `targets` entry identifying the input definition by ORD ID, definition type, media type, explicit effective visibility (including inheritance from its resource), and optional purpose.
+An Overlay Resource in an ORD Document MUST provide exactly one `targets` entry identifying the input definition by ORD ID, definition type, media type, explicit effective visibility (including inheritance from its resource), and optional purpose.
 Omitting the input purpose selects the primary definition without a purpose, not every purpose.
 Consumers MUST resolve exactly one input definition and report an error for zero or multiple matches.
 If the overlay file also declares target metadata, it MUST identify the same input.
