@@ -477,8 +477,10 @@ If the overlay file also declares target metadata, it MUST identify the same inp
 Requiring `targets` is an intentional incompatible change to the alpha Overlay Resource model.
 Existing standalone Overlay Resources must add the explicit target selection.
 
-The Overlay Resource's `visibility` governs access to the overlay, and its optional `purpose` supplies the default purpose of the merged output.
-Existing `definitions[].visibility` and `definitions[].purpose` remain valid, retain their meaning, and take precedence over the resource-level defaults.
+The Overlay Resource's `visibility` governs access to the overlay, and its optional `purpose` supplies the purpose of the merged output.
+Place output `purpose` on the Overlay Resource; `targets[].resourceDefinition.purpose` separately selects the input definition's purpose.
+Definition-level `purpose` is no longer accepted on standalone Overlay Resources; migrate an existing `definitions[].purpose` to the containing Overlay Resource.
+Existing `definitions[].visibility` remains valid and takes precedence over the resource-level visibility.
 The ORD Overlay file format is unchanged: its optional metadata MAY be provided or omitted.
 For patch-file semantics, see [ORD Overlay](./interfaces/OrdOverlay.md).
 

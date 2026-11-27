@@ -89,6 +89,9 @@ and overlays managed by a different team than the resource provider.
 The ORD Overlay Resource acts as any other ORD resource: it has its own `ordId`, `version`, `releaseStatus`, and `visibility`,
 and references the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`.
 Its required `targets` array selects exactly one input definition, including explicit input visibility.
+The Overlay Resource's optional `purpose` belongs next to its `visibility` and supplies the purpose of the merged output.
+The separate `targets[].resourceDefinition.purpose` selects the input definition's purpose; omit it to select the primary definition without a purpose.
+For example, an overlay with `purpose: "foo.bar:governance"` can select an AI-enriched input using `targets[0].resourceDefinition.purpose: "ord:ai-enrichment"`.
 
 ```json
 {
@@ -99,6 +102,7 @@ Its required `targets` array selects exactly one input definition, including exp
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "public",
+      "purpose": "ord:ai-enrichment",
       "targets": [
         {
           "ordId": "sap.foo:apiResource:astronomy:v1",
@@ -116,8 +120,7 @@ Its required `targets` array selects exactly one input definition, including exp
         {
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
-          "url": "/ord/overlays/ai-enrichment.overlay.json",
-          "purpose": "ord:ai-enrichment"
+          "url": "/ord/overlays/ai-enrichment.overlay.json"
         }
       ]
     }
@@ -242,9 +245,11 @@ An ORD Aggregator SHOULD support merging ORD Overlays into the resource definiti
 so that individual consumers do not need to implement overlay processing themselves.
 
 When an ORD Aggregator performs the merge, it SHOULD produce a new resource definition entry with the merged content.
-The new entry takes over the `type` from the original resource definition,
-the `visibility` from the overlay document,
-and the `purpose` from the overlay's definition entry.
+The new entry takes over the `type` from the original resource definition.
+For standalone overlays, its `purpose` comes from the Overlay Resource.
+Its `visibility` comes from the Overlay Resource, subject to the retained definition-level visibility override.
+The input selection's `targets[].resourceDefinition.purpose` does not supply the output purpose.
+For existing attached overlays, the output uses the overlay resource-definition entry's effective `visibility` and `purpose`.
 
 ## Overlay Document Metadata
 

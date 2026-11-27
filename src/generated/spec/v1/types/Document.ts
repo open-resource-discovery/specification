@@ -3605,6 +3605,12 @@ export interface Overlay {
    */
   visibility: "public" | "internal" | "private";
   /**
+   * Optional purpose of the resource definition produced by applying this overlay.
+   * This describes the output; `targets[].resourceDefinition.purpose` selects the input.
+   * If omitted, the output definition has no purpose.
+   */
+  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
+  /**
    * Defines the maturity level and stability commitment for the resource's API contract (interface, behavior, data models).
    *
    * This indicates whether the resource may undergo backward-incompatible changes. It helps consumers understand the risk
@@ -3615,13 +3621,6 @@ export interface Overlay {
    * See [Lifecycle](../concepts/versioning-and-lifecycle.md#lifecycle) and [Compatibility](../concepts/versioning-and-lifecycle.md#compatibility) for more details.
    */
   releaseStatus: "development" | "beta" | "active" | "deprecated" | "sunset";
-  /**
-   * Optional default purpose of the resource definition produced by applying this overlay.
-   * This describes the output; `targets[].resourceDefinition.purpose` selects the input.
-   * A legacy `definitions[].purpose`, when provided, continues to apply to that definition.
-   * If neither property is provided, the output definition has no purpose.
-   */
-  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
   /**
    * Required explicit selection of the input resource definition patched by the referenced overlay files.
    * MUST contain exactly one target so consumers can resolve the input from the ORD Document.
@@ -3780,20 +3779,6 @@ export interface OverlayDefinition {
    * in case that some metadata must only be made accessible to internal consumers.
    */
   visibility?: "public" | "internal" | "private";
-  /**
-   * Marks a resource definition as a *complementary* variant of the resource's default definition,
-   * for example an overlay, an AI-enriched variant, or an agent-security-permissions view.
-   * All entries in the definitions list, with or without `purpose`, MUST describe the same
-   * underlying resource; see the list property for the full modelling rules.
-   *
-   * Together with `type` (or `customType`) and `visibility`, `purpose` forms the uniqueness
-   * key for entries in the definitions list.
-   *
-   * MUST be a valid [Concept ID](../concepts/identifiers.md#concept-id). The `ord:` namespace is reserved for
-   * values standardized by the ORD specification itself; custom values MUST use a vendor- or
-   * product-specific namespace prefix (e.g. `foo.bar:my-purpose`).
-   */
-  purpose?: (string | "ord:ai-enrichment" | "ord:agent-security-permissions") & string;
 }
 /**
  * An [Integration Dependency](../concepts/integration-dependency) states that the described system (self) can integrate with external systems (integration target) to achieve an integration purpose.

@@ -34,6 +34,7 @@
       "version": "1.0.0",
       "releaseStatus": "active",
       "visibility": "internal",
+      "purpose": "foo.bar:governance",
       "targets": [
         {
           "ordId": "sap.foo:apiResource:astronomy:v1",
@@ -51,8 +52,7 @@
         {
           "type": "ord:overlay:v1",
           "mediaType": "application/json",
-          "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json",
-          "purpose": "foo.bar:governance"
+          "url": "/open-resource-discovery/v1/overlays/astronomy-api-governance.overlay.json"
         }
       ]
     },

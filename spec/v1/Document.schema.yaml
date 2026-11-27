@@ -3341,17 +3341,16 @@ definitions:
       visibility:
         <<: *visibility
 
-      releaseStatus:
-        <<: *releaseStatus
-
       purpose:
         <<: *resourceDefinitionPurpose
         x-introduced-in-version: "1.18.0"
         description: |-
-          Optional default purpose of the resource definition produced by applying this overlay.
+          Optional purpose of the resource definition produced by applying this overlay.
           This describes the output; `targets[].resourceDefinition.purpose` selects the input.
-          A legacy `definitions[].purpose`, when provided, continues to apply to that definition.
-          If neither property is provided, the output definition has no purpose.
+          If omitted, the output definition has no purpose.
+
+      releaseStatus:
+        <<: *releaseStatus
 
       targets:
         type: array
@@ -3470,13 +3469,6 @@ definitions:
         x-deprecation-text: |-
           Prefer the containing Overlay Resource's `visibility` in new publications.
           Existing definition-level visibility continues to apply, including its inheritance and restriction rules.
-
-      purpose:
-        <<: *resourceDefinitionPurpose
-        x-deprecated-in-version: "1.18.0"
-        x-deprecation-text: |-
-          Prefer the containing Overlay Resource's `purpose` in new publications.
-          Existing definition-level purpose continues to apply and takes precedence over the resource-level default.
 
     additionalProperties: false
     required:

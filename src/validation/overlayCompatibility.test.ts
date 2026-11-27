@@ -64,7 +64,7 @@ describe("Overlay publication contract", () => {
     );
   });
 
-  it("accepts legacy relationships and definition metadata", () => {
+  it("accepts legacy relationships and definition visibility", () => {
     assert.ok(
       validateResource({
         ...overlay,
@@ -82,7 +82,6 @@ describe("Overlay publication contract", () => {
           {
             ...definition,
             visibility: "internal",
-            purpose: "ord:ai-enrichment",
           },
         ],
       }),
@@ -90,13 +89,45 @@ describe("Overlay publication contract", () => {
     );
   });
 
-  it("accepts explicit input selection with separate output purpose and visibility", () => {
+  it("rejects purpose on standalone overlay definitions", () => {
+    for (const resourcePurpose of [undefined, "foo.bar:governance"]) {
+      assert.equal(
+        validateResource({
+          ...overlay,
+          ...(resourcePurpose === undefined
+            ? {}
+            : { purpose: resourcePurpose }),
+          targets: [target],
+          definitions: [{ ...definition, purpose: "ord:ai-enrichment" }],
+        }),
+        false,
+      );
+      assert.ok(
+        validateResource.errors?.some(
+          (error) =>
+            error.instancePath === "/definitions/0" &&
+            error.keyword === "additionalProperties" &&
+            error.params.additionalProperty === "purpose",
+        ),
+      );
+    }
+  });
+
+  it("accepts distinct input and output purposes and visibility", () => {
     assert.ok(
       validateResource({
         ...overlay,
         visibility: "internal",
         purpose: "ord:ai-enrichment",
-        targets: [target],
+        targets: [
+          {
+            ...target,
+            resourceDefinition: {
+              ...target.resourceDefinition,
+              purpose: "foo.bar:governance",
+            },
+          },
+        ],
         definitions: [definition],
       }),
       JSON.stringify(validateResource.errors),
