@@ -56,7 +56,7 @@ export interface OrdDocument {
    * Optional [base URL](../index.md#base-url) of the ORD provider system instance that serves this document.
    *
    * Used to resolve relative URLs to [resource definition](../index.md#resource-definition) files and resource definition metadata file
-   * references within this document (e.g., `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`).
+   * references within this document (e.g., `resourceDefinitions[].url`, `overlays[].definitions[].url`, `File.url`).
    * This differs from `describedSystemInstance.baseUrl`, which is used for entry point URLs.
    *
    * It may differ from `describedSystemInstance.baseUrl` when an ORD provider describes another system on its behalf.
@@ -148,8 +148,8 @@ export interface OrdDocument {
    * An ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches
    * resource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.
    *
-   * For overlays that are tightly coupled to a single API or Event resource, consider attaching them directly
-   * as a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.
+   * New overlay publications SHOULD use standalone Overlay Resources with patch files referenced through `definitions`.
+   * Attaching overlays as API or Event resource definitions is deprecated; existing publications remain valid.
    */
   overlays?: Overlay[];
   /**
@@ -3538,7 +3538,8 @@ export interface ExposedAPIResource {
  * Overlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.
  *
  * Use an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.
- * For producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.
+ * New overlay publications SHOULD use an Overlay Resource, including producer-owned overlays that patch a single resource.
+ * Attaching overlays as API or Event resource definitions is deprecated; existing publications remain valid.
  */
 export interface Overlay {
   /**

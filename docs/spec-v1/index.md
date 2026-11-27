@@ -302,7 +302,7 @@ The base URL used for resolving base-URL-relative URLs (leading slash) depends o
 
 | URL type | Resolved against | Declared via |
 |---|---|---|
-| **Metadata files**: `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`, `APIEventResourceLink.url`, `DataProductLink.url` | Provider base URL | Document root `baseUrl` |
+| **Metadata files**: `resourceDefinitions[].url`, `overlays[].definitions[].url`, `File.url`, `APIEventResourceLink.url`, `DataProductLink.url` | Provider base URL | Document root `baseUrl` |
 | **Entry points**: `entryPoints[]` | Described system base URL | `describedSystemInstance.baseUrl` |
 
 This distinction matters when the ORD provider and the described system differ (e.g., a central aggregator describing multiple systems on its behalf).
@@ -362,7 +362,7 @@ The motivation behind the ORD configuration endpoint is to:
 - Define where and how the ORD information can be accessed
   - Which transport mode is available (URLs to ORD document(s) indicate the [pull transport mode](#pull-transport))
   - Which [access strategies](../spec-extensions/access-strategies/index.mdx) are available
-- Optionally provide discoverable ORD Overlay files via `openResourceDiscoveryV1.overlays` (see [ORD Overlay](./interfaces/OrdOverlay.md))
+- Discover Overlay Resources through the referenced ORD Documents' `overlays` arrays (see [ORD Overlay](./interfaces/OrdOverlay.md))
 
 The idea behind the configuration endpoint is inspired by the [well-known URI](https://datatracker.ietf.org/doc/html/rfc8615) discovery mechanism.
 
@@ -462,7 +462,10 @@ Within a single resource, the list MAY still hold several entries, but they must
 
 The entry *without* a `purpose` is the primary / default definition, and there SHOULD be exactly one per `(type, visibility)` combination. Consumers that don't explicitly ask for a specific `purpose` MUST fall back to the default entry with the highest `visibility` they are entitled to see. Values under the `ord:` namespace are reserved for the ORD specification; custom purposes MUST use their own namespace prefix.
 
-An ORD resource can also reference an ORD Overlay as an additional `resourceDefinitions` entry with type `ord:overlay:v1`. The same overlay files can optionally be discovered independently via the [ORD configuration endpoint](#ord-configuration-endpoint). For details, see [ORD Overlay](./interfaces/OrdOverlay.md).
+New overlay publications SHOULD use standalone [Overlay Resources](./interfaces/Document.md#overlay) in an ORD Document's `overlays` array, with patch files referenced through `definitions`.
+Attaching `ord:overlay:v1` or `oas-overlay-v1` files as API or Event resource definitions is deprecated; existing publications remain valid and supported.
+This deprecation changes the recommended publication model; the ORD Overlay file format and its optional metadata remain unchanged.
+For publication guidance and existing attached examples, see [ORD Overlay](./interfaces/OrdOverlay.md#publishing).
 
 For details on how resource definitions are referenced, see the `resourceDefinitions` property on [API Resource](./interfaces/Document.md#api-resource) and [Event Resource](./interfaces/Document.md#event-resource) in the interface documentation.
 When consumed via an [ORD aggregator](#ord-aggregator), the aggregator may [host the resource definitions](#hosting-resource-definitions) for easier access.

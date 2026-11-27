@@ -21,8 +21,8 @@ For a detailed comparison and rationale, see
 [Appendix: Relation to the OpenAPI Initiative Overlay Specification](#appendix-relation-to-the-openapi-initiative-overlay-specification).
 
 If publishers prefer to author their overlays in the OpenAPI Initiative Overlay format directly,
-they can still expose them through ORD by attaching them as a resource definition with `type: oas-overlay-v1`.
-See the [API Resource Definition](../../spec-v1/interfaces/Document.md#api-resource-definition) type enum for details.
+they can expose them through an Overlay Resource whose `definitions` entry uses `type: oas-overlay-v1`.
+See [Overlay Definition](../../spec-v1/interfaces/Document.md#overlay-definition) for details.
 
 ```json
 {
@@ -43,13 +43,17 @@ See the [API Resource Definition](../../spec-v1/interfaces/Document.md#api-resou
 
 ## Publishing
 
+New overlay publications SHOULD use standalone Overlay Resources in an ORD Document.
+Attaching `ord:overlay:v1` or `oas-overlay-v1` files as API or Event resource definitions is deprecated; existing publications remain valid and supported.
+The ORD Overlay file format and its optional metadata are unchanged.
+
 Decision guidance for choosing a publishing approach is collected in the
 [Appendix: ORD Document Resource vs. Attached Resource Definition](#deep-dive-ord-document-resource-vs-attached-resource-definition).
 
 ### Attached to an ORD Resource
 
 Overlays can be attached directly to an API or Event resource as a `resourceDefinitions` entry with type `ord:overlay:v1`.
-This keeps the overlay co-located with the resource it patches and is the preferred approach when the same ORD Provider owns both.
+This keeps the overlay co-located with the resource it patches and remains supported for existing publications.
 
 A single resource can have multiple overlays with different `purpose` values.
 This allows independent concerns (e.g. AI enrichment, platform governance) to be managed by different teams
@@ -79,8 +83,8 @@ the processing order is not defined by this specification and MUST be establishe
 ### As an ORD Document Resource
 
 Overlays can be described as standalone `OrdOverlayResource` entries inside an [ORD Document](../../spec-v1/index.md#ord-document).
-This is the preferred approach for cross-cutting overlays that are not tightly coupled to a single resource,
-or for overlays managed by a different team than the resource provider.
+This is the preferred approach for new publications, including producer-owned overlays that patch a single resource
+and overlays managed by a different team than the resource provider.
 
 The ORD Overlay Resource acts as any other ORD resource: it has its own `ordId`, `version`, `releaseStatus`, and `visibility`,
 and references the actual overlay file via a `definitions` entry with `type: ord:overlay:v1`.

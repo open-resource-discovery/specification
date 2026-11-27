@@ -69,6 +69,8 @@ Rule of thumb:
 
 Overlays can be distributed either as a standalone `OrdOverlayResource` in an ORD Document or by attaching them as `ord:overlay:v1` resource definitions to an API or Event resource.
 Those options are not interchangeable in practice, because they imply different ownership and publication models.
+New publications SHOULD use standalone Overlay Resources.
+Attached overlay resource definitions are deprecated; existing publications remain valid and supported.
 
 The strongest discriminator is ownership:
 if the overlay is created by a different ORD Provider than the one describing the target resource,
@@ -82,7 +84,9 @@ In that case, distributing it as an `OrdOverlayResource` in a separate ORD Docum
 - the overlay should be published independently from the lifecycle of one concrete API or Event resource
 - the overlay provider needs its own publication channel and cannot modify the target resource entry
 
-#### Prefer attaching as a resource definition when
+<span id="prefer-attaching-as-a-resource-definition-when" />
+
+#### Legacy attached resource definitions
 
 - the same ORD Provider owns both the target resource and the overlay
 - the overlay belongs to the resource as part of the producer-owned metadata package
@@ -99,8 +103,11 @@ In that case, distributing it as an `OrdOverlayResource` in a separate ORD Docum
 
 Rule of thumb:
 
-- use attached resource definitions for producer-owned, resource-local overlays
-- use ORD Document Resources for externally managed, cross-resource, or independently versioned overlays
+- use ORD Document Resources for new overlay publications
+- retain support for existing attached resource definitions
+
+To migrate an attached overlay, create an Overlay Resource and reference the same patch file through `definitions`, preserving its URL, type, media type, purpose, effective visibility, and access strategies.
+Preserve the patch file's optional metadata and target-resolution behavior.
 
 ### Appendix: Relation to the OpenAPI Initiative Overlay Specification
 
