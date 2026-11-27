@@ -10,6 +10,10 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+### Changed
+
+- Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.
+
 ### Fixed
 
 - Corrected the Package inheritance rules by removing `labels`. Inheritance added unnecessary merging complexity for ORD aggregators and prevented technical labels from applying only to a Package. Labels now apply only to the object on which they are published. Aggregators must stop propagating Package labels, and providers relying on inheritance must publish the relevant labels directly on resources.
