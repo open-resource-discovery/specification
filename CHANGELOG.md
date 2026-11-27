@@ -10,10 +10,14 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 
 ## [unreleased]
 
+## [[1.17.2](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.2)] - 2026-11-27
+
 ### Added
 
 - Added `Overlay.targets`, limited to one explicit input-definition selection, and optional resource-level `Overlay.purpose`.
   Input visibility is explicit; omitted input purpose selects the primary definition without a purpose.
+- Added SAP Core guidance to use recent ORD specification versions.
+  Validators SHOULD warn when the declared version is more than three minor versions behind the latest version they support; older supported documents remain valid.
 
 ### Changed
 
@@ -24,19 +28,23 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
   The ORD Overlay file format and its optional metadata remain unchanged.
 - Removed `OverlayDefinition.purpose` from the alpha standalone Overlay Resource model.
   Move an existing `definitions[].purpose` to the containing `Overlay.purpose`; `targets[].resourceDefinition.purpose` continues to select the input definition independently.
+- Aligned SAP Core overlay target identification with the standalone resource model.
+  Standalone Overlay Resources MUST identify their input through `targets`; legacy attached overlays MUST still provide the overlay file's `target.ordId`.
 
 ### Deprecated
 
 - Deprecated attaching `ord:overlay:v1` and `oas-overlay-v1` files as API or Event resource definitions in favor of standalone Overlay Resources.
   New publications SHOULD use the standalone model; existing attached definitions remain valid and supported.
-  Existing attached definitions retain their schema, and the ORD Overlay file format and optional metadata are unchanged.
+  The ORD Overlay file format and optional metadata are unchanged.
 - Deprecated `Overlay.relatedApiResources`, `Overlay.relatedEventResources`, and `OverlayDefinition.visibility` while retaining their existing meaning and validity.
   Deprecated properties remain accepted, and the ORD Overlay file format is unchanged.
 - Deprecated `Vendor.partners` without replacement. New ORD documents SHOULD omit this property; existing documents using it remain valid.
 
 ### Fixed
 
-- Corrected the Package inheritance rules by removing `labels`. Inheritance added unnecessary merging complexity for ORD aggregators and prevented technical labels from applying only to a Package. Labels now apply only to the object on which they are published. Aggregators must stop propagating Package labels, and providers relying on inheritance must publish the relevant labels directly on resources.
+- Corrected Package inheritance so `labels` apply only to the object on which they are published.
+  Aggregators MUST NOT propagate Package labels to contained resources.
+  Providers relying on inheritance must publish the relevant labels directly on resources.
 
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
