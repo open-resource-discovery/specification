@@ -59,7 +59,7 @@
       "type": "string",
       "format": "uri",
       "x-introduced-in-version": "1.16.0",
-      "description": "Optional [base URL](../index.md#base-url) of the ORD provider system instance that serves this document.\n\nUsed to resolve relative URLs to [resource definition](../index.md#resource-definition) files and resource definition metadata file\nreferences within this document (e.g., `resourceDefinitions[].url`, `overlayDefinitions[].url`, `File.url`).\nThis differs from `describedSystemInstance.baseUrl`, which is used for entry point URLs.\n\nIt may differ from `describedSystemInstance.baseUrl` when an ORD provider describes another system on its behalf.\nIn the common case where the ORD provider and the described system are the same, both values are identical.\n\nThe `baseUrl` MUST NOT contain a trailing slash.\n\nThis property is particularly important in push, offline, and self-contained document scenarios,\nand REQUIRED when the provider and the described system differ.\n\nSee [Relative URL Resolution](../index.md#relative-url-resolution) for the full resolution order including fallbacks and backward-compatibility rules.",
+      "description": "Optional [base URL](../index.md#base-url) of the ORD provider system instance that serves this document.\n\nUsed to resolve relative URLs to [resource definition](../index.md#resource-definition) files and resource definition metadata file\nreferences within this document (e.g., `resourceDefinitions[].url`, `overlays[].definitions[].url`, `File.url`).\nThis differs from `describedSystemInstance.baseUrl`, which is used for entry point URLs.\n\nIt may differ from `describedSystemInstance.baseUrl` when an ORD provider describes another system on its behalf.\nIn the common case where the ORD provider and the described system are the same, both values are identical.\n\nThe `baseUrl` MUST NOT contain a trailing slash.\n\nThis property is particularly important in push, offline, and self-contained document scenarios,\nand REQUIRED when the provider and the described system differ.\n\nSee [Relative URL Resolution](../index.md#relative-url-resolution) for the full resolution order including fallbacks and backward-compatibility rules.",
       "pattern": "^http[s]?:\\/\\/[^:\\/\\s]+\\.[^:\\/\\s\\.]+(:\\d+)?(\\/[a-zA-Z0-9-\\._~]+)*$",
       "examples": [
         "https://example-sap-system.com",
@@ -209,7 +209,7 @@
     },
     "overlays": {
       "type": "array",
-      "description": "Array of all metadata overlays described in this ORD document.\n\nAn ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches\nresource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.\n\nFor overlays that are tightly coupled to a single API or Event resource, consider attaching them directly\nas a `resourceDefinitions` entry with `type: ord:overlay:v1` instead.",
+      "description": "Array of all metadata overlays described in this ORD document.\n\nAn ORD Overlay resource is a standalone, versioned resource that references an overlay document which patches\nresource definitions (e.g. OpenAPI, AsyncAPI, OData CSDL) without modifying the originals.\n\nNew overlay publications SHOULD use standalone Overlay Resources with patch files referenced through `definitions`.\nAttaching overlays as API or Event resource definitions is deprecated; existing publications remain valid.",
       "x-introduced-in-version": "1.15.0",
       "x-feature-status": "alpha",
       "items": {
@@ -3912,12 +3912,16 @@
             },
             {
               "const": "ord:overlay:v1",
+              "x-deprecated-in-version": "1.18.0",
+              "x-deprecation-text": "New publications SHOULD reference this file through an Overlay Resource in `overlays[].definitions[]`.\nExisting attached resource definitions remain valid and supported.",
               "x-feature-status": "alpha",
               "x-introduced-in-version": "1.15.0",
               "description": "ORD Overlay file for patching referenced resource definition files.\nFor details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).\nThe `mediaType` MUST be set to `application/json`."
             },
             {
               "const": "oas-overlay-v1",
+              "x-deprecated-in-version": "1.18.0",
+              "x-deprecation-text": "New publications SHOULD reference this file through an Overlay Resource in `overlays[].definitions[]`.\nExisting attached resource definitions remain valid and supported.",
               "x-introduced-in-version": "1.17.0",
               "description": "[OpenAPI Overlay v1.0.0](https://spec.openapis.org/overlay/v1.0.0.html) document for patching an OpenAPI definition.\nUse this when overlays are authored in the OpenAPI Initiative Overlay format rather than the\n[ORD Overlay](../../spec-v1/interfaces/OrdOverlay) format.\nThe `mediaType` MUST be set to `application/json` or `application/yaml`."
             },
@@ -4050,6 +4054,8 @@
             },
             {
               "const": "ord:overlay:v1",
+              "x-deprecated-in-version": "1.18.0",
+              "x-deprecation-text": "New publications SHOULD reference this file through an Overlay Resource in `overlays[].definitions[]`.\nExisting attached resource definitions remain valid and supported.",
               "x-feature-status": "alpha",
               "x-introduced-in-version": "1.15.0",
               "description": "ORD Overlay file for patching metadata / resource definition files.\nFor details, see [ORD Overlay](../../spec-v1/interfaces/OrdOverlay).\nThe `mediaType` MUST be set to `application/json`."
@@ -4721,7 +4727,7 @@
       "x-ums-type": "root",
       "x-introduced-in-version": "1.15.0",
       "x-feature-status": "alpha",
-      "description": "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.\nFor producer-owned overlays that belong to a single resource, they SHOULD instead be attached directly as a `resourceDefinitions` entry with `type: ord:overlay:v1`.",
+      "description": "An Overlay Resource is a standalone, versioned resource that references a metadata patch file.\nOverlays enrich / patch resource definition files (e.g. OpenAPI) without modifying the originals, e.g. to add AI-optimized descriptions, apply governance annotations, or adapt definitions for a specific audience / purpose.\n\nUse an Overlay Resource for overlays that serve a different concern or audience than the original metadata — such as AI enrichment, governance annotations, or audience-specific adaptations — and are managed independently or applied across multiple resources.\nNew overlay publications SHOULD use an Overlay Resource, including producer-owned overlays that patch a single resource.\nAttaching overlays as API or Event resource definitions is deprecated; existing publications remain valid.",
       "properties": {
         "ordId": {
           "type": "string",
