@@ -128,6 +128,16 @@ article .card {
   min-width: 120px;
   max-width: 120px;
 }
+/* Keep property tables within the container: fill the width and let long
+   unbreakable tokens (regex patterns, ORD IDs, URLs) in the description wrap,
+   instead of forcing a horizontal scrollbar even on wide screens. */
+.markdown table:has(.interface-property-name) {
+  width: 100%;
+}
+.markdown .interface-property-description,
+.markdown .interface-property-description code {
+  overflow-wrap: anywhere;
+}
 .markdown dfn {
   scroll-margin-top: 80px;
   background: #e3eef7;
@@ -339,12 +349,17 @@ html[data-theme="dark"] #__docusaurus:not(:has(.ord-home-flag)) .clean-btn {
 }
 
 html {
-  /* Native anchor offset for in-page links */
-  scroll-padding-top: calc(var(--doc-header-offset) + 8px);
+  /* Native anchor offset for in-page links. --policy-switcher-offset is set by
+     the policy switcher (0 when absent) so TOC jumps clear the sticky toolbar. */
+  scroll-padding-top: calc(
+    var(--doc-header-offset) + var(--policy-switcher-offset, 0px) + 8px
+  );
 }
 
 .markdown :is(h1, h2, h3, h4, h5, h6, dfn, .interface-property-name, .interface-property-type) {
-  scroll-margin-top: calc(var(--doc-header-offset) + 8px);
+  scroll-margin-top: calc(
+    var(--doc-header-offset) + var(--policy-switcher-offset, 0px) + 8px
+  );
 }
 
 .markdown :is(h1, h2, h3, h4, h5, h6):target .hash-link,

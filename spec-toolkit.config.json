@@ -28,6 +28,7 @@
       "type": "spec",
       "id": "Document",
       "sourceFilePath": "./spec/v1/Document.schema.yaml",
+      "sourceIntroFilePath": "./spec/v1/Document.intro.md",
       "mdFrontmatter": {
         "title": "ORD Document",
         "sidebar_position": "1",

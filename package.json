@@ -30,10 +30,11 @@
     "format": "biome format --write .",
     "lint": "biome lint .",
     "test": "npm run build:ts && node --test dist/validation/*.test.js",
+    "validate:policy": "npm run build:ts && node ./dist/build/validatePolicyOverlays.js",
     "serve": "docusaurus serve",
     "start": "docusaurus start",
     "deploy": "npm run build && gh-pages -d ./build",
-    "generate": "npm run clean && npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json && npm run build:ts && node ./dist/helper/copyGeneratedToDestination.js",
+    "generate": "npm run clean && npx @open-resource-discovery/spec-toolkit -c ./spec-toolkit.config.json && npm run build:ts && node ./dist/helper/copyGeneratedToDestination.js && node ./dist/build/compilePolicyLevels.js",
     "generate:llm-notebook": "npm run generate && node ./dist/helper/exportForNotebookLM.js"
   },
   "devDependencies": {

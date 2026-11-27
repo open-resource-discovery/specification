@@ -12,12 +12,13 @@ node_modules/
 
 # Build
 dist/
-build/
+/build/
 
 # Generated
 src/generated/**/*.md
 src/generated/**/*.schema.json
 src/generated/**/plugin/
+src/generated/policy-levels.json
 docs/spec-v1/interfaces/Configuration.md
 docs/spec-v1/interfaces/Document.md
 docs/spec-v1/interfaces/OrdOverlay.md
@@ -26,6 +27,12 @@ docs/spec-v1/examples/*
 docs/spec-v1/diagrams/*
 !docs/spec-v1/diagrams/index.mdx
 docs/spec-extensions/models/*.md
+
+# Generated from spec-extension/policy-levels/*.overlay.yaml (overlays are the source of truth)
+docs/spec-extensions/policy-levels/sap-base-v1.md
+docs/spec-extensions/policy-levels/sap-core-v1.md
+docs/spec-extensions/policy-levels/sap-documentation-v1.md
+docs/spec-extensions/policy-levels/sap-dp-v1.md
 
 /static/spec-v1/interfaces/*.schema.json
 /static/spec-v1/interfaces/*.csv

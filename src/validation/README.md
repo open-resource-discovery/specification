@@ -27,11 +27,13 @@ The `exampleValidation.test.ts` file provides dynamic validation of all example 
 To add a new example that will be automatically validated:
 
 **For Configuration or Document examples:**
+
 1. Add your `.json` file to `examples/configuration/` or `examples/documents/`
 2. Ensure it includes a `$schema` reference (optional but recommended)
 3. Run `npm test` - your example will be validated automatically
 
 **For Model Extension examples:**
+
 1. Create a directory matching your model extension name: `examples/models/{modelname}/`
 2. Add your `.json` example files there
 3. Run `npm test` - they will be discovered and validated automatically

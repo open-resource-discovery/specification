@@ -52,11 +52,11 @@ export async function copyGeneratedToDestination(): Promise<void> {
       "static/spec-v1/interfaces/Configuration.xlsx",
     );
     await cp(
-      "./src/generated/spec/v1/plugin/tabular/Ord Document.csv",
+      "./src/generated/spec/v1/plugin/tabular/ORD Document.csv",
       "static/spec-v1/interfaces/Document.csv",
     );
     await cp(
-      "./src/generated/spec/v1/plugin/tabular/Ord Document.xlsx",
+      "./src/generated/spec/v1/plugin/tabular/ORD Document.xlsx",
       "static/spec-v1/interfaces/Document.xlsx",
     );
 

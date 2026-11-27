@@ -178,3 +178,14 @@ html[data-theme="light"] {
   --lp-shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.08);
   --lp-shadow-strong: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
+/* Give documentation pages more horizontal room on large screens so wide
+   tables (e.g. the ORD Document interface) are not boxed into a narrow,
+   heavily-guttered column. Scoped to the doc main area so the homepage and
+   navbar containers are unaffected. */
+@media (min-width: 997px) {
+  main[class*="docMainContainer"] {
+    --ifm-container-width: 1600px;
+    --ifm-container-width-xl: 1600px;
+  }
+}

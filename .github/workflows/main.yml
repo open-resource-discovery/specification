@@ -35,6 +35,9 @@ jobs:
       - name: Generate
         run: npm run generate
 
+      - name: Validate policy overlays
+        run: npm run validate:policy
+
       - name: Lint
         run: npm run lint
 
