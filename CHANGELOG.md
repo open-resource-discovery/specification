@@ -15,6 +15,15 @@ For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMA
 - Deprecated attaching `ord:overlay:v1` and `oas-overlay-v1` files as API or Event resource definitions in favor of standalone Overlay Resources.
   New publications SHOULD use the standalone model; existing attached definitions remain valid and supported.
   No schema properties or enum values were removed, and the ORD Overlay file format and optional metadata are unchanged.
+- Deprecated `Vendor.partners` without replacement. New ORD documents SHOULD omit this property; existing documents using it remain valid.
+
+### Changed
+
+- Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.
+
+### Fixed
+
+- Corrected the Package inheritance rules by removing `labels`. Inheritance added unnecessary merging complexity for ORD aggregators and prevented technical labels from applying only to a Package. Labels now apply only to the object on which they are published. Aggregators must stop propagating Package labels, and providers relying on inheritance must publish the relevant labels directly on resources.
 
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
