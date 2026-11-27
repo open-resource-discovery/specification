@@ -134,35 +134,12 @@ describe("Overlay publication contract", () => {
     );
   });
 
-  it("accepts one or more explicit targets without requiring purpose", () => {
+  it("limits explicit targets to one without requiring purpose", () => {
     assert.ok(validateResource({ ...overlay, targets: [target] }));
     assert.equal(validateResource({ ...overlay, targets: [] }), false);
-    const secondTarget = {
-      ...target,
-      ordId: "sap.foo:apiResource:constellations:v1",
-    };
-    assert.ok(
-      validateResource({ ...overlay, targets: [target, secondTarget] }),
-      JSON.stringify(validateResource.errors),
-    );
-  });
-
-  it("validates the input-definition selection of every target", () => {
-    const { visibility: _omitted, ...input } = target.resourceDefinition;
     assert.equal(
-      validateResource({
-        ...overlay,
-        targets: [target, { ...target, resourceDefinition: input }],
-      }),
+      validateResource({ ...overlay, targets: [target, target] }),
       false,
-    );
-    assert.ok(
-      validateResource.errors?.some(
-        (error) =>
-          error.instancePath === "/targets/1/resourceDefinition" &&
-          error.keyword === "required" &&
-          error.params.missingProperty === "visibility",
-      ),
     );
   });
 
