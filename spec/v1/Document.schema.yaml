@@ -4517,7 +4517,7 @@ definitions:
 
       partners:
         type: array
-        x-deprecated-in-version: "1.18.0"
+        x-deprecated-in-version: "1.17.2"
         x-deprecation-text: |-
           Deprecated without replacement. New ORD documents SHOULD omit this property. Partner relationships are typically managed outside the scope of ORD. If you need to make the relationships discoverable, make sure the vendor ORD-ID or `correlationIds` point allow to reach the correct record in the partnership management systems.
           Existing documents using `partners` remain valid.

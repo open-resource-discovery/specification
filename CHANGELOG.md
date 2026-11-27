@@ -3,40 +3,47 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) rules,
-but omits the **patch** level in the spec version number.
+Release versions use [Semantic Versioning](https://semver.org/spec/v2.0.0.html) notation, with compatibility exceptions explained in the release notes.
+The `openResourceDiscovery` version in ORD documents omits the **patch** component.
 
 For a roadmap including expected timeline, please refer to [ROADMAP.md](./ROADMAP.md)
 
 ## [unreleased]
 
+## [[1.17.2](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.2)] - 2026-11-27
+
 ### Added
 
-- Added `Overlay.targets`, limited to one explicit input-definition selection, and optional resource-level `Overlay.purpose`.
+- Added `Overlay.targets` to select exactly one resource definition to patch, and optional resource-level `Overlay.purpose`.
   Input visibility is explicit; omitted input purpose selects the primary definition without a purpose.
 
 ### Changed
 
 - Allowed complementary `sap-csn-interop-effective-v1` API Resource definitions across protocols that permit resource definitions, including SOAP, WebSocket, and RFC; protocol-specific required definitions and the JSON media type requirement still apply.
-- Alpha Overlay Resources now require `targets` with exactly one input-definition selection.
+- Standalone Overlay Resources now require `targets` with exactly one entry.
   The standalone Overlay Resource interface in ORD is still in alpha, where incompatible changes remain possible.
   This is an intentional incompatible change: existing standalone Overlay Resources must supply the target resource ORD ID and input definition's type, media type, and explicit visibility.
   The ORD Overlay file format and its optional metadata remain unchanged.
-- Removed `OverlayDefinition.purpose` from the alpha standalone Overlay Resource model.
-  Move an existing `definitions[].purpose` to the containing `Overlay.purpose`; `targets[].resourceDefinition.purpose` continues to select the input definition independently.
 
 ### Deprecated
 
 - Deprecated attaching `ord:overlay:v1` and `oas-overlay-v1` files as API or Event resource definitions in favor of standalone Overlay Resources.
   New publications SHOULD use the standalone model; existing attached definitions remain valid and supported.
-  Existing attached definitions retain their schema, and the ORD Overlay file format and optional metadata are unchanged.
+  The ORD Overlay file format and optional metadata are unchanged.
 - Deprecated `Overlay.relatedApiResources`, `Overlay.relatedEventResources`, and `OverlayDefinition.visibility` while retaining their existing meaning and validity.
   Deprecated properties remain accepted, and the ORD Overlay file format is unchanged.
 - Deprecated `Vendor.partners` without replacement. New ORD documents SHOULD omit this property; existing documents using it remain valid.
 
+### Removed
+
+- Removed `OverlayDefinition.purpose` from the alpha standalone Overlay Resource interface in ORD.
+  Move an existing `definitions[].purpose` to the containing `Overlay.purpose`; `targets[].resourceDefinition.purpose` continues to select the input definition independently.
+
 ### Fixed
 
-- Corrected the Package inheritance rules by removing `labels`. Inheritance added unnecessary merging complexity for ORD aggregators and prevented technical labels from applying only to a Package. Labels now apply only to the object on which they are published. Aggregators must stop propagating Package labels, and providers relying on inheritance must publish the relevant labels directly on resources.
+- Corrected Package inheritance so `labels` apply only to the object on which they are published.
+  Aggregators MUST NOT propagate Package labels to contained resources.
+  Providers relying on inheritance must publish the relevant labels directly on resources.
 
 ## [[1.17.1](https://github.com/open-resource-discovery/specification/releases/tag/v1.17.1)] - 2026-11-06
 
