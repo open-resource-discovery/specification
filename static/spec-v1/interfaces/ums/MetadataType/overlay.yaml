@@ -120,7 +120,7 @@ spec:
     - propertyName: 'targets'
       relatedTypeName: 'OverlayResourceTarget'
       relatedTypeNamespace: '/sap/core/ucl/metadata/ord/v1'
-      description: "Required explicit selection of the input resource definition patched by the referenced overlay files.\nMUST contain exactly one target so consumers can resolve the input from the ORD Document.\nIf an overlay file also provides target metadata, it MUST identify the same input."
+      description: "Required explicit selection of the input resource definitions patched by the referenced overlay files.\nMUST contain at least one target so consumers can resolve each input from the ORD Document.\nEach target MUST resolve exactly one input resource definition.\nIf an overlay file also provides target metadata, it MUST agree with each selected input."
       mandatory: true
     - propertyName: 'relatedApiResources'
       relatedTypeName: 'RelatedApiResource'

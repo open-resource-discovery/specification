@@ -80,7 +80,7 @@ In that case, distributing it as an `OrdOverlayResource` in a separate ORD Docum
 #### Prefer an ORD Document Resource when
 
 - the overlay is created by someone other than the original resource provider
-- a cross-cutting enrichment is published as a separate Overlay Resource for each input definition
+- the same overlay patches resource definitions of multiple ORD resources
 - the overlay should be published independently from the lifecycle of one concrete API or Event resource
 - the overlay provider needs its own publication channel and cannot modify the target resource entry
 
